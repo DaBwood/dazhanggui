@@ -1,0 +1,536 @@
+[gd_scene format=3 uid="uid://ppwrhv7ag3ag"]
+
+[ext_resource type="Script" uid="uid://eo5hr04hdusm" path="res://new_script.gd" id="1_0fbet"]
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_0fbet"]
+bg_color = Color(0.0010853444, 0.0010853448, 0.0010853435, 1)
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_62e2m"]
+bg_color = Color(0.0071415594, 0.0071415617, 0.007141554, 1)
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_qtu10"]
+bg_color = Color(0.05457376, 0.05457379, 0.054573722, 1)
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_fj5cn"]
+content_margin_left = 2.0
+content_margin_top = 2.0
+content_margin_right = 2.0
+content_margin_bottom = 2.0
+bg_color = Color(0.7882353, 0.6627451, 0.34901962, 1)
+corner_radius_top_left = 8
+corner_radius_top_right = 8
+corner_radius_bottom_right = 8
+corner_radius_bottom_left = 8
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_iy58a"]
+content_margin_left = 2.0
+content_margin_top = 2.0
+content_margin_right = 2.0
+content_margin_bottom = 2.0
+bg_color = Color(0.8784314, 0.7529412, 0.4392157, 1)
+corner_radius_top_left = 8
+corner_radius_top_right = 8
+corner_radius_bottom_right = 8
+corner_radius_bottom_left = 8
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_6a6wx"]
+content_margin_left = 2.0
+content_margin_top = 2.0
+content_margin_right = 2.0
+content_margin_bottom = 2.0
+bg_color = Color(0.627451, 0.5019608, 0.1882353, 1)
+corner_radius_top_left = 8
+corner_radius_top_right = 8
+corner_radius_bottom_right = 8
+corner_radius_bottom_left = 8
+
+[node name="control" type="Control" unique_id=1611249931]
+layout_mode = 3
+anchors_preset = 0
+script = ExtResource("1_0fbet")
+
+[node name="Background" type="ColorRect" parent="." unique_id=24143841]
+layout_mode = 0
+offset_right = 1152.0
+offset_bottom = 581.0
+
+[node name="TopBar" type="HBoxContainer" parent="." unique_id=327367715]
+layout_mode = 0
+offset_left = 50.0
+offset_right = 182.0
+offset_bottom = 50.0
+
+[node name="Label" type="Label" parent="TopBar" unique_id=1537757194]
+layout_mode = 2
+
+[node name="ItemLabel" type="Label" parent="TopBar" unique_id=122820387]
+layout_mode = 2
+
+[node name="PageContainer" type="Control" parent="." unique_id=1935977747]
+anchors_preset = 0
+offset_top = 50.0
+offset_right = 1152.0
+offset_bottom = 550.0
+
+[node name="ShopPage" type="Control" parent="PageContainer" unique_id=951969954]
+anchors_preset = 0
+offset_right = 1152.0
+offset_bottom = 520.0
+
+[node name="HQEntryBtn" type="Button" parent="PageContainer/ShopPage" unique_id=905248165]
+layout_mode = 0
+offset_left = 200.0
+offset_top = 120.0
+offset_right = 600.0
+offset_bottom = 180.0
+text = "【钱庄】"
+
+[node name="ShopList" type="VBoxContainer" parent="PageContainer/ShopPage" unique_id=483105166]
+layout_mode = 0
+offset_left = 200.0
+offset_top = 200.0
+offset_right = 240.0
+offset_bottom = 240.0
+
+[node name="HeroPage" type="Control" parent="PageContainer" unique_id=1535043129]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_top = 40.0
+offset_bottom = 20.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="HeroScroll" type="ScrollContainer" parent="PageContainer/HeroPage" unique_id=2059615273]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="HeroList" type="GridContainer" parent="PageContainer/HeroPage/HeroScroll" unique_id=457763508]
+custom_maximum_size = Vector2(1152, -1)
+layout_mode = 2
+mouse_filter = 0
+theme_override_constants/h_separation = 10
+theme_override_constants/v_separation = 10
+columns = 2
+
+[node name="BagPage" type="Control" parent="PageContainer" unique_id=1856501066]
+anchors_preset = 0
+offset_right = 1152.0
+offset_bottom = 520.0
+
+[node name="MansionPage" type="Control" parent="PageContainer" unique_id=423770030]
+anchors_preset = 0
+offset_right = 40.0
+offset_bottom = 40.0
+
+[node name="BottomNav" type="HBoxContainer" parent="." unique_id=807440156]
+layout_mode = 0
+offset_top = 600.0
+offset_right = 1152.0
+offset_bottom = 648.0
+theme_override_constants/separation = 0
+
+[node name="NavMansionBtn" type="Button" parent="BottomNav" unique_id=997414615]
+layout_mode = 2
+text = "府邸"
+
+[node name="NavShopBtn" type="Button" parent="BottomNav" unique_id=1846939716]
+layout_mode = 2
+text = "商铺"
+
+[node name="NavHeroBtn" type="Button" parent="BottomNav" unique_id=398516321]
+layout_mode = 2
+text = "门客"
+
+[node name="NavBagBtn" type="Button" parent="BottomNav" unique_id=940789279]
+layout_mode = 2
+text = "背包"
+
+[node name="Overlay" type="ColorRect" parent="." unique_id=1151962551]
+visible = false
+z_index = 1
+layout_mode = 0
+offset_right = 1152.0
+offset_bottom = 648.0
+color = Color(0.14901961, 0.105882354, 0.5921569, 0.8352941)
+
+[node name="HQPanel" type="Panel" parent="." unique_id=893851812]
+visible = false
+z_index = 2
+layout_mode = 0
+offset_left = 351.0
+offset_top = 167.0
+offset_right = 711.0
+offset_bottom = 347.0
+theme_override_styles/panel = SubResource("StyleBoxFlat_0fbet")
+
+[node name="VBoxContainer" type="VBoxContainer" parent="HQPanel" unique_id=566364325]
+layout_mode = 0
+offset_left = 35.0
+offset_top = 30.0
+offset_right = 135.0
+offset_bottom = 130.0
+theme_override_constants/separation = 10
+
+[node name="HQName" type="Label" parent="HQPanel/VBoxContainer" unique_id=472797195]
+layout_mode = 2
+text = "钱庄"
+
+[node name="HQInfo" type="Label" parent="HQPanel/VBoxContainer" unique_id=334816971]
+layout_mode = 2
+text = "赚速：0"
+
+[node name="HBoxContainer" type="HBoxContainer" parent="HQPanel/VBoxContainer" unique_id=1954098085]
+layout_mode = 2
+theme_override_constants/separation = 15
+
+[node name="HQClickBtn" type="Button" parent="HQPanel/VBoxContainer/HBoxContainer" unique_id=1564005180]
+layout_mode = 2
+text = "打理"
+
+[node name="HQUpgradeBtn" type="Button" parent="HQPanel/VBoxContainer/HBoxContainer" unique_id=1410939640]
+layout_mode = 2
+text = "升级"
+
+[node name="CloseBtn" type="Button" parent="HQPanel" unique_id=723033541]
+layout_mode = 0
+offset_left = 325.0
+offset_top = -14.0
+offset_right = 351.0
+offset_bottom = 17.0
+text = "✕ "
+
+[node name="ShopPanel" type="Panel" parent="." unique_id=1549178323]
+visible = false
+z_index = 2
+layout_mode = 0
+offset_left = 329.0
+offset_top = 100.0
+offset_right = 729.0
+offset_bottom = 550.0
+theme_override_styles/panel = SubResource("StyleBoxFlat_62e2m")
+
+[node name="VBoxContainer" type="VBoxContainer" parent="ShopPanel" unique_id=1290318120]
+layout_mode = 0
+offset_left = 40.0
+offset_top = 35.0
+offset_right = 140.0
+offset_bottom = 135.0
+
+[node name="ShopName" type="Label" parent="ShopPanel/VBoxContainer" unique_id=1300717981]
+layout_mode = 2
+text = "茶楼"
+
+[node name="ShopInfo" type="Label" parent="ShopPanel/VBoxContainer" unique_id=51090648]
+layout_mode = 2
+text = "茶楼信息"
+
+[node name="HBoxContainer" type="HBoxContainer" parent="ShopPanel/VBoxContainer" unique_id=92858597]
+layout_mode = 2
+
+[node name="ShopUpgradeBtn" type="Button" parent="ShopPanel/VBoxContainer/HBoxContainer" unique_id=1417889841]
+layout_mode = 2
+text = "升级"
+
+[node name="ShopHireBtn" type="Button" parent="ShopPanel/VBoxContainer/HBoxContainer" unique_id=450187533]
+layout_mode = 2
+text = "招募"
+
+[node name="AssignContainer" type="VBoxContainer" parent="ShopPanel/VBoxContainer" unique_id=1707518153]
+layout_mode = 2
+theme_override_constants/separation = 10
+
+[node name="AssignSlot_0" type="HBoxContainer" parent="ShopPanel/VBoxContainer/AssignContainer" unique_id=110718492]
+layout_mode = 2
+
+[node name="AssignLabel" type="Label" parent="ShopPanel/VBoxContainer/AssignContainer/AssignSlot_0" unique_id=192599631]
+layout_mode = 2
+
+[node name="AssignBtn" type="Button" parent="ShopPanel/VBoxContainer/AssignContainer/AssignSlot_0" unique_id=1722259983]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="AssignSlot_1" type="HBoxContainer" parent="ShopPanel/VBoxContainer/AssignContainer" unique_id=1341849372]
+layout_mode = 2
+
+[node name="AssignLabel" type="Label" parent="ShopPanel/VBoxContainer/AssignContainer/AssignSlot_1" unique_id=949617517]
+layout_mode = 2
+
+[node name="AssignBtn" type="Button" parent="ShopPanel/VBoxContainer/AssignContainer/AssignSlot_1" unique_id=2138209508]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="AssignSlot_2" type="HBoxContainer" parent="ShopPanel/VBoxContainer/AssignContainer" unique_id=1102769672]
+layout_mode = 2
+
+[node name="AssignLabel" type="Label" parent="ShopPanel/VBoxContainer/AssignContainer/AssignSlot_2" unique_id=5546252]
+layout_mode = 2
+
+[node name="AssignBtn" type="Button" parent="ShopPanel/VBoxContainer/AssignContainer/AssignSlot_2" unique_id=1061275347]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="AssignSlot_3" type="HBoxContainer" parent="ShopPanel/VBoxContainer/AssignContainer" unique_id=1110535542]
+layout_mode = 2
+
+[node name="AssignLabel" type="Label" parent="ShopPanel/VBoxContainer/AssignContainer/AssignSlot_3" unique_id=397494964]
+layout_mode = 2
+
+[node name="AssignBtn" type="Button" parent="ShopPanel/VBoxContainer/AssignContainer/AssignSlot_3" unique_id=2124899409]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="AssignSlot_4" type="HBoxContainer" parent="ShopPanel/VBoxContainer/AssignContainer" unique_id=833864043]
+layout_mode = 2
+
+[node name="AssignLabel" type="Label" parent="ShopPanel/VBoxContainer/AssignContainer/AssignSlot_4" unique_id=1969253772]
+layout_mode = 2
+
+[node name="AssignBtn" type="Button" parent="ShopPanel/VBoxContainer/AssignContainer/AssignSlot_4" unique_id=578792161]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="ShopCloseBtn" type="Button" parent="ShopPanel" unique_id=1790626049]
+layout_mode = 0
+offset_left = 366.0
+offset_top = -10.0
+offset_right = 392.0
+offset_bottom = 21.0
+text = "✕ "
+
+[node name="HeroPanel" type="Panel" parent="." unique_id=462287886]
+visible = false
+z_index = 2
+layout_mode = 0
+offset_left = 326.0
+offset_top = 124.0
+offset_right = 826.0
+offset_bottom = 524.0
+theme_override_styles/panel = SubResource("StyleBoxFlat_qtu10")
+
+[node name="HeroName" type="Label" parent="HeroPanel" unique_id=1642015587]
+layout_mode = 0
+offset_left = 20.0
+offset_top = 20.0
+offset_right = 60.0
+offset_bottom = 43.0
+
+[node name="HeroIncome" type="Label" parent="HeroPanel" unique_id=1352230536]
+layout_mode = 0
+offset_left = 20.0
+offset_top = 60.0
+offset_right = 60.0
+offset_bottom = 83.0
+
+[node name="HeroCloseBtn" type="Button" parent="HeroPanel" unique_id=923600435]
+custom_minimum_size = Vector2(28, 28)
+layout_mode = 0
+offset_left = 470.0
+offset_right = 498.0
+offset_bottom = 31.0
+text = "X"
+
+[node name="ScrollContainer" type="ScrollContainer" parent="HeroPanel" unique_id=2080348750]
+layout_mode = 0
+offset_left = 20.0
+offset_top = 110.0
+offset_right = 480.0
+offset_bottom = 350.0
+
+[node name="SkillList" type="VBoxContainer" parent="HeroPanel/ScrollContainer" unique_id=1754006406]
+layout_mode = 2
+size_flags_vertical = 0
+
+[node name="LevelUpBox" type="HBoxContainer" parent="HeroPanel" unique_id=1790861493]
+layout_mode = 0
+offset_left = 275.0
+offset_top = 30.0
+offset_right = 340.0
+offset_bottom = 73.0
+
+[node name="LevelUpInfo" type="Label" parent="HeroPanel/LevelUpBox" unique_id=64696787]
+layout_mode = 2
+
+[node name="LevelUpBtnBox" type="VBoxContainer" parent="HeroPanel/LevelUpBox" unique_id=197963921]
+layout_mode = 2
+
+[node name="LevelUpBtn" type="Button" parent="HeroPanel/LevelUpBox/LevelUpBtnBox" unique_id=1958403097]
+layout_mode = 2
+
+[node name="BatchCheck" type="CheckBox" parent="HeroPanel/LevelUpBox/LevelUpBtnBox" unique_id=1428309525]
+layout_mode = 2
+theme_override_font_sizes/font_size = 12
+text = "十连"
+
+[node name="FriendPanel" type="Panel" parent="." unique_id=712027694]
+visible = false
+z_index = 2
+layout_mode = 0
+offset_left = 300.0
+offset_top = 100.0
+offset_right = 900.0
+offset_bottom = 550.0
+
+[node name="FriendListView" type="Panel" parent="FriendPanel" unique_id=1645610656]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="ScrollContainer" type="ScrollContainer" parent="FriendPanel/FriendListView" unique_id=1189822880]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_bottom = -50.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="VBoxContainer" type="VBoxContainer" parent="FriendPanel/FriendListView/ScrollContainer" unique_id=325880286]
+layout_mode = 2
+
+[node name="FriendDetailView" type="VBoxContainer" parent="FriendPanel" unique_id=98662131]
+visible = false
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="FriendName" type="Label" parent="FriendPanel/FriendDetailView" unique_id=1481653613]
+custom_minimum_size = Vector2(600, 0)
+layout_mode = 2
+
+[node name="FriendAttr" type="Label" parent="FriendPanel/FriendDetailView" unique_id=163784233]
+custom_minimum_size = Vector2(600, 0)
+layout_mode = 2
+
+[node name="ShopSkills" type="Label" parent="FriendPanel/FriendDetailView" unique_id=622920414]
+layout_mode = 2
+
+[node name="FriendBond" type="Label" parent="FriendPanel/FriendDetailView" unique_id=2053404720]
+layout_mode = 2
+
+[node name="BoundHeroes" type="Label" parent="FriendPanel/FriendDetailView" unique_id=1644256681]
+layout_mode = 2
+
+[node name="HBoxContainer" type="HBoxContainer" parent="FriendPanel/FriendDetailView" unique_id=2208407]
+layout_mode = 2
+
+[node name="GiftBtn" type="Button" parent="FriendPanel/FriendDetailView/HBoxContainer" unique_id=1027332842]
+custom_minimum_size = Vector2(50, 20)
+layout_mode = 2
+text = "赠送"
+
+[node name="FriendSkillList" type="VBoxContainer" parent="FriendPanel/FriendDetailView" unique_id=118024720]
+layout_mode = 2
+
+[node name="FixedSkillBox" type="HBoxContainer" parent="FriendPanel/FriendDetailView/FriendSkillList" unique_id=36652752]
+layout_mode = 2
+
+[node name="FixedSkillName" type="Label" parent="FriendPanel/FriendDetailView/FriendSkillList/FixedSkillBox" unique_id=1772071700]
+layout_mode = 2
+text = "天生丽质"
+
+[node name="FixedSkillInfo" type="Label" parent="FriendPanel/FriendDetailView/FriendSkillList/FixedSkillBox" unique_id=1936628918]
+custom_minimum_size = Vector2(280, 0)
+layout_mode = 2
+
+[node name="FixedSkillBtn" type="Button" parent="FriendPanel/FriendDetailView/FriendSkillList/FixedSkillBox" unique_id=1017213105]
+custom_minimum_size = Vector2(150, 25)
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="FixedSkillChek" type="CheckBox" parent="FriendPanel/FriendDetailView/FriendSkillList/FixedSkillBox" unique_id=760339937]
+custom_minimum_size = Vector2(60, 0)
+layout_mode = 2
+size_flags_horizontal = 8
+text = "十连"
+
+[node name="PercentSkillBox" type="HBoxContainer" parent="FriendPanel/FriendDetailView/FriendSkillList" unique_id=1769038991]
+layout_mode = 2
+
+[node name="PercentSkillName" type="Label" parent="FriendPanel/FriendDetailView/FriendSkillList/PercentSkillBox" unique_id=492347559]
+layout_mode = 2
+text = "花开富贵"
+
+[node name="PercentSkillInfo" type="Label" parent="FriendPanel/FriendDetailView/FriendSkillList/PercentSkillBox" unique_id=88960994]
+custom_minimum_size = Vector2(280, 0)
+layout_mode = 2
+
+[node name="PercentSkillBtn" type="Button" parent="FriendPanel/FriendDetailView/FriendSkillList/PercentSkillBox" unique_id=1667291229]
+layout_mode = 2
+size_flags_horizontal = 3
+text = "十连"
+
+[node name="PercentSkillChek" type="CheckBox" parent="FriendPanel/FriendDetailView/FriendSkillList/PercentSkillBox" unique_id=1892575123]
+custom_minimum_size = Vector2(60, 0)
+layout_mode = 2
+text = "十连"
+
+[node name="ChatOpBox" type="Control" parent="FriendPanel" unique_id=1151828707]
+anchors_preset = 0
+offset_top = 400.0
+offset_right = 600.0
+offset_bottom = 450.0
+
+[node name="Bg" type="Panel" parent="FriendPanel/ChatOpBox" unique_id=1902727558]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="InnerBox" type="HBoxContainer" parent="FriendPanel/ChatOpBox" unique_id=173550729]
+layout_mode = 1
+anchors_preset = 3
+anchor_left = 1.0
+anchor_top = 1.0
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = -190.0
+offset_top = -50.0
+offset_right = -1.0
+grow_horizontal = 0
+grow_vertical = 0
+
+[node name="ChatBtn" type="Button" parent="FriendPanel/ChatOpBox/InnerBox" unique_id=873879287]
+custom_minimum_size = Vector2(120, 0)
+layout_mode = 2
+text = "谈心"
+
+[node name="BatchChatCheck" type="CheckBox" parent="FriendPanel/ChatOpBox/InnerBox" unique_id=1887776333]
+custom_minimum_size = Vector2(65, 0)
+layout_mode = 2
+text = "一键"
+
+[node name="CloseBtn" type="Button" parent="FriendPanel" unique_id=1973038989]
+z_index = 5
+custom_minimum_size = Vector2(28, 28)
+custom_maximum_size = Vector2(28, 28)
+layout_mode = 1
+anchors_preset = 1
+anchor_left = 1.0
+anchor_right = 1.0
+offset_left = -28.0
+offset_bottom = 28.0
+grow_horizontal = 0
+theme_override_colors/font_color = Color(0.0329679, 0.03296804, 0.032967918, 1)
+theme_override_font_sizes/font_size = 14
+theme_override_styles/normal = SubResource("StyleBoxFlat_fj5cn")
+theme_override_styles/hover = SubResource("StyleBoxFlat_iy58a")
+theme_override_styles/hover_pressed = SubResource("StyleBoxFlat_6a6wx")
+text = "×"
+vertical_icon_alignment = 2
+
+[node name="Timer" type="Timer" parent="." unique_id=719061768]
+autostart = true
