@@ -1,0 +1,222 @@
+{
+  "ke_zhan": {
+	"name": "客栈",
+	"category": "士",
+	"auto_base": 5,
+	"staff_income": 1,
+	"hire_cost": 50,
+	"level": 1,
+	"staff": 0,
+	"upgrade_cost": 1,
+	"income_mult": 1.5
+  },
+  "yi_guan": {
+	"name": "医馆",
+	"category": "农",
+	"auto_base": 10,
+	"staff_income": 2,
+	"hire_cost": 100,
+	"level": 1,
+	"staff": 0,
+	"upgrade_cost": 2,
+	"income_mult": 1.5
+  },
+  "shuoshu_tan": {
+	"name": "说书摊",
+	"category": "工",
+	"auto_base": 20,
+	"staff_income": 4,
+	"hire_cost": 200,
+	"level": 1,
+	"staff": 0,
+	"upgrade_cost": 4,
+	"income_mult": 1.5
+  },
+  "xiangliao_pu": {
+	"name": "香料铺",
+	"category": "商",
+	"auto_base": 50,
+	"staff_income": 6,
+	"hire_cost": 400,
+	"level": 1,
+	"staff": 0,
+	"upgrade_cost": 5,
+	"income_mult": 1.5
+  },
+  "dang_pu": {
+	"name": "当铺",
+	"category": "侠",
+	"auto_base": 100,
+	"staff_income": 8,
+	"hire_cost": 600,
+	"level": 1,
+	"staff": 0,
+	"upgrade_cost": 10,
+	"income_mult": 1.5
+  },
+  "yao_pu": {
+	"name": "药铺",
+	"category": "士",
+	"auto_base": 200,
+	"staff_income": 10,
+	"hire_cost": 1000,
+	"level": 1,
+	"staff": 0,
+	"upgrade_cost": 12,
+	"income_mult": 1.5
+  },
+  "jiu_si": {
+	"name": "酒肆",
+	"category": "农",
+	"auto_base": 500,
+	"staff_income": 12,
+	"hire_cost": 1200,
+	"level": 1,
+	"staff": 0,
+	"upgrade_cost": 14,
+	"income_mult": 1.5
+  },
+  "yi_zhan": {
+	"name": "驿站",
+	"category": "工",
+	"auto_base": 1000,
+	"staff_income": 14,
+	"hire_cost": 1400,
+	"level": 1,
+	"staff": 0,
+	"upgrade_cost": 15,
+	"income_mult": 1.5
+  },
+  "miaoyin_fang": {
+	"name": "妙音坊",
+	"category": "商",
+	"auto_base": 2000,
+	"staff_income": 16,
+	"hire_cost": 1600,
+	"level": 1,
+	"staff": 0,
+	"upgrade_cost": 20,
+	"income_mult": 1.5
+  },
+  "jiu_fang": {
+	"name": "酒坊",
+	"category": "侠",
+	"auto_base": 5000,
+	"staff_income": 18,
+	"hire_cost": 1800,
+	"level": 1,
+	"staff": 0,
+	"upgrade_cost": 22,
+	"income_mult": 1.5
+  },
+  "changle_fang": {
+	"name": "长乐坊",
+	"category": "士",
+	"auto_base": 10000,
+	"staff_income": 20,
+	"hire_cost": 5000,
+	"level": 1,
+	"staff": 0,
+	"upgrade_cost": 25,
+	"income_mult": 1.5
+  },
+  "chengyi_pu": {
+	"name": "成衣铺",
+	"category": "农",
+	"auto_base": 20000,
+	"staff_income": 22,
+	"hire_cost": 5200,
+	"level": 1,
+	"staff": 0,
+	"upgrade_cost": 30,
+	"income_mult": 1.5
+  },
+  "suanming_tan": {
+	"name": "算命摊",
+	"category": "工",
+	"auto_base": 50000,
+	"staff_income": 24,
+	"hire_cost": 5400,
+	"level": 1,
+	"staff": 0,
+	"upgrade_cost": 32,
+	"income_mult": 1.5
+  },
+  "chuan_wu": {
+	"name": "船坞",
+	"category": "商",
+	"auto_base": 100000,
+	"staff_income": 26,
+	"hire_cost": 5600,
+	"level": 1,
+	"staff": 0,
+	"upgrade_cost": 34,
+	"income_mult": 1.5
+  },
+  "chema_hang": {
+	"name": "车马行",
+	"category": "侠",
+	"auto_base": 200000,
+	"staff_income": 28,
+	"hire_cost": 5800,
+	"level": 1,
+	"staff": 0,
+	"upgrade_cost": 35,
+	"income_mult": 1.5
+  },
+  "cha_si": {
+	"name": "茶肆",
+	"category": "士",
+	"auto_base": 500000,
+	"staff_income": 30,
+	"hire_cost": 10000,
+	"level": 1,
+	"staff": 0,
+	"upgrade_cost": 40,
+	"income_mult": 1.5
+  },
+  "xi_lou": {
+	"name": "戏楼",
+	"category": "农",
+	"auto_base": 1000000,
+	"staff_income": 32,
+	"hire_cost": 12000,
+	"level": 1,
+	"staff": 0,
+	"upgrade_cost": 42,
+	"income_mult": 1.5
+  },
+  "zao_tang": {
+	"name": "澡堂",
+	"category": "工",
+	"auto_base": 2000000,
+	"staff_income": 34,
+	"hire_cost": 14000,
+	"level": 1,
+	"staff": 0,
+	"upgrade_cost": 44,
+	"income_mult": 1.5
+  },
+  "biao_ju": {
+	"name": "镖局",
+	"category": "商",
+	"auto_base": 5000000,
+	"staff_income": 36,
+	"hire_cost": 16000,
+	"level": 1,
+	"staff": 0,
+	"upgrade_cost": 45,
+	"income_mult": 1.5
+  },
+  "yao_chang": {
+	"name": "窑厂",
+	"category": "侠",
+	"auto_base": 10000000,
+	"staff_income": 38,
+	"hire_cost": 18000,
+	"level": 1,
+	"staff": 0,
+	"upgrade_cost": 48,
+	"income_mult": 1.5
+  }
+}

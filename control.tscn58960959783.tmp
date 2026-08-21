@@ -1,6 +1,6 @@
 [gd_scene format=3 uid="uid://ppwrhv7ag3ag"]
 
-[ext_resource type="Script" uid="uid://eo5hr04hdusm" path="res://game_controller.gd" id="1_0fbet"]
+[ext_resource type="Script" uid="uid://eo5hr04hdusm" path="res://new_script.gd" id="1_0fbet"]
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_1yqcw"]
 bg_color = Color(0.005198905, 0.0051989076, 0.0051989006, 1)
@@ -9,13 +9,46 @@ bg_color = Color(0.005198905, 0.0051989076, 0.0051989006, 1)
 bg_color = Color(0.03227852, 0.00082666293, 0.03232573, 1)
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_0fbet"]
-bg_color = Color(0.13867968, 0.13867983, 0.12607783, 1)
+bg_color = Color(0.0010853444, 0.0010853448, 0.0010853435, 1)
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_62e2m"]
 bg_color = Color(0.0071415594, 0.0071415617, 0.007141554, 1)
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_qtu10"]
 bg_color = Color(0.05457376, 0.05457379, 0.054573722, 1)
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_fj5cn"]
+content_margin_left = 2.0
+content_margin_top = 2.0
+content_margin_right = 2.0
+content_margin_bottom = 2.0
+bg_color = Color(0.7882353, 0.6627451, 0.34901962, 1)
+corner_radius_top_left = 8
+corner_radius_top_right = 8
+corner_radius_bottom_right = 8
+corner_radius_bottom_left = 8
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_iy58a"]
+content_margin_left = 2.0
+content_margin_top = 2.0
+content_margin_right = 2.0
+content_margin_bottom = 2.0
+bg_color = Color(0.8784314, 0.7529412, 0.4392157, 1)
+corner_radius_top_left = 8
+corner_radius_top_right = 8
+corner_radius_bottom_right = 8
+corner_radius_bottom_left = 8
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_6a6wx"]
+content_margin_left = 2.0
+content_margin_top = 2.0
+content_margin_right = 2.0
+content_margin_bottom = 2.0
+bg_color = Color(0.627451, 0.5019608, 0.1882353, 1)
+corner_radius_top_left = 8
+corner_radius_top_right = 8
+corner_radius_bottom_right = 8
+corner_radius_bottom_left = 8
 
 [node name="control" type="Control" unique_id=1611249931]
 layout_mode = 3
@@ -52,28 +85,18 @@ offset_bottom = 520.0
 
 [node name="HQEntryBtn" type="Button" parent="PageContainer/ShopPage" unique_id=905248165]
 layout_mode = 0
-offset_left = 370.0
-offset_top = 50.0
-offset_right = 770.0
-offset_bottom = 110.0
+offset_left = 200.0
+offset_top = 120.0
+offset_right = 600.0
+offset_bottom = 180.0
 text = "【钱庄】"
 
-[node name="ShopScroll" type="ScrollContainer" parent="PageContainer/ShopPage" unique_id=527145895]
-custom_maximum_size = Vector2(-1, 500)
-layout_mode = 1
-anchors_preset = 15
-anchor_right = 1.0
-anchor_bottom = 1.0
-offset_top = 120.0
-grow_horizontal = 2
-grow_vertical = 2
-
-[node name="ShopList" type="GridContainer" parent="PageContainer/ShopPage/ShopScroll" unique_id=1471778929]
-custom_minimum_size = Vector2(1152, 0)
-layout_mode = 2
-size_flags_horizontal = 3
-size_flags_vertical = 3
-columns = 2
+[node name="ShopList" type="VBoxContainer" parent="PageContainer/ShopPage" unique_id=483105166]
+layout_mode = 0
+offset_left = 200.0
+offset_top = 200.0
+offset_right = 240.0
+offset_bottom = 240.0
 
 [node name="HeroPage" type="Control" parent="PageContainer" unique_id=1535043129]
 layout_mode = 1
@@ -107,36 +130,9 @@ offset_right = 1152.0
 offset_bottom = 520.0
 
 [node name="MansionPage" type="Control" parent="PageContainer" unique_id=423770030]
-layout_mode = 1
-anchors_preset = 15
-anchor_right = 1.0
-anchor_bottom = 1.0
-grow_horizontal = 2
-grow_vertical = 2
-
-[node name="StagePage" type="VBoxContainer" parent="PageContainer" unique_id=565288113]
-layout_mode = 1
-anchors_preset = 15
-anchor_right = 1.0
-anchor_bottom = 1.0
-grow_horizontal = 2
-grow_vertical = 2
-
-[node name="BeastPage" type="Control" parent="PageContainer" unique_id=518730131]
-layout_mode = 1
-anchors_preset = 15
-anchor_right = 1.0
-anchor_bottom = 1.0
-grow_horizontal = 2
-grow_vertical = 2
-
-[node name="AdventurePage" type="Control" parent="PageContainer" unique_id=1624701004]
-layout_mode = 1
-anchors_preset = 15
-anchor_right = 1.0
-anchor_bottom = 1.0
-grow_horizontal = 2
-grow_vertical = 2
+anchors_preset = 0
+offset_right = 40.0
+offset_bottom = 40.0
 
 [node name="BottomNav" type="HBoxContainer" parent="." unique_id=807440156]
 layout_mode = 0
@@ -156,10 +152,6 @@ text = "商铺"
 [node name="NavHeroBtn" type="Button" parent="BottomNav" unique_id=398516321]
 layout_mode = 2
 text = "门客"
-
-[node name="NavAdventureBtn" type="Button" parent="BottomNav" unique_id=915142639]
-layout_mode = 2
-text = "闯荡"
 
 [node name="NavBagBtn" type="Button" parent="BottomNav" unique_id=940789279]
 layout_mode = 2
@@ -203,10 +195,6 @@ text = "元宝充值"
 layout_mode = 2
 text = "每日礼包"
 
-[node name="TapSpecial" type="Button" parent="RechargePage/RechargeContainer/TabBar" unique_id=1054061200]
-layout_mode = 2
-text = "特惠礼包"
-
 [node name="ContentContainer" type="VBoxContainer" parent="RechargePage/RechargeContainer" unique_id=1740668998]
 z_index = 2
 layout_mode = 2
@@ -224,9 +212,6 @@ columns = 3
 visible = false
 layout_mode = 2
 alignment = 1
-
-[node name="SpecialPackContainer" type="VBoxContainer" parent="RechargePage/RechargeContainer/ContentContainer" unique_id=564837808]
-layout_mode = 2
 
 [node name="CloseBtn" type="Button" parent="RechargePage/RechargeContainer" unique_id=1591419104]
 custom_minimum_size = Vector2(80, 32)
@@ -286,10 +271,10 @@ text = "关闭"
 visible = false
 z_index = 2
 layout_mode = 0
-offset_left = 280.0
-offset_top = 100.0
-offset_right = 880.0
-offset_bottom = 550.0
+offset_left = 351.0
+offset_top = 167.0
+offset_right = 711.0
+offset_bottom = 347.0
 theme_override_styles/panel = SubResource("StyleBoxFlat_0fbet")
 
 [node name="VBoxContainer" type="VBoxContainer" parent="HQPanel" unique_id=566364325]
@@ -322,9 +307,9 @@ text = "升级"
 
 [node name="CloseBtn" type="Button" parent="HQPanel" unique_id=723033541]
 layout_mode = 0
-offset_left = 580.0
+offset_left = 325.0
 offset_top = -14.0
-offset_right = 610.0
+offset_right = 351.0
 offset_bottom = 17.0
 text = "✕ "
 
@@ -332,9 +317,9 @@ text = "✕ "
 visible = false
 z_index = 2
 layout_mode = 0
-offset_left = 280.0
+offset_left = 329.0
 offset_top = 100.0
-offset_right = 880.0
+offset_right = 729.0
 offset_bottom = 550.0
 theme_override_styles/panel = SubResource("StyleBoxFlat_62e2m")
 
@@ -363,10 +348,6 @@ text = "升级"
 [node name="ShopHireBtn" type="Button" parent="ShopPanel/VBoxContainer/HBoxContainer" unique_id=450187533]
 layout_mode = 2
 text = "招募"
-
-[node name="BatchHireCheck" type="CheckBox" parent="ShopPanel/VBoxContainer/HBoxContainer" unique_id=1730551561]
-layout_mode = 2
-text = "十连"
 
 [node name="AssignContainer" type="VBoxContainer" parent="ShopPanel/VBoxContainer" unique_id=1707518153]
 layout_mode = 2
@@ -424,9 +405,9 @@ size_flags_horizontal = 3
 
 [node name="ShopCloseBtn" type="Button" parent="ShopPanel" unique_id=1790626049]
 layout_mode = 0
-offset_left = 585.0
+offset_left = 366.0
 offset_top = -10.0
-offset_right = 615.0
+offset_right = 392.0
 offset_bottom = 21.0
 text = "✕ "
 
@@ -493,6 +474,171 @@ layout_mode = 2
 layout_mode = 2
 theme_override_font_sizes/font_size = 12
 text = "十连"
+
+[node name="FriendPanel" type="Panel" parent="." unique_id=712027694]
+visible = false
+z_index = 2
+layout_mode = 0
+offset_left = 300.0
+offset_top = 100.0
+offset_right = 900.0
+offset_bottom = 550.0
+
+[node name="FriendListView" type="Panel" parent="FriendPanel" unique_id=1645610656]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="ScrollContainer" type="ScrollContainer" parent="FriendPanel/FriendListView" unique_id=1189822880]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_bottom = -50.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="VBoxContainer" type="VBoxContainer" parent="FriendPanel/FriendListView/ScrollContainer" unique_id=325880286]
+layout_mode = 2
+
+[node name="FriendDetailView" type="VBoxContainer" parent="FriendPanel" unique_id=98662131]
+visible = false
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="FriendName" type="Label" parent="FriendPanel/FriendDetailView" unique_id=1481653613]
+custom_minimum_size = Vector2(600, 0)
+layout_mode = 2
+
+[node name="FriendAttr" type="Label" parent="FriendPanel/FriendDetailView" unique_id=163784233]
+custom_minimum_size = Vector2(600, 0)
+layout_mode = 2
+
+[node name="ShopSkills" type="Label" parent="FriendPanel/FriendDetailView" unique_id=622920414]
+layout_mode = 2
+
+[node name="FriendBond" type="Label" parent="FriendPanel/FriendDetailView" unique_id=2053404720]
+layout_mode = 2
+
+[node name="BoundHeroes" type="Label" parent="FriendPanel/FriendDetailView" unique_id=1644256681]
+layout_mode = 2
+
+[node name="HBoxContainer" type="HBoxContainer" parent="FriendPanel/FriendDetailView" unique_id=2208407]
+layout_mode = 2
+
+[node name="GiftBtn" type="Button" parent="FriendPanel/FriendDetailView/HBoxContainer" unique_id=1027332842]
+custom_minimum_size = Vector2(50, 20)
+layout_mode = 2
+text = "赠送"
+
+[node name="FriendSkillList" type="VBoxContainer" parent="FriendPanel/FriendDetailView" unique_id=118024720]
+layout_mode = 2
+
+[node name="FixedSkillBox" type="HBoxContainer" parent="FriendPanel/FriendDetailView/FriendSkillList" unique_id=36652752]
+layout_mode = 2
+
+[node name="FixedSkillName" type="Label" parent="FriendPanel/FriendDetailView/FriendSkillList/FixedSkillBox" unique_id=1772071700]
+layout_mode = 2
+text = "天生丽质"
+
+[node name="FixedSkillInfo" type="Label" parent="FriendPanel/FriendDetailView/FriendSkillList/FixedSkillBox" unique_id=1936628918]
+custom_minimum_size = Vector2(280, 0)
+layout_mode = 2
+
+[node name="FixedSkillBtn" type="Button" parent="FriendPanel/FriendDetailView/FriendSkillList/FixedSkillBox" unique_id=1017213105]
+custom_minimum_size = Vector2(150, 25)
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="FixedSkillChek" type="CheckBox" parent="FriendPanel/FriendDetailView/FriendSkillList/FixedSkillBox" unique_id=760339937]
+custom_minimum_size = Vector2(60, 0)
+layout_mode = 2
+size_flags_horizontal = 8
+text = "十连"
+
+[node name="PercentSkillBox" type="HBoxContainer" parent="FriendPanel/FriendDetailView/FriendSkillList" unique_id=1769038991]
+layout_mode = 2
+
+[node name="PercentSkillName" type="Label" parent="FriendPanel/FriendDetailView/FriendSkillList/PercentSkillBox" unique_id=492347559]
+layout_mode = 2
+text = "花开富贵"
+
+[node name="PercentSkillInfo" type="Label" parent="FriendPanel/FriendDetailView/FriendSkillList/PercentSkillBox" unique_id=88960994]
+custom_minimum_size = Vector2(280, 0)
+layout_mode = 2
+
+[node name="PercentSkillBtn" type="Button" parent="FriendPanel/FriendDetailView/FriendSkillList/PercentSkillBox" unique_id=1667291229]
+layout_mode = 2
+size_flags_horizontal = 3
+text = "十连"
+
+[node name="PercentSkillChek" type="CheckBox" parent="FriendPanel/FriendDetailView/FriendSkillList/PercentSkillBox" unique_id=1892575123]
+custom_minimum_size = Vector2(60, 0)
+layout_mode = 2
+text = "十连"
+
+[node name="ChatOpBox" type="Control" parent="FriendPanel" unique_id=1151828707]
+anchors_preset = 0
+offset_top = 400.0
+offset_right = 600.0
+offset_bottom = 450.0
+
+[node name="Bg" type="Panel" parent="FriendPanel/ChatOpBox" unique_id=1902727558]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="InnerBox" type="HBoxContainer" parent="FriendPanel/ChatOpBox" unique_id=173550729]
+layout_mode = 1
+anchors_preset = 3
+anchor_left = 1.0
+anchor_top = 1.0
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = -190.0
+offset_top = -50.0
+offset_right = -1.0
+grow_horizontal = 0
+grow_vertical = 0
+
+[node name="ChatBtn" type="Button" parent="FriendPanel/ChatOpBox/InnerBox" unique_id=873879287]
+custom_minimum_size = Vector2(120, 0)
+layout_mode = 2
+text = "谈心"
+
+[node name="BatchChatCheck" type="CheckBox" parent="FriendPanel/ChatOpBox/InnerBox" unique_id=1887776333]
+custom_minimum_size = Vector2(65, 0)
+layout_mode = 2
+text = "一键"
+
+[node name="CloseBtn" type="Button" parent="FriendPanel" unique_id=1973038989]
+z_index = 5
+custom_minimum_size = Vector2(28, 28)
+custom_maximum_size = Vector2(28, 28)
+layout_mode = 1
+anchors_preset = 1
+anchor_left = 1.0
+anchor_right = 1.0
+offset_left = -28.0
+offset_bottom = 28.0
+grow_horizontal = 0
+theme_override_colors/font_color = Color(0.0329679, 0.03296804, 0.032967918, 1)
+theme_override_font_sizes/font_size = 14
+theme_override_styles/normal = SubResource("StyleBoxFlat_fj5cn")
+theme_override_styles/hover = SubResource("StyleBoxFlat_iy58a")
+theme_override_styles/hover_pressed = SubResource("StyleBoxFlat_6a6wx")
+text = "×"
+vertical_icon_alignment = 2
 
 [node name="Timer" type="Timer" parent="." unique_id=719061768]
 autostart = true

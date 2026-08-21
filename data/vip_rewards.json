@@ -1,0 +1,149 @@
+{
+  "1": [
+	{
+	  "type": "hero",
+	  "id": "shen_suanzi",
+	  "name": "神算子"
+	}
+  ],
+  "2": [
+	{
+	  "type": "hero",
+	  "id": "luo_caifeng",
+	  "name": "罗裁缝"
+	}
+  ],
+  "3": [
+	{
+	  "type": "friend",
+	  "id": "xiao_shimei",
+	  "name": "小师妹"
+	}
+  ],
+  "4": [
+	{
+	  "type": "hero",
+	  "id": "ding_xiren",
+	  "name": "丁戏人"
+	}
+  ],
+  "5": [
+	{
+	  "type": "hero",
+	  "id": "fang_huotou",
+	  "name": "方火头"
+	}
+  ],
+  "6": [
+	{
+	  "type": "friend",
+	  "id": "xinniang",
+	  "name": "新娘"
+	}
+  ],
+  "7": [
+	{
+	  "type": "hero",
+	  "id": "leng_erpi",
+	  "name": "冷二皮"
+	}
+  ],
+  "8": [
+	{
+	  "type": "hero",
+	  "id": "ya_jiu",
+	  "name": "牙九"
+	}
+  ],
+  "9": [
+	{
+	  "type": "hero",
+	  "id": "guanxingshi",
+	  "name": "观星师"
+	}
+  ],
+  "10": [
+	{
+	  "type": "hero",
+	  "id": "jisi_fuhao",
+	  "name": "祭师妇好"
+	},
+	{
+	  "type": "friend",
+	  "id": "friend_jisi_fuhao",
+	  "name": "王后妇好"
+	}
+  ],
+  "11": [
+	{
+	  "type": "hero",
+	  "id": "dayu",
+	  "name": "大禹"
+	},
+	{
+	  "type": "friend",
+	  "id": "tushanshi",
+	  "name": "涂山氏"
+	}
+  ],
+  "12": [
+	{
+	  "type": "hero",
+	  "id": "fuxi",
+	  "name": "伏羲"
+	},
+	{
+	  "type": "friend",
+	  "id": "jingwei",
+	  "name": "精卫"
+	}
+  ],
+  "13": [
+	{
+	  "type": "hero",
+	  "id": "houyi",
+	  "name": "后羿"
+	},
+	{
+	  "type": "friend",
+	  "id": "change",
+	  "name": "嫦娥"
+	}
+  ],
+  "14": [
+	{
+	  "type": "hero",
+	  "id": "chiyou",
+	  "name": "蚩尤"
+	},
+	{
+	  "type": "friend",
+	  "id": "nvba",
+	  "name": "女魃"
+	}
+  ],
+  "15": [
+	{
+	  "type": "hero",
+	  "id": "donghuang_taiyi",
+	  "name": "东皇太一"
+	},
+	{
+	  "type": "friend",
+	  "id": "nvwa",
+	  "name": "女娲"
+	}
+  ],
+  "16": [
+	{
+	  "type": "hero",
+	  "id": "haotian_shangdi",
+	  "name": "昊天上帝"
+	},
+	{
+	  "type": "friend",
+	  "id": "xiwangmu",
+	  "name": "西王母"
+	}
+  ]
+}

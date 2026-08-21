@@ -1,0 +1,191 @@
+{
+  "zou_yu": {
+	"name": "驺虞",
+	"quality": "无双",
+	"aptitude": 80,
+	"skill_count": 12,
+	"auras": [],
+	"exchange_item": "",
+	"max_count": 999
+  },
+  "xuan_niao": {
+	"name": "玄鸟",
+	"quality": "封神灵兽",
+	"aptitude": 100,
+	"skill_count": 16,
+	"auras": ["封神灵兽","上古血脉","封神梵咒"],
+	"exchange_item": "feng_shen_zhi",
+	"max_count": 1
+  },
+  "jiu_wei_hu": {
+	"name": "九尾狐",
+	"quality": "封神灵兽",
+	"aptitude": 100,
+	"skill_count": 16,
+	"auras": ["封神灵兽","上古血脉","封神梵咒"],
+	"exchange_item": "feng_shen_zhi",
+	"max_count": 1
+  },
+  "zheng": {
+	"name": "狰",
+	"quality": "封神灵兽",
+	"aptitude": 100,
+	"skill_count": 16,
+	"auras": ["封神灵兽","上古血脉","封神梵咒"],
+	"exchange_item": "feng_shen_zhi",
+	"max_count": 1
+  },
+  "si_bu_xiang": {
+	"name": "四不像",
+	"quality": "封神灵兽",
+	"aptitude": 100,
+	"skill_count": 16,
+	"auras": ["封神灵兽","上古血脉","封神梵咒"],
+	"exchange_item": "feng_shen_zhi",
+	"max_count": 1
+  },
+  "tian_ma": {
+	"name": "天马",
+	"quality": "山海异兽",
+	"aptitude": 120,
+	"skill_count": 18,
+	"auras": ["山海神兽","异兽之灵","山海起源"],
+	"exchange_item": "shan_hai_shi",
+	"max_count": 1
+  },
+  "bi_fang": {
+	"name": "毕方",
+	"quality": "山海异兽",
+	"aptitude": 120,
+	"skill_count": 18,
+	"auras": ["山海神兽","异兽之灵","山海起源"],
+	"exchange_item": "shan_hai_shi",
+	"max_count": 1
+  },
+  "xuan_gui": {
+	"name": "玄龟",
+	"quality": "山海异兽",
+	"aptitude": 120,
+	"skill_count": 18,
+	"auras": ["山海神兽","异兽之灵","山海起源"],
+	"exchange_item": "shan_hai_shi",
+	"max_count": 1
+  },
+  "kun": {
+	"name": "鲲",
+	"quality": "山海异兽",
+	"aptitude": 120,
+	"skill_count": 18,
+	"auras": ["山海神兽","异兽之灵","山海起源"],
+	"exchange_item": "shan_hai_shi",
+	"max_count": 1
+  },
+  "tao_tie": {
+	"name": "饕餮",
+	"quality": "上古凶兽",
+	"aptitude": 120,
+	"skill_count": 18,
+	"auras": ["上古凶兽","蛮荒噬兽","邪火燎原"],
+	"exchange_item": "hong_huang_huo",
+	"max_count": 1
+  },
+  "qiong_qi": {
+	"name": "穷奇",
+	"quality": "上古凶兽",
+	"aptitude": 120,
+	"skill_count": 18,
+	"auras": ["上古凶兽","蛮荒噬兽","邪火燎原"],
+	"exchange_item": "hong_huang_huo",
+	"max_count": 1
+  },
+  "hun_dun": {
+	"name": "混沌",
+	"quality": "上古凶兽",
+	"aptitude": 120,
+	"skill_count": 18,
+	"auras": ["上古凶兽","蛮荒噬兽","邪火燎原"],
+	"exchange_item": "hong_huang_huo",
+	"max_count": 1
+  },
+  "tao_wu": {
+	"name": "梼杌",
+	"quality": "上古凶兽",
+	"aptitude": 120,
+	"skill_count": 18,
+	"auras": ["上古凶兽","蛮荒噬兽","邪火燎原"],
+	"exchange_item": "hong_huang_huo",
+	"max_count": 1
+  },
+  "xiang_liu": {
+	"name": "相柳",
+	"quality": "蛮荒主兽",
+	"aptitude": 120,
+	"skill_count": 18,
+	"auras": ["蛮荒主兽","九首弥川","灾厄邪神"],
+	"exchange_item": "jiu_yuan_shui",
+	"max_count": 1
+  },
+  "cheng_huang": {
+	"name": "乘黄",
+	"quality": "蛮荒主兽",
+	"aptitude": 120,
+	"skill_count": 18,
+	"auras": ["蛮荒主兽","九天乘风","长生霄汉"],
+	"exchange_item": "jiu_yuan_shui",
+	"max_count": 1
+  },
+  "jin_wu": {
+	"name": "金乌",
+	"quality": "蛮荒主兽",
+	"aptitude": 120,
+	"skill_count": 18,
+	"auras": ["蛮荒主兽","金乌负日","不灭炎阳"],
+	"exchange_item": "jiu_yuan_shui",
+	"max_count": 1
+  },
+  "ying_long": {
+	"name": "应龙",
+	"quality": "蛮荒主兽",
+	"aptitude": 120,
+	"skill_count": 18,
+	"auras": ["蛮荒主兽","龙吟方泽","逆鳞之殇"],
+	"exchange_item": "jiu_yuan_shui",
+	"max_count": 1
+  },
+  "lu_wu": {
+	"name": "陆吾",
+	"quality": "蛮荒主兽",
+	"aptitude": 120,
+	"skill_count": 18,
+	"auras": ["蛮荒主兽","虎啸山丘","罡风之煞"],
+	"exchange_item": "jiu_yuan_shui",
+	"max_count": 1
+  },
+  "meng_zhang_cang_long": {
+	"name": "孟章苍龙",
+	"quality": "星神圣兽",
+	"aptitude": 150,
+	"skill_count": 20,
+	"auras": ["星神圣兽","星神噬渊"],
+	"exchange_item": "long_zhuo_xi",
+	"max_count": 1
+  },
+  "zhi_ming_xuan_wu": {
+	"name": "执明玄武",
+	"quality": "星神圣兽",
+	"aptitude": 150,
+	"skill_count": 20,
+	"auras": ["星神圣兽","星神噬渊"],
+	"exchange_item": "xing_wu_po",
+	"max_count": 1
+  },
+  "yu_heng_qi_lin": {
+	"name": "玉衡麒麟",
+	"quality": "星神圣兽",
+	"aptitude": 150,
+	"skill_count": 20,
+	"auras": ["星神圣兽","星神噬渊"],
+	"exchange_item": "xing_shu_lin",
+	"max_count": 1
+  }
+}
