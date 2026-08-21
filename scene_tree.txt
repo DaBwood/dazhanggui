@@ -1,140 +1,140 @@
  ┖╴control
-    ┠╴Background
-    ┠╴TopBar
-    ┃  ┠╴Label
-    ┃  ┖╴ItemLabel
-    ┠╴PageContainer
-    ┃  ┠╴ShopPage
-    ┃  ┃  ┠╴HQEntryBtn
-    ┃  ┃  ┖╴ShopScroll
-    ┃  ┃     ┠╴ShopList
-    ┃  ┃     ┠╴@TextureRect@2
-    ┃  ┃     ┠╴@TextureRect@3
-    ┃  ┃     ┠╴_h_scroll
-    ┃  ┃     ┠╴_v_scroll
-    ┃  ┃     ┖╴_focus
-    ┃  ┠╴HeroPage
-    ┃  ┃  ┖╴HeroScroll
-    ┃  ┃     ┠╴HeroList
-    ┃  ┃     ┠╴@TextureRect@4
-    ┃  ┃     ┠╴@TextureRect@5
-    ┃  ┃     ┠╴_h_scroll
-    ┃  ┃     ┠╴_v_scroll
-    ┃  ┃     ┖╴_focus
-    ┃  ┠╴BagPage
-    ┃  ┠╴MansionPage
-    ┃  ┠╴StagePage
-    ┃  ┠╴BeastPage
-    ┃  ┖╴AdventurePage
-    ┠╴BottomNav
-    ┃  ┠╴NavMansionBtn
-    ┃  ┠╴NavShopBtn
-    ┃  ┠╴NavHeroBtn
-    ┃  ┠╴NavStageBtn
-    ┃  ┖╴NavBagBtn
-    ┠╴Overlay
-    ┠╴RechargePage
-    ┃  ┖╴RechargeContainer
-    ┃     ┠╴TabBar
-    ┃     ┃  ┠╴TapYuanbao
-    ┃     ┃  ┠╴TapDaily
-    ┃     ┃  ┖╴TapSpecial
-    ┃     ┠╴ContentContainer
-    ┃     ┃  ┠╴YuanbaiContainer
-    ┃     ┃  ┃  ┖╴RechargeGrid
-    ┃     ┃  ┠╴DailyGiftContainer
-    ┃     ┃  ┖╴SpecialPackContainer
-    ┃     ┖╴CloseBtn
-    ┠╴VIPPanel
-    ┃  ┖╴VBoxContainer
-    ┃     ┠╴Title
-    ┃     ┠╴VIPLevel
-    ┃     ┠╴VIPExpInfo
-    ┃     ┠╴VIPProgress
-    ┃     ┠╴HSeparator
-    ┃     ┠╴VIPList
-    ┃     ┖╴CloseBtn
-    ┠╴HQPanel
-    ┃  ┠╴VBoxContainer
-    ┃  ┃  ┠╴HQName
-    ┃  ┃  ┠╴HQInfo
-    ┃  ┃  ┖╴HBoxContainer
-    ┃  ┃     ┠╴HQClickBtn
-    ┃  ┃     ┖╴HQUpgradeBtn
-    ┃  ┖╴CloseBtn
-    ┠╴ShopPanel
-    ┃  ┠╴VBoxContainer
-    ┃  ┃  ┠╴ShopName
-    ┃  ┃  ┠╴ShopInfo
-    ┃  ┃  ┠╴HBoxContainer
-    ┃  ┃  ┃  ┠╴ShopUpgradeBtn
-    ┃  ┃  ┃  ┠╴ShopHireBtn
-    ┃  ┃  ┃  ┖╴BatchHireCheck
-    ┃  ┃  ┖╴AssignContainer
-    ┃  ┃     ┠╴AssignSlot_0
-    ┃  ┃     ┃  ┠╴AssignLabel
-    ┃  ┃     ┃  ┖╴AssignBtn
-    ┃  ┃     ┠╴AssignSlot_1
-    ┃  ┃     ┃  ┠╴AssignLabel
-    ┃  ┃     ┃  ┖╴AssignBtn
-    ┃  ┃     ┠╴AssignSlot_2
-    ┃  ┃     ┃  ┠╴AssignLabel
-    ┃  ┃     ┃  ┖╴AssignBtn
-    ┃  ┃     ┠╴AssignSlot_3
-    ┃  ┃     ┃  ┠╴AssignLabel
-    ┃  ┃     ┃  ┖╴AssignBtn
-    ┃  ┃     ┖╴AssignSlot_4
-    ┃  ┃        ┠╴AssignLabel
-    ┃  ┃        ┖╴AssignBtn
-    ┃  ┖╴ShopCloseBtn
-    ┠╴HeroPanel
-    ┃  ┠╴HeroName
-    ┃  ┠╴HeroIncome
-    ┃  ┠╴HeroCloseBtn
-    ┃  ┠╴ScrollContainer
-    ┃  ┃  ┠╴SkillList
-    ┃  ┃  ┠╴@TextureRect@6
-    ┃  ┃  ┠╴@TextureRect@7
-    ┃  ┃  ┠╴_h_scroll
-    ┃  ┃  ┠╴_v_scroll
-    ┃  ┃  ┖╴_focus
-    ┃  ┖╴LevelUpBox
-    ┃     ┠╴LevelUpInfo
-    ┃     ┖╴LevelUpBtnBox
-    ┃        ┠╴LevelUpBtn
-    ┃        ┖╴BatchCheck
-    ┠╴FriendPanel
-    ┃  ┠╴FriendListView
-    ┃  ┃  ┖╴ScrollContainer
-    ┃  ┃     ┠╴VBoxContainer
-    ┃  ┃     ┠╴@TextureRect@8
-    ┃  ┃     ┠╴@TextureRect@9
-    ┃  ┃     ┠╴_h_scroll
-    ┃  ┃     ┠╴_v_scroll
-    ┃  ┃     ┖╴_focus
-    ┃  ┠╴FriendDetailView
-    ┃  ┃  ┠╴FriendName
-    ┃  ┃  ┠╴FriendAttr
-    ┃  ┃  ┠╴ShopSkills
-    ┃  ┃  ┠╴FriendBond
-    ┃  ┃  ┠╴BoundHeroes
-    ┃  ┃  ┠╴HBoxContainer
-    ┃  ┃  ┃  ┖╴GiftBtn
-    ┃  ┃  ┖╴FriendSkillList
-    ┃  ┃     ┠╴FixedSkillBox
-    ┃  ┃     ┃  ┠╴FixedSkillName
-    ┃  ┃     ┃  ┠╴FixedSkillInfo
-    ┃  ┃     ┃  ┠╴FixedSkillBtn
-    ┃  ┃     ┃  ┖╴FixedSkillChek
-    ┃  ┃     ┖╴PercentSkillBox
-    ┃  ┃        ┠╴PercentSkillName
-    ┃  ┃        ┠╴PercentSkillInfo
-    ┃  ┃        ┠╴PercentSkillBtn
-    ┃  ┃        ┖╴PercentSkillChek
-    ┃  ┠╴ChatOpBox
-    ┃  ┃  ┠╴Bg
-    ┃  ┃  ┖╴InnerBox
-    ┃  ┃     ┠╴ChatBtn
-    ┃  ┃     ┖╴BatchChatCheck
-    ┃  ┖╴CloseBtn
-    ┖╴Timer
+	┠╴Background
+	┠╴TopBar
+	┃  ┠╴Label
+	┃  ┖╴ItemLabel
+	┠╴PageContainer
+	┃  ┠╴ShopPage
+	┃  ┃  ┠╴HQEntryBtn
+	┃  ┃  ┖╴ShopScroll
+	┃  ┃     ┠╴ShopList
+	┃  ┃     ┠╴@TextureRect@2
+	┃  ┃     ┠╴@TextureRect@3
+	┃  ┃     ┠╴_h_scroll
+	┃  ┃     ┠╴_v_scroll
+	┃  ┃     ┖╴_focus
+	┃  ┠╴HeroPage
+	┃  ┃  ┖╴HeroScroll
+	┃  ┃     ┠╴HeroList
+	┃  ┃     ┠╴@TextureRect@4
+	┃  ┃     ┠╴@TextureRect@5
+	┃  ┃     ┠╴_h_scroll
+	┃  ┃     ┠╴_v_scroll
+	┃  ┃     ┖╴_focus
+	┃  ┠╴BagPage
+	┃  ┠╴MansionPage
+	┃  ┠╴StagePage
+	┃  ┠╴BeastPage
+	┃  ┖╴AdventurePage
+	┠╴BottomNav
+	┃  ┠╴NavMansionBtn
+	┃  ┠╴NavShopBtn
+	┃  ┠╴NavHeroBtn
+	┃  ┠╴NavStageBtn
+	┃  ┖╴NavBagBtn
+	┠╴Overlay
+	┠╴RechargePage
+	┃  ┖╴RechargeContainer
+	┃     ┠╴TabBar
+	┃     ┃  ┠╴TapYuanbao
+	┃     ┃  ┠╴TapDaily
+	┃     ┃  ┖╴TapSpecial
+	┃     ┠╴ContentContainer
+	┃     ┃  ┠╴YuanbaiContainer
+	┃     ┃  ┃  ┖╴RechargeGrid
+	┃     ┃  ┠╴DailyGiftContainer
+	┃     ┃  ┖╴SpecialPackContainer
+	┃     ┖╴CloseBtn
+	┠╴VIPPanel
+	┃  ┖╴VBoxContainer
+	┃     ┠╴Title
+	┃     ┠╴VIPLevel
+	┃     ┠╴VIPExpInfo
+	┃     ┠╴VIPProgress
+	┃     ┠╴HSeparator
+	┃     ┠╴VIPList
+	┃     ┖╴CloseBtn
+	┠╴HQPanel
+	┃  ┠╴VBoxContainer
+	┃  ┃  ┠╴HQName
+	┃  ┃  ┠╴HQInfo
+	┃  ┃  ┖╴HBoxContainer
+	┃  ┃     ┠╴HQClickBtn
+	┃  ┃     ┖╴HQUpgradeBtn
+	┃  ┖╴CloseBtn
+	┠╴ShopPanel
+	┃  ┠╴VBoxContainer
+	┃  ┃  ┠╴ShopName
+	┃  ┃  ┠╴ShopInfo
+	┃  ┃  ┠╴HBoxContainer
+	┃  ┃  ┃  ┠╴ShopUpgradeBtn
+	┃  ┃  ┃  ┠╴ShopHireBtn
+	┃  ┃  ┃  ┖╴BatchHireCheck
+	┃  ┃  ┖╴AssignContainer
+	┃  ┃     ┠╴AssignSlot_0
+	┃  ┃     ┃  ┠╴AssignLabel
+	┃  ┃     ┃  ┖╴AssignBtn
+	┃  ┃     ┠╴AssignSlot_1
+	┃  ┃     ┃  ┠╴AssignLabel
+	┃  ┃     ┃  ┖╴AssignBtn
+	┃  ┃     ┠╴AssignSlot_2
+	┃  ┃     ┃  ┠╴AssignLabel
+	┃  ┃     ┃  ┖╴AssignBtn
+	┃  ┃     ┠╴AssignSlot_3
+	┃  ┃     ┃  ┠╴AssignLabel
+	┃  ┃     ┃  ┖╴AssignBtn
+	┃  ┃     ┖╴AssignSlot_4
+	┃  ┃        ┠╴AssignLabel
+	┃  ┃        ┖╴AssignBtn
+	┃  ┖╴ShopCloseBtn
+	┠╴HeroPanel
+	┃  ┠╴HeroName
+	┃  ┠╴HeroIncome
+	┃  ┠╴HeroCloseBtn
+	┃  ┠╴ScrollContainer
+	┃  ┃  ┠╴SkillList
+	┃  ┃  ┠╴@TextureRect@6
+	┃  ┃  ┠╴@TextureRect@7
+	┃  ┃  ┠╴_h_scroll
+	┃  ┃  ┠╴_v_scroll
+	┃  ┃  ┖╴_focus
+	┃  ┖╴LevelUpBox
+	┃     ┠╴LevelUpInfo
+	┃     ┖╴LevelUpBtnBox
+	┃        ┠╴LevelUpBtn
+	┃        ┖╴BatchCheck
+	┠╴FriendPanel
+	┃  ┠╴FriendListView
+	┃  ┃  ┖╴ScrollContainer
+	┃  ┃     ┠╴VBoxContainer
+	┃  ┃     ┠╴@TextureRect@8
+	┃  ┃     ┠╴@TextureRect@9
+	┃  ┃     ┠╴_h_scroll
+	┃  ┃     ┠╴_v_scroll
+	┃  ┃     ┖╴_focus
+	┃  ┠╴FriendDetailView
+	┃  ┃  ┠╴FriendName
+	┃  ┃  ┠╴FriendAttr
+	┃  ┃  ┠╴ShopSkills
+	┃  ┃  ┠╴FriendBond
+	┃  ┃  ┠╴BoundHeroes
+	┃  ┃  ┠╴HBoxContainer
+	┃  ┃  ┃  ┖╴GiftBtn
+	┃  ┃  ┖╴FriendSkillList
+	┃  ┃     ┠╴FixedSkillBox
+	┃  ┃     ┃  ┠╴FixedSkillName
+	┃  ┃     ┃  ┠╴FixedSkillInfo
+	┃  ┃     ┃  ┠╴FixedSkillBtn
+	┃  ┃     ┃  ┖╴FixedSkillChek
+	┃  ┃     ┖╴PercentSkillBox
+	┃  ┃        ┠╴PercentSkillName
+	┃  ┃        ┠╴PercentSkillInfo
+	┃  ┃        ┠╴PercentSkillBtn
+	┃  ┃        ┖╴PercentSkillChek
+	┃  ┠╴ChatOpBox
+	┃  ┃  ┠╴Bg
+	┃  ┃  ┖╴InnerBox
+	┃  ┃     ┠╴ChatBtn
+	┃  ┃     ┖╴BatchChatCheck
+	┃  ┖╴CloseBtn
+	┖╴Timer

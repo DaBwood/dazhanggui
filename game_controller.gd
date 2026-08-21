@@ -332,9 +332,12 @@ func generate_friend_page():
 	shop_scroll.custom_minimum_size = Vector2(0, 200)
 	detail.add_child(shop_scroll)
 	
-	var shop_list = VBoxContainer.new()
+	var shop_list = GridContainer.new()
 	shop_list.name = "ShopSkillsList"
-	shop_list.add_theme_constant_override("separation", 4)
+	shop_list.columns = 5
+	shop_list.add_theme_constant_override("h_separation", 12)
+	shop_list.add_theme_constant_override("v_separation", 8)
+	shop_list.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	shop_scroll.add_child(shop_list)
 	
 	var categories = ["士", "农", "工", "商", "侠"]
@@ -343,6 +346,7 @@ func generate_friend_page():
 		row.name = "ShopSkillRow_%d" % i
 		row.alignment = BoxContainer.ALIGNMENT_CENTER
 		row.add_theme_constant_override("separation", 8)
+		row.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 		
 		var cat_lbl = Label.new()
 		cat_lbl.name = "Category"
