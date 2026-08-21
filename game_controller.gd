@@ -340,7 +340,6 @@ func generate_friend_page():
 	shop_list.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	shop_scroll.add_child(shop_list)
 	
-	var categories = ["士", "农", "工", "商", "侠"]
 	for i in range(400):
 		var btn = Button.new()
 		btn.name = "ShopSkillBtn_%d" % i
@@ -501,7 +500,7 @@ func _update_friend_page_detail():
 			btn.visible = true
 			var skill = f.shop_skills[i]
 			var bonus_txt = "+%.0f%%" % (skill.bonus * 100)
-			if skill.bonus >= 0.30:
+			if skill.bonus >= 0.299:
 				bonus_txt += " [满]"
 				btn.disabled = true
 			else:
@@ -578,21 +577,26 @@ func _show_shop_skill_detail(skill_index: int):
 	
 	var status_lbl = Label.new()
 	status_lbl.name = "DetailStatus"
-	if skill.bonus >= 0.30:
+	if skill.bonus >= 0.299:
 		status_lbl.text = "已满级"
 		status_lbl.add_theme_color_override("font_color", Color("#ffd700"))
 	else:
-		var cost = 100 * (skill.refresh_count + 1)
+		var cost = 100 * int(pow(2, skill.refresh_count))
 		status_lbl.text = "刷新消耗：%s 铜钱" % format_number(cost)
 	info_vbox.add_child(status_lbl)
 	
 	# 按钮区
+	if skill.bonus < 0.299:
+		var wish_check = CheckBox.new()
+		wish_check.name = "WishStoneCheck"
+		wish_check.text = "使用许愿石（拥有：%d）" % data.items.get("wish_stone", 0)
+		vbox.add_child(wish_check)
 	var btn_box = HBoxContainer.new()
 	btn_box.alignment = BoxContainer.ALIGNMENT_CENTER
 	btn_box.add_theme_constant_override("separation", 16)
 	vbox.add_child(btn_box)
 	
-	if skill.bonus < 0.30:
+	if skill.bonus < 0.299:
 		var refresh_btn = Button.new()
 		refresh_btn.name = "DetailRefreshBtn"
 		refresh_btn.text = "刷新"
@@ -616,19 +620,78 @@ func _close_shop_skill_detail():
 
 func _on_refresh_selected_skill():
 	if _selected_shop_skill_index < 0: return
-	if data.refresh_friend_shop_skill(current_friend_id, _selected_shop_skill_index, false):
+	var parent = $PageContainer/FriendPage
+	var panel = parent.get_node_or_null("ShopSkillDetailPanel")
+	var use_wish = false
+	if panel:
+		var wish_check = panel.find_child("WishStoneCheck", true, false)
+		if wish_check:
+			use_wish = wish_check.button_pressed
+	
+	if data.refresh_friend_shop_skill(current_friend_id, _selected_shop_skill_index, use_wish):
 		_update_friend_page_detail()
 		update_all_ui()
-		# 刷新弹窗内容
-		_close_shop_skill_detail()
-		_show_shop_skill_detail(_selected_shop_skill_index)
+		var f = data.friends[current_friend_id]
+		var skill = f.shop_skills[_selected_shop_skill_index]
+		if skill.bonus >= 0.299:
+			_close_shop_skill_detail()
+		else:
+			_update_shop_skill_detail()
 	else:
-		var parent = $PageContainer/FriendPage
-		var panel = parent.get_node_or_null("ShopSkillDetailPanel")
-		if panel:
-			var refresh_btn = panel.find_child("DetailRefreshBtn", true, false)
+		var parent2 = $PageContainer/FriendPage
+		var panel2 = parent2.get_node_or_null("ShopSkillDetailPanel")
+		if panel2:
+			var refresh_btn = panel2.find_child("DetailRefreshBtn", true, false)
 			if refresh_btn:
 				flash_red(refresh_btn.get_path())
+
+func _update_shop_skill_detail():
+	var parent = $PageContainer/FriendPage
+	var panel = parent.get_node_or_null("ShopSkillDetailPanel")
+	if not panel: return
+	
+	var f = data.friends[current_friend_id]
+	if not f.has("shop_skills") or _selected_shop_skill_index >= f.shop_skills.size(): return
+	var skill = f.shop_skills[_selected_shop_skill_index]
+	
+	# 更新加成文本
+	var bonus_lbl = panel.find_child("DetailBonus", true, false)
+	if bonus_lbl:
+		bonus_lbl.text = "当前加成：+%.0f%%" % (skill.bonus * 100)
+	
+	# 更新状态文本
+	var status_lbl = panel.find_child("DetailStatus", true, false)
+	var wish_check = panel.find_child("WishStoneCheck", true, false)
+	if status_lbl:
+		if skill.bonus >= 0.299:
+			status_lbl.text = "已满级"
+			status_lbl.add_theme_color_override("font_color", Color("#ffd700"))
+		else:
+			var use_wish = wish_check != null and wish_check.button_pressed
+			if use_wish:
+				var wish_count = data.items.get("wish_stone", 0)
+				status_lbl.text = "许愿石：%d/1" % wish_count
+			else:
+				var cost = 100 * int(pow(2, skill.refresh_count))
+				status_lbl.text = "刷新消耗：%s 铜钱" % format_number(cost)
+			status_lbl.remove_theme_color_override("font_color")
+	
+	# 更新勾选框文字
+	if wish_check:
+		wish_check.text = "使用许愿石（拥有：%d）" % data.items.get("wish_stone", 0)
+		if skill.bonus >= 0.299:
+			wish_check.visible = false
+	
+	# 刷新按钮
+	var refresh_btn = panel.find_child("DetailRefreshBtn", true, false)
+	if skill.bonus >= 0.299:
+		if refresh_btn:
+			refresh_btn.queue_free()
+		if wish_check:
+			wish_check.queue_free()
+	else:
+		if refresh_btn:
+			refresh_btn.text = "刷新"
 
 
 func generate_adventure_page():
@@ -3077,12 +3140,46 @@ func _update_special_pack_page():
 		btn.add_theme_font_size_override("font_size", 20)
 		btn.pressed.connect(_on_buy_prop_pack.bind(p.item, 100, p.cost))
 		row.add_child(btn)
+	
+	# 许愿石礼包
+	var wish_row = HBoxContainer.new()
+	wish_row.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	wish_row.alignment = BoxContainer.ALIGNMENT_CENTER
+	main_vbox.add_child(wish_row)
+	
+	var wish_info = Label.new()
+	wish_info.text = "许愿石礼包\n木梳×2000 + 胭脂×2000 + 许愿石×200"
+	wish_info.horizontal_alignment = HORIZONTAL_ALIGNMENT_LEFT
+	wish_info.add_theme_font_size_override("font_size", 18)
+	wish_row.add_child(wish_info)
+	
+	var wish_spacer = Control.new()
+	wish_spacer.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	wish_row.add_child(wish_spacer)
+	
+	var wish_btn = Button.new()
+	wish_btn.text = "购买（¥1998）"
+	wish_btn.custom_minimum_size = Vector2(160, 60)
+	wish_btn.add_theme_font_size_override("font_size", 20)
+	wish_btn.pressed.connect(_on_buy_wish_stone_pack)
+	wish_row.add_child(wish_btn)
 
 func _on_buy_prop_pack(item_id: String, count: int, cost: int):
 	data.vip_exp += cost * 10
 	data.vip_level = data.get_vip_level()
 	data.items[item_id] = data.items.get(item_id, 0) + count
 	_show_stage_hint("购买成功！%s ×%d" % [data.ITEM_CONFIG.get(item_id, {}).get("name", item_id), count])
+	update_all_ui()
+	update_bag_list()
+
+func _on_buy_wish_stone_pack():
+	var cost = 1998
+	data.vip_exp += cost * 10
+	data.vip_level = data.get_vip_level()
+	data.items["wood_comb"] = data.items.get("wood_comb", 0) + 2000
+	data.items["rouge"] = data.items.get("rouge", 0) + 2000
+	data.items["wish_stone"] = data.items.get("wish_stone", 0) + 200
+	_show_stage_hint("购买成功！木梳×2000、胭脂×2000、许愿石×200")
 	update_all_ui()
 	update_bag_list()
 

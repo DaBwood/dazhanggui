@@ -159,6 +159,7 @@ const ITEM_CONFIG = {
 	"friend_token":    {"name": "挚友帖",   "desc": "用于兑换挚友"},
 	"ginseng_1000":    {"name": "千年人参", "desc": "指定门客基础赚速+20000"},
 	"vitality_pill":   {"name": "活力丹",   "desc": "后续玩法更新后使用"},
+	"wish_stone":      {"name": "许愿石",   "desc": "用于刷新挚友店铺技能，必定获得20%-30%加成"},
 }
 
 # 已领取的VIP奖励等级（true=已领取）
@@ -224,6 +225,7 @@ var items = {
 	"friend_token": 0,
 	"ginseng_1000": 0,
 	"vitality_pill": 0,
+	"wish_stone": 0,
 }
 
 const SURNAMES = ["赵","钱","孙","李","周","吴","郑","王","冯","陈","褚","卫","蒋","沈","韩","杨","朱","秦","尤","许"]
@@ -366,17 +368,33 @@ func refresh_friend_shop_skill(friend_id: String, skill_index: int, use_wish_sto
 	if skill.bonus >= 0.30: return false
 	
 	if use_wish_stone:
-		# 许愿石逻辑预留（下一步）
-		return false
+		var wish_cost = 1
+		if items.get("wish_stone", 0) < wish_cost:
+			return false
+		items.wish_stone -= wish_cost
+		skill.refresh_count += 1
+		var new_bonus = randf_range(0.20, 0.31)
+		skill.bonus = max(skill.bonus, new_bonus)
+		if skill.bonus >= 0.295:
+			skill.bonus = 0.30
 	else:
-		var cost = 100 * (skill.refresh_count + 1)
+		var cost = 100 * int(pow(2, skill.refresh_count))
 		if money < cost: return false
 		money -= cost
 		skill.refresh_count += 1
-		var new_bonus = randf_range(0.05, 0.301)
-		if new_bonus > 0.30:
-			new_bonus = 0.30
+		
+		var roll = randf()
+		var new_bonus: float
+		if roll < 0.9:
+			# 90% 概率刷新出 5% ~ 19% 的加成
+			new_bonus = randf_range(0.05, 0.199)
+		else:
+			# 10% 概率刷新出 20% ~ 30% 的加成
+			new_bonus = randf_range(0.20, 0.31)
+		
 		skill.bonus = max(skill.bonus, new_bonus)
+		if skill.bonus >= 0.295:
+			skill.bonus = 0.30
 	return true
 
 # 挚友给门客的加成
