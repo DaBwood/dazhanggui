@@ -14,3 +14,29 @@ export_credentials.cfg
 .mono/
 data_*/
 mono_crash.*.json
+
+# Godot 编辑器临时文件
+*.tmp
+*.tmp.*
+
+# 编辑器自动保存/恢复文件
+*.autosave
+*.recovery
+
+# 操作系统垃圾文件
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# 编辑器配置（个人偏好，不需要共享）
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# 日志文件
+*.log
+
+# 构建产物（如果后续有）
+/build/
+/dist/
