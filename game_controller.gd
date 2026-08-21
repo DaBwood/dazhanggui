@@ -733,7 +733,7 @@ func generate_adventure_page():
 	exchange_btn.pressed.connect(show_exchange_view)
 	vbox.add_child(exchange_btn)
 	
-	# 兑换子页面
+	# 兑换子页面（目录：珍兽兑换 / 门客帖兑换）
 	var exchange_view = VBoxContainer.new()
 	exchange_view.name = "ExchangeView"
 	exchange_view.set_anchors_preset(Control.PRESET_FULL_RECT)
@@ -742,18 +742,73 @@ func generate_adventure_page():
 	page.add_child(exchange_view)
 	
 	var back_btn = Button.new()
-	back_btn.text = "< 返回闯荡"
-	back_btn.pressed.connect(hide_exchange_view)
+	back_btn.text = "< 返回"
+	back_btn.pressed.connect(_on_exchange_back_pressed)
 	exchange_view.add_child(back_btn)
 	
-	var ex_scroll = ScrollContainer.new()
-	ex_scroll.name = "ExchangeScroll"
-	ex_scroll.size_flags_vertical = Control.SIZE_EXPAND_FILL
-	exchange_view.add_child(ex_scroll)
+	# 入口按钮区
+	var entry_box = VBoxContainer.new()
+	entry_box.name = "ExchangeEntryBox"
+	entry_box.alignment = BoxContainer.ALIGNMENT_CENTER
+	entry_box.add_theme_constant_override("separation", 20)
+	entry_box.size_flags_vertical = Control.SIZE_EXPAND_FILL
+	exchange_view.add_child(entry_box)
 	
-	var ex_list = VBoxContainer.new()
-	ex_list.name = "ExchangeList"
-	ex_scroll.add_child(ex_list)
+	var beast_entry_btn = Button.new()
+	beast_entry_btn.text = "珍兽兑换"
+	beast_entry_btn.custom_minimum_size = Vector2(240, 60)
+	beast_entry_btn.pressed.connect(show_beast_exchange_view)
+	entry_box.add_child(beast_entry_btn)
+	
+	var token_entry_btn = Button.new()
+	token_entry_btn.text = "门客帖兑换"
+	token_entry_btn.custom_minimum_size = Vector2(240, 60)
+	token_entry_btn.pressed.connect(show_token_exchange_view)
+	entry_box.add_child(token_entry_btn)
+	
+	# --- 珍兽兑换子页面 ---
+	var beast_view = VBoxContainer.new()
+	beast_view.name = "BeastExchangeView"
+	beast_view.set_anchors_preset(Control.PRESET_FULL_RECT)
+	beast_view.visible = false
+	beast_view.size_flags_vertical = Control.SIZE_EXPAND_FILL
+	beast_view.add_theme_constant_override("separation", 12)
+	exchange_view.add_child(beast_view)
+	
+	var beast_scroll = ScrollContainer.new()
+	beast_scroll.name = "BeastExchangeScroll"
+	beast_scroll.size_flags_vertical = Control.SIZE_EXPAND_FILL
+	beast_view.add_child(beast_scroll)
+	
+	var beast_list = VBoxContainer.new()
+	beast_list.name = "BeastExchangeList"
+	beast_list.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	beast_scroll.add_child(beast_list)
+	
+	# --- 门客帖兑换子页面 ---
+	var token_view = VBoxContainer.new()
+	token_view.name = "TokenExchangeView"
+	token_view.set_anchors_preset(Control.PRESET_FULL_RECT)
+	token_view.visible = false
+	token_view.size_flags_vertical = Control.SIZE_EXPAND_FILL
+	token_view.add_theme_constant_override("separation", 12)
+	exchange_view.add_child(token_view)
+	
+	var token_res = Label.new()
+	token_res.name = "TokenRes"
+	token_res.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	token_res.add_theme_color_override("font_color", Color("#ffd700"))
+	token_view.add_child(token_res)
+	
+	var token_scroll = ScrollContainer.new()
+	token_scroll.name = "TokenExchangeScroll"
+	token_scroll.size_flags_vertical = Control.SIZE_EXPAND_FILL
+	token_view.add_child(token_scroll)
+	
+	var token_list = VBoxContainer.new()
+	token_list.name = "TokenExchangeList"
+	token_list.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	token_scroll.add_child(token_list)
 	
 	# --- 抽奖入口 ---
 	var lottery_btn = Button.new()
@@ -815,12 +870,26 @@ func generate_adventure_page():
 	lot_result_list.name = "LotteryResultList"
 	lot_result_scroll.add_child(lot_result_list)
 
+# 兑换页返回键：逐层后退（子页面 → 兑换目录 → 闯荡）
+func _on_exchange_back_pressed():
+	var ev = $PageContainer/AdventurePage/ExchangeView
+	if ev.get_node("BeastExchangeView").visible:
+		hide_beast_exchange_view()      # 在珍兽兑换 → 退回目录
+	elif ev.get_node("TokenExchangeView").visible:
+		hide_token_exchange_view()      # 在门客帖兑换 → 退回目录
+	else:
+		hide_exchange_view()            # 在目录 → 退回闯荡
+
 func show_exchange_view():
 	if not has_node("PageContainer/AdventurePage"): return
 	var page = $PageContainer/AdventurePage
 	page.get_node("AdventureVBox").visible = false
-	page.get_node("ExchangeView").visible = true
-	update_exchange_view()
+	var ev = page.get_node("ExchangeView")
+	ev.visible = true
+	# 每次进入都重置回目录层
+	if ev.has_node("ExchangeEntryBox"): ev.get_node("ExchangeEntryBox").visible = true
+	if ev.has_node("BeastExchangeView"): ev.get_node("BeastExchangeView").visible = false
+	if ev.has_node("TokenExchangeView"): ev.get_node("TokenExchangeView").visible = false
 
 func hide_exchange_view():
 	if not has_node("PageContainer/AdventurePage"): return
@@ -830,38 +899,180 @@ func hide_exchange_view():
 	if page.has_node("LotteryView"):
 		page.get_node("LotteryView").visible = false
 
-func update_exchange_view():
-	if not has_node("PageContainer/AdventurePage/ExchangeView"): return
-	var list = $PageContainer/AdventurePage/ExchangeView/ExchangeScroll/ExchangeList
+# ========== 珍兽兑换子页面 ==========
+func show_beast_exchange_view():
+	var ev = $PageContainer/AdventurePage/ExchangeView
+	ev.get_node("ExchangeEntryBox").visible = false
+	ev.get_node("TokenExchangeView").visible = false
+	ev.get_node("BeastExchangeView").visible = true
+	update_beast_exchange_view()
+
+func hide_beast_exchange_view():
+	var ev = $PageContainer/AdventurePage/ExchangeView
+	ev.get_node("BeastExchangeView").visible = false
+	ev.get_node("ExchangeEntryBox").visible = true
+
+func update_beast_exchange_view():
+	if not has_node("PageContainer/AdventurePage/ExchangeView/BeastExchangeView"): return
+	var list = $PageContainer/AdventurePage/ExchangeView/BeastExchangeView/BeastExchangeScroll/BeastExchangeList
 	for child in list.get_children():
 		child.queue_free()
+	
+	var grid = GridContainer.new()
+	grid.columns = 4
+	grid.add_theme_constant_override("h_separation", 12)
+	grid.add_theme_constant_override("v_separation", 12)
+	grid.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	list.add_child(grid)
 	
 	for beast_id in data.get_all_beast_ids():
 		if data.beasts.has(beast_id): continue
 		var cfg = data.get_beast_config(beast_id)
 		if cfg.get("max_count", 1) != 1: continue
-		
-		var ex = cfg.get("exchange_item", "")
-		if ex == "": continue
-		
-		var row = HBoxContainer.new()
-		row.size_flags_horizontal = Control.SIZE_EXPAND_FILL
-		
-		var lbl = Label.new()
-		lbl.text = "【%s】%s" % [cfg.name, cfg.quality]
-		lbl.size_flags_horizontal = Control.SIZE_EXPAND_FILL
-		lbl.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
-		row.add_child(lbl)
-		
-		var ex_btn = Button.new()
-		var ex_count = data.items.get(ex, 0)
-		ex_btn.text = "兑换（%d/100）" % ex_count
-		ex_btn.custom_minimum_size = Vector2(140, 36)
-		ex_btn.disabled = ex_count < 100
-		ex_btn.pressed.connect(_on_exchange_beast.bind(beast_id))
-		row.add_child(ex_btn)
-		
-		list.add_child(row)
+		if cfg.get("exchange_item", "") == "": continue
+		grid.add_child(_create_beast_exchange_card(beast_id))
+
+# 珍兽兑换卡片：整张卡就是按钮
+func _create_beast_exchange_card(beast_id: String) -> Button:
+	var cfg = data.get_beast_config(beast_id)
+	var ex = cfg.get("exchange_item", "")
+	var ex_count = data.items.get(ex, 0)
+	
+	var cell = Button.new()
+	cell.custom_minimum_size = Vector2(0, 140)
+	cell.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	cell.disabled = ex_count < 100
+	
+	var vbox = VBoxContainer.new()
+	vbox.alignment = BoxContainer.ALIGNMENT_CENTER
+	vbox.add_theme_constant_override("separation", 6)
+	cell.add_child(vbox)
+	
+	var name_lbl = Label.new()
+	name_lbl.text = "【%s】" % cfg.name
+	name_lbl.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	name_lbl.add_theme_font_size_override("font_size", 18)
+	vbox.add_child(name_lbl)
+	
+	var quality_lbl = Label.new()
+	quality_lbl.text = cfg.quality
+	quality_lbl.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	quality_lbl.add_theme_font_size_override("font_size", 14)
+	vbox.add_child(quality_lbl)
+	
+	var cost_lbl = Label.new()
+	cost_lbl.text = "兑换（%d/100）" % ex_count
+	cost_lbl.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	cost_lbl.add_theme_font_size_override("font_size", 14)
+	vbox.add_child(cost_lbl)
+	
+	cell.pressed.connect(_on_exchange_beast.bind(beast_id))
+	return cell
+
+# ========== 门客帖兑换子页面 ==========
+func show_token_exchange_view():
+	var ev = $PageContainer/AdventurePage/ExchangeView
+	ev.get_node("ExchangeEntryBox").visible = false
+	ev.get_node("BeastExchangeView").visible = false
+	ev.get_node("TokenExchangeView").visible = true
+	update_token_exchange_view()
+
+func hide_token_exchange_view():
+	var ev = $PageContainer/AdventurePage/ExchangeView
+	ev.get_node("TokenExchangeView").visible = false
+	ev.get_node("ExchangeEntryBox").visible = true
+
+func update_token_exchange_view():
+	if not has_node("PageContainer/AdventurePage/ExchangeView/TokenExchangeView"): return
+	var view = $PageContainer/AdventurePage/ExchangeView/TokenExchangeView
+	view.get_node("TokenRes").text = "门客帖：%d" % data.items.get("hero_token", 0)
+	
+	var list = view.get_node("TokenExchangeScroll/TokenExchangeList")
+	for child in list.get_children():
+		child.queue_free()
+	
+	# 门客分区
+	_add_exchange_section_title(list, "门客")
+	_add_role_exchange_grid(list, "hero", data.TOKEN_EXCHANGE_HEROES)
+	
+	# 挚友分区
+	_add_exchange_section_title(list, "挚友")
+	_add_role_exchange_grid(list, "friend", data.TOKEN_EXCHANGE_FRIENDS)
+
+func _add_exchange_section_title(list: VBoxContainer, text: String):
+	var title = Label.new()
+	title.text = "—— %s ——" % text
+	title.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	title.add_theme_font_size_override("font_size", 20)
+	title.add_theme_color_override("font_color", Color("#ffd700"))
+	list.add_child(title)
+
+# 一个分区的网格
+func _add_role_exchange_grid(list: VBoxContainer, role_type: String, entries: Array):
+	var grid = GridContainer.new()
+	grid.columns = 4
+	grid.add_theme_constant_override("h_separation", 12)
+	grid.add_theme_constant_override("v_separation", 12)
+	grid.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	list.add_child(grid)
+	
+	for entry in entries:
+		grid.add_child(_create_role_exchange_card(role_type, entry.id, entry.cost))
+
+# 门客/挚友兑换卡片：整张卡就是按钮
+func _create_role_exchange_card(role_type: String, role_id: String, cost: int) -> Button:
+	var cfg = data.get_hero_config(role_id) if role_type == "hero" else data.get_friend_config(role_id)
+	var owned = data.heroes.has(role_id) if role_type == "hero" else data.friends.has(role_id)
+	var have = data.items.get("hero_token", 0)
+	
+	var cell = Button.new()
+	cell.custom_minimum_size = Vector2(0, 140)
+	cell.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	
+	var vbox = VBoxContainer.new()
+	vbox.alignment = BoxContainer.ALIGNMENT_CENTER
+	vbox.add_theme_constant_override("separation", 6)
+	cell.add_child(vbox)
+	
+	var name_lbl = Label.new()
+	if role_type == "hero":
+		name_lbl.text = "【%s】%s" % [cfg.name, cfg.category]
+	else:
+		name_lbl.text = "【%s】" % cfg.name
+	name_lbl.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	name_lbl.add_theme_font_size_override("font_size", 18)
+	vbox.add_child(name_lbl)
+	
+	var status_lbl = Label.new()
+	status_lbl.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	status_lbl.add_theme_font_size_override("font_size", 14)
+	vbox.add_child(status_lbl)
+	
+	if owned:
+		status_lbl.text = "已拥有"
+		cell.disabled = true
+		cell.modulate = Color(0.5, 0.5, 0.5, 0.7)
+	else:
+		status_lbl.text = "兑换（%d/%d）" % [have, cost]
+		cell.disabled = have < cost
+		cell.pressed.connect(_on_exchange_role.bind(role_type, role_id, cost))
+	
+	return cell
+
+func _on_exchange_role(role_type: String, role_id: String, cost: int):
+	var result = data.exchange_role_with_token(role_type, role_id, cost)
+	if result.ok:
+		var cfg = data.get_hero_config(role_id) if role_type == "hero" else data.get_friend_config(role_id)
+		_show_stage_hint("兑换成功！获得【%s】" % cfg.name)
+		update_token_exchange_view()
+		update_all_ui()
+		update_bag_list()
+		if role_type == "hero":
+			generate_hero_list()
+		update_friend_page()
+	else:
+		_show_stage_hint(result.reason)
+
 
 func show_lottery_view():
 	if not has_node("PageContainer/AdventurePage"): return
@@ -2498,8 +2709,8 @@ func _on_exchange_beast(beast_id: String):
 		update_bag_list()
 		_show_stage_hint("兑换成功！获得【%s】" % cfg.name)
 		# 如果兑换视图打开，也刷新
-		if has_node("PageContainer/AdventurePage/ExchangeView") and $PageContainer/AdventurePage/ExchangeView.visible:
-			update_exchange_view()
+		if has_node("PageContainer/AdventurePage/ExchangeView/BeastExchangeView") and $PageContainer/AdventurePage/ExchangeView/BeastExchangeView.visible:
+			update_beast_exchange_view()
 	else:
 		_show_stage_hint("兑换失败")
 

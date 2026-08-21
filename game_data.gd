@@ -163,6 +163,31 @@ const ITEM_CONFIG = {
 	"hero_box":        {"name": "门客盒子", "desc": "打开后可从所有门客中选择一个获得"},
 }
 
+# ========== 门客帖兑换表 ==========
+const TOKEN_EXCHANGE_HEROES = [
+	{"id": "hong_laoxie", "cost": 20},      # 洪老邪
+	{"id": "shen_wansan", "cost": 20},      # 沈万三
+	{"id": "li_shenshou", "cost": 20},      # 李神手
+	{"id": "zhen_tufu", "cost": 20},        # 镇屠夫
+	{"id": "yan_xiansheng", "cost": 20},    # 严先生
+	{"id": "feng_mier", "cost": 20},        # 冯蜜儿
+	{"id": "cao_tiejiang", "cost": 10},     # 曹铁匠
+	{"id": "zhao_liehu", "cost": 10},       # 赵猎户
+	{"id": "qian_caizhu", "cost": 10},      # 钱财主
+	{"id": "pi_yingjiang", "cost": 10},     # 皮影匠人
+]
+
+const TOKEN_EXCHANGE_FRIENDS = [
+	{"id": "miao_jiang_shengnv", "cost": 20},   # 苗疆圣女
+	{"id": "yi_shi", "cost": 20},               # 驿使
+	{"id": "xun_ying_shaonv", "cost": 20},      # 驯鹰少女
+	{"id": "hua_yi_shi", "cost": 20},           # 花艺师
+	{"id": "bu_kuai", "cost": 20},              # 捕快
+	{"id": "xun_ma_shi", "cost": 20},           # 驯马师
+	{"id": "qi_shi", "cost": 10},               # 棋士
+]
+
+
 # 已领取的VIP奖励等级（true=已领取）
 var vip_claimed_rewards: Dictionary = {}
 
@@ -1147,6 +1172,23 @@ func claim_vip_reward(level: int) -> bool:
 	vip_claimed_rewards[str(level)] = true
 	return true
 
+# 门客帖兑换（门客/挚友统一消耗 hero_token）
+func exchange_role_with_token(role_type: String, role_id: String, cost: int) -> Dictionary:
+	if items.get("hero_token", 0) < cost:
+		return {"ok": false, "reason": "门客帖不足"}
+	var success = false
+	if role_type == "hero":
+		if heroes.has(role_id):
+			return {"ok": false, "reason": "已拥有该门客"}
+		success = unlock_hero(role_id)
+	else:
+		if friends.has(role_id):
+			return {"ok": false, "reason": "已拥有该挚友"}
+		success = unlock_friend(role_id)
+	if not success:
+		return {"ok": false, "reason": "兑换失败"}
+	items.hero_token -= cost
+	return {"ok": true}
 
 # ========== 存档 ==========
 func save_game():
