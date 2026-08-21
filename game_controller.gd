@@ -3416,15 +3416,21 @@ func _update_special_pack_page():
 	for child in container.get_children():
 		child.queue_free()
 	
+	# 确保 container 在父容器中能获得垂直空间
+	container.size_flags_vertical = Control.SIZE_EXPAND_FILL
+	
 	var scroll = ScrollContainer.new()
-	scroll.set_anchors_preset(Control.PRESET_FULL_RECT)
+	scroll.name = "SpecialPackScroll"
+	scroll.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	scroll.size_flags_vertical = Control.SIZE_EXPAND_FILL
 	container.add_child(scroll)
 	
 	var main_vbox = VBoxContainer.new()
+	main_vbox.name = "SpecialPackVBox"
 	main_vbox.size_flags_horizontal = Control.SIZE_EXPAND_FILL
-	main_vbox.size_flags_vertical = Control.SIZE_EXPAND_FILL
+	# 关键：不设置 size_flags_vertical！让 VBoxContainer 根据内容自然扩展高度
 	main_vbox.alignment = BoxContainer.ALIGNMENT_CENTER
-	main_vbox.add_theme_constant_override("separation", 20)
+	main_vbox.add_theme_constant_override("separation", 16)
 	scroll.add_child(main_vbox)
 	
 	var packs = [
