@@ -175,6 +175,36 @@ const ITEM_CONFIG = {
 	"vitality_pill":   {"name": "活力丹",   "desc": "后续玩法更新后使用"},
 	"wish_stone":      {"name": "许愿石",   "desc": "用于刷新挚友店铺技能，必定获得20%-30%加成"},
 	"hero_box":        {"name": "门客盒子", "desc": "打开后可从所有门客中选择一个获得"},
+	# ===== 系列兑换道具 =====
+	"zongjiang_ling":   {"name": "宗匠令",   "desc": "兑换一代宗匠系列门客所需"},
+	"kaishan_ling":     {"name": "开山令",   "desc": "兑换开山鼻祖系列门客所需"},
+	"panzhu_zhuiyu":    {"name": "攀竹缀玉", "desc": "兑换门客【马湘兰】所需"},
+	"zhimeng_zhuiyu":   {"name": "织梦缀玉", "desc": "兑换门客【董小宛】所需"},
+	"yingge_zhuiyu":    {"name": "莺歌缀玉", "desc": "兑换门客【卞玉京】所需"},
+	"luohua_zhuiyu":    {"name": "落花缀玉", "desc": "兑换门客【李香君】所需"},
+	"liuyun_zhuiyu":    {"name": "流云缀玉", "desc": "兑换门客【寇白门】所需"},
+	"xuanhe_qixi":      {"name": "宣和七玺", "desc": "兑换门客【宋徽宗】所需"},
+	"tiankui_lingqi":   {"name": "天魁令旗", "desc": "兑换门客【宋江】所需"},
+	"yuanhun_dou":      {"name": "冤魂斗",   "desc": "兑换门客【活阎王】所需"},
+	"quanxiang_guan":   {"name": "权相之冠", "desc": "兑换门客【蔡京】所需"},
+	"fangtian_huaji":   {"name": "方天画戟", "desc": "兑换门客【吕布】所需"},
+	"taia_jian":        {"name": "泰阿剑",   "desc": "兑换门客【秦始皇】所需"},
+	"hufu_junling":     {"name": "虎符军令", "desc": "兑换门客【孙武】所需"},
+	"suitang_huaben":   {"name": "隋唐话本", "desc": "兑换门客【秦琼尉迟恭】所需"},
+	"bawang_qiang":     {"name": "霸王枪",   "desc": "兑换门客【项羽】所需"},
+	"huanglong_jinduan": {"name": "黄龙锦缎", "desc": "兑换门客【宋太祖】所需"},
+	"tiangong_zanchui": {"name": "天工錾锤", "desc": "兑换门客【石敢当】所需"},
+	"qisheng_mianju":   {"name": "七圣面具", "desc": "兑换门客【百戏圣刀】所需"},
+	"danqing_pan":      {"name": "丹青盘",   "desc": "兑换门客【敦煌匠神】所需"},
+	"cangbao_tu":       {"name": "藏宝图",   "desc": "兑换门客【滚海蛟】所需"},
+	"huojian_qiang":    {"name": "火尖枪",   "desc": "兑换门客【哪吒】所需"},
+	"shoulie_guren":    {"name": "狩猎骨刃", "desc": "兑换门客【敖武】所需"},
+	"chengzu_chiling":  {"name": "成祖敕令", "desc": "兑换门客【郑和】所需"},
+	"wulong_xiuqiu":    {"name": "舞龙绣球", "desc": "兑换门客【龙骧】所需"},
+	"yugu_dao":         {"name": "鱼骨刀",   "desc": "兑换门客【罗海王】所需"},
+	"yuye_jinhua":      {"name": "玉叶金花", "desc": "兑换门客【小柒】所需"},
+	"linglong_hebao":   {"name": "玲珑荷包", "desc": "兑换门客【小八】所需"},
+
 }
 
 # ========== 门客帖兑换表 ==========
@@ -201,6 +231,89 @@ const TOKEN_EXCHANGE_FRIENDS = [
 	{"id": "qi_shi", "cost": 10},               # 棋士
 ]
 
+# ========== 系列兑换表 ==========
+# grant_friend = true 时，兑换门客同时获得 entry.friend 指定的同名挚友（秦淮五艳）
+const SERIES_EXCHANGE = [
+	{
+		"series": "一代宗匠",
+		"heroes": [
+			{"hero": "gao_jianli", "item": "zongjiang_ling", "cost": 20},
+			{"hero": "su_wu", "item": "zongjiang_ling", "cost": 20},
+			{"hero": "bi_sheng", "item": "zongjiang_ling", "cost": 20},
+			{"hero": "zong_ze", "item": "zongjiang_ling", "cost": 20},
+			{"hero": "zhang_sanfeng", "item": "zongjiang_ling", "cost": 20},
+		],
+	},
+	{
+		"series": "开山鼻祖",
+		"heroes": [
+			{"hero": "wu_daozi", "item": "kaishan_ling", "cost": 20},
+			{"hero": "sun_bin", "item": "kaishan_ling", "cost": 20},
+			{"hero": "du_kang", "item": "kaishan_ling", "cost": 20},
+			{"hero": "ou_yezi", "item": "kaishan_ling", "cost": 20},
+		],
+	},
+	{
+		"series": "秦淮五艳",
+		"grant_friend": true,
+		"heroes": [
+			{"hero": "ma_xianglan", "friend": "ma_xianglan_friend", "item": "panzhu_zhuiyu", "cost": 100},
+			{"hero": "dong_xiaowan", "friend": "dong_xiaowan_friend", "item": "zhimeng_zhuiyu", "cost": 100},
+			{"hero": "bian_yujing", "friend": "bian_yujing_friend", "item": "yingge_zhuiyu", "cost": 100},
+			{"hero": "li_xiangjun", "friend": "li_xiangjun_friend", "item": "luohua_zhuiyu", "cost": 100},
+			{"hero": "kou_baimen", "friend": "kou_baimen_friend", "item": "liuyun_zhuiyu", "cost": 100},
+		],
+	},
+	{
+		"series": "一世枭雄",
+		"heroes": [
+			{"hero": "song_huizong", "item": "xuanhe_qixi", "cost": 100},
+			{"hero": "song_jiang", "item": "tiankui_lingqi", "cost": 100},
+			{"hero": "huo_yanwang", "item": "yuanhun_dou", "cost": 100},
+			{"hero": "cai_jing", "item": "quanxiang_guan", "cost": 100},
+			{"hero": "lv_bu", "item": "fangtian_huaji", "cost": 100},
+			{"hero": "qin_shihuang", "item": "taia_jian", "cost": 100},
+			{"hero": "sun_wu", "item": "hufu_junling", "cost": 100},
+			{"hero": "qin_qiong_yuchi_gong", "item": "suitang_huaben", "cost": 100},
+			{"hero": "xiang_yu", "item": "bawang_qiang", "cost": 100},
+			{"hero": "song_taizu", "item": "huanglong_jinduan", "cost": 100},
+		],
+	},
+	{
+		"series": "奇人异士",
+		"heroes": [
+			{"hero": "shi_gandang", "item": "tiangong_zanchui", "cost": 100},
+			{"hero": "baixi_shengdao", "item": "qisheng_mianju", "cost": 100},
+			{"hero": "dunhuang_jiangshen", "item": "danqing_pan", "cost": 100},
+			{"hero": "gun_haijiao", "item": "cangbao_tu", "cost": 100},
+			{"hero": "ne_zha", "item": "huojian_qiang", "cost": 100},
+			{"hero": "ao_wu", "item": "shoulie_guren", "cost": 100},
+			{"hero": "zheng_he", "item": "chengzu_chiling", "cost": 100},
+			{"hero": "long_xiang", "item": "wulong_xiuqiu", "cost": 100},
+			{"hero": "luo_haiwang", "item": "yugu_dao", "cost": 100},
+		],
+	},
+	{
+		"series": "徒弟",
+		"heroes": [
+			{"hero": "xiao_qi", "item": "yuye_jinhua", "cost": 100},
+			{"hero": "xiao_ba", "item": "linglong_hebao", "cost": 100},
+		],
+	},
+]
+
+# 系列兑换（可附带同名挚友）
+func exchange_series_hero(hero_id: String, item_id: String, cost: int, friend_id: String = "") -> Dictionary:
+	if heroes.has(hero_id):
+		return {"ok": false, "reason": "已拥有该门客"}
+	if items.get(item_id, 0) < cost:
+		return {"ok": false, "reason": "兑换道具不足"}
+	if not unlock_hero(hero_id):
+		return {"ok": false, "reason": "兑换失败"}
+	items[item_id] -= cost
+	if friend_id != "":
+		unlock_friend(friend_id)
+	return {"ok": true}
 
 # 已领取的VIP奖励等级（true=已领取）
 var vip_claimed_rewards: Dictionary = {}
@@ -267,6 +380,13 @@ var items = {
 	"vitality_pill": 0,
 	"wish_stone": 0,
 	"hero_box": 0,
+	"zongjiang_ling": 100, "kaishan_ling": 0,
+	"panzhu_zhuiyu": 0, "zhimeng_zhuiyu": 0, "yingge_zhuiyu": 0, "luohua_zhuiyu": 0, "liuyun_zhuiyu": 100,
+	"xuanhe_qixi": 0, "tiankui_lingqi": 0, "yuanhun_dou": 0, "quanxiang_guan": 100, "fangtian_huaji": 0,
+	"taia_jian": 0, "hufu_junling":100, "suitang_huaben": 0, "bawang_qiang": 0, "huanglong_jinduan": 100,
+	"tiangong_zanchui": 0, "qisheng_mianju": 0, "danqing_pan": 0, "cangbao_tu": 0, "huojian_qiang": 0,
+	"shoulie_guren": 0, "chengzu_chiling": 0, "wulong_xiuqiu": 0, "yugu_dao": 0,
+	"yuye_jinhua": 0, "linglong_hebao":100,
 }
 
 const SURNAMES = ["赵","钱","孙","李","周","吴","郑","王","冯","陈","褚","卫","蒋","沈","韩","杨","朱","秦","尤","许"]

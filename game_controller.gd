@@ -754,17 +754,33 @@ func generate_adventure_page():
 	entry_box.size_flags_vertical = Control.SIZE_EXPAND_FILL
 	exchange_view.add_child(entry_box)
 	
+	# 3列网格放所有入口，防止按钮太多溢出
+	var entry_grid = GridContainer.new()
+	entry_grid.columns = 3
+	entry_grid.add_theme_constant_override("h_separation", 16)
+	entry_grid.add_theme_constant_override("v_separation", 16)
+	entry_grid.size_flags_horizontal = Control.SIZE_SHRINK_CENTER
+	entry_box.add_child(entry_grid)
+	
 	var beast_entry_btn = Button.new()
 	beast_entry_btn.text = "珍兽兑换"
 	beast_entry_btn.custom_minimum_size = Vector2(240, 60)
 	beast_entry_btn.pressed.connect(show_beast_exchange_view)
-	entry_box.add_child(beast_entry_btn)
+	entry_grid.add_child(beast_entry_btn)
 	
 	var token_entry_btn = Button.new()
 	token_entry_btn.text = "门客帖兑换"
 	token_entry_btn.custom_minimum_size = Vector2(240, 60)
 	token_entry_btn.pressed.connect(show_token_exchange_view)
-	entry_box.add_child(token_entry_btn)
+	entry_grid.add_child(token_entry_btn)
+	
+	# 系列兑换入口（配置表驱动，加系列只改 game_data 的表）
+	for i in range(data.SERIES_EXCHANGE.size()):
+		var s_btn = Button.new()
+		s_btn.text = data.SERIES_EXCHANGE[i].series
+		s_btn.custom_minimum_size = Vector2(240, 60)
+		s_btn.pressed.connect(show_series_exchange_view.bind(i))
+		entry_grid.add_child(s_btn)
 	
 	# --- 珍兽兑换子页面 ---
 	var beast_view = VBoxContainer.new()
@@ -809,6 +825,33 @@ func generate_adventure_page():
 	token_list.name = "TokenExchangeList"
 	token_list.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	token_scroll.add_child(token_list)
+	
+	# --- 系列兑换子页面（所有系列共用） ---
+	var series_view = VBoxContainer.new()
+	series_view.name = "SeriesExchangeView"
+	series_view.set_anchors_preset(Control.PRESET_FULL_RECT)
+	series_view.visible = false
+	series_view.size_flags_vertical = Control.SIZE_EXPAND_FILL
+	series_view.add_theme_constant_override("separation", 12)
+	exchange_view.add_child(series_view)
+	
+	var series_title = Label.new()
+	series_title.name = "SeriesTitle"
+	series_title.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	series_title.add_theme_font_size_override("font_size", 20)
+	series_title.add_theme_color_override("font_color", Color("#ffd700"))
+	series_view.add_child(series_title)
+	
+	var series_scroll = ScrollContainer.new()
+	series_scroll.name = "SeriesExchangeScroll"
+	series_scroll.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	series_scroll.size_flags_vertical = Control.SIZE_EXPAND_FILL
+	series_view.add_child(series_scroll)
+	
+	var series_list = VBoxContainer.new()
+	series_list.name = "SeriesExchangeList"
+	series_list.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	series_scroll.add_child(series_list)
 	
 	# --- 抽奖入口 ---
 	var lottery_btn = Button.new()
@@ -873,12 +916,14 @@ func generate_adventure_page():
 # 兑换页返回键：逐层后退（子页面 → 兑换目录 → 闯荡）
 func _on_exchange_back_pressed():
 	var ev = $PageContainer/AdventurePage/ExchangeView
-	if ev.get_node("BeastExchangeView").visible:
-		hide_beast_exchange_view()      # 在珍兽兑换 → 退回目录
+	if ev.get_node("SeriesExchangeView").visible:
+		hide_series_exchange_view()     # 在系列兑换 → 退回目录
+	elif ev.get_node("BeastExchangeView").visible:
+		hide_beast_exchange_view()
 	elif ev.get_node("TokenExchangeView").visible:
-		hide_token_exchange_view()      # 在门客帖兑换 → 退回目录
+		hide_token_exchange_view()
 	else:
-		hide_exchange_view()            # 在目录 → 退回闯荡
+		hide_exchange_view()
 
 func show_exchange_view():
 	if not has_node("PageContainer/AdventurePage"): return
@@ -1058,6 +1103,112 @@ func _create_role_exchange_card(role_type: String, role_id: String, cost: int) -
 		cell.pressed.connect(_on_exchange_role.bind(role_type, role_id, cost))
 	
 	return cell
+
+# ========== 系列兑换子页面 ==========
+var _current_series_index: int = -1
+
+func show_series_exchange_view(series_index: int):
+	_current_series_index = series_index
+	var ev = $PageContainer/AdventurePage/ExchangeView
+	ev.get_node("ExchangeEntryBox").visible = false
+	ev.get_node("BeastExchangeView").visible = false
+	ev.get_node("TokenExchangeView").visible = false
+	ev.get_node("SeriesExchangeView").visible = true
+	update_series_exchange_view()
+
+func hide_series_exchange_view():
+	_current_series_index = -1
+	var ev = $PageContainer/AdventurePage/ExchangeView
+	ev.get_node("SeriesExchangeView").visible = false
+	ev.get_node("ExchangeEntryBox").visible = true
+
+func update_series_exchange_view():
+	if _current_series_index < 0: return
+	var view = $PageContainer/AdventurePage/ExchangeView/SeriesExchangeView
+	var series = data.SERIES_EXCHANGE[_current_series_index]
+	view.get_node("SeriesTitle").text = "—— %s ——" % series.series
+	
+	var list = view.get_node("SeriesExchangeScroll/SeriesExchangeList")
+	for child in list.get_children():
+		child.queue_free()
+	
+	var grid = GridContainer.new()
+	grid.columns = 4
+	grid.add_theme_constant_override("h_separation", 12)
+	grid.add_theme_constant_override("v_separation", 12)
+	grid.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	list.add_child(grid)
+	
+	for entry in series.heroes:
+		grid.add_child(_create_series_exchange_card(entry, series))
+
+func _create_series_exchange_card(entry: Dictionary, series: Dictionary) -> Button:
+	var hero_id = entry.hero
+	var cfg = data.get_hero_config(hero_id)
+	var item_name = data.ITEM_CONFIG.get(entry.item, {}).get("name", entry.item)
+	var have = data.items.get(entry.item, 0)
+	var owned = data.heroes.has(hero_id)
+	var grant_friend = series.get("grant_friend", false)
+	
+	var cell = Button.new()
+	cell.custom_minimum_size = Vector2(0, 160)
+	cell.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	
+	var vbox = VBoxContainer.new()
+	vbox.alignment = BoxContainer.ALIGNMENT_CENTER
+	vbox.add_theme_constant_override("separation", 4)
+	cell.add_child(vbox)
+	
+	var name_lbl = Label.new()
+	name_lbl.text = "【%s】%s" % [cfg.name, cfg.category]
+	name_lbl.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	name_lbl.add_theme_font_size_override("font_size", 18)
+	vbox.add_child(name_lbl)
+	
+	var item_lbl = Label.new()
+	item_lbl.text = "%s ×%d" % [item_name, entry.cost]
+	if grant_friend:
+		item_lbl.text += "\n（赠同名挚友）"
+	item_lbl.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	item_lbl.add_theme_font_size_override("font_size", 14)
+	vbox.add_child(item_lbl)
+	
+	var status_lbl = Label.new()
+	status_lbl.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	status_lbl.add_theme_font_size_override("font_size", 14)
+	vbox.add_child(status_lbl)
+	
+	if owned:
+		status_lbl.text = "已拥有"
+		cell.disabled = true
+		cell.modulate = Color(0.5, 0.5, 0.5, 0.7)
+	else:
+		status_lbl.text = "兑换（%d/%d）" % [have, entry.cost]
+		cell.disabled = have < entry.cost
+		cell.pressed.connect(_on_exchange_series_hero.bind(entry, series))
+	
+	return cell
+
+func _on_exchange_series_hero(entry: Dictionary, series: Dictionary):
+	var friend_id = ""
+	if series.get("grant_friend", false):
+		friend_id = entry.get("friend", "")
+	
+	var result = data.exchange_series_hero(entry.hero, entry.item, entry.cost, friend_id)
+	if result.ok:
+		var cfg = data.get_hero_config(entry.hero)
+		if friend_id != "":
+			var fcfg = data.get_friend_config(friend_id)
+			_show_stage_hint("兑换成功！获得门客【%s】和挚友【%s】" % [cfg.name, fcfg.name])
+		else:
+			_show_stage_hint("兑换成功！获得门客【%s】" % cfg.name)
+		update_series_exchange_view()
+		update_all_ui()
+		update_bag_list()
+		generate_hero_list()
+		update_friend_page()
+	else:
+		_show_stage_hint(result.reason)
 
 func _on_exchange_role(role_type: String, role_id: String, cost: int):
 	var result = data.exchange_role_with_token(role_type, role_id, cost)
