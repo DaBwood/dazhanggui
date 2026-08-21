@@ -3,7 +3,7 @@ extends Control
 var data: GameData 
 var current_hero_id: String = ""
 var current_friend_id: String = ""
-
+var _selected_shop_skill_index: int = -1
 #页面切换
 var current_page: String = "shop"   # shop / hero / bag
 
@@ -342,30 +342,12 @@ func generate_friend_page():
 	
 	var categories = ["士", "农", "工", "商", "侠"]
 	for i in range(400):
-		var row = HBoxContainer.new()
-		row.name = "ShopSkillRow_%d" % i
-		row.alignment = BoxContainer.ALIGNMENT_CENTER
-		row.add_theme_constant_override("separation", 8)
-		row.size_flags_horizontal = Control.SIZE_EXPAND_FILL
-		
-		var cat_lbl = Label.new()
-		cat_lbl.name = "Category"
-		cat_lbl.text = categories[i % 5]
-		row.add_child(cat_lbl)
-		
-		var bonus_lbl = Label.new()
-		bonus_lbl.name = "Bonus"
-		row.add_child(bonus_lbl)
-		
-		var refresh_btn = Button.new()
-		refresh_btn.name = "RefreshBtn"
-		refresh_btn.text = "刷新"
-		refresh_btn.custom_minimum_size = Vector2(100, 28)
-		refresh_btn.add_theme_font_size_override("font_size", 12)
-		refresh_btn.pressed.connect(_on_refresh_shop_skill.bind(i))
-		row.add_child(refresh_btn)
-		
-		shop_list.add_child(row)
+		var btn = Button.new()
+		btn.name = "ShopSkillBtn_%d" % i
+		btn.custom_minimum_size = Vector2(0, 36)
+		btn.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+		btn.pressed.connect(_on_shop_skill_clicked.bind(i))
+		shop_list.add_child(btn)
 
 # ========== 动态生成店铺列表 ==========
 func generate_shop_list():
@@ -514,36 +496,139 @@ func _update_friend_page_detail():
 	var max_slots = min(400, int(f.friendly / 500))
 	var shop_list = detail.get_node("ShopSkillsScroll/ShopSkillsList")
 	for i in range(400):
-		var row = shop_list.get_node("ShopSkillRow_%d" % i)
+		var btn = shop_list.get_node("ShopSkillBtn_%d" % i)
 		if i < max_slots and i < f.shop_skills.size():
-			row.visible = true
+			btn.visible = true
 			var skill = f.shop_skills[i]
-			row.get_node("Category").text = skill.category
 			var bonus_txt = "+%.0f%%" % (skill.bonus * 100)
-			var btn = row.get_node("RefreshBtn")
 			if skill.bonus >= 0.30:
-				bonus_txt += " [满级]"
+				bonus_txt += " [满]"
 				btn.disabled = true
-				btn.text = "已满级"
 			else:
-				var cost = 100 * (skill.refresh_count + 1)
-				btn.text = "刷新(%s)" % format_number(cost)
 				btn.disabled = false
-			row.get_node("Bonus").text = bonus_txt
+			btn.text = "%s %s" % [skill.category, bonus_txt]
 		else:
-			row.visible = false
+			btn.visible = false
 
-func _on_refresh_shop_skill(skill_index: int):
-	if current_friend_id == "": return
-	if data.refresh_friend_shop_skill(current_friend_id, skill_index, false):
+func _on_shop_skill_clicked(skill_index: int):
+	_selected_shop_skill_index = skill_index
+	_show_shop_skill_detail(skill_index)
+
+func _get_category_color(category: String) -> Color:
+	var colors = {
+		"士": Color("#4a90d9"),
+		"农": Color("#5cb85c"),
+		"工": Color("#d9534f"),
+		"商": Color("#f0ad4e"),
+		"侠": Color("#9b59b6")
+	}
+	return colors.get(category, Color("#888888"))
+
+func _show_shop_skill_detail(skill_index: int):
+	var parent = $PageContainer/FriendPage
+	if parent.has_node("ShopSkillDetailPanel"): return
+	
+	var f = data.friends[current_friend_id]
+	if not f.has("shop_skills") or skill_index >= f.shop_skills.size(): return
+	var skill = f.shop_skills[skill_index]
+	
+	var panel = PanelContainer.new()
+	panel.name = "ShopSkillDetailPanel"
+	panel.custom_minimum_size = Vector2(360, 280)
+	panel.position = (parent.size - panel.custom_minimum_size) / 2
+	panel.z_index = 40
+	
+	var style = StyleBoxFlat.new()
+	style.bg_color = Color("#1e1b2e")
+	style.set_corner_radius_all(12)
+	panel.add_theme_stylebox_override("panel", style)
+	
+	var vbox = VBoxContainer.new()
+	vbox.alignment = BoxContainer.ALIGNMENT_CENTER
+	vbox.add_theme_constant_override("separation", 14)
+	panel.add_child(vbox)
+	
+	# 标题
+	var title = Label.new()
+	title.text = "【%s类】店铺技能" % skill.category
+	title.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	title.add_theme_font_size_override("font_size", 20)
+	title.add_theme_color_override("font_color", Color("#ffd700"))
+	vbox.add_child(title)
+	
+	# 图标 + 信息
+	var info_box = HBoxContainer.new()
+	info_box.alignment = BoxContainer.ALIGNMENT_CENTER
+	info_box.add_theme_constant_override("separation", 16)
+	vbox.add_child(info_box)
+	
+	var icon = ColorRect.new()
+	icon.custom_minimum_size = Vector2(64, 64)
+	icon.color = _get_category_color(skill.category)
+	info_box.add_child(icon)
+	
+	var info_vbox = VBoxContainer.new()
+	info_box.add_child(info_vbox)
+	
+	var bonus_lbl = Label.new()
+	bonus_lbl.name = "DetailBonus"
+	bonus_lbl.text = "当前加成：+%.0f%%" % (skill.bonus * 100)
+	bonus_lbl.add_theme_font_size_override("font_size", 18)
+	info_vbox.add_child(bonus_lbl)
+	
+	var status_lbl = Label.new()
+	status_lbl.name = "DetailStatus"
+	if skill.bonus >= 0.30:
+		status_lbl.text = "已满级"
+		status_lbl.add_theme_color_override("font_color", Color("#ffd700"))
+	else:
+		var cost = 100 * (skill.refresh_count + 1)
+		status_lbl.text = "刷新消耗：%s 铜钱" % format_number(cost)
+	info_vbox.add_child(status_lbl)
+	
+	# 按钮区
+	var btn_box = HBoxContainer.new()
+	btn_box.alignment = BoxContainer.ALIGNMENT_CENTER
+	btn_box.add_theme_constant_override("separation", 16)
+	vbox.add_child(btn_box)
+	
+	if skill.bonus < 0.30:
+		var refresh_btn = Button.new()
+		refresh_btn.name = "DetailRefreshBtn"
+		refresh_btn.text = "刷新"
+		refresh_btn.custom_minimum_size = Vector2(100, 40)
+		refresh_btn.pressed.connect(_on_refresh_selected_skill)
+		btn_box.add_child(refresh_btn)
+	
+	var close_btn = Button.new()
+	close_btn.text = "关闭"
+	close_btn.custom_minimum_size = Vector2(100, 40)
+	close_btn.pressed.connect(_close_shop_skill_detail)
+	btn_box.add_child(close_btn)
+	
+	parent.add_child(panel)
+
+func _close_shop_skill_detail():
+	var parent = $PageContainer/FriendPage
+	var panel = parent.get_node_or_null("ShopSkillDetailPanel")
+	if panel:
+		panel.queue_free()
+
+func _on_refresh_selected_skill():
+	if _selected_shop_skill_index < 0: return
+	if data.refresh_friend_shop_skill(current_friend_id, _selected_shop_skill_index, false):
 		_update_friend_page_detail()
 		update_all_ui()
+		# 刷新弹窗内容
+		_close_shop_skill_detail()
+		_show_shop_skill_detail(_selected_shop_skill_index)
 	else:
-		var detail = $PageContainer/FriendPage/FriendDetail
-		var shop_list = detail.get_node("ShopSkillsScroll/ShopSkillsList")
-		var row = shop_list.get_node("ShopSkillRow_%d" % skill_index)
-		var btn = row.get_node("RefreshBtn")
-		flash_red(btn.get_path())
+		var parent = $PageContainer/FriendPage
+		var panel = parent.get_node_or_null("ShopSkillDetailPanel")
+		if panel:
+			var refresh_btn = panel.find_child("DetailRefreshBtn", true, false)
+			if refresh_btn:
+				flash_red(refresh_btn.get_path())
 
 
 func generate_adventure_page():
