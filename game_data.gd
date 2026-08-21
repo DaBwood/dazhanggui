@@ -129,6 +129,20 @@ const IDENTITY_REWARD_TABLE = {
 
 var identity_rewards_claimed: Dictionary = {}
 
+# ========== 特惠礼包配置表 ==========
+# 字段：name 礼包名 / desc 内容描述 / cost 价格(元) / items 道具及数量
+const SPECIAL_PACKS = [
+	{"name": "封神志×100",   "desc": "兑换封神灵兽",                 "cost": 10000, "items": {"feng_shen_zhi": 100}},
+	{"name": "山海石×100",   "desc": "兑换山海异兽",                 "cost": 10000, "items": {"shan_hai_shi": 100}},
+	{"name": "鸿荒火×100",   "desc": "兑换上古凶兽",                 "cost": 10000, "items": {"hong_huang_huo": 100}},
+	{"name": "九渊之水×100", "desc": "兑换蛮荒主兽",                 "cost": 10000, "items": {"jiu_yuan_shui": 100}},
+	{"name": "星枢麟角×100", "desc": "兑换星神圣兽",                 "cost": 50000, "items": {"xing_shu_lin": 100}},
+	{"name": "许愿石礼包",   "desc": "木梳×2000 + 胭脂×2000 + 许愿石×200", "cost": 1998, "items": {"wood_comb": 2000, "rouge": 2000, "wish_stone": 200}},
+	{"name": "门客盒子礼包", "desc": "门客盒子×1",                   "cost": 10000, "items": {"hero_box": 1}},
+	{"name": "门客帖礼包",   "desc": "门客帖×10",                    "cost": 1000,  "items": {"hero_token": 10}},
+]
+
+
 #==============道具物品=========================
 const ITEM_CONFIG = {
 	"shop_blueprint":  {"name": "商铺图纸", "desc": "用于解锁新商铺"},
@@ -855,6 +869,14 @@ func unequip_beast(hero_id: String) -> bool:
 			old_inst.equipped_hero = ""
 	heroes[hero_id].equipped_beast = ""
 	heroes[hero_id].equipped_beast_index = 0
+	return true
+
+# 购买特惠礼包（自娱自乐版，直接成功）
+func buy_special_pack(pack: Dictionary) -> bool:
+	vip_exp += pack.cost * 10
+	vip_level = get_vip_level()
+	for item_id in pack.items.keys():
+		items[item_id] = items.get(item_id, 0) + pack.items[item_id]
 	return true
 
 func buy_test_beast_pack() -> bool:

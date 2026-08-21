@@ -3628,7 +3628,7 @@ func _update_special_pack_page():
 	for child in container.get_children():
 		child.queue_free()
 	
-	# 确保 container 在父容器中能获得垂直空间
+	# 确保 container 在父容器中获得垂直空间
 	container.size_flags_vertical = Control.SIZE_EXPAND_FILL
 	
 	var scroll = ScrollContainer.new()
@@ -3645,22 +3645,15 @@ func _update_special_pack_page():
 	main_vbox.add_theme_constant_override("separation", 16)
 	scroll.add_child(main_vbox)
 	
-	var packs = [
-		{"name": "封神志×100", "desc": "兑换封神灵兽", "cost": 10000, "item": "feng_shen_zhi"},
-		{"name": "山海石×100", "desc": "兑换山海异兽", "cost": 10000, "item": "shan_hai_shi"},
-		{"name": "鸿荒火×100", "desc": "兑换上古凶兽", "cost": 10000, "item": "hong_huang_huo"},
-		{"name": "九渊之水×100", "desc": "兑换蛮荒主兽", "cost": 10000, "item": "jiu_yuan_shui"},
-		{"name": "星枢麟角×100", "desc": "兑换星神圣兽", "cost": 50000, "item": "xing_shu_lin"},
-	]
-	
-	for p in packs:
+	# 配置表驱动：所有礼包统一生成
+	for pack in data.SPECIAL_PACKS:
 		var row = HBoxContainer.new()
 		row.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 		row.alignment = BoxContainer.ALIGNMENT_CENTER
 		main_vbox.add_child(row)
 		
 		var info = Label.new()
-		info.text = "%s\n%s" % [p.name, p.desc]
+		info.text = "%s\n%s" % [pack.name, pack.desc]
 		info.horizontal_alignment = HORIZONTAL_ALIGNMENT_LEFT
 		info.add_theme_font_size_override("font_size", 18)
 		row.add_child(info)
@@ -3670,83 +3663,16 @@ func _update_special_pack_page():
 		row.add_child(spacer)
 		
 		var btn = Button.new()
-		btn.text = "购买（¥%d）" % p.cost
+		btn.text = "购买（¥%d）" % pack.cost
 		btn.custom_minimum_size = Vector2(160, 60)
 		btn.add_theme_font_size_override("font_size", 20)
-		btn.pressed.connect(_on_buy_prop_pack.bind(p.item, 100, p.cost))
+		btn.pressed.connect(_on_buy_special_pack.bind(pack))
 		row.add_child(btn)
-	
-	# 许愿石礼包
-	var wish_row = HBoxContainer.new()
-	wish_row.size_flags_horizontal = Control.SIZE_EXPAND_FILL
-	wish_row.alignment = BoxContainer.ALIGNMENT_CENTER
-	main_vbox.add_child(wish_row)
-	
-	var wish_info = Label.new()
-	wish_info.text = "许愿石礼包\n木梳×2000 + 胭脂×2000 + 许愿石×200"
-	wish_info.horizontal_alignment = HORIZONTAL_ALIGNMENT_LEFT
-	wish_info.add_theme_font_size_override("font_size", 18)
-	wish_row.add_child(wish_info)
-	
-	var wish_spacer = Control.new()
-	wish_spacer.size_flags_horizontal = Control.SIZE_EXPAND_FILL
-	wish_row.add_child(wish_spacer)
-	
-	var wish_btn = Button.new()
-	wish_btn.text = "购买（¥1998）"
-	wish_btn.custom_minimum_size = Vector2(160, 60)
-	wish_btn.add_theme_font_size_override("font_size", 20)
-	wish_btn.pressed.connect(_on_buy_wish_stone_pack)
-	wish_row.add_child(wish_btn)
-	
-	# 门客盒子礼包
-	var hero_box_row = HBoxContainer.new()
-	hero_box_row.size_flags_horizontal = Control.SIZE_EXPAND_FILL
-	hero_box_row.alignment = BoxContainer.ALIGNMENT_CENTER
-	main_vbox.add_child(hero_box_row)
-	
-	var hero_box_info = Label.new()
-	hero_box_info.text = "门客盒子礼包\n门客盒子×1"
-	hero_box_info.horizontal_alignment = HORIZONTAL_ALIGNMENT_LEFT
-	hero_box_info.add_theme_font_size_override("font_size", 18)
-	hero_box_row.add_child(hero_box_info)
-	
-	var hero_box_spacer = Control.new()
-	hero_box_spacer.size_flags_horizontal = Control.SIZE_EXPAND_FILL
-	hero_box_row.add_child(hero_box_spacer)
-	
-	var hero_box_btn = Button.new()
-	hero_box_btn.text = "购买（¥10000）"
-	hero_box_btn.custom_minimum_size = Vector2(160, 60)
-	hero_box_btn.add_theme_font_size_override("font_size", 20)
-	hero_box_btn.pressed.connect(_on_buy_hero_box_pack)
-	hero_box_row.add_child(hero_box_btn)
 
-func _on_buy_prop_pack(item_id: String, count: int, cost: int):
-	data.vip_exp += cost * 10
-	data.vip_level = data.get_vip_level()
-	data.items[item_id] = data.items.get(item_id, 0) + count
-	_show_stage_hint("购买成功！%s ×%d" % [data.ITEM_CONFIG.get(item_id, {}).get("name", item_id), count])
-	update_all_ui()
-	update_bag_list()
-
-func _on_buy_hero_box_pack():
-	var cost = 10000
-	data.vip_exp += cost * 10
-	data.vip_level = data.get_vip_level()
-	data.items["hero_box"] = data.items.get("hero_box", 0) + 1
-	_show_stage_hint("购买成功！获得门客盒子×1")
-	update_all_ui()
-	update_bag_list()
-
-func _on_buy_wish_stone_pack():
-	var cost = 1998
-	data.vip_exp += cost * 10
-	data.vip_level = data.get_vip_level()
-	data.items["wood_comb"] = data.items.get("wood_comb", 0) + 2000
-	data.items["rouge"] = data.items.get("rouge", 0) + 2000
-	data.items["wish_stone"] = data.items.get("wish_stone", 0) + 200
-	_show_stage_hint("购买成功！木梳×2000、胭脂×2000、许愿石×200")
+# 通用购买处理：一个函数搞定所有礼包
+func _on_buy_special_pack(pack: Dictionary):
+	data.buy_special_pack(pack)
+	_show_stage_hint("购买成功！%s" % pack.name)
 	update_all_ui()
 	update_bag_list()
 
