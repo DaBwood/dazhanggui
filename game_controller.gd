@@ -1878,6 +1878,13 @@ func generate_bag_list():
 			use_btn.add_theme_font_size_override("font_size", 12)
 			use_btn.pressed.connect(func(): _show_quantity_selector("hour_card", "使用小时卡", _on_hour_card_confirmed))
 			vbox.add_child(use_btn)
+		elif item_id == "hero_box":
+			var use_btn = Button.new()
+			use_btn.text = "打开"
+			use_btn.custom_minimum_size = Vector2(60, 28)
+			use_btn.add_theme_font_size_override("font_size", 12)
+			use_btn.pressed.connect(_show_hero_box_selector)
+			vbox.add_child(use_btn)
 
 		
 		grid.add_child(cell)
@@ -2053,6 +2060,60 @@ func _close_ginseng_selector():
 		bag_page.get_node("GinsengSelector").queue_free()
 	_pending_ginseng_count = 0
 	_pending_ginseng_type = ""
+
+func _show_hero_box_selector():
+	if has_node("HeroBoxSelector"): return
+	
+	var panel = _create_base_popup("选择门客", Vector2(460, 500), Vector2(346, 120))
+	panel.name = "HeroBoxSelector"
+	var vbox = panel.get_child(0)
+	
+	var scroll = ScrollContainer.new()
+	scroll.custom_minimum_size = Vector2(440, 380)
+	vbox.add_child(scroll)
+	
+	var list = VBoxContainer.new()
+	scroll.add_child(list)
+	
+	var has_unlockable = false
+	for hero_id in data.get_all_hero_ids():
+		if data.heroes.has(hero_id): continue  # 已拥有的跳过
+		
+		var cfg = data.get_hero_config(hero_id)
+		var btn = Button.new()
+		var vip_lv = data.get_hero_unlock_vip(hero_id)
+		btn.text = "【%s】%s  |  VIP%d解锁" % [cfg.name, cfg.category, vip_lv]
+		btn.pressed.connect(_on_hero_box_selected.bind(hero_id))
+		list.add_child(btn)
+		has_unlockable = true
+	
+	if not has_unlockable:
+		var empty = Label.new()
+		empty.text = "所有门客已拥有"
+		empty.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+		list.add_child(empty)
+	
+	var cancel = Button.new()
+	cancel.text = "取消"
+	cancel.pressed.connect(func(): _safe_close("HeroBoxSelector"))
+	vbox.add_child(cancel)
+	
+	add_child(panel)
+
+func _on_hero_box_selected(hero_id: String):
+	if data.items.get("hero_box", 0) < 1:
+		_safe_close("HeroBoxSelector")
+		return
+	
+	data.items.hero_box -= 1
+	data.add_hero(hero_id)
+	
+	var cfg = data.get_hero_config(hero_id)
+	_safe_close("HeroBoxSelector")
+	_show_stage_hint("获得门客【%s】" % cfg.name)
+	update_all_ui()
+	update_bag_list()
+	update_hero_list()
 
 
 # ========== UI 更新 ==========
@@ -3355,11 +3416,16 @@ func _update_special_pack_page():
 	for child in container.get_children():
 		child.queue_free()
 	
+	var scroll = ScrollContainer.new()
+	scroll.set_anchors_preset(Control.PRESET_FULL_RECT)
+	container.add_child(scroll)
+	
 	var main_vbox = VBoxContainer.new()
-	main_vbox.alignment = BoxContainer.ALIGNMENT_CENTER
 	main_vbox.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	main_vbox.size_flags_vertical = Control.SIZE_EXPAND_FILL
+	main_vbox.alignment = BoxContainer.ALIGNMENT_CENTER
 	main_vbox.add_theme_constant_override("separation", 20)
-	container.add_child(main_vbox)
+	scroll.add_child(main_vbox)
 	
 	var packs = [
 		{"name": "封神志×100", "desc": "兑换封神灵兽", "cost": 10000, "item": "feng_shen_zhi"},
@@ -3414,12 +3480,44 @@ func _update_special_pack_page():
 	wish_btn.add_theme_font_size_override("font_size", 20)
 	wish_btn.pressed.connect(_on_buy_wish_stone_pack)
 	wish_row.add_child(wish_btn)
+	
+	# 门客盒子礼包
+	var hero_box_row = HBoxContainer.new()
+	hero_box_row.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	hero_box_row.alignment = BoxContainer.ALIGNMENT_CENTER
+	main_vbox.add_child(hero_box_row)
+	
+	var hero_box_info = Label.new()
+	hero_box_info.text = "门客盒子礼包\n门客盒子×1"
+	hero_box_info.horizontal_alignment = HORIZONTAL_ALIGNMENT_LEFT
+	hero_box_info.add_theme_font_size_override("font_size", 18)
+	hero_box_row.add_child(hero_box_info)
+	
+	var hero_box_spacer = Control.new()
+	hero_box_spacer.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	hero_box_row.add_child(hero_box_spacer)
+	
+	var hero_box_btn = Button.new()
+	hero_box_btn.text = "购买（¥10000）"
+	hero_box_btn.custom_minimum_size = Vector2(160, 60)
+	hero_box_btn.add_theme_font_size_override("font_size", 20)
+	hero_box_btn.pressed.connect(_on_buy_hero_box_pack)
+	hero_box_row.add_child(hero_box_btn)
 
 func _on_buy_prop_pack(item_id: String, count: int, cost: int):
 	data.vip_exp += cost * 10
 	data.vip_level = data.get_vip_level()
 	data.items[item_id] = data.items.get(item_id, 0) + count
 	_show_stage_hint("购买成功！%s ×%d" % [data.ITEM_CONFIG.get(item_id, {}).get("name", item_id), count])
+	update_all_ui()
+	update_bag_list()
+
+func _on_buy_hero_box_pack():
+	var cost = 10000
+	data.vip_exp += cost * 10
+	data.vip_level = data.get_vip_level()
+	data.items["hero_box"] = data.items.get("hero_box", 0) + 1
+	_show_stage_hint("购买成功！获得门客盒子×1")
 	update_all_ui()
 	update_bag_list()
 

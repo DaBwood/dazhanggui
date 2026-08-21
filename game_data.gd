@@ -160,6 +160,7 @@ const ITEM_CONFIG = {
 	"ginseng_1000":    {"name": "千年人参", "desc": "指定门客基础赚速+20000"},
 	"vitality_pill":   {"name": "活力丹",   "desc": "后续玩法更新后使用"},
 	"wish_stone":      {"name": "许愿石",   "desc": "用于刷新挚友店铺技能，必定获得20%-30%加成"},
+	"hero_box":        {"name": "门客盒子", "desc": "打开后可从所有门客中选择一个获得"},
 }
 
 # 已领取的VIP奖励等级（true=已领取）
@@ -226,6 +227,7 @@ var items = {
 	"ginseng_1000": 0,
 	"vitality_pill": 0,
 	"wish_stone": 0,
+	"hero_box": 0,
 }
 
 const SURNAMES = ["赵","钱","孙","李","周","吴","郑","王","冯","陈","褚","卫","蒋","沈","韩","杨","朱","秦","尤","许"]
