@@ -1072,6 +1072,7 @@ func generate_hero_list():
 	if not has_node("PageContainer/HeroPage"): return
 	var scroll = $PageContainer/HeroPage/HeroScroll
 	for child in scroll.get_children():
+		scroll.remove_child(child) 
 		child.queue_free()
 	
 	# 创建网格
@@ -2106,14 +2107,14 @@ func _on_hero_box_selected(hero_id: String):
 		return
 	
 	data.items.hero_box -= 1
-	data.add_hero(hero_id)
+	data.unlock_hero(hero_id)
 	
 	var cfg = data.get_hero_config(hero_id)
 	_safe_close("HeroBoxSelector")
 	_show_stage_hint("获得门客【%s】" % cfg.name)
 	update_all_ui()
 	update_bag_list()
-	update_hero_list()
+	generate_hero_list() 
 
 
 # ========== UI 更新 ==========
@@ -3300,7 +3301,7 @@ func _on_claim_identity_reward(level: int):
 		_show_stage_hint("领取成功！%s" % result.reward.name)
 		_update_identity_reward_list()
 		update_all_ui()
-		update_hero_list()
+		generate_hero_list()
 		if has_node("PageContainer/BeastPage"):
 			update_beast_page()
 	elif result.duplicate:
