@@ -723,7 +723,7 @@ func get_hero_beast_bonus(hero_id: String) -> Dictionary:
 func _init_beast_skills(count: int) -> Array:
 	var skills = []
 	for i in range(count):
-		skills.append({"percent": 0.01})
+		skills.append({"percent": 0.01, "refresh_count": 0})
 	return skills
 
 func add_beast(beast_id: String) -> bool:
@@ -748,17 +748,46 @@ func upgrade_beast(beast_id: String, instance_index: int = 0) -> bool:
 	instance.level += 1
 	return true
 
-func refresh_beast_skills(beast_id: String, instance_index: int = 0) -> bool:
+func refresh_beast_skill(beast_id: String, instance_index: int, skill_index: int, use_aroma: bool = false) -> bool:
 	var instance = get_beast_instance(beast_id, instance_index)
 	if instance == null: return false
-	if aroma_fruit < 1: return false
-	aroma_fruit -= 1
-	var cfg = get_beast_config(beast_id)
-	var count = cfg.get("skill_count", 0)
-	var skills = []
-	for i in range(count):
-		skills.append({"percent": randf_range(0.15, 0.25)})
-	instance.skills = skills
+	var skills = instance.get("skills", [])
+	if skill_index < 0 or skill_index >= skills.size(): return false
+	
+	var skill = skills[skill_index]
+	if skill.percent >= 0.249:  # 满级 25%，留一点浮点余量
+		skill.percent = 0.25
+		return false
+	
+	if use_aroma:
+		# 奇香果刷新：固定消耗1个，15%-25%
+		if aroma_fruit < 1: return false
+		aroma_fruit -= 1
+		skill.refresh_count += 1
+		var new_val = randf_range(0.15, 0.251)
+		if new_val > 0.25: new_val = 0.25
+		skill.percent = max(skill.percent, new_val)
+	else:
+		# 铜钱刷新：指数增长费用
+		var cost = 100 * int(pow(2, skill.refresh_count))
+		if money < cost: return false
+		money -= cost
+		skill.refresh_count += 1
+		
+		var roll = randf()
+		var new_val: float
+		if roll < 0.9:
+			new_val = randf_range(0.01, 0.149)
+		else:
+			new_val = randf_range(0.15, 0.251)
+		
+		if new_val > 0.25: new_val = 0.25
+		skill.percent = max(skill.percent, new_val)
+	
+	# 接近满级直接封顶
+	if skill.percent >= 0.245:
+		skill.percent = 0.25
+	
 	return true
 
 func equip_beast(hero_id: String, beast_id: String, instance_index: int) -> bool:
@@ -1212,7 +1241,16 @@ func load_game():
 	if data.has("identity_level"): identity_level = data.identity_level
 	if data.has("last_daily_reward_time"): last_daily_reward_time = data.last_daily_reward_time
 	
-	if data.has("beasts"): beasts = data.beasts
+	if data.has("beasts"): 
+		beasts = data.beasts
+		# 兼容旧存档：给没有 refresh_count 的珍兽技能补上
+		for bid in beasts.keys():
+			var d = beasts[bid]
+			var instances = d if d is Array else [d]
+			for inst in instances:
+				for sk in inst.get("skills", []):
+					if not sk.has("refresh_count"):
+						sk.refresh_count = 0
 	if data.has("beast_fruit"): beast_fruit = data.beast_fruit
 	if data.has("aroma_fruit"): aroma_fruit = data.aroma_fruit
 	if data.has("lottery_draw_count"): lottery_draw_count = data.lottery_draw_count

@@ -4,6 +4,9 @@ var data: GameData
 var current_hero_id: String = ""
 var current_friend_id: String = ""
 var _selected_shop_skill_index: int = -1
+var _current_beast_id: String = ""
+var _current_beast_index: int = 0
+var _selected_beast_skill_index: int = -1
 #页面切换
 var current_page: String = "shop"   # shop / hero / bag
 
@@ -2440,32 +2443,86 @@ func _on_exchange_beast(beast_id: String):
 
 func open_beast_detail(beast_id: String, instance_index: int):
 	_close_beast_detail()
+	_current_beast_id = beast_id
+	_current_beast_index = instance_index
+	
 	var cfg = data.get_beast_config(beast_id)
 	var instance = data.get_beast_instance(beast_id, instance_index)
 	if instance == null: return
 	
-	var panel = _create_base_popup("【%s】" % cfg.name, Vector2(480, 500), Vector2(336, 70))
+	var panel = _create_base_popup("【%s】" % cfg.name, Vector2(520, 620), Vector2(316, 30))
 	panel.name = "BeastDetailPanel"
 	var vbox = panel.get_child(0)
 	
-	var info = Label.new()
-	info.name = "BeastDetailInfo"
-	info.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
-	vbox.add_child(info)
+	# 品质
+	var quality_lbl = Label.new()
+	quality_lbl.name = "BeastQualityLbl"
+	quality_lbl.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	vbox.add_child(quality_lbl)
 	
-	# 升级按钮
+	# 资质行（文字 + 升级按钮）
+	var apt_row = HBoxContainer.new()
+	apt_row.alignment = BoxContainer.ALIGNMENT_CENTER
+	apt_row.add_theme_constant_override("separation", 12)
+	vbox.add_child(apt_row)
+	
+	var apt_lbl = Label.new()
+	apt_lbl.name = "BeastAptLbl"
+	apt_row.add_child(apt_lbl)
+	
 	var up_btn = Button.new()
 	up_btn.name = "BeastUpBtn"
-	up_btn.custom_minimum_size = Vector2(200, 40)
+	up_btn.custom_minimum_size = Vector2(120, 32)
 	up_btn.pressed.connect(_on_beast_upgrade.bind(beast_id, instance_index))
-	vbox.add_child(up_btn)
+	apt_row.add_child(up_btn)
 	
-	# 刷新技能按钮
-	var refresh_btn = Button.new()
-	refresh_btn.name = "BeastRefreshBtn"
-	refresh_btn.custom_minimum_size = Vector2(200, 40)
-	refresh_btn.pressed.connect(_on_beast_refresh.bind(beast_id, instance_index))
-	vbox.add_child(refresh_btn)
+	# 光环
+	var aura_lbl = Label.new()
+	aura_lbl.name = "BeastAuraLbl"
+	aura_lbl.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	aura_lbl.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+	vbox.add_child(aura_lbl)
+	
+	# 技能列表标题行
+	var skill_title_row = HBoxContainer.new()
+	skill_title_row.alignment = BoxContainer.ALIGNMENT_CENTER
+	skill_title_row.add_theme_constant_override("separation", 16)
+	vbox.add_child(skill_title_row)
+	
+	var skill_title = Label.new()
+	skill_title.text = "技能列表"
+	skill_title.add_theme_font_size_override("font_size", 18)
+	skill_title.add_theme_color_override("font_color", Color("#ffd700"))
+	skill_title_row.add_child(skill_title)
+	
+	var skill_bonus_lbl = Label.new()
+	skill_bonus_lbl.name = "BeastSkillBonusLbl"
+	skill_title_row.add_child(skill_bonus_lbl)
+	
+	# 技能网格滚动区
+	var skill_scroll = ScrollContainer.new()
+	skill_scroll.name = "BeastSkillScroll"
+	skill_scroll.custom_minimum_size = Vector2(0, 220)
+	skill_scroll.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	vbox.add_child(skill_scroll)
+	
+	var skill_grid = GridContainer.new()
+	skill_grid.name = "BeastSkillGrid"
+	skill_grid.columns = 4
+	skill_grid.add_theme_constant_override("h_separation", 8)
+	skill_grid.add_theme_constant_override("v_separation", 8)
+	skill_grid.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	skill_scroll.add_child(skill_grid)
+	
+	# 创建技能按钮
+	var skill_count = cfg.get("skill_count", 0)
+	for i in range(skill_count):
+		var btn = Button.new()
+		btn.name = "BeastSkillBtn_%d" % i
+		btn.custom_minimum_size = Vector2(0, 40)
+		btn.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+		btn.pressed.connect(_on_beast_skill_clicked.bind(i))
+		skill_grid.add_child(btn)
 	
 	# 装备/卸下按钮
 	var equip_btn = Button.new()
@@ -2491,29 +2548,55 @@ func _update_beast_detail(beast_id: String, instance_index: int):
 	if instance == null: return
 	
 	var vbox = $BeastDetailPanel.get_child(0)
-	var info = vbox.get_node("BeastDetailInfo")
-	var up_btn = vbox.get_node("BeastUpBtn")
-	var refresh_btn = vbox.get_node("BeastRefreshBtn")
+	var quality_lbl = vbox.get_node("BeastQualityLbl")
+	var apt_lbl = vbox.find_child("BeastAptLbl", true, false)
+	var up_btn = vbox.find_child("BeastUpBtn", true, false)
+	var aura_lbl = vbox.get_node("BeastAuraLbl")
+	var skill_bonus_lbl = vbox.find_child("BeastSkillBonusLbl", true, false)
 	var equip_btn = vbox.get_node("BeastEquipBtn")
 	
 	var apt = data.get_beast_aptitude(beast_id, instance_index)
 	var skill_bonus = data.get_beast_skill_bonus(beast_id, instance_index)
-	var aura_bonus = data.get_beast_aura_bonus(beast_id, instance_index)
-	var hero_name = ""
-	var hid = instance.get("equipped_hero", "")
-	if hid != "" and data.heroes.has(hid):
-		hero_name = "装备门客：%s" % data.heroes[hid].name
 	
-	info.text = "品质：%s\n资质：%d（基础%d + 等级%d×8）\n技能加成：%.0f%%\n光环加成：%.0f%%\n%s" % [
-		cfg.quality, apt, cfg.aptitude, instance.level-1, skill_bonus*100, aura_bonus*100, hero_name
-	]
+	quality_lbl.text = "品质：%s" % cfg.quality
+	apt_lbl.text = "资质：%d（基础%d + 等级%d×8）" % [apt, cfg.aptitude, instance.level - 1]
 	
-	up_btn.text = "升级（需%d珍兽果）" % 80 if instance.level < 200 else "已满级"
+	up_btn.text = "升级" if instance.level < 200 else "已满级"
 	up_btn.disabled = instance.level >= 200 or data.beast_fruit < 80
 	
-	refresh_btn.text = "刷新技能（需1奇香果）"
-	refresh_btn.disabled = data.aroma_fruit < 1
+	# 光环显示具体列表
+	var auras = cfg.get("auras", [])
+	if auras.is_empty():
+		aura_lbl.text = "光环：无"
+	else:
+		var aura_texts = []
+		for a in auras:
+			aura_texts.append(a)
+		aura_lbl.text = "光环：%s" % " | ".join(aura_texts)
 	
+	skill_bonus_lbl.text = "技能加成：%.0f%%" % (skill_bonus * 100)
+	
+	# 更新技能网格按钮
+	var skills = instance.get("skills", [])
+	var skill_grid = vbox.find_child("BeastSkillGrid", true, false)
+	if skill_grid:
+		for i in range(skill_grid.get_child_count()):
+			var btn = skill_grid.get_child(i)
+			if i < skills.size():
+				btn.visible = true
+				var sk = skills[i]
+				var txt = "+%.0f%%" % (sk.percent * 100)
+				if sk.percent >= 0.249:
+					txt += " [满]"
+					btn.disabled = true
+				else:
+					btn.disabled = false
+				btn.text = txt
+			else:
+				btn.visible = false
+	
+	# 装备状态
+	var hid = instance.get("equipped_hero", "")
 	if hid != "":
 		equip_btn.text = "卸下"
 	else:
@@ -2525,12 +2608,6 @@ func _on_beast_upgrade(beast_id: String, instance_index: int):
 		update_beast_page()
 		update_all_ui()
 
-func _on_beast_refresh(beast_id: String, instance_index: int):
-	if data.refresh_beast_skills(beast_id, instance_index):
-		_update_beast_detail(beast_id, instance_index)
-		update_beast_page()
-		update_all_ui()
-		update_bag_list()
 
 func _on_beast_equip_toggle(beast_id: String, instance_index: int):
 	var instance = data.get_beast_instance(beast_id, instance_index)
@@ -2540,12 +2617,15 @@ func _on_beast_equip_toggle(beast_id: String, instance_index: int):
 		data.unequip_beast(hid)
 		_update_beast_detail(beast_id, instance_index)
 		update_beast_page()
+		update_hero_panel()
 		update_all_ui()
 	else:
 		_show_hero_equip_selector(beast_id, instance_index)
 
 func _show_hero_equip_selector(beast_id: String, instance_index: int):
-	_close_beast_detail()
+	
+	# 关闭技能刷新面板，避免层级冲突
+	_close_beast_skill_refresh_panel()
 	var panel = _create_base_popup("选择门客装备", Vector2(460, 400), Vector2(346, 120))
 	panel.name = "HeroEquipSelector"
 	var vbox = panel.get_child(0)
@@ -2591,13 +2671,184 @@ func _on_hero_equipped_beast(hero_id: String, beast_id: String, instance_index: 
 	update_beast_page()
 	update_all_ui()
 
+func _on_beast_skill_clicked(skill_index: int):
+	_selected_beast_skill_index = skill_index
+	_show_beast_skill_refresh_panel()
+
+func _show_beast_skill_refresh_panel():
+	var parent = $BeastDetailPanel
+	if parent == null: return
+	if parent.has_node("BeastSkillRefreshPanel"): return
+	
+	var instance = data.get_beast_instance(_current_beast_id, _current_beast_index)
+	if instance == null: return
+	var skills = instance.get("skills", [])
+	if _selected_beast_skill_index < 0 or _selected_beast_skill_index >= skills.size(): return
+	var skill = skills[_selected_beast_skill_index]
+	
+	var panel = PanelContainer.new()
+	panel.name = "BeastSkillRefreshPanel"
+	panel.custom_minimum_size = Vector2(360, 260)
+	panel.position = (parent.size - panel.custom_minimum_size) / 2
+	panel.z_index = 50
+	
+	var style = StyleBoxFlat.new()
+	style.bg_color = Color("#1e1b2e")
+	style.set_corner_radius_all(12)
+	panel.add_theme_stylebox_override("panel", style)
+	
+	var vbox = VBoxContainer.new()
+	vbox.alignment = BoxContainer.ALIGNMENT_CENTER
+	vbox.add_theme_constant_override("separation", 14)
+	panel.add_child(vbox)
+	
+	# 标题
+	var title = Label.new()
+	title.text = "技能槽位 #%d" % (_selected_beast_skill_index + 1)
+	title.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	title.add_theme_font_size_override("font_size", 20)
+	title.add_theme_color_override("font_color", Color("#ffd700"))
+	vbox.add_child(title)
+	
+	# 当前加成
+	var bonus_lbl = Label.new()
+	bonus_lbl.name = "BeastSkillBonus"
+	bonus_lbl.text = "当前加成：+%.0f%%" % (skill.percent * 100)
+	bonus_lbl.add_theme_font_size_override("font_size", 18)
+	vbox.add_child(bonus_lbl)
+	
+	# 状态/消耗
+	var status_lbl = Label.new()
+	status_lbl.name = "BeastSkillStatus"
+	vbox.add_child(status_lbl)
+	
+	# 勾选框
+	if skill.percent < 0.249:
+		var aroma_check = CheckBox.new()
+		aroma_check.name = "AromaCheck"
+		aroma_check.text = "使用奇香果（拥有：%d）" % data.aroma_fruit
+		vbox.add_child(aroma_check)
+	
+	# 按钮区
+	var btn_box = HBoxContainer.new()
+	btn_box.alignment = BoxContainer.ALIGNMENT_CENTER
+	btn_box.add_theme_constant_override("separation", 16)
+	vbox.add_child(btn_box)
+	
+	if skill.percent < 0.249:
+		var refresh_btn = Button.new()
+		refresh_btn.name = "BeastSkillRefreshBtn"
+		refresh_btn.text = "刷新"
+		refresh_btn.custom_minimum_size = Vector2(100, 40)
+		refresh_btn.pressed.connect(_on_refresh_beast_skill)
+		btn_box.add_child(refresh_btn)
+	
+	var close_btn = Button.new()
+	close_btn.text = "关闭"
+	close_btn.custom_minimum_size = Vector2(100, 40)
+	close_btn.pressed.connect(_close_beast_skill_refresh_panel)
+	btn_box.add_child(close_btn)
+	
+	parent.add_child(panel)
+	_update_beast_skill_refresh_panel()
+
+func _update_beast_skill_refresh_panel():
+	var parent = $BeastDetailPanel
+	var panel = parent.get_node_or_null("BeastSkillRefreshPanel")
+	if not panel: return
+	
+	var instance = data.get_beast_instance(_current_beast_id, _current_beast_index)
+	if instance == null: return
+	var skills = instance.get("skills", [])
+	if _selected_beast_skill_index < 0 or _selected_beast_skill_index >= skills.size(): return
+	var skill = skills[_selected_beast_skill_index]
+	
+	var bonus_lbl = panel.find_child("BeastSkillBonus", true, false)
+	if bonus_lbl:
+		bonus_lbl.text = "当前加成：+%.0f%%" % (skill.percent * 100)
+	
+	var status_lbl = panel.find_child("BeastSkillStatus", true, false)
+	var aroma_check = panel.find_child("AromaCheck", true, false)
+	if status_lbl:
+		if skill.percent >= 0.249:
+			status_lbl.text = "已满级"
+			status_lbl.add_theme_color_override("font_color", Color("#ffd700"))
+		else:
+			var use_aroma = aroma_check != null and aroma_check.button_pressed
+			if use_aroma:
+				status_lbl.text = "奇香果：%d/1" % data.aroma_fruit
+			else:
+				var cost = 100 * int(pow(2, skill.refresh_count))
+				status_lbl.text = "刷新消耗：%s 铜钱" % format_number(cost)
+			status_lbl.remove_theme_color_override("font_color")
+	
+	if aroma_check:
+		aroma_check.text = "使用奇香果（拥有：%d）" % data.aroma_fruit
+		if skill.percent >= 0.249:
+			aroma_check.visible = false
+	
+	var refresh_btn = panel.find_child("BeastSkillRefreshBtn", true, false)
+	if skill.percent >= 0.249:
+		if refresh_btn:
+			refresh_btn.queue_free()
+		if aroma_check:
+			aroma_check.queue_free()
+	else:
+		if refresh_btn:
+			refresh_btn.text = "刷新"
+
+func _on_refresh_beast_skill():
+	if _selected_beast_skill_index < 0: return
+	var parent = $BeastDetailPanel
+	var panel = parent.get_node_or_null("BeastSkillRefreshPanel")
+	var use_aroma = false
+	if panel:
+		var aroma_check = panel.find_child("AromaCheck", true, false)
+		if aroma_check:
+			use_aroma = aroma_check.button_pressed
+	
+	if data.refresh_beast_skill(_current_beast_id, _current_beast_index, _selected_beast_skill_index, use_aroma):
+		_update_beast_detail(_current_beast_id, _current_beast_index)
+		update_beast_page()
+		update_all_ui()
+		update_bag_list()
+		var instance = data.get_beast_instance(_current_beast_id, _current_beast_index)
+		var skills = instance.get("skills", [])
+		var skill = skills[_selected_beast_skill_index]
+		if skill.percent >= 0.249:
+			_close_beast_skill_refresh_panel()
+		else:
+			_update_beast_skill_refresh_panel()
+	else:
+		var panel2 = $BeastDetailPanel.get_node_or_null("BeastSkillRefreshPanel")
+		if panel2:
+			var refresh_btn = panel2.find_child("BeastSkillRefreshBtn", true, false)
+			if refresh_btn:
+				flash_red(refresh_btn.get_path())
+
+func _close_beast_skill_refresh_panel():
+	var parent = get_node_or_null("BeastDetailPanel")
+	if parent == null: return
+	var panel = parent.get_node_or_null("BeastSkillRefreshPanel")
+	if panel:
+		panel.queue_free()
+
 func _close_beast_detail():
+	# 先关闭内层面板
+	if has_node("BeastDetailPanel/BeastSkillRefreshPanel"):
+		var inner = $BeastDetailPanel/BeastSkillRefreshPanel
+		inner.get_parent().remove_child(inner)
+		inner.queue_free()
+	# 立即从场景树移除旧面板，避免同名冲突
 	if has_node("BeastDetailPanel"):
-		_safe_close("BeastDetailPanel")
-	# 【改】如果下层 HeroPanel 还开着，恢复它作为当前弹窗，避免卡死
+		var old = $BeastDetailPanel
+		old.get_parent().remove_child(old)
+		old.queue_free()
+	# 如果下层 HeroPanel 还开着...
 	if has_node("HeroPanel") and $HeroPanel.visible:
 		_current_popup = $HeroPanel
 		$Overlay.show()
+		update_hero_panel()
 	else:
 		$Overlay.hide()
 		_current_popup = null
