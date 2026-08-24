@@ -1,4049 +1,4124 @@
 {
-  "ge_langzhong": {
-	"name": "葛郎中",
-	"category": "士",
-	"level": 1,
-	"base_income": 0,
-	"breakthrough_count": 1,
-	"initial_aptitude": 66,
-	"assigned_shop": "",
-	"aptitude_skills": [
-	  {
-		"name": "普通资质",
-		"level": 1,
-		"max_level": 200,
-		"aptitude_per_level": 1
-	  }
-	],
-	"shop_skills": [
-	  {
-		"name": "门客委任",
-		"level": 1,
-		"max_level": 200,
-		"base_percent": 0.05,
-		"percent_per_level": 0.03
-	  }
-	]
-  },
-  "zheng_guonong": {
-	"name": "郑果农",
-	"category": "农",
-	"level": 1,
-	"base_income": 0,
-	"breakthrough_count": 1,
-	"initial_aptitude": 66,
-	"assigned_shop": "",
-	"aptitude_skills": [
-	  {
-		"name": "普通资质",
-		"level": 1,
-		"max_level": 200,
-		"aptitude_per_level": 1
-	  }
-	],
-	"shop_skills": [
-	  {
-		"name": "门客委任",
-		"level": 1,
-		"max_level": 200,
-		"base_percent": 0.05,
-		"percent_per_level": 0.03
-	  }
-	]
-  },
-  "liang_waiqi": {
-	"name": "梁歪七",
-	"category": "侠",
-	"level": 1,
-	"base_income": 0,
-	"breakthrough_count": 1,
-	"initial_aptitude": 66,
-	"assigned_shop": "",
-	"aptitude_skills": [
-	  {
-		"name": "普通资质",
-		"level": 1,
-		"max_level": 200,
-		"aptitude_per_level": 1
-	  }
-	],
-	"shop_skills": [
-	  {
-		"name": "门客委任",
-		"level": 1,
-		"max_level": 200,
-		"base_percent": 0.05,
-		"percent_per_level": 0.03
-	  }
-	]
-  },
-  "zhu_huolang": {
-	"name": "祝货郎",
-	"category": "商",
-	"level": 1,
-	"base_income": 0,
-	"breakthrough_count": 1,
-	"initial_aptitude": 66,
-	"assigned_shop": "",
-	"aptitude_skills": [
-	  {
-		"name": "普通资质",
-		"level": 1,
-		"max_level": 200,
-		"aptitude_per_level": 1
-	  }
-	],
-	"shop_skills": [
-	  {
-		"name": "门客委任",
-		"level": 1,
-		"max_level": 200,
-		"base_percent": 0.05,
-		"percent_per_level": 0.03
-	  }
-	]
-  },
-  "kang_chashi": {
-	"name": "康茶师",
-	"category": "工",
-	"level": 1,
-	"base_income": 0,
-	"breakthrough_count": 1,
-	"initial_aptitude": 66,
-	"assigned_shop": "",
-	"aptitude_skills": [
-	  {
-		"name": "普通资质",
-		"level": 1,
-		"max_level": 200,
-		"aptitude_per_level": 1
-	  }
-	],
-	"shop_skills": [
-	  {
-		"name": "门客委任",
-		"level": 1,
-		"max_level": 200,
-		"base_percent": 0.05,
-		"percent_per_level": 0.03
-	  }
-	]
-  },
-  "cai_yufu": {
-	"name": "蔡渔夫",
-	"category": "农",
-	"level": 1,
-	"base_income": 0,
-	"breakthrough_count": 1,
-	"initial_aptitude": 66,
-	"assigned_shop": "",
-	"aptitude_skills": [
-	  {
-		"name": "普通资质",
-		"level": 1,
-		"max_level": 200,
-		"aptitude_per_level": 1
-	  }
-	],
-	"shop_skills": [
-	  {
-		"name": "门客委任",
-		"level": 1,
-		"max_level": 200,
-		"base_percent": 0.05,
-		"percent_per_level": 0.03
-	  }
-	]
-  },
-  "liu_xizi": {
-	"name": "刘戏子",
-	"category": "工",
-	"level": 1,
-	"base_income": 0,
-	"breakthrough_count": 1,
-	"initial_aptitude": 66,
-	"assigned_shop": "",
-	"aptitude_skills": [
-	  {
-		"name": "普通资质",
-		"level": 1,
-		"max_level": 200,
-		"aptitude_per_level": 1
-	  }
-	],
-	"shop_skills": [
-	  {
-		"name": "门客委任",
-		"level": 1,
-		"max_level": 200,
-		"base_percent": 0.05,
-		"percent_per_level": 0.03
-	  }
-	]
-  },
-  "zheng_chuzi": {
-	"name": "郑厨子",
-	"category": "工",
-	"level": 1,
-	"base_income": 0,
-	"breakthrough_count": 1,
-	"initial_aptitude": 66,
-	"assigned_shop": "",
-	"aptitude_skills": [
-	  {
-		"name": "普通资质",
-		"level": 1,
-		"max_level": 200,
-		"aptitude_per_level": 1
-	  }
-	],
-	"shop_skills": [
-	  {
-		"name": "门客委任",
-		"level": 1,
-		"max_level": 200,
-		"base_percent": 0.05,
-		"percent_per_level": 0.03
-	  }
-	]
-  },
-  "he_yashi": {
-	"name": "何雅士",
-	"category": "士",
-	"level": 1,
-	"base_income": 0,
-	"breakthrough_count": 1,
-	"initial_aptitude": 66,
-	"assigned_shop": "",
-	"aptitude_skills": [
-	  {
-		"name": "普通资质",
-		"level": 1,
-		"max_level": 200,
-		"aptitude_per_level": 1
-	  }
-	],
-	"shop_skills": [
-	  {
-		"name": "门客委任",
-		"level": 1,
-		"max_level": 200,
-		"base_percent": 0.05,
-		"percent_per_level": 0.03
-	  }
-	]
-  },
-  "liu_bukuai": {
-	"name": "柳捕快",
-	"category": "士",
-	"level": 1,
-	"base_income": 0,
-	"breakthrough_count": 1,
-	"initial_aptitude": 66,
-	"assigned_shop": "",
-	"aptitude_skills": [
-	  {
-		"name": "普通资质",
-		"level": 1,
-		"max_level": 200,
-		"aptitude_per_level": 1
-	  }
-	],
-	"shop_skills": [
-	  {
-		"name": "门客委任",
-		"level": 1,
-		"max_level": 200,
-		"base_percent": 0.05,
-		"percent_per_level": 0.03
-	  }
-	]
-  },
-  "luo_sunshan": {
-	"name": "洛孙山",
-	"category": "士",
-	"level": 1,
-	"base_income": 0,
-	"breakthrough_count": 1,
-	"initial_aptitude": 66,
-	"assigned_shop": "",
-	"aptitude_skills": [
-	  {
-		"name": "普通资质",
-		"level": 1,
-		"max_level": 200,
-		"aptitude_per_level": 1
-	  }
-	],
-	"shop_skills": [
-	  {
-		"name": "门客委任",
-		"level": 1,
-		"max_level": 200,
-		"base_percent": 0.05,
-		"percent_per_level": 0.03
-	  }
-	]
-  },
-  "li_gushi": {
-	"name": "黎蛊师",
-	"category": "侠",
-	"level": 1,
-	"base_income": 0,
-	"breakthrough_count": 1,
-	"initial_aptitude": 66,
-	"assigned_shop": "",
-	"aptitude_skills": [
-	  {
-		"name": "普通资质",
-		"level": 1,
-		"max_level": 200,
-		"aptitude_per_level": 1
-	  }
-	],
-	"shop_skills": [
-	  {
-		"name": "门客委任",
-		"level": 1,
-		"max_level": 200,
-		"base_percent": 0.05,
-		"percent_per_level": 0.03
-	  }
-	]
-  },
-  "wu_shiren": {
-	"name": "武石仁",
-	"category": "侠",
-	"level": 1,
-	"base_income": 0,
-	"breakthrough_count": 1,
-	"initial_aptitude": 66,
-	"assigned_shop": "",
-	"aptitude_skills": [
-	  {
-		"name": "普通资质",
-		"level": 1,
-		"max_level": 200,
-		"aptitude_per_level": 1
-	  }
-	],
-	"shop_skills": [
-	  {
-		"name": "门客委任",
-		"level": 1,
-		"max_level": 200,
-		"base_percent": 0.05,
-		"percent_per_level": 0.03
-	  }
-	]
-  },
-  "wan_jinya": {
-	"name": "万金牙",
-	"category": "商",
-	"level": 1,
-	"base_income": 0,
-	"breakthrough_count": 1,
-	"initial_aptitude": 66,
-	"assigned_shop": "",
-	"aptitude_skills": [
-	  {
-		"name": "普通资质",
-		"level": 1,
-		"max_level": 200,
-		"aptitude_per_level": 1
-	  }
-	],
-	"shop_skills": [
-	  {
-		"name": "门客委任",
-		"level": 1,
-		"max_level": 200,
-		"base_percent": 0.05,
-		"percent_per_level": 0.03
-	  }
-	]
-  },
-  "niu_fushi": {
-	"name": "牛符师",
-	"category": "侠",
-	"level": 1,
-	"base_income": 0,
-	"breakthrough_count": 1,
-	"initial_aptitude": 66,
-	"assigned_shop": "",
-	"aptitude_skills": [
-	  {
-		"name": "普通资质",
-		"level": 1,
-		"max_level": 200,
-		"aptitude_per_level": 1
-	  }
-	],
-	"shop_skills": [
-	  {
-		"name": "门客委任",
-		"level": 1,
-		"max_level": 200,
-		"base_percent": 0.05,
-		"percent_per_level": 0.03
-	  }
-	]
-  },
-  "tang_hulu": {
-	"name": "唐葫芦",
-	"category": "商",
-	"level": 1,
-	"base_income": 0,
-	"breakthrough_count": 1,
-	"initial_aptitude": 66,
-	"assigned_shop": "",
-	"aptitude_skills": [
-	  {
-		"name": "普通资质",
-		"level": 1,
-		"max_level": 200,
-		"aptitude_per_level": 1
-	  }
-	],
-	"shop_skills": [
-		 {
-		"name": "门客委任",
-		"level": 1,
-		"max_level": 200,
-		"base_percent": 0.05,
-		"percent_per_level": 0.03
-	  }
-	]
-  },
-  "zhu_daliang": {
-	"name": "朱大亮",
-	"category": "商",
-	"level": 1,
-	"base_income": 0,
-	"breakthrough_count": 1,
-	"initial_aptitude": 66,
-	"assigned_shop": "",
-	"aptitude_skills": [
-	  {
-		"name": "普通资质",
-		"level": 1,
-		"max_level": 200,
-		"aptitude_per_level": 1
-	  }
-	],
-	"shop_skills": [
-	  {
-		"name": "门客委任",
-		"level": 1,
-		"max_level": 200,
-		"base_percent": 0.05,
-		"percent_per_level": 0.03
-	  }
-	]
-  },
-  "jia_houzi": {
-	"name": "贾猴子",
-	"category": "工",
-	"level": 1,
-	"base_income": 0,
-	"breakthrough_count": 1,
-	"initial_aptitude": 66,
-	"assigned_shop": "",
-	"aptitude_skills": [
-	  {
-		"name": "普通资质",
-		"level": 1,
-		"max_level": 200,
-		"aptitude_per_level": 1
-	  }
-	],
-	"shop_skills": [
-	  {
-		"name": "门客委任",
-		"level": 1,
-		"max_level": 200,
-		"base_percent": 0.05,
-		"percent_per_level": 0.03
-	  }
-	]
-  },
-  "hu_qigai": {
-	"name": "胡乞丐",
-	"category": "农",
-	"level": 1,
-	"base_income": 0,
-	"breakthrough_count": 1,
-	"initial_aptitude": 66,
-	"assigned_shop": "",
-	"aptitude_skills": [
-	  {
-		"name": "普通资质",
-		"level": 1,
-		"max_level": 200,
-		"aptitude_per_level": 1
-	  }
-	],
-	"shop_skills": [
-	  {
-		"name": "门客委任",
-		"level": 1,
-		"max_level": 200,
-		"base_percent": 0.05,
-		"percent_per_level": 0.03
-	  }
-	]
-  },
-  "zhang_laobo": {
-	"name": "张老伯",
-	"category": "农",
-	"level": 1,
-	"base_income": 0,
-	"breakthrough_count": 1,
-	"initial_aptitude": 66,
-	"assigned_shop": "",
-	"aptitude_skills": [
-	  {
-		"name": "普通资质",
-		"level": 1,
-		"max_level": 200,
-		"aptitude_per_level": 1
-	  }
-	],
-	"shop_skills": [
-	  {
-		"name": "门客委任",
-		"level": 1,
-		"max_level": 200,
-		"base_percent": 0.05,
-		"percent_per_level": 0.03
-	  }
-	]
-  },
-  "zhao_liehu": {
-	"name": "赵猎户",
-	"category": "农",
-	"level": 1,
-	"bound_heroes": [
-      "lie_ren"
-	],
-	"base_income": 0,
-	"breakthrough_count": 1,
-	"initial_aptitude": 66,
-	"assigned_shop": "",
-	"aptitude_skills": [
-	  {
-		"name": "非凡资质",
-		"level": 1,
-		"max_level": 200,
-		"aptitude_per_level": 2
-	  }
-	],
-	"shop_skills": [
-	  {
-		"name": "门客委任",
-		"level": 1,
-		"max_level": 200,
-		"base_percent": 0.05,
-		"percent_per_level": 0.03
-	  }
-	]
-  },
-  "jia_jiguan": {
-	"name": "贾机关",
-	"category": "工",
-	"level": 1,
-	"bound_heroes": [
-      "cao_yuan_nvhai"
-	],
-	"base_income": 0,
-	"breakthrough_count": 1,
-	"initial_aptitude": 66,
-	"assigned_shop": "",
-	"aptitude_skills": [
-	  {
-		"name": "非凡资质",
-		"level": 1,
-		"max_level": 200,
-		"aptitude_per_level": 2
-	  }
-	],
-	"shop_skills": [
-	  {
-		"name": "门客委任",
-		"level": 1,
-		"max_level": 200,
-		"base_percent": 0.05,
-		"percent_per_level": 0.03
-	  }
-	]
-  },
-  "liu_silang": {
-	"name": "刘四郎",
-	"category": "工",
-	"level": 1,
-	"bound_heroes": [
-      "ya_huan"
-	],
-	"base_income": 0,
-	"breakthrough_count": 1,
-	"initial_aptitude": 66,
-	"assigned_shop": "",
-	"aptitude_skills": [
-	  {
-		"name": "非凡资质",
-		"level": 1,
-		"max_level": 200,
-		"aptitude_per_level": 2
-	  }
-	],
-	"shop_skills": [
-	  {
-		"name": "门客委任",
-		"level": 1,
-		"max_level": 200,
-		"base_percent": 0.05,
-		"percent_per_level": 0.03
-	  }
-	]
-  },
-  "yun_youren": {
-	"name": "云游人",
-	"category": "农",
-	"level": 1,
-	"bound_heroes": [
-      "xiyu_nvzi"
-	],
-	"base_income": 0,
-	"breakthrough_count": 1,
-	"initial_aptitude": 66,
-	"assigned_shop": "",
-	"aptitude_skills": [
-	  {
-		"name": "非凡资质",
-		"level": 1,
-		"max_level": 200,
-		"aptitude_per_level": 2
-	  }
-	],
-	"shop_skills": [
-	  {
-		"name": "门客委任",
-		"level": 1,
-		"max_level": 200,
-		"base_percent": 0.05,
-		"percent_per_level": 0.03
-	  }
-	]
-  },
-  "zhuang_gengfu": {
-	"name": "庄更夫",
-	"category": "农",
-	"level": 1,
-	"bound_heroes": [
-      "cai_yao_nv"
-	],
-	"base_income": 0,
-	"breakthrough_count": 1,
-	"initial_aptitude": 66,
-	"assigned_shop": "",
-	"aptitude_skills": [
-	  {
-		"name": "非凡资质",
-		"level": 1,
-		"max_level": 200,
-		"aptitude_per_level": 2
-	  }
-	],
-	"shop_skills": [
-	  {
-		"name": "门客委任",
-		"level": 1,
-		"max_level": 200,
-		"base_percent": 0.05,
-		"percent_per_level": 0.03
-	  }
-	]
-  },
-  "qin_jianxian": {
-	"name": "秦剑仙",
-	"category": "侠",
-	"level": 1,
-	"bound_heroes": [
-	  "pi_pa_nv",
-      "xihu_chuangniang"
-	],
-	"base_income": 0,
-	"breakthrough_count": 1,
-	"initial_aptitude": 66,
-	"assigned_shop": "",
-	"aptitude_skills": [
-	  {
-		"name": "非凡资质",
-		"level": 1,
-		"max_level": 200,
-		"aptitude_per_level": 2
-	  }
-	],
-	"shop_skills": [
-	  {
-		"name": "门客委任",
-		"level": 1,
-		"max_level": 200,
-		"base_percent": 0.05,
-		"percent_per_level": 0.03
-	  }
-	]
-  },
-  "li_jianchi": {
-	"name": "李剑痴",
-	"category": "商",
-	"level": 1,
-	"base_income": 0,
-	"breakthrough_count": 1,
-	"initial_aptitude": 66,
-	"assigned_shop": "",
-	"aptitude_skills": [
-	  {
-		"name": "非凡资质",
-		"level": 1,
-		"max_level": 200,
-		"aptitude_per_level": 2
-	  }
-	],
-	"shop_skills": [
-	  {
-		"name": "门客委任",
-		"level": 1,
-		"max_level": 200,
-		"base_percent": 0.05,
-		"percent_per_level": 0.03
-	  }
-	]
-  },
-  "cao_tiejiang": {
-	"name": "曹铁匠",
-	"category": "工",
-	"level": 1,
-	"bound_heroes": [
-	  "cai_yao_nv",
-      "xiao_mujiang"
-	],
-	"base_income": 0,
-	"breakthrough_count": 1,
-	"initial_aptitude": 66,
-	"assigned_shop": "",
-	"aptitude_skills": [
-	  {
-		"name": "非凡资质",
-		"level": 1,
-		"max_level": 200,
-		"aptitude_per_level": 2
-	  }
-	],
-	"shop_skills": [
-	  {
-		"name": "门客委任",
-		"level": 1,
-		"max_level": 200,
-		"base_percent": 0.05,
-		"percent_per_level": 0.03
-	  }
-	]
-  },
-  "xing_huwei": {
-	"name": "邢护卫",
-	"category": "侠",
-	"level": 1,
-	"bound_heroes": [
-	  "wu_nv",
-      "mi_tan"
-	],
-	"base_income": 0,
-	"breakthrough_count": 1,
-	"initial_aptitude": 66,
-	"assigned_shop": "",
-	"aptitude_skills": [
-	  {
-		"name": "非凡资质",
-		"level": 1,
-		"max_level": 200,
-		"aptitude_per_level": 2
-	  }
-	],
-	"shop_skills": [
-	  {
-		"name": "门客委任",
-		"level": 1,
-		"max_level": 200,
-		"base_percent": 0.05,
-		"percent_per_level": 0.03
-	  }
-	]
-  },
-  "yan_xiaoer": {
-	"name": "严小二",
-	"category": "商",
-	"level": 1,
-	"bound_heroes": [
-	  "qi_shi",
-      "hong_niangzi"
-	],
-	"base_income": 0,
-	"breakthrough_count": 1,
-	"initial_aptitude": 66,
-	"assigned_shop": "",
-	"aptitude_skills": [
-	  {
-		"name": "非凡资质",
-		"level": 1,
-		"max_level": 200,
-		"aptitude_per_level": 2
-	  }
-	],
-	"shop_skills": [
-	  {
-		"name": "门客委任",
-		"level": 1,
-		"max_level": 200,
-		"base_percent": 0.05,
-		"percent_per_level": 0.03
-	  }
-	]
-  },
-  "qian_caizhu": {
-	"name": "钱财主",
-	"category": "商",
-	"level": 1,
-	"bound_heroes": [
-	  "jian_wuzhe",
-      "hong_niangzi"
-	],
-	"base_income": 0,
-	"breakthrough_count": 1,
-	"initial_aptitude": 66,
-	"assigned_shop": "",
-	"aptitude_skills": [
-	  {
-		"name": "非凡资质",
-		"level": 1,
-		"max_level": 200,
-		"aptitude_per_level": 2
-	  }
-	],
-	"shop_skills": [
-	  {
-		"name": "门客委任",
-		"level": 1,
-		"max_level": 200,
-		"base_percent": 0.05,
-		"percent_per_level": 0.03
-	  }
-	]
-  },
-  "wu_biaoshi": {
-	"name": "武镖师",
-	"category": "侠",
-	"level": 1,
-	"bound_heroes": [
-	  "jiang_men_nvzi",
-      "ma_ma"
-	],
-	"base_income": 0,
-	"breakthrough_count": 1,
-	"initial_aptitude": 66,
-	"assigned_shop": "",
-	"aptitude_skills": [
-	  {
-		"name": "非凡资质",
-		"level": 1,
-		"max_level": 200,
-		"aptitude_per_level": 2
-	  }
-	],
-	"shop_skills": [
-	  {
-		"name": "门客委任",
-		"level": 1,
-		"max_level": 200,
-		"base_percent": 0.05,
-		"percent_per_level": 0.03
-	  }
-	]
-  },
-  "yao_wuzuo": {
-	"name": "姚仵作",
-	"category": "士",
-	"level": 1,
-	"bound_heroes": [
-      "lie_ren"
-	],
-	"base_income": 0,
-	"breakthrough_count": 1,
-	"initial_aptitude": 66,
-	"assigned_shop": "",
-	"aptitude_skills": [
-	  {
-		"name": "非凡资质",
-		"level": 1,
-		"max_level": 200,
-		"aptitude_per_level": 2
-	  }
-	],
-	"shop_skills": [
-	  {
-		"name": "门客委任",
-		"level": 1,
-		"max_level": 200,
-		"base_percent": 0.05,
-		"percent_per_level": 0.03
-	  }
-	]
-  },
-  "pi_yingjiang": {
-	"name": "皮影匠人",
-	"category": "士",
-	"level": 1,
-	"bound_heroes": [
-      "cu_ju_nv"
-	],
-	"base_income": 0,
-	"breakthrough_count": 1,
-	"initial_aptitude": 66,
-	"assigned_shop": "",
-	"aptitude_skills": [
-	  {
-		"name": "非凡资质",
-		"level": 1,
-		"max_level": 200,
-		"aptitude_per_level": 2
-	  }
-	],
-	"shop_skills": [
-	  {
-		"name": "门客委任",
-		"level": 1,
-		"max_level": 200,
-		"base_percent": 0.05,
-		"percent_per_level": 0.03
-	  }
-	]
-  },
-  "tian_shiren": {
-	"name": "田诗人",
-	"category": "士",
-	"level": 1,
-	"bound_heroes": [
-      "pi_pa_nv"
-	],
-	"base_income": 0,
-	"breakthrough_count": 1,
-	"initial_aptitude": 66,
-	"assigned_shop": "",
-	"aptitude_skills": [
-	  {
-		"name": "非凡资质",
-		"level": 1,
-		"max_level": 200,
-		"aptitude_per_level": 2
-	  }
-	],
-	"shop_skills": [
-	  {
-		"name": "门客委任",
-		"level": 1,
-		"max_level": 200,
-		"base_percent": 0.05,
-		"percent_per_level": 0.03
-	  }
-	]
-  },
-  "si_lang": {
-	"name": "四郎",
-	"category": "工",
-	"level": 1,
-	"base_income": 0,
-	"breakthrough_count": 1,
-	"initial_aptitude": 66,
-	"assigned_shop": "",
-	"bound_heroes": [
-	  "hua_wuque",
-	  "luo",
-	  "hua_lang",
-	  "bi_bi_dong",
-      "zhou_meili"
-	],
-	"aptitude_skills": [
-	  {
-		"name": "非凡资质",
-		"level": 1,
-		"max_level": 200,
-		"aptitude_per_level": 2
-	  }
-	],
-	"shop_skills": [
-	  {
-		"name": "门客委任",
-		"level": 1,
-		"max_level": 200,
-		"base_percent": 0.05,
-		"percent_per_level": 0.03
-	  }
-	]
-  },
-  "yan_xiansheng": {
-	"name": "严先生",
-	"category": "士",
-	"level": 1,
-	"base_income": 0,
-	"breakthrough_count": 1,
-	"initial_aptitude": 99,
-	"assigned_shop": "",
-	"bound_heroes": [
-	  "jiang_men_nvzi",
-	  "yi_shi",
-	  "wu_nv_wu",
-      "qiu_ying"
-	],
-	"aptitude_skills": [
-	  {
-		"name": "大师资质",
-		"level": 1,
-		"max_level": 200,
-		"aptitude_per_level": 3
-	  }
-	],
-	"shop_skills": [
-	  {
-		"name": "门客委任",
-		"level": 1,
-		"max_level": 200,
-		"base_percent": 0.05,
-		"percent_per_level": 0.03
-	  }
-	]
-  },
-  "feng_mier": {
-	"name": "冯蜜儿",
-	"category": "农",
-	"level": 1,
-	"base_income": 0,
-	"breakthrough_count": 1,
-	"initial_aptitude": 99,
-	"assigned_shop": "",
-	"bound_heroes": [
-	  "yuan_xiao_guniang",
-	  "miao_jiang_shengnv",
-	  "niu_lang",
-	  "luo",
-      "zhao_yang"
-	],
-	"aptitude_skills": [
-	  {
-		"name": "大师资质",
-		"level": 1,
-		"max_level": 200,
-		"aptitude_per_level": 3
-	  }
-	],
-	"shop_skills": [
-	  {
-		"name": "门客委任",
-		"level": 1,
-		"max_level": 200,
-		"base_percent": 0.05,
-		"percent_per_level": 0.03
-	  }
-	]
-  },
-  "li_shenshou": {
-	"name": "李神手",
-	"category": "工",
-	"level": 1,
-	"base_income": 0,
-	"breakthrough_count": 1,
-	"initial_aptitude": 99,
-	"assigned_shop": "",
-	"bound_heroes": [
-	  "qi_shi",
-	  "shao_jiangjun",
-	  "zhi_nv",
-	  "yao_ying",
-      "shen_meizhuang"
-	],
-	"aptitude_skills": [
-	  {
-		"name": "大师资质",
-		"level": 1,
-		"max_level": 200,
-		"aptitude_per_level": 3
-	  }
-	],
-	"shop_skills": [
-	  {
-		"name": "门客委任",
-		"level": 1,
-		"max_level": 200,
-		"base_percent": 0.05,
-		"percent_per_level": 0.03
-	  }
-	]
-  },
-  "zhen_tufu": {
-	"name": "镇屠夫",
-	"category": "商",
-	"level": 1,
-	"base_income": 0,
-	"breakthrough_count": 1,
-	"initial_aptitude": 99,
-	"assigned_shop": "",
-	"bound_heroes": [
-	  "lang_zi",
-	  "li_shishi",
-	  "miao_jiang_shengnv",
-	  "xihu_chuangniang",
-	  "qian_ren_xue",
-      "hong_ying"
-	],
-	"aptitude_skills": [
-	  {
-		"name": "大师资质",
-		"level": 1,
-		"max_level": 200,
-		"aptitude_per_level": 3
-	  }
-	],
-	"shop_skills": [
-	  {
-		"name": "门客委任",
-		"level": 1,
-		"max_level": 200,
-		"base_percent": 0.05,
-		"percent_per_level": 0.03
-	  }
-	]
-  },
-  "hong_laoxie": {
-	"name": "洪老邪",
-	"category": "侠",
-	"level": 1,
-	"base_income": 0,
-	"breakthrough_count": 1,
-	"initial_aptitude": 99,
-	"assigned_shop": "",
-	"bound_heroes": [
-	  "xiao_qigai",
-	  "yi_shi",
-	  "hua_lang",
-	  "mo_li",
-      "mu_shu"
-	],
-	"aptitude_skills": [
-	  {
-		"name": "大师资质",
-		"level": 1,
-		"max_level": 200,
-		"aptitude_per_level": 3
-	  }
-	],
-	"shop_skills": [
-	  {
-		"name": "门客委任",
-		"level": 1,
-		"max_level": 200,
-		"base_percent": 0.05,
-		"percent_per_level": 0.03
-	  }
-	]
-  },
-  "wu_daozi": {
-	"name": "吴道子",
-	"category": "士",
-	"level": 1,
-	"base_income": 0,
-	"breakthrough_count": 1,
-	"initial_aptitude": 99,
-	"assigned_shop": "",
-	"bound_heroes": [
-	  "jun_zhu",
-	  "wanghou_fuhao",
-	  "xihu_chuangniang",
-	  "jin_shu",
-      "qing_ning"
-	],
-	"aptitude_skills": [
-	  {
-		"name": "大师资质",
-		"level": 1,
-		"max_level": 200,
-		"aptitude_per_level": 3
-	  }
-	],
-	"shop_skills": [
-	  {
-		"name": "门客委任",
-		"level": 1,
-		"max_level": 200,
-		"base_percent": 0.05,
-		"percent_per_level": 0.03
-	  }
-	]
-  },
-  "sun_bin": {
-	"name": "孙膑",
-	"category": "农",
-	"level": 1,
-	"base_income": 0,
-	"breakthrough_count": 1,
-	"initial_aptitude": 99,
-	"assigned_shop": "",
-	"bound_heroes": [
-	  "xun_ying_shaonv",
-	  "gu_guo_gongzhu",
-	  "xiao_hudie",
-      "wu_xie"
-	],
-	"aptitude_skills": [
-	  {
-		"name": "大师资质",
-		"level": 1,
-		"max_level": 200,
-		"aptitude_per_level": 3
-	  }
-	],
-	"shop_skills": [
-	  {
-		"name": "门客委任",
-		"level": 1,
-		"max_level": 200,
-		"base_percent": 0.05,
-		"percent_per_level": 0.03
-	  }
-	]
-  },
-  "lu_ban": {
-	"name": "鲁班",
-	"category": "工",
-	"level": 1,
-	"base_income": 0,
-	"breakthrough_count": 1,
-	"initial_aptitude": 99,
-	"assigned_shop": "",
-	"bound_heroes": [
-	  "hua_yi_shi",
-	  "xinniang_zhimei",
-	  "zi_yu",
-	  "luo",
-	  "qing_ning",
-      "jiu_yue"
-	],
-	"aptitude_skills": [
-	  {
-		"name": "大师资质",
-		"level": 1,
-		"max_level": 200,
-		"aptitude_per_level": 3
-	  }
-	],
-	"shop_skills": [
-	  {
-		"name": "门客委任",
-		"level": 1,
-		"max_level": 200,
-		"base_percent": 0.05,
-		"percent_per_level": 0.03
-	  }
-	]
-  },
-  "du_kang": {
-	"name": "杜康",
-	"category": "商",
-	"level": 1,
-	"base_income": 0,
-	"breakthrough_count": 1,
-	"initial_aptitude": 99,
-	"assigned_shop": "",
-	"bound_heroes": [
-	  "ma_ma",
-	  "hu_yao_zhanggui",
-	  "ni_huang_junzhu",
-      "yu_lu"
-	],
-	"aptitude_skills": [
-	  {
-		"name": "大师资质",
-		"level": 1,
-		"max_level": 200,
-		"aptitude_per_level": 3
-	  }
-	],
-	"shop_skills": [
-	  {
-		"name": "门客委任",
-		"level": 1,
-		"max_level": 200,
-		"base_percent": 0.05,
-		"percent_per_level": 0.03
-	  }
-	]
-  },
-  "ou_yezi": {
-	"name": "欧冶子",
-	"category": "侠",
-	"level": 1,
-	"base_income": 0,
-	"breakthrough_count": 1,
-	"initial_aptitude": 99,
-	"assigned_shop": "",
-	"bound_heroes": [
-	  "yi_shi",
-	  "ling_ye_maonv",
-	  "shou_gong_shaonv",
-	  "qi_guang",
-      "sha_lan"
-	],
-	"aptitude_skills": [
-	  {
-		"name": "大师资质",
-		"level": 1,
-		"max_level": 200,
-		"aptitude_per_level": 3
-	  }
-	],
-	"shop_skills": [
-	  {
-		"name": "门客委任",
-		"level": 1,
-		"max_level": 200,
-		"base_percent": 0.05,
-		"percent_per_level": 0.03
-	  }
-	]
-  },
-  "gao_jianli": {
-	"name": "高渐离",
-	"category": "士",
-	"level": 1,
-	"base_income": 0,
-	"breakthrough_count": 1,
-	"initial_aptitude": 99,
-	"assigned_shop": "",
-	"bound_heroes": [
-	  "hua_yi_shi",
-	  "cai_shi_guan",
-	  "zhuo_gui_shi",
-	  "wang_zhaojun_friend",
-      "yin_niang"
-	],
-	"aptitude_skills": [
-	  {
-		"name": "大师资质",
-		"level": 1,
-		"max_level": 200,
-		"aptitude_per_level": 3
-	  }
-	],
-	"shop_skills": [
-	  {
-		"name": "门客委任",
-		"level": 1,
-		"max_level": 200,
-		"base_percent": 0.05,
-		"percent_per_level": 0.03
-	  }
-	]
-  },
-  "su_wu": {
-	"name": "苏武",
-	"category": "农",
-	"level": 1,
-	"base_income": 0,
-	"breakthrough_count": 1,
-	"initial_aptitude": 99,
-	"assigned_shop": "",
-	"bound_heroes": [
-	  "cao_yuan_nvhai",
-	  "ling_ye_maonv",
-	  "huang_ye_linglan",
-      "mu_shu"
-	],
-	"aptitude_skills": [
-	  {
-		"name": "大师资质",
-		"level": 1,
-		"max_level": 200,
-		"aptitude_per_level": 3
-	  }
-	],
-	"shop_skills": [
-	  {
-		"name": "门客委任",
-		"level": 1,
-		"max_level": 200,
-		"base_percent": 0.05,
-		"percent_per_level": 0.03
-	  }
-	]
-  },
-  "bi_sheng": {
-	"name": "毕昇",
-	"category": "工",
-	"level": 1,
-	"base_income": 0,
-	"breakthrough_count": 1,
-	"initial_aptitude": 99,
-	"assigned_shop": "",
-	"bound_heroes": [
-	  "jun_zhu",
-	  "hu_yao_zhanggui",
-	  "ni_huang_junzhu",
-      "bi_bi_dong"
-	],
-	"aptitude_skills": [
-	  {
-		"name": "大师资质",
-		"level": 1,
-		"max_level": 200,
-		"aptitude_per_level": 3
-	  }
-	],
-	"shop_skills": [
-	  {
-		"name": "门客委任",
-		"level": 1,
-		"max_level": 200,
-		"base_percent": 0.05,
-		"percent_per_level": 0.03
-	  }
-	]
-  },
-  "zong_ze": {
-	"name": "宗泽",
-	"category": "商",
-	"level": 1,
-	"base_income": 0,
-	"breakthrough_count": 1,
-	"initial_aptitude": 99,
-	"assigned_shop": "",
-	"bound_heroes": [
-	  "xun_ying_shaonv",
-	  "tang_pingguo",
-	  "shou_gong_shaonv",
-	  "yu_ge",
-	  "ning_yin",
-	  "hua_mulan_friend",
-      "rong"
-	],
-	"aptitude_skills": [
-	  {
-		"name": "大师资质",
-		"level": 1,
-		"max_level": 200,
-		"aptitude_per_level": 3
-	  }
-	],
-	"shop_skills": [
-	  {
-		"name": "门客委任",
-		"level": 1,
-		"max_level": 200,
-		"base_percent": 0.05,
-		"percent_per_level": 0.03
-	  }
-	]
-  },
-  "zhang_sanfeng": {
-	"name": "张三丰",
-	"category": "侠",
-	"level": 1,
-	"base_income": 0,
-	"breakthrough_count": 1,
-	"initial_aptitude": 99,
-	"assigned_shop": "",
-	"bound_heroes": [
-	  "bu_kuai",
-	  "xiao_wu_friend",
-	  "qian_ren_xue",
-	  "qi_ling",
-	  "ying_chun",
-      "zhu_sha"
-	],
-	"aptitude_skills": [
-	  {
-		"name": "大师资质",
-		"level": 1,
-		"max_level": 200,
-		"aptitude_per_level": 3
-	  }
-	],
-	"shop_skills": [
-	  {
-		"name": "门客委任",
-		"level": 1,
-		"max_level": 200,
-		"base_percent": 0.05,
-		"percent_per_level": 0.03
-	  }
-	]
-  },
-  "shen_wansan": {
-	"name": "沈万三",
-	"category": "商",
-	"level": 1,
-	"base_income": 0,
-	"breakthrough_count": 1,
-	"initial_aptitude": 99,
-	"assigned_shop": "",
-	"bound_heroes": [
-	  "meng_qier",
-	  "li_shishi",
-	  "gu_guo_gongzhu",
-	  "xiao_hudie",
-	  "ning_yin",
-      "xing_lan"
-	],
-	"aptitude_skills": [
-	  {
-		"name": "大师资质",
-		"level": 1,
-		"max_level": 200,
-		"aptitude_per_level": 3
-	  }
-	],
-	"shop_skills": [
-	  {
-		"name": "门客委任",
-		"level": 1,
-		"max_level": 200,
-		"base_percent": 0.05,
-		"percent_per_level": 0.03
-	  }
-	]
-  },
-  "shi_gandang": {
-	"name": "石敢当",
-	"category": "工",
-	"level": 1,
-	"base_income": 0,
-	"breakthrough_count": 1,
-	"initial_aptitude": 99,
-	"assigned_shop": "",
-	"bound_heroes": [
-	  "li_xiangjun_friend",
-	  "xun_ma_shi",
-	  "shou_gong_shaonv",
-	  "tushan_honghong",
-      "hua_chao"
-	],
-	"aptitude_skills": [
-	  {
-		"name": "大师资质",
-		"level": 1,
-		"max_level": 200,
-		"aptitude_per_level": 3
-	  },
-	  {
-		"name": "金刚臂",
-		"level": 1,
-		"max_level": 200,
-		"aptitude_per_level": 3
-	  }
-	],
-	"shop_skills": [
-	  {
-		"name": "门客委任",
-		"level": 1,
-		"max_level": 200,
-		"base_percent": 0.05,
-		"percent_per_level": 0.03
-	  }
-	]
-  },
-  "song_huizong": {
-	"name": "宋徽宗",
-	"category": "士",
-	"level": 1,
-	"base_income": 0,
-	"breakthrough_count": 1,
-	"initial_aptitude": 99,
-	"assigned_shop": "",
-	"bound_heroes": [
-	  "kou_baimen_friend",
-	  "li_shishi",
-	  "xiao_mujiang",
-	  "nan_gong_wan",
-	  "zhao_yang",
-      "sha_lan"
-	],
-	"aptitude_skills": [
-	  {
-		"name": "大师资质",
-		"level": 1,
-		"max_level": 200,
-		"aptitude_per_level": 3
-	  },
-	  {
-		"name": "瘦金体",
-		"level": 1,
-		"max_level": 200,
-		"aptitude_per_level": 3
-	  }
-	],
-	"shop_skills": [
-	  {
-		"name": "门客委任",
-		"level": 1,
-		"max_level": 200,
-		"base_percent": 0.05,
-		"percent_per_level": 0.03
-	  }
-	]
-  },
-  "cai_jing": {
-	"name": "蔡京",
-	"category": "士",
-	"level": 1,
-	"base_income": 0,
-	"breakthrough_count": 1,
-	"initial_aptitude": 99,
-	"assigned_shop": "",
-	"bound_heroes": [
-	  "ma_xianglan_friend",
-	  "dong_xiaowan_friend",
-	  "qing_ning",
-	  "hui_yin",
-      "he_xi"
-	],
-	"aptitude_skills": [
-	  {
-		"name": "大师资质",
-		"level": 1,
-		"max_level": 200,
-		"aptitude_per_level": 3
-	  },
-	  {
-		"name": "花石纲",
-		"level": 1,
-		"max_level": 200,
-		"aptitude_per_level": 3
-	  }
-	],
-	"shop_skills": [
-	  {
-		"name": "门客委任",
-		"level": 1,
-		"max_level": 200,
-		"base_percent": 0.05,
-		"percent_per_level": 0.03
-	  }
-	]
-  },
-  "dunhuang_jiangshen": {
-	"name": "敦煌匠神",
-	"category": "工",
-	"level": 1,
-	"base_income": 0,
-	"breakthrough_count": 1,
-	"initial_aptitude": 99,
-	"assigned_shop": "",
-	"bound_heroes": [
-	  "yi_shi",
-	  "hu_yao_zhanggui",
-	  "xiao_lu_nv",
-      "qi_ling"
-	],
-	"aptitude_skills": [
-	  {
-		"name": "大师资质",
-		"level": 1,
-		"max_level": 200,
-		"aptitude_per_level": 3
-	  },
-	  {
-		"name": "麟角刷",
-		"level": 1,
-		"max_level": 200,
-		"aptitude_per_level": 3
-	  }
-	],
-	"shop_skills": [
-	  {
-		"name": "门客委任",
-		"level": 1,
-		"max_level": 200,
-		"base_percent": 0.05,
-		"percent_per_level": 0.03
-	  }
-	]
-  },
-  "baixi_shengdao": {
-	"name": "百戏圣刀",
-	"category": "侠",
-	"level": 1,
-	"base_income": 0,
-	"breakthrough_count": 1,
-	"initial_aptitude": 99,
-	"assigned_shop": "",
-	"bound_heroes": [
-	  "ma_xianglan_friend",
-	  "shao_jiangjun",
-	  "ning_yin",
-      "yin_niang"
-	],
-	"aptitude_skills": [
-	  {
-		"name": "大师资质",
-		"level": 1,
-		"max_level": 200,
-		"aptitude_per_level": 3
-	  },
-	  {
-		"name": "幻影刀",
-		"level": 1,
-		"max_level": 200,
-		"aptitude_per_level": 3
-	  }
-	],
-	"shop_skills": [
-	  {
-		"name": "门客委任",
-		"level": 1,
-		"max_level": 200,
-		"base_percent": 0.05,
-		"percent_per_level": 0.03
-	  }
-	]
-  },
-  "song_jiang": {
-	"name": "宋江",
-	"category": "农",
-	"level": 1,
-	"base_income": 0,
-	"breakthrough_count": 1,
-	"initial_aptitude": 99,
-	"assigned_shop": "",
-	"bound_heroes": [
-	  "li_xiangjun_friend",
-      "cai_shi_guan"
-	],
-	"aptitude_skills": [
-	  {
-		"name": "大师资质",
-		"level": 1,
-		"max_level": 200,
-		"aptitude_per_level": 3
-	  },
-	  {
-		"name": "及时雨",
-		"level": 1,
-		"max_level": 200,
-		"aptitude_per_level": 3
-	  }
-	],
-	"shop_skills": [
-	  {
-		"name": "门客委任",
-		"level": 1,
-		"max_level": 200,
-		"base_percent": 0.05,
-		"percent_per_level": 0.03
-	  }
-	]
-  },
-  "huo_yanwang": {
-	"name": "活阎王",
-	"category": "士",
-	"level": 1,
-	"base_income": 0,
-	"breakthrough_count": 1,
-	"initial_aptitude": 99,
-	"assigned_shop": "",
-	"bound_heroes": [
-	  "bian_yujing_friend",
-	  "xinniang_zhimei",
-	  "zhuo_gui_shi",
-      "hua_chao"
-	],
-	"aptitude_skills": [
-	  {
-		"name": "大师资质",
-		"level": 1,
-		"max_level": 200,
-		"aptitude_per_level": 3
-	  },
-	  {
-		"name": "夺命判",
-		"level": 1,
-		"max_level": 200,
-		"aptitude_per_level": 3
-	  }
-	],
-	"shop_skills": [
-	  {
-		"name": "门客委任",
-		"level": 1,
-		"max_level": 200,
-		"base_percent": 0.05,
-		"percent_per_level": 0.03
-	  }
-	]
-  },
-  "lei_en": {
-	"name": "雷恩",
-	"category": "农",
-	"level": 1,
-	"base_income": 0,
-	"breakthrough_count": 1,
-	"initial_aptitude": 99,
-	"assigned_shop": "",
-	"bound_heroes": [
-	  "ling_ye_maonv",
-	  "xinniang_zhimei",
-	  "wu_xie",
-	  "shen_meizhuang",
-      "zhou_meili"
-	],
-	"aptitude_skills": [
-	  {
-		"name": "大师资质",
-		"level": 1,
-		"max_level": 200,
-		"aptitude_per_level": 3
-	  },
-	  {
-		"name": "青龙斩",
-		"level": 1,
-		"max_level": 200,
-		"aptitude_per_level": 3
-	  },
-	  {
-		"name": "冰山雕",
-		"level": 1,
-		"max_level": 200,
-		"aptitude_per_level": 2
-	  }
-	],
-	"shop_skills": [
-	  {
-		"name": "门客委任",
-		"level": 1,
-		"max_level": 200,
-		"base_percent": 0.05,
-		"percent_per_level": 0.03
-	  }
-	]
-  },
-  "xiang_en": {
-	"name": "向恩",
-	"category": "工",
-	"level": 1,
-	"base_income": 0,
-	"breakthrough_count": 1,
-	"initial_aptitude": 99,
-	"assigned_shop": "",
-	"bound_heroes": [
-	  "hua_yi_shi",
-	  "niu_lang",
-	  "yu_tu",
-      "tushan_honghong"
-	],
-	"aptitude_skills": [
-	  {
-		"name": "大师资质",
-		"level": 1,
-		"max_level": 200,
-		"aptitude_per_level": 3
-	  },
-	  {
-		"name": "破军切",
-		"level": 1,
-		"max_level": 200,
-		"aptitude_per_level": 3
-	  },
-	  {
-		"name": "神速切",
-		"level": 1,
-		"max_level": 200,
-		"aptitude_per_level": 2
-	  }
-	],
-	"shop_skills": [
-	  {
-		"name": "门客委任",
-		"level": 1,
-		"max_level": 200,
-		"base_percent": 0.05,
-		"percent_per_level": 0.03
-	  }
-	]
-  },
-  "zhou_yu": {
-	"name": "周瑜",
-	"category": "商",
-	"level": 1,
-	"base_income": 0,
-	"breakthrough_count": 1,
-	"initial_aptitude": 99,
-	"assigned_shop": "",
-	"bound_heroes": [
-	  "bu_kuai",
-	  "zhi_nv",
-	  "yao_ying",
-      "qi_guang"
-	],
-	"aptitude_skills": [
-	  {
-		"name": "大师资质",
-		"level": 1,
-		"max_level": 200,
-		"aptitude_per_level": 3
-	  },
-	  {
-		"name": "业火烩",
-		"level": 1,
-		"max_level": 200,
-		"aptitude_per_level": 3
-	  },
-	  {
-		"name": "火焰手",
-		"level": 1,
-		"max_level": 200,
-		"aptitude_per_level": 2
-	  }
-	],
-	"shop_skills": [
-	  {
-		"name": "门客委任",
-		"level": 1,
-		"max_level": 200,
-		"base_percent": 0.05,
-		"percent_per_level": 0.03
-	  }
-	]
-  },
-  "qin_shihuang": {
-	"name": "秦始皇",
-	"category": "士",
-	"level": 1,
-	"base_income": 0,
-	"breakthrough_count": 1,
-	"initial_aptitude": 99,
-	"assigned_shop": "",
-	"bound_heroes": [
-	  "xinniang",
-	  "dong_xiaowan_friend",
-	  "huang_ye_linglan",
-	  "qiu_ying",
-      "xing_lan"
-	],
-	"aptitude_skills": [
-	  {
-		"name": "大师资质",
-		"level": 1,
-		"max_level": 200,
-		"aptitude_per_level": 3
-	  },
-	  {
-		"name": "千秋霸业",
-		"level": 1,
-		"max_level": 200,
-		"aptitude_per_level": 6
-	  },
-	  {
-		"name": "始皇帝",
-		"level": 1,
-		"max_level": 200,
-		"aptitude_per_level": 5
-	  },
-	  {
-		"name": "睥睨天下",
-		"level": 1,
-		"max_level": 200,
-		"aptitude_per_level": 5
-	  },
-	  {
-		"name": "万里长城",
-		"level": 1,
-		"max_level": 200,
-		"aptitude_per_level": 4
-	  },
-	  {
-		"name": "衡石量书",
-		"level": 1,
-		"max_level": 200,
-		"aptitude_per_level": 4
-	  }
-	],
-	"shop_skills": [
-	  {
-		"name": "门客委任",
-		"level": 1,
-		"max_level": 200,
-		"base_percent": 0.05,
-		"percent_per_level": 0.03
-	  }
-	]
-  },
-  "gun_haijiao": {
-	"name": "滚海蛟",
-	"category": "侠",
-	"level": 1,
-	"base_income": 0,
-	"breakthrough_count": 1,
-	"initial_aptitude": 99,
-	"assigned_shop": "",
-	"bound_heroes": [
-	  "bu_kuai",
-      "bian_yujing_friend"
-	],
-	"aptitude_skills": [
-	  {
-		"name": "大师资质",
-		"level": 1,
-		"max_level": 200,
-		"aptitude_per_level": 3
-	  },
-	  {
-		"name": "海盗王",
-		"level": 1,
-		"max_level": 200,
-		"aptitude_per_level": 3
-	  }
-	],
-	"shop_skills": [
-	  {
-		"name": "门客委任",
-		"level": 1,
-		"max_level": 200,
-		"base_percent": 0.05,
-		"percent_per_level": 0.03
-	  }
-	]
-  },
-  "lv_bu": {
-	"name": "吕布",
-	"category": "侠",
-	"level": 1,
-	"base_income": 0,
-	"breakthrough_count": 1,
-	"initial_aptitude": 99,
-	"assigned_shop": "",
-	"bound_heroes": [
-	  "xun_ma_shi",
-	  "xinniang_zhimei",
-	  "xiao_mujiang",
-	  "shi_bo_shi",
-      "dao_gu"
-	],
-	"aptitude_skills": [
-	  {
-		"name": "大师资质",
-		"level": 1,
-		"max_level": 200,
-		"aptitude_per_level": 3
-	  },
-	  {
-		"name": "骁勇善战",
-		"level": 1,
-		"max_level": 200,
-		"aptitude_per_level": 3
-	  }
-	],
-	"shop_skills": [
-	  {
-		"name": "门客委任",
-		"level": 1,
-		"max_level": 200,
-		"base_percent": 0.05,
-		"percent_per_level": 0.03
-		}
-	]
-  },
-  "ne_zha": {
-	"name": "哪吒",
-	"category": "商",
-	"level": 1,
-	"base_income": 0,
-	"breakthrough_count": 1,
-	"initial_aptitude": 99,
-	"assigned_shop": "",
-	"bound_heroes": [
-	  "hua_yi_shi",
-	  "wu_nv_wu",
-	  "xiao_lu_nv",
-	  "mo_li",
-	  "xing_lan",
-      "yu_ji"
-	],
-	"aptitude_skills": [
-	  {
-		"name": "大师资质",
-		"level": 1,
-		"max_level": 200,
-		"aptitude_per_level": 3
-	  },
-	  {
-		"name": "神枪聚元",
-		"level": 1,
-		"max_level": 200,
-		"aptitude_per_level": 5
-	  }
-	],
-	"shop_skills": [
-	  {
-		"name": "门客委任",
-		"level": 1,
-		"max_level": 200,
-		"base_percent": 0.05,
-		"percent_per_level": 0.03
-	  }
-	]
-  },
-  "sun_wu": {
-	"name": "孙武",
-	"category": "农",
-	"level": 1,
-	"base_income": 0,
-	"breakthrough_count": 1,
-	"initial_aptitude": 99,
-	"assigned_shop": "",
-	"bound_heroes": [
-	  "yu_ge",
-	  "qiu_ying",
-	  "gu_guo_gongzhu",
-	  "hui_yin",
-      "rong"
-	],
-	"aptitude_skills": [
-	  {
-		"name": "大师资质",
-		"level": 1,
-		"max_level": 200,
-		"aptitude_per_level": 3
-	  },
-	  {
-		"name": "用兵如神",
-		"level": 1,
-		"max_level": 200,
-		"aptitude_per_level": 3
-	  }
-	],
-	"shop_skills": [
-	  {
-		"name": "门客委任",
-		"level": 1,
-		"max_level": 200,
-		"base_percent": 0.05,
-		"percent_per_level": 0.03
-	  }
-	]
-  },
-  "qin_qiong_yuchi_gong": {
-	"name": "秦琼尉迟恭",
-	"category": "侠",
-	"level": 1,
-	"base_income": 0,
-	"breakthrough_count": 1,
-	"initial_aptitude": 99,
-	"assigned_shop": "",
-	"bound_heroes": [
-	  "qi_ling",
-	  "shi_bo_shi",
-	  "jin_shu",
-	  "yu_tu",
-	  "dao_gu",
-      "wan_wan"
-	],
-	"aptitude_skills": [
-	  {
-		"name": "大师资质",
-		"level": 1,
-		"max_level": 200,
-		"aptitude_per_level": 3
-	  },
-	  {
-		"name": "鞭锏扬威",
-		"level": 1,
-		"max_level": 200,
-		"aptitude_per_level": 3
-	  }
-	],
-	"shop_skills": [
-	  {
-		"name": "门客委任",
-		"level": 1,
-		"max_level": 200,
-		"base_percent": 0.05,
-		"percent_per_level": 0.03
-	  }
-	]
-  },
-  "ao_wu": {
-	"name": "敖武",
-	"category": "农",
-	"level": 1,
-	"base_income": 0,
-	"breakthrough_count": 1,
-	"initial_aptitude": 99,
-	"assigned_shop": "",
-	"bound_heroes": [
-	  "wu_xie",
-	  "xiao_hudie",
-	  "tang_pingguo",
-	  "zhi_nv",
-	  "ji_zhou",
-      "hua_mulan_friend"
-	],
-	"aptitude_skills": [
-	  {
-		"name": "大师资质",
-		"level": 1,
-		"max_level": 200,
-		"aptitude_per_level": 3
-	  },
-	  {
-		"name": "与狼同行",
-		"level": 1,
-		"max_level": 200,
-		"aptitude_per_level": 3
-	  }
-	],
-	"shop_skills": [
-	  {
-		"name": "门客委任",
-		"level": 1,
-		"max_level": 200,
-		"base_percent": 0.05,
-		"percent_per_level": 0.03
-	  }
-	]
-  },
-  "xiao_wu": {
-	"name": "小舞",
-	"category": "农",
-	"level": 1,
-	"base_income": 0,
-	"breakthrough_count": 1,
-	"initial_aptitude": 99,
-	"assigned_shop": "",
-	"bound_heroes": [
-	  "xiao_wu_friend",
-	  "miao_jiang_shengnv",
-	  "li_xiangjun_friend",
-	  "yu_ge",
-	  "qian_ren_xue",
-      "bi_bi_dong"
-	],
-	"aptitude_skills": [
-	  {
-		"name": "大师资质",
-		"level": 1,
-		"max_level": 200,
-		"aptitude_per_level": 3
-	  },
-	  {
-		"name": "爆杀八段摔",
-		"level": 1,
-		"max_level": 200,
-		"aptitude_per_level": 3
-	  },
-	  {
-		"name": "无敌金身",
-		"level": 1,
-		"max_level": 200,
-		"aptitude_per_level": 2
-	  }
-	],
-	"shop_skills": [
-	  {
-		"name": "门客委任",
-		"level": 1,
-		"max_level": 200,
-		"base_percent": 0.05,
-		"percent_per_level": 0.03
-	  }
-	]
-  },
-  "xiao_qi": {
-	"name": "小柒",
-	"category": "士",
-	"level": 1,
-	"base_income": 0,
-	"breakthrough_count": 1,
-	"initial_aptitude": 99,
-	"assigned_shop": "",
-	"bound_heroes": [
-	  "luo",
-	  "mo_li",
-	  "yu_ge",
-	  "dao_gu",
-	  "zhao_yang",
-	  "si_tang",
-      "jiu_yue"
-	],
-	"aptitude_skills": [
-	  {
-		"name": "大师资质",
-		"level": 1,
-		"max_level": 200,
-		"aptitude_per_level": 3
-	  },
-	  {
-		"name": "千金妙玉",
-		"level": 1,
-		"max_level": 200,
-		"aptitude_per_level": 5
-	  },
-	  {
-		"name": "敏而好学",
-		"level": 1,
-		"max_level": 200,
-		"aptitude_per_level": 3
-	  },
-	  {
-		"name": "秀外慧中",
-		"level": 1,
-		"max_level": 200,
-		"aptitude_per_level": 2
-	  }
-	],
-	"shop_skills": [
-	  {
-		"name": "门客委任",
-		"level": 1,
-		"max_level": 200,
-		"base_percent": 0.05,
-		"percent_per_level": 0.03
-	  }
-	]
-  },
-  "xiang_yu": {
-	"name": "项羽",
-	"category": "商",
-	"level": 1,
-	"base_income": 0,
-	"breakthrough_count": 1,
-	"initial_aptitude": 99,
-	"assigned_shop": "",
-	"bound_heroes": [
-	  "yu_ji",
-	  "ji_ye",
-	  "tang_pingguo",
-	  "bu_kuai",
-      "xiao_ning"
-	],
-	"aptitude_skills": [
-	  {
-		"name": "大师资质",
-		"level": 1,
-		"max_level": 200,
-		"aptitude_per_level": 3
-	  },
-	  {
-		"name": "无畏冲锋",
-		"level": 1,
-		"max_level": 200,
-		"aptitude_per_level": 3
-	  }
-	],
-	"shop_skills": [
-	  {
-		"name": "门客委任",
-		"level": 1,
-		"max_level": 200,
-		"base_percent": 0.05,
-		"percent_per_level": 0.03
-	  }
-	]
-  },
-  "zheng_he": {
-	"name": "郑和",
-	"category": "士",
-	"level": 1,
-	"base_income": 0,
-	"breakthrough_count": 1,
-	"initial_aptitude": 99,
-	"assigned_shop": "",
-	"bound_heroes": [
-	  "qing_ning",
-	  "hui_yin",
-	  "kou_baimen_friend",
-	  "si_tang",
-      "ying_chun"
-	],
-	"aptitude_skills": [
-	  {
-		"name": "大师资质",
-		"level": 1,
-		"max_level": 200,
-		"aptitude_per_level": 3
-	  },
-	  {
-		"name": "了如指掌",
-		"level": 1,
-		"max_level": 200,
-		"aptitude_per_level": 3
-	  }
-	],
-	"shop_skills": [
-	  {
-		"name": "门客委任",
-		"level": 1,
-		"max_level": 200,
-		"base_percent": 0.05,
-		"percent_per_level": 0.03
-	  }
-	]
-  },
-  "xiao_ba": {
-	"name": "小八",
-	"category": "士",
-	"level": 1,
-	"base_income": 0,
-	"breakthrough_count": 1,
-	"initial_aptitude": 99,
-	"assigned_shop": "",
-	"bound_heroes": [
-	  "tan_you",
-	  "xing_lan",
-	  "ling_ye_maonv",
-	  "qi_ling",
-	  "shi_bo_shi",
-	  "rong",
-	  "hua_chao",
-      "sha_lan"
-	],
-	"aptitude_skills": [
-	  {
-		"name": "大师资质",
-		"level": 1,
-		"max_level": 200,
-		"aptitude_per_level": 3
-	  },
-	  {
-		"name": "见微知著",
-		"level": 1,
-		"max_level": 200,
-		"aptitude_per_level": 3
-	  },
-	  {
-		"name": "聚沙成塔",
-		"level": 1,
-		"max_level": 200,
-		"aptitude_per_level": 2
-	  }
-	],
-	"shop_skills": [
-	  {
-		"name": "门客委任",
-		"level": 1,
-		"max_level": 200,
-		"base_percent": 0.05,
-		"percent_per_level": 0.03
-	  }
-	]
-  },
-  "long_xiang": {
-	"name": "龙骧",
-	"category": "工",
-	"level": 1,
-	"base_income": 0,
-	"breakthrough_count": 1,
-	"initial_aptitude": 99,
-	"assigned_shop": "",
-	"bound_heroes": [
-	  "he_xi",
-	  "yu_ji",
-	  "ying_chun",
-	  "hu_yao_zhanggui",
-      "hong_ying"
-	],
-	"aptitude_skills": [
-	  {
-		"name": "大师资质",
-		"level": 1,
-		"max_level": 200,
-		"aptitude_per_level": 3
-	  },
-	  {
-		"name": "立身举龙",
-		"level": 1,
-		"max_level": 200,
-		"aptitude_per_level": 3
-	  }
-	],
-	"shop_skills": [
-	  {
-		"name": "门客委任",
-		 "level": 1,
-		"max_level": 200,
-		"base_percent": 0.05,
-		"percent_per_level": 0.03
-	  }
-	]
-  },
-  "song_taizu": {
-	"name": "宋太祖",
-	"category": "侠",
-	"level": 1,
-	"base_income": 0,
-	"breakthrough_count": 1,
-	"initial_aptitude": 99,
-	"assigned_shop": "",
-	"bound_heroes": [
-	  "gu_guo_gongzhu",
-	  "yu_tu",
-	  "rong",
-      "ji_ye"
-	],
-	"aptitude_skills": [
-	  {
-		"name": "大师资质",
-		"level": 1,
-		"max_level": 200,
-		"aptitude_per_level": 3
-	  },
-	  {
-		"name": "杯酒释兵权",
-		"level": 1,
-		"max_level": 200,
-		"aptitude_per_level": 3
-	  }
-	],
-	"shop_skills": [
-	  {
-		"name": "门客委任",
-		"level": 1,
-		"max_level": 200,
-		"base_percent": 0.05,
-		"percent_per_level": 0.03
-	  }
-	]
-  },
-  "luo_haiwang": {
-	"name": "罗海王",
-	"category": "农",
-	"level": 1,
-	"base_income": 0,
-	"breakthrough_count": 1,
-	"initial_aptitude": 99,
-	"assigned_shop": "",
-	"bound_heroes": [
-	  "shi_bo_shi",
-	  "yu_ge",
-	  "niu_lang",
-      "ji_zhou"
-	],
-	"aptitude_skills": [
-	  {
-		"name": "大师资质",
-		"level": 1,
-		"max_level": 200,
-		"aptitude_per_level": 3
-	  },
-	  {
-		"name": "客满堂前",
-		"level": 1,
-		"max_level": 200,
-		"aptitude_per_level": 3
-	  }
-	],
-	"shop_skills": [
-	  {
-		"name": "门客委任",
-		"level": 1,
-		"max_level": 200,
-		"base_percent": 0.05,
-		"percent_per_level": 0.03
-	  }
-	]
-  },
-  "ma_xianglan": {
-	"name": "马湘兰",
-	"category": "士",
-	"level": 1,
-	"base_income": 0,
-	"breakthrough_count": 1,
-	"initial_aptitude": 99,
-	"assigned_shop": "",
-	"bound_heroes": [
-	  "ma_xianglan_friend",
-	  "xun_ma_shi",
-	  "wu_nv_wu",
-	  "hua_wuque",
-	  "yu_tu",
-	  "hui_yin",
-      "yu_lu"
-	],
-	"aptitude_skills": [
-	  {
-		"name": "大师资质",
-		"level": 1,
-		"max_level": 200,
-		"aptitude_per_level": 3
-	  },
-	  {
-		"name": "墨兰册",
-		"level": 1,
-		"max_level": 200,
-		"aptitude_per_level": 3
-	  },
-	  {
-		"name": "幽兰馆",
-		"level": 1,
-		"max_level": 200,
-		"aptitude_per_level": 2
-	  }
-	],
-	"shop_skills": [
-	  {
-		"name": "门客委任",
-		"level": 1,
-		"max_level": 200,
-		"base_percent": 0.05,
-		"percent_per_level": 0.03
-	  }
-	]
-  },
-  "li_xiangjun": {
-	"name": "李香君",
-	"category": "农",
-	"level": 1,
-	"base_income": 0,
-	"breakthrough_count": 1,
-	"initial_aptitude": 99,
-	"assigned_shop": "",
-	"bound_heroes": [
-	  "li_xiangjun_friend",
-	  "cai_shi_guan",
-	  "xiao_wu_friend",
-	  "shi_bo_shi",
-	  "shen_meizhuang",
-	  "si_tang",
-	  "xiao_ning",
-      "hua_chao"
-	],
-	"aptitude_skills": [
-	  {
-		"name": "大师资质",
-		"level": 1,
-		"max_level": 200,
-		"aptitude_per_level": 3
-	  },
-	  {
-		"name": "香扇坠",
-		"level": 1,
-		"max_level": 200,
-		"aptitude_per_level": 3
-	  },
-	  {
-		"name": "风尘落",
-		"level": 1,
-		"max_level": 200,
-		"aptitude_per_level": 2
-	  }
-	],
-	"shop_skills": [
-	  {
-		"name": "门客委任",
-		"level": 1,
-		"max_level": 200,
-		"base_percent": 0.05,
-		"percent_per_level": 0.03
-	  }
-	]
-  },
-  "dong_xiaowan": {
-	"name": "董小宛",
-	"category": "工",
-	"level": 1,
-	"base_income": 0,
-	"breakthrough_count": 1,
-	"initial_aptitude": 99,
-	"assigned_shop": "",
-	"bound_heroes": [
-	  "dong_xiaowan_friend",
-	  "tang_pingguo",
-	  "zhuo_gui_shi",
-	  "nan_gong_wan",
-	  "mo_li",
-	  "yu_ji",
-      "mu_shu"
-	],
-	"aptitude_skills": [
-	  {
-		"name": "大师资质",
-		"level": 1,
-		"max_level": 200,
-		"aptitude_per_level": 3
-	  },
-	  {
-		"name": "葬残花",
-		"level": 1,
-		"max_level": 200,
-		"aptitude_per_level": 3
-	  },
-	  {
-		"name": "灌香糖",
-		"level": 1,
-		"max_level": 200,
-		"aptitude_per_level": 2
-	  }
-	],
-	"shop_skills": [
-	  {
-		"name": "门客委任",
-		"level": 1,
-		"max_level": 200,
-		"base_percent": 0.05,
-		"percent_per_level": 0.03
-	  }
-	]
-  },
-  "bian_yujing": {
-	"name": "卞玉京",
-	"category": "商",
-	"level": 1,
-	"base_income": 0,
-	"breakthrough_count": 1,
-	"initial_aptitude": 99,
-	"assigned_shop": "",
-	"bound_heroes": [
-	  "bian_yujing_friend",
-	  "zi_yu",
-	  "ji_ye",
-	  "tushan_honghong",
-	  "yun_zhi",
-	  "xiao_ning",
-      "hong_ying"
-	],
-	"aptitude_skills": [
-	  {
-		"name": "大师资质",
-		"level": 1,
-		"max_level": 200,
-		"aptitude_per_level": 3
-	  },
-	  {
-		"name": "忘忧曲",
-		"level": 1,
-		"max_level": 200,
-		"aptitude_per_level": 3
-	  },
-	  {
-		"name": "善尤兰",
-		"level": 1,
-		"max_level": 200,
-		"aptitude_per_level": 2
-	  }
-	],
-	"shop_skills": [
-	  {
-		"name": "门客委任",
-		"level": 1,
-		"max_level": 200,
-		"base_percent": 0.05,
-		"percent_per_level": 0.03
-	  }
-	]
-  },
-  "kou_baimen": {
-	"name": "寇白门",
-	"category": "侠",
-	"level": 1,
-	"base_income": 0,
-	"breakthrough_count": 1,
-	"initial_aptitude": 99,
-	"assigned_shop": "",
-	"bound_heroes": [
-	  "kou_baimen_friend",
-	  "mi_tan",
-	  "jin_shu",
-	  "ni_huang_junzhu",
-	  "ji_zhou",
-	  "wan_wan",
-	  "tan_you",
-      "zhu_sha"
-	],
-	"aptitude_skills": [
-	  {
-		"name": "大师资质",
-		"level": 1,
-		"max_level": 200,
-		"aptitude_per_level": 3
-	  },
-	  {
-		"name": "绽芳华",
-		"level": 1,
-		"max_level": 200,
-		"aptitude_per_level": 3
-	  },
-	  {
-		"name": "巾帼心",
-		"level": 1,
-		"max_level": 200,
-		"aptitude_per_level": 2
-	  }
-	],
-	"shop_skills": [
-	  {
-		"name": "门客委任",
-		"level": 1,
-		"max_level": 200,
-		"base_percent": 0.05,
-		"percent_per_level": 0.03
-	  }
-	]
-  },
-  "hu_lu_xianren": {
-	"name": "葫芦仙人",
-	"category": "商",
-	"level": 1,
-	"base_income": 0,
-	"breakthrough_count": 1,
-	"initial_aptitude": 66,
-	"assigned_shop": "",
-	"bound_heroes": [
-	  "xiao_shimei",
-	  "xiao_hudie",
-	  "jin_shu",
-	  "shi_bo_shi",
-	  "yao_ying",
-	  "zhou_meili",
-	  "yu_lu",
-      "sha_lan"
-	],
-	"aptitude_skills": [
-	  {
-		"name": "非凡资质",
-		"level": 1,
-		"max_level": 200,
-		"aptitude_per_level": 2
-	  }
-	],
-	"shop_skills": [
-	  {
-		"name": "门客委任",
-		"level": 1,
-		"max_level": 200,
-		"base_percent": 0.05,
-		"percent_per_level": 0.03
-	  }
-	]
-  },
-  "xie_lu": {
-	"name": "解鲁",
-	"category": "士",
-	"level": 1,
-	"base_income": 0,
-	"breakthrough_count": 1,
-	"initial_aptitude": 66,
-	"assigned_shop": "",
-	"bound_heroes": [
-	  "lang_zi",
-	  "xun_ma_shi",
-	  "ji_ye",
-	  "wang_zhaojun_friend",
-      "yun_zhi"
-	],
-	"aptitude_skills": [
-	  {
-		"name": "非凡资质",
-		"level": 1,
-		"max_level": 200,
-		"aptitude_per_level": 2
-	  }
-	],
-	"shop_skills": [
-	  {
-		"name": "门客委任",
-		"level": 1,
-		"max_level": 200,
-		"base_percent": 0.05,
-		"percent_per_level": 0.03
-	  }
-	]
-  },
-  "yang_jian": {
-	"name": "杨戬",
-	"category": "农",
-	"level": 1,
-	"base_income": 0,
-	"breakthrough_count": 1,
-	"initial_aptitude": 66,
-	"assigned_shop": "",
-	"bound_heroes": [
-	  "miao_jiang_shengnv",
-	  "li_xiangjun_friend",
-	  "xiao_wu_friend",
-	  "yu_ge",
-	  "qian_ren_xue",
-	  "bi_bi_dong",
-	  "hua_mulan_friend",
-      "zhu_sha"
-	],
-	"aptitude_skills": [
-	  {
-		"name": "非凡资质",
-		"level": 1,
-		"max_level": 200,
-		"aptitude_per_level": 2
-	  }
-	],
-	"shop_skills": [
-	  {
-		"name": "门客委任",
-		"level": 1,
-		"max_level": 200,
-		"base_percent": 0.05,
-		"percent_per_level": 0.03
-	  }
-	]
-  },
-  "xiao_yuer": {
-	"name": "小鱼儿",
-	"category": "工",
-	"level": 1,
-	"base_income": 0,
-	"breakthrough_count": 1,
-	"initial_aptitude": 66,
-	"assigned_shop": "",
-	"bound_heroes": [
-	  "ma_xianglan_friend",
-	  "cai_shi_guan",
-	  "hua_wuque",
-	  "qiu_ying",
-	  "yun_zhi",
-	  "zhao_yang",
-      "qi_guang"
-	],
-	"aptitude_skills": [
-	  {
-		"name": "非凡资质",
-		"level": 1,
-		"max_level": 200,
-		"aptitude_per_level": 2
-	  }
-	],
-	"shop_skills": [
-	  {
-		"name": "门客委任",
-		"level": 1,
-		"max_level": 200,
-		"base_percent": 0.05,
-		"percent_per_level": 0.03
-	  }
-	]
-  },
-  "mei_changsu": {
-	"name": "梅长苏",
-	"category": "侠",
-	"level": 1,
-	"base_income": 0,
-	"breakthrough_count": 1,
-	"initial_aptitude": 66,
-	"assigned_shop": "",
-	"bound_heroes": [
-	  "ni_huang_junzhu",
-	  "shou_gong_shaonv",
-	  "yi_shi",
-	  "yu_tu",
-	  "bi_bi_dong",
-	  "ji_zhou",
-      "tan_you"
-	],
-	"aptitude_skills": [
-	  {
-		"name": "非凡资质",
-		"level": 1,
-		"max_level": 200,
-		"aptitude_per_level": 2
-	  }
-	],
-	"shop_skills": [
-	  {
-		"name": "门客委任",
-		"level": 1,
-		"max_level": 200,
-		"base_percent": 0.05,
-		"percent_per_level": 0.03
-	  }
-	]
-  },
-  "zhang_qiling": {
-	"name": "张起灵",
-	"category": "工",
-	"level": 1,
-	"base_income": 0,
-	"breakthrough_count": 1,
-	"initial_aptitude": 66,
-	"assigned_shop": "",
-	"bound_heroes": [
-	  "wu_xie",
-	  "xiao_shimei",
-	  "xinniang_zhimei",
-	  "mo_li",
-	  "yin_niang",
-	  "he_xi",
-      "jiu_yue"
-	],
-	"aptitude_skills": [
-	  {
-		"name": "非凡资质",
-		"level": 1,
-		"max_level": 200,
-		"aptitude_per_level": 2
-	  }
-	],
-	"shop_skills": [
-	  {
-		"name": "门客委任",
-		"level": 1,
-		"max_level": 200,
-		"base_percent": 0.05,
-		"percent_per_level": 0.03
-	  }
-	]
-  },
-  "bai_yuechu": {
-	"name": "白月初",
-	"category": "士",
-	"level": 1,
-	"base_income": 0,
-	"breakthrough_count": 1,
-	"initial_aptitude": 66,
-	"assigned_shop": "",
-	"bound_heroes": [
-	  "tushan_honghong",
-	  "xun_ying_shaonv",
-	  "dong_xiaowan_friend",
-	  "ning_yin",
-	  "hui_yin",
-	  "yu_ji",
-	  "wan_wan",
-      "zhu_sha"
-	],
-	"aptitude_skills": [
-	  {
-		"name": "非凡资质",
-		"level": 1,
-		"max_level": 200,
-		"aptitude_per_level": 2
-	  }
-	],
-	"shop_skills": [
-	  {
-		"name": "门客委任",
-		"level": 1,
-		"max_level": 200,
-		"base_percent": 0.05,
-		"percent_per_level": 0.03
-	  }
-	]
-  },
-  "liu_maoxing": {
-	"name": "刘昴星",
-	"category": "侠",
-	"level": 1,
-	"base_income": 0,
-	"breakthrough_count": 1,
-	"initial_aptitude": 66,
-	"assigned_shop": "",
-	"bound_heroes": [
-	  "zhou_meili",
-	  "yao_pingguo",
-	  "wang_zhaojun_friend",
-	  "dao_gu",
-	  "he_xi",
-	  "wan_wan",
-      "ying_chun"
-	],
-	"aptitude_skills": [
-	  {
-		"name": "非凡资质",
-		"level": 1,
-		"max_level": 200,
-		"aptitude_per_level": 2
-	  }
-	],
-	"shop_skills": [
-	  {
-		"name": "门客委任",
-		"level": 1,
-		"max_level": 200,
-		"base_percent": 0.05,
-		"percent_per_level": 0.03
-	  }
-	]
-  },
-  "hua_mulan": {
-	"name": "花木兰",
-	"category": "商",
-	"level": 1,
-	"base_income": 0,
-	"breakthrough_count": 1,
-	"initial_aptitude": 66,
-	"assigned_shop": "",
-	"bound_heroes": [
-	  "hua_mulan_friend",
-	  "xinniang",
-	  "bian_yujing_friend",
-	  "xiao_hudie",
-	  "xiao_ning",
-	  "tan_you",
-      "rong"
-	],
-	"aptitude_skills": [
-	  {
-		"name": "非凡资质",
-		"level": 1,
-		"max_level": 200,
-		"aptitude_per_level": 2
-	  }
-	],
-	"shop_skills": [
-	  {
-		"name": "门客委任",
-		"level": 1,
-		"max_level": 200,
-		"base_percent": 0.05,
-		"percent_per_level": 0.03
-	  }
-	]
-  },
-  "wang_zhaojun": {
-	"name": "王昭君",
-	"category": "商",
-	"level": 1,
-	"base_income": 0,
-	"breakthrough_count": 1,
-	"initial_aptitude": 66,
-	"assigned_shop": "",
-	"bound_heroes": [
-	  "shen_meizhuang",
-	  "xinniang",
-	  "wang_zhaojun_friend",
-	  "miao_jiang_shengnv",
-	  "yin_niang",
-	  "xing_lan",
-	  "si_tang",
-      "qi_guang"
-	],
-	"aptitude_skills": [
-	  {
-		"name": "非凡资质",
-		"level": 1,
-		"max_level": 200,
-		"aptitude_per_level": 2
-	  },
-	  {
-		"name": "塞弦歌",
-		"level": 1,
-		"max_level": 200,
-		"aptitude_per_level": 6
-	  }
-	],
-	"shop_skills": [
-	  {
-		"name": "门客委任",
-		"level": 1,
-		"max_level": 200,
-		"base_percent": 0.05,
-		"percent_per_level": 0.03
-	  }
-	]
-  },
-  "lan_feihong": {
-	"name": "兰飞鸿",
-	"category": "侠",
-	"level": 1,
-	"base_income": 0,
-	"breakthrough_count": 1,
-	"initial_aptitude": 66,
-	"assigned_shop": "",
-	"bound_heroes": [
-	  "xun_ying_shaonv",
-	  "tang_pingguo",
-	  "gu_guo_gongzhu",
-	  "luo",
-	  "qi_ling",
-	  "yun_zhi",
-      "ying_chun"
-	],
-	"aptitude_skills": [
-	  {
-		"name": "非凡资质",
-		"level": 1,
-		"max_level": 200,
-		"aptitude_per_level": 2
-	  }
-	],
-	"shop_skills": [
-	  {
-		"name": "门客委任",
-		"level": 1,
-		"max_level": 200,
-		"base_percent": 0.05,
-		"percent_per_level": 0.03
-	  }
-	]
-  },
-  "li_bai": {
-	"name": "李白",
-	"category": "士",
-	"level": 1,
-	"base_income": 0,
-	"breakthrough_count": 1,
-	"initial_aptitude": 66,
-	"quality": 0,
-	"fu_shi_level": 0,
-	"assigned_shop": "",
-	"promotion": {
-	  "name": "赋诗",
-	  "level": 0,
-	  "max_level": 300,
-	  "cost_item": "zui_xian_niang",
-	  "cost_amount": 600,
-	  "aptitude_per_level": 6,
-	  "tiers": [
-		{
-		  "threshold": 5,
-		  "quality": 1,
-		  "initial_aptitude": 99,
-		  "new_skills": [
+	"ge_langzhong": {
+		"name": "葛郎中",
+		"category": "士",
+		"level": 1,
+		"base_income": 0,
+		"breakthrough_count": 1,
+		"initial_aptitude": 66,
+		"assigned_shop": "",
+		"bound_heroes": [
+			"li_shishi"
+		],
+		"aptitude_skills": [
 			{
-			  "name": "月下独酌",
-			  "aptitude_per_level": 3
+				"name": "普通资质",
+				"level": 1,
+				"max_level": 200,
+				"aptitude_per_level": 1
 			}
-		  ]
-		},
-		{
-		  "threshold": 15,
-		  "new_skills": [
+		],
+		"shop_skills": [
 			{
-			  "name": "侠客行",
-			  "aptitude_per_level": 3
+				"name": "门客委任",
+				"level": 1,
+				"max_level": 200,
+				"base_percent": 0.05,
+				"percent_per_level": 0.03
 			}
-		  ]
-		},
-		{
-		  "threshold": 30,
-		  "new_skills": [
-			{
-			  "name": "长风破浪",
-			  "aptitude_per_level": 3
-			}
-		  ]
-		},
-		{
-		  "threshold": 45,
-		  "new_skills": [
-			{
-			  "name": "扶摇直上",
-			  "aptitude_per_level": 3
-			}
-		  ]
-		},
-		{
-		  "threshold": 60,
-		  "new_skills": [
-			{
-			  "name": "天仙狂醉",
-			  "aptitude_per_level": 4
-			}
-		  ]
-		},
-		{
-		  "threshold": 80,
-		  "quality": 2,
-		  "initial_aptitude": 333,
-		  "new_skills": []
-		}
-	  ]
+		]
 	},
-	"aptitude_skills": [
-	  {
-		"name": "非凡资质",
-		"level": 1,
-		"max_level": 200,
-		"aptitude_per_level": 2
-	  }
-	],
-	"shop_skills": [
-	  {
-		"name": "门客委任",
-		"level": 1,
-		"max_level": 200,
-		"base_percent": 0.05,
-		"percent_per_level": 0.03
-	  }
-	]
-  },
-  "shen_suanzi": {
-	"name": "神算子",
-	"category": "士",
-	"level": 1,
-	"base_income": 0,
-	"breakthrough_count": 1,
-	"initial_aptitude": 66,
-	"assigned_shop": "",
-	"aptitude_skills": [
-	  {
-		"name": "非凡资质",
-		"level": 1,
-		"max_level": 200,
-		"aptitude_per_level": 2
-	  }
-	],
-	"shop_skills": [
-	  {
-		"name": "门客委任",
-		"level": 1,
-		"max_level": 200,
-		"base_percent": 0.05,
-		"percent_per_level": 0.03
-	  }
-	]
-  },
-  "luo_caifeng": {
-	"name": "罗裁缝",
-	"category": "工",
-	"level": 1,
-	"base_income": 0,
-	"breakthrough_count": 1,
-	"initial_aptitude": 99,
-	"assigned_shop": "",
-	"bound_heroes": [
-	  "yuan_xiao_guniang",
-	  "xiao_shimei",
-	  "xiao_mujiang",
-	  "zi_yu",
-	  "yu_lu",
-      "jiu_yue"
-	],
-	"aptitude_skills": [
-	  {
-		"name": "大师资质",
-		"level": 1,
-		"max_level": 200,
-		"aptitude_per_level": 3
-	  }
-	],
-	"shop_skills": [
-	  {
-		"name": "门客委任",
-		"level": 1,
-		"max_level": 200,
-		"base_percent": 0.05,
-		"percent_per_level": 0.03
-	  }
-	]
-  },
-  "ding_xiren": {
-	"name": "丁戏人",
-	"category": "商",
-	"level": 1,
-	"base_income": 0,
-	"breakthrough_count": 1,
-	"initial_aptitude": 99,
-	"assigned_shop": "",
-	"bound_heroes": [
-	  "xiyu_nvzi",
-	  "xinniang",
-	  "hua_lang",
-	  "xiao_lu_nv",
-      "yao_ying"
-	],
-	"aptitude_skills": [
-	  {
-		"name": "大师资质",
-		"level": 1,
-		"max_level": 200,
-		"aptitude_per_level": 3
-	  },
-	  {
-		"name": "牵丝戏",
-		"level": 1,
-		"max_level": 200,
-		"aptitude_per_level": 2
-	  }
-	],
-	"shop_skills": [
-	  {
-		"name": "门客委任",
-		"level": 1,
-		"max_level": 200,
-		"base_percent": 0.05,
-		"percent_per_level": 0.03
-	  }
-	]
-  },
-  "fang_huotou": {
-	"name": "方火头",
-	"category": "侠",
-	"level": 1,
-	"base_income": 0,
-	"breakthrough_count": 1,
-	"initial_aptitude": 99,
-	"assigned_shop": "",
-	"bound_heroes": [
-	  "xiao_qigai",
-	  "xinniang",
-	  "niu_lang",
-	  "huang_ye_linglan",
-      "he_xi"
-	],
-	"aptitude_skills": [
-	  {
-		"name": "大师资质",
-		"level": 1,
-		"max_level": 200,
-		"aptitude_per_level": 3
-	  },
-	  {
-		"name": "震天雷",
-		"level": 1,
-		"max_level": 200,
-		"aptitude_per_level": 2
-	  }
-	],
-	"shop_skills": [
-	  {
-		"name": "门客委任",
-		"level": 1,
-		"max_level": 200,
-		"base_percent": 0.05,
-		"percent_per_level": 0.03
-	  }
-	]
-  },
-  "leng_erpi": {
-	"name": "冷二皮",
-	"category": "士",
-	"level": 1,
-	"base_income": 0,
-	"breakthrough_count": 1,
-	"initial_aptitude": 99,
-	"assigned_shop": "",
-	"bound_heroes": [
-	  "yi_shi",
-	  "xinniang",
-	  "zhi_nv",
-      "hua_wuque"
-	],
-	"aptitude_skills": [
-	  {
-		"name": "大师资质",
-		"level": 1,
-		"max_level": 200,
-		"aptitude_per_level": 3
-	  },
-	  {
-		"name": "缝合术",
-		"level": 1,
-		"max_level": 200,
-		"aptitude_per_level": 3
-	  }
-	],
-	"shop_skills": [
-	  {
-		"name": "门客委任",
-		"level": 1,
-		"max_level": 200,
-		"base_percent": 0.05,
-		"percent_per_level": 0.03
-	  }
-	]
-  },
-  "ya_jiu": {
-	"name": "牙九",
-	"category": "农",
-	"level": 1,
-	"base_income": 0,
-	"breakthrough_count": 1,
-	"initial_aptitude": 99,
-	"assigned_shop": "",
-	"bound_heroes": [
-	  "jing_an",
-	  "bu_kuai",
-	  "wanghou_fuhao",
-      "qian_ren_xue"
-	],
-	"aptitude_skills": [
-	  {
-		"name": "大师资质",
-		"level": 1,
-		"max_level": 200,
-		"aptitude_per_level": 3
-	  },
-	  {
-		"name": "聚财来",
-		"level": 1,
-		"max_level": 200,
-		"aptitude_per_level": 3
-	  },
-	  {
-		"name": "财运通",
-		"level": 1,
-		"max_level": 200,
-		"aptitude_per_level": 3
-	  }
-	],
-	"shop_skills": [
-	  {
-		"name": "门客委任",
-		"level": 1,
-		"max_level": 200,
-		"base_percent": 0.05,
-		"percent_per_level": 0.03
-	  }
-	]
-  },
-  "guanxingshi": {
-	"name": "观星师",
-	"category": "侠",
-	"level": 1,
-	"base_income": 0,
-	"breakthrough_count": 1,
-	"initial_aptitude": 99,
-	"assigned_shop": "",
-	"bound_heroes": [
-	  "xiao_shimei",
-	  "bian_yujing_friend",
-	  "kou_baimen_friend",
-      "wang_zhaojun_friend"
-	],
-	"aptitude_skills": [
-	  {
-		"name": "大师资质",
-		"level": 1,
-		"max_level": 200,
-		"aptitude_per_level": 3
-	  },
-	  {
-		"name": "星辉术",
-		"level": 1,
-		"max_level": 200,
-		"aptitude_per_level": 3
-	  },
-	  {
-		"name": "观天意",
-		"level": 1,
-		"max_level": 200,
-		"aptitude_per_level": 3
-	  },
-	  {
-		"name": "道天机",
-		"level": 1,
-		"max_level": 200,
-		"aptitude_per_level": 3
-	  }
-	],
-	"shop_skills": [
-	  {
-		"name": "门客委任",
-		"level": 1,
-		"max_level": 200,
-		"base_percent": 0.05,
-		"percent_per_level": 0.03
-	  }
-	]
-  },
-  "jisi_fuhao": {
-	"name": "祭师妇好",
-	"category": "农",
-	"level": 1,
-	"base_income": 0,
-	"breakthrough_count": 1,
-	"initial_aptitude": 99,
-	"assigned_shop": "",
-	"bound_heroes": [
-	  "miao_jiang_shengnv",
-	  "wanghou_fuhao",
-      "tushanshi"
-	],
-	"aptitude_skills": [
-	  {
-		"name": "大师资质",
-		"level": 1,
-		"max_level": 200,
-		"aptitude_per_level": 3
-	  },
-	  {
-		"name": "占卜术",
-		"level": 1,
-		"max_level": 200,
-		"aptitude_per_level": 3
-	  },
-	  {
-		"name": "善谋略",
-		"level": 1,
-		"max_level": 200,
-		"aptitude_per_level": 3
-	  },
-	  {
-		"name": "懂文武",
-		"level": 1,
-		"max_level": 200,
-		"aptitude_per_level": 3
-	  },
-	  {
-		"name": "开疆土",
-		"level": 1,
-		"max_level": 200,
-		"aptitude_per_level": 3
-	  }
-	],
-	"shop_skills": [
-	  {
-		"name": "门客委任",
-		"level": 1,
-		"max_level": 200,
-		"base_percent": 0.05,
-		"percent_per_level": 0.03
-	  }
-	]
-  },
-  "dayu": {
-	"name": "大禹",
-	"category": "工",
-	"level": 1,
-	"base_income": 0,
-	"breakthrough_count": 1,
-	"initial_aptitude": 333,
-	"assigned_shop": "",
-	"bound_heroes": [
-	  "xun_ying_shaonv",
-	  "wanghou_fuhao",
-	  "tushanshi",
-      "jingwei"
-	],
-	"aptitude_skills": [
-	  {
-		"name": "传说资质",
-		"level": 1,
-		"max_level": 200,
-		"aptitude_per_level": 4
-	  },
-	  {
-		"name": "治水术",
-		"level": 1,
-		"max_level": 200,
-		"aptitude_per_level": 4
-	  },
-	  {
-		"name": "水龙吟",
-		"level": 1,
-		"max_level": 200,
-		"aptitude_per_level": 4
-	  },
-	  {
-		"name": "凿龙门",
-		"level": 1,
-		"max_level": 200,
-		"aptitude_per_level": 4
-	  },
-	  {
-		"name": "会诸侯",
-		"level": 1,
-		"max_level": 200,
-		"aptitude_per_level": 4
-	  },
-	  {
-		"name": "造九鼎",
-		"level": 1,
-		"max_level": 200,
-		"aptitude_per_level": 4
-	  }
-	],
-	"shop_skills": [
-	  {
-		"name": "门客委任",
-		"level": 1,
-		"max_level": 200,
-		"base_percent": 0.05,
-		"percent_per_level": 0.03
-	  }
-	]
-  },
-  "fuxi": {
-	"name": "伏羲",
-	"category": "士",
-	"level": 1,
-	"base_income": 0,
-	"breakthrough_count": 1,
-	"initial_aptitude": 333,
-	"assigned_shop": "",
-	"bound_heroes": [
-	  "tushanshi",
-	  "jingwei",
-	  "change",
-      "huang_ye_linglan"
-	],
-	"aptitude_skills": [
-	  {
-		"name": "传说资质",
-		"level": 1,
-		"max_level": 200,
-		"aptitude_per_level": 4
-	  },
-	  {
-		"name": "位三皇",
-		"level": 1,
-		"max_level": 200,
-		"aptitude_per_level": 5
-	  },
-	  {
-		"name": "观天象",
-		"level": 1,
-		"max_level": 200,
-		"aptitude_per_level": 4
-	  },
-	  {
-		"name": "悟太极",
-		"level": 1,
-		"max_level": 200,
-		"aptitude_per_level": 4
-	  },
-	  {
-		"name": "创八卦",
-		"level": 1,
-		"max_level": 200,
-		"aptitude_per_level": 4
-	  },
-	  {
-		"name": "游太虚",
-		"level": 1,
-		"max_level": 200,
-		"aptitude_per_level": 4
-	  },
-	  {
-		"name": "天下和",
-		"level": 1,
-		"max_level": 200,
-		"aptitude_per_level": 4
-	  }
-	],
-	"shop_skills": [
-	  {
-		"name": "门客委任",
-		"level": 1,
-		"max_level": 200,
-		"base_percent": 0.05,
-		"percent_per_level": 0.03
-	  }
-	]
-  },
-  "houyi": {
-	"name": "后羿",
-	"category": "商",
-	"level": 1,
-	"base_income": 0,
-	"breakthrough_count": 1,
-	"initial_aptitude": 333,
-	"assigned_shop": "",
-	"bound_heroes": [
-	  "change",
-	  "jingwei",
-	  "zi_yu",
-      "nvba"
-	],
-	"aptitude_skills": [
-	  {
-		"name": "传说资质",
-		"level": 1,
-		"max_level": 200,
-		"aptitude_per_level": 4
-	  },
-	  {
-		"name": "赐彤弓",
-		"level": 1,
-		"max_level": 200,
-		"aptitude_per_level": 5
-	  },
-	  {
-		"name": "诛凿齿",
-		"level": 1,
-		"max_level": 200,
-		"aptitude_per_level": 5
-	  },
-	  {
-		"name": "徼大风",
-		"level": 1,
-		"max_level": 200,
-		"aptitude_per_level": 5
-	  },
-	  {
-		"name": "降猰貐",
-		"level": 1,
-		"max_level": 200,
-		"aptitude_per_level": 4
-	  },
-	  {
-		"name": "扶下国",
-		"level": 1,
-		"max_level": 200,
-		"aptitude_per_level": 4
-	  },
-	  {
-		"name": "统百部",
-		"level": 1,
-		"max_level": 200,
-		"aptitude_per_level": 4
-	  },
-	  {
-		"name": "得灵药",
-		"level": 1,
-		"max_level": 200,
-		"aptitude_per_level": 4
-	  }
-	],
-	"shop_skills": [
-	  {
-		"name": "门客委任",
-		"level": 1,
-		"max_level": 200,
-		"base_percent": 0.05,
-		"percent_per_level": 0.03
-	  }
-	]
-  },
-  "chiyou": {
-	"name": "蚩尤",
-	"category": "侠",
-	"level": 1,
-	"base_income": 0,
-	"breakthrough_count": 1,
-	"initial_aptitude": 333,
-	"assigned_shop": "",
-	"bound_heroes": [
-	  "jingwei",
-	  "change",
-	  "nvba",
-      "nvwa"
-	],
-	"aptitude_skills": [
-	  {
-		"name": "传说资质",
-		"level": 1,
-		"max_level": 200,
-		"aptitude_per_level": 4
-	  },
-	  {
-		"name": "九黎族",
-		"level": 1,
-		"max_level": 200,
-		"aptitude_per_level": 5
-	  },
-	  {
-		"name": "侵如火",
-		"level": 1,
-		"max_level": 200,
-		"aptitude_per_level": 5
-	  },
-	  {
-		"name": "战逐鹿",
-		"level": 1,
-		"max_level": 200,
-		"aptitude_per_level": 5
-	  },
-	  {
-		"name": "风雨助",
-		"level": 1,
-		"max_level": 200,
-		"aptitude_per_level": 5
-	  },
-	  {
-		"name": "驱千旗",
-		"level": 1,
-		"max_level": 200,
-		"aptitude_per_level": 5
-	  },
-	  {
-		"name": "魔神角",
-		"level": 1,
-		"max_level": 200,
-		"aptitude_per_level": 4
-	  },
-	  {
-		"name": "铜铁骨",
-		"level": 1,
-		"max_level": 200,
-		"aptitude_per_level": 4
-	  },
-	  {
-		"name": "制五兵",
-		"level": 1,
-		"max_level": 200,
-		"aptitude_per_level": 4
-	  }
-	],
-	"shop_skills": [
-	  {
-		"name": "门客委任",
-		"level": 1,
-		"max_level": 200,
-		"base_percent": 0.05,
-		"percent_per_level": 0.03
-	  }
-	]
-  },
-  "donghuang_taiyi": {
-	"name": "东皇太一",
-	"category": "农",
-	"level": 1,
-	"base_income": 0,
-	"breakthrough_count": 1,
-	"initial_aptitude": 333,
-	"assigned_shop": "",
-	"bound_heroes": [
-	  "nvwa",
-	  "nvba",
-	  "change",
-      "xiwangmu"
-	],
-	"aptitude_skills": [
-	  {
-		"name": "完美资质",
-		"level": 1,
-		"max_level": 200,
-		"aptitude_per_level": 5
-	  },
-	  {
-		"name": "称东皇",
-		"level": 1,
-		"max_level": 200,
-		"aptitude_per_level": 5
-	  },
-	  {
-		"name": "力证道",
-		"level": 1,
-		"max_level": 200,
-		"aptitude_per_level": 5
-	  },
-	  {
-		"name": "灭祖巫",
-		"level": 1,
-		"max_level": 200,
-		"aptitude_per_level": 5
-	  },
-	  {
-		"name": "太阳星",
-		"level": 1,
-		"max_level": 200,
-		"aptitude_per_level": 6
-	  },
-	  {
-		"name": "混沌钟",
-		"level": 1,
-		"max_level": 200,
-		"aptitude_per_level": 6
-	  },
-	  {
-		"name": "镇鸿蒙",
-		"level": 1,
-		"max_level": 200,
-		"aptitude_per_level": 6
-	  },
-	  {
-		"name": "统万族",
-		"level": 1,
-		"max_level": 200,
-		"aptitude_per_level": 6
-	  },
-	  {
-		"name": "立天庭",
-		"level": 1,
-		"max_level": 200,
-		"aptitude_per_level": 6
-	  }
-	],
-	"shop_skills": [
-	  {
-		"name": "门客委任",
-		"level": 1,
-		"max_level": 200,
-		"base_percent": 0.05,
-		"percent_per_level": 0.03
-	  }
-	]
-  },
-  "haotian_shangdi": {
-	"name": "昊天上帝",
-	"category": "工",
-	"level": 1,
-	"base_income": 0,
-	"breakthrough_count": 1,
-	"initial_aptitude": 333,
-	"assigned_shop": "",
-	"bound_heroes": [
-	  "xiwangmu",
-	  "nvwa",
-      "nvba"
-	],
-	"aptitude_skills": [
-	  {
-		"name": "完美资质",
-		"level": 1,
-		"max_level": 200,
-		"aptitude_per_level": 5
-	  },
-	  {
-		"name": "赐福祉",
-		"level": 1,
-		"max_level": 200,
-		"aptitude_per_level": 7
-	  },
-	  {
-		"name": "封仙籍",
-		"level": 1,
-		"max_level": 200,
-		"aptitude_per_level": 7
-	  },
-	  {
-		"name": "登无极",
-		"level": 1,
-		"max_level": 200,
-		"aptitude_per_level": 7
-	  },
-	  {
-		"name": "镇邪祟",
-		"level": 1,
-		"max_level": 200,
-		"aptitude_per_level": 7
-	  },
-	  {
-		"name": "昊天塔",
-		"level": 1,
-		"max_level": 200,
-		"aptitude_per_level": 7
-	  },
-	  {
-		"name": "开纪元",
-		"level": 1,
-		"max_level": 200,
-		"aptitude_per_level": 7
-	  },
-	  {
-		"name": "立天纲",
-		"level": 1,
-		"max_level": 200,
-		"aptitude_per_level": 7
-	  },
-	  {
-		"name": "掌天枢",
-		"level": 1,
-		"max_level": 200,
-		"aptitude_per_level": 7
-	  }
-	],
-	"shop_skills": [
-	  {
-		"name": "门客委任",
-		"level": 1,
-		"max_level": 200,
-		"base_percent": 0.05,
-		"percent_per_level": 0.03
-	  }
-	]
-  }
+	"zheng_guonong": {
+		"name": "郑果农",
+		"category": "农",
+		"level": 1,
+		"base_income": 0,
+		"breakthrough_count": 1,
+		"initial_aptitude": 66,
+		"assigned_shop": "",
+		"bound_heroes": [
+			"xiu_niang"
+		],
+		"aptitude_skills": [
+			{
+				"name": "普通资质",
+				"level": 1,
+				"max_level": 200,
+				"aptitude_per_level": 1
+			}
+		],
+		"shop_skills": [
+			{
+				"name": "门客委任",
+				"level": 1,
+				"max_level": 200,
+				"base_percent": 0.05,
+				"percent_per_level": 0.03
+			}
+		]
+	},
+	"liang_waiqi": {
+		"name": "梁歪七",
+		"category": "侠",
+		"level": 1,
+		"base_income": 0,
+		"breakthrough_count": 1,
+		"initial_aptitude": 66,
+		"assigned_shop": "",
+		"bound_heroes": [
+			"jian_wuzhe"
+		],
+		"aptitude_skills": [
+			{
+				"name": "普通资质",
+				"level": 1,
+				"max_level": 200,
+				"aptitude_per_level": 1
+			}
+		],
+		"shop_skills": [
+			{
+				"name": "门客委任",
+				"level": 1,
+				"max_level": 200,
+				"base_percent": 0.05,
+				"percent_per_level": 0.03
+			}
+		]
+	},
+	"zhu_huolang": {
+		"name": "祝货郎",
+		"category": "商",
+		"level": 1,
+		"base_income": 0,
+		"breakthrough_count": 1,
+		"initial_aptitude": 66,
+		"assigned_shop": "",
+		"bound_heroes": [
+			"mai_san_nv"
+		],
+		"aptitude_skills": [
+			{
+				"name": "普通资质",
+				"level": 1,
+				"max_level": 200,
+				"aptitude_per_level": 1
+			}
+		],
+		"shop_skills": [
+			{
+				"name": "门客委任",
+				"level": 1,
+				"max_level": 200,
+				"base_percent": 0.05,
+				"percent_per_level": 0.03
+			}
+		]
+	},
+	"kang_chashi": {
+		"name": "康茶师",
+		"category": "工",
+		"level": 1,
+		"base_income": 0,
+		"breakthrough_count": 1,
+		"initial_aptitude": 66,
+		"assigned_shop": "",
+		"bound_heroes": [
+			"zhen_xian_nv"
+		],
+		"aptitude_skills": [
+			{
+				"name": "普通资质",
+				"level": 1,
+				"max_level": 200,
+				"aptitude_per_level": 1
+			}
+		],
+		"shop_skills": [
+			{
+				"name": "门客委任",
+				"level": 1,
+				"max_level": 200,
+				"base_percent": 0.05,
+				"percent_per_level": 0.03
+			}
+		]
+	},
+	"cai_yufu": {
+		"name": "蔡渔夫",
+		"category": "农",
+		"level": 1,
+		"base_income": 0,
+		"breakthrough_count": 1,
+		"initial_aptitude": 66,
+		"assigned_shop": "",
+		"bound_heroes": [
+			"cu_ju_nv"
+		],
+		"aptitude_skills": [
+			{
+				"name": "普通资质",
+				"level": 1,
+				"max_level": 200,
+				"aptitude_per_level": 1
+			}
+		],
+		"shop_skills": [
+			{
+				"name": "门客委任",
+				"level": 1,
+				"max_level": 200,
+				"base_percent": 0.05,
+				"percent_per_level": 0.03
+			}
+		]
+	},
+	"liu_xizi": {
+		"name": "刘戏子",
+		"category": "工",
+		"level": 1,
+		"base_income": 0,
+		"breakthrough_count": 1,
+		"initial_aptitude": 66,
+		"assigned_shop": "",
+		"bound_heroes": [
+			"xi_zi"
+		],
+		"aptitude_skills": [
+			{
+				"name": "普通资质",
+				"level": 1,
+				"max_level": 200,
+				"aptitude_per_level": 1
+			}
+		],
+		"shop_skills": [
+			{
+				"name": "门客委任",
+				"level": 1,
+				"max_level": 200,
+				"base_percent": 0.05,
+				"percent_per_level": 0.03
+			}
+		]
+	},
+	"zheng_chuzi": {
+		"name": "郑厨子",
+		"category": "工",
+		"level": 1,
+		"base_income": 0,
+		"breakthrough_count": 1,
+		"initial_aptitude": 66,
+		"assigned_shop": "",
+		"bound_heroes": [
+			"jing_an"
+		],
+		"aptitude_skills": [
+			{
+				"name": "普通资质",
+				"level": 1,
+				"max_level": 200,
+				"aptitude_per_level": 1
+			}
+		],
+		"shop_skills": [
+			{
+				"name": "门客委任",
+				"level": 1,
+				"max_level": 200,
+				"base_percent": 0.05,
+				"percent_per_level": 0.03
+			}
+		]
+	},
+	"he_yashi": {
+		"name": "何雅士",
+		"category": "士",
+		"level": 1,
+		"base_income": 0,
+		"breakthrough_count": 1,
+		"initial_aptitude": 66,
+		"assigned_shop": "",
+		"bound_heroes": [
+			"wu_nv"
+		],
+		"aptitude_skills": [
+			{
+				"name": "普通资质",
+				"level": 1,
+				"max_level": 200,
+				"aptitude_per_level": 1
+			}
+		],
+		"shop_skills": [
+			{
+				"name": "门客委任",
+				"level": 1,
+				"max_level": 200,
+				"base_percent": 0.05,
+				"percent_per_level": 0.03
+			}
+		]
+	},
+	"liu_bukuai": {
+		"name": "柳捕快",
+		"category": "士",
+		"level": 1,
+		"base_income": 0,
+		"breakthrough_count": 1,
+		"initial_aptitude": 66,
+		"assigned_shop": "",
+		"bound_heroes": [
+			"shu_xiang_nv"
+		],
+		"aptitude_skills": [
+			{
+				"name": "普通资质",
+				"level": 1,
+				"max_level": 200,
+				"aptitude_per_level": 1
+			}
+		],
+		"shop_skills": [
+			{
+				"name": "门客委任",
+				"level": 1,
+				"max_level": 200,
+				"base_percent": 0.05,
+				"percent_per_level": 0.03
+			}
+		]
+	},
+	"luo_sunshan": {
+		"name": "洛孙山",
+		"category": "士",
+		"level": 1,
+		"base_income": 0,
+		"breakthrough_count": 1,
+		"initial_aptitude": 66,
+		"assigned_shop": "",
+		"bound_heroes": [
+			"dou_fu_nv"
+		],
+		"aptitude_skills": [
+			{
+				"name": "普通资质",
+				"level": 1,
+				"max_level": 200,
+				"aptitude_per_level": 1
+			}
+		],
+		"shop_skills": [
+			{
+				"name": "门客委任",
+				"level": 1,
+				"max_level": 200,
+				"base_percent": 0.05,
+				"percent_per_level": 0.03
+			}
+		]
+	},
+	"li_gushi": {
+		"name": "黎蛊师",
+		"category": "侠",
+		"level": 1,
+		"base_income": 0,
+		"breakthrough_count": 1,
+		"initial_aptitude": 66,
+		"assigned_shop": "",
+		"bound_heroes": [
+			"xiu_niang"
+		],
+		"aptitude_skills": [
+			{
+				"name": "普通资质",
+				"level": 1,
+				"max_level": 200,
+				"aptitude_per_level": 1
+			}
+		],
+		"shop_skills": [
+			{
+				"name": "门客委任",
+				"level": 1,
+				"max_level": 200,
+				"base_percent": 0.05,
+				"percent_per_level": 0.03
+			}
+		]
+	},
+	"wu_shiren": {
+		"name": "武石仁",
+		"category": "侠",
+		"level": 1,
+		"base_income": 0,
+		"breakthrough_count": 1,
+		"initial_aptitude": 66,
+		"assigned_shop": "",
+		"bound_heroes": [
+			"xi_zi"
+		],
+		"aptitude_skills": [
+			{
+				"name": "普通资质",
+				"level": 1,
+				"max_level": 200,
+				"aptitude_per_level": 1
+			}
+		],
+		"shop_skills": [
+			{
+				"name": "门客委任",
+				"level": 1,
+				"max_level": 200,
+				"base_percent": 0.05,
+				"percent_per_level": 0.03
+			}
+		]
+	},
+	"wan_jinya": {
+		"name": "万金牙",
+		"category": "商",
+		"level": 1,
+		"base_income": 0,
+		"breakthrough_count": 1,
+		"initial_aptitude": 66,
+		"assigned_shop": "",
+		"bound_heroes": [
+			"shu_xiang_nv"
+		],
+		"aptitude_skills": [
+			{
+				"name": "普通资质",
+				"level": 1,
+				"max_level": 200,
+				"aptitude_per_level": 1
+			}
+		],
+		"shop_skills": [
+			{
+				"name": "门客委任",
+				"level": 1,
+				"max_level": 200,
+				"base_percent": 0.05,
+				"percent_per_level": 0.03
+			}
+		]
+	},
+	"niu_fushi": {
+		"name": "牛符师",
+		"category": "侠",
+		"level": 1,
+		"base_income": 0,
+		"breakthrough_count": 1,
+		"initial_aptitude": 66,
+		"assigned_shop": "",
+		"bound_heroes": [
+			"zhen_xian_nv"
+		],
+		"aptitude_skills": [
+			{
+				"name": "普通资质",
+				"level": 1,
+				"max_level": 200,
+				"aptitude_per_level": 1
+			}
+		],
+		"shop_skills": [
+			{
+				"name": "门客委任",
+				"level": 1,
+				"max_level": 200,
+				"base_percent": 0.05,
+				"percent_per_level": 0.03
+			}
+		]
+	},
+	"tang_hulu": {
+		"name": "唐葫芦",
+		"category": "商",
+		"level": 1,
+		"base_income": 0,
+		"breakthrough_count": 1,
+		"initial_aptitude": 66,
+		"assigned_shop": "",
+		"bound_heroes": [
+			"dou_fu_nv"
+		],
+		"aptitude_skills": [
+			{
+				"name": "普通资质",
+				"level": 1,
+				"max_level": 200,
+				"aptitude_per_level": 1
+			}
+		],
+		"shop_skills": [
+			{
+				"name": "门客委任",
+				"level": 1,
+				"max_level": 200,
+				"base_percent": 0.05,
+				"percent_per_level": 0.03
+			}
+		]
+	},
+	"zhu_daliang": {
+		"name": "朱大亮",
+		"category": "商",
+		"level": 1,
+		"base_income": 0,
+		"breakthrough_count": 1,
+		"initial_aptitude": 66,
+		"assigned_shop": "",
+		"bound_heroes": [
+			"meng_qier"
+		],
+		"aptitude_skills": [
+			{
+				"name": "普通资质",
+				"level": 1,
+				"max_level": 200,
+				"aptitude_per_level": 1
+			}
+		],
+		"shop_skills": [
+			{
+				"name": "门客委任",
+				"level": 1,
+				"max_level": 200,
+				"base_percent": 0.05,
+				"percent_per_level": 0.03
+			}
+		]
+	},
+	"jia_houzi": {
+		"name": "贾猴子",
+		"category": "工",
+		"level": 1,
+		"base_income": 0,
+		"breakthrough_count": 1,
+		"initial_aptitude": 66,
+		"assigned_shop": "",
+		"bound_heroes": [
+			"xiao_shijie"
+		],
+		"aptitude_skills": [
+			{
+				"name": "普通资质",
+				"level": 1,
+				"max_level": 200,
+				"aptitude_per_level": 1
+			}
+		],
+		"shop_skills": [
+			{
+				"name": "门客委任",
+				"level": 1,
+				"max_level": 200,
+				"base_percent": 0.05,
+				"percent_per_level": 0.03
+			}
+		]
+	},
+	"hu_qigai": {
+		"name": "胡乞丐",
+		"category": "农",
+		"level": 1,
+		"base_income": 0,
+		"breakthrough_count": 1,
+		"initial_aptitude": 66,
+		"assigned_shop": "",
+		"bound_heroes": [
+			"ya_huan"
+		],
+		"aptitude_skills": [
+			{
+				"name": "普通资质",
+				"level": 1,
+				"max_level": 200,
+				"aptitude_per_level": 1
+			}
+		],
+		"shop_skills": [
+			{
+				"name": "门客委任",
+				"level": 1,
+				"max_level": 200,
+				"base_percent": 0.05,
+				"percent_per_level": 0.03
+			}
+		]
+	},
+	"zhang_laobo": {
+		"name": "张老伯",
+		"category": "农",
+		"level": 1,
+		"base_income": 0,
+		"breakthrough_count": 1,
+		"initial_aptitude": 66,
+		"assigned_shop": "",
+		"bound_heroes": [
+			"mai_san_nv"
+		],
+		"aptitude_skills": [
+			{
+				"name": "普通资质",
+				"level": 1,
+				"max_level": 200,
+				"aptitude_per_level": 1
+			}
+		],
+		"shop_skills": [
+			{
+				"name": "门客委任",
+				"level": 1,
+				"max_level": 200,
+				"base_percent": 0.05,
+				"percent_per_level": 0.03
+			}
+		]
+	},
+	"zhao_liehu": {
+		"name": "赵猎户",
+		"category": "农",
+		"level": 1,
+		"bound_heroes": [
+			"lie_ren"
+		],
+		"base_income": 0,
+		"breakthrough_count": 1,
+		"initial_aptitude": 66,
+		"assigned_shop": "",
+		"aptitude_skills": [
+			{
+				"name": "非凡资质",
+				"level": 1,
+				"max_level": 200,
+				"aptitude_per_level": 2
+			}
+		],
+		"shop_skills": [
+			{
+				"name": "门客委任",
+				"level": 1,
+				"max_level": 200,
+				"base_percent": 0.05,
+				"percent_per_level": 0.03
+			}
+		]
+	},
+	"jia_jiguan": {
+		"name": "贾机关",
+		"category": "工",
+		"level": 1,
+		"bound_heroes": [
+			"cao_yuan_nvhai"
+		],
+		"base_income": 0,
+		"breakthrough_count": 1,
+		"initial_aptitude": 66,
+		"assigned_shop": "",
+		"aptitude_skills": [
+			{
+				"name": "非凡资质",
+				"level": 1,
+				"max_level": 200,
+				"aptitude_per_level": 2
+			}
+		],
+		"shop_skills": [
+			{
+				"name": "门客委任",
+				"level": 1,
+				"max_level": 200,
+				"base_percent": 0.05,
+				"percent_per_level": 0.03
+			}
+		]
+	},
+	"liu_silang": {
+		"name": "刘四郎",
+		"category": "工",
+		"level": 1,
+		"bound_heroes": [
+			"ya_huan"
+		],
+		"base_income": 0,
+		"breakthrough_count": 1,
+		"initial_aptitude": 66,
+		"assigned_shop": "",
+		"aptitude_skills": [
+			{
+				"name": "非凡资质",
+				"level": 1,
+				"max_level": 200,
+				"aptitude_per_level": 2
+			}
+		],
+		"shop_skills": [
+			{
+				"name": "门客委任",
+				"level": 1,
+				"max_level": 200,
+				"base_percent": 0.05,
+				"percent_per_level": 0.03
+			}
+		]
+	},
+	"yun_youren": {
+		"name": "云游人",
+		"category": "农",
+		"level": 1,
+		"bound_heroes": [
+			"xiyu_nvzi"
+		],
+		"base_income": 0,
+		"breakthrough_count": 1,
+		"initial_aptitude": 66,
+		"assigned_shop": "",
+		"aptitude_skills": [
+			{
+				"name": "非凡资质",
+				"level": 1,
+				"max_level": 200,
+				"aptitude_per_level": 2
+			}
+		],
+		"shop_skills": [
+			{
+				"name": "门客委任",
+				"level": 1,
+				"max_level": 200,
+				"base_percent": 0.05,
+				"percent_per_level": 0.03
+			}
+		]
+	},
+	"zhuang_gengfu": {
+		"name": "庄更夫",
+		"category": "农",
+		"level": 1,
+		"bound_heroes": [
+			"cai_yao_nv"
+		],
+		"base_income": 0,
+		"breakthrough_count": 1,
+		"initial_aptitude": 66,
+		"assigned_shop": "",
+		"aptitude_skills": [
+			{
+				"name": "非凡资质",
+				"level": 1,
+				"max_level": 200,
+				"aptitude_per_level": 2
+			}
+		],
+		"shop_skills": [
+			{
+				"name": "门客委任",
+				"level": 1,
+				"max_level": 200,
+				"base_percent": 0.05,
+				"percent_per_level": 0.03
+			}
+		]
+	},
+	"qin_jianxian": {
+		"name": "秦剑仙",
+		"category": "侠",
+		"level": 1,
+		"bound_heroes": [
+			"pi_pa_nv",
+			"xihu_chuangniang"
+		],
+		"base_income": 0,
+		"breakthrough_count": 1,
+		"initial_aptitude": 66,
+		"assigned_shop": "",
+		"aptitude_skills": [
+			{
+				"name": "非凡资质",
+				"level": 1,
+				"max_level": 200,
+				"aptitude_per_level": 2
+			}
+		],
+		"shop_skills": [
+			{
+				"name": "门客委任",
+				"level": 1,
+				"max_level": 200,
+				"base_percent": 0.05,
+				"percent_per_level": 0.03
+			}
+		]
+	},
+	"li_jianchi": {
+		"name": "李剑痴",
+		"category": "商",
+		"level": 1,
+		"base_income": 0,
+		"breakthrough_count": 1,
+		"initial_aptitude": 66,
+		"assigned_shop": "",
+		"aptitude_skills": [
+			{
+				"name": "非凡资质",
+				"level": 1,
+				"max_level": 200,
+				"aptitude_per_level": 2
+			}
+		],
+		"shop_skills": [
+			{
+				"name": "门客委任",
+				"level": 1,
+				"max_level": 200,
+				"base_percent": 0.05,
+				"percent_per_level": 0.03
+			}
+		]
+	},
+	"cao_tiejiang": {
+		"name": "曹铁匠",
+		"category": "工",
+		"level": 1,
+		"bound_heroes": [
+			"cai_yao_nv",
+			"xiao_mujiang"
+		],
+		"base_income": 0,
+		"breakthrough_count": 1,
+		"initial_aptitude": 66,
+		"assigned_shop": "",
+		"aptitude_skills": [
+			{
+				"name": "非凡资质",
+				"level": 1,
+				"max_level": 200,
+				"aptitude_per_level": 2
+			}
+		],
+		"shop_skills": [
+			{
+				"name": "门客委任",
+				"level": 1,
+				"max_level": 200,
+				"base_percent": 0.05,
+				"percent_per_level": 0.03
+			}
+		]
+	},
+	"xing_huwei": {
+		"name": "邢护卫",
+		"category": "侠",
+		"level": 1,
+		"bound_heroes": [
+			"wu_nv",
+			"mi_tan"
+		],
+		"base_income": 0,
+		"breakthrough_count": 1,
+		"initial_aptitude": 66,
+		"assigned_shop": "",
+		"aptitude_skills": [
+			{
+				"name": "非凡资质",
+				"level": 1,
+				"max_level": 200,
+				"aptitude_per_level": 2
+			}
+		],
+		"shop_skills": [
+			{
+				"name": "门客委任",
+				"level": 1,
+				"max_level": 200,
+				"base_percent": 0.05,
+				"percent_per_level": 0.03
+			}
+		]
+	},
+	"yan_xiaoer": {
+		"name": "严小二",
+		"category": "商",
+		"level": 1,
+		"bound_heroes": [
+			"qi_shi",
+			"hong_niangzi"
+		],
+		"base_income": 0,
+		"breakthrough_count": 1,
+		"initial_aptitude": 66,
+		"assigned_shop": "",
+		"aptitude_skills": [
+			{
+				"name": "非凡资质",
+				"level": 1,
+				"max_level": 200,
+				"aptitude_per_level": 2
+			}
+		],
+		"shop_skills": [
+			{
+				"name": "门客委任",
+				"level": 1,
+				"max_level": 200,
+				"base_percent": 0.05,
+				"percent_per_level": 0.03
+			}
+		]
+	},
+	"qian_caizhu": {
+		"name": "钱财主",
+		"category": "商",
+		"level": 1,
+		"bound_heroes": [
+			"jian_wuzhe",
+			"hong_niangzi"
+		],
+		"base_income": 0,
+		"breakthrough_count": 1,
+		"initial_aptitude": 66,
+		"assigned_shop": "",
+		"aptitude_skills": [
+			{
+				"name": "非凡资质",
+				"level": 1,
+				"max_level": 200,
+				"aptitude_per_level": 2
+			}
+		],
+		"shop_skills": [
+			{
+				"name": "门客委任",
+				"level": 1,
+				"max_level": 200,
+				"base_percent": 0.05,
+				"percent_per_level": 0.03
+			}
+		]
+	},
+	"wu_biaoshi": {
+		"name": "武镖师",
+		"category": "侠",
+		"level": 1,
+		"bound_heroes": [
+			"jiang_men_nvzi",
+			"ma_ma"
+		],
+		"base_income": 0,
+		"breakthrough_count": 1,
+		"initial_aptitude": 66,
+		"assigned_shop": "",
+		"aptitude_skills": [
+			{
+				"name": "非凡资质",
+				"level": 1,
+				"max_level": 200,
+				"aptitude_per_level": 2
+			}
+		],
+		"shop_skills": [
+			{
+				"name": "门客委任",
+				"level": 1,
+				"max_level": 200,
+				"base_percent": 0.05,
+				"percent_per_level": 0.03
+			}
+		]
+	},
+	"yao_wuzuo": {
+		"name": "姚仵作",
+		"category": "士",
+		"level": 1,
+		"bound_heroes": [
+			"lie_ren"
+		],
+		"base_income": 0,
+		"breakthrough_count": 1,
+		"initial_aptitude": 66,
+		"assigned_shop": "",
+		"aptitude_skills": [
+			{
+				"name": "非凡资质",
+				"level": 1,
+				"max_level": 200,
+				"aptitude_per_level": 2
+			}
+		],
+		"shop_skills": [
+			{
+				"name": "门客委任",
+				"level": 1,
+				"max_level": 200,
+				"base_percent": 0.05,
+				"percent_per_level": 0.03
+			}
+		]
+	},
+	"pi_yingjiang": {
+		"name": "皮影匠人",
+		"category": "士",
+		"level": 1,
+		"bound_heroes": [
+			"cu_ju_nv"
+		],
+		"base_income": 0,
+		"breakthrough_count": 1,
+		"initial_aptitude": 66,
+		"assigned_shop": "",
+		"aptitude_skills": [
+			{
+				"name": "非凡资质",
+				"level": 1,
+				"max_level": 200,
+				"aptitude_per_level": 2
+			}
+		],
+		"shop_skills": [
+			{
+				"name": "门客委任",
+				"level": 1,
+				"max_level": 200,
+				"base_percent": 0.05,
+				"percent_per_level": 0.03
+			}
+		]
+	},
+	"tian_shiren": {
+		"name": "田诗人",
+		"category": "士",
+		"level": 1,
+		"bound_heroes": [
+			"pi_pa_nv"
+		],
+		"base_income": 0,
+		"breakthrough_count": 1,
+		"initial_aptitude": 66,
+		"assigned_shop": "",
+		"aptitude_skills": [
+			{
+				"name": "非凡资质",
+				"level": 1,
+				"max_level": 200,
+				"aptitude_per_level": 2
+			}
+		],
+		"shop_skills": [
+			{
+				"name": "门客委任",
+				"level": 1,
+				"max_level": 200,
+				"base_percent": 0.05,
+				"percent_per_level": 0.03
+			}
+		]
+	},
+	"si_lang": {
+		"name": "四郎",
+		"category": "工",
+		"level": 1,
+		"base_income": 0,
+		"breakthrough_count": 1,
+		"initial_aptitude": 66,
+		"assigned_shop": "",
+		"bound_heroes": [
+			"hua_wuque",
+			"luo",
+			"hua_lang",
+			"bi_bi_dong",
+			"zhou_meili"
+		],
+		"aptitude_skills": [
+			{
+				"name": "非凡资质",
+				"level": 1,
+				"max_level": 200,
+				"aptitude_per_level": 2
+			}
+		],
+		"shop_skills": [
+			{
+				"name": "门客委任",
+				"level": 1,
+				"max_level": 200,
+				"base_percent": 0.05,
+				"percent_per_level": 0.03
+			}
+		]
+	},
+	"yan_xiansheng": {
+		"name": "严先生",
+		"category": "士",
+		"level": 1,
+		"base_income": 0,
+		"breakthrough_count": 1,
+		"initial_aptitude": 99,
+		"assigned_shop": "",
+		"bound_heroes": [
+			"jiang_men_nvzi",
+			"yi_shi",
+			"wu_nv_wu",
+			"qiu_ying"
+		],
+		"aptitude_skills": [
+			{
+				"name": "大师资质",
+				"level": 1,
+				"max_level": 200,
+				"aptitude_per_level": 3
+			}
+		],
+		"shop_skills": [
+			{
+				"name": "门客委任",
+				"level": 1,
+				"max_level": 200,
+				"base_percent": 0.05,
+				"percent_per_level": 0.03
+			}
+		]
+	},
+	"feng_mier": {
+		"name": "冯蜜儿",
+		"category": "农",
+		"level": 1,
+		"base_income": 0,
+		"breakthrough_count": 1,
+		"initial_aptitude": 99,
+		"assigned_shop": "",
+		"bound_heroes": [
+			"yuan_xiao_guniang",
+			"miao_jiang_shengnv",
+			"niu_lang",
+			"luo",
+			"zhao_yang"
+		],
+		"aptitude_skills": [
+			{
+				"name": "大师资质",
+				"level": 1,
+				"max_level": 200,
+				"aptitude_per_level": 3
+			}
+		],
+		"shop_skills": [
+			{
+				"name": "门客委任",
+				"level": 1,
+				"max_level": 200,
+				"base_percent": 0.05,
+				"percent_per_level": 0.03
+			}
+		]
+	},
+	"li_shenshou": {
+		"name": "李神手",
+		"category": "工",
+		"level": 1,
+		"base_income": 0,
+		"breakthrough_count": 1,
+		"initial_aptitude": 99,
+		"assigned_shop": "",
+		"bound_heroes": [
+			"qi_shi",
+			"shao_jiangjun",
+			"zhi_nv",
+			"yao_ying",
+			"shen_meizhuang"
+		],
+		"aptitude_skills": [
+			{
+				"name": "大师资质",
+				"level": 1,
+				"max_level": 200,
+				"aptitude_per_level": 3
+			}
+		],
+		"shop_skills": [
+			{
+				"name": "门客委任",
+				"level": 1,
+				"max_level": 200,
+				"base_percent": 0.05,
+				"percent_per_level": 0.03
+			}
+		]
+	},
+	"zhen_tufu": {
+		"name": "镇屠夫",
+		"category": "商",
+		"level": 1,
+		"base_income": 0,
+		"breakthrough_count": 1,
+		"initial_aptitude": 99,
+		"assigned_shop": "",
+		"bound_heroes": [
+			"lang_zi",
+			"li_shishi",
+			"miao_jiang_shengnv",
+			"xihu_chuangniang",
+			"qian_ren_xue",
+			"hong_ying"
+		],
+		"aptitude_skills": [
+			{
+				"name": "大师资质",
+				"level": 1,
+				"max_level": 200,
+				"aptitude_per_level": 3
+			}
+		],
+		"shop_skills": [
+			{
+				"name": "门客委任",
+				"level": 1,
+				"max_level": 200,
+				"base_percent": 0.05,
+				"percent_per_level": 0.03
+			}
+		]
+	},
+	"hong_laoxie": {
+		"name": "洪老邪",
+		"category": "侠",
+		"level": 1,
+		"base_income": 0,
+		"breakthrough_count": 1,
+		"initial_aptitude": 99,
+		"assigned_shop": "",
+		"bound_heroes": [
+			"xiao_qigai",
+			"yi_shi",
+			"hua_lang",
+			"mo_li",
+			"mu_shu"
+		],
+		"aptitude_skills": [
+			{
+				"name": "大师资质",
+				"level": 1,
+				"max_level": 200,
+				"aptitude_per_level": 3
+			}
+		],
+		"shop_skills": [
+			{
+				"name": "门客委任",
+				"level": 1,
+				"max_level": 200,
+				"base_percent": 0.05,
+				"percent_per_level": 0.03
+			}
+		]
+	},
+	"wu_daozi": {
+		"name": "吴道子",
+		"category": "士",
+		"level": 1,
+		"base_income": 0,
+		"breakthrough_count": 1,
+		"initial_aptitude": 99,
+		"assigned_shop": "",
+		"bound_heroes": [
+			"jun_zhu",
+			"wanghou_fuhao",
+			"xihu_chuangniang",
+			"jin_shu",
+			"qing_ning"
+		],
+		"aptitude_skills": [
+			{
+				"name": "大师资质",
+				"level": 1,
+				"max_level": 200,
+				"aptitude_per_level": 3
+			}
+		],
+		"shop_skills": [
+			{
+				"name": "门客委任",
+				"level": 1,
+				"max_level": 200,
+				"base_percent": 0.05,
+				"percent_per_level": 0.03
+			}
+		]
+	},
+	"sun_bin": {
+		"name": "孙膑",
+		"category": "农",
+		"level": 1,
+		"base_income": 0,
+		"breakthrough_count": 1,
+		"initial_aptitude": 99,
+		"assigned_shop": "",
+		"bound_heroes": [
+			"xun_ying_shaonv",
+			"gu_guo_gongzhu",
+			"xiao_hudie",
+			"wu_xie"
+		],
+		"aptitude_skills": [
+			{
+				"name": "大师资质",
+				"level": 1,
+				"max_level": 200,
+				"aptitude_per_level": 3
+			}
+		],
+		"shop_skills": [
+			{
+				"name": "门客委任",
+				"level": 1,
+				"max_level": 200,
+				"base_percent": 0.05,
+				"percent_per_level": 0.03
+			}
+		]
+	},
+	"lu_ban": {
+		"name": "鲁班",
+		"category": "工",
+		"level": 1,
+		"base_income": 0,
+		"breakthrough_count": 1,
+		"initial_aptitude": 99,
+		"assigned_shop": "",
+		"bound_heroes": [
+			"hua_yi_shi",
+			"xinniang_zhimei",
+			"zi_yu",
+			"luo",
+			"qing_ning",
+			"jiu_yue"
+		],
+		"aptitude_skills": [
+			{
+				"name": "大师资质",
+				"level": 1,
+				"max_level": 200,
+				"aptitude_per_level": 3
+			}
+		],
+		"shop_skills": [
+			{
+				"name": "门客委任",
+				"level": 1,
+				"max_level": 200,
+				"base_percent": 0.05,
+				"percent_per_level": 0.03
+			}
+		]
+	},
+	"du_kang": {
+		"name": "杜康",
+		"category": "商",
+		"level": 1,
+		"base_income": 0,
+		"breakthrough_count": 1,
+		"initial_aptitude": 99,
+		"assigned_shop": "",
+		"bound_heroes": [
+			"ma_ma",
+			"hu_yao_zhanggui",
+			"ni_huang_junzhu",
+			"yu_lu"
+		],
+		"aptitude_skills": [
+			{
+				"name": "大师资质",
+				"level": 1,
+				"max_level": 200,
+				"aptitude_per_level": 3
+			}
+		],
+		"shop_skills": [
+			{
+				"name": "门客委任",
+				"level": 1,
+				"max_level": 200,
+				"base_percent": 0.05,
+				"percent_per_level": 0.03
+			}
+		]
+	},
+	"ou_yezi": {
+		"name": "欧冶子",
+		"category": "侠",
+		"level": 1,
+		"base_income": 0,
+		"breakthrough_count": 1,
+		"initial_aptitude": 99,
+		"assigned_shop": "",
+		"bound_heroes": [
+			"yi_shi",
+			"ling_ye_mao_nv",
+			"shou_gong_shaonv",
+			"qi_guang",
+			"sha_lan",
+			"yi_shi_new"
+		],
+		"aptitude_skills": [
+			{
+				"name": "大师资质",
+				"level": 1,
+				"max_level": 200,
+				"aptitude_per_level": 3
+			}
+		],
+		"shop_skills": [
+			{
+				"name": "门客委任",
+				"level": 1,
+				"max_level": 200,
+				"base_percent": 0.05,
+				"percent_per_level": 0.03
+			}
+		]
+	},
+	"gao_jianli": {
+		"name": "高渐离",
+		"category": "士",
+		"level": 1,
+		"base_income": 0,
+		"breakthrough_count": 1,
+		"initial_aptitude": 99,
+		"assigned_shop": "",
+		"bound_heroes": [
+			"hua_yi_shi",
+			"cai_shi_guan",
+			"zhuo_gui_shi",
+			"wang_zhaojun_friend",
+			"yin_niang"
+		],
+		"aptitude_skills": [
+			{
+				"name": "大师资质",
+				"level": 1,
+				"max_level": 200,
+				"aptitude_per_level": 3
+			}
+		],
+		"shop_skills": [
+			{
+				"name": "门客委任",
+				"level": 1,
+				"max_level": 200,
+				"base_percent": 0.05,
+				"percent_per_level": 0.03
+			}
+		]
+	},
+	"su_wu": {
+		"name": "苏武",
+		"category": "农",
+		"level": 1,
+		"base_income": 0,
+		"breakthrough_count": 1,
+		"initial_aptitude": 99,
+		"assigned_shop": "",
+		"bound_heroes": [
+			"cao_yuan_nvhai",
+			"ling_ye_mao_nv",
+			"huang_ye_linglan",
+			"mu_shu"
+		],
+		"aptitude_skills": [
+			{
+				"name": "大师资质",
+				"level": 1,
+				"max_level": 200,
+				"aptitude_per_level": 3
+			}
+		],
+		"shop_skills": [
+			{
+				"name": "门客委任",
+				"level": 1,
+				"max_level": 200,
+				"base_percent": 0.05,
+				"percent_per_level": 0.03
+			}
+		]
+	},
+	"bi_sheng": {
+		"name": "毕昇",
+		"category": "工",
+		"level": 1,
+		"base_income": 0,
+		"breakthrough_count": 1,
+		"initial_aptitude": 99,
+		"assigned_shop": "",
+		"bound_heroes": [
+			"jun_zhu",
+			"hu_yao_zhanggui",
+			"ni_huang_junzhu",
+			"bi_bi_dong"
+		],
+		"aptitude_skills": [
+			{
+				"name": "大师资质",
+				"level": 1,
+				"max_level": 200,
+				"aptitude_per_level": 3
+			}
+		],
+		"shop_skills": [
+			{
+				"name": "门客委任",
+				"level": 1,
+				"max_level": 200,
+				"base_percent": 0.05,
+				"percent_per_level": 0.03
+			}
+		]
+	},
+	"zong_ze": {
+		"name": "宗泽",
+		"category": "商",
+		"level": 1,
+		"base_income": 0,
+		"breakthrough_count": 1,
+		"initial_aptitude": 99,
+		"assigned_shop": "",
+		"bound_heroes": [
+			"xun_ying_shaonv",
+			"tang_pingguo",
+			"shou_gong_shaonv",
+			"yu_ge",
+			"ning_yin",
+			"hua_mulan_friend",
+			"rong"
+		],
+		"aptitude_skills": [
+			{
+				"name": "大师资质",
+				"level": 1,
+				"max_level": 200,
+				"aptitude_per_level": 3
+			}
+		],
+		"shop_skills": [
+			{
+				"name": "门客委任",
+				"level": 1,
+				"max_level": 200,
+				"base_percent": 0.05,
+				"percent_per_level": 0.03
+			}
+		]
+	},
+	"zhang_sanfeng": {
+		"name": "张三丰",
+		"category": "侠",
+		"level": 1,
+		"base_income": 0,
+		"breakthrough_count": 1,
+		"initial_aptitude": 99,
+		"assigned_shop": "",
+		"bound_heroes": [
+			"bu_kuai",
+			"xiao_wu_friend",
+			"qian_ren_xue",
+			"qi_ling",
+			"ying_chun",
+			"zhu_sha"
+		],
+		"aptitude_skills": [
+			{
+				"name": "大师资质",
+				"level": 1,
+				"max_level": 200,
+				"aptitude_per_level": 3
+			}
+		],
+		"shop_skills": [
+			{
+				"name": "门客委任",
+				"level": 1,
+				"max_level": 200,
+				"base_percent": 0.05,
+				"percent_per_level": 0.03
+			}
+		]
+	},
+	"shen_wansan": {
+		"name": "沈万三",
+		"category": "商",
+		"level": 1,
+		"base_income": 0,
+		"breakthrough_count": 1,
+		"initial_aptitude": 99,
+		"assigned_shop": "",
+		"bound_heroes": [
+			"meng_qier",
+			"li_shishi",
+			"gu_guo_gongzhu",
+			"xiao_hudie",
+			"ning_yin",
+			"xing_lan"
+		],
+		"aptitude_skills": [
+			{
+				"name": "大师资质",
+				"level": 1,
+				"max_level": 200,
+				"aptitude_per_level": 3
+			}
+		],
+		"shop_skills": [
+			{
+				"name": "门客委任",
+				"level": 1,
+				"max_level": 200,
+				"base_percent": 0.05,
+				"percent_per_level": 0.03
+			}
+		]
+	},
+	"shi_gandang": {
+		"name": "石敢当",
+		"category": "工",
+		"level": 1,
+		"base_income": 0,
+		"breakthrough_count": 1,
+		"initial_aptitude": 99,
+		"assigned_shop": "",
+		"bound_heroes": [
+			"li_xiangjun_friend",
+			"xun_ma_shi",
+			"shou_gong_shaonv",
+			"tushan_honghong",
+			"hua_zhao"
+		],
+		"aptitude_skills": [
+			{
+				"name": "大师资质",
+				"level": 1,
+				"max_level": 200,
+				"aptitude_per_level": 3
+			},
+			{
+				"name": "金刚臂",
+				"level": 1,
+				"max_level": 200,
+				"aptitude_per_level": 3
+			}
+		],
+		"shop_skills": [
+			{
+				"name": "门客委任",
+				"level": 1,
+				"max_level": 200,
+				"base_percent": 0.05,
+				"percent_per_level": 0.03
+			}
+		]
+	},
+	"song_huizong": {
+		"name": "宋徽宗",
+		"category": "士",
+		"level": 1,
+		"base_income": 0,
+		"breakthrough_count": 1,
+		"initial_aptitude": 99,
+		"assigned_shop": "",
+		"bound_heroes": [
+			"kou_baimen_friend",
+			"li_shishi",
+			"xiao_mujiang",
+			"nan_gong_wan",
+			"zhao_yang",
+			"sha_lan"
+		],
+		"aptitude_skills": [
+			{
+				"name": "大师资质",
+				"level": 1,
+				"max_level": 200,
+				"aptitude_per_level": 3
+			},
+			{
+				"name": "瘦金体",
+				"level": 1,
+				"max_level": 200,
+				"aptitude_per_level": 3
+			}
+		],
+		"shop_skills": [
+			{
+				"name": "门客委任",
+				"level": 1,
+				"max_level": 200,
+				"base_percent": 0.05,
+				"percent_per_level": 0.03
+			}
+		]
+	},
+	"cai_jing": {
+		"name": "蔡京",
+		"category": "士",
+		"level": 1,
+		"base_income": 0,
+		"breakthrough_count": 1,
+		"initial_aptitude": 99,
+		"assigned_shop": "",
+		"bound_heroes": [
+			"ma_xianglan_friend",
+			"dong_xiaowan_friend",
+			"qing_ning",
+			"hui_yin",
+			"he_xi"
+		],
+		"aptitude_skills": [
+			{
+				"name": "大师资质",
+				"level": 1,
+				"max_level": 200,
+				"aptitude_per_level": 3
+			},
+			{
+				"name": "花石纲",
+				"level": 1,
+				"max_level": 200,
+				"aptitude_per_level": 3
+			}
+		],
+		"shop_skills": [
+			{
+				"name": "门客委任",
+				"level": 1,
+				"max_level": 200,
+				"base_percent": 0.05,
+				"percent_per_level": 0.03
+			}
+		]
+	},
+	"dunhuang_jiangshen": {
+		"name": "敦煌匠神",
+		"category": "工",
+		"level": 1,
+		"base_income": 0,
+		"breakthrough_count": 1,
+		"initial_aptitude": 99,
+		"assigned_shop": "",
+		"bound_heroes": [
+			"yi_shi",
+			"hu_yao_zhanggui",
+			"xiao_lu_nv",
+			"qi_ling"
+		],
+		"aptitude_skills": [
+			{
+				"name": "大师资质",
+				"level": 1,
+				"max_level": 200,
+				"aptitude_per_level": 3
+			},
+			{
+				"name": "麟角刷",
+				"level": 1,
+				"max_level": 200,
+				"aptitude_per_level": 3
+			}
+		],
+		"shop_skills": [
+			{
+				"name": "门客委任",
+				"level": 1,
+				"max_level": 200,
+				"base_percent": 0.05,
+				"percent_per_level": 0.03
+			}
+		]
+	},
+	"baixi_shengdao": {
+		"name": "百戏圣刀",
+		"category": "侠",
+		"level": 1,
+		"base_income": 0,
+		"breakthrough_count": 1,
+		"initial_aptitude": 99,
+		"assigned_shop": "",
+		"bound_heroes": [
+			"ma_xianglan_friend",
+			"shao_jiangjun",
+			"ning_yin",
+			"yin_niang"
+		],
+		"aptitude_skills": [
+			{
+				"name": "大师资质",
+				"level": 1,
+				"max_level": 200,
+				"aptitude_per_level": 3
+			},
+			{
+				"name": "幻影刀",
+				"level": 1,
+				"max_level": 200,
+				"aptitude_per_level": 3
+			}
+		],
+		"shop_skills": [
+			{
+				"name": "门客委任",
+				"level": 1,
+				"max_level": 200,
+				"base_percent": 0.05,
+				"percent_per_level": 0.03
+			}
+		]
+	},
+	"song_jiang": {
+		"name": "宋江",
+		"category": "农",
+		"level": 1,
+		"base_income": 0,
+		"breakthrough_count": 1,
+		"initial_aptitude": 99,
+		"assigned_shop": "",
+		"bound_heroes": [
+			"li_xiangjun_friend",
+			"cai_shi_guan"
+		],
+		"aptitude_skills": [
+			{
+				"name": "大师资质",
+				"level": 1,
+				"max_level": 200,
+				"aptitude_per_level": 3
+			},
+			{
+				"name": "及时雨",
+				"level": 1,
+				"max_level": 200,
+				"aptitude_per_level": 3
+			}
+		],
+		"shop_skills": [
+			{
+				"name": "门客委任",
+				"level": 1,
+				"max_level": 200,
+				"base_percent": 0.05,
+				"percent_per_level": 0.03
+			}
+		]
+	},
+	"huo_yanwang": {
+		"name": "活阎王",
+		"category": "士",
+		"level": 1,
+		"base_income": 0,
+		"breakthrough_count": 1,
+		"initial_aptitude": 99,
+		"assigned_shop": "",
+		"bound_heroes": [
+			"bian_yujing_friend",
+			"xinniang_zhimei",
+			"zhuo_gui_shi",
+			"hua_zhao"
+		],
+		"aptitude_skills": [
+			{
+				"name": "大师资质",
+				"level": 1,
+				"max_level": 200,
+				"aptitude_per_level": 3
+			},
+			{
+				"name": "夺命判",
+				"level": 1,
+				"max_level": 200,
+				"aptitude_per_level": 3
+			}
+		],
+		"shop_skills": [
+			{
+				"name": "门客委任",
+				"level": 1,
+				"max_level": 200,
+				"base_percent": 0.05,
+				"percent_per_level": 0.03
+			}
+		]
+	},
+	"lei_en": {
+		"name": "雷恩",
+		"category": "农",
+		"level": 1,
+		"base_income": 0,
+		"breakthrough_count": 1,
+		"initial_aptitude": 99,
+		"assigned_shop": "",
+		"bound_heroes": [
+			"ling_ye_mao_nv",
+			"xinniang_zhimei",
+			"wu_xie",
+			"shen_meizhuang",
+			"zhou_meili"
+		],
+		"aptitude_skills": [
+			{
+				"name": "大师资质",
+				"level": 1,
+				"max_level": 200,
+				"aptitude_per_level": 3
+			},
+			{
+				"name": "青龙斩",
+				"level": 1,
+				"max_level": 200,
+				"aptitude_per_level": 3
+			},
+			{
+				"name": "冰山雕",
+				"level": 1,
+				"max_level": 200,
+				"aptitude_per_level": 2
+			}
+		],
+		"shop_skills": [
+			{
+				"name": "门客委任",
+				"level": 1,
+				"max_level": 200,
+				"base_percent": 0.05,
+				"percent_per_level": 0.03
+			}
+		]
+	},
+	"xiang_en": {
+		"name": "向恩",
+		"category": "工",
+		"level": 1,
+		"base_income": 0,
+		"breakthrough_count": 1,
+		"initial_aptitude": 99,
+		"assigned_shop": "",
+		"bound_heroes": [
+			"hua_yi_shi",
+			"niu_lang",
+			"yu_tu",
+			"tushan_honghong"
+		],
+		"aptitude_skills": [
+			{
+				"name": "大师资质",
+				"level": 1,
+				"max_level": 200,
+				"aptitude_per_level": 3
+			},
+			{
+				"name": "破军切",
+				"level": 1,
+				"max_level": 200,
+				"aptitude_per_level": 3
+			},
+			{
+				"name": "神速切",
+				"level": 1,
+				"max_level": 200,
+				"aptitude_per_level": 2
+			}
+		],
+		"shop_skills": [
+			{
+				"name": "门客委任",
+				"level": 1,
+				"max_level": 200,
+				"base_percent": 0.05,
+				"percent_per_level": 0.03
+			}
+		]
+	},
+	"zhou_yu": {
+		"name": "周瑜",
+		"category": "商",
+		"level": 1,
+		"base_income": 0,
+		"breakthrough_count": 1,
+		"initial_aptitude": 99,
+		"assigned_shop": "",
+		"bound_heroes": [
+			"bu_kuai",
+			"zhi_nv",
+			"yao_ying",
+			"qi_guang"
+		],
+		"aptitude_skills": [
+			{
+				"name": "大师资质",
+				"level": 1,
+				"max_level": 200,
+				"aptitude_per_level": 3
+			},
+			{
+				"name": "业火烩",
+				"level": 1,
+				"max_level": 200,
+				"aptitude_per_level": 3
+			},
+			{
+				"name": "火焰手",
+				"level": 1,
+				"max_level": 200,
+				"aptitude_per_level": 2
+			}
+		],
+		"shop_skills": [
+			{
+				"name": "门客委任",
+				"level": 1,
+				"max_level": 200,
+				"base_percent": 0.05,
+				"percent_per_level": 0.03
+			}
+		]
+	},
+	"qin_shihuang": {
+		"name": "秦始皇",
+		"category": "士",
+		"level": 1,
+		"base_income": 0,
+		"breakthrough_count": 1,
+		"initial_aptitude": 99,
+		"assigned_shop": "",
+		"bound_heroes": [
+			"xinniang",
+			"dong_xiaowan_friend",
+			"huang_ye_linglan",
+			"qiu_ying",
+			"xing_lan"
+		],
+		"aptitude_skills": [
+			{
+				"name": "大师资质",
+				"level": 1,
+				"max_level": 200,
+				"aptitude_per_level": 3
+			},
+			{
+				"name": "千秋霸业",
+				"level": 1,
+				"max_level": 200,
+				"aptitude_per_level": 6
+			},
+			{
+				"name": "始皇帝",
+				"level": 1,
+				"max_level": 200,
+				"aptitude_per_level": 5
+			},
+			{
+				"name": "睥睨天下",
+				"level": 1,
+				"max_level": 200,
+				"aptitude_per_level": 5
+			},
+			{
+				"name": "万里长城",
+				"level": 1,
+				"max_level": 200,
+				"aptitude_per_level": 4
+			},
+			{
+				"name": "衡石量书",
+				"level": 1,
+				"max_level": 200,
+				"aptitude_per_level": 4
+			}
+		],
+		"shop_skills": [
+			{
+				"name": "门客委任",
+				"level": 1,
+				"max_level": 200,
+				"base_percent": 0.05,
+				"percent_per_level": 0.03
+			}
+		]
+	},
+	"gun_haijiao": {
+		"name": "滚海蛟",
+		"category": "侠",
+		"level": 1,
+		"base_income": 0,
+		"breakthrough_count": 1,
+		"initial_aptitude": 99,
+		"assigned_shop": "",
+		"bound_heroes": [
+			"bu_kuai",
+			"bian_yujing_friend"
+		],
+		"aptitude_skills": [
+			{
+				"name": "大师资质",
+				"level": 1,
+				"max_level": 200,
+				"aptitude_per_level": 3
+			},
+			{
+				"name": "海盗王",
+				"level": 1,
+				"max_level": 200,
+				"aptitude_per_level": 3
+			}
+		],
+		"shop_skills": [
+			{
+				"name": "门客委任",
+				"level": 1,
+				"max_level": 200,
+				"base_percent": 0.05,
+				"percent_per_level": 0.03
+			}
+		]
+	},
+	"lv_bu": {
+		"name": "吕布",
+		"category": "侠",
+		"level": 1,
+		"base_income": 0,
+		"breakthrough_count": 1,
+		"initial_aptitude": 99,
+		"assigned_shop": "",
+		"bound_heroes": [
+			"xun_ma_shi",
+			"xinniang_zhimei",
+			"xiao_mujiang",
+			"shi_bo_shi",
+			"dao_gu"
+		],
+		"aptitude_skills": [
+			{
+				"name": "大师资质",
+				"level": 1,
+				"max_level": 200,
+				"aptitude_per_level": 3
+			},
+			{
+				"name": "骁勇善战",
+				"level": 1,
+				"max_level": 200,
+				"aptitude_per_level": 3
+			}
+		],
+		"shop_skills": [
+			{
+				"name": "门客委任",
+				"level": 1,
+				"max_level": 200,
+				"base_percent": 0.05,
+				"percent_per_level": 0.03
+			}
+		]
+	},
+	"ne_zha": {
+		"name": "哪吒",
+		"category": "商",
+		"level": 1,
+		"base_income": 0,
+		"breakthrough_count": 1,
+		"initial_aptitude": 99,
+		"assigned_shop": "",
+		"bound_heroes": [
+			"hua_yi_shi",
+			"wu_nv_wu",
+			"xiao_lu_nv",
+			"mo_li",
+			"xing_lan",
+			"yu_ji"
+		],
+		"aptitude_skills": [
+			{
+				"name": "大师资质",
+				"level": 1,
+				"max_level": 200,
+				"aptitude_per_level": 3
+			},
+			{
+				"name": "神枪聚元",
+				"level": 1,
+				"max_level": 200,
+				"aptitude_per_level": 5
+			}
+		],
+		"shop_skills": [
+			{
+				"name": "门客委任",
+				"level": 1,
+				"max_level": 200,
+				"base_percent": 0.05,
+				"percent_per_level": 0.03
+			}
+		]
+	},
+	"sun_wu": {
+		"name": "孙武",
+		"category": "农",
+		"level": 1,
+		"base_income": 0,
+		"breakthrough_count": 1,
+		"initial_aptitude": 99,
+		"assigned_shop": "",
+		"bound_heroes": [
+			"yu_ge",
+			"qiu_ying",
+			"gu_guo_gongzhu",
+			"hui_yin",
+			"rong"
+		],
+		"aptitude_skills": [
+			{
+				"name": "大师资质",
+				"level": 1,
+				"max_level": 200,
+				"aptitude_per_level": 3
+			},
+			{
+				"name": "用兵如神",
+				"level": 1,
+				"max_level": 200,
+				"aptitude_per_level": 3
+			}
+		],
+		"shop_skills": [
+			{
+				"name": "门客委任",
+				"level": 1,
+				"max_level": 200,
+				"base_percent": 0.05,
+				"percent_per_level": 0.03
+			}
+		]
+	},
+	"qin_qiong_yuchi_gong": {
+		"name": "秦琼尉迟恭",
+		"category": "侠",
+		"level": 1,
+		"base_income": 0,
+		"breakthrough_count": 1,
+		"initial_aptitude": 99,
+		"assigned_shop": "",
+		"bound_heroes": [
+			"qi_ling",
+			"shi_bo_shi",
+			"jin_shu",
+			"yu_tu",
+			"dao_gu",
+			"wan_wan"
+		],
+		"aptitude_skills": [
+			{
+				"name": "大师资质",
+				"level": 1,
+				"max_level": 200,
+				"aptitude_per_level": 3
+			},
+			{
+				"name": "鞭锏扬威",
+				"level": 1,
+				"max_level": 200,
+				"aptitude_per_level": 3
+			}
+		],
+		"shop_skills": [
+			{
+				"name": "门客委任",
+				"level": 1,
+				"max_level": 200,
+				"base_percent": 0.05,
+				"percent_per_level": 0.03
+			}
+		]
+	},
+	"ao_wu": {
+		"name": "敖武",
+		"category": "农",
+		"level": 1,
+		"base_income": 0,
+		"breakthrough_count": 1,
+		"initial_aptitude": 99,
+		"assigned_shop": "",
+		"bound_heroes": [
+			"wu_xie",
+			"xiao_hudie",
+			"tang_pingguo",
+			"zhi_nv",
+			"ji_zhou",
+			"hua_mulan_friend"
+		],
+		"aptitude_skills": [
+			{
+				"name": "大师资质",
+				"level": 1,
+				"max_level": 200,
+				"aptitude_per_level": 3
+			},
+			{
+				"name": "与狼同行",
+				"level": 1,
+				"max_level": 200,
+				"aptitude_per_level": 3
+			}
+		],
+		"shop_skills": [
+			{
+				"name": "门客委任",
+				"level": 1,
+				"max_level": 200,
+				"base_percent": 0.05,
+				"percent_per_level": 0.03
+			}
+		]
+	},
+	"xiao_wu": {
+		"name": "小舞",
+		"category": "农",
+		"level": 1,
+		"base_income": 0,
+		"breakthrough_count": 1,
+		"initial_aptitude": 99,
+		"assigned_shop": "",
+		"bound_heroes": [
+			"xiao_wu_friend",
+			"miao_jiang_shengnv",
+			"li_xiangjun_friend",
+			"yu_ge",
+			"qian_ren_xue",
+			"bi_bi_dong"
+		],
+		"aptitude_skills": [
+			{
+				"name": "大师资质",
+				"level": 1,
+				"max_level": 200,
+				"aptitude_per_level": 3
+			},
+			{
+				"name": "爆杀八段摔",
+				"level": 1,
+				"max_level": 200,
+				"aptitude_per_level": 3
+			},
+			{
+				"name": "无敌金身",
+				"level": 1,
+				"max_level": 200,
+				"aptitude_per_level": 2
+			}
+		],
+		"shop_skills": [
+			{
+				"name": "门客委任",
+				"level": 1,
+				"max_level": 200,
+				"base_percent": 0.05,
+				"percent_per_level": 0.03
+			}
+		]
+	},
+	"xiao_qi": {
+		"name": "小柒",
+		"category": "士",
+		"level": 1,
+		"base_income": 0,
+		"breakthrough_count": 1,
+		"initial_aptitude": 99,
+		"assigned_shop": "",
+		"bound_heroes": [
+			"luo",
+			"mo_li",
+			"yu_ge",
+			"dao_gu",
+			"zhao_yang",
+			"si_tang",
+			"jiu_yue"
+		],
+		"aptitude_skills": [
+			{
+				"name": "大师资质",
+				"level": 1,
+				"max_level": 200,
+				"aptitude_per_level": 3
+			},
+			{
+				"name": "千金妙玉",
+				"level": 1,
+				"max_level": 200,
+				"aptitude_per_level": 5
+			},
+			{
+				"name": "敏而好学",
+				"level": 1,
+				"max_level": 200,
+				"aptitude_per_level": 3
+			},
+			{
+				"name": "秀外慧中",
+				"level": 1,
+				"max_level": 200,
+				"aptitude_per_level": 2
+			}
+		],
+		"shop_skills": [
+			{
+				"name": "门客委任",
+				"level": 1,
+				"max_level": 200,
+				"base_percent": 0.05,
+				"percent_per_level": 0.03
+			}
+		]
+	},
+	"xiang_yu": {
+		"name": "项羽",
+		"category": "商",
+		"level": 1,
+		"base_income": 0,
+		"breakthrough_count": 1,
+		"initial_aptitude": 99,
+		"assigned_shop": "",
+		"bound_heroes": [
+			"yu_ji",
+			"ji_ye",
+			"tang_pingguo",
+			"bu_kuai",
+			"xiao_ning"
+		],
+		"aptitude_skills": [
+			{
+				"name": "大师资质",
+				"level": 1,
+				"max_level": 200,
+				"aptitude_per_level": 3
+			},
+			{
+				"name": "无畏冲锋",
+				"level": 1,
+				"max_level": 200,
+				"aptitude_per_level": 3
+			}
+		],
+		"shop_skills": [
+			{
+				"name": "门客委任",
+				"level": 1,
+				"max_level": 200,
+				"base_percent": 0.05,
+				"percent_per_level": 0.03
+			}
+		]
+	},
+	"zheng_he": {
+		"name": "郑和",
+		"category": "士",
+		"level": 1,
+		"base_income": 0,
+		"breakthrough_count": 1,
+		"initial_aptitude": 99,
+		"assigned_shop": "",
+		"bound_heroes": [
+			"qing_ning",
+			"hui_yin",
+			"kou_baimen_friend",
+			"si_tang",
+			"ying_chun"
+		],
+		"aptitude_skills": [
+			{
+				"name": "大师资质",
+				"level": 1,
+				"max_level": 200,
+				"aptitude_per_level": 3
+			},
+			{
+				"name": "了如指掌",
+				"level": 1,
+				"max_level": 200,
+				"aptitude_per_level": 3
+			}
+		],
+		"shop_skills": [
+			{
+				"name": "门客委任",
+				"level": 1,
+				"max_level": 200,
+				"base_percent": 0.05,
+				"percent_per_level": 0.03
+			}
+		]
+	},
+	"xiao_ba": {
+		"name": "小八",
+		"category": "士",
+		"level": 1,
+		"base_income": 0,
+		"breakthrough_count": 1,
+		"initial_aptitude": 99,
+		"assigned_shop": "",
+		"bound_heroes": [
+			"tan_you",
+			"xing_lan",
+			"ling_ye_mao_nv",
+			"qi_ling",
+			"shi_bo_shi",
+			"rong",
+			"hua_zhao",
+			"sha_lan"
+		],
+		"aptitude_skills": [
+			{
+				"name": "大师资质",
+				"level": 1,
+				"max_level": 200,
+				"aptitude_per_level": 3
+			},
+			{
+				"name": "见微知著",
+				"level": 1,
+				"max_level": 200,
+				"aptitude_per_level": 3
+			},
+			{
+				"name": "聚沙成塔",
+				"level": 1,
+				"max_level": 200,
+				"aptitude_per_level": 2
+			}
+		],
+		"shop_skills": [
+			{
+				"name": "门客委任",
+				"level": 1,
+				"max_level": 200,
+				"base_percent": 0.05,
+				"percent_per_level": 0.03
+			}
+		]
+	},
+	"long_xiang": {
+		"name": "龙骧",
+		"category": "工",
+		"level": 1,
+		"base_income": 0,
+		"breakthrough_count": 1,
+		"initial_aptitude": 99,
+		"assigned_shop": "",
+		"bound_heroes": [
+			"he_xi",
+			"yu_ji",
+			"ying_chun",
+			"hu_yao_zhanggui",
+			"hong_ying"
+		],
+		"aptitude_skills": [
+			{
+				"name": "大师资质",
+				"level": 1,
+				"max_level": 200,
+				"aptitude_per_level": 3
+			},
+			{
+				"name": "立身举龙",
+				"level": 1,
+				"max_level": 200,
+				"aptitude_per_level": 3
+			}
+		],
+		"shop_skills": [
+			{
+				"name": "门客委任",
+				"level": 1,
+				"max_level": 200,
+				"base_percent": 0.05,
+				"percent_per_level": 0.03
+			}
+		]
+	},
+	"song_taizu": {
+		"name": "宋太祖",
+		"category": "侠",
+		"level": 1,
+		"base_income": 0,
+		"breakthrough_count": 1,
+		"initial_aptitude": 99,
+		"assigned_shop": "",
+		"bound_heroes": [
+			"gu_guo_gongzhu",
+			"yu_tu",
+			"rong",
+			"ji_ye"
+		],
+		"aptitude_skills": [
+			{
+				"name": "大师资质",
+				"level": 1,
+				"max_level": 200,
+				"aptitude_per_level": 3
+			},
+			{
+				"name": "杯酒释兵权",
+				"level": 1,
+				"max_level": 200,
+				"aptitude_per_level": 3
+			}
+		],
+		"shop_skills": [
+			{
+				"name": "门客委任",
+				"level": 1,
+				"max_level": 200,
+				"base_percent": 0.05,
+				"percent_per_level": 0.03
+			}
+		]
+	},
+	"luo_haiwang": {
+		"name": "罗海王",
+		"category": "农",
+		"level": 1,
+		"base_income": 0,
+		"breakthrough_count": 1,
+		"initial_aptitude": 99,
+		"assigned_shop": "",
+		"bound_heroes": [
+			"shi_bo_shi",
+			"yu_ge",
+			"niu_lang",
+			"ji_zhou"
+		],
+		"aptitude_skills": [
+			{
+				"name": "大师资质",
+				"level": 1,
+				"max_level": 200,
+				"aptitude_per_level": 3
+			},
+			{
+				"name": "客满堂前",
+				"level": 1,
+				"max_level": 200,
+				"aptitude_per_level": 3
+			}
+		],
+		"shop_skills": [
+			{
+				"name": "门客委任",
+				"level": 1,
+				"max_level": 200,
+				"base_percent": 0.05,
+				"percent_per_level": 0.03
+			}
+		]
+	},
+	"ma_xianglan": {
+		"name": "马湘兰",
+		"category": "士",
+		"level": 1,
+		"base_income": 0,
+		"breakthrough_count": 1,
+		"initial_aptitude": 99,
+		"assigned_shop": "",
+		"bound_heroes": [
+			"ma_xianglan_friend",
+			"xun_ma_shi",
+			"wu_nv_wu",
+			"hua_wuque",
+			"yu_tu",
+			"hui_yin",
+			"yu_lu"
+		],
+		"aptitude_skills": [
+			{
+				"name": "大师资质",
+				"level": 1,
+				"max_level": 200,
+				"aptitude_per_level": 3
+			},
+			{
+				"name": "墨兰册",
+				"level": 1,
+				"max_level": 200,
+				"aptitude_per_level": 3
+			},
+			{
+				"name": "幽兰馆",
+				"level": 1,
+				"max_level": 200,
+				"aptitude_per_level": 2
+			}
+		],
+		"shop_skills": [
+			{
+				"name": "门客委任",
+				"level": 1,
+				"max_level": 200,
+				"base_percent": 0.05,
+				"percent_per_level": 0.03
+			}
+		]
+	},
+	"li_xiangjun": {
+		"name": "李香君",
+		"category": "农",
+		"level": 1,
+		"base_income": 0,
+		"breakthrough_count": 1,
+		"initial_aptitude": 99,
+		"assigned_shop": "",
+		"bound_heroes": [
+			"li_xiangjun_friend",
+			"cai_shi_guan",
+			"xiao_wu_friend",
+			"shi_bo_shi",
+			"shen_meizhuang",
+			"si_tang",
+			"xiao_ning",
+			"hua_zhao"
+		],
+		"aptitude_skills": [
+			{
+				"name": "大师资质",
+				"level": 1,
+				"max_level": 200,
+				"aptitude_per_level": 3
+			},
+			{
+				"name": "香扇坠",
+				"level": 1,
+				"max_level": 200,
+				"aptitude_per_level": 3
+			},
+			{
+				"name": "风尘落",
+				"level": 1,
+				"max_level": 200,
+				"aptitude_per_level": 2
+			}
+		],
+		"shop_skills": [
+			{
+				"name": "门客委任",
+				"level": 1,
+				"max_level": 200,
+				"base_percent": 0.05,
+				"percent_per_level": 0.03
+			}
+		]
+	},
+	"dong_xiaowan": {
+		"name": "董小宛",
+		"category": "工",
+		"level": 1,
+		"base_income": 0,
+		"breakthrough_count": 1,
+		"initial_aptitude": 99,
+		"assigned_shop": "",
+		"bound_heroes": [
+			"dong_xiaowan_friend",
+			"tang_pingguo",
+			"zhuo_gui_shi",
+			"nan_gong_wan",
+			"mo_li",
+			"yu_ji",
+			"mu_shu"
+		],
+		"aptitude_skills": [
+			{
+				"name": "大师资质",
+				"level": 1,
+				"max_level": 200,
+				"aptitude_per_level": 3
+			},
+			{
+				"name": "葬残花",
+				"level": 1,
+				"max_level": 200,
+				"aptitude_per_level": 3
+			},
+			{
+				"name": "灌香糖",
+				"level": 1,
+				"max_level": 200,
+				"aptitude_per_level": 2
+			}
+		],
+		"shop_skills": [
+			{
+				"name": "门客委任",
+				"level": 1,
+				"max_level": 200,
+				"base_percent": 0.05,
+				"percent_per_level": 0.03
+			}
+		]
+	},
+	"bian_yujing": {
+		"name": "卞玉京",
+		"category": "商",
+		"level": 1,
+		"base_income": 0,
+		"breakthrough_count": 1,
+		"initial_aptitude": 99,
+		"assigned_shop": "",
+		"bound_heroes": [
+			"bian_yujing_friend",
+			"zi_yu",
+			"ji_ye",
+			"tushan_honghong",
+			"yun_zhi",
+			"xiao_ning",
+			"hong_ying"
+		],
+		"aptitude_skills": [
+			{
+				"name": "大师资质",
+				"level": 1,
+				"max_level": 200,
+				"aptitude_per_level": 3
+			},
+			{
+				"name": "忘忧曲",
+				"level": 1,
+				"max_level": 200,
+				"aptitude_per_level": 3
+			},
+			{
+				"name": "善尤兰",
+				"level": 1,
+				"max_level": 200,
+				"aptitude_per_level": 2
+			}
+		],
+		"shop_skills": [
+			{
+				"name": "门客委任",
+				"level": 1,
+				"max_level": 200,
+				"base_percent": 0.05,
+				"percent_per_level": 0.03
+			}
+		]
+	},
+	"kou_baimen": {
+		"name": "寇白门",
+		"category": "侠",
+		"level": 1,
+		"base_income": 0,
+		"breakthrough_count": 1,
+		"initial_aptitude": 99,
+		"assigned_shop": "",
+		"bound_heroes": [
+			"kou_baimen_friend",
+			"mi_tan",
+			"jin_shu",
+			"ni_huang_junzhu",
+			"ji_zhou",
+			"wan_wan",
+			"tan_you",
+			"zhu_sha"
+		],
+		"aptitude_skills": [
+			{
+				"name": "大师资质",
+				"level": 1,
+				"max_level": 200,
+				"aptitude_per_level": 3
+			},
+			{
+				"name": "绽芳华",
+				"level": 1,
+				"max_level": 200,
+				"aptitude_per_level": 3
+			},
+			{
+				"name": "巾帼心",
+				"level": 1,
+				"max_level": 200,
+				"aptitude_per_level": 2
+			}
+		],
+		"shop_skills": [
+			{
+				"name": "门客委任",
+				"level": 1,
+				"max_level": 200,
+				"base_percent": 0.05,
+				"percent_per_level": 0.03
+			}
+		]
+	},
+	"hu_lu_xianren": {
+		"name": "葫芦仙人",
+		"category": "商",
+		"level": 1,
+		"base_income": 0,
+		"breakthrough_count": 1,
+		"initial_aptitude": 66,
+		"assigned_shop": "",
+		"bound_heroes": [
+			"xiao_shimei",
+			"xiao_hudie",
+			"jin_shu",
+			"shi_bo_shi",
+			"yao_ying",
+			"zhou_meili",
+			"yu_lu",
+			"sha_lan"
+		],
+		"aptitude_skills": [
+			{
+				"name": "非凡资质",
+				"level": 1,
+				"max_level": 200,
+				"aptitude_per_level": 2
+			}
+		],
+		"shop_skills": [
+			{
+				"name": "门客委任",
+				"level": 1,
+				"max_level": 200,
+				"base_percent": 0.05,
+				"percent_per_level": 0.03
+			}
+		]
+	},
+	"xie_lu": {
+		"name": "解鲁",
+		"category": "士",
+		"level": 1,
+		"base_income": 0,
+		"breakthrough_count": 1,
+		"initial_aptitude": 66,
+		"assigned_shop": "",
+		"bound_heroes": [
+			"lang_zi",
+			"xun_ma_shi",
+			"ji_ye",
+			"wang_zhaojun_friend",
+			"yun_zhi"
+		],
+		"aptitude_skills": [
+			{
+				"name": "非凡资质",
+				"level": 1,
+				"max_level": 200,
+				"aptitude_per_level": 2
+			}
+		],
+		"shop_skills": [
+			{
+				"name": "门客委任",
+				"level": 1,
+				"max_level": 200,
+				"base_percent": 0.05,
+				"percent_per_level": 0.03
+			}
+		]
+	},
+	"yang_jian": {
+		"name": "杨戬",
+		"category": "农",
+		"level": 1,
+		"base_income": 0,
+		"breakthrough_count": 1,
+		"initial_aptitude": 66,
+		"assigned_shop": "",
+		"bound_heroes": [
+			"miao_jiang_shengnv",
+			"li_xiangjun_friend",
+			"xiao_wu_friend",
+			"yu_ge",
+			"qian_ren_xue",
+			"bi_bi_dong",
+			"hua_mulan_friend",
+			"zhu_sha"
+		],
+		"aptitude_skills": [
+			{
+				"name": "非凡资质",
+				"level": 1,
+				"max_level": 200,
+				"aptitude_per_level": 2
+			}
+		],
+		"shop_skills": [
+			{
+				"name": "门客委任",
+				"level": 1,
+				"max_level": 200,
+				"base_percent": 0.05,
+				"percent_per_level": 0.03
+			}
+		]
+	},
+	"xiao_yuer": {
+		"name": "小鱼儿",
+		"category": "工",
+		"level": 1,
+		"base_income": 0,
+		"breakthrough_count": 1,
+		"initial_aptitude": 66,
+		"assigned_shop": "",
+		"bound_heroes": [
+			"ma_xianglan_friend",
+			"cai_shi_guan",
+			"hua_wuque",
+			"qiu_ying",
+			"yun_zhi",
+			"zhao_yang",
+			"qi_guang"
+		],
+		"aptitude_skills": [
+			{
+				"name": "非凡资质",
+				"level": 1,
+				"max_level": 200,
+				"aptitude_per_level": 2
+			}
+		],
+		"shop_skills": [
+			{
+				"name": "门客委任",
+				"level": 1,
+				"max_level": 200,
+				"base_percent": 0.05,
+				"percent_per_level": 0.03
+			}
+		]
+	},
+	"mei_changsu": {
+		"name": "梅长苏",
+		"category": "侠",
+		"level": 1,
+		"base_income": 0,
+		"breakthrough_count": 1,
+		"initial_aptitude": 66,
+		"assigned_shop": "",
+		"bound_heroes": [
+			"ni_huang_junzhu",
+			"shou_gong_shaonv",
+			"yi_shi",
+			"yu_tu",
+			"bi_bi_dong",
+			"ji_zhou",
+			"tan_you"
+		],
+		"aptitude_skills": [
+			{
+				"name": "非凡资质",
+				"level": 1,
+				"max_level": 200,
+				"aptitude_per_level": 2
+			}
+		],
+		"shop_skills": [
+			{
+				"name": "门客委任",
+				"level": 1,
+				"max_level": 200,
+				"base_percent": 0.05,
+				"percent_per_level": 0.03
+			}
+		]
+	},
+	"zhang_qiling": {
+		"name": "张起灵",
+		"category": "工",
+		"level": 1,
+		"base_income": 0,
+		"breakthrough_count": 1,
+		"initial_aptitude": 66,
+		"assigned_shop": "",
+		"bound_heroes": [
+			"wu_xie",
+			"xiao_shimei",
+			"xinniang_zhimei",
+			"mo_li",
+			"yin_niang",
+			"he_xi",
+			"jiu_yue"
+		],
+		"aptitude_skills": [
+			{
+				"name": "非凡资质",
+				"level": 1,
+				"max_level": 200,
+				"aptitude_per_level": 2
+			}
+		],
+		"shop_skills": [
+			{
+				"name": "门客委任",
+				"level": 1,
+				"max_level": 200,
+				"base_percent": 0.05,
+				"percent_per_level": 0.03
+			}
+		]
+	},
+	"bai_yuechu": {
+		"name": "白月初",
+		"category": "士",
+		"level": 1,
+		"base_income": 0,
+		"breakthrough_count": 1,
+		"initial_aptitude": 66,
+		"assigned_shop": "",
+		"bound_heroes": [
+			"tushan_honghong",
+			"xun_ying_shaonv",
+			"dong_xiaowan_friend",
+			"ning_yin",
+			"hui_yin",
+			"yu_ji",
+			"wan_wan",
+			"zhu_sha"
+		],
+		"aptitude_skills": [
+			{
+				"name": "非凡资质",
+				"level": 1,
+				"max_level": 200,
+				"aptitude_per_level": 2
+			}
+		],
+		"shop_skills": [
+			{
+				"name": "门客委任",
+				"level": 1,
+				"max_level": 200,
+				"base_percent": 0.05,
+				"percent_per_level": 0.03
+			}
+		]
+	},
+	"liu_maoxing": {
+		"name": "刘昴星",
+		"category": "侠",
+		"level": 1,
+		"base_income": 0,
+		"breakthrough_count": 1,
+		"initial_aptitude": 66,
+		"assigned_shop": "",
+		"bound_heroes": [
+			"zhou_meili",
+			"yao_pingguo",
+			"wang_zhaojun_friend",
+			"dao_gu",
+			"he_xi",
+			"wan_wan",
+			"ying_chun"
+		],
+		"aptitude_skills": [
+			{
+				"name": "非凡资质",
+				"level": 1,
+				"max_level": 200,
+				"aptitude_per_level": 2
+			}
+		],
+		"shop_skills": [
+			{
+				"name": "门客委任",
+				"level": 1,
+				"max_level": 200,
+				"base_percent": 0.05,
+				"percent_per_level": 0.03
+			}
+		]
+	},
+	"hua_mulan": {
+		"name": "花木兰",
+		"category": "商",
+		"level": 1,
+		"base_income": 0,
+		"breakthrough_count": 1,
+		"initial_aptitude": 66,
+		"assigned_shop": "",
+		"bound_heroes": [
+			"hua_mulan_friend",
+			"xinniang",
+			"bian_yujing_friend",
+			"xiao_hudie",
+			"xiao_ning",
+			"tan_you",
+			"rong"
+		],
+		"aptitude_skills": [
+			{
+				"name": "非凡资质",
+				"level": 1,
+				"max_level": 200,
+				"aptitude_per_level": 2
+			}
+		],
+		"shop_skills": [
+			{
+				"name": "门客委任",
+				"level": 1,
+				"max_level": 200,
+				"base_percent": 0.05,
+				"percent_per_level": 0.03
+			}
+		]
+	},
+	"wang_zhaojun": {
+		"name": "王昭君",
+		"category": "商",
+		"level": 1,
+		"base_income": 0,
+		"breakthrough_count": 1,
+		"initial_aptitude": 66,
+		"assigned_shop": "",
+		"bound_heroes": [
+			"shen_meizhuang",
+			"xinniang",
+			"wang_zhaojun_friend",
+			"miao_jiang_shengnv",
+			"yin_niang",
+			"xing_lan",
+			"si_tang",
+			"qi_guang"
+		],
+		"aptitude_skills": [
+			{
+				"name": "非凡资质",
+				"level": 1,
+				"max_level": 200,
+				"aptitude_per_level": 2
+			},
+			{
+				"name": "塞弦歌",
+				"level": 1,
+				"max_level": 200,
+				"aptitude_per_level": 6
+			}
+		],
+		"shop_skills": [
+			{
+				"name": "门客委任",
+				"level": 1,
+				"max_level": 200,
+				"base_percent": 0.05,
+				"percent_per_level": 0.03
+			}
+		]
+	},
+	"lan_feihong": {
+		"name": "兰飞鸿",
+		"category": "侠",
+		"level": 1,
+		"base_income": 0,
+		"breakthrough_count": 1,
+		"initial_aptitude": 66,
+		"assigned_shop": "",
+		"bound_heroes": [
+			"xun_ying_shaonv",
+			"tang_pingguo",
+			"gu_guo_gongzhu",
+			"luo",
+			"qi_ling",
+			"yun_zhi",
+			"ying_chun"
+		],
+		"aptitude_skills": [
+			{
+				"name": "非凡资质",
+				"level": 1,
+				"max_level": 200,
+				"aptitude_per_level": 2
+			}
+		],
+		"shop_skills": [
+			{
+				"name": "门客委任",
+				"level": 1,
+				"max_level": 200,
+				"base_percent": 0.05,
+				"percent_per_level": 0.03
+			}
+		]
+	},
+	"li_bai": {
+		"name": "李白",
+		"category": "士",
+		"level": 1,
+		"base_income": 0,
+		"breakthrough_count": 1,
+		"initial_aptitude": 66,
+		"quality": 0,
+		"fu_shi_level": 0,
+		"assigned_shop": "",
+		"bound_heroes": [
+			"nan_gong_wan",
+			"ling_ye_mao_nv",
+			"zhuo_gui_shi",
+			"ji_ye",
+			"qing_ning",
+			"ji_zhou",
+			"mu_shu",
+			"hong_ying"
+		],
+		"promotion": {
+			"name": "赋诗",
+			"level": 0,
+			"max_level": 300,
+			"cost_item": "zui_xian_niang",
+			"cost_amount": 600,
+			"aptitude_per_level": 6,
+			"tiers": [
+				{
+					"threshold": 5,
+					"quality": 1,
+					"initial_aptitude": 99,
+					"new_skills": [
+						{
+							"name": "月下独酌",
+							"aptitude_per_level": 3
+						}
+					]
+				},
+				{
+					"threshold": 15,
+					"new_skills": [
+						{
+							"name": "侠客行",
+							"aptitude_per_level": 3
+						}
+					]
+				},
+				{
+					"threshold": 30,
+					"new_skills": [
+						{
+							"name": "长风破浪",
+							"aptitude_per_level": 3
+						}
+					]
+				},
+				{
+					"threshold": 45,
+					"new_skills": [
+						{
+							"name": "扶摇直上",
+							"aptitude_per_level": 3
+						}
+					]
+				},
+				{
+					"threshold": 60,
+					"new_skills": [
+						{
+							"name": "天仙狂醉",
+							"aptitude_per_level": 4
+						}
+					]
+				},
+				{
+					"threshold": 80,
+					"quality": 2,
+					"initial_aptitude": 333,
+					"new_skills": []
+				}
+			]
+		},
+		"aptitude_skills": [
+			{
+				"name": "非凡资质",
+				"level": 1,
+				"max_level": 200,
+				"aptitude_per_level": 2
+			}
+		],
+		"shop_skills": [
+			{
+				"name": "门客委任",
+				"level": 1,
+				"max_level": 200,
+				"base_percent": 0.05,
+				"percent_per_level": 0.03
+			}
+		]
+	},
+	"shen_suanzi": {
+		"name": "神算子",
+		"category": "士",
+		"level": 1,
+		"base_income": 0,
+		"breakthrough_count": 1,
+		"initial_aptitude": 66,
+		"assigned_shop": "",
+		"bound_heroes": [
+			"xiao_shimei"
+		],
+		"aptitude_skills": [
+			{
+				"name": "非凡资质",
+				"level": 1,
+				"max_level": 200,
+				"aptitude_per_level": 2
+			}
+		],
+		"shop_skills": [
+			{
+				"name": "门客委任",
+				"level": 1,
+				"max_level": 200,
+				"base_percent": 0.05,
+				"percent_per_level": 0.03
+			}
+		]
+	},
+	"luo_caifeng": {
+		"name": "罗裁缝",
+		"category": "工",
+		"level": 1,
+		"base_income": 0,
+		"breakthrough_count": 1,
+		"initial_aptitude": 99,
+		"assigned_shop": "",
+		"bound_heroes": [
+			"yuan_xiao_guniang",
+			"xiao_shimei",
+			"xiao_mujiang",
+			"zi_yu",
+			"yu_lu",
+			"jiu_yue"
+		],
+		"aptitude_skills": [
+			{
+				"name": "大师资质",
+				"level": 1,
+				"max_level": 200,
+				"aptitude_per_level": 3
+			}
+		],
+		"shop_skills": [
+			{
+				"name": "门客委任",
+				"level": 1,
+				"max_level": 200,
+				"base_percent": 0.05,
+				"percent_per_level": 0.03
+			}
+		]
+	},
+	"ding_xiren": {
+		"name": "丁戏人",
+		"category": "商",
+		"level": 1,
+		"base_income": 0,
+		"breakthrough_count": 1,
+		"initial_aptitude": 99,
+		"assigned_shop": "",
+		"bound_heroes": [
+			"xiyu_nvzi",
+			"xinniang",
+			"hua_lang",
+			"xiao_lu_nv",
+			"yao_ying"
+		],
+		"aptitude_skills": [
+			{
+				"name": "大师资质",
+				"level": 1,
+				"max_level": 200,
+				"aptitude_per_level": 3
+			},
+			{
+				"name": "牵丝戏",
+				"level": 1,
+				"max_level": 200,
+				"aptitude_per_level": 2
+			}
+		],
+		"shop_skills": [
+			{
+				"name": "门客委任",
+				"level": 1,
+				"max_level": 200,
+				"base_percent": 0.05,
+				"percent_per_level": 0.03
+			}
+		]
+	},
+	"fang_huotou": {
+		"name": "方火头",
+		"category": "侠",
+		"level": 1,
+		"base_income": 0,
+		"breakthrough_count": 1,
+		"initial_aptitude": 99,
+		"assigned_shop": "",
+		"bound_heroes": [
+			"xiao_qigai",
+			"xinniang",
+			"niu_lang",
+			"huang_ye_linglan",
+			"he_xi"
+		],
+		"aptitude_skills": [
+			{
+				"name": "大师资质",
+				"level": 1,
+				"max_level": 200,
+				"aptitude_per_level": 3
+			},
+			{
+				"name": "震天雷",
+				"level": 1,
+				"max_level": 200,
+				"aptitude_per_level": 2
+			}
+		],
+		"shop_skills": [
+			{
+				"name": "门客委任",
+				"level": 1,
+				"max_level": 200,
+				"base_percent": 0.05,
+				"percent_per_level": 0.03
+			}
+		]
+	},
+	"leng_erpi": {
+		"name": "冷二皮",
+		"category": "士",
+		"level": 1,
+		"base_income": 0,
+		"breakthrough_count": 1,
+		"initial_aptitude": 99,
+		"assigned_shop": "",
+		"bound_heroes": [
+			"yi_shi",
+			"xinniang",
+			"zhi_nv",
+			"hua_wuque",
+			"yi_shi_new"
+		],
+		"aptitude_skills": [
+			{
+				"name": "大师资质",
+				"level": 1,
+				"max_level": 200,
+				"aptitude_per_level": 3
+			},
+			{
+				"name": "缝合术",
+				"level": 1,
+				"max_level": 200,
+				"aptitude_per_level": 3
+			}
+		],
+		"shop_skills": [
+			{
+				"name": "门客委任",
+				"level": 1,
+				"max_level": 200,
+				"base_percent": 0.05,
+				"percent_per_level": 0.03
+			}
+		]
+	},
+	"ya_jiu": {
+		"name": "牙九",
+		"category": "农",
+		"level": 1,
+		"base_income": 0,
+		"breakthrough_count": 1,
+		"initial_aptitude": 99,
+		"assigned_shop": "",
+		"bound_heroes": [
+			"jing_an",
+			"bu_kuai",
+			"wanghou_fuhao",
+			"qian_ren_xue"
+		],
+		"aptitude_skills": [
+			{
+				"name": "大师资质",
+				"level": 1,
+				"max_level": 200,
+				"aptitude_per_level": 3
+			},
+			{
+				"name": "聚财来",
+				"level": 1,
+				"max_level": 200,
+				"aptitude_per_level": 3
+			},
+			{
+				"name": "财运通",
+				"level": 1,
+				"max_level": 200,
+				"aptitude_per_level": 3
+			}
+		],
+		"shop_skills": [
+			{
+				"name": "门客委任",
+				"level": 1,
+				"max_level": 200,
+				"base_percent": 0.05,
+				"percent_per_level": 0.03
+			}
+		]
+	},
+	"guanxingshi": {
+		"name": "观星师",
+		"category": "侠",
+		"level": 1,
+		"base_income": 0,
+		"breakthrough_count": 1,
+		"initial_aptitude": 99,
+		"assigned_shop": "",
+		"bound_heroes": [
+			"xiao_shimei",
+			"bian_yujing_friend",
+			"kou_baimen_friend",
+			"wang_zhaojun_friend"
+		],
+		"aptitude_skills": [
+			{
+				"name": "大师资质",
+				"level": 1,
+				"max_level": 200,
+				"aptitude_per_level": 3
+			},
+			{
+				"name": "星辉术",
+				"level": 1,
+				"max_level": 200,
+				"aptitude_per_level": 3
+			},
+			{
+				"name": "观天意",
+				"level": 1,
+				"max_level": 200,
+				"aptitude_per_level": 3
+			},
+			{
+				"name": "道天机",
+				"level": 1,
+				"max_level": 200,
+				"aptitude_per_level": 3
+			}
+		],
+		"shop_skills": [
+			{
+				"name": "门客委任",
+				"level": 1,
+				"max_level": 200,
+				"base_percent": 0.05,
+				"percent_per_level": 0.03
+			}
+		]
+	},
+	"jisi_fuhao": {
+		"name": "祭师妇好",
+		"category": "农",
+		"level": 1,
+		"base_income": 0,
+		"breakthrough_count": 1,
+		"initial_aptitude": 99,
+		"assigned_shop": "",
+		"bound_heroes": [
+			"miao_jiang_shengnv",
+			"wanghou_fuhao",
+			"tushanshi"
+		],
+		"aptitude_skills": [
+			{
+				"name": "大师资质",
+				"level": 1,
+				"max_level": 200,
+				"aptitude_per_level": 3
+			},
+			{
+				"name": "占卜术",
+				"level": 1,
+				"max_level": 200,
+				"aptitude_per_level": 3
+			},
+			{
+				"name": "善谋略",
+				"level": 1,
+				"max_level": 200,
+				"aptitude_per_level": 3
+			},
+			{
+				"name": "懂文武",
+				"level": 1,
+				"max_level": 200,
+				"aptitude_per_level": 3
+			},
+			{
+				"name": "开疆土",
+				"level": 1,
+				"max_level": 200,
+				"aptitude_per_level": 3
+			}
+		],
+		"shop_skills": [
+			{
+				"name": "门客委任",
+				"level": 1,
+				"max_level": 200,
+				"base_percent": 0.05,
+				"percent_per_level": 0.03
+			}
+		]
+	},
+	"dayu": {
+		"name": "大禹",
+		"category": "工",
+		"level": 1,
+		"base_income": 0,
+		"breakthrough_count": 1,
+		"initial_aptitude": 333,
+		"assigned_shop": "",
+		"bound_heroes": [
+			"xun_ying_shaonv",
+			"wanghou_fuhao",
+			"tushanshi",
+			"jingwei"
+		],
+		"aptitude_skills": [
+			{
+				"name": "传说资质",
+				"level": 1,
+				"max_level": 200,
+				"aptitude_per_level": 4
+			},
+			{
+				"name": "治水术",
+				"level": 1,
+				"max_level": 200,
+				"aptitude_per_level": 4
+			},
+			{
+				"name": "水龙吟",
+				"level": 1,
+				"max_level": 200,
+				"aptitude_per_level": 4
+			},
+			{
+				"name": "凿龙门",
+				"level": 1,
+				"max_level": 200,
+				"aptitude_per_level": 4
+			},
+			{
+				"name": "会诸侯",
+				"level": 1,
+				"max_level": 200,
+				"aptitude_per_level": 4
+			},
+			{
+				"name": "造九鼎",
+				"level": 1,
+				"max_level": 200,
+				"aptitude_per_level": 4
+			}
+		],
+		"shop_skills": [
+			{
+				"name": "门客委任",
+				"level": 1,
+				"max_level": 200,
+				"base_percent": 0.05,
+				"percent_per_level": 0.03
+			}
+		]
+	},
+	"fuxi": {
+		"name": "伏羲",
+		"category": "士",
+		"level": 1,
+		"base_income": 0,
+		"breakthrough_count": 1,
+		"initial_aptitude": 333,
+		"assigned_shop": "",
+		"bound_heroes": [
+			"tushanshi",
+			"jingwei",
+			"change",
+			"huang_ye_linglan"
+		],
+		"aptitude_skills": [
+			{
+				"name": "传说资质",
+				"level": 1,
+				"max_level": 200,
+				"aptitude_per_level": 4
+			},
+			{
+				"name": "位三皇",
+				"level": 1,
+				"max_level": 200,
+				"aptitude_per_level": 5
+			},
+			{
+				"name": "观天象",
+				"level": 1,
+				"max_level": 200,
+				"aptitude_per_level": 4
+			},
+			{
+				"name": "悟太极",
+				"level": 1,
+				"max_level": 200,
+				"aptitude_per_level": 4
+			},
+			{
+				"name": "创八卦",
+				"level": 1,
+				"max_level": 200,
+				"aptitude_per_level": 4
+			},
+			{
+				"name": "游太虚",
+				"level": 1,
+				"max_level": 200,
+				"aptitude_per_level": 4
+			},
+			{
+				"name": "天下和",
+				"level": 1,
+				"max_level": 200,
+				"aptitude_per_level": 4
+			}
+		],
+		"shop_skills": [
+			{
+				"name": "门客委任",
+				"level": 1,
+				"max_level": 200,
+				"base_percent": 0.05,
+				"percent_per_level": 0.03
+			}
+		]
+	},
+	"houyi": {
+		"name": "后羿",
+		"category": "商",
+		"level": 1,
+		"base_income": 0,
+		"breakthrough_count": 1,
+		"initial_aptitude": 333,
+		"assigned_shop": "",
+		"bound_heroes": [
+			"change",
+			"jingwei",
+			"zi_yu",
+			"nvba"
+		],
+		"aptitude_skills": [
+			{
+				"name": "传说资质",
+				"level": 1,
+				"max_level": 200,
+				"aptitude_per_level": 4
+			},
+			{
+				"name": "赐彤弓",
+				"level": 1,
+				"max_level": 200,
+				"aptitude_per_level": 5
+			},
+			{
+				"name": "诛凿齿",
+				"level": 1,
+				"max_level": 200,
+				"aptitude_per_level": 5
+			},
+			{
+				"name": "徼大风",
+				"level": 1,
+				"max_level": 200,
+				"aptitude_per_level": 5
+			},
+			{
+				"name": "降猰貐",
+				"level": 1,
+				"max_level": 200,
+				"aptitude_per_level": 4
+			},
+			{
+				"name": "扶下国",
+				"level": 1,
+				"max_level": 200,
+				"aptitude_per_level": 4
+			},
+			{
+				"name": "统百部",
+				"level": 1,
+				"max_level": 200,
+				"aptitude_per_level": 4
+			},
+			{
+				"name": "得灵药",
+				"level": 1,
+				"max_level": 200,
+				"aptitude_per_level": 4
+			}
+		],
+		"shop_skills": [
+			{
+				"name": "门客委任",
+				"level": 1,
+				"max_level": 200,
+				"base_percent": 0.05,
+				"percent_per_level": 0.03
+			}
+		]
+	},
+	"chiyou": {
+		"name": "蚩尤",
+		"category": "侠",
+		"level": 1,
+		"base_income": 0,
+		"breakthrough_count": 1,
+		"initial_aptitude": 333,
+		"assigned_shop": "",
+		"bound_heroes": [
+			"jingwei",
+			"change",
+			"nvba",
+			"nvwa"
+		],
+		"aptitude_skills": [
+			{
+				"name": "传说资质",
+				"level": 1,
+				"max_level": 200,
+				"aptitude_per_level": 4
+			},
+			{
+				"name": "九黎族",
+				"level": 1,
+				"max_level": 200,
+				"aptitude_per_level": 5
+			},
+			{
+				"name": "侵如火",
+				"level": 1,
+				"max_level": 200,
+				"aptitude_per_level": 5
+			},
+			{
+				"name": "战逐鹿",
+				"level": 1,
+				"max_level": 200,
+				"aptitude_per_level": 5
+			},
+			{
+				"name": "风雨助",
+				"level": 1,
+				"max_level": 200,
+				"aptitude_per_level": 5
+			},
+			{
+				"name": "驱千旗",
+				"level": 1,
+				"max_level": 200,
+				"aptitude_per_level": 5
+			},
+			{
+				"name": "魔神角",
+				"level": 1,
+				"max_level": 200,
+				"aptitude_per_level": 4
+			},
+			{
+				"name": "铜铁骨",
+				"level": 1,
+				"max_level": 200,
+				"aptitude_per_level": 4
+			},
+			{
+				"name": "制五兵",
+				"level": 1,
+				"max_level": 200,
+				"aptitude_per_level": 4
+			}
+		],
+		"shop_skills": [
+			{
+				"name": "门客委任",
+				"level": 1,
+				"max_level": 200,
+				"base_percent": 0.05,
+				"percent_per_level": 0.03
+			}
+		]
+	},
+	"donghuang_taiyi": {
+		"name": "东皇太一",
+		"category": "农",
+		"level": 1,
+		"base_income": 0,
+		"breakthrough_count": 1,
+		"initial_aptitude": 333,
+		"assigned_shop": "",
+		"bound_heroes": [
+			"nvwa",
+			"nvba",
+			"change",
+			"xiwangmu"
+		],
+		"aptitude_skills": [
+			{
+				"name": "完美资质",
+				"level": 1,
+				"max_level": 200,
+				"aptitude_per_level": 5
+			},
+			{
+				"name": "称东皇",
+				"level": 1,
+				"max_level": 200,
+				"aptitude_per_level": 5
+			},
+			{
+				"name": "力证道",
+				"level": 1,
+				"max_level": 200,
+				"aptitude_per_level": 5
+			},
+			{
+				"name": "灭祖巫",
+				"level": 1,
+				"max_level": 200,
+				"aptitude_per_level": 5
+			},
+			{
+				"name": "太阳星",
+				"level": 1,
+				"max_level": 200,
+				"aptitude_per_level": 6
+			},
+			{
+				"name": "混沌钟",
+				"level": 1,
+				"max_level": 200,
+				"aptitude_per_level": 6
+			},
+			{
+				"name": "镇鸿蒙",
+				"level": 1,
+				"max_level": 200,
+				"aptitude_per_level": 6
+			},
+			{
+				"name": "统万族",
+				"level": 1,
+				"max_level": 200,
+				"aptitude_per_level": 6
+			},
+			{
+				"name": "立天庭",
+				"level": 1,
+				"max_level": 200,
+				"aptitude_per_level": 6
+			}
+		],
+		"shop_skills": [
+			{
+				"name": "门客委任",
+				"level": 1,
+				"max_level": 200,
+				"base_percent": 0.05,
+				"percent_per_level": 0.03
+			}
+		]
+	},
+	"haotian_shangdi": {
+		"name": "昊天上帝",
+		"category": "工",
+		"level": 1,
+		"base_income": 0,
+		"breakthrough_count": 1,
+		"initial_aptitude": 333,
+		"assigned_shop": "",
+		"bound_heroes": [
+			"xiwangmu",
+			"nvwa",
+			"nvba"
+		],
+		"aptitude_skills": [
+			{
+				"name": "完美资质",
+				"level": 1,
+				"max_level": 200,
+				"aptitude_per_level": 5
+			},
+			{
+				"name": "赐福祉",
+				"level": 1,
+				"max_level": 200,
+				"aptitude_per_level": 7
+			},
+			{
+				"name": "封仙籍",
+				"level": 1,
+				"max_level": 200,
+				"aptitude_per_level": 7
+			},
+			{
+				"name": "登无极",
+				"level": 1,
+				"max_level": 200,
+				"aptitude_per_level": 7
+			},
+			{
+				"name": "镇邪祟",
+				"level": 1,
+				"max_level": 200,
+				"aptitude_per_level": 7
+			},
+			{
+				"name": "昊天塔",
+				"level": 1,
+				"max_level": 200,
+				"aptitude_per_level": 7
+			},
+			{
+				"name": "开纪元",
+				"level": 1,
+				"max_level": 200,
+				"aptitude_per_level": 7
+			},
+			{
+				"name": "立天纲",
+				"level": 1,
+				"max_level": 200,
+				"aptitude_per_level": 7
+			},
+			{
+				"name": "掌天枢",
+				"level": 1,
+				"max_level": 200,
+				"aptitude_per_level": 7
+			}
+		],
+		"shop_skills": [
+			{
+				"name": "门客委任",
+				"level": 1,
+				"max_level": 200,
+				"base_percent": 0.05,
+				"percent_per_level": 0.03
+			}
+		]
+	}
 }

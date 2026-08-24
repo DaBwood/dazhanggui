@@ -1,1586 +1,1591 @@
 {
 	"shu_xiang_nv": {
-	"name": "书香女",
-	"friendly": 100,
-	"talent": 100,
-	"bond": 0,
-	"fixed_skill_level": 0,
-	"percent_skill_level": 0,
-	"bound_heroes": [
-	  "wan_jinya",
-      "liu_bukuai"
-	]
-  },
-  "zhen_xian_nv": {
-	"name": "针线女",
-	"friendly": 100,
-	"talent": 100,
-	"bond": 0,
-	"fixed_skill_level": 0,
-	"percent_skill_level": 0,
-	"bound_heroes": [
-	  "kang_chashi",
-      "niu_fushi"
-	]
-  },
-  "wu_nv": {
-	"name": "舞女",
-	"friendly": 100,
-	"talent": 100,
-	"bond": 0,
-	"fixed_skill_level": 0,
-	"percent_skill_level": 0,
-	"bound_heroes": [
-	  "he_yashi",
-      "xing_huwei"
-	]
-  },
-  "jian_wuzhe": {
-	"name": "剑舞者",
-	"friendly": 100,
-	"talent": 100,
-	"bond": 0,
-	"fixed_skill_level": 0,
-	"percent_skill_level": 0,
-	"bound_heroes": [
-	  "liang_waiqi",
-      "qian_caizhu"
-	]
-  },
-  "dou_fu_nv": {
-	"name": "豆腐女",
-	"friendly": 100,
-	"talent": 100,
-	"bond": 0,
-	"fixed_skill_level": 0,
-	"percent_skill_level": 0,
-	"bound_heroes": [
-	  "luo_sunshan",
-      "tang_hulu"
-	]
-  },
-  "xiu_niang": {
-	"name": "秀娘",
-	"friendly": 100,
-	"talent": 100,
-	"bond": 0,
-	"fixed_skill_level": 0,
-	"percent_skill_level": 0,
-	"bound_heroes": [
-	  "li_gushi",
-      "zheng_guonong"
-	]
-  },
-  "xi_zi": {
-	"name": "戏子",
-	"friendly": 100,
-	"talent": 100,
-	"bond": 0,
-	"fixed_skill_level": 0,
-	"percent_skill_level": 0,
-	"bound_heroes": [
-	  "wu_shiren",
-      "liu_xizi"
-	]
-  },
-  "mai_san_nv": {
-	"name": "买伞女",
-	"friendly": 100,
-	"talent": 100,
-	"bond": 0,
-	"fixed_skill_level": 0,
-	"percent_skill_level": 0,
-	"bound_heroes": [
-	  "zhang_laobo",
-      "zhu_huolang"
-	]
-  },
-  "ya_huan": {
-	"name": "丫鬟",
-	"friendly": 100,
-	"talent": 100,
-	"bond": 0,
-	"fixed_skill_level": 0,
-	"percent_skill_level": 0,
-	"bound_heroes": [
-	  "hu_qigai",
-      "liu_silang"
-	]
-  },
-  "xiao_shijie": {
-	"name": "小师姐",
-	"friendly": 100,
-	"talent": 100,
-	"bond": 0,
-	"fixed_skill_level": 0,
-	"percent_skill_level": 0,
-	"bound_heroes": [
-      "jia_houzi"
-	]
-  },
-  "meng_qier": {
-	"name": "蒙琪儿",
-	"friendly": 100,
-	"talent": 100,
-	"bond": 0,
-	"fixed_skill_level": 0,
-	"percent_skill_level": 0,
-	"bound_heroes": [
-	  "zhu_daliang",
-      "shen_wansan"
-	]
-  },
-  "jing_an": {
-	"name": "静庵",
-	"friendly": 100,
-	"talent": 100,
-	"bond": 0,
-	"fixed_skill_level": 0,
-	"percent_skill_level": 0,
-	"bound_heroes": [
-	  "zheng_chuzi",
-      "ya_jiu"
-	]
-  },
-  "cu_ju_nv": {
-	"name": "蹴鞠女",
-	"friendly": 100,
-	"talent": 100,
-	"bond": 0,
-	"fixed_skill_level": 0,
-	"percent_skill_level": 0,
-	"bound_heroes": [
-	  "cai_yufu",
-      "pi_yingjiang"
-	]
-  },
-  "li_shishi": {
-	"name": "李师师",
-	"friendly": 100,
-	"talent": 100,
-	"bond": 0,
-	"fixed_skill_level": 0,
-	"percent_skill_level": 0,
-	"bound_heroes": [
-	  "ge_langzhong",
-	  "zhen_tufu",
-	  "song_huizong",
-      "shen_wansan"
-	]
-  },
-  "bi_bi_dong": {
-	"name": "比比东",
-	"friendly": 100,
-	"talent": 100,
-	"bond": 0,
-	"fixed_skill_level": 0,
-	"percent_skill_level": 0,
-	"bound_heroes": [
-	  "si_lang",
-	  "yang_jian",
-	  "mei_changsu",
-	  "bi_sheng",
-      "xiao_wu"
-	]
-  },
-  "bian_yujing_friend": {
-	"name": "卞玉京",
-	"friendly": 100,
-	"talent": 100,
-	"bond": 0,
-	"fixed_skill_level": 0,
-	"percent_skill_level": 0,
-	"bound_heroes": [
-	  "hua_mulan",
-	  "guanxingshi",
-	  "bian_yujing",
-	  "huo_yanwang",
-      "gun_hai_jiao"
-	]
-  },
-  "bu_kuai": {
-	"name": "捕快",
-	"friendly": 100,
-	"talent": 100,
-	"bond": 0,
-	"fixed_skill_level": 0,
-	"percent_skill_level": 0,
-	"bound_heroes": [
-	  "ya_jiu",
-	  "zhang_sanfeng",
-	  "zhou_yu",
-	  "xiang_yu",
-      "gun_hai_jiao"
-	]
-  },
-  "cai_shi_guan": {
-	"name": "采诗官",
-	"friendly": 100,
-	"talent": 100,
-	"bond": 0,
-	"fixed_skill_level": 0,
-	"percent_skill_level": 0,
-	"bound_heroes": [
-	  "xiao_yuer",
-	  "gao_jianli",
-	  "song_jiang",
-      "li_xiangjun"
-	]
-  },
-  "cai_yao_nv": {
-	"name": "采药女",
-	"friendly": 100,
-	"talent": 100,
-	"bond": 0,
-	"fixed_skill_level": 0,
-	"percent_skill_level": 0,
-	"bound_heroes": [
-	  "zhuang_gengfu",
-      "cao_tiejiang"
-	]
-  },
-  "cao_yuan_nvhai": {
-	"name": "草原女孩",
-	"friendly": 100,
-	"talent": 100,
-	"bond": 0,
-	"fixed_skill_level": 0,
-	"percent_skill_level": 0,
-	"bound_heroes": [
-	  "jia_jiguan",
-      "su_wu"
-	]
-  },
-  "dao_gu": {
-	"name": "盗姑",
-	"friendly": 100,
-	"talent": 100,
-	"bond": 0,
-	"fixed_skill_level": 0,
-	"percent_skill_level": 0,
-	"bound_heroes": [
-	  "liu_maoxing",
-	  "lv_bu",
-	  "qin_qiong_yuchi",
-      "xiao_qi"
-	]
-  },
-  "dong_xiaowan_friend": {
-	"name": "董小宛",
-	"friendly": 100,
-	"talent": 100,
-	"bond": 0,
-	"fixed_skill_level": 0,
-	"percent_skill_level": 0,
-	"bound_heroes": [
-	  "bai_yuechu",
-	  "cai_jing",
-	  "dong_xiaowan",
-      "qin_shihuang"
-	]
-  },
-  "gu_guo_gongzhu": {
-	"name": "古国公主",
-	"friendly": 100,
-	"talent": 100,
-	"bond": 0,
-	"fixed_skill_level": 0,
-	"percent_skill_level": 0,
-	"bound_heroes": [
-	  "lan_feihong",
-	  "sun_bin",
-	  "shen_wansan",
-	  "sun_wu",
-      "song_taizu"
-	]
-  },
-  "he_xi": {
-	"name": "何曦",
-	"friendly": 100,
-	"talent": 100,
-	"bond": 0,
-	"fixed_skill_level": 0,
-	"percent_skill_level": 0,
-	"bound_heroes": [
-	  "zhang_qiling",
-	  "liu_maoxing",
-	  "fang_huotou",
-	  "cai_jing",
-      "long_xiang"
-	]
-  },
-  "hong_niangzi": {
-	"name": "红娘子",
-	"friendly": 100,
-	"talent": 100,
-	"bond": 0,
-	"fixed_skill_level": 0,
-	"percent_skill_level": 0,
-	"bound_heroes": [
-	  "yan_xiaoer",
-      "qian_caizhu"
-	]
-  },
-  "hong_ying": {
-	"name": "红缨",
-	"friendly": 100,
-	"talent": 100,
-	"bond": 0,
-	"fixed_skill_level": 0,
-	"percent_skill_level": 0,
-	"bound_heroes": [
-	  "li_bai",
-	  "zhen_tufu",
-	  "long_xiang",
-      "bian_yujing"
-	]
-  },
-  "hu_yao_zhanggui": {
-	"name": "狐妖掌柜",
-	"friendly": 100,
-	"talent": 100,
-	"bond": 0,
-	"fixed_skill_level": 0,
-	"percent_skill_level": 0,
-	"bound_heroes": [
-	  "du_kang",
-	  "bi_sheng",
-	  "dunhuang_jiang",
-      "long_xiang"
-	]
-  },
-  "hua_lang": {
-	"name": "花郎",
-	"friendly": 100,
-	"talent": 100,
-	"bond": 0,
-	"fixed_skill_level": 0,
-	"percent_skill_level": 0,
-	"bound_heroes": [
-	  "si_lang",
-	  "ding_xiren",
-      "hong_laoxie"
-	]
-  },
-  "hua_mulan_friend": {
-	"name": "花木兰",
-	"friendly": 100,
-	"talent": 100,
-	"bond": 0,
-	"fixed_skill_level": 0,
-	"percent_skill_level": 0,
-	"bound_heroes": [
-	  "yang_jian",
-	  "hua_mulan",
-	  "zong_ze",
-      "ao_wu"
-	]
-  },
-  "hua_wuque": {
-	"name": "花无缺",
-	"friendly": 100,
-	"talent": 100,
-	"bond": 0,
-	"fixed_skill_level": 0,
-	"percent_skill_level": 0,
-	"bound_heroes": [
-	  "si_lang",
-	  "xiao_yuer",
-	  "leng_erpi",
-      "ma_xianglan"
-	]
-  },
-  "hua_yi_shi": {
-	"name": "花艺师",
-	"friendly": 100,
-	"talent": 100,
-	"bond": 0,
-	"fixed_skill_level": 0,
-	"percent_skill_level": 0,
-	"bound_heroes": [
-	  "lu_ban",
-	  "gao_jianli",
-	  "xiang_en",
-      "ne_zha"
-	]
-  },
-  "hua_zhao": {
-	"name": "花朝",
-	"friendly": 100,
-	"talent": 100,
-	"bond": 0,
-	"fixed_skill_level": 0,
-	"percent_skill_level": 0,
-	"bound_heroes": [
-	  "shi_gandang",
-	  "huo_yanwang",
-	  "xiao_ba",
-      "li_xiangjun"
-	]
-  },
-  "huang_ye_linglan": {
-	"name": "荒野铃兰",
-	"friendly": 100,
-	"talent": 100,
-	"bond": 0,
-	"fixed_skill_level": 0,
-	"percent_skill_level": 0,
-	"bound_heroes": [
-	  "fang_huotou",
-	  "su_wu",
-	  "fu_xi",
-      "qin_shihuang"
-	]
-  },
-  "hui_yin": {
-	"name": "徽茵",
-	"friendly": 100,
-	"talent": 100,
-	"bond": 0,
-	"fixed_skill_level": 0,
-	"percent_skill_level": 0,
-	"bound_heroes": [
-	  "bai_yuechu",
-	  "cai_jing",
-	  "sun_wu",
-	  "zheng_he",
-      "ma_xianglan"
-	]
-  },
-  "ji_ye": {
-	"name": "极夜",
-	"friendly": 100,
-	"talent": 100,
-	"bond": 0,
-	"fixed_skill_level": 0,
-	"percent_skill_level": 0,
-	"bound_heroes": [
-	  "jie_lu",
-	  "li_bai",
-	  "xiang_yu",
-	  "bian_yujing",
-      "song_taizu"
-	]
-  },
-  "ji_zhou": {
-	"name": "极昼",
-	"friendly": 100,
-	"talent": 100,
-	"bond": 0,
-	"fixed_skill_level": 0,
-	"percent_skill_level": 0,
-	"bound_heroes": [
-	  "li_bai",
-	  "mei_changsu",
-	  "ao_wu",
-	  "kou_baimen",
-      "luo_haiwang"
-	]
-  },
-  "jiang_men_nvzi": {
-	"name": "将门女子",
-	"friendly": 100,
-	"talent": 100,
-	"bond": 0,
-	"fixed_skill_level": 0,
-	"percent_skill_level": 0,
-	"bound_heroes": [
-	  "wu_biaoshi",
-      "yan_xiansheng"
-	]
-  },
-  "jin_shu": {
-	"name": "堇书",
-	"friendly": 100,
-	"talent": 100,
-	"bond": 0,
-	"fixed_skill_level": 0,
-	"percent_skill_level": 0,
-	"bound_heroes": [
-	  "hulu_xianren",
-	  "wu_daozi",
-	  "qin_qiong_yuchi",
-      "kou_baimen"
-	]
-  },
-  "jiu_yue": {
-	"name": "玖月",
-	"friendly": 100,
-	"talent": 100,
-	"bond": 0,
-	"fixed_skill_level": 0,
-	"percent_skill_level": 0,
-	"bound_heroes": [
-	  "zhang_qiling",
-	  "luo_caifeng",
-	  "lu_ban",
-      "xiao_qi"
-	]
-  },
-  "jun_zhu": {
-	"name": "郡主",
-	"friendly": 100,
-	"talent": 100,
-	"bond": 0,
-	"fixed_skill_level": 0,
-	"percent_skill_level": 0,
-	"bound_heroes": [
-	  "wu_daozi",
-      "bi_sheng"
-	]
-  },
-  "kou_baimen_friend": {
-	"name": "寇白门",
-	"friendly": 100,
-	"talent": 100,
-	"bond": 0,
-	"fixed_skill_level": 0,
-	"percent_skill_level": 0,
-	"bound_heroes": [
-	  "guanxingshi",
-	  "song_huizong",
-	  "kou_baimen",
-      "zheng_he"
-	]
-  },
-  "lang_zi": {
-	"name": "浪子",
-	"friendly": 100,
-	"talent": 100,
-	"bond": 0,
-	"fixed_skill_level": 0,
-	"percent_skill_level": 0,
-	"bound_heroes": [
-	  "jie_lu",
-      "zhen_tufu"
-	]
-  },
-  "li_xiangjun_friend": {
-	"name": "李香君",
-	"friendly": 100,
-	"talent": 100,
-	"bond": 0,
-	"fixed_skill_level": 0,
-	"percent_skill_level": 0,
-	"bound_heroes": [
-	  "yang_jian",
-	  "li_xiangjun",
-	  "shi_gandang",
-      "xiao_wu"
-	]
-  },
-  "lie_ren": {
-	"name": "猎人",
-	"friendly": 100,
-	"talent": 100,
-	"bond": 0,
-	"fixed_skill_level": 0,
-	"percent_skill_level": 0,
-	"bound_heroes": [
-	  "zhao_liehu",
-      "yao_wuzuo"
-	]
-  },
-  "ling_ye_mao_nv": {
-	"name": "灵夜猫女",
-	"friendly": 100,
-	"talent": 100,
-	"bond": 0,
-	"fixed_skill_level": 0,
-	"percent_skill_level": 0,
-	"bound_heroes": [
-	  "li_bai",
-	  "ou_yezi",
-	  "su_wu",
-	  "lei_en",
-      "xiao_ba"
-	]
-  },
-  "luo": {
-	"name": "萝",
-	"friendly": 100,
-	"talent": 100,
-	"bond": 0,
-	"fixed_skill_level": 0,
-	"percent_skill_level": 0,
-	"bound_heroes": [
-	  "si_lang",
-	  "lan_feihong",
-	  "feng_mier",
-	  "xiao_qi",
-      "lu_ban"
-	]
-  },
-  "ma_ma": {
-	"name": "嬷嬷",
-	"friendly": 100,
-	"talent": 100,
-	"bond": 0,
-	"fixed_skill_level": 0,
-	"percent_skill_level": 0,
-	"bound_heroes": [
-	  "wu_biaoshi",
-      "du_kang"
-	]
-  },
-  "ma_xianglan_friend": {
-	"name": "马湘兰",
-	"friendly": 100,
-	"talent": 100,
-	"bond": 0,
-	"fixed_skill_level": 0,
-	"percent_skill_level": 0,
-	"bound_heroes": [
-	  "xiao_yuer",
-	  "ma_xianglan",
-	  "cai_jing",
-      "baixi_shengdao"
-	]
-  },
-  "mi_tan": {
-	"name": "密探",
-	"friendly": 100,
-	"talent": 100,
-	"bond": 0,
-	"fixed_skill_level": 0,
-	"percent_skill_level": 0,
-	"bound_heroes": [
-	  "xing_huwei",
-      "kou_baimen"
-	]
-  },
-  "miao_jiang_shengnv": {
-	"name": "苗疆圣女",
-	"friendly": 100,
-	"talent": 100,
-	"bond": 0,
-	"fixed_skill_level": 0,
-	"percent_skill_level": 0,
-	"bound_heroes": [
-	  "yang_jian",
-	  "wang_zhaojun",
-	  "feng_mier",
-	  "zhen_tufu",
-	  "jisi_fuhao",
-      "xiao_wu"
-	]
-  },
-  "mo_li": {
-	"name": "墨璃",
-	"friendly": 100,
-	"talent": 100,
-	"bond": 0,
-	"fixed_skill_level": 0,
-	"percent_skill_level": 0,
-	"bound_heroes": [
-	  "zhang_qiling",
-	  "hong_laoxie",
-	  "ne_zha",
-	  "xiao_qi",
-      "dong_xiaowan"
-	]
-  },
-  "mu_shu": {
-	"name": "慕姝",
-	"friendly": 100,
-	"talent": 100,
-	"bond": 0,
-	"fixed_skill_level": 0,
-	"percent_skill_level": 0,
-	"bound_heroes": [
-	  "li_bai",
-	  "hong_laoxie",
-	  "su_wu",
-      "dong_xiaowan"
-	]
-  },
-  "nan_gong_wan": {
-	"name": "南宫婉",
-	"friendly": 100,
-	"talent": 100,
-	"bond": 0,
-	"fixed_skill_level": 0,
-	"percent_skill_level": 0,
-	"bound_heroes": [
-	  "li_bai",
-	  "song_huizong",
-      "dong_xiaowan"
-	]
-  },
-  "ni_huang_junzhu": {
-	"name": "霓凰郡主",
-	"friendly": 100,
-	"talent": 100,
-	"bond": 0,
-	"fixed_skill_level": 0,
-	"percent_skill_level": 0,
-	"bound_heroes": [
-	  "mei_changsu",
-	  "du_kang",
-	  "bi_sheng",
-      "kou_baimen"
-	]
-  },
-  "ning_yin": {
-	"name": "凝音",
-	"friendly": 100,
-	"talent": 100,
-	"bond": 0,
-	"fixed_skill_level": 0,
-	"percent_skill_level": 0,
-	"bound_heroes": [
-	  "bai_yuechu",
-	  "zong_ze",
-	  "shen_wansan",
-      "baixi_shengdao"
-	]
-  },
-  "niu_lang": {
-	"name": "牛郎",
-	"friendly": 100,
-	"talent": 100,
-	"bond": 0,
-	"fixed_skill_level": 0,
-	"percent_skill_level": 0,
-	"bound_heroes": [
-	  "fang_huotou",
-	  "feng_mier",
-	  "xiang_en",
-      "luo_haiwang"
-	]
-  },
-  "pi_pa_nv": {
-	"name": "琵琶女",
-	"friendly": 100,
-	"talent": 100,
-	"bond": 0,
-	"fixed_skill_level": 0,
-	"percent_skill_level": 0,
-	"bound_heroes": [
-	  "qin_jianxian",
-      "tian_shiren"
-	]
-  },
-  "qi_guang": {
-	"name": "栖光",
-	"friendly": 100,
-	"talent": 100,
-	"bond": 0,
-	"fixed_skill_level": 0,
-	"percent_skill_level": 0,
-	"bound_heroes": [
-	  "xiao_yuer",
-	  "wang_zhaojun",
-	  "ou_yezi",
-      "zhou_yu"
-	]
-  },
-  "qi_ling": {
-	"name": "器灵",
-	"friendly": 100,
-	"talent": 100,
-	"bond": 0,
-	"fixed_skill_level": 0,
-	"percent_skill_level": 0,
-	"bound_heroes": [
-	  "lan_feihong",
-	  "zhang_sanfeng",
-	  "dunhuang_jiang",
-	  "qin_qiong_yuchi",
-      "xiao_ba"
-	]
-  },
-  "qi_shi": {
-	"name": "棋士",
-	"friendly": 100,
-	"talent": 100,
-	"bond": 0,
-	"fixed_skill_level": 0,
-	"percent_skill_level": 0,
-	"bound_heroes": [
-	  "yan_xiaoer",
-      "li_shenshou"
-	]
-  },
-  "qian_ren_xue": {
-	"name": "千仞雪",
-	"friendly": 100,
-	"talent": 100,
-	"bond": 0,
-	"fixed_skill_level": 0,
-	"percent_skill_level": 0,
-	"bound_heroes": [
-	  "yang_jian",
-	  "ya_jiu",
-	  "zhen_tufu",
-	  "zhang_sanfeng",
-      "xiao_wu"
-	]
-  },
-  "qing_ning": {
-	"name": "青凝",
-	"friendly": 100,
-	"talent": 100,
-	"bond": 0,
-	"fixed_skill_level": 0,
-	"percent_skill_level": 0,
-	"bound_heroes": [
-	  "li_bai",
-	  "wu_daozi",
-	  "cai_jing",
-	  "zheng_he",
-      "lu_ban"
-	]
-  },
-  "qiu_ying": {
-	"name": "秋萤",
-	"friendly": 100,
-	"talent": 100,
-	"bond": 0,
-	"fixed_skill_level": 0,
-	"percent_skill_level": 0,
-	"bound_heroes": [
-	  "xiao_yuer",
-	  "yan_xiansheng",
-	  "qin_shihuang",
-      "sun_wu"
-	]
-  },
-  "rong": {
-	"name": "融",
-	"friendly": 100,
-	"talent": 100,
-	"bond": 0,
-	"fixed_skill_level": 0,
-	"percent_skill_level": 0,
-	"bound_heroes": [
-	  "hua_mulan",
-	  "zong_ze",
-	  "sun_wu",
-	  "song_taizu",
-      "xiao_ba"
-	]
-  },
-  "sha_lan": {
-	"name": "沙兰",
-	"friendly": 100,
-	"talent": 100,
-	"bond": 0,
-	"fixed_skill_level": 0,
-	"percent_skill_level": 0,
-	"bound_heroes": [
-	  "hulu_xianren",
-	  "ou_yezi",
-	  "song_huizong",
-      "xiao_ba"
-	]
-  },
-  "shao_jiangjun": {
-	"name": "少将军",
-	"friendly": 100,
-	"talent": 100,
-	"bond": 0,
-	"fixed_skill_level": 0,
-	"percent_skill_level": 0,
-	"bound_heroes": [
-	  "li_shenshou",
-      "baixi_shengdao"
-	]
-  },
-  "shen_meizhuang": {
-	"name": "沈眉庄",
-	"friendly": 100,
-	"talent": 100,
-	"bond": 0,
-	"fixed_skill_level": 0,
-	"percent_skill_level": 0,
-	"bound_heroes": [
-	  "wang_zhaojun",
-	  "li_shenshou",
-	  "lei_en",
-      "li_xiangjun"
-	]
-  },
-  "shi_bo_shi": {
-	"name": "市舶使",
-	"friendly": 100,
-	"talent": 100,
-	"bond": 0,
-	"fixed_skill_level": 0,
-	"percent_skill_level": 0,
-	"bound_heroes": [
-	  "hulu_xianren",
-	  "lv_bu",
-	  "qin_qiong_yuchi",
-	  "li_xiangjun",
-	  "xiao_ba",
-      "luo_haiwang"
-	]
-  },
-  "shou_gong_shaonv": {
-	"name": "手工少女",
-	"friendly": 100,
-	"talent": 100,
-	"bond": 0,
-	"fixed_skill_level": 0,
-	"percent_skill_level": 0,
-	"bound_heroes": [
-	  "mei_changsu",
-	  "ou_yezi",
-	  "zong_ze",
-      "shi_gandang"
-	]
-  },
-  "si_tang": {
-	"name": "司棠",
-	"friendly": 100,
-	"talent": 100,
-	"bond": 0,
-	"fixed_skill_level": 0,
-	"percent_skill_level": 0,
-	"bound_heroes": [
-	  "wang_zhaojun",
-	  "xiao_qi",
-	  "zheng_he",
-      "li_xiangjun"
-	]
-  },
-  "tan_you": {
-	"name": "探幽",
-	"friendly": 100,
-	"talent": 100,
-	"bond": 0,
-	"fixed_skill_level": 0,
-	"percent_skill_level": 0,
-	"bound_heroes": [
-	  "mei_changsu",
-	  "hua_mulan",
-	  "xiao_ba",
-      "kou_baimen"
-	]
-  },
-  "tang_pingguo": {
-	"name": "糖苹果",
-	"friendly": 100,
-	"talent": 100,
-	"bond": 0,
-	"fixed_skill_level": 0,
-	"percent_skill_level": 0,
-	"bound_heroes": [
-	  "lan_feihong",
-	  "zong_ze",
-	  "ao_wu",
-	  "xiang_yu",
-      "dong_xiaowan"
-	]
-  },
-  "tushan_honghong": {
-	"name": "涂山红红",
-	"friendly": 100,
-	"talent": 100,
-	"bond": 0,
-	"fixed_skill_level": 0,
-	"percent_skill_level": 0,
-	"bound_heroes": [
-	  "bai_yuechu",
-	  "shi_gandang",
-	  "xiang_en",
-      "bian_yujing"
-	]
-  },
-  "wang_zhaojun_friend": {
-	"name": "王昭君",
-	"friendly": 100,
-	"talent": 100,
-	"bond": 0,
-	"fixed_skill_level": 0,
-	"percent_skill_level": 0,
-	"bound_heroes": [
-	  "jie_lu",
-	  "wang_zhaojun",
-	  "liu_maoxing",
-	  "gao_jianli",
-      "guanxingshi"
-	]
-  },
-  "wan_wan": {
-	"name": "绾绾",
-	"friendly": 100,
-	"talent": 100,
-	"bond": 0,
-	"fixed_skill_level": 0,
-	"percent_skill_level": 0,
-	"bound_heroes": [
-	  "bai_yuechu",
-	  "liu_maoxing",
-	  "qin_qiong_yuchi",
-      "kou_baimen"
-	]
-  },
-  "wu_nv_wu": {
-	"name": "巫女",
-	"friendly": 100,
-	"talent": 100,
-	"bond": 0,
-	"fixed_skill_level": 0,
-	"percent_skill_level": 0,
-	"bound_heroes": [
-	  "yan_xiansheng",
-	  "ne_zha",
-      "ma_xianglan"
-	]
-  },
-  "wu_xie": {
-	"name": "吴邪",
-	"friendly": 100,
-	"talent": 100,
-	"bond": 0,
-	"fixed_skill_level": 0,
-	"percent_skill_level": 0,
-	"bound_heroes": [
-	  "zhang_qiling",
-	  "sun_bin",
-	  "lei_en",
-      "ao_wu"
-	]
-  },
-  "xihu_chuangniang": {
-	"name": "西湖船娘",
-	"friendly": 100,
-	"talent": 100,
-	"bond": 0,
-	"fixed_skill_level": 0,
-	"percent_skill_level": 0,
-	"bound_heroes": [
-	  "qin_jianxian",
-	  "zhen_tufu",
-      "wu_daozi"
-	]
-  },
-  "xiyu_nvzi": {
-	"name": "西域女子",
-	"friendly": 100,
-	"talent": 100,
-	"bond": 0,
-	"fixed_skill_level": 0,
-	"percent_skill_level": 0,
-	"bound_heroes": [
-	  "yun_youren",
-      "ding_xiren"
-	]
-  },
-  "xiao_hudie": {
-	"name": "小蝴蝶",
-	"friendly": 100,
-	"talent": 100,
-	"bond": 0,
-	"fixed_skill_level": 0,
-	"percent_skill_level": 0,
-	"bound_heroes": [
-	  "hulu_xianren",
-	  "hua_mulan",
-	  "sun_bin",
-	  "shen_wansan",
-      "ao_wu"
-	]
-  },
-  "xiao_lu_nv": {
-	"name": "小鹿女",
-	"friendly": 100,
-	"talent": 100,
-	"bond": 0,
-	"fixed_skill_level": 0,
-	"percent_skill_level": 0,
-	"bound_heroes": [
-	  "ding_xiren",
-	  "dunhuang_jiang",
-      "ne_zha"
-	]
-  },
-  "xiao_mujiang": {
-	"name": "小木匠",
-	"friendly": 100,
-	"talent": 100,
-	"bond": 0,
-	"fixed_skill_level": 0,
-	"percent_skill_level": 0,
-	"bound_heroes": [
-	  "cao_tiejiang",
-	  "luo_caifeng",
-	  "song_huizong",
-      "lv_bu"
-	]
-  },
-  "xiao_ning": {
-	"name": "骁宁",
-	"friendly": 100,
-	"talent": 100,
-	"bond": 0,
-	"fixed_skill_level": 0,
-	"percent_skill_level": 0,
-	"bound_heroes": [
-	  "hua_mulan",
-	  "xiang_yu",
-	  "li_xiangjun",
-      "bian_yujing"
-	]
-  },
-  "xiao_qigai": {
-	"name": "小乞丐",
-	"friendly": 100,
-	"talent": 100,
-	"bond": 0,
-	"fixed_skill_level": 0,
-	"percent_skill_level": 0,
-	"bound_heroes": [
-	  "fang_huotou",
-      "hong_laoxie"
-	]
-  },
-  "xiao_shimei": {
-	"name": "小师妹",
-	"friendly": 100,
-	"talent": 100,
-	"bond": 0,
-	"fixed_skill_level": 0,
-	"percent_skill_level": 0,
-	"bound_heroes": [
-	  "shen_suanzi",
-	  "luo_caifeng",
-	  "zhang_qiling",
-      "hu_lu_xianren"
-	]
-  },
-  "xiao_wu_friend": {
-	"name": "小舞",
-	"friendly": 100,
-	"talent": 100,
-	"bond": 0,
-	"fixed_skill_level": 0,
-	"percent_skill_level": 0,
-	"bound_heroes": [
-	  "yang_jian",
-	  "xiao_wu",
-	  "zhang_sanfeng",
-      "li_xiangjun"
-	]
-  },
-  "xinniang": {
-	"name": "新娘",
-	"friendly": 100,
-	"talent": 100,
-	"bond": 0,
-	"fixed_skill_level": 0,
-	"percent_skill_level": 0,
-	"bound_heroes": [
-	  "leng_erpi",
-	  "ding_xiren",
-	  "fang_huotou",
-	  "wang_zhaojun",
-	  "hua_mulan",
-      "qin_shihuang"
-	]
-  },
-  "xinniang_zhimei": {
-	"name": "新娘之妹",
-	"friendly": 100,
-	"talent": 100,
-	"bond": 0,
-	"fixed_skill_level": 0,
-	"percent_skill_level": 0,
-	"bound_heroes": [
-	  "zhang_qiling",
-	  "lu_ban",
-	  "lei_en",
-      "lv_bu"
-	]
-  },
-  "xing_lan": {
-	"name": "行岚",
-	"friendly": 100,
-	"talent": 100,
-	"bond": 0,
-	"fixed_skill_level": 0,
-	"percent_skill_level": 0,
-	"bound_heroes": [
-	  "wang_zhaojun",
-	  "shen_wansan",
-	  "qin_shihuang",
-	  "ne_zha",
-      "xiao_ba"
-	]
-  },
-  "xun_ma_shi": {
-	"name": "驯马师",
-	"friendly": 100,
-	"talent": 100,
-	"bond": 0,
-	"fixed_skill_level": 0,
-	"percent_skill_level": 0,
-	"bound_heroes": [
-	  "jie_lu",
-	  "shi_gandang",
-	  "lv_bu",
-      "ma_xianglan"
-	]
-  },
-  "xun_ying_shaonv": {
-	"name": "驯鹰少女",
-	"friendly": 100,
-	"talent": 100,
-	"bond": 0,
-	"fixed_skill_level": 0,
-	"percent_skill_level": 0,
-	"bound_heroes": [
-	  "bai_yuechu",
-	  "lan_feihong",
-	  "sun_bin",
-	  "zong_ze",
-      "da_yu"
-	]
-  },
-  "yao_pingguo": {
-	"name": "姚苹果",
-	"friendly": 100,
-	"talent": 100,
-	"bond": 0,
-	"fixed_skill_level": 0,
-	"percent_skill_level": 0,
-	"bound_heroes": [
-      "liu_maoxing"
-	]
-  },
-  "yao_ying": {
-	"name": "邀影",
-	"friendly": 100,
-	"talent": 100,
-	"bond": 0,
-	"fixed_skill_level": 0,
-	"percent_skill_level": 0,
-	"bound_heroes": [
-	  "hulu_xianren",
-	  "ding_xiren",
-	  "li_shenshou",
-      "zhou_yu"
-	]
-  },
-  "yi_shi": {
-	"name": "驿使",
-	"friendly": 100,
-	"talent": 100,
-	"bond": 0,
-	"fixed_skill_level": 0,
-	"percent_skill_level": 0,
-	"bound_heroes": [
-	  "mei_changsu",
-	  "yan_xiansheng",
-	  "hong_laoxie",
-      "dunhuang_jiang"
-	]
-  },
-  "yi_shi_new": {
-	"name": "医师",
-	"friendly": 100,
-	"talent": 100,
-	"bond": 0,
-	"fixed_skill_level": 0,
-	"percent_skill_level": 0,
-	"bound_heroes": [
-	  "leng_erpi",
-      "ou_yezi"
-	]
-  },
-  "yin_niang": {
-	"name": "隐娘",
-	"friendly": 100,
-	"talent": 100,
-	"bond": 0,
-	"fixed_skill_level": 0,
-	"percent_skill_level": 0,
-	"bound_heroes": [
-	  "zhang_qiling",
-	  "gao_jianli",
-	  "wang_zhaojun",
-      "baixi_shengdao"
-	]
-  },
-  "ying_chun": {
-	"name": "映春",
-	"friendly": 100,
-	"talent": 100,
-	"bond": 0,
-	"fixed_skill_level": 0,
-	"percent_skill_level": 0,
-	"bound_heroes": [
-	  "liu_maoxing",
-	  "lan_feihong",
-	  "zhang_sanfeng",
-	  "zheng_he",
-      "long_xiang"
-	]
-  },
-  "yu_ge": {
-	"name": "渔歌",
-	"friendly": 100,
-	"talent": 100,
-	"bond": 0,
-	"fixed_skill_level": 0,
-	"percent_skill_level": 0,
-	"bound_heroes": [
-	  "yang_jian",
-	  "zong_ze",
-	  "sun_wu",
-	  "xiao_qi",
-	  "luo_haiwang",
-      "xiao_wu"
-	]
-  },
-  "yu_ji": {
-	"name": "虞姬",
-	"friendly": 100,
-	"talent": 100,
-	"bond": 0,
-	"fixed_skill_level": 0,
-	"percent_skill_level": 0,
-	"bound_heroes": [
-	  "bai_yuechu",
-	  "ne_zha",
-	  "xiang_yu",
-	  "dong_xiaowan",
-      "long_xiang"
-	]
-  },
-  "yu_lu": {
-	"name": "玉露",
-	"friendly": 100,
-	"talent": 100,
-	"bond": 0,
-	"fixed_skill_level": 0,
-	"percent_skill_level": 0,
-	"bound_heroes": [
-	  "hulu_xianren",
-	  "luo_caifeng",
-	  "du_kang",
-      "ma_xianglan"
-	]
-  },
-  "yu_tu": {
-	"name": "玉兔",
-	"friendly": 100,
-	"talent": 100,
-	"bond": 0,
-	"fixed_skill_level": 0,
-	"percent_skill_level": 0,
-	"bound_heroes": [
-	  "mei_changsu",
-	  "xiang_en",
-	  "qin_qiong_yuchi",
-	  "song_taizu",
-      "ma_xianglan"
-	]
-  },
-  "yuan_xiao_guniang": {
-	"name": "元宵姑娘",
-	"friendly": 100,
-	"talent": 100,
-	"bond": 0,
-	"fixed_skill_level": 0,
-	"percent_skill_level": 0,
-	"bound_heroes": [
-	  "luo_caifeng",
-      "feng_mier"
-	]
-  },
-  "yun_zhi": {
-	"name": "云织",
-	"friendly": 100,
-	"talent": 100,
-	"bond": 0,
-	"fixed_skill_level": 0,
-	"percent_skill_level": 0,
-	"bound_heroes": [
-	  "jie_lu",
-	  "xiao_yuer",
-	  "lan_feihong",
-      "bian_yujing"
-	]
-  },
-  "zhao_yang": {
-	"name": "昭阳",
-	"friendly": 100,
-	"talent": 100,
-	"bond": 0,
-	"fixed_skill_level": 0,
-	"percent_skill_level": 0,
-	"bound_heroes": [
-	  "xiao_yuer",
-	  "feng_mier",
-	  "song_huizong",
-      "xiao_qi"
-	]
-  },
-  "zhi_nv": {
-	"name": "织女",
-	"friendly": 100,
-	"talent": 100,
-	"bond": 0,
-	"fixed_skill_level": 0,
-	"percent_skill_level": 0,
-	"bound_heroes": [
-	  "leng_erpi",
-	  "li_shenshou",
-	  "zhou_yu",
-      "ao_wu"
-	]
-  },
-  "zhou_meili": {
-	"name": "周梅丽",
-	"friendly": 100,
-	"talent": 100,
-	"bond": 0,
-	"fixed_skill_level": 0,
-	"percent_skill_level": 0,
-	"bound_heroes": [
-	  "si_lang",
-	  "hulu_xianren",
-	  "liu_maoxing",
-      "lei_en"
-	]
-  },
-  "zhu_sha": {
-	"name": "朱砂",
-	"friendly": 100,
-	"talent": 100,
-	"bond": 0,
-	"fixed_skill_level": 0,
-	"percent_skill_level": 0,
-	"bound_heroes": [
-	  "yang_jian",
-	  "bai_yuechu",
-	  "zhang_sanfeng",
-      "kou_baimen"
-	]
-  },
-  "zhuo_gui_shi": {
-	"name": "捉鬼师",
-	"friendly": 100,
-	"talent": 100,
-	"bond": 0,
-	"fixed_skill_level": 0,
-	"percent_skill_level": 0,
-	"bound_heroes": [
-	  "li_bai",
-	  "gao_jianli",
-	  "huo_yanwang",
-      "dong_xiaowan"
-	]
-  },
-  "zi_yu": {
-	"name": "紫玉",
-	"friendly": 100,
-	"talent": 100,
-	"bond": 0,
-	"fixed_skill_level": 0,
-	"percent_skill_level": 0,
-	"bound_heroes": [
-	  "luo_caifeng",
-	  "lu_ban",
-	  "bian_yujing",
-      "hou_yi"
-	]
-  },
-  "wanghou_fuhao": {
-	"name": "王后妇好",
-	"friendly": 100,
-	"talent": 100,
-	"bond": 0,
-	"fixed_skill_level": 0,
-	"percent_skill_level": 0,
-	"bound_heroes": [
-	  "ya_jiu",
-	  "wu_daozi",
-	  "jisi_fuhao",
-      "dayu"
-	]
-  },
-  "tushanshi": {
-	"name": "涂山氏",
-	"friendly": 100,
-	"talent": 100,
-	"bond": 0,
-	"fixed_skill_level": 0,
-	"percent_skill_level": 0,
-	"bound_heroes": [
-	  "dayu",
-	  "fuxi",
-      "jisi_fuhao"
-	]
-  },
-  "jingwei": {
-	"name": "精卫",
-	"friendly": 100,
-	"talent": 100,
-	"bond": 0,
-	"fixed_skill_level": 0,
-	"percent_skill_level": 0,
-	"bound_heroes": [
-	  "fuxi",
-	  "dayu",
-	  "houyi",
-      "chiyou"
-	]
-  },
-  "change": {
-	"name": "嫦娥",
-	"friendly": 100,
-	"talent": 100,
-	"bond": 0,
-	"fixed_skill_level": 0,
-	"percent_skill_level": 0,
-	"bound_heroes": [
-	  "fuxi",
-	  "houyi",
-	  "chiyou",
-      "donghuang_taiyi"
-	]
-  },
-  "nvba": {
-	"name": "女魃",
-	"friendly": 100,
-	"talent": 100,
-	"bond": 0,
-	"fixed_skill_level": 0,
-	"percent_skill_level": 0,
-	"bound_heroes": [
-	  "haotian_shangdi",
-	  "houyi",
-	  "chiyou",
-      "donghuang_taiyi"
-	]
-  },
-  "nvwa": {
-	"name": "女娲",
-	"friendly": 100,
-	"talent": 100,
-	"bond": 0,
-	"fixed_skill_level": 0,
-	"percent_skill_level": 0,
-	"bound_heroes": [
-	  "haotian_shangdi",
-	  "chiyou",
-      "donghuang_taiyi"
-	]
-  },
-  "xiwangmu": {
-	"name": "西王母",
-	"friendly": 100,
-	"talent": 100,
-	"bond": 0,
-	"fixed_skill_level": 0,
-	"percent_skill_level": 0,
-	"bound_heroes": [
-	  "haotian_shangdi",
-      "donghuang_taiyi"
-	]
-  }
+		"name": "书香女",
+		"friendly": 100,
+		"talent": 100,
+		"bond": 0,
+		"fixed_skill_level": 0,
+		"percent_skill_level": 0,
+		"bound_heroes": [
+			"wan_jinya",
+			"liu_bukuai"
+		]
+	},
+	"zhen_xian_nv": {
+		"name": "针线女",
+		"friendly": 100,
+		"talent": 100,
+		"bond": 0,
+		"fixed_skill_level": 0,
+		"percent_skill_level": 0,
+		"bound_heroes": [
+			"kang_chashi",
+			"niu_fushi"
+		]
+	},
+	"wu_nv": {
+		"name": "舞女",
+		"friendly": 100,
+		"talent": 100,
+		"bond": 0,
+		"fixed_skill_level": 0,
+		"percent_skill_level": 0,
+		"bound_heroes": [
+			"he_yashi",
+			"xing_huwei"
+		]
+	},
+	"jian_wuzhe": {
+		"name": "剑舞者",
+		"friendly": 100,
+		"talent": 100,
+		"bond": 0,
+		"fixed_skill_level": 0,
+		"percent_skill_level": 0,
+		"bound_heroes": [
+			"liang_waiqi",
+			"qian_caizhu"
+		]
+	},
+	"dou_fu_nv": {
+		"name": "豆腐女",
+		"friendly": 100,
+		"talent": 100,
+		"bond": 0,
+		"fixed_skill_level": 0,
+		"percent_skill_level": 0,
+		"bound_heroes": [
+			"luo_sunshan",
+			"tang_hulu"
+		]
+	},
+	"xiu_niang": {
+		"name": "秀娘",
+		"friendly": 100,
+		"talent": 100,
+		"bond": 0,
+		"fixed_skill_level": 0,
+		"percent_skill_level": 0,
+		"bound_heroes": [
+			"li_gushi",
+			"zheng_guonong"
+		]
+	},
+	"xi_zi": {
+		"name": "戏子",
+		"friendly": 100,
+		"talent": 100,
+		"bond": 0,
+		"fixed_skill_level": 0,
+		"percent_skill_level": 0,
+		"bound_heroes": [
+			"wu_shiren",
+			"liu_xizi"
+		]
+	},
+	"mai_san_nv": {
+		"name": "买伞女",
+		"friendly": 100,
+		"talent": 100,
+		"bond": 0,
+		"fixed_skill_level": 0,
+		"percent_skill_level": 0,
+		"bound_heroes": [
+			"zhang_laobo",
+			"zhu_huolang"
+		]
+	},
+	"ya_huan": {
+		"name": "丫鬟",
+		"friendly": 100,
+		"talent": 100,
+		"bond": 0,
+		"fixed_skill_level": 0,
+		"percent_skill_level": 0,
+		"bound_heroes": [
+			"hu_qigai",
+			"liu_silang"
+		]
+	},
+	"xiao_shijie": {
+		"name": "小师姐",
+		"friendly": 100,
+		"talent": 100,
+		"bond": 0,
+		"fixed_skill_level": 0,
+		"percent_skill_level": 0,
+		"bound_heroes": [
+			"jia_houzi"
+		]
+	},
+	"meng_qier": {
+		"name": "蒙琪儿",
+		"friendly": 100,
+		"talent": 100,
+		"bond": 0,
+		"fixed_skill_level": 0,
+		"percent_skill_level": 0,
+		"bound_heroes": [
+			"zhu_daliang",
+			"shen_wansan"
+		]
+	},
+	"jing_an": {
+		"name": "静庵",
+		"friendly": 100,
+		"talent": 100,
+		"bond": 0,
+		"fixed_skill_level": 0,
+		"percent_skill_level": 0,
+		"bound_heroes": [
+			"zheng_chuzi",
+			"ya_jiu"
+		]
+	},
+	"cu_ju_nv": {
+		"name": "蹴鞠女",
+		"friendly": 100,
+		"talent": 100,
+		"bond": 0,
+		"fixed_skill_level": 0,
+		"percent_skill_level": 0,
+		"bound_heroes": [
+			"cai_yufu",
+			"pi_yingjiang"
+		]
+	},
+	"li_shishi": {
+		"name": "李师师",
+		"friendly": 100,
+		"talent": 100,
+		"bond": 0,
+		"fixed_skill_level": 0,
+		"percent_skill_level": 0,
+		"bound_heroes": [
+			"ge_langzhong",
+			"zhen_tufu",
+			"song_huizong",
+			"shen_wansan"
+		]
+	},
+	"bi_bi_dong": {
+		"name": "比比东",
+		"friendly": 100,
+		"talent": 100,
+		"bond": 0,
+		"fixed_skill_level": 0,
+		"percent_skill_level": 0,
+		"bound_heroes": [
+			"si_lang",
+			"yang_jian",
+			"mei_changsu",
+			"bi_sheng",
+			"xiao_wu"
+		]
+	},
+	"bian_yujing_friend": {
+		"name": "卞玉京",
+		"friendly": 100,
+		"talent": 100,
+		"bond": 0,
+		"fixed_skill_level": 0,
+		"percent_skill_level": 0,
+		"bound_heroes": [
+			"hua_mulan",
+			"guanxingshi",
+			"bian_yujing",
+			"huo_yanwang",
+			"gun_haijiao"
+		]
+	},
+	"bu_kuai": {
+		"name": "捕快",
+		"friendly": 100,
+		"talent": 100,
+		"bond": 0,
+		"fixed_skill_level": 0,
+		"percent_skill_level": 0,
+		"bound_heroes": [
+			"ya_jiu",
+			"zhang_sanfeng",
+			"zhou_yu",
+			"xiang_yu",
+			"gun_haijiao"
+		]
+	},
+	"cai_shi_guan": {
+		"name": "采诗官",
+		"friendly": 100,
+		"talent": 100,
+		"bond": 0,
+		"fixed_skill_level": 0,
+		"percent_skill_level": 0,
+		"bound_heroes": [
+			"xiao_yuer",
+			"gao_jianli",
+			"song_jiang",
+			"li_xiangjun"
+		]
+	},
+	"cai_yao_nv": {
+		"name": "采药女",
+		"friendly": 100,
+		"talent": 100,
+		"bond": 0,
+		"fixed_skill_level": 0,
+		"percent_skill_level": 0,
+		"bound_heroes": [
+			"zhuang_gengfu",
+			"cao_tiejiang"
+		]
+	},
+	"cao_yuan_nvhai": {
+		"name": "草原女孩",
+		"friendly": 100,
+		"talent": 100,
+		"bond": 0,
+		"fixed_skill_level": 0,
+		"percent_skill_level": 0,
+		"bound_heroes": [
+			"jia_jiguan",
+			"su_wu"
+		]
+	},
+	"dao_gu": {
+		"name": "盗姑",
+		"friendly": 100,
+		"talent": 100,
+		"bond": 0,
+		"fixed_skill_level": 0,
+		"percent_skill_level": 0,
+		"bound_heroes": [
+			"liu_maoxing",
+			"lv_bu",
+			"qin_qiong_yuchi_gong",
+			"xiao_qi"
+		]
+	},
+	"dong_xiaowan_friend": {
+		"name": "董小宛",
+		"friendly": 100,
+		"talent": 100,
+		"bond": 0,
+		"fixed_skill_level": 0,
+		"percent_skill_level": 0,
+		"bound_heroes": [
+			"bai_yuechu",
+			"cai_jing",
+			"dong_xiaowan",
+			"qin_shihuang"
+		]
+	},
+	"gu_guo_gongzhu": {
+		"name": "古国公主",
+		"friendly": 100,
+		"talent": 100,
+		"bond": 0,
+		"fixed_skill_level": 0,
+		"percent_skill_level": 0,
+		"bound_heroes": [
+			"lan_feihong",
+			"sun_bin",
+			"shen_wansan",
+			"sun_wu",
+			"song_taizu"
+		]
+	},
+	"he_xi": {
+		"name": "何曦",
+		"friendly": 100,
+		"talent": 100,
+		"bond": 0,
+		"fixed_skill_level": 0,
+		"percent_skill_level": 0,
+		"bound_heroes": [
+			"zhang_qiling",
+			"liu_maoxing",
+			"fang_huotou",
+			"cai_jing",
+			"long_xiang"
+		]
+	},
+	"hong_niangzi": {
+		"name": "红娘子",
+		"friendly": 100,
+		"talent": 100,
+		"bond": 0,
+		"fixed_skill_level": 0,
+		"percent_skill_level": 0,
+		"bound_heroes": [
+			"yan_xiaoer",
+			"qian_caizhu"
+		]
+	},
+	"hong_ying": {
+		"name": "红缨",
+		"friendly": 100,
+		"talent": 100,
+		"bond": 0,
+		"fixed_skill_level": 0,
+		"percent_skill_level": 0,
+		"bound_heroes": [
+			"li_bai",
+			"zhen_tufu",
+			"long_xiang",
+			"bian_yujing"
+		]
+	},
+	"hu_yao_zhanggui": {
+		"name": "狐妖掌柜",
+		"friendly": 100,
+		"talent": 100,
+		"bond": 0,
+		"fixed_skill_level": 0,
+		"percent_skill_level": 0,
+		"bound_heroes": [
+			"du_kang",
+			"bi_sheng",
+			"dunhuang_jiangshen",
+			"long_xiang"
+		]
+	},
+	"hua_lang": {
+		"name": "花郎",
+		"friendly": 100,
+		"talent": 100,
+		"bond": 0,
+		"fixed_skill_level": 0,
+		"percent_skill_level": 0,
+		"bound_heroes": [
+			"si_lang",
+			"ding_xiren",
+			"hong_laoxie"
+		]
+	},
+	"hua_mulan_friend": {
+		"name": "花木兰",
+		"friendly": 100,
+		"talent": 100,
+		"bond": 0,
+		"fixed_skill_level": 0,
+		"percent_skill_level": 0,
+		"bound_heroes": [
+			"yang_jian",
+			"hua_mulan",
+			"zong_ze",
+			"ao_wu"
+		]
+	},
+	"hua_wuque": {
+		"name": "花无缺",
+		"friendly": 100,
+		"talent": 100,
+		"bond": 0,
+		"fixed_skill_level": 0,
+		"percent_skill_level": 0,
+		"bound_heroes": [
+			"si_lang",
+			"xiao_yuer",
+			"leng_erpi",
+			"ma_xianglan"
+		]
+	},
+	"hua_yi_shi": {
+		"name": "花艺师",
+		"friendly": 100,
+		"talent": 100,
+		"bond": 0,
+		"fixed_skill_level": 0,
+		"percent_skill_level": 0,
+		"bound_heroes": [
+			"lu_ban",
+			"gao_jianli",
+			"xiang_en",
+			"ne_zha"
+		]
+	},
+	"hua_zhao": {
+		"name": "花朝",
+		"friendly": 100,
+		"talent": 100,
+		"bond": 0,
+		"fixed_skill_level": 0,
+		"percent_skill_level": 0,
+		"bound_heroes": [
+			"shi_gandang",
+			"huo_yanwang",
+			"xiao_ba",
+			"li_xiangjun"
+		]
+	},
+	"huang_ye_linglan": {
+		"name": "荒野铃兰",
+		"friendly": 100,
+		"talent": 100,
+		"bond": 0,
+		"fixed_skill_level": 0,
+		"percent_skill_level": 0,
+		"bound_heroes": [
+			"fang_huotou",
+			"su_wu",
+			"fuxi",
+			"qin_shihuang"
+		]
+	},
+	"hui_yin": {
+		"name": "徽茵",
+		"friendly": 100,
+		"talent": 100,
+		"bond": 0,
+		"fixed_skill_level": 0,
+		"percent_skill_level": 0,
+		"bound_heroes": [
+			"bai_yuechu",
+			"cai_jing",
+			"sun_wu",
+			"zheng_he",
+			"ma_xianglan"
+		]
+	},
+	"ji_ye": {
+		"name": "极夜",
+		"friendly": 100,
+		"talent": 100,
+		"bond": 0,
+		"fixed_skill_level": 0,
+		"percent_skill_level": 0,
+		"bound_heroes": [
+			"xie_lu",
+			"li_bai",
+			"xiang_yu",
+			"bian_yujing",
+			"song_taizu"
+		]
+	},
+	"ji_zhou": {
+		"name": "极昼",
+		"friendly": 100,
+		"talent": 100,
+		"bond": 0,
+		"fixed_skill_level": 0,
+		"percent_skill_level": 0,
+		"bound_heroes": [
+			"li_bai",
+			"mei_changsu",
+			"ao_wu",
+			"kou_baimen",
+			"luo_haiwang"
+		]
+	},
+	"jiang_men_nvzi": {
+		"name": "将门女子",
+		"friendly": 100,
+		"talent": 100,
+		"bond": 0,
+		"fixed_skill_level": 0,
+		"percent_skill_level": 0,
+		"bound_heroes": [
+			"wu_biaoshi",
+			"yan_xiansheng"
+		]
+	},
+	"jin_shu": {
+		"name": "堇书",
+		"friendly": 100,
+		"talent": 100,
+		"bond": 0,
+		"fixed_skill_level": 0,
+		"percent_skill_level": 0,
+		"bound_heroes": [
+			"hu_lu_xianren",
+			"wu_daozi",
+			"qin_qiong_yuchi_gong",
+			"kou_baimen"
+		]
+	},
+	"jiu_yue": {
+		"name": "玖月",
+		"friendly": 100,
+		"talent": 100,
+		"bond": 0,
+		"fixed_skill_level": 0,
+		"percent_skill_level": 0,
+		"bound_heroes": [
+			"zhang_qiling",
+			"luo_caifeng",
+			"lu_ban",
+			"xiao_qi"
+		]
+	},
+	"jun_zhu": {
+		"name": "郡主",
+		"friendly": 100,
+		"talent": 100,
+		"bond": 0,
+		"fixed_skill_level": 0,
+		"percent_skill_level": 0,
+		"bound_heroes": [
+			"wu_daozi",
+			"bi_sheng"
+		]
+	},
+	"kou_baimen_friend": {
+		"name": "寇白门",
+		"friendly": 100,
+		"talent": 100,
+		"bond": 0,
+		"fixed_skill_level": 0,
+		"percent_skill_level": 0,
+		"bound_heroes": [
+			"guanxingshi",
+			"song_huizong",
+			"kou_baimen",
+			"zheng_he"
+		]
+	},
+	"lang_zi": {
+		"name": "浪子",
+		"friendly": 100,
+		"talent": 100,
+		"bond": 0,
+		"fixed_skill_level": 0,
+		"percent_skill_level": 0,
+		"bound_heroes": [
+			"xie_lu",
+			"zhen_tufu"
+		]
+	},
+	"li_xiangjun_friend": {
+		"name": "李香君",
+		"friendly": 100,
+		"talent": 100,
+		"bond": 0,
+		"fixed_skill_level": 0,
+		"percent_skill_level": 0,
+		"bound_heroes": [
+			"yang_jian",
+			"li_xiangjun",
+			"shi_gandang",
+			"xiao_wu",
+			"song_jiang"
+		]
+	},
+	"lie_ren": {
+		"name": "猎人",
+		"friendly": 100,
+		"talent": 100,
+		"bond": 0,
+		"fixed_skill_level": 0,
+		"percent_skill_level": 0,
+		"bound_heroes": [
+			"zhao_liehu",
+			"yao_wuzuo"
+		]
+	},
+	"ling_ye_mao_nv": {
+		"name": "灵夜猫女",
+		"friendly": 100,
+		"talent": 100,
+		"bond": 0,
+		"fixed_skill_level": 0,
+		"percent_skill_level": 0,
+		"bound_heroes": [
+			"li_bai",
+			"ou_yezi",
+			"su_wu",
+			"lei_en",
+			"xiao_ba"
+		]
+	},
+	"luo": {
+		"name": "萝",
+		"friendly": 100,
+		"talent": 100,
+		"bond": 0,
+		"fixed_skill_level": 0,
+		"percent_skill_level": 0,
+		"bound_heroes": [
+			"si_lang",
+			"lan_feihong",
+			"feng_mier",
+			"xiao_qi",
+			"lu_ban"
+		]
+	},
+	"ma_ma": {
+		"name": "嬷嬷",
+		"friendly": 100,
+		"talent": 100,
+		"bond": 0,
+		"fixed_skill_level": 0,
+		"percent_skill_level": 0,
+		"bound_heroes": [
+			"wu_biaoshi",
+			"du_kang"
+		]
+	},
+	"ma_xianglan_friend": {
+		"name": "马湘兰",
+		"friendly": 100,
+		"talent": 100,
+		"bond": 0,
+		"fixed_skill_level": 0,
+		"percent_skill_level": 0,
+		"bound_heroes": [
+			"xiao_yuer",
+			"ma_xianglan",
+			"cai_jing",
+			"baixi_shengdao"
+		]
+	},
+	"mi_tan": {
+		"name": "密探",
+		"friendly": 100,
+		"talent": 100,
+		"bond": 0,
+		"fixed_skill_level": 0,
+		"percent_skill_level": 0,
+		"bound_heroes": [
+			"xing_huwei",
+			"kou_baimen"
+		]
+	},
+	"miao_jiang_shengnv": {
+		"name": "苗疆圣女",
+		"friendly": 100,
+		"talent": 100,
+		"bond": 0,
+		"fixed_skill_level": 0,
+		"percent_skill_level": 0,
+		"bound_heroes": [
+			"yang_jian",
+			"wang_zhaojun",
+			"feng_mier",
+			"zhen_tufu",
+			"jisi_fuhao",
+			"xiao_wu"
+		]
+	},
+	"mo_li": {
+		"name": "墨璃",
+		"friendly": 100,
+		"talent": 100,
+		"bond": 0,
+		"fixed_skill_level": 0,
+		"percent_skill_level": 0,
+		"bound_heroes": [
+			"zhang_qiling",
+			"hong_laoxie",
+			"ne_zha",
+			"xiao_qi",
+			"dong_xiaowan"
+		]
+	},
+	"mu_shu": {
+		"name": "慕姝",
+		"friendly": 100,
+		"talent": 100,
+		"bond": 0,
+		"fixed_skill_level": 0,
+		"percent_skill_level": 0,
+		"bound_heroes": [
+			"li_bai",
+			"hong_laoxie",
+			"su_wu",
+			"dong_xiaowan"
+		]
+	},
+	"nan_gong_wan": {
+		"name": "南宫婉",
+		"friendly": 100,
+		"talent": 100,
+		"bond": 0,
+		"fixed_skill_level": 0,
+		"percent_skill_level": 0,
+		"bound_heroes": [
+			"li_bai",
+			"song_huizong",
+			"dong_xiaowan"
+		]
+	},
+	"ni_huang_junzhu": {
+		"name": "霓凰郡主",
+		"friendly": 100,
+		"talent": 100,
+		"bond": 0,
+		"fixed_skill_level": 0,
+		"percent_skill_level": 0,
+		"bound_heroes": [
+			"mei_changsu",
+			"du_kang",
+			"bi_sheng",
+			"kou_baimen"
+		]
+	},
+	"ning_yin": {
+		"name": "凝音",
+		"friendly": 100,
+		"talent": 100,
+		"bond": 0,
+		"fixed_skill_level": 0,
+		"percent_skill_level": 0,
+		"bound_heroes": [
+			"bai_yuechu",
+			"zong_ze",
+			"shen_wansan",
+			"baixi_shengdao"
+		]
+	},
+	"niu_lang": {
+		"name": "牛郎",
+		"friendly": 100,
+		"talent": 100,
+		"bond": 0,
+		"fixed_skill_level": 0,
+		"percent_skill_level": 0,
+		"bound_heroes": [
+			"fang_huotou",
+			"feng_mier",
+			"xiang_en",
+			"luo_haiwang"
+		]
+	},
+	"pi_pa_nv": {
+		"name": "琵琶女",
+		"friendly": 100,
+		"talent": 100,
+		"bond": 0,
+		"fixed_skill_level": 0,
+		"percent_skill_level": 0,
+		"bound_heroes": [
+			"qin_jianxian",
+			"tian_shiren"
+		]
+	},
+	"qi_guang": {
+		"name": "栖光",
+		"friendly": 100,
+		"talent": 100,
+		"bond": 0,
+		"fixed_skill_level": 0,
+		"percent_skill_level": 0,
+		"bound_heroes": [
+			"xiao_yuer",
+			"wang_zhaojun",
+			"ou_yezi",
+			"zhou_yu"
+		]
+	},
+	"qi_ling": {
+		"name": "器灵",
+		"friendly": 100,
+		"talent": 100,
+		"bond": 0,
+		"fixed_skill_level": 0,
+		"percent_skill_level": 0,
+		"bound_heroes": [
+			"lan_feihong",
+			"zhang_sanfeng",
+			"dunhuang_jiangshen",
+			"qin_qiong_yuchi_gong",
+			"xiao_ba"
+		]
+	},
+	"qi_shi": {
+		"name": "棋士",
+		"friendly": 100,
+		"talent": 100,
+		"bond": 0,
+		"fixed_skill_level": 0,
+		"percent_skill_level": 0,
+		"bound_heroes": [
+			"yan_xiaoer",
+			"li_shenshou"
+		]
+	},
+	"qian_ren_xue": {
+		"name": "千仞雪",
+		"friendly": 100,
+		"talent": 100,
+		"bond": 0,
+		"fixed_skill_level": 0,
+		"percent_skill_level": 0,
+		"bound_heroes": [
+			"yang_jian",
+			"ya_jiu",
+			"zhen_tufu",
+			"zhang_sanfeng",
+			"xiao_wu"
+		]
+	},
+	"qing_ning": {
+		"name": "青凝",
+		"friendly": 100,
+		"talent": 100,
+		"bond": 0,
+		"fixed_skill_level": 0,
+		"percent_skill_level": 0,
+		"bound_heroes": [
+			"li_bai",
+			"wu_daozi",
+			"cai_jing",
+			"zheng_he",
+			"lu_ban"
+		]
+	},
+	"qiu_ying": {
+		"name": "秋萤",
+		"friendly": 100,
+		"talent": 100,
+		"bond": 0,
+		"fixed_skill_level": 0,
+		"percent_skill_level": 0,
+		"bound_heroes": [
+			"xiao_yuer",
+			"yan_xiansheng",
+			"qin_shihuang",
+			"sun_wu"
+		]
+	},
+	"rong": {
+		"name": "融",
+		"friendly": 100,
+		"talent": 100,
+		"bond": 0,
+		"fixed_skill_level": 0,
+		"percent_skill_level": 0,
+		"bound_heroes": [
+			"hua_mulan",
+			"zong_ze",
+			"sun_wu",
+			"song_taizu",
+			"xiao_ba"
+		]
+	},
+	"sha_lan": {
+		"name": "沙兰",
+		"friendly": 100,
+		"talent": 100,
+		"bond": 0,
+		"fixed_skill_level": 0,
+		"percent_skill_level": 0,
+		"bound_heroes": [
+			"hu_lu_xianren",
+			"ou_yezi",
+			"song_huizong",
+			"xiao_ba"
+		]
+	},
+	"shao_jiangjun": {
+		"name": "少将军",
+		"friendly": 100,
+		"talent": 100,
+		"bond": 0,
+		"fixed_skill_level": 0,
+		"percent_skill_level": 0,
+		"bound_heroes": [
+			"li_shenshou",
+			"baixi_shengdao"
+		]
+	},
+	"shen_meizhuang": {
+		"name": "沈眉庄",
+		"friendly": 100,
+		"talent": 100,
+		"bond": 0,
+		"fixed_skill_level": 0,
+		"percent_skill_level": 0,
+		"bound_heroes": [
+			"wang_zhaojun",
+			"li_shenshou",
+			"lei_en",
+			"li_xiangjun"
+		]
+	},
+	"shi_bo_shi": {
+		"name": "市舶使",
+		"friendly": 100,
+		"talent": 100,
+		"bond": 0,
+		"fixed_skill_level": 0,
+		"percent_skill_level": 0,
+		"bound_heroes": [
+			"hu_lu_xianren",
+			"lv_bu",
+			"qin_qiong_yuchi_gong",
+			"li_xiangjun",
+			"xiao_ba",
+			"luo_haiwang"
+		]
+	},
+	"shou_gong_shaonv": {
+		"name": "手工少女",
+		"friendly": 100,
+		"talent": 100,
+		"bond": 0,
+		"fixed_skill_level": 0,
+		"percent_skill_level": 0,
+		"bound_heroes": [
+			"mei_changsu",
+			"ou_yezi",
+			"zong_ze",
+			"shi_gandang"
+		]
+	},
+	"si_tang": {
+		"name": "司棠",
+		"friendly": 100,
+		"talent": 100,
+		"bond": 0,
+		"fixed_skill_level": 0,
+		"percent_skill_level": 0,
+		"bound_heroes": [
+			"wang_zhaojun",
+			"xiao_qi",
+			"zheng_he",
+			"li_xiangjun"
+		]
+	},
+	"tan_you": {
+		"name": "探幽",
+		"friendly": 100,
+		"talent": 100,
+		"bond": 0,
+		"fixed_skill_level": 0,
+		"percent_skill_level": 0,
+		"bound_heroes": [
+			"mei_changsu",
+			"hua_mulan",
+			"xiao_ba",
+			"kou_baimen"
+		]
+	},
+	"tang_pingguo": {
+		"name": "糖苹果",
+		"friendly": 100,
+		"talent": 100,
+		"bond": 0,
+		"fixed_skill_level": 0,
+		"percent_skill_level": 0,
+		"bound_heroes": [
+			"lan_feihong",
+			"zong_ze",
+			"ao_wu",
+			"xiang_yu",
+			"dong_xiaowan"
+		]
+	},
+	"tushan_honghong": {
+		"name": "涂山红红",
+		"friendly": 100,
+		"talent": 100,
+		"bond": 0,
+		"fixed_skill_level": 0,
+		"percent_skill_level": 0,
+		"bound_heroes": [
+			"bai_yuechu",
+			"shi_gandang",
+			"xiang_en",
+			"bian_yujing"
+		]
+	},
+	"wang_zhaojun_friend": {
+		"name": "王昭君",
+		"friendly": 100,
+		"talent": 100,
+		"bond": 0,
+		"fixed_skill_level": 0,
+		"percent_skill_level": 0,
+		"bound_heroes": [
+			"xie_lu",
+			"wang_zhaojun",
+			"liu_maoxing",
+			"gao_jianli",
+			"guanxingshi"
+		]
+	},
+	"wan_wan": {
+		"name": "绾绾",
+		"friendly": 100,
+		"talent": 100,
+		"bond": 0,
+		"fixed_skill_level": 0,
+		"percent_skill_level": 0,
+		"bound_heroes": [
+			"bai_yuechu",
+			"liu_maoxing",
+			"qin_qiong_yuchi_gong",
+			"kou_baimen"
+		]
+	},
+	"wu_nv_wu": {
+		"name": "巫女",
+		"friendly": 100,
+		"talent": 100,
+		"bond": 0,
+		"fixed_skill_level": 0,
+		"percent_skill_level": 0,
+		"bound_heroes": [
+			"yan_xiansheng",
+			"ne_zha",
+			"ma_xianglan"
+		]
+	},
+	"wu_xie": {
+		"name": "吴邪",
+		"friendly": 100,
+		"talent": 100,
+		"bond": 0,
+		"fixed_skill_level": 0,
+		"percent_skill_level": 0,
+		"bound_heroes": [
+			"zhang_qiling",
+			"sun_bin",
+			"lei_en",
+			"ao_wu"
+		]
+	},
+	"xihu_chuangniang": {
+		"name": "西湖船娘",
+		"friendly": 100,
+		"talent": 100,
+		"bond": 0,
+		"fixed_skill_level": 0,
+		"percent_skill_level": 0,
+		"bound_heroes": [
+			"qin_jianxian",
+			"zhen_tufu",
+			"wu_daozi"
+		]
+	},
+	"xiyu_nvzi": {
+		"name": "西域女子",
+		"friendly": 100,
+		"talent": 100,
+		"bond": 0,
+		"fixed_skill_level": 0,
+		"percent_skill_level": 0,
+		"bound_heroes": [
+			"yun_youren",
+			"ding_xiren"
+		]
+	},
+	"xiao_hudie": {
+		"name": "小蝴蝶",
+		"friendly": 100,
+		"talent": 100,
+		"bond": 0,
+		"fixed_skill_level": 0,
+		"percent_skill_level": 0,
+		"bound_heroes": [
+			"hu_lu_xianren",
+			"hua_mulan",
+			"sun_bin",
+			"shen_wansan",
+			"ao_wu"
+		]
+	},
+	"xiao_lu_nv": {
+		"name": "小鹿女",
+		"friendly": 100,
+		"talent": 100,
+		"bond": 0,
+		"fixed_skill_level": 0,
+		"percent_skill_level": 0,
+		"bound_heroes": [
+			"ding_xiren",
+			"dunhuang_jiangshen",
+			"ne_zha"
+		]
+	},
+	"xiao_mujiang": {
+		"name": "小木匠",
+		"friendly": 100,
+		"talent": 100,
+		"bond": 0,
+		"fixed_skill_level": 0,
+		"percent_skill_level": 0,
+		"bound_heroes": [
+			"cao_tiejiang",
+			"luo_caifeng",
+			"song_huizong",
+			"lv_bu"
+		]
+	},
+	"xiao_ning": {
+		"name": "骁宁",
+		"friendly": 100,
+		"talent": 100,
+		"bond": 0,
+		"fixed_skill_level": 0,
+		"percent_skill_level": 0,
+		"bound_heroes": [
+			"hua_mulan",
+			"xiang_yu",
+			"li_xiangjun",
+			"bian_yujing"
+		]
+	},
+	"xiao_qigai": {
+		"name": "小乞丐",
+		"friendly": 100,
+		"talent": 100,
+		"bond": 0,
+		"fixed_skill_level": 0,
+		"percent_skill_level": 0,
+		"bound_heroes": [
+			"fang_huotou",
+			"hong_laoxie"
+		]
+	},
+	"xiao_shimei": {
+		"name": "小师妹",
+		"friendly": 100,
+		"talent": 100,
+		"bond": 0,
+		"fixed_skill_level": 0,
+		"percent_skill_level": 0,
+		"bound_heroes": [
+			"shen_suanzi",
+			"luo_caifeng",
+			"zhang_qiling",
+			"hu_lu_xianren",
+			"guanxingshi"
+		]
+	},
+	"xiao_wu_friend": {
+		"name": "小舞",
+		"friendly": 100,
+		"talent": 100,
+		"bond": 0,
+		"fixed_skill_level": 0,
+		"percent_skill_level": 0,
+		"bound_heroes": [
+			"yang_jian",
+			"xiao_wu",
+			"zhang_sanfeng",
+			"li_xiangjun"
+		]
+	},
+	"xinniang": {
+		"name": "新娘",
+		"friendly": 100,
+		"talent": 100,
+		"bond": 0,
+		"fixed_skill_level": 0,
+		"percent_skill_level": 0,
+		"bound_heroes": [
+			"leng_erpi",
+			"ding_xiren",
+			"fang_huotou",
+			"wang_zhaojun",
+			"hua_mulan",
+			"qin_shihuang"
+		]
+	},
+	"xinniang_zhimei": {
+		"name": "新娘之妹",
+		"friendly": 100,
+		"talent": 100,
+		"bond": 0,
+		"fixed_skill_level": 0,
+		"percent_skill_level": 0,
+		"bound_heroes": [
+			"zhang_qiling",
+			"lu_ban",
+			"lei_en",
+			"lv_bu",
+			"huo_yanwang"
+		]
+	},
+	"xing_lan": {
+		"name": "行岚",
+		"friendly": 100,
+		"talent": 100,
+		"bond": 0,
+		"fixed_skill_level": 0,
+		"percent_skill_level": 0,
+		"bound_heroes": [
+			"wang_zhaojun",
+			"shen_wansan",
+			"qin_shihuang",
+			"ne_zha",
+			"xiao_ba"
+		]
+	},
+	"xun_ma_shi": {
+		"name": "驯马师",
+		"friendly": 100,
+		"talent": 100,
+		"bond": 0,
+		"fixed_skill_level": 0,
+		"percent_skill_level": 0,
+		"bound_heroes": [
+			"xie_lu",
+			"shi_gandang",
+			"lv_bu",
+			"ma_xianglan"
+		]
+	},
+	"xun_ying_shaonv": {
+		"name": "驯鹰少女",
+		"friendly": 100,
+		"talent": 100,
+		"bond": 0,
+		"fixed_skill_level": 0,
+		"percent_skill_level": 0,
+		"bound_heroes": [
+			"bai_yuechu",
+			"lan_feihong",
+			"sun_bin",
+			"zong_ze",
+			"dayu"
+		]
+	},
+	"yao_pingguo": {
+		"name": "姚苹果",
+		"friendly": 100,
+		"talent": 100,
+		"bond": 0,
+		"fixed_skill_level": 0,
+		"percent_skill_level": 0,
+		"bound_heroes": [
+			"liu_maoxing"
+		]
+	},
+	"yao_ying": {
+		"name": "邀影",
+		"friendly": 100,
+		"talent": 100,
+		"bond": 0,
+		"fixed_skill_level": 0,
+		"percent_skill_level": 0,
+		"bound_heroes": [
+			"hu_lu_xianren",
+			"ding_xiren",
+			"li_shenshou",
+			"zhou_yu"
+		]
+	},
+	"yi_shi": {
+		"name": "驿使",
+		"friendly": 100,
+		"talent": 100,
+		"bond": 0,
+		"fixed_skill_level": 0,
+		"percent_skill_level": 0,
+		"bound_heroes": [
+			"mei_changsu",
+			"yan_xiansheng",
+			"hong_laoxie",
+			"dunhuang_jiangshen",
+			"ou_yezi",
+			"leng_erpi"
+		]
+	},
+	"yi_shi_new": {
+		"name": "医师",
+		"friendly": 100,
+		"talent": 100,
+		"bond": 0,
+		"fixed_skill_level": 0,
+		"percent_skill_level": 0,
+		"bound_heroes": [
+			"leng_erpi",
+			"ou_yezi"
+		]
+	},
+	"yin_niang": {
+		"name": "隐娘",
+		"friendly": 100,
+		"talent": 100,
+		"bond": 0,
+		"fixed_skill_level": 0,
+		"percent_skill_level": 0,
+		"bound_heroes": [
+			"zhang_qiling",
+			"gao_jianli",
+			"wang_zhaojun",
+			"baixi_shengdao"
+		]
+	},
+	"ying_chun": {
+		"name": "映春",
+		"friendly": 100,
+		"talent": 100,
+		"bond": 0,
+		"fixed_skill_level": 0,
+		"percent_skill_level": 0,
+		"bound_heroes": [
+			"liu_maoxing",
+			"lan_feihong",
+			"zhang_sanfeng",
+			"zheng_he",
+			"long_xiang"
+		]
+	},
+	"yu_ge": {
+		"name": "渔歌",
+		"friendly": 100,
+		"talent": 100,
+		"bond": 0,
+		"fixed_skill_level": 0,
+		"percent_skill_level": 0,
+		"bound_heroes": [
+			"yang_jian",
+			"zong_ze",
+			"sun_wu",
+			"xiao_qi",
+			"luo_haiwang",
+			"xiao_wu"
+		]
+	},
+	"yu_ji": {
+		"name": "虞姬",
+		"friendly": 100,
+		"talent": 100,
+		"bond": 0,
+		"fixed_skill_level": 0,
+		"percent_skill_level": 0,
+		"bound_heroes": [
+			"bai_yuechu",
+			"ne_zha",
+			"xiang_yu",
+			"dong_xiaowan",
+			"long_xiang"
+		]
+	},
+	"yu_lu": {
+		"name": "玉露",
+		"friendly": 100,
+		"talent": 100,
+		"bond": 0,
+		"fixed_skill_level": 0,
+		"percent_skill_level": 0,
+		"bound_heroes": [
+			"hu_lu_xianren",
+			"luo_caifeng",
+			"du_kang",
+			"ma_xianglan"
+		]
+	},
+	"yu_tu": {
+		"name": "玉兔",
+		"friendly": 100,
+		"talent": 100,
+		"bond": 0,
+		"fixed_skill_level": 0,
+		"percent_skill_level": 0,
+		"bound_heroes": [
+			"mei_changsu",
+			"xiang_en",
+			"qin_qiong_yuchi_gong",
+			"song_taizu",
+			"ma_xianglan"
+		]
+	},
+	"yuan_xiao_guniang": {
+		"name": "元宵姑娘",
+		"friendly": 100,
+		"talent": 100,
+		"bond": 0,
+		"fixed_skill_level": 0,
+		"percent_skill_level": 0,
+		"bound_heroes": [
+			"luo_caifeng",
+			"feng_mier"
+		]
+	},
+	"yun_zhi": {
+		"name": "云织",
+		"friendly": 100,
+		"talent": 100,
+		"bond": 0,
+		"fixed_skill_level": 0,
+		"percent_skill_level": 0,
+		"bound_heroes": [
+			"xie_lu",
+			"xiao_yuer",
+			"lan_feihong",
+			"bian_yujing"
+		]
+	},
+	"zhao_yang": {
+		"name": "昭阳",
+		"friendly": 100,
+		"talent": 100,
+		"bond": 0,
+		"fixed_skill_level": 0,
+		"percent_skill_level": 0,
+		"bound_heroes": [
+			"xiao_yuer",
+			"feng_mier",
+			"song_huizong",
+			"xiao_qi"
+		]
+	},
+	"zhi_nv": {
+		"name": "织女",
+		"friendly": 100,
+		"talent": 100,
+		"bond": 0,
+		"fixed_skill_level": 0,
+		"percent_skill_level": 0,
+		"bound_heroes": [
+			"leng_erpi",
+			"li_shenshou",
+			"zhou_yu",
+			"ao_wu"
+		]
+	},
+	"zhou_meili": {
+		"name": "周梅丽",
+		"friendly": 100,
+		"talent": 100,
+		"bond": 0,
+		"fixed_skill_level": 0,
+		"percent_skill_level": 0,
+		"bound_heroes": [
+			"si_lang",
+			"hu_lu_xianren",
+			"liu_maoxing",
+			"lei_en"
+		]
+	},
+	"zhu_sha": {
+		"name": "朱砂",
+		"friendly": 100,
+		"talent": 100,
+		"bond": 0,
+		"fixed_skill_level": 0,
+		"percent_skill_level": 0,
+		"bound_heroes": [
+			"yang_jian",
+			"bai_yuechu",
+			"zhang_sanfeng",
+			"kou_baimen"
+		]
+	},
+	"zhuo_gui_shi": {
+		"name": "捉鬼师",
+		"friendly": 100,
+		"talent": 100,
+		"bond": 0,
+		"fixed_skill_level": 0,
+		"percent_skill_level": 0,
+		"bound_heroes": [
+			"li_bai",
+			"gao_jianli",
+			"huo_yanwang",
+			"dong_xiaowan"
+		]
+	},
+	"zi_yu": {
+		"name": "紫玉",
+		"friendly": 100,
+		"talent": 100,
+		"bond": 0,
+		"fixed_skill_level": 0,
+		"percent_skill_level": 0,
+		"bound_heroes": [
+			"luo_caifeng",
+			"lu_ban",
+			"bian_yujing",
+			"houyi"
+		]
+	},
+	"wanghou_fuhao": {
+		"name": "王后妇好",
+		"friendly": 100,
+		"talent": 100,
+		"bond": 0,
+		"fixed_skill_level": 0,
+		"percent_skill_level": 0,
+		"bound_heroes": [
+			"ya_jiu",
+			"wu_daozi",
+			"jisi_fuhao",
+			"dayu"
+		]
+	},
+	"tushanshi": {
+		"name": "涂山氏",
+		"friendly": 100,
+		"talent": 100,
+		"bond": 0,
+		"fixed_skill_level": 0,
+		"percent_skill_level": 0,
+		"bound_heroes": [
+			"dayu",
+			"fuxi",
+			"jisi_fuhao"
+		]
+	},
+	"jingwei": {
+		"name": "精卫",
+		"friendly": 100,
+		"talent": 100,
+		"bond": 0,
+		"fixed_skill_level": 0,
+		"percent_skill_level": 0,
+		"bound_heroes": [
+			"fuxi",
+			"dayu",
+			"houyi",
+			"chiyou"
+		]
+	},
+	"change": {
+		"name": "嫦娥",
+		"friendly": 100,
+		"talent": 100,
+		"bond": 0,
+		"fixed_skill_level": 0,
+		"percent_skill_level": 0,
+		"bound_heroes": [
+			"fuxi",
+			"houyi",
+			"chiyou",
+			"donghuang_taiyi"
+		]
+	},
+	"nvba": {
+		"name": "女魃",
+		"friendly": 100,
+		"talent": 100,
+		"bond": 0,
+		"fixed_skill_level": 0,
+		"percent_skill_level": 0,
+		"bound_heroes": [
+			"haotian_shangdi",
+			"houyi",
+			"chiyou",
+			"donghuang_taiyi"
+		]
+	},
+	"nvwa": {
+		"name": "女娲",
+		"friendly": 100,
+		"talent": 100,
+		"bond": 0,
+		"fixed_skill_level": 0,
+		"percent_skill_level": 0,
+		"bound_heroes": [
+			"haotian_shangdi",
+			"chiyou",
+			"donghuang_taiyi"
+		]
+	},
+	"xiwangmu": {
+		"name": "西王母",
+		"friendly": 100,
+		"talent": 100,
+		"bond": 0,
+		"fixed_skill_level": 0,
+		"percent_skill_level": 0,
+		"bound_heroes": [
+			"haotian_shangdi",
+			"donghuang_taiyi"
+		]
+	}
 }
