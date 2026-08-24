@@ -20,6 +20,8 @@ var current_shop_id: String = ""
 # 人参待使用数量
 var _pending_ginseng_count: int = 0
 var _pending_ginseng_type: String = ""
+var _apprentice_batch_train: bool = false   # 徒弟一键培养勾选状态（页面重建时保持）
+var _vitality_target_slot: int = -1         # 活力丹目标槽位
 
 # ========== 记录当前打开的弹窗面板 ==========
 var _current_popup: Control = null
@@ -188,6 +190,7 @@ func switch_page(page_id: String):
 	if page_id == "adventure": 
 		hide_exchange_view()
 		hide_lottery_view()
+		hide_charity_view()
 		update_adventure_page()
 	
 	if page_id == "apprentice": update_apprentice_page()
@@ -300,6 +303,13 @@ func generate_friend_page():
 	gift_btn.text = "赠礼"
 	gift_btn.pressed.connect(on_gift_friend)
 	attr_box.add_child(gift_btn)
+	
+	# 【新增】游玩按钮
+	var play_btn = Button.new()
+	play_btn.name = "PlayBtn"
+	play_btn.text = "游玩"
+	play_btn.pressed.connect(_show_play_selector)
+	attr_box.add_child(play_btn)
 	
 	# 技能区（天生丽质/花开富贵）
 	var skill_list = VBoxContainer.new()
@@ -468,7 +478,7 @@ func _update_friend_page_detail():
 	
 	# 才华/友好/缘分/赠礼（放一起）
 	var attr_box = detail.get_node("AttrBox")
-	attr_box.get_node("FriendAttr").text = "友好：%d  |  才华：%d" % [f.friendly, f.talent]
+	attr_box.get_node("FriendAttr").text = "友好：%d  |  才华：%d  |  美名：%s" % [f.friendly, f.talent, data.get_friend_title(fid)]
 	attr_box.get_node("FriendBond").text = "缘分：%s" % format_number(f.bond)
 	
 	# 天生丽质
@@ -919,6 +929,61 @@ func generate_adventure_page():
 	var lot_result_list = VBoxContainer.new()
 	lot_result_list.name = "LotteryResultList"
 	lot_result_scroll.add_child(lot_result_list)
+	
+	# --- 行善入口 ---
+	var charity_btn = Button.new()
+	charity_btn.text = "行善"
+	charity_btn.custom_minimum_size = Vector2(240, 60)
+	charity_btn.pressed.connect(show_charity_view)
+	vbox.add_child(charity_btn)
+	
+	# --- 行善子页面 ---
+	var charity_view = VBoxContainer.new()
+	charity_view.name = "CharityView"
+	charity_view.set_anchors_preset(Control.PRESET_FULL_RECT)
+	charity_view.visible = false
+	charity_view.add_theme_constant_override("separation", 12)
+	page.add_child(charity_view)
+	
+	var c_back = Button.new()
+	c_back.text = "< 返回闯荡"
+	c_back.pressed.connect(hide_charity_view)
+	charity_view.add_child(c_back)
+	
+	var c_info = Label.new()
+	c_info.name = "CharityInfo"
+	c_info.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	charity_view.add_child(c_info)
+	
+	var c_op = HBoxContainer.new()
+	c_op.name = "CharityOpBox"
+	c_op.alignment = BoxContainer.ALIGNMENT_CENTER
+	c_op.add_theme_constant_override("separation", 12)
+	charity_view.add_child(c_op)
+	
+	var c_btn = Button.new()
+	c_btn.name = "CharityBtn"
+	c_btn.custom_minimum_size = Vector2(240, 60)
+	c_btn.pressed.connect(_on_charity)
+	c_op.add_child(c_btn)
+	
+	var c_check = CheckBox.new()
+	c_check.name = "CharityBatchCheck"
+	c_check.text = "十连"
+	c_op.add_child(c_check)
+	
+	# 五个地点进度列表（scroll双向填充，内容只横向填充）
+	var c_scroll = ScrollContainer.new()
+	c_scroll.name = "CharityScroll"
+	c_scroll.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	c_scroll.size_flags_vertical = Control.SIZE_EXPAND_FILL
+	charity_view.add_child(c_scroll)
+	
+	var c_list = VBoxContainer.new()
+	c_list.name = "CharityList"
+	c_list.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	c_list.add_theme_constant_override("separation", 8)
+	c_scroll.add_child(c_list)
 
 # 兑换页返回键：逐层后退（子页面 → 兑换目录 → 闯荡）
 func _on_exchange_back_pressed():
@@ -1386,6 +1451,101 @@ func on_shop_entry_pressed(shop_id: String):
 	else:
 		var need = data.get_shop_unlock_chapter(shop_id)
 		_show_stage_hint("【%s】通关第%d章解锁" % [data.get_shop_config(shop_id).name, need])
+
+# ========== 行善页面 ==========
+func show_charity_view():
+	if not has_node("PageContainer/AdventurePage/CharityView"): return
+	var page = $PageContainer/AdventurePage
+	page.get_node("AdventureVBox").visible = false
+	if page.has_node("ExchangeView"): page.get_node("ExchangeView").visible = false
+	page.get_node("CharityView").visible = true
+	update_charity_view()
+
+func hide_charity_view():
+	if not has_node("PageContainer/AdventurePage/CharityView"): return
+	var page = $PageContainer/AdventurePage
+	page.get_node("CharityView").visible = false
+	page.get_node("AdventureVBox").visible = true
+
+func update_charity_view():
+	if not has_node("PageContainer/AdventurePage/CharityView"): return
+	var view = $PageContainer/AdventurePage/CharityView
+	var cost = data.get_charity_cost()   # 顺带触发跨天重置
+	view.get_node("CharityInfo").text = "今日已行善 %d 次（消耗每天重置）" % data.charity_click_count
+	var btn = view.find_child("CharityBtn", true, false)
+	btn.text = "行善（-%s铜钱，随机地点）" % format_number(cost)
+	btn.disabled = data.money < cost
+	
+	# 五个地点的进度和加成池
+	var list = view.get_node("CharityScroll/CharityList")
+	for child in list.get_children():
+		child.queue_free()
+	for loc in data.CHARITY_LOCATIONS:
+		var p = data.charity_progress.get(loc.id, {"progress": 0, "tier": 0})
+		var need = data.get_charity_tier_need(loc.id)
+		var lbl = Label.new()
+		lbl.text = "【%s】%s类徒弟赚速加成池 +%d（%d档）  |  进度 %d/%d" % [
+			loc.name, loc.career, p.tier * data.CHARITY_EFFECT_PER_TIER, p.tier, p.progress, need
+		]
+		lbl.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+		list.add_child(lbl)
+
+# 行善按钮
+# 行善按钮：勾选十连则连续行善10次（消耗逐次递增，铜钱不足提前结束）
+func _on_charity():
+	var view = $PageContainer/AdventurePage/CharityView
+	var batch = false
+	var check = view.find_child("CharityBatchCheck", true, false)
+	if check != null:
+		batch = check.button_pressed
+	
+	if not batch:
+		# 单次行善
+		var result = data.do_charity()
+		if not result.ok:
+			_show_stage_hint(result.reason)
+			return
+		var msg = "在【%s】行善！\n获得：%s" % [result.location, "、".join(result.rewards)]
+		if result.completed:
+			msg += "\n\n第%d档完成！%s类徒弟赚速加成池 +%d（结业时生效）" % [result.tier, result.career, data.CHARITY_EFFECT_PER_TIER]
+		_show_stage_hint(msg, 4.0)
+	else:
+		# 十连：逐次结算（每次消耗按当时次数×1.5递增），失败即停
+		var done = 0
+		var total_cost = 0
+		var loc_counts = {}
+		var reward_counts = {}
+		var tier_msgs = []
+		for i in range(10):
+			var r = data.do_charity()
+			if not r.ok: break
+			done += 1
+			total_cost += r.cost
+			loc_counts[r.location] = loc_counts.get(r.location, 0) + 1
+			for rw in r.rewards:
+				reward_counts[rw] = reward_counts.get(rw, 0) + 1
+			if r.completed:
+				tier_msgs.append("【%s】第%d档（%s类+%d）" % [r.location, r.tier, r.career, data.CHARITY_EFFECT_PER_TIER])
+		if done == 0:
+			_show_stage_hint("铜钱不足")
+			return
+		var loc_parts = []
+		for k in loc_counts.keys():
+			loc_parts.append("%s×%d" % [k, loc_counts[k]])
+		var rw_parts = []
+		for k in reward_counts.keys():
+			rw_parts.append("%s×%d" % [k, reward_counts[k]])
+		var msg = "行善 ×%d（共 -%s 铜钱）\n地点：%s\n奖励：%s" % [done, format_number(total_cost), "、".join(loc_parts), "、".join(rw_parts)]
+		if not tier_msgs.is_empty():
+			msg += "\n\n满档：\n" + "\n".join(tier_msgs)
+		if done < 10:
+			msg += "\n（铜钱不足，提前结束）"
+		_show_stage_hint(msg, 5.0)
+	
+	update_charity_view()
+	update_all_ui()
+	update_bag_list()
+	update_friend_page()
 
 # ========== 统一弹窗管理 ==========
 func open_popup(panel: Control):
@@ -2219,59 +2379,41 @@ func generate_bag_list():
 		desc_lbl.add_theme_font_size_override("font_size", 14)
 		vbox.add_child(desc_lbl)
 		
-		# 可使用道具添加按钮
-		if item_id == "exp_box":
+		# 可使用道具：按 ITEM_CONFIG 的 use 配置自动生成按钮
+		# type: quantity=数量选择后data.use_item结算 / ginseng=数量选择后选门客 / hero_box=直接选门客
+		var use_cfg = cfg.get("use", {})
+		if not use_cfg.is_empty():
 			var use_btn = Button.new()
-			use_btn.text = "打开"
+			use_btn.text = use_cfg.get("btn", "使用")
 			use_btn.custom_minimum_size = Vector2(60, 28)
 			use_btn.add_theme_font_size_override("font_size", 12)
-			use_btn.pressed.connect(func(): _show_quantity_selector("exp_box", "打开阅历箱", _on_exp_box_confirmed))
-			vbox.add_child(use_btn)
-		elif item_id == "ginseng":
-			var use_btn = Button.new()
-			use_btn.text = "使用"
-			use_btn.custom_minimum_size = Vector2(60, 28)
-			use_btn.add_theme_font_size_override("font_size", 12)
-			use_btn.pressed.connect(func(): _show_quantity_selector("ginseng", "使用百年人参", _on_ginseng_confirmed))
-			vbox.add_child(use_btn)
-		elif item_id == "ginseng_1000":
-			var use_btn = Button.new()
-			use_btn.text = "使用"
-			use_btn.custom_minimum_size = Vector2(60, 28)
-			use_btn.add_theme_font_size_override("font_size", 12)
-			use_btn.pressed.connect(func(): _show_quantity_selector("ginseng_1000", "使用千年人参", _on_ginseng_1000_confirmed))
-			vbox.add_child(use_btn)
-		elif item_id == "hour_card":
-			var use_btn = Button.new()
-			use_btn.text = "使用"
-			use_btn.custom_minimum_size = Vector2(60, 28)
-			use_btn.add_theme_font_size_override("font_size", 12)
-			use_btn.pressed.connect(func(): _show_quantity_selector("hour_card", "使用小时卡", _on_hour_card_confirmed))
-			vbox.add_child(use_btn)
-		elif item_id == "hero_box":
-			var use_btn = Button.new()
-			use_btn.text = "打开"
-			use_btn.custom_minimum_size = Vector2(60, 28)
-			use_btn.add_theme_font_size_override("font_size", 12)
-			use_btn.pressed.connect(_show_hero_box_selector)
-			vbox.add_child(use_btn)
-		elif item_id == "reputation_card":
-			var use_btn = Button.new()
-			use_btn.text = "使用"
-			use_btn.custom_minimum_size = Vector2(60, 28)
-			use_btn.add_theme_font_size_override("font_size", 12)
-			use_btn.pressed.connect(func(): _show_quantity_selector("reputation_card", "使用声望卡", _on_reputation_card_confirmed))
-			vbox.add_child(use_btn)
-		elif item_id == "reputation_card_adv":
-			var use_btn = Button.new()
-			use_btn.text = "使用"
-			use_btn.custom_minimum_size = Vector2(60, 28)
-			use_btn.add_theme_font_size_override("font_size", 12)
-			use_btn.pressed.connect(func(): _show_quantity_selector("reputation_card_adv", "使用高级声望卡", _on_reputation_card_confirmed))
+			var title = use_cfg.get("title", "使用" + cfg.name)
+			match use_cfg.get("type", ""):
+				"quantity":
+					use_btn.pressed.connect(func(): _show_quantity_selector(item_id, title, _on_item_use_confirmed))
+				"ginseng":
+					use_btn.pressed.connect(func(): _show_quantity_selector(item_id, title, _on_ginseng_confirmed))
+				"hero_box":
+					use_btn.pressed.connect(_show_hero_box_selector)
 			vbox.add_child(use_btn)
 
 		
 		grid.add_child(cell)
+
+# 通用数量型道具使用确认：效果统一由 data.use_item 结算
+func _on_item_use_confirmed(spin: SpinBox):
+	var count = int(spin.value)
+	var item_id = _quantity_item_id
+	_quantity_item_id = ""
+	if item_id == "": return
+	var result = data.use_item(item_id, count)
+	_close_quantity_selector()
+	if result.get("ok", false):
+		update_bag_list()
+		update_all_ui()
+		_show_stage_hint(result.get("msg", "使用成功"))
+	else:
+		_show_stage_hint(result.get("msg", "使用失败"))
 
 #更新背包
 func update_bag_list():
@@ -2328,36 +2470,22 @@ func _close_quantity_selector():
 	if has_node("QuantitySelector"):
 		_safe_close("QuantitySelector")
 
-func _on_exp_box_confirmed(spin: SpinBox):
-	var count = int(spin.value)
-	if data.items.get("exp_box", 0) < count:
-		_close_quantity_selector()
-		return
-	data.items.exp_box -= count
-	data.items.experience += 99999 * count
-	_close_quantity_selector()
-	update_bag_list()
-	update_all_ui()
 
+# 人参数量确认（百年/千年共用）：记录后弹门客选择
 func _on_ginseng_confirmed(spin: SpinBox):
 	var count = int(spin.value)
-	if data.items.get("ginseng", 0) < count:
+	var item_id = _quantity_item_id
+	_quantity_item_id = ""
+	if item_id == "": return
+	if data.items.get(item_id, 0) < count:
 		_close_quantity_selector()
 		return
 	_pending_ginseng_count = count
-	_pending_ginseng_type = "ginseng"
+	_pending_ginseng_type = item_id
 	_close_quantity_selector()
 	_show_ginseng_selector()
 
-func _on_ginseng_1000_confirmed(spin: SpinBox):
-	var count = int(spin.value)
-	if data.items.get("ginseng_1000", 0) < count:
-		_close_quantity_selector()
-		return
-	_pending_ginseng_count = count
-	_pending_ginseng_type = "ginseng_1000"
-	_close_quantity_selector()
-	_show_ginseng_selector()
+
 
 # ========== 背包道具使用 ==========
 func _show_ginseng_selector():
@@ -2404,35 +2532,8 @@ func on_money_plus_clicked():
 	if count <= 0:
 		_show_stage_hint("没有小时卡，请前往商城购买")
 		return
-	_show_quantity_selector("hour_card", "使用小时卡", _on_hour_card_confirmed)
+	_show_quantity_selector("hour_card", "使用小时卡", _on_item_use_confirmed)
 
-func _on_hour_card_confirmed(spin: SpinBox):
-	var count = int(spin.value)
-	var gain = data.use_hour_card(count)
-	if gain > 0:
-		_close_quantity_selector()
-		update_all_ui()
-		update_bag_list()
-		_show_stage_hint("获得铜钱 %s" % format_number(gain))
-	else:
-		_close_quantity_selector()
-
-# 声望卡使用确认（普通/高级共用）
-func _on_reputation_card_confirmed(spin: SpinBox):
-	# 从弹窗标题判断用的是哪种卡不太稳，直接检查两个都试一遍
-	var count = int(spin.value)
-	var item_id = ""
-	if _quantity_item_id != "":
-		item_id = _quantity_item_id
-	_quantity_item_id = ""
-	if item_id == "": return
-	if data.use_reputation_card(item_id, count):
-		_close_quantity_selector()
-		update_bag_list()
-		update_all_ui()
-		_show_stage_hint("声望 +%d！" % (10 * count if item_id == "reputation_card" else 100 * count))
-	else:
-		_close_quantity_selector()
 
 func _on_ginseng_target_selected(hero_id: String):
 	var count = _pending_ginseng_count
@@ -2722,64 +2823,28 @@ func on_daily_task(): print("每日任务预留")
 func on_mall():
 	_close_mall_panel()
 	
-	var panel = _create_base_popup("商城", Vector2(500, 320), Vector2(326, 160))
+	var panel = _create_base_popup("商城", Vector2(500, 420), Vector2(326, 160))
 	panel.name = "MallPanel"
-	
 	var vbox = panel.get_child(0)
 	
-	# 驺虞礼包
-	var row1 = HBoxContainer.new()
-	row1.size_flags_horizontal = Control.SIZE_EXPAND_FILL
-	row1.add_theme_constant_override("separation", 16)
-	vbox.add_child(row1)
-	
-	var info1 = Label.new()
-	info1.text = "驺虞礼包\n驺虞×1 + 珍兽果×988 + 奇香果×988"
-	info1.size_flags_horizontal = Control.SIZE_EXPAND_FILL
-	info1.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
-	row1.add_child(info1)
-	
-	var buy1 = Button.new()
-	buy1.text = "19888元宝"
-	buy1.custom_minimum_size = Vector2(120, 40)
-	buy1.pressed.connect(_on_buy_zou_yu_pack)
-	row1.add_child(buy1)
-	
-	# 小时卡礼包
-	var row2 = HBoxContainer.new()
-	row2.size_flags_horizontal = Control.SIZE_EXPAND_FILL
-	row2.add_theme_constant_override("separation", 16)
-	vbox.add_child(row2)
-	
-	var info2 = Label.new()
-	info2.text = "小时卡礼包\n小时卡×999"
-	info2.size_flags_horizontal = Control.SIZE_EXPAND_FILL
-	info2.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
-	row2.add_child(info2)
-	
-	var buy2 = Button.new()
-	buy2.text = "998元宝"
-	buy2.custom_minimum_size = Vector2(120, 40)
-	buy2.pressed.connect(_on_buy_hour_card_pack)
-	row2.add_child(buy2)
-	
-	# 声望礼包
-	var row3 = HBoxContainer.new()
-	row3.size_flags_horizontal = Control.SIZE_EXPAND_FILL
-	row3.add_theme_constant_override("separation", 16)
-	vbox.add_child(row3)
-	
-	var info3 = Label.new()
-	info3.text = "声望礼包\n高级声望卡×10 + 声望卡×100"
-	info3.size_flags_horizontal = Control.SIZE_EXPAND_FILL
-	info3.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
-	row3.add_child(info3)
-	
-	var buy3 = Button.new()
-	buy3.text = "988元宝"
-	buy3.custom_minimum_size = Vector2(120, 40)
-	buy3.pressed.connect(_on_buy_reputation_pack)
-	row3.add_child(buy3)
+	# 配置表驱动：新增礼包只需改 game_data 的 MALL_PACKS 表
+	for pack in data.MALL_PACKS:
+		var row = HBoxContainer.new()
+		row.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+		row.add_theme_constant_override("separation", 16)
+		vbox.add_child(row)
+		
+		var info = Label.new()
+		info.text = "%s\n%s" % [pack.name, pack.desc]
+		info.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+		info.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
+		row.add_child(info)
+		
+		var buy_btn = Button.new()
+		buy_btn.text = "%d元宝" % pack.cost
+		buy_btn.custom_minimum_size = Vector2(120, 40)
+		buy_btn.pressed.connect(_on_buy_mall_pack.bind(pack))
+		row.add_child(buy_btn)
 	
 	var close_btn = Button.new()
 	close_btn.text = "关闭"
@@ -2790,32 +2855,15 @@ func on_mall():
 	_current_popup = panel
 	$Overlay.show()
 
-func _on_buy_zou_yu_pack():
-	if data.buy_test_beast_pack():
+# 商城礼包购买（通用处理）
+func _on_buy_mall_pack(pack: Dictionary):
+	if data.buy_mall_pack(pack):
 		update_all_ui()
 		update_bag_list()
-		_show_stage_hint("购买成功！驺虞×1 珍兽果×988 奇香果×988")
+		_show_stage_hint("购买成功！%s" % pack.name)
 	else:
 		flash_red("MallPanel")
 
-func _on_buy_hour_card_pack():
-	if data.yuanbao < 998:
-		flash_red("MallPanel")
-		return
-	data.yuanbao -= 998
-	data.items.hour_card += 999
-	update_all_ui()
-	update_bag_list()
-	_show_stage_hint("购买成功！获得小时卡 ×999")
-
-# 购买声望礼包
-func _on_buy_reputation_pack():
-	if data.buy_reputation_pack():
-		update_all_ui()
-		update_bag_list()
-		_show_stage_hint("购买成功！高级声望卡×10 声望卡×100")
-	else:
-		flash_red("MallPanel")
 
 func _close_mall_panel():
 	if has_node("MallPanel"):
@@ -4243,7 +4291,9 @@ func _show_chat_result(results: Array):
 	for r in results:
 		var lbl = Label.new()
 		lbl.text = "与【%s】谈心，缘分 +%d" % [r.name, r.gain]
-		if r.get("adopted", false):
+		if r.get("twin", false):
+			lbl.text += "，领养了一对双胞胎徒弟！"
+		elif r.get("adopted", false):
 			lbl.text += "，领养了一位徒弟！"
 		list.add_child(lbl)
 	
@@ -4314,6 +4364,71 @@ func _upgrade_friend_percent_batch(friend_id: String, batch: bool) -> int:
 		count += 1
 	return count
 
+# 游玩选择弹窗：游山玩水（1000元宝）/ 吟诗作对（玫瑰香水×1）
+func _show_play_selector():
+	if current_friend_id == "" or not data.friends.has(current_friend_id): return
+	_safe_close("PlaySelector")
+	
+	var f = data.friends[current_friend_id]
+	var panel = _create_base_popup("与【%s】游玩" % f.name, Vector2(420, 260), Vector2(366, 190))
+	panel.name = "PlaySelector"
+	var vbox = panel.get_child(0)
+	
+	var info = Label.new()
+	info.text = "谈心效果与普通谈心一致\n（缘分+才华，有空位可领养徒弟，不消耗精力）"
+	info.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	info.add_theme_font_size_override("font_size", 14)
+	vbox.add_child(info)
+	
+	# 游山玩水：1000元宝
+	var scenery_btn = Button.new()
+	scenery_btn.text = "游山玩水（1000元宝，拥有%s）" % format_number(data.yuanbao)
+	scenery_btn.custom_minimum_size = Vector2(280, 44)
+	scenery_btn.disabled = data.yuanbao < 1000
+	scenery_btn.pressed.connect(_on_play_scenery)
+	vbox.add_child(scenery_btn)
+	
+	# 吟诗作对：玫瑰香水×1
+	var poetry_btn = Button.new()
+	poetry_btn.text = "吟诗作对（玫瑰香水×1，拥有%d）" % data.items.get("rose_perfume", 0)
+	poetry_btn.custom_minimum_size = Vector2(280, 44)
+	poetry_btn.disabled = data.items.get("rose_perfume", 0) < 1
+	poetry_btn.pressed.connect(_on_play_poetry)
+	vbox.add_child(poetry_btn)
+	
+	_add_ok_button(vbox, func(): _safe_close("PlaySelector"), "取消")
+	add_child(panel)
+
+# 游山玩水：扣1000元宝
+func _on_play_scenery():
+	if data.yuanbao < 1000:
+		_show_stage_hint("元宝不足！")
+		return
+	data.yuanbao -= 1000
+	_do_play_chat()
+
+# 吟诗作对：扣1个玫瑰香水
+func _on_play_poetry():
+	if data.items.get("rose_perfume", 0) < 1:
+		_show_stage_hint("玫瑰香水不足！")
+		return
+	data.items.rose_perfume -= 1
+	_do_play_chat()
+
+# 游玩谈心统一处理
+func _do_play_chat():
+	var result = data.chat_with_specific_friend(current_friend_id)
+	_safe_close("PlaySelector")
+	if result.ok:
+		var msg = "与【%s】谈心，缘分 +%d" % [result.name, result.gain]
+		if result.get("twin", false):
+			msg += "，领养了一对双胞胎徒弟！"
+		elif result.get("adopted", false):
+			msg += "，领养了一位徒弟！"
+		_show_stage_hint(msg)
+		_update_friend_page_detail()
+		update_all_ui()
+		update_bag_list()
 
 #挚友赠礼
 func on_gift_friend():
@@ -4530,7 +4645,16 @@ func update_apprentice_page():
 		btn.modulate = Color("#e0c070") if btn.name == "Tab_" + _apprentice_tab else Color("#c9a959")
 
 # 徒弟培养板块：5个槽位
+# 徒弟培养板块：一键勾选框 + 5个槽位
 func _update_apprentice_train(content: VBoxContainer):
+	# 一键培养勾选框（状态存成员变量，页面刷新不丢）
+	var batch_check = CheckBox.new()
+	batch_check.name = "BatchTrainCheck"
+	batch_check.text = "一键培养（消耗全部活力）"
+	batch_check.button_pressed = _apprentice_batch_train
+	batch_check.toggled.connect(func(pressed): _apprentice_batch_train = pressed)
+	content.add_child(batch_check)
+	
 	var unlocked = data.get_apprentice_slot_count()
 	for i in range(5):
 		var row = HBoxContainer.new()
@@ -4549,41 +4673,59 @@ func _update_apprentice_train(content: VBoxContainer):
 			info.modulate = Color(0.5, 0.5, 0.5)
 			continue
 		
-		var a = data.apprentices[i]
+		var entry = data.apprentices[i]
 		# 空位
-		if a == null:
+		if entry == null or (entry is Array and entry.is_empty()):
 			info.text = "【槽位%d】空位 —— 与挚友谈心可领养徒弟" % (i + 1)
 			continue
 		
-		# 已有徒弟
-		var state_txt = {"training": "培养中", "adult": "待结业", "magician": "魔法师", "lover": "现充", "married": "已婚"}.get(a.state, "")
+		# 已有徒弟（1~2名，双胞胎占同一槽位）
+		var list = entry if entry is Array else [entry]
+		var first = list[0]
+		var state_txt = {"training": "培养中", "adult": "待结业"}.get(first.state, first.state)
 		var friend_name = ""
-		if data.friends.has(a.friend_id):
-			friend_name = data.friends[a.friend_id].name
-		info.text = "【%s】%s | %s | 挚友:%s\n进度 %d/10000 | 赚速 %s/秒 | 活力 %d/500 | %s" % [
-			a.name, a.gender, a.career, friend_name,
-			a.progress, format_number(data.get_apprentice_income(i)),
+		if data.friends.has(first.friend_id):
+			friend_name = data.friends[first.friend_id].name
+		
+		# 每个徒弟的名字行
+		var names_txt = ""
+		for a in list:
+			var q = data.FRIEND_TITLES[clamp(a.get("quality_idx", 0), 0, data.FRIEND_TITLES.size() - 1)].quality
+			names_txt += "【%s】%s | %s | 品质:%s\n" % [a.name, a.gender, a.career, q]
+		if list.size() > 1:
+			names_txt = "双胞胎！\n" + names_txt
+		
+		info.text = "%s挚友:%s\n进度 %d/10000 | 赚速 %s/秒 | 活力 %d/500 | %s" % [
+			names_txt, friend_name,
+			first.progress, format_number(data.get_apprentice_income(i)),
 			data.get_slot_vigor(i), state_txt
 		]
 		
+		# 培养中：活力旁加"+"按钮（使用活力丹）
+		if first.state == "training":
+			var plus_btn = Button.new()
+			plus_btn.text = "+"
+			plus_btn.custom_minimum_size = Vector2(36, 40)
+			plus_btn.tooltip_text = "使用活力丹恢复活力"
+			plus_btn.pressed.connect(_show_vitality_pill_prompt.bind(i))
+			row.add_child(plus_btn)
+		
 		var btn = Button.new()
 		btn.custom_minimum_size = Vector2(100, 40)
-		if a.state == "training":
+		if first.state == "training":
 			btn.text = "培养"
 			btn.pressed.connect(_on_train_apprentice.bind(i))
-		elif a.state == "adult":
+		else:
+			# 待结业（结业的徒弟会离开槽位）
 			btn.text = "结业"
 			btn.pressed.connect(_show_graduate_selector.bind(i))
-		else:
-			btn.text = "已结业"
-			btn.disabled = true
 		row.add_child(btn)
 
-# 现充/魔法师/已婚板块：按状态过滤展示
+# 现充/魔法师/已婚板块：遍历已结业徒弟列表，按状态过滤
 func _update_apprentice_list_view(content: VBoxContainer, state: String):
 	var has_any = false
-	for i in range(5):
-		var a = data.apprentices[i]
+	for i in range(data.graduated_apprentices.size()):
+		var a = data.graduated_apprentices[i]
 		if a == null or a.state != state: continue
 		has_any = true
 		
@@ -4595,7 +4737,8 @@ func _update_apprentice_list_view(content: VBoxContainer, state: String):
 		var info = Label.new()
 		info.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 		info.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
-		var txt = "【%s】%s | %s | 赚速 %s/秒" % [a.name, a.gender, a.career, format_number(data.get_apprentice_income(i))]
+		var quality_txt = data.FRIEND_TITLES[clamp(a.get("quality_idx", 0), 0, data.FRIEND_TITLES.size() - 1)].quality
+		var txt = "【%s】%s | %s | 品质:%s | 赚速 %s/秒" % [a.name, a.gender, a.career, quality_txt, format_number(data.get_graduated_income(i))]
 		if state == "magician":
 			txt += " | 魔法加成 +%d%%" % int(a.magic_bonus * 100)
 		elif state == "married":
@@ -4619,26 +4762,64 @@ func _update_apprentice_list_view(content: VBoxContainer, state: String):
 		content.add_child(empty)
 
 # 培养按钮
+# 培养按钮：勾选一键则连续培养；活力不足且有活力丹时弹使用框
 func _on_train_apprentice(slot: int):
-	var result = data.train_apprentice(slot)
-	if result.ok:
-		update_apprentice_page()
-		update_all_ui()
-		if result.get("adult", false):
-			_show_stage_hint("培养完成！徒弟已成年，可以结业了")
+	if _apprentice_batch_train:
+		var result = data.train_apprentice_batch(slot)
+		if result.ok:
+			update_apprentice_page()
+			update_all_ui()
+			var msg = "一键培养 ×%d" % result.count
+			if result.get("adult", false):
+				msg += "，徒弟已成年，可以结业了"
+			elif result.get("stop_reason", "") != "":
+				msg += "（%s）" % result.stop_reason
+			_show_stage_hint(msg)
+		else:
+			_handle_train_fail(slot, result.reason)
 	else:
-		_show_stage_hint(result.reason)
+		var result = data.train_apprentice(slot)
+		if result.ok:
+			update_apprentice_page()
+			update_all_ui()
+			if result.get("adult", false):
+				_show_stage_hint("培养完成！徒弟已成年，可以结业了")
+		else:
+			_handle_train_fail(slot, result.reason)
 
-# 结业弹窗：选魔法师或现充
+# 培养失败处理：活力不足且有活力丹 → 弹出使用框，否则提示
+func _handle_train_fail(slot: int, reason: String):
+	if reason == "活力不足" and data.items.get("vitality_pill", 0) > 0:
+		_show_vitality_pill_prompt(slot)
+	else:
+		_show_stage_hint(reason)
+
+# 结业弹窗：选魔法师或现充（双胞胎轮流选择，每次处理槽位第一个）
 func _show_graduate_selector(slot: int):
 	_safe_close("GraduatePanel")
-	var panel = _create_base_popup("选择结业方向", Vector2(420, 260), Vector2(366, 180))
+	var entry = data.apprentices[slot]
+	if entry == null: return
+	var list = entry if entry is Array else [entry]
+	if list.is_empty(): return
+	var a = list[0]
+	
+	var panel = _create_base_popup("选择结业方向", Vector2(420, 280), Vector2(366, 170))
 	panel.name = "GraduatePanel"
 	var vbox = panel.get_child(0)
 	
-	var a = data.apprentices[slot]
+	# 双胞胎提示当前进度
+	if list.size() > 1:
+		var twin_lbl = Label.new()
+		twin_lbl.text = "双胞胎结业（第1个/共%d个）" % list.size()
+		twin_lbl.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+		twin_lbl.add_theme_color_override("font_color", Color("#ffd700"))
+		vbox.add_child(twin_lbl)
+	
 	var info = Label.new()
-	info.text = "【%s】当前赚速：%s/秒" % [a.name, format_number(data.get_apprentice_income(slot))]
+	info.text = "【%s】%s | %s\n当前赚速：%s/秒" % [
+		a.name, a.gender, a.career,
+		format_number(data._get_single_apprentice_income(a))
+	]
 	info.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	vbox.add_child(info)
 	
@@ -4658,15 +4839,69 @@ func _show_graduate_selector(slot: int):
 	add_child(panel)
 
 func _on_graduate(slot: int, path: String):
-	if data.graduate_apprentice(slot, path):
+	if data.graduate_apprentice_one(slot, path):
 		_safe_close("GraduatePanel")
-		var a = data.apprentices[slot]
+		# 刚结业的徒弟在已结业列表末尾
+		var a = data.graduated_apprentices.back()
 		if path == "magician":
-			_show_stage_hint("转职魔法师！赚速提升 %d%%" % int(a.magic_bonus * 100))
+			_show_stage_hint("【%s】转职魔法师！赚速提升 %d%%" % [a.name, int(a.magic_bonus * 100)])
 		else:
-			_show_stage_hint("结业成功！已进入现充")
+			_show_stage_hint("【%s】结业成功！已进入现充" % a.name)
 		update_apprentice_page()
 		update_all_ui()
+		# 双胞胎：槽位里还有徒弟，继续为其选择方向
+		if data.apprentices[slot] != null:
+			_show_graduate_selector(slot)
+
+# 活力丹使用弹窗：选择数量给指定槽位恢复（每个+5）
+func _show_vitality_pill_prompt(slot: int):
+	var max_pills = data.items.get("vitality_pill", 0)
+	if max_pills <= 0:
+		_show_stage_hint("没有活力丹，可前往商城购买活力礼包")
+		return
+	_vitality_target_slot = slot
+	_safe_close("VitalityPillPrompt")
+	
+	var panel = _create_base_popup("使用活力丹", Vector2(420, 280), Vector2(366, 184))
+	panel.name = "VitalityPillPrompt"
+	var vbox = panel.get_child(0)
+	
+	var info = Label.new()
+	info.text = "槽位%d 当前活力：%d/500\n拥有活力丹：%d（每个+5）" % [slot + 1, data.get_slot_vigor(slot), max_pills]
+	info.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	vbox.add_child(info)
+	
+	var pair = _create_slider_spin_pair(vbox, max_pills)
+	var spin = pair.spin
+	
+	var btn_box = HBoxContainer.new()
+	btn_box.alignment = BoxContainer.ALIGNMENT_CENTER
+	btn_box.add_theme_constant_override("separation", 16)
+	vbox.add_child(btn_box)
+	
+	var use_btn = Button.new()
+	use_btn.text = "使用"
+	use_btn.custom_minimum_size = Vector2(80, 36)
+	use_btn.pressed.connect(_on_use_vitality_pill.bind(spin))
+	btn_box.add_child(use_btn)
+	
+	var cancel_btn = Button.new()
+	cancel_btn.text = "取消"
+	cancel_btn.custom_minimum_size = Vector2(80, 36)
+	cancel_btn.pressed.connect(func(): _safe_close("VitalityPillPrompt"))
+	btn_box.add_child(cancel_btn)
+	
+	add_child(panel)
+
+# 活力丹使用确认
+func _on_use_vitality_pill(spin: SpinBox):
+	var count = clamp(int(spin.value), 1, data.items.get("vitality_pill", 0))
+	if data.use_vitality_pill(_vitality_target_slot, count):
+		_safe_close("VitalityPillPrompt")
+		_show_stage_hint("活力 +%d！" % (5 * count))
+		update_apprentice_page()
+		update_bag_list()
+	_vitality_target_slot = -1
 
 # 提亲弹窗
 var _proposing_slot: int = -1
@@ -4678,7 +4913,7 @@ func _show_marriage_proposal(slot: int):
 	_proposed_spouse = data.generate_spouse(slot)
 	if _proposed_spouse.is_empty(): return
 	
-	var a = data.apprentices[slot]
+	var a = data.graduated_apprentices[slot]
 	var panel = _create_base_popup("提亲", Vector2(420, 300), Vector2(366, 140))
 	panel.name = "MarriagePanel"
 	var vbox = panel.get_child(0)

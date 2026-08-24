@@ -142,6 +142,33 @@ const SPECIAL_PACKS = [
 	{"name": "门客帖礼包",   "desc": "门客帖×10",                    "cost": 1000,  "items": {"hero_token": 10}},
 ]
 
+# ========== 元宝商城礼包表 ==========
+# 字段：name 礼包名 / desc 内容描述 / cost 价格(元宝)
+# 可选：items 道具及数量 / beast 珍兽ID / beast_fruit 珍兽果 / aroma_fruit 奇香果
+const MALL_PACKS = [
+	{"name": "驺虞礼包",   "desc": "驺虞×1 + 珍兽果×988 + 奇香果×988", "cost": 19888, "beast": "zou_yu", "beast_fruit": 988, "aroma_fruit": 988},
+	{"name": "小时卡礼包", "desc": "小时卡×999",                        "cost": 998,   "items": {"hour_card": 999}},
+	{"name": "活力礼包",   "desc": "木梳×1000 + 胭脂×1000 + 活力丹×2000 + 玫瑰香水×1", "cost": 1988,  "items": {"wood_comb": 1000, "rouge": 1000, "vitality_pill": 2000, "rose_perfume": 1}},
+	{"name": "声望礼包",   "desc": "声望卡×100 + 高级声望卡×10", "cost": 988,  "items": {"reputation_card": 100, "reputation_card_adv": 10}},
+	
+]
+
+# ========== 行善系统 ==========
+const CHARITY_LOCATIONS = [
+	{"id": "da_fo",     "name": "大佛", "career": "侠", "way_item": "xia_way"},
+	{"id": "zhou_peng", "name": "粥棚", "career": "农", "way_item": "nong_way"},
+	{"id": "xue_tang",  "name": "学堂", "career": "士", "way_item": "shi_way"},
+	{"id": "shu_ta",    "name": "书塔", "career": "工", "way_item": "gong_way"},
+	{"id": "liang_cang","name": "粮仓", "career": "商", "way_item": "shang_way"},
+]
+const CHARITY_BASE_COST = 10000        # 首次行善消耗铜钱
+const CHARITY_COST_MULT = 1.5          # 每次消耗递增倍率
+const CHARITY_EFFECT_PER_TIER = 50     # 每档：对应职业的徒弟赚速加成池 +50
+
+# 各地点进度：{"da_fo": {"progress": 当前档进度, "tier": 已完成档数}, ...}
+var charity_progress: Dictionary = {}
+var charity_click_count: int = 0       # 今日行善次数（决定消耗）
+var charity_last_day: String = ""      # 上次行善日期，跨天重置次数
 
 #==============道具物品=========================
 const ITEM_CONFIG = {
@@ -151,14 +178,14 @@ const ITEM_CONFIG = {
 	"experience":      {"name": "阅历",     "desc": "门客升级所需经验"},
 	"abacus":          {"name": "算盘",     "desc": "提升店铺算力效率"},
 	"fengyasong": {"name": "风雅颂", "desc": "门客突破所需"},
-	"exp_box":         {"name": "阅历箱",   "desc": "打开获得99999阅历"},      
-	"ginseng":         {"name": "百年人参", "desc": "指定门客基础赚速+2000"},
+	"exp_box":         {"name": "阅历箱",   "desc": "打开获得99999阅历", "use": {"type": "quantity", "btn": "打开", "title": "打开阅历箱"}},      
+	"ginseng":         {"name": "百年人参", "desc": "指定门客基础赚速+2000", "use": {"type": "ginseng", "btn": "使用", "title": "使用百年人参"}},
 	"wood_comb":      {"name": "木梳",   "desc": "赠送给挚友，友好+1"},
 	"rouge":          {"name": "胭脂",   "desc": "赠送给挚友，才华+1"},
 	"energy_pill":    {"name": "精力丹", "desc": "恢复3点精力"},
 	"zui_xian_niang":  {"name": "醉仙酿", "desc": "李白赋诗升级所需"},
 	"stage_box": {"name": "关卡宝箱", "desc": "通关小关获得的宝箱"},
-	"hour_card":       {"name": "小时卡",   "desc": "使用后获得当前总赚速一小时的铜钱"},
+	"hour_card":       {"name": "小时卡",   "desc": "使用后获得当前总赚速一小时的铜钱", "use": {"type": "quantity", "btn": "使用", "title": "使用小时卡"}},
 	"beast_fruit":     {"name": "珍兽果",   "desc": "升级珍兽等级"},
 	"aroma_fruit":     {"name": "奇香果",   "desc": "刷新珍兽技能"},
 	"feng_shen_zhi":   {"name": "封神志",   "desc": "兑换封神灵兽"},
@@ -171,10 +198,10 @@ const ITEM_CONFIG = {
 	"lottery_ticket": {"name": "抽奖券", "desc": "用于闯荡页面的抽奖"},
 	"hero_token":      {"name": "门客帖",   "desc": "用于兑换门客"},
 	"friend_token":    {"name": "挚友帖",   "desc": "用于兑换挚友"},
-	"ginseng_1000":    {"name": "千年人参", "desc": "指定门客基础赚速+20000"},
-	"vitality_pill":   {"name": "活力丹",   "desc": "后续玩法更新后使用"},
+	"ginseng_1000":    {"name": "千年人参", "desc": "指定门客基础赚速+20000", "use": {"type": "ginseng", "btn": "使用", "title": "使用千年人参"}},
+	"vitality_pill":   {"name": "活力丹",   "desc": "使用后徒弟槽位活力+5"},
 	"wish_stone":      {"name": "许愿石",   "desc": "用于刷新挚友店铺技能，必定获得20%-30%加成"},
-	"hero_box":        {"name": "门客盒子", "desc": "打开后可从所有门客中选择一个获得"},
+	"hero_box":        {"name": "门客盒子", "desc": "打开后可从所有门客中选择一个获得", "use": {"type": "hero_box", "btn": "打开"}},
 	# ===== 系列兑换道具 =====
 	"zongjiang_ling":   {"name": "宗匠令",   "desc": "兑换一代宗匠系列门客所需"},
 	"kaishan_ling":     {"name": "开山令",   "desc": "兑换开山鼻祖系列门客所需"},
@@ -204,8 +231,18 @@ const ITEM_CONFIG = {
 	"yugu_dao":         {"name": "鱼骨刀",   "desc": "兑换门客【罗海王】所需"},
 	"yuye_jinhua":      {"name": "玉叶金花", "desc": "兑换门客【小柒】所需"},
 	"linglong_hebao":   {"name": "玲珑荷包", "desc": "兑换门客【小八】所需"},
-	"reputation_card":      {"name": "声望卡",     "desc": "使用后声望 +10"},
-	"reputation_card_adv":  {"name": "高级声望卡", "desc": "使用后声望 +100"},
+	"reputation_card":      {"name": "声望卡",     "desc": "使用后声望 +10", "use": {"type": "quantity", "btn": "使用", "title": "使用声望卡"}},
+	"reputation_card_adv":  {"name": "高级声望卡", "desc": "使用后声望 +100", "use": {"type": "quantity", "btn": "使用", "title": "使用高级声望卡"}},
+	"rose_perfume":     {"name": "玫瑰香水", "desc": "与指定挚友吟诗作对（谈心）"},
+	"xia_way":          {"name": "侠义之道", "desc": "后续玩法更新后使用"},
+	"nong_way":         {"name": "农业之道", "desc": "后续玩法更新后使用"},
+	"shi_way":          {"name": "仕途之道", "desc": "后续玩法更新后使用"},
+	"gong_way":         {"name": "工业之道", "desc": "后续玩法更新后使用"},
+	"shang_way":        {"name": "经商之道", "desc": "后续玩法更新后使用"},
+	"recruit_bronze":   {"name": "募工铜牌", "desc": "使用后随机店铺店员+1", "use": {"type": "quantity", "btn": "使用", "title": "使用募工铜牌"}},
+	"recruit_silver":   {"name": "募工银牌", "desc": "使用后随机店铺店员+3", "use": {"type": "quantity", "btn": "使用", "title": "使用募工银牌"}},
+	"recruit_gold":     {"name": "募工金牌", "desc": "使用后随机店铺店员+5", "use": {"type": "quantity", "btn": "使用", "title": "使用募工金牌"}},
+	
 
 }
 
@@ -244,8 +281,30 @@ const APPRENTICE_CAREERS = ["士", "农", "工", "商", "侠"]
 const APPRENTICE_MALE_NAMES = ["阿宝", "小虎", "石头", "铁蛋", "柱子"]
 const APPRENTICE_FEMALE_NAMES = ["小蝶", "阿翠", "丫丫", "秀儿", "花儿"]
 
+# ========== 挚友美名 / 徒弟品质表 ==========
+# 友好和才华都达到 req 才拥有该美名（自动生效，取最高档）
+# 徒弟品质在领养时按挚友当前美名定格，徒弟赚速基数用 income 列
+const FRIEND_TITLES = [
+	{"title": "淑女", "req": 100,    "quality": "平庸", "income": 1000},
+	{"title": "才女", "req": 250,    "quality": "活泼", "income": 1250},
+	{"title": "玉女", "req": 500,    "quality": "伶俐", "income": 1500},
+	{"title": "伊人", "req": 800,    "quality": "机敏", "income": 2000},
+	{"title": "佳人", "req": 1000,   "quality": "聪明", "income": 3000},
+	{"title": "丽人", "req": 2000,   "quality": "颖慧", "income": 5000},
+	{"title": "红粉", "req": 4000,   "quality": "睿智", "income": 9000},
+	{"title": "婵娟", "req": 8000,   "quality": "天才", "income": 17000},
+	{"title": "花魁", "req": 20000,  "quality": "神童", "income": 33000},
+	{"title": "国色", "req": 50000,  "quality": "灵心", "income": 65000},
+	{"title": "仙子", "req": 100000, "quality": "天人", "income": 129000},
+	{"title": "天仙", "req": 200000, "quality": "仙童", "income": 257000},
+]
+
+
 # 5个徒弟槽位：null=空位，字典=已有徒弟
 var apprentices: Array = [null, null, null, null, null]
+const APPRENTICE_TWIN_CHANCE = 0.01   # 领养时双胞胎概率
+# 已结业的徒弟（魔法师/现充/已婚），结业后离开培养位进入这里
+var graduated_apprentices: Array = []
 # 每个槽位独立的活力与上次恢复时间（懒结算用）
 var apprentice_vigor: Array = [500, 500, 500, 500, 500]
 var apprentice_vigor_time: Array = [0, 0, 0, 0, 0]
@@ -320,6 +379,8 @@ const SERIES_EXCHANGE = [
 		],
 	},
 ]
+
+
 
 # 系列兑换（可附带同名挚友）
 func exchange_series_hero(hero_id: String, item_id: String, cost: int, friend_id: String = "") -> Dictionary:
@@ -406,7 +467,9 @@ var items = {
 	"tiangong_zanchui": 0, "qisheng_mianju": 0, "danqing_pan": 0, "cangbao_tu": 0, "huojian_qiang": 0,
 	"shoulie_guren": 0, "chengzu_chiling": 0, "wulong_xiuqiu": 0, "yugu_dao": 0,
 	"yuye_jinhua": 0, "linglong_hebao":100,
-	"reputation_card": 0, "reputation_card_adv": 0,
+	"reputation_card": 0, "reputation_card_adv": 0,"rose_perfume": 0,
+	"xia_way": 0, "nong_way": 0, "shi_way": 0, "gong_way": 0, "shang_way": 0,
+	"recruit_bronze": 0, "recruit_silver": 0, "recruit_gold": 0,
 }
 
 const SURNAMES = ["赵","钱","孙","李","周","吴","郑","王","冯","陈","褚","卫","蒋","沈","韩","杨","朱","秦","尤","许"]
@@ -659,7 +722,8 @@ func chat_with_friend(once: bool = true) -> Dictionary:
 		var f = friends[fid]
 		f.bond += f.talent
 		# 有空位则与本次谈心的挚友领养一位徒弟
-		results.append({"friend_id": fid, "name": f.name, "gain": f.talent, "adopted": adopt_apprentice(fid)})
+		var n = adopt_apprentice(fid)
+		results.append({"friend_id": fid, "name": f.name, "gain": f.talent, "adopted": n > 0, "twin": n == 2})
 	else:
 		while energy > 0:
 			energy -= 1
@@ -668,9 +732,19 @@ func chat_with_friend(once: bool = true) -> Dictionary:
 			var f = friends[fid]
 			f.bond += f.talent
 			# 一键谈心：有几个空位，前几位挚友就各领养一位
-			results.append({"friend_id": fid, "name": f.name, "gain": f.talent, "adopted": adopt_apprentice(fid)})
+			var n = adopt_apprentice(fid)
+			results.append({"friend_id": fid, "name": f.name, "gain": f.talent, "adopted": n > 0, "twin": n == 2})
 	
 	return {"ok": true, "results": results}
+
+# 与指定挚友谈心（游山玩水/吟诗作对共用）：缘分+才华，有空位则领养徒弟
+# 不消耗精力，消耗由调用方（元宝/玫瑰香水）负责
+func chat_with_specific_friend(friend_id: String) -> Dictionary:
+	if not friends.has(friend_id): return {"ok": false, "reason": "未拥有该挚友"}
+	var f = friends[friend_id]
+	f.bond += f.talent
+	var n = adopt_apprentice(friend_id)
+	return {"ok": true, "name": f.name, "gain": f.talent, "adopted": n > 0, "twin": n == 2}
 
 # 升级固定技能
 func upgrade_friend_fixed(friend_id: String) -> bool:
@@ -711,6 +785,21 @@ func gift_friend(friend_id: String, item_id: String) -> bool:
 			return false
 	return true
 
+# 挚友当前美名下标：友好和才华都达标才算，-1=无美名
+func get_friend_title_index(friend_id: String) -> int:
+	if not friends.has(friend_id): return -1
+	var f = friends[friend_id]
+	var idx = -1
+	for i in range(FRIEND_TITLES.size()):
+		if f.friendly >= FRIEND_TITLES[i].req and f.talent >= FRIEND_TITLES[i].req:
+			idx = i
+	return idx
+
+# 挚友当前美名（无美名返回"无"）
+func get_friend_title(friend_id: String) -> String:
+	var idx = get_friend_title_index(friend_id)
+	return FRIEND_TITLES[idx].title if idx >= 0 else "无"
+
 # ========== 徒弟：槽位 ==========
 
 # 已解锁的徒弟槽位数（按身份等级）
@@ -725,11 +814,15 @@ func get_apprentice_slot_count() -> int:
 func is_apprentice_slot_unlocked(slot: int) -> bool:
 	return slot >= 0 and slot < get_apprentice_slot_count()
 
-# 懒结算槽位活力：每分钟恢复1点，上限500
+# 懒结算槽位活力：每分钟恢复1点，500只是自动恢复的上限（道具可超上限）
 func _settle_slot_vigor(slot: int):
 	var now = Time.get_unix_time_from_system()
 	var last = apprentice_vigor_time[slot]
 	if last <= 0:
+		apprentice_vigor_time[slot] = now
+		return
+	# 活力已满（或超出上限）：不再恢复，但绝不能截断超出部分
+	if apprentice_vigor[slot] >= APPRENTICE_VIGOR_MAX:
 		apprentice_vigor_time[slot] = now
 		return
 	@warning_ignore("narrowing_conversion")
@@ -746,73 +839,131 @@ func get_slot_vigor(slot: int) -> int:
 
 # ========== 徒弟：领养 ==========
 
-# 与挚友领养徒弟：占用第一个已解锁的空位，性别/职业平等随机
-func adopt_apprentice(friend_id: String) -> bool:
-	if not friends.has(friend_id): return false
+# 与挚友领养徒弟：占用第一个已解锁的空位，1%概率双胞胎（同槽位两名，性别职业各自独立随机）
+# 返回领养数量：0=没有空位，1=单人，2=双胞胎
+func adopt_apprentice(friend_id: String) -> int:
+	if not friends.has(friend_id): return 0
 	for i in range(5):
 		if not is_apprentice_slot_unlocked(i): break
-		if apprentices[i] == null:
-			var gender = "男" if randi() % 2 == 0 else "女"
-			var pool = APPRENTICE_MALE_NAMES if gender == "男" else APPRENTICE_FEMALE_NAMES
-			apprentices[i] = {
-				"name": SURNAMES[randi() % SURNAMES.size()] + pool[randi() % pool.size()],
-				"gender": gender,
-				"career": APPRENTICE_CAREERS[randi() % APPRENTICE_CAREERS.size()],
-				"friend_id": friend_id,        # 领养来源挚友
-				"progress": 0,                 # 培养进度
-				"state": "training",           # training/adult/magician/lover/married
-				"magic_bonus": 0.0,            # 魔法师加成比例
-				"spouse": {},                  # 配偶信息
-				"spouse_income": 0,            # 联姻获得的赚速
-			}
-			return true
-	return false
+		var entry = apprentices[i]
+		if entry == null or (entry is Array and entry.is_empty()):
+			var list = [_create_apprentice(friend_id)]
+			if randf() < APPRENTICE_TWIN_CHANCE:
+				list.append(_create_apprentice(friend_id))
+			apprentices[i] = list
+			return list.size()
+	return 0
+
+# 创建一个徒弟（性别/职业独立随机，品质按领养时挚友美名定格）
+func _create_apprentice(friend_id: String) -> Dictionary:
+	var gender = "男" if randi() % 2 == 0 else "女"
+	var pool = APPRENTICE_MALE_NAMES if gender == "男" else APPRENTICE_FEMALE_NAMES
+	return {
+		"name": SURNAMES[randi() % SURNAMES.size()] + pool[randi() % pool.size()],
+		"gender": gender,
+		"career": APPRENTICE_CAREERS[randi() % APPRENTICE_CAREERS.size()],
+		"friend_id": friend_id,        # 领养来源挚友
+		"quality_idx": max(0, get_friend_title_index(friend_id)),  # 品质按领养时美名定格
+		"progress": 0,                 # 培养进度
+		"state": "training",           # training/adult/magician/lover/married
+		"magic_bonus": 0.0,            # 魔法师加成比例
+		"spouse": {},                  # 配偶信息
+		"spouse_income": 0,            # 联姻获得的赚速
+		"income_bonus": 0,               # 【新增】徒弟赚速加成（结业时按职业加成池定格）
+	}
 
 # ========== 徒弟：赚速 ==========
 
-# 徒弟成年赚速 = 1000 + 绑定挚友友好×10%
-func get_apprentice_adult_income(slot: int) -> int:
-	var a = apprentices[slot]
-	if a == null: return 0
+# 单个徒弟的当前赚速
+# 顺序：成年值 = 品质赚速+友好×10%+徒弟赚速加成 → 按进度线性 → 魔法师加成 → 联姻加成
+func _get_single_apprentice_income(a: Dictionary) -> int:
 	var f = friends.get(a.friend_id, {})
-	return 1000 + int(f.get("friendly", 0) * 0.1)
-
-# 徒弟当前赚速：进度线性增长 + 魔法师加成 + 联姻加成
-func get_apprentice_income(slot: int) -> int:
-	var a = apprentices[slot]
-	if a == null: return 0
-	var income = int(get_apprentice_adult_income(slot) * a.progress / float(APPRENTICE_MAX_PROGRESS))
+	var q = clamp(a.get("quality_idx", 0), 0, FRIEND_TITLES.size() - 1)
+	var adult = FRIEND_TITLES[q].income + int(f.get("friendly", 0) * 0.1) + a.get("income_bonus", 0)
+	var income = int(adult * a.progress / float(APPRENTICE_MAX_PROGRESS))
 	if a.state == "magician":
 		income = int(income * (1.0 + a.magic_bonus))
 	elif a.state == "married":
 		income += a.get("spouse_income", 0)
 	return income
 
+# 槽位总赚速：同槽每个徒弟单独计算后求和（双胞胎即两倍）
+func get_apprentice_income(slot: int) -> int:
+	var entry = apprentices[slot]
+	if entry == null: return 0
+	var list = entry if entry is Array else [entry]   # 兼容旧存档
+	var total = 0
+	for a in list:
+		total += _get_single_apprentice_income(a)
+	return total
+
+# 已结业徒弟赚速（结业列表里都是单人条目）
+func get_graduated_income(index: int) -> int:
+	if index < 0 or index >= graduated_apprentices.size(): return 0
+	return _get_single_apprentice_income(graduated_apprentices[index])
+
 # ========== 徒弟：培养 / 结业 / 联姻 ==========
 
-# 培养：10000铜钱 + 1活力 → 进度+4、阅历+3100；满进度成年
+# 培养：10000铜钱 + 1活力 → 同槽所有徒弟进度各+4、阅历+3100；满进度成年
 func train_apprentice(slot: int) -> Dictionary:
 	if slot < 0 or slot >= 5: return {"ok": false, "reason": "槽位错误"}
-	var a = apprentices[slot]
-	if a == null: return {"ok": false, "reason": "空位"}
-	if a.state != "training": return {"ok": false, "reason": "培养已完成"}
+	var entry = apprentices[slot]
+	if entry == null: return {"ok": false, "reason": "空位"}
+	var list = entry if entry is Array else [entry]
+	if list.is_empty(): return {"ok": false, "reason": "空位"}
+	if list[0].state != "training": return {"ok": false, "reason": "培养已完成"}
 	if money < APPRENTICE_TRAIN_COST: return {"ok": false, "reason": "铜钱不足"}
 	_settle_slot_vigor(slot)
 	if apprentice_vigor[slot] < 1: return {"ok": false, "reason": "活力不足"}
 	money -= APPRENTICE_TRAIN_COST
 	apprentice_vigor[slot] -= 1
-	a.progress = min(APPRENTICE_MAX_PROGRESS, a.progress + APPRENTICE_PROGRESS_PER_TRAIN)
+	# 双胞胎占同一槽位，一起培养
+	for a in list:
+		a.progress = min(APPRENTICE_MAX_PROGRESS, a.progress + APPRENTICE_PROGRESS_PER_TRAIN)
 	items.experience += APPRENTICE_TRAIN_EXP
-	var adult = a.progress >= APPRENTICE_MAX_PROGRESS
+	var adult = list[0].progress >= APPRENTICE_MAX_PROGRESS
 	if adult:
-		a.state = "adult"
+		for a in list:
+			a.state = "adult"
 	return {"ok": true, "adult": adult}
 
-# 结业转职："magician"=魔法师（赚速提升70%-140%随机）/ "lover"=现充
-func graduate_apprentice(slot: int, path: String) -> bool:
+# 一键培养：连续培养直到活力耗尽 / 铜钱不足 / 已成年
+func train_apprentice_batch(slot: int) -> Dictionary:
+	var count = 0
+	var adult = false
+	while true:
+		var r = train_apprentice(slot)
+		if not r.ok:
+			# 至少成功过一次就算成功，带上中断原因
+			if count > 0:
+				return {"ok": true, "count": count, "adult": adult, "stop_reason": r.reason}
+			return r
+		count += 1
+		adult = adult or r.get("adult", false)
+		if adult: break
+	return {"ok": true, "count": count, "adult": adult}
+
+
+# 使用活力丹：指定槽位活力 +5/个，不受自动恢复上限限制
+func use_vitality_pill(slot: int, count: int) -> bool:
+	if slot < 0 or slot >= 5 or count <= 0: return false
+	if items.get("vitality_pill", 0) < count: return false
+	_settle_slot_vigor(slot)
+	items.vitality_pill -= count
+	apprentice_vigor[slot] += 5 * count
+	return true
+
+# 结业转职（逐个进行，双胞胎轮流选择）："magician"=魔法师 / "lover"=现充
+# 每次处理槽位里第一个待结业的徒弟，全部结业后槽位空出
+func graduate_apprentice_one(slot: int, path: String) -> bool:
 	if slot < 0 or slot >= 5: return false
-	var a = apprentices[slot]
-	if a == null or a.state != "adult": return false
+	var entry = apprentices[slot]
+	if entry == null: return false
+	var list = entry if entry is Array else [entry]
+	if list.is_empty(): return false
+	var a = list[0]
+	if a.state != "adult": return false
+	a.income_bonus = get_charity_career_bonus(a.career)
 	if path == "magician":
 		a.magic_bonus = randf_range(0.7, 1.4)
 		a.state = "magician"
@@ -820,12 +971,20 @@ func graduate_apprentice(slot: int, path: String) -> bool:
 		a.state = "lover"
 	else:
 		return false
+	# 移入已结业列表
+	graduated_apprentices.append(a)
+	list.remove_at(0)
+	# 槽位腾空（双胞胎的另一个还在的话保留槽位）
+	if list.size() > 0:
+		apprentices[slot] = list
+	else:
+		apprentices[slot] = null
 	return true
 
-# 生成联姻对象：性别相反、赚速与当前徒弟相同
-func generate_spouse(slot: int) -> Dictionary:
-	if slot < 0 or slot >= 5: return {}
-	var a = apprentices[slot]
+# 生成联姻对象：性别相反、赚速与当前徒弟相同（index为已结业列表下标）
+func generate_spouse(index: int) -> Dictionary:
+	if index < 0 or index >= graduated_apprentices.size(): return {}
+	var a = graduated_apprentices[index]
 	if a == null: return {}
 	var gender = "女" if a.gender == "男" else "男"
 	var pool = APPRENTICE_MALE_NAMES if gender == "男" else APPRENTICE_FEMALE_NAMES
@@ -833,13 +992,13 @@ func generate_spouse(slot: int) -> Dictionary:
 		"name": SURNAMES[randi() % SURNAMES.size()] + pool[randi() % pool.size()],
 		"gender": gender,
 		"career": APPRENTICE_CAREERS[randi() % APPRENTICE_CAREERS.size()],
-		"income": get_apprentice_income(slot),
+		"income": get_graduated_income(index),
 	}
 
-# 联姻：获得对象赚速，进入已婚
-func marry_apprentice(slot: int, spouse: Dictionary) -> bool:
-	if slot < 0 or slot >= 5: return false
-	var a = apprentices[slot]
+# 联姻：获得对象赚速，进入已婚（index为已结业列表下标）
+func marry_apprentice(index: int, spouse: Dictionary) -> bool:
+	if index < 0 or index >= graduated_apprentices.size(): return false
+	var a = graduated_apprentices[index]
 	if a == null or a.state != "lover": return false
 	a.spouse = spouse
 	a.spouse_income = spouse.get("income", 0)
@@ -969,13 +1128,45 @@ func claim_daily_reward() -> int:
 	last_daily_reward_time = Time.get_unix_time_from_system()
 	return reward
 
-func use_hour_card(count: int) -> int:
-	if items.get("hour_card", 0) < count:
-		return 0
-	items.hour_card -= count
-	var gain = get_total_auto_income() * 3600 * count
-	money += gain
-	return gain
+# ========== 通用道具使用（数量型） ==========
+# 背包"使用/打开"按钮统一走这里，返回 {"ok", "msg"}；加新数量型道具只需加个分支
+func use_item(item_id: String, count: int) -> Dictionary:
+	if count <= 0: return {"ok": false, "msg": "数量错误"}
+	if items.get(item_id, 0) < count: return {"ok": false, "msg": "道具不足"}
+	match item_id:
+		"exp_box":
+			items.exp_box -= count
+			items.experience += 99999 * count
+			return {"ok": true, "msg": "获得阅历 ×%d" % (99999 * count)}
+		"hour_card":
+			items.hour_card -= count
+			var gain = get_total_auto_income() * 3600 * count
+			money += gain
+			return {"ok": true, "msg": "获得铜钱 ×%d" % gain}
+		"reputation_card":
+			items.reputation_card -= count
+			reputation += 10 * count
+			return {"ok": true, "msg": "声望 +%d" % (10 * count)}
+		"reputation_card_adv":
+			items.reputation_card_adv -= count
+			reputation += 100 * count
+			return {"ok": true, "msg": "声望 +%d" % (100 * count)}
+		"recruit_bronze", "recruit_silver", "recruit_gold":
+			# 募工牌：随机已解锁店铺店员 +1/3/5，不消耗铜钱
+			if shops.is_empty(): return {"ok": false, "msg": "还没有已解锁的店铺"}
+			var per_use = {"recruit_bronze": 1, "recruit_silver": 3, "recruit_gold": 5}[item_id]
+			items[item_id] -= count
+			var gains = {}
+			for i in range(count):
+				var keys = shops.keys()
+				var sid = keys[randi() % keys.size()]
+				shops[sid].staff += per_use
+				gains[sid] = gains.get(sid, 0) + per_use
+			var parts = []
+			for sid in gains.keys():
+				parts.append("【%s】店员+%d" % [shops[sid].name, gains[sid]])
+			return {"ok": true, "msg": "、".join(parts)}
+	return {"ok": false, "msg": "该道具不可使用"}
 
 func get_beast_config(beast_id: String) -> Dictionary:
 	return _beast_configs.get(beast_id, {}).duplicate(true)
@@ -1159,18 +1350,18 @@ func buy_special_pack(pack: Dictionary) -> bool:
 		items[item_id] = items.get(item_id, 0) + pack.items[item_id]
 	return true
 
-# 使用声望卡：普通+10/张，高级+100/张
-func use_reputation_card(item_id: String, count: int) -> bool:
-	if count <= 0: return false
-	var gain_per_card = 0
-	match item_id:
-		"reputation_card": gain_per_card = 10
-		"reputation_card_adv": gain_per_card = 100
-		_: return false
-	if items.get(item_id, 0) < count: return false
-	items[item_id] -= count
-	reputation += gain_per_card * count
+# 购买商城礼包（通用，加礼包只改上面的表）
+func buy_mall_pack(pack: Dictionary) -> bool:
+	if yuanbao < pack.cost: return false
+	yuanbao -= pack.cost
+	for item_id in pack.get("items", {}).keys():
+		items[item_id] = items.get(item_id, 0) + pack.items[item_id]
+	if pack.has("beast"):
+		add_beast(pack.beast)
+	beast_fruit += pack.get("beast_fruit", 0)
+	aroma_fruit += pack.get("aroma_fruit", 0)
 	return true
+
 
 # 购买声望礼包：988元宝 → 高级声望卡×10 + 声望卡×100
 func buy_reputation_pack() -> bool:
@@ -1513,6 +1704,86 @@ func exchange_role_with_token(role_type: String, role_id: String, cost: int) -> 
 	items.hero_token -= cost
 	return {"ok": true}
 
+# 跨天重置行善消耗次数
+func _refresh_charity_daily():
+	var today = Time.get_date_string_from_system()
+	if charity_last_day != today:
+		charity_last_day = today
+		charity_click_count = 0
+
+# 当前行善消耗：首次1万，每次×1.5，每天重置
+func get_charity_cost() -> int:
+	_refresh_charity_daily()
+	return int(CHARITY_BASE_COST * pow(CHARITY_COST_MULT, charity_click_count))
+
+# 某地点当前档所需次数：第1档2次，之后每档+1（2、3、4、5…）
+func get_charity_tier_need(loc_id: String) -> int:
+	var tier = charity_progress.get(loc_id, {}).get("tier", 0)
+	return tier + 2
+
+# 某职业的徒弟赚速加成池（每档+50）
+# 注意：这是累计池，不直接加到徒弟身上，徒弟结业转职时才定格到自己身上
+func get_charity_career_bonus(career: String) -> int:
+	for loc in CHARITY_LOCATIONS:
+		if loc.career == career:
+			return charity_progress.get(loc.id, {}).get("tier", 0) * CHARITY_EFFECT_PER_TIER
+	return 0
+
+# 行善：扣铜钱 → 随机地点进度+1 → 发奖励；满档加成池+50，余数带进下一档
+func do_charity() -> Dictionary:
+	_refresh_charity_daily()
+	var cost = get_charity_cost()
+	if money < cost: return {"ok": false, "reason": "铜钱不足"}
+	money -= cost
+	charity_click_count += 1
+	
+	# 随机一个地点
+	var loc = CHARITY_LOCATIONS[randi() % CHARITY_LOCATIONS.size()]
+	var p = charity_progress.get(loc.id, {"progress": 0, "tier": 0})
+	p.progress += 1
+	var need = p.tier + 2
+	var completed = false
+	if p.progress >= need:
+		p.progress -= need
+		p.tier += 1
+		completed = true
+	charity_progress[loc.id] = p
+	
+	var rewards = []
+	# 必定奖励1：才华1-2，加给随机一位已拥有挚友
+	var talent_gain = randi_range(1, 2)
+	if not friends.is_empty():
+		var fkeys = friends.keys()
+		var fid = fkeys[randi() % fkeys.size()]
+		friends[fid].talent += talent_gain
+		rewards.append("才华+%d（%s）" % [talent_gain, friends[fid].name])
+	# 必定奖励2：对应该地点的"之道"×1
+	items[loc.way_item] = items.get(loc.way_item, 0) + 1
+	rewards.append(ITEM_CONFIG[loc.way_item].name + "×1")
+	# 其他道具：90%随机1个，10%随机2个
+	var pool = [
+		{"item": "rouge", "weight": 30},
+		{"item": "recruit_bronze", "weight": 30},
+		{"item": "recruit_silver", "weight": 5},
+		{"item": "recruit_gold", "weight": 3},
+		{"item": "shop_blueprint", "weight": 30},
+		{"item": "aptitude_pill", "weight": 2},
+	]
+	var total_w = 0
+	for e in pool: total_w += e.weight
+	var extra_count = 2 if randf() < 0.1 else 1
+	for i in range(extra_count):
+		var r = randi() % total_w
+		for e in pool:
+			if r < e.weight:
+				items[e.item] = items.get(e.item, 0) + 1
+				rewards.append(ITEM_CONFIG[e.item].name + "×1")
+				break
+			r -= e.weight
+	
+	return {"ok": true, "location": loc.name, "career": loc.career, "rewards": rewards,
+		"completed": completed, "tier": p.tier, "cost": cost}
+
 # ========== 存档 ==========
 func save_game():
 	@warning_ignore("narrowing_conversion")
@@ -1547,6 +1818,10 @@ func save_game():
 		"apprentices": apprentices,
 		"apprentice_vigor": apprentice_vigor,
 		"apprentice_vigor_time": apprentice_vigor_time,
+		"graduated_apprentices": graduated_apprentices,
+		"charity_progress": charity_progress,
+		"charity_click_count": charity_click_count,
+		"charity_last_day": charity_last_day,
 	}
 	var file = FileAccess.open(SAVE_PATH, FileAccess.WRITE)
 	if file:
@@ -1631,8 +1906,26 @@ func load_game():
 		# 兼容旧存档：补齐到5个槽位
 		while apprentices.size() < 5:
 			apprentices.append(null)
-	if data.has("apprentice_vigor"): apprentice_vigor = data.apprentice_vigor
-	if data.has("apprentice_vigor_time"): apprentice_vigor_time = data.apprentice_vigor_time
+		# 旧存档单人徒弟（字典）包成数组；已结业的移到结业列表
+		for i in range(apprentices.size()):
+			var entry = apprentices[i]
+			if entry == null: continue
+			if entry is Dictionary:
+				entry = [entry]
+			var remaining = []
+			for a in entry:
+				if a.get("state", "") in ["magician", "lover", "married"]:
+					graduated_apprentices.append(a)
+				else:
+					remaining.append(a)
+			if remaining.size() > 0:
+				apprentices[i] = remaining
+			else:
+				apprentices[i] = null
+	
+	if data.has("charity_progress"): charity_progress = data.charity_progress
+	if data.has("charity_click_count"): charity_click_count = data.charity_click_count
+	if data.has("charity_last_day"): charity_last_day = data.charity_last_day
 	
 	# 清理存档中已不存在的角色（防止配置删了存档还残留）
 	for hero_id in heroes.keys():
