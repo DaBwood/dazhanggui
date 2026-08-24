@@ -10,6 +10,8 @@ var _selected_beast_skill_index: int = -1
 #页面切换
 var current_page: String = "shop"   # shop / hero / bag
 
+var _quantity_item_id: String = ""   # 数量选择器当前操作的道具ID
+
 #按钮信号连接
 var _signals_connected: bool = false
 
@@ -2253,6 +2255,20 @@ func generate_bag_list():
 			use_btn.add_theme_font_size_override("font_size", 12)
 			use_btn.pressed.connect(_show_hero_box_selector)
 			vbox.add_child(use_btn)
+		elif item_id == "reputation_card":
+			var use_btn = Button.new()
+			use_btn.text = "使用"
+			use_btn.custom_minimum_size = Vector2(60, 28)
+			use_btn.add_theme_font_size_override("font_size", 12)
+			use_btn.pressed.connect(func(): _show_quantity_selector("reputation_card", "使用声望卡", _on_reputation_card_confirmed))
+			vbox.add_child(use_btn)
+		elif item_id == "reputation_card_adv":
+			var use_btn = Button.new()
+			use_btn.text = "使用"
+			use_btn.custom_minimum_size = Vector2(60, 28)
+			use_btn.add_theme_font_size_override("font_size", 12)
+			use_btn.pressed.connect(func(): _show_quantity_selector("reputation_card_adv", "使用高级声望卡", _on_reputation_card_confirmed))
+			vbox.add_child(use_btn)
 
 		
 		grid.add_child(cell)
@@ -2271,6 +2287,7 @@ func update_bag_list():
 # ========== 通用数量选择器 ==========
 func _show_quantity_selector(item_id: String, title_text: String, on_confirm: Callable):
 	_close_quantity_selector()
+	_quantity_item_id = item_id
 	
 	var max_count = data.items.get(item_id, 0)
 	if max_count <= 0: return
@@ -2397,6 +2414,23 @@ func _on_hour_card_confirmed(spin: SpinBox):
 		update_all_ui()
 		update_bag_list()
 		_show_stage_hint("获得铜钱 %s" % format_number(gain))
+	else:
+		_close_quantity_selector()
+
+# 声望卡使用确认（普通/高级共用）
+func _on_reputation_card_confirmed(spin: SpinBox):
+	# 从弹窗标题判断用的是哪种卡不太稳，直接检查两个都试一遍
+	var count = int(spin.value)
+	var item_id = ""
+	if _quantity_item_id != "":
+		item_id = _quantity_item_id
+	_quantity_item_id = ""
+	if item_id == "": return
+	if data.use_reputation_card(item_id, count):
+		_close_quantity_selector()
+		update_bag_list()
+		update_all_ui()
+		_show_stage_hint("声望 +%d！" % (10 * count if item_id == "reputation_card" else 100 * count))
 	else:
 		_close_quantity_selector()
 
@@ -2729,6 +2763,24 @@ func on_mall():
 	buy2.pressed.connect(_on_buy_hour_card_pack)
 	row2.add_child(buy2)
 	
+	# 声望礼包
+	var row3 = HBoxContainer.new()
+	row3.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	row3.add_theme_constant_override("separation", 16)
+	vbox.add_child(row3)
+	
+	var info3 = Label.new()
+	info3.text = "声望礼包\n高级声望卡×10 + 声望卡×100"
+	info3.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	info3.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
+	row3.add_child(info3)
+	
+	var buy3 = Button.new()
+	buy3.text = "988元宝"
+	buy3.custom_minimum_size = Vector2(120, 40)
+	buy3.pressed.connect(_on_buy_reputation_pack)
+	row3.add_child(buy3)
+	
 	var close_btn = Button.new()
 	close_btn.text = "关闭"
 	close_btn.pressed.connect(_close_mall_panel)
@@ -2755,6 +2807,15 @@ func _on_buy_hour_card_pack():
 	update_all_ui()
 	update_bag_list()
 	_show_stage_hint("购买成功！获得小时卡 ×999")
+
+# 购买声望礼包
+func _on_buy_reputation_pack():
+	if data.buy_reputation_pack():
+		update_all_ui()
+		update_bag_list()
+		_show_stage_hint("购买成功！高级声望卡×10 声望卡×100")
+	else:
+		flash_red("MallPanel")
 
 func _close_mall_panel():
 	if has_node("MallPanel"):

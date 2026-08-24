@@ -204,6 +204,8 @@ const ITEM_CONFIG = {
 	"yugu_dao":         {"name": "鱼骨刀",   "desc": "兑换门客【罗海王】所需"},
 	"yuye_jinhua":      {"name": "玉叶金花", "desc": "兑换门客【小柒】所需"},
 	"linglong_hebao":   {"name": "玲珑荷包", "desc": "兑换门客【小八】所需"},
+	"reputation_card":      {"name": "声望卡",     "desc": "使用后声望 +10"},
+	"reputation_card_adv":  {"name": "高级声望卡", "desc": "使用后声望 +100"},
 
 }
 
@@ -404,6 +406,7 @@ var items = {
 	"tiangong_zanchui": 0, "qisheng_mianju": 0, "danqing_pan": 0, "cangbao_tu": 0, "huojian_qiang": 0,
 	"shoulie_guren": 0, "chengzu_chiling": 0, "wulong_xiuqiu": 0, "yugu_dao": 0,
 	"yuye_jinhua": 0, "linglong_hebao":100,
+	"reputation_card": 0, "reputation_card_adv": 0,
 }
 
 const SURNAMES = ["赵","钱","孙","李","周","吴","郑","王","冯","陈","褚","卫","蒋","沈","韩","杨","朱","秦","尤","许"]
@@ -1154,6 +1157,27 @@ func buy_special_pack(pack: Dictionary) -> bool:
 	vip_level = get_vip_level()
 	for item_id in pack.items.keys():
 		items[item_id] = items.get(item_id, 0) + pack.items[item_id]
+	return true
+
+# 使用声望卡：普通+10/张，高级+100/张
+func use_reputation_card(item_id: String, count: int) -> bool:
+	if count <= 0: return false
+	var gain_per_card = 0
+	match item_id:
+		"reputation_card": gain_per_card = 10
+		"reputation_card_adv": gain_per_card = 100
+		_: return false
+	if items.get(item_id, 0) < count: return false
+	items[item_id] -= count
+	reputation += gain_per_card * count
+	return true
+
+# 购买声望礼包：988元宝 → 高级声望卡×10 + 声望卡×100
+func buy_reputation_pack() -> bool:
+	if yuanbao < 988: return false
+	yuanbao -= 988
+	items.reputation_card_adv = items.get("reputation_card_adv", 0) + 10
+	items.reputation_card = items.get("reputation_card", 0) + 100
 	return true
 
 func buy_test_beast_pack() -> bool:
