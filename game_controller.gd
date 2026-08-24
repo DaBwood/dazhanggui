@@ -82,6 +82,8 @@ func _ready():
 	#初始化闯荡页面
 	generate_adventure_page()
 	
+	generate_apprentice_page()   # 【新增】徒弟页面
+	#挚友页面
 	generate_friend_page()
 	
 	print("信号连接完成")  # ← 加这行
@@ -166,6 +168,7 @@ func switch_page(page_id: String):
 	if has_node("PageContainer/BeastPage"): $PageContainer/BeastPage.visible = false
 	if has_node("PageContainer/AdventurePage"): $PageContainer/AdventurePage.visible = false
 	if has_node("PageContainer/FriendPage"): $PageContainer/FriendPage.visible = false
+	if has_node("PageContainer/ApprenticePage"): $PageContainer/ApprenticePage.visible = false
 
 	# 显示目标页面
 	var page_path = "PageContainer/" + page_id.capitalize() + "Page"
@@ -184,6 +187,8 @@ func switch_page(page_id: String):
 		hide_exchange_view()
 		hide_lottery_view()
 		update_adventure_page()
+	
+	if page_id == "apprentice": update_apprentice_page()
 	
 	if page_id == "beast": update_beast_page()
 	
@@ -2638,6 +2643,7 @@ func generate_mansion_list():
 		{"name": "VIP", "func": "on_vip"},
 		{"name": "充值豪礼", "func": "on_recharge"},
 		{"name": "珍兽", "func": "on_beast"},
+		{"name": "徒弟", "func": "on_apprentice"},   # 【新增】
 	]
 	
 	for m in modules:
@@ -4176,6 +4182,8 @@ func _show_chat_result(results: Array):
 	for r in results:
 		var lbl = Label.new()
 		lbl.text = "与【%s】谈心，缘分 +%d" % [r.name, r.gain]
+		if r.get("adopted", false):
+			lbl.text += "，领养了一位徒弟！"
 		list.add_child(lbl)
 	
 	if results.size() > 1:
@@ -4379,7 +4387,277 @@ func _refresh_gift_selector():
 				if spin.value > count:
 					spin.value = count
 
+# ========== 徒弟页面 ==========
+var _apprentice_tab: String = "train"   # train / lover / magician / married
 
+func on_apprentice():
+	switch_page("apprentice")
+	update_apprentice_page()
+
+func generate_apprentice_page():
+	if not has_node("PageContainer"): return
+	var page = $PageContainer/ApprenticePage if has_node("PageContainer/ApprenticePage") else null
+	if page == null:
+		page = Panel.new()
+		page.name = "ApprenticePage"
+		page.set_anchors_preset(Control.PRESET_FULL_RECT)
+		page.visible = false
+		$PageContainer.add_child(page)
+	
+	for child in page.get_children():
+		child.queue_free()
+	
+	var vbox = VBoxContainer.new()
+	vbox.name = "ApprenticeVBox"
+	vbox.set_anchors_preset(Control.PRESET_FULL_RECT)
+	vbox.add_theme_constant_override("separation", 12)
+	page.add_child(vbox)
+	
+	var title = Label.new()
+	title.text = "徒弟"
+	title.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	title.add_theme_font_size_override("font_size", 24)
+	title.add_theme_color_override("font_color", Color("#ffd700"))
+	vbox.add_child(title)
+	
+	# 板块切换栏
+	var tab_bar = HBoxContainer.new()
+	tab_bar.name = "ApprenticeTabBar"
+	tab_bar.alignment = BoxContainer.ALIGNMENT_CENTER
+	tab_bar.add_theme_constant_override("separation", 12)
+	vbox.add_child(tab_bar)
+	
+	var tabs = [["train", "徒弟培养"], ["lover", "现充"], ["magician", "魔法师"], ["married", "已婚"]]
+	for t in tabs:
+		var btn = Button.new()
+		btn.name = "Tab_" + t[0]
+		btn.text = t[1]
+		btn.custom_minimum_size = Vector2(140, 44)
+		btn.pressed.connect(_on_apprentice_tab.bind(t[0]))
+		tab_bar.add_child(btn)
+	
+	# 内容滚动区（套用修好的布局模式：scroll双向填充，内容只横向填充）
+	var scroll = ScrollContainer.new()
+	scroll.name = "ApprenticeScroll"
+	scroll.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	scroll.size_flags_vertical = Control.SIZE_EXPAND_FILL
+	vbox.add_child(scroll)
+	
+	var content = VBoxContainer.new()
+	content.name = "ApprenticeContent"
+	content.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	content.add_theme_constant_override("separation", 10)
+	scroll.add_child(content)
+
+func _on_apprentice_tab(tab: String):
+	_apprentice_tab = tab
+	update_apprentice_page()
+
+func update_apprentice_page():
+	if not has_node("PageContainer/ApprenticePage/ApprenticeVBox"): return
+	var vbox = $PageContainer/ApprenticePage/ApprenticeVBox
+	var content = vbox.get_node("ApprenticeScroll/ApprenticeContent")
+	for child in content.get_children():
+		child.queue_free()
+	
+	match _apprentice_tab:
+		"train": _update_apprentice_train(content)
+		_: _update_apprentice_list_view(content, _apprentice_tab)
+	
+	# 高亮当前板块按钮
+	for btn in vbox.get_node("ApprenticeTabBar").get_children():
+		btn.modulate = Color("#e0c070") if btn.name == "Tab_" + _apprentice_tab else Color("#c9a959")
+
+# 徒弟培养板块：5个槽位
+func _update_apprentice_train(content: VBoxContainer):
+	var unlocked = data.get_apprentice_slot_count()
+	for i in range(5):
+		var row = HBoxContainer.new()
+		row.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+		row.add_theme_constant_override("separation", 12)
+		content.add_child(row)
+		
+		var info = Label.new()
+		info.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+		info.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
+		row.add_child(info)
+		
+		# 未解锁槽位
+		if i >= unlocked:
+			info.text = "【槽位%d】身份等级 Lv.%d 解锁" % [i + 1, data.APPRENTICE_UNLOCK_LEVELS[i]]
+			info.modulate = Color(0.5, 0.5, 0.5)
+			continue
+		
+		var a = data.apprentices[i]
+		# 空位
+		if a == null:
+			info.text = "【槽位%d】空位 —— 与挚友谈心可领养徒弟" % (i + 1)
+			continue
+		
+		# 已有徒弟
+		var state_txt = {"training": "培养中", "adult": "待结业", "magician": "魔法师", "lover": "现充", "married": "已婚"}.get(a.state, "")
+		var friend_name = ""
+		if data.friends.has(a.friend_id):
+			friend_name = data.friends[a.friend_id].name
+		info.text = "【%s】%s | %s | 挚友:%s\n进度 %d/10000 | 赚速 %s/秒 | 活力 %d/500 | %s" % [
+			a.name, a.gender, a.career, friend_name,
+			a.progress, format_number(data.get_apprentice_income(i)),
+			data.get_slot_vigor(i), state_txt
+		]
+		
+		var btn = Button.new()
+		btn.custom_minimum_size = Vector2(100, 40)
+		if a.state == "training":
+			btn.text = "培养"
+			btn.pressed.connect(_on_train_apprentice.bind(i))
+		elif a.state == "adult":
+			btn.text = "结业"
+			btn.pressed.connect(_show_graduate_selector.bind(i))
+		else:
+			btn.text = "已结业"
+			btn.disabled = true
+		row.add_child(btn)
+
+# 现充/魔法师/已婚板块：按状态过滤展示
+func _update_apprentice_list_view(content: VBoxContainer, state: String):
+	var has_any = false
+	for i in range(5):
+		var a = data.apprentices[i]
+		if a == null or a.state != state: continue
+		has_any = true
+		
+		var row = HBoxContainer.new()
+		row.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+		row.add_theme_constant_override("separation", 12)
+		content.add_child(row)
+		
+		var info = Label.new()
+		info.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+		info.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
+		var txt = "【%s】%s | %s | 赚速 %s/秒" % [a.name, a.gender, a.career, format_number(data.get_apprentice_income(i))]
+		if state == "magician":
+			txt += " | 魔法加成 +%d%%" % int(a.magic_bonus * 100)
+		elif state == "married":
+			var sp = a.get("spouse", {})
+			txt += " | 配偶:【%s】%s +%s/秒" % [sp.get("name", ""), sp.get("gender", ""), format_number(a.get("spouse_income", 0))]
+		info.text = txt
+		row.add_child(info)
+		
+		# 现充板块有提亲按钮
+		if state == "lover":
+			var btn = Button.new()
+			btn.text = "提亲"
+			btn.custom_minimum_size = Vector2(100, 40)
+			btn.pressed.connect(_show_marriage_proposal.bind(i))
+			row.add_child(btn)
+	
+	if not has_any:
+		var empty = Label.new()
+		empty.text = "暂无徒弟"
+		empty.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+		content.add_child(empty)
+
+# 培养按钮
+func _on_train_apprentice(slot: int):
+	var result = data.train_apprentice(slot)
+	if result.ok:
+		update_apprentice_page()
+		update_all_ui()
+		if result.get("adult", false):
+			_show_stage_hint("培养完成！徒弟已成年，可以结业了")
+	else:
+		_show_stage_hint(result.reason)
+
+# 结业弹窗：选魔法师或现充
+func _show_graduate_selector(slot: int):
+	_safe_close("GraduatePanel")
+	var panel = _create_base_popup("选择结业方向", Vector2(420, 260), Vector2(366, 180))
+	panel.name = "GraduatePanel"
+	var vbox = panel.get_child(0)
+	
+	var a = data.apprentices[slot]
+	var info = Label.new()
+	info.text = "【%s】当前赚速：%s/秒" % [a.name, format_number(data.get_apprentice_income(slot))]
+	info.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	vbox.add_child(info)
+	
+	var magic_btn = Button.new()
+	magic_btn.text = "转职魔法师\n赚速提升70%-140%"
+	magic_btn.custom_minimum_size = Vector2(200, 60)
+	magic_btn.pressed.connect(_on_graduate.bind(slot, "magician"))
+	vbox.add_child(magic_btn)
+	
+	var lover_btn = Button.new()
+	lover_btn.text = "成为现充\n可提亲联姻"
+	lover_btn.custom_minimum_size = Vector2(200, 60)
+	lover_btn.pressed.connect(_on_graduate.bind(slot, "lover"))
+	vbox.add_child(lover_btn)
+	
+	_add_ok_button(vbox, func(): _safe_close("GraduatePanel"), "取消")
+	add_child(panel)
+
+func _on_graduate(slot: int, path: String):
+	if data.graduate_apprentice(slot, path):
+		_safe_close("GraduatePanel")
+		var a = data.apprentices[slot]
+		if path == "magician":
+			_show_stage_hint("转职魔法师！赚速提升 %d%%" % int(a.magic_bonus * 100))
+		else:
+			_show_stage_hint("结业成功！已进入现充")
+		update_apprentice_page()
+		update_all_ui()
+
+# 提亲弹窗
+var _proposing_slot: int = -1
+var _proposed_spouse: Dictionary = {}
+
+func _show_marriage_proposal(slot: int):
+	_safe_close("MarriagePanel")
+	_proposing_slot = slot
+	_proposed_spouse = data.generate_spouse(slot)
+	if _proposed_spouse.is_empty(): return
+	
+	var a = data.apprentices[slot]
+	var panel = _create_base_popup("提亲", Vector2(420, 300), Vector2(366, 140))
+	panel.name = "MarriagePanel"
+	var vbox = panel.get_child(0)
+	
+	var info = Label.new()
+	info.text = "徒弟【%s】\n\n联姻对象：【%s】%s | %s\n赚速：%s/秒\n\n联姻后获得对方赚速" % [
+		a.name,
+		_proposed_spouse.name, _proposed_spouse.gender, _proposed_spouse.career,
+		format_number(_proposed_spouse.income)
+	]
+	info.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	vbox.add_child(info)
+	
+	var btn_box = HBoxContainer.new()
+	btn_box.alignment = BoxContainer.ALIGNMENT_CENTER
+	btn_box.add_theme_constant_override("separation", 16)
+	vbox.add_child(btn_box)
+	
+	var marry_btn = Button.new()
+	marry_btn.text = "联姻"
+	marry_btn.custom_minimum_size = Vector2(100, 40)
+	marry_btn.pressed.connect(_on_marry_apprentice)
+	btn_box.add_child(marry_btn)
+	
+	var cancel_btn = Button.new()
+	cancel_btn.text = "再想想"
+	cancel_btn.custom_minimum_size = Vector2(100, 40)
+	cancel_btn.pressed.connect(func(): _safe_close("MarriagePanel"))
+	btn_box.add_child(cancel_btn)
+	
+	add_child(panel)
+
+func _on_marry_apprentice():
+	if data.marry_apprentice(_proposing_slot, _proposed_spouse):
+		_safe_close("MarriagePanel")
+		_show_stage_hint("联姻成功！徒弟已进入已婚")
+		update_apprentice_page()
+		update_all_ui()
+		_proposing_slot = -1
+		_proposed_spouse = {}
 
 # ========== 美化 ==========
 func apply_theme():

@@ -231,6 +231,23 @@ const TOKEN_EXCHANGE_FRIENDS = [
 	{"id": "qi_shi", "cost": 10},               # 棋士
 ]
 
+# ========== 徒弟系统 ==========
+const APPRENTICE_MAX_PROGRESS = 10000        # 培养进度上限（满则成年）
+const APPRENTICE_PROGRESS_PER_TRAIN = 4      # 每次培养提升的进度
+const APPRENTICE_TRAIN_COST = 10000          # 每次培养消耗铜钱
+const APPRENTICE_TRAIN_EXP = 3100            # 每次培养获得阅历
+const APPRENTICE_VIGOR_MAX = 500             # 每个槽位活力上限
+const APPRENTICE_UNLOCK_LEVELS = [3, 6, 9, 12, 15]  # 5个槽位解锁所需身份等级
+const APPRENTICE_CAREERS = ["士", "农", "工", "商", "侠"]
+const APPRENTICE_MALE_NAMES = ["阿宝", "小虎", "石头", "铁蛋", "柱子"]
+const APPRENTICE_FEMALE_NAMES = ["小蝶", "阿翠", "丫丫", "秀儿", "花儿"]
+
+# 5个徒弟槽位：null=空位，字典=已有徒弟
+var apprentices: Array = [null, null, null, null, null]
+# 每个槽位独立的活力与上次恢复时间（懒结算用）
+var apprentice_vigor: Array = [500, 500, 500, 500, 500]
+var apprentice_vigor_time: Array = [0, 0, 0, 0, 0]
+
 # ========== 系列兑换表 ==========
 # grant_friend = true 时，兑换门客同时获得 entry.friend 指定的同名挚友（秦淮五艳）
 const SERIES_EXCHANGE = [
@@ -638,7 +655,8 @@ func chat_with_friend(once: bool = true) -> Dictionary:
 		var fid = keys[randi() % keys.size()]
 		var f = friends[fid]
 		f.bond += f.talent
-		results.append({"friend_id": fid, "name": f.name, "gain": f.talent})
+		# 有空位则与本次谈心的挚友领养一位徒弟
+		results.append({"friend_id": fid, "name": f.name, "gain": f.talent, "adopted": adopt_apprentice(fid)})
 	else:
 		while energy > 0:
 			energy -= 1
@@ -646,7 +664,8 @@ func chat_with_friend(once: bool = true) -> Dictionary:
 			var fid = keys[randi() % keys.size()]
 			var f = friends[fid]
 			f.bond += f.talent
-			results.append({"friend_id": fid, "name": f.name, "gain": f.talent})
+			# 一键谈心：有几个空位，前几位挚友就各领养一位
+			results.append({"friend_id": fid, "name": f.name, "gain": f.talent, "adopted": adopt_apprentice(fid)})
 	
 	return {"ok": true, "results": results}
 
@@ -687,6 +706,141 @@ func gift_friend(friend_id: String, item_id: String) -> bool:
 			energy = min(100, energy + 3)
 		_:
 			return false
+	return true
+
+# ========== 徒弟：槽位 ==========
+
+# 已解锁的徒弟槽位数（按身份等级）
+func get_apprentice_slot_count() -> int:
+	var count = 0
+	for lv in APPRENTICE_UNLOCK_LEVELS:
+		if identity_level >= lv:
+			count += 1
+	return count
+
+# 指定槽位是否已解锁
+func is_apprentice_slot_unlocked(slot: int) -> bool:
+	return slot >= 0 and slot < get_apprentice_slot_count()
+
+# 懒结算槽位活力：每分钟恢复1点，上限500
+func _settle_slot_vigor(slot: int):
+	var now = Time.get_unix_time_from_system()
+	var last = apprentice_vigor_time[slot]
+	if last <= 0:
+		apprentice_vigor_time[slot] = now
+		return
+	@warning_ignore("narrowing_conversion")
+	var regen = int((now - last) / 60)
+	if regen > 0:
+		apprentice_vigor[slot] = min(APPRENTICE_VIGOR_MAX, apprentice_vigor[slot] + regen)
+		@warning_ignore("narrowing_conversion")
+		apprentice_vigor_time[slot] = last + regen * 60
+
+# 获取槽位当前活力（先结算恢复）
+func get_slot_vigor(slot: int) -> int:
+	_settle_slot_vigor(slot)
+	return apprentice_vigor[slot]
+
+# ========== 徒弟：领养 ==========
+
+# 与挚友领养徒弟：占用第一个已解锁的空位，性别/职业平等随机
+func adopt_apprentice(friend_id: String) -> bool:
+	if not friends.has(friend_id): return false
+	for i in range(5):
+		if not is_apprentice_slot_unlocked(i): break
+		if apprentices[i] == null:
+			var gender = "男" if randi() % 2 == 0 else "女"
+			var pool = APPRENTICE_MALE_NAMES if gender == "男" else APPRENTICE_FEMALE_NAMES
+			apprentices[i] = {
+				"name": SURNAMES[randi() % SURNAMES.size()] + pool[randi() % pool.size()],
+				"gender": gender,
+				"career": APPRENTICE_CAREERS[randi() % APPRENTICE_CAREERS.size()],
+				"friend_id": friend_id,        # 领养来源挚友
+				"progress": 0,                 # 培养进度
+				"state": "training",           # training/adult/magician/lover/married
+				"magic_bonus": 0.0,            # 魔法师加成比例
+				"spouse": {},                  # 配偶信息
+				"spouse_income": 0,            # 联姻获得的赚速
+			}
+			return true
+	return false
+
+# ========== 徒弟：赚速 ==========
+
+# 徒弟成年赚速 = 1000 + 绑定挚友友好×10%
+func get_apprentice_adult_income(slot: int) -> int:
+	var a = apprentices[slot]
+	if a == null: return 0
+	var f = friends.get(a.friend_id, {})
+	return 1000 + int(f.get("friendly", 0) * 0.1)
+
+# 徒弟当前赚速：进度线性增长 + 魔法师加成 + 联姻加成
+func get_apprentice_income(slot: int) -> int:
+	var a = apprentices[slot]
+	if a == null: return 0
+	var income = int(get_apprentice_adult_income(slot) * a.progress / float(APPRENTICE_MAX_PROGRESS))
+	if a.state == "magician":
+		income = int(income * (1.0 + a.magic_bonus))
+	elif a.state == "married":
+		income += a.get("spouse_income", 0)
+	return income
+
+# ========== 徒弟：培养 / 结业 / 联姻 ==========
+
+# 培养：10000铜钱 + 1活力 → 进度+4、阅历+3100；满进度成年
+func train_apprentice(slot: int) -> Dictionary:
+	if slot < 0 or slot >= 5: return {"ok": false, "reason": "槽位错误"}
+	var a = apprentices[slot]
+	if a == null: return {"ok": false, "reason": "空位"}
+	if a.state != "training": return {"ok": false, "reason": "培养已完成"}
+	if money < APPRENTICE_TRAIN_COST: return {"ok": false, "reason": "铜钱不足"}
+	_settle_slot_vigor(slot)
+	if apprentice_vigor[slot] < 1: return {"ok": false, "reason": "活力不足"}
+	money -= APPRENTICE_TRAIN_COST
+	apprentice_vigor[slot] -= 1
+	a.progress = min(APPRENTICE_MAX_PROGRESS, a.progress + APPRENTICE_PROGRESS_PER_TRAIN)
+	items.experience += APPRENTICE_TRAIN_EXP
+	var adult = a.progress >= APPRENTICE_MAX_PROGRESS
+	if adult:
+		a.state = "adult"
+	return {"ok": true, "adult": adult}
+
+# 结业转职："magician"=魔法师（赚速提升70%-140%随机）/ "lover"=现充
+func graduate_apprentice(slot: int, path: String) -> bool:
+	if slot < 0 or slot >= 5: return false
+	var a = apprentices[slot]
+	if a == null or a.state != "adult": return false
+	if path == "magician":
+		a.magic_bonus = randf_range(0.7, 1.4)
+		a.state = "magician"
+	elif path == "lover":
+		a.state = "lover"
+	else:
+		return false
+	return true
+
+# 生成联姻对象：性别相反、赚速与当前徒弟相同
+func generate_spouse(slot: int) -> Dictionary:
+	if slot < 0 or slot >= 5: return {}
+	var a = apprentices[slot]
+	if a == null: return {}
+	var gender = "女" if a.gender == "男" else "男"
+	var pool = APPRENTICE_MALE_NAMES if gender == "男" else APPRENTICE_FEMALE_NAMES
+	return {
+		"name": SURNAMES[randi() % SURNAMES.size()] + pool[randi() % pool.size()],
+		"gender": gender,
+		"career": APPRENTICE_CAREERS[randi() % APPRENTICE_CAREERS.size()],
+		"income": get_apprentice_income(slot),
+	}
+
+# 联姻：获得对象赚速，进入已婚
+func marry_apprentice(slot: int, spouse: Dictionary) -> bool:
+	if slot < 0 or slot >= 5: return false
+	var a = apprentices[slot]
+	if a == null or a.state != "lover": return false
+	a.spouse = spouse
+	a.spouse_income = spouse.get("income", 0)
+	a.state = "married"
 	return true
 
 func get_identity_reward(level: int) -> Dictionary:
@@ -768,6 +922,9 @@ func get_total_auto_income() -> int:
 		total += get_shop_auto_income(shop_id)
 	for hero_id in heroes.keys():
 		total += get_hero_contribution(hero_id)
+	# 徒弟赚速（含魔法师/联姻加成）
+	for i in range(5):
+		total += get_apprentice_income(i)
 	return total
 
 # ========== 身份晋升 ==========
@@ -1363,6 +1520,9 @@ func save_game():
 		"aroma_fruit": aroma_fruit,
 		"lottery_draw_count": lottery_draw_count,
 		"identity_rewards_claimed": identity_rewards_claimed,
+		"apprentices": apprentices,
+		"apprentice_vigor": apprentice_vigor,
+		"apprentice_vigor_time": apprentice_vigor_time,
 	}
 	var file = FileAccess.open(SAVE_PATH, FileAccess.WRITE)
 	if file:
@@ -1441,6 +1601,14 @@ func load_game():
 	if data.has("aroma_fruit"): aroma_fruit = data.aroma_fruit
 	if data.has("lottery_draw_count"): lottery_draw_count = data.lottery_draw_count
 	if data.has("identity_rewards_claimed"): identity_rewards_claimed = data.identity_rewards_claimed
+	
+	if data.has("apprentices"):
+		apprentices = data.apprentices
+		# 兼容旧存档：补齐到5个槽位
+		while apprentices.size() < 5:
+			apprentices.append(null)
+	if data.has("apprentice_vigor"): apprentice_vigor = data.apprentice_vigor
+	if data.has("apprentice_vigor_time"): apprentice_vigor_time = data.apprentice_vigor_time
 	
 	# 清理存档中已不存在的角色（防止配置删了存档还残留）
 	for hero_id in heroes.keys():
