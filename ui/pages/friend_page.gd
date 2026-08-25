@@ -194,8 +194,10 @@ func update_friend_page():
 	for child in grid.get_children():
 		child.queue_free()
 	
-	# 已解锁
-	for fid in data.friends.keys():
+	# 已解锁（【改动】按友好度从高到低排序；未解锁VIP挚友仍按原顺序排在最后）
+	var unlocked_ids = data.friends.keys()
+	unlocked_ids.sort_custom(func(a, b): return data.friends[a].friendly > data.friends[b].friendly)
+	for fid in unlocked_ids:
 		var f = data.friends[fid]
 		var cell = _create_friend_card(f.name, f.friendly, f.talent, false)
 		cell.pressed.connect(show_friend_detail.bind(fid))

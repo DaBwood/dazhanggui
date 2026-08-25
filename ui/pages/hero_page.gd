@@ -125,22 +125,39 @@ func update_hero_panel():
 	if c.has_node("HeroPanel/BeastInfoBox"):
 		c.get_node("HeroPanel/BeastInfoBox").queue_free()
 	
-	# ========== 珍兽装备按钮（放在赚速和技能列表之间）==========
+	# ========== 缘分按钮 + 珍兽装备按钮（HeroIncome 下方，上下排列）==========
 	var beast_id = data.heroes[current_hero_id].get("equipped_beast", "")
 	var beast_idx = data.heroes[current_hero_id].get("equipped_beast_index", 0)
+	var income_label = c.get_node("HeroPanel/HeroIncome")
+	# 【修复】显式固定尺寸：新建 Button 当帧 size 为 (0,0)，不能用 size 做定位依据
+	var btn_size = Vector2(120, 40)
 	
+	# 【新增】缘分按钮（上行）：点击弹窗显示该门客的缘分挚友
+	var fate_btn = c.get_node("HeroPanel").get_node_or_null("FateBtn")
+	if fate_btn == null:
+		fate_btn = Button.new()
+		fate_btn.name = "FateBtn"
+		fate_btn.text = "缘分"
+		fate_btn.add_theme_font_size_override("font_size", 14)
+		c.get_node("HeroPanel").add_child(fate_btn)
+	fate_btn.size = btn_size
+	fate_btn.position = Vector2(income_label.position.x, income_label.position.y + income_label.size.y + 4)
+	# 信号重连（先断后连，防止切换门客后串数据）
+	for conn in fate_btn.pressed.get_connections():
+		fate_btn.pressed.disconnect(conn.callable)
+	fate_btn.pressed.connect(_on_fate_btn_clicked.bind(current_hero_id))
+	
+	# 珍兽按钮（下行）：原有创建逻辑，位置改为缘分按钮正下方
 	var beast_btn = c.get_node("HeroPanel").get_node_or_null("BeastEquipBtn")
 	if beast_btn == null:
 		beast_btn = Button.new()
 		beast_btn.name = "BeastEquipBtn"
-		beast_btn.custom_minimum_size = Vector2(120, 40)
 		beast_btn.add_theme_font_size_override("font_size", 14)
 		c.get_node("HeroPanel").add_child(beast_btn)
+	beast_btn.size = btn_size
+	beast_btn.position = Vector2(income_label.position.x, fate_btn.position.y + btn_size.y + 4)
 	
-	var income_label = c.get_node("HeroPanel/HeroIncome")
-	beast_btn.position = Vector2(income_label.position.x, income_label.position.y + income_label.size.y + 4)
-	
-	# 把技能列表下移到按钮下方，避免重叠
+	# 把技能列表下移到珍兽按钮下方，避免重叠（原有逻辑不变，基准仍是珍兽按钮底部）
 	if c.get_node("HeroPanel").has_node("ScrollContainer"):
 		var scroll = c.get_node("HeroPanel/ScrollContainer")
 		var needed_y = beast_btn.position.y + beast_btn.size.y + 8
@@ -522,4 +539,75 @@ func update_hero_list():
 			income_lbl.text = "%s/秒" % c.format_number(income)
 		if status_lbl:
 			status_lbl.text = status
+	
+	_sort_hero_grid(grid)   # 【新增】每次刷新后按实时赚速重排卡片顺序
 
+# 【新增】门客网格按赚速降序重排：已解锁按实时赚速从高到低，未解锁VIP门客保持原相对顺序排在最后
+# 赚速会随升级/今日新菜等变化，所以在 update_hero_list 每次刷新时调用，保证顺序始终最新
+func _sort_hero_grid(grid):
+	var unlocked = []   # 已解锁：[cell, 实时赚速]
+	var locked = []     # 未解锁VIP门客：保持原相对顺序
+	for cell in grid.get_children():
+		if not cell is Button: continue
+		# 与 update_hero_list 相同的 id 解析方式：去掉 _hero_locked / _hero 后缀
+		var hero_id = cell.name.replace("_hero_locked", "").replace("_hero", "")
+		if data.heroes.has(hero_id):
+			unlocked.append([cell, data.get_hero_income(hero_id)])
+		else:
+			locked.append(cell)
+	unlocked.sort_custom(func(a, b): return a[1] > b[1])   # 赚速降序
+	# 用 move_child 原位重排：先排已解锁，未解锁依次排到末尾（不销毁重建，保留卡片信号连接）
+	var idx = 0
+	for pair in unlocked:
+		grid.move_child(pair[0], idx)
+		idx += 1
+	for cell in locked:
+		grid.move_child(cell, idx)
+		idx += 1
+
+# 【新增】获取指定门客的全部缘分挚友id（friends.json 中 bound_heroes 数组包含该门客的挚友）
+func _get_fate_friends(hero_id: String) -> Array:
+	var result = []
+	for fid in data.get_all_friend_ids():
+		var cfg = data.get_friend_config(fid)
+		if cfg.get("bound_heroes", []).has(hero_id):
+			result.append(fid)
+	return result
+
+# 【新增】缘分按钮点击：弹窗列出该门客全部缘分挚友
+# 已拥有=金色（带友好度）；未拥有=灰色默认色，附获取途径（VIP解锁 / 游历好感进度 / 仅显示未拥有）
+func _on_fate_btn_clicked(hero_id: String):
+	var fate_ids = _get_fate_friends(hero_id)
+	if fate_ids.is_empty():
+		c._show_stage_hint("该门客没有缘分挚友")
+		return
+	var popup = c._create_base_popup("缘分挚友", Vector2(420, 400), Vector2(366, 120))
+	popup.name = "FatePopup"
+	var vb = popup.get_child(0)
+	# 列表可滚动，挚友多时不超窗
+	var scroll = ScrollContainer.new()
+	scroll.custom_minimum_size = Vector2(0, 280)
+	vb.add_child(scroll)
+	var list = VBoxContainer.new()
+	list.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	scroll.add_child(list)
+	for fid in fate_ids:
+		var cfg = data.get_friend_config(fid)
+		var lbl = Label.new()
+		lbl.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+		if data.friends.has(fid):
+			# 已拥有：金色 + 当前友好度
+			lbl.text = "【%s】已拥有（友好%d）" % [cfg.get("name", fid), data.friends[fid].friendly]
+			lbl.add_theme_color_override("font_color", Color("#ffd700"))
+		else:
+			# 未拥有：按获取途径显示提示（VIP解锁 > 游历好感 > 仅标未拥有）
+			var vip_lv = data.get_friend_unlock_vip(fid)
+			if vip_lv > 0:
+				lbl.text = "【%s】未拥有（VIP%d解锁）" % [cfg.get("name", fid), vip_lv]
+			elif data.TRAVEL_AFFECTION.has(fid):
+				lbl.text = "【%s】未拥有（游历好感%d/%d）" % [cfg.get("name", fid), data.friend_affection.get(fid, 0), data.TRAVEL_AFFECTION[fid]]
+			else:
+				lbl.text = "【%s】未拥有" % cfg.get("name", fid)
+		list.add_child(lbl)
+	c._add_ok_button(vb, func(): popup.queue_free(), "关闭")
+	c.add_child(popup)

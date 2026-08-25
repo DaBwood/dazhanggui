@@ -114,11 +114,29 @@ func update_beast_page():
 	for child in grid.get_children():
 		child.queue_free()
 	
+	# 【改动】珍兽排序：已装备的排前面（按所装备门客的实时赚速降序），
+	# 未装备的排最后面（按等级降序）——未装备无论等级多高都排在已装备之后
+	var equipped_list = []     # 已装备实例：[beast_id, 实例下标, 门客赚速]
+	var unequipped_list = []   # 未装备实例：[beast_id, 实例下标, 等级]
 	for beast_id in data.beasts.keys():
-		var cfg = data.get_beast_config(beast_id)
 		var raw = data.beasts[beast_id]
 		var count = raw.size() if raw is Array else 1
 		for i in range(count):
+			var inst = data.get_beast_instance(beast_id, i)
+			if inst == null: continue
+			var eq_hid = inst.get("equipped_hero", "")
+			if eq_hid != "" and data.heroes.has(eq_hid):
+				equipped_list.append([beast_id, i, data.get_hero_income(eq_hid)])
+			else:
+				unequipped_list.append([beast_id, i, inst.level])
+	equipped_list.sort_custom(func(a, b): return a[2] > b[2])     # 按门客赚速降序
+	unequipped_list.sort_custom(func(a, b): return a[2] > b[2])   # 按等级降序
+
+	for entry in equipped_list + unequipped_list:
+		var beast_id = entry[0]   # 从排序结果取出 id 和实例下标
+		var i = entry[1]
+		if true:   # 保持原循环体缩进不变的最小改动写法
+			var cfg = data.get_beast_config(beast_id)
 			var instance = data.get_beast_instance(beast_id, i)
 			if instance == null: continue
 			
