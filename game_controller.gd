@@ -191,6 +191,7 @@ func switch_page(page_id: String):
 		hide_exchange_view()
 		hide_lottery_view()
 		hide_charity_view()
+		hide_travel_view()      # 【新增】回到闯荡主界面时关闭游历子页面
 		update_adventure_page()
 	
 	if page_id == "apprentice": update_apprentice_page()
@@ -984,6 +985,75 @@ func generate_adventure_page():
 	c_list.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	c_list.add_theme_constant_override("separation", 8)
 	c_scroll.add_child(c_list)
+	
+	# --- 【新增】游历入口（与行善并列） ---
+	var travel_btn = Button.new()
+	travel_btn.text = "游历"
+	travel_btn.custom_minimum_size = Vector2(240, 60)
+	travel_btn.pressed.connect(show_travel_view)
+	vbox.add_child(travel_btn)
+	
+	# --- 【新增】游历子页面 ---
+	var travel_view = VBoxContainer.new()
+	travel_view.name = "TravelView"
+	travel_view.set_anchors_preset(Control.PRESET_FULL_RECT)
+	travel_view.visible = false
+	travel_view.add_theme_constant_override("separation", 12)
+	page.add_child(travel_view)
+	
+	var t_back = Button.new()
+	t_back.text = "< 返回闯荡"
+	t_back.pressed.connect(hide_travel_view)
+	travel_view.add_child(t_back)
+	
+	# 体力/声望显示
+	var t_info = Label.new()
+	t_info.name = "TravelInfo"
+	t_info.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	travel_view.add_child(t_info)
+	
+	# 月老/观音祝福层数显示
+	var t_buff = Label.new()
+	t_buff.name = "TravelBuffInfo"
+	t_buff.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	t_buff.add_theme_font_size_override("font_size", 14)
+	travel_view.add_child(t_buff)
+	
+	# 游历按钮
+	var t_btn = Button.new()
+	t_btn.name = "TravelBtn"
+	t_btn.text = "游历（-1体力，+20声望）"
+	t_btn.custom_minimum_size = Vector2(240, 60)
+	t_btn.pressed.connect(_on_travel)
+	travel_view.add_child(t_btn)
+	
+	# 本次游历结果
+	var t_result = Label.new()
+	t_result.name = "TravelResult"
+	t_result.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	t_result.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+	t_result.add_theme_color_override("font_color", Color("#ffd700"))
+	travel_view.add_child(t_result)
+	
+	# 表2挚友好感进度列表（scroll双向填充，内容只横向填充）
+	var t_title = Label.new()
+	t_title.text = "—— 好感解锁挚友 ——"
+	t_title.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	t_title.add_theme_font_size_override("font_size", 18)
+	t_title.add_theme_color_override("font_color", Color("#ffd700"))
+	travel_view.add_child(t_title)
+	
+	var t_scroll = ScrollContainer.new()
+	t_scroll.name = "TravelScroll"
+	t_scroll.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	t_scroll.size_flags_vertical = Control.SIZE_EXPAND_FILL
+	travel_view.add_child(t_scroll)
+	
+	var t_list = VBoxContainer.new()
+	t_list.name = "TravelList"
+	t_list.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	t_list.add_theme_constant_override("separation", 8)
+	t_scroll.add_child(t_list)
 
 # 兑换页返回键：逐层后退（子页面 → 兑换目录 → 闯荡）
 func _on_exchange_back_pressed():
@@ -1543,6 +1613,68 @@ func _on_charity():
 		_show_stage_hint(msg, 5.0)
 	
 	update_charity_view()
+	update_all_ui()
+	update_bag_list()
+	update_friend_page()
+
+# ========== 【新增】游历页面 ==========
+# 显示游历子页面（隐藏闯荡主界面及其他子页面）
+func show_travel_view():
+	if not has_node("PageContainer/AdventurePage/TravelView"): return
+	var page = $PageContainer/AdventurePage
+	page.get_node("AdventureVBox").visible = false
+	if page.has_node("ExchangeView"): page.get_node("ExchangeView").visible = false
+	if page.has_node("LotteryView"): page.get_node("LotteryView").visible = false
+	if page.has_node("CharityView"): page.get_node("CharityView").visible = false
+	page.get_node("TravelView").visible = true
+	update_travel_view()
+
+# 隐藏游历子页面，回到闯荡主界面
+func hide_travel_view():
+	if not has_node("PageContainer/AdventurePage/TravelView"): return
+	var page = $PageContainer/AdventurePage
+	page.get_node("TravelView").visible = false
+	page.get_node("AdventureVBox").visible = true
+
+# 刷新游历界面：体力（顺带懒结算恢复）、祝福层数、按钮状态、表2挚友好感进度
+func update_travel_view():
+	if not has_node("PageContainer/AdventurePage/TravelView"): return
+	var view = $PageContainer/AdventurePage/TravelView
+	var stamina_now = data.get_stamina()   # 懒结算体力恢复
+	view.get_node("TravelInfo").text = "体力：%d/%d  |  声望：%s" % [stamina_now, data.STAMINA_MAX, format_number(data.reputation)]
+	view.get_node("TravelBuffInfo").text = "月老祝福：%d层（谈心对象变为友好最高挚友）  |  观音祝福：%d层（谈心必双胞胎）" % [data.yuelao_count, data.guanyin_count]
+	var btn = view.find_child("TravelBtn", true, false)
+	if btn:
+		btn.disabled = stamina_now < 1
+	# 表2挚友：已获得标金色，未获得显示好感进度（重建前先移除再释放，避免残留）
+	var list = view.get_node("TravelScroll/TravelList")
+	for child in list.get_children():
+		list.remove_child(child)
+		child.queue_free()
+	for fid in data.TRAVEL_AFFECTION.keys():
+		var cfg = data.get_friend_config(fid)
+		var lbl = Label.new()
+		lbl.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+		if data.friends.has(fid):
+			lbl.text = "【%s】已获得" % cfg.get("name", fid)
+			lbl.add_theme_color_override("font_color", Color("#ffd700"))
+		else:
+			lbl.text = "【%s】好感 %d/%d" % [cfg.get("name", fid), data.friend_affection.get(fid, 0), data.TRAVEL_AFFECTION[fid]]
+		list.add_child(lbl)
+
+# 游历按钮：消耗1体力游历一次，展示结果并全量刷新（可能获得物品/门客加成/解锁挚友）
+func _on_travel():
+	var result = data.do_travel()
+	if not result.ok:
+		_show_stage_hint(result.msg)
+		update_travel_view()
+		return
+	if has_node("PageContainer/AdventurePage/TravelView/TravelResult"):
+		$PageContainer/AdventurePage/TravelView/TravelResult.text = result.msg
+	# 若触发了好感解锁，额外提示
+	if result.get("unlock_friend", "") != "":
+		_show_stage_hint("喜获挚友【%s】！" % data.friends[result.unlock_friend].name)
+	update_travel_view()
 	update_all_ui()
 	update_bag_list()
 	update_friend_page()
@@ -4291,8 +4423,14 @@ func _show_chat_result(results: Array):
 	for r in results:
 		var lbl = Label.new()
 		lbl.text = "与【%s】谈心，缘分 +%d" % [r.name, r.gain]
+		# 【新增】月老牵线提示
+		if r.get("yuelao", false):
+			lbl.text += "（月老牵线！）"
 		if r.get("twin", false):
 			lbl.text += "，领养了一对双胞胎徒弟！"
+			# 【新增】观音送子提示
+			if r.get("guanyin", false):
+				lbl.text += "（观音送子！）"
 		elif r.get("adopted", false):
 			lbl.text += "，领养了一位徒弟！"
 		list.add_child(lbl)
@@ -4423,6 +4561,9 @@ func _do_play_chat():
 		var msg = "与【%s】谈心，缘分 +%d" % [result.name, result.gain]
 		if result.get("twin", false):
 			msg += "，领养了一对双胞胎徒弟！"
+			# 【新增】观音送子提示
+			if result.get("guanyin", false):
+				msg += "（观音送子！）"
 		elif result.get("adopted", false):
 			msg += "，领养了一位徒弟！"
 		_show_stage_hint(msg)

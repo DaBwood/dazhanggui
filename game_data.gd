@@ -242,6 +242,12 @@ const ITEM_CONFIG = {
 	"recruit_bronze":   {"name": "募工铜牌", "desc": "使用后随机店铺店员+1", "use": {"type": "quantity", "btn": "使用", "title": "使用募工铜牌"}},
 	"recruit_silver":   {"name": "募工银牌", "desc": "使用后随机店铺店员+3", "use": {"type": "quantity", "btn": "使用", "title": "使用募工银牌"}},
 	"recruit_gold":     {"name": "募工金牌", "desc": "使用后随机店铺店员+5", "use": {"type": "quantity", "btn": "使用", "title": "使用募工金牌"}},
+	"huo_qi":      {"name": "火器",   "desc": "使用后随机一名侠门客基础赚速+500", "use": {"type": "quantity", "btn": "使用", "title": "使用火器"}},
+	"ci_qi":       {"name": "瓷器",   "desc": "使用后随机一名商门客基础赚速+500", "use": {"type": "quantity", "btn": "使用", "title": "使用瓷器"}},
+	"qiong_jiang": {"name": "琼浆",   "desc": "使用后随机一名工门客基础赚速+500", "use": {"type": "quantity", "btn": "使用", "title": "使用琼浆"}},
+	"cha_ye":      {"name": "茶叶",   "desc": "使用后随机一名农门客基础赚速+500", "use": {"type": "quantity", "btn": "使用", "title": "使用茶叶"}},
+	"xuan_zhi":    {"name": "宣纸",   "desc": "使用后随机一名士门客基础赚速+500", "use": {"type": "quantity", "btn": "使用", "title": "使用宣纸"}},
+	"random_book": {"name": "随机书籍", "desc": "打开后随机获得一本：仕途/农业/工业/经商/侠义之道", "use": {"type": "quantity", "btn": "打开", "title": "打开随机书籍"}},
 	
 
 }
@@ -470,6 +476,7 @@ var items = {
 	"reputation_card": 0, "reputation_card_adv": 0,"rose_perfume": 0,
 	"xia_way": 0, "nong_way": 0, "shi_way": 0, "gong_way": 0, "shang_way": 0,
 	"recruit_bronze": 0, "recruit_silver": 0, "recruit_gold": 0,
+	"huo_qi": 0, "ci_qi": 0, "qiong_jiang": 0, "cha_ye": 0, "xuan_zhi": 0, "random_book": 0,
 }
 
 const SURNAMES = ["赵","钱","孙","李","周","吴","郑","王","冯","陈","褚","卫","蒋","沈","韩","杨","朱","秦","尤","许"]
@@ -506,6 +513,240 @@ var hq = {
 	"income_mult": 1.5,
 	"global_bonus": 0.05,
 }
+
+# ========== 【新增】游历体力系统 ==========
+const STAMINA_MAX = 30                 # 体力自动恢复上限（杜康事件可超上限）
+const STAMINA_RECOVER_SECONDS = 1200   # 每20分钟恢复1点体力
+
+var stamina: int = STAMINA_MAX         # 当前体力（游历消耗，1点/次）
+var stamina_time: int = 0              # 上次体力恢复结算时间戳（懒结算用）
+
+# 懒结算体力：每20分钟恢复1点，30只是自动恢复的上限（杜康事件可超上限）
+func _settle_stamina():
+	var now = Time.get_unix_time_from_system()
+	if stamina_time <= 0:
+		stamina_time = now
+		return
+	# 体力已满（或超出上限）：不再恢复，但绝不能截断超出部分
+	if stamina >= STAMINA_MAX:
+		stamina_time = now
+		return
+	@warning_ignore("narrowing_conversion")
+	var regen = int((now - stamina_time) / STAMINA_RECOVER_SECONDS)
+	if regen > 0:
+		stamina = min(STAMINA_MAX, stamina + regen)
+		@warning_ignore("narrowing_conversion")
+		stamina_time = stamina_time + regen * STAMINA_RECOVER_SECONDS
+
+# 获取当前体力（先懒结算恢复）
+func get_stamina() -> int:
+	_settle_stamina()
+	return stamina
+
+# ========== 【新增】游历系统（XLS表1：地点/物品/事件） ==========
+const TRAVEL_REPUTATION = 20          # 每次游历固定获得声望
+const TRAVEL_LOCATION_CHANCE = 0.5    # 游历到地点概率50%
+const TRAVEL_ITEM_CHANCE = 0.4        # 获得物品概率40%（剩余10%为事件）
+
+# 游历地点表：id -> {name=显示名, friends=该地点可相遇挚友ID列表（含表2挚友）}
+const TRAVEL_LOCATIONS = {
+	"si_miao": {"name": "寺庙", "friends": ["zhuo_gui_shi", "tang_pingguo", "xun_ma_shi", "xiao_qigai", "wan_wan", "jing_an", "ying_chun", "bi_bi_dong", "xiwangmu", "yu_tu", "shi_bo_shi", "wanghou_fuhao"]},
+	"shu_yuan": {"name": "书院", "friends": ["ji_zhou", "mo_li", "shu_xiang_nv", "ma_xianglan_friend", "yuan_xiao_guniang", "jun_zhu", "zhu_sha", "nvwa", "jin_shu", "xiao_wu_friend", "zhi_nv", "xinniang_zhimei"]},
+	"ke_zhan": {"name": "客栈", "friends": ["tushan_honghong", "mu_shu", "qi_shi", "ya_huan", "xiao_shijie", "hua_zhao", "yao_ying", "qiu_ying", "zi_yu", "hua_lang", "hu_yao_zhanggui"]},
+	"chuan_wu": {"name": "船坞", "friends": ["xun_ying_shaonv", "ji_ye", "yu_ji", "cao_yuan_nvhai", "li_xiangjun_friend", "meng_qier", "xiyu_nvzi", "hui_yin", "hua_mulan_friend", "xihu_chuangniang", "xiao_mujiang"]},
+	"chou_duan_zhuang": {"name": "绸缎庄", "friends": ["xiu_niang", "dong_xiaowan_friend", "xinniang", "li_shishi", "zhen_xian_nv", "ma_ma", "sha_lan", "xing_lan", "qi_ling", "yu_ge", "xiao_lu_nv"]},
+	"biao_ju": {"name": "镖局", "friends": ["xiao_shimei", "ning_yin", "mai_san_nv", "cu_ju_nv", "qian_ren_xue", "kou_baimen_friend", "hong_ying", "rong", "jiu_yue", "xiao_ning", "he_xi", "luo", "huang_ye_linglan", "zhi_nv", "wu_nv_wu"]},
+	"shan_zhai": {"name": "山寨", "friends": ["miao_jiang_shengnv", "yi_shi_new", "dao_gu", "lie_ren", "yu_lu", "zhao_yang", "yin_niang", "wang_zhaojun_friend", "nvba", "tushanshi", "cai_shi_guan"]},
+	"ya_men": {"name": "衙门", "friends": ["ling_ye_mao_nv", "yi_shi", "bu_kuai", "jiang_men_nvzi", "tan_you", "yun_zhi", "shen_meizhuang", "wu_xie", "hua_wuque", "change", "jingwei", "gu_guo_gongzhu"]},
+	"cha_guan": {"name": "茶馆", "friends": ["nan_gong_wan", "qing_ning", "hua_yi_shi", "xi_zi", "si_tang", "cai_yao_nv", "bian_yujing_friend", "dou_fu_nv", "qi_guang", "zhou_meili", "ni_huang_junzhu", "shou_gong_shaonv", "xiao_hudie", "niu_lang"]},
+	"miao_yin_fang": {"name": "妙音坊", "friends": ["jian_wuzhe", "shao_jiangjun", "lang_zi", "wu_nv", "pi_pa_nv", "mi_tan", "hong_niangzi"]},
+}
+
+# 表2：好感解锁挚友（未拥有时游历相遇好感+1，达到要求即 unlock_friend 获得）
+const TRAVEL_AFFECTION = {
+	"hong_niangzi": 30,
+	"mi_tan": 25,
+	"lang_zi": 25,
+	"shao_jiangjun": 25,
+	"jun_zhu": 105,
+	"yuan_xiao_guniang": 50,
+	"xiao_qigai": 15,
+	"pi_pa_nv": 15,
+	"dou_fu_nv": 30,
+	"xi_zi": 10,
+	"cu_ju_nv": 30,
+	"wu_nv": 15,
+	"lie_ren": 35,
+	"xiao_shijie": 25,
+	"jian_wuzhe": 10,
+	"mai_san_nv": 4,
+	"zhen_xian_nv": 3,
+}
+
+# 游历物品池：20项等概率，{item=道具ID, count=抽中后给N个}
+# 注意：表格里的"许愿果"映射到现有许愿石 wish_stone；珍兽果/奇香果是独立货币，结算时加变量不加items
+const TRAVEL_ITEM_POOL = [
+	{"item": "huo_qi", "count": 1},
+	{"item": "ci_qi", "count": 1},
+	{"item": "qiong_jiang", "count": 1},
+	{"item": "cha_ye", "count": 1},
+	{"item": "xuan_zhi", "count": 1},
+	{"item": "recruit_bronze", "count": 1},
+	{"item": "vitality_pill", "count": 1},
+	{"item": "energy_pill", "count": 1},
+	{"item": "random_book", "count": 20},
+	{"item": "fengyasong", "count": 1},
+	{"item": "wood_comb", "count": 1},
+	{"item": "rouge", "count": 1},
+	{"item": "aptitude_pill", "count": 1},
+	{"item": "abacus", "count": 1},
+	{"item": "recruit_silver", "count": 1},
+	{"item": "recruit_gold", "count": 1},
+	{"item": "aroma_fruit", "count": 1},
+	{"item": "wish_stone", "count": 1},
+	{"item": "beast_fruit", "count": 1},
+	{"item": "beast_fruit", "count": 20},
+]
+
+# 未拥有表2挚友的好感进度（fid -> 好感值），达标获得后清除
+var friend_affection: Dictionary = {}
+# 月老/观音祝福层数：可一直累计，只有谈心真正领养到徒弟时才消耗
+var yuelao_count: int = 0    # 月老：下次谈心（能领养时）对象改为当前友好最高的挚友
+var guanyin_count: int = 0   # 观音：下次谈心（能领养时）必定双胞胎
+
+# 游历：消耗1点体力，固定声望+20，再按50%/40%/10%触发地点/物品/事件
+func do_travel() -> Dictionary:
+	_settle_stamina()
+	if stamina < 1:
+		return {"ok": false, "msg": "体力不足"}
+	stamina -= 1
+	reputation += TRAVEL_REPUTATION
+	var roll = randf()
+	if roll < TRAVEL_LOCATION_CHANCE:
+		return _do_travel_location()
+	elif roll < TRAVEL_LOCATION_CHANCE + TRAVEL_ITEM_CHANCE:
+		return _do_travel_item()
+	return _do_travel_event()
+
+# 游历到地点：随机一个地点，从该地点「已拥有挚友 + 未拥有的表2挚友」中随机相遇
+# 已拥有挚友友好+1；未拥有表2挚友好感+1，达标即获得
+func _do_travel_location() -> Dictionary:
+	var loc_ids = TRAVEL_LOCATIONS.keys()
+	var loc_id = loc_ids[randi() % loc_ids.size()]
+	var loc = TRAVEL_LOCATIONS[loc_id]
+	# 筛选候选：该地点中已拥有的挚友 + 未拥有但属于表2的挚友
+	var candidates = []
+	for fid in loc.friends:
+		if friends.has(fid):
+			candidates.append(fid)
+		elif TRAVEL_AFFECTION.has(fid):
+			candidates.append(fid)
+	if candidates.is_empty():
+		return {"ok": true, "type": "location", "msg": "游历到【%s】，没有遇到熟人，声望+%d" % [loc.name, TRAVEL_REPUTATION]}
+	var fid = candidates[randi() % candidates.size()]
+	var cfg = get_friend_config(fid)
+	if friends.has(fid):
+		# 已拥有：友好+1
+		friends[fid].friendly += 1
+		return {"ok": true, "type": "location", "msg": "游历到【%s】，偶遇挚友【%s】，友好+1，声望+%d" % [loc.name, cfg.get("name", fid), TRAVEL_REPUTATION]}
+	# 未拥有的表2挚友：好感+1，达标则获得
+	friend_affection[fid] = friend_affection.get(fid, 0) + 1
+	var need = TRAVEL_AFFECTION[fid]
+	if friend_affection[fid] >= need:
+		unlock_friend(fid)
+		friend_affection.erase(fid)
+		return {"ok": true, "type": "location", "msg": "游历到【%s】，与【%s】好感已满，喜获挚友！声望+%d" % [loc.name, cfg.get("name", fid), TRAVEL_REPUTATION], "unlock_friend": fid}
+	return {"ok": true, "type": "location", "msg": "游历到【%s】，与【%s】相遇，好感+1（%d/%d），声望+%d" % [loc.name, cfg.get("name", fid), friend_affection[fid], need, TRAVEL_REPUTATION]}
+
+# 游历获得物品：物品池20项等概率，抽中给 entry.count 个
+func _do_travel_item() -> Dictionary:
+	var entry = TRAVEL_ITEM_POOL[randi() % TRAVEL_ITEM_POOL.size()]
+	var item_id = entry.item
+	var count = entry.count
+	# 珍兽果/奇香果是独立货币（珍兽页面消费用变量），其余进背包
+	match item_id:
+		"beast_fruit":
+			beast_fruit += count
+		"aroma_fruit":
+			aroma_fruit += count
+		_:
+			items[item_id] = items.get(item_id, 0) + count
+	var item_name = ITEM_CONFIG.get(item_id, {}).get("name", item_id)
+	return {"ok": true, "type": "item", "msg": "游历途中获得【%s】×%d，声望+%d" % [item_name, count, TRAVEL_REPUTATION]}
+
+# 游历遭遇事件：5个事件等概率
+# 财神到=元宝+1000；月老/观音=祝福层数+1（可累计）；杜康=体力+1~3（可超上限）；今日新菜=赚速最高门客基础赚速+2000
+func _do_travel_event() -> Dictionary:
+	var events = ["cai_shen", "yue_lao", "guan_yin", "du_kang", "new_dish"]
+	var event_id = events[randi() % events.size()]
+	match event_id:
+		"cai_shen":
+			yuanbao += 1000
+			return {"ok": true, "type": "event", "msg": "遭遇【财神到】！元宝+1000，声望+%d" % TRAVEL_REPUTATION}
+		"yue_lao":
+			yuelao_count += 1
+			return {"ok": true, "type": "event", "msg": "遭遇【月老】！获得1层祝福：下次谈心（能领养徒弟时）将与友好最高的挚友谈心（当前累计%d层），声望+%d" % [yuelao_count, TRAVEL_REPUTATION]}
+		"guan_yin":
+			guanyin_count += 1
+			return {"ok": true, "type": "event", "msg": "遭遇【观音】！获得1层祝福：下次谈心（能领养徒弟时）必为双胞胎（当前累计%d层），声望+%d" % [guanyin_count, TRAVEL_REPUTATION]}
+		"du_kang":
+			# 杜康赠酒：体力+1~3，不受30点自动恢复上限限制
+			_settle_stamina()
+			var gain = randi_range(1, 3)
+			stamina += gain
+			return {"ok": true, "type": "event", "msg": "遭遇【杜康】！共饮美酒，体力+%d（当前%d点），声望+%d" % [gain, stamina, TRAVEL_REPUTATION]}
+		"new_dish":
+			# 今日新菜：当前总赚速最高的已拥有门客基础赚速+2000
+			var best_id = ""
+			var best_income = -1
+			for hid in heroes.keys():
+				var income = get_hero_income(hid)
+				if income > best_income:
+					best_income = income
+					best_id = hid
+			if best_id == "":
+				return {"ok": true, "type": "event", "msg": "遭遇【今日新菜】，但还没有门客可以享用，声望+%d" % TRAVEL_REPUTATION}
+			heroes[best_id].base_income += 2000
+			return {"ok": true, "type": "event", "msg": "遭遇【今日新菜】！【%s】大快朵颐，基础赚速+2000，声望+%d" % [heroes[best_id].name, TRAVEL_REPUTATION]}
+	return {"ok": false, "msg": "未知事件"}
+
+# 是否存在已解锁的空徒弟槽位（月老/观音祝福生效的前提）
+func _has_empty_apprentice_slot() -> bool:
+	for i in range(5):
+		if not is_apprentice_slot_unlocked(i): break
+		var entry = apprentices[i]
+		if entry == null or (entry is Array and entry.is_empty()):
+			return true
+	return false
+
+# 当前友好最高的已拥有挚友ID（月老牵线的谈心对象）；没有挚友时返回空串
+func _get_highest_friendly_friend() -> String:
+	var best_id = ""
+	var best_friendly = -1
+	for fid in friends.keys():
+		var fv = friends[fid].get("friendly", 0)
+		if fv > best_friendly:
+			best_friendly = fv
+			best_id = fid
+	return best_id
+
+# 谈心前的祝福结算：返回 {"target"=谈心挚友ID, "force_twin"=是否必双胞胎, "yuelao"=月老是否生效, "guanyin"=观音是否生效}
+# 只有存在徒弟空位（本次谈心能领养）时才消耗层数；没有空位则层数保留、继续累计
+func _prepare_chat_adoption(default_friend_id: String) -> Dictionary:
+	var bless = {"target": default_friend_id, "force_twin": false, "yuelao": false, "guanyin": false}
+	if not _has_empty_apprentice_slot():
+		return bless
+	if yuelao_count > 0:
+		yuelao_count -= 1
+		var top_id = _get_highest_friendly_friend()
+		if top_id != "":
+			bless.target = top_id
+		bless.yuelao = true
+	if guanyin_count > 0:
+		guanyin_count -= 1
+		bless.force_twin = true
+		bless.guanyin = true
+	return bless
 
 func _load_all_configs():
 	_hero_configs = _load_json("res://data/heroes.json")
@@ -711,6 +952,8 @@ func get_hero_contribution(hero_id: String) -> int:
 	return int(income * h.breakthrough_count * 0.5)
 
 # 谈心
+# 谈心：随机一位已拥有挚友，缘分+才华，有空位则领养徒弟
+# 【修改】月老层数>0且有徒弟空位：本次谈心对象改为友好最高的挚友；观音层数>0且有徒弟空位：本次领养必为双胞胎
 func chat_with_friend(once: bool = true) -> Dictionary:
 	if energy <= 0: return {"ok": false, "reason": "精力不足"}
 	
@@ -719,32 +962,46 @@ func chat_with_friend(once: bool = true) -> Dictionary:
 		energy -= 1
 		var keys = friends.keys()
 		var fid = keys[randi() % keys.size()]
+		# 【新增】月老/观音祝福结算（没有徒弟空位时不消耗层数）
+		var bless = _prepare_chat_adoption(fid)
+		fid = bless.target
 		var f = friends[fid]
 		f.bond += f.talent
-		# 有空位则与本次谈心的挚友领养一位徒弟
-		var n = adopt_apprentice(fid)
-		results.append({"friend_id": fid, "name": f.name, "gain": f.talent, "adopted": n > 0, "twin": n == 2})
+		# 有空位则与本次谈心的挚友领养一位徒弟（观音生效时必双胞胎）
+		var n = adopt_apprentice(fid, bless.force_twin)
+		results.append({"friend_id": fid, "name": f.name, "gain": f.talent, "adopted": n > 0, "twin": n == 2, "yuelao": bless.yuelao, "guanyin": bless.guanyin})
 	else:
 		while energy > 0:
 			energy -= 1
 			var keys = friends.keys()
 			var fid = keys[randi() % keys.size()]
+			# 【新增】一键谈心逐次结算月老/观音祝福
+			var bless = _prepare_chat_adoption(fid)
+			fid = bless.target
 			var f = friends[fid]
 			f.bond += f.talent
 			# 一键谈心：有几个空位，前几位挚友就各领养一位
-			var n = adopt_apprentice(fid)
-			results.append({"friend_id": fid, "name": f.name, "gain": f.talent, "adopted": n > 0, "twin": n == 2})
+			var n = adopt_apprentice(fid, bless.force_twin)
+			results.append({"friend_id": fid, "name": f.name, "gain": f.talent, "adopted": n > 0, "twin": n == 2, "yuelao": bless.yuelao, "guanyin": bless.guanyin})
 	
 	return {"ok": true, "results": results}
 
 # 与指定挚友谈心（游山玩水/吟诗作对共用）：缘分+才华，有空位则领养徒弟
 # 不消耗精力，消耗由调用方（元宝/玫瑰香水）负责
+# 【修改】指定谈心不触发月老（对象已由玩家指定），观音祝福正常生效（必双胞胎）
 func chat_with_specific_friend(friend_id: String) -> Dictionary:
 	if not friends.has(friend_id): return {"ok": false, "reason": "未拥有该挚友"}
 	var f = friends[friend_id]
 	f.bond += f.talent
-	var n = adopt_apprentice(friend_id)
-	return {"ok": true, "name": f.name, "gain": f.talent, "adopted": n > 0, "twin": n == 2}
+	# 【新增】观音祝福：有徒弟空位才生效并消耗一层
+	var force_twin = false
+	var guanyin_used = false
+	if guanyin_count > 0 and _has_empty_apprentice_slot():
+		guanyin_count -= 1
+		force_twin = true
+		guanyin_used = true
+	var n = adopt_apprentice(friend_id, force_twin)
+	return {"ok": true, "name": f.name, "gain": f.talent, "adopted": n > 0, "twin": n == 2, "guanyin": guanyin_used}
 
 # 升级固定技能
 func upgrade_friend_fixed(friend_id: String) -> bool:
@@ -840,15 +1097,16 @@ func get_slot_vigor(slot: int) -> int:
 # ========== 徒弟：领养 ==========
 
 # 与挚友领养徒弟：占用第一个已解锁的空位，1%概率双胞胎（同槽位两名，性别职业各自独立随机）
+# 【修改】force_twin=true（观音祝福）时必定双胞胎
 # 返回领养数量：0=没有空位，1=单人，2=双胞胎
-func adopt_apprentice(friend_id: String) -> int:
+func adopt_apprentice(friend_id: String, force_twin: bool = false) -> int:
 	if not friends.has(friend_id): return 0
 	for i in range(5):
 		if not is_apprentice_slot_unlocked(i): break
 		var entry = apprentices[i]
 		if entry == null or (entry is Array and entry.is_empty()):
 			var list = [_create_apprentice(friend_id)]
-			if randf() < APPRENTICE_TWIN_CHANCE:
+			if force_twin or randf() < APPRENTICE_TWIN_CHANCE:
 				list.append(_create_apprentice(friend_id))
 			apprentices[i] = list
 			return list.size()
@@ -1166,6 +1424,38 @@ func use_item(item_id: String, count: int) -> Dictionary:
 			for sid in gains.keys():
 				parts.append("【%s】店员+%d" % [shops[sid].name, gains[sid]])
 			return {"ok": true, "msg": "、".join(parts)}
+		"huo_qi", "ci_qi", "qiong_jiang", "cha_ye", "xuan_zhi":
+			# 【新增】游历道具：每使用1个，随机一名对应职业门客基础赚速+500（逐个随机，可命中同一门客）
+			var buff_category = {"huo_qi": "侠", "ci_qi": "商", "qiong_jiang": "工", "cha_ye": "农", "xuan_zhi": "士"}[item_id]
+			var buff_pool = []
+			for hid in heroes.keys():
+				if heroes[hid].get("category", "") == buff_category:
+					buff_pool.append(hid)
+			if buff_pool.is_empty():
+				return {"ok": false, "msg": "没有已拥有的%s类门客" % buff_category}
+			items[item_id] -= count
+			var buff_gains = {}
+			for i in range(count):
+				var hid = buff_pool[randi() % buff_pool.size()]
+				heroes[hid].base_income += 500
+				buff_gains[hid] = buff_gains.get(hid, 0) + 500
+			var buff_parts = []
+			for hid in buff_gains.keys():
+				buff_parts.append("【%s】基础赚速+%d" % [heroes[hid].name, buff_gains[hid]])
+			return {"ok": true, "msg": "、".join(buff_parts)}
+		"random_book":
+			# 【新增】随机书籍：每打开1个，从五种之道中随机获得一本
+			items.random_book -= count
+			var book_pool = ["shi_way", "nong_way", "gong_way", "shang_way", "xia_way"]
+			var book_gains = {}
+			for i in range(count):
+				var bid = book_pool[randi() % book_pool.size()]
+				items[bid] = items.get(bid, 0) + 1
+				book_gains[bid] = book_gains.get(bid, 0) + 1
+			var book_parts = []
+			for bid in book_gains.keys():
+				book_parts.append("【%s】×%d" % [ITEM_CONFIG[bid].name, book_gains[bid]])
+			return {"ok": true, "msg": "获得：" + "、".join(book_parts)}
 	return {"ok": false, "msg": "该道具不可使用"}
 
 func get_beast_config(beast_id: String) -> Dictionary:
@@ -1822,6 +2112,11 @@ func save_game():
 		"charity_progress": charity_progress,
 		"charity_click_count": charity_click_count,
 		"charity_last_day": charity_last_day,
+		"stamina": stamina,                     # 【新增】游历体力
+		"stamina_time": stamina_time,           # 【新增】体力恢复时间戳
+		"friend_affection": friend_affection,   # 【新增】表2挚友好感进度
+		"yuelao_count": yuelao_count,           # 【新增】月老祝福层数
+		"guanyin_count": guanyin_count,         # 【新增】观音祝福层数
 	}
 	var file = FileAccess.open(SAVE_PATH, FileAccess.WRITE)
 	if file:
@@ -1926,6 +2221,13 @@ func load_game():
 	if data.has("charity_progress"): charity_progress = data.charity_progress
 	if data.has("charity_click_count"): charity_click_count = data.charity_click_count
 	if data.has("charity_last_day"): charity_last_day = data.charity_last_day
+	
+	# 【新增】游历系统存档读取（老存档没有这些字段则保持初始值）
+	if data.has("stamina"): stamina = data.stamina
+	if data.has("stamina_time"): stamina_time = data.stamina_time
+	if data.has("friend_affection"): friend_affection = data.friend_affection
+	if data.has("yuelao_count"): yuelao_count = data.yuelao_count
+	if data.has("guanyin_count"): guanyin_count = data.guanyin_count
 	
 	# 清理存档中已不存在的角色（防止配置删了存档还残留）
 	for hero_id in heroes.keys():
