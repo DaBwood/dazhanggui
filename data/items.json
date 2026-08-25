@@ -1,6 +1,14 @@
 {
   "_comment": "道具配置表。config=道具定义(name名称/desc描述/use使用方式,use可省略); initial=新档初始数量(未列出的道具自动补0)",
   "config": {
+    "hero_box": {
+      "name": "门客盒子",
+      "desc": "打开后可从所有门客中选择一个获得",
+      "use": {
+        "type": "hero_box",
+        "btn": "打开"
+      }
+    },
     "shop_blueprint": {
       "name": "商铺图纸",
       "desc": "用于解锁新商铺"
@@ -8,6 +16,87 @@
     "hq_blueprint": {
       "name": "钱庄图纸",
       "desc": "用于升级钱庄建筑"
+    },
+    "recruit_bronze": {
+      "name": "募工铜牌",
+      "desc": "使用后随机店铺店员+1",
+      "use": {
+        "type": "quantity",
+        "btn": "使用",
+        "title": "使用募工铜牌"
+      }
+    },
+    "recruit_silver": {
+      "name": "募工银牌",
+      "desc": "使用后随机店铺店员+3",
+      "use": {
+        "type": "quantity",
+        "btn": "使用",
+        "title": "使用募工银牌"
+      }
+    },
+    "recruit_gold": {
+      "name": "募工金牌",
+      "desc": "使用后随机店铺店员+5",
+      "use": {
+        "type": "quantity",
+        "btn": "使用",
+        "title": "使用募工金牌"
+      }
+    },
+    "huo_qi": {
+      "name": "火器",
+      "desc": "使用后随机一名侠门客基础赚速+500",
+      "use": {
+        "type": "quantity",
+        "btn": "使用",
+        "title": "使用火器"
+      }
+    },
+    "ci_qi": {
+      "name": "瓷器",
+      "desc": "使用后随机一名商门客基础赚速+500",
+      "use": {
+        "type": "quantity",
+        "btn": "使用",
+        "title": "使用瓷器"
+      }
+    },
+    "qiong_jiang": {
+      "name": "琼浆",
+      "desc": "使用后随机一名工门客基础赚速+500",
+      "use": {
+        "type": "quantity",
+        "btn": "使用",
+        "title": "使用琼浆"
+      }
+    },
+    "cha_ye": {
+      "name": "茶叶",
+      "desc": "使用后随机一名农门客基础赚速+500",
+      "use": {
+        "type": "quantity",
+        "btn": "使用",
+        "title": "使用茶叶"
+      }
+    },
+    "xuan_zhi": {
+      "name": "宣纸",
+      "desc": "使用后随机一名士门客基础赚速+500",
+      "use": {
+        "type": "quantity",
+        "btn": "使用",
+        "title": "使用宣纸"
+      }
+    },
+    "random_book": {
+      "name": "随机书籍",
+      "desc": "打开后随机获得一本：仕途/农业/工业/经商/侠义之道",
+      "use": {
+        "type": "quantity",
+        "btn": "打开",
+        "title": "打开随机书籍"
+      }
     },
     "aptitude_pill": {
       "name": "资质丹",
@@ -43,6 +132,15 @@
         "title": "使用百年人参"
       }
     },
+     "ginseng_1000": {
+      "name": "千年人参",
+      "desc": "指定门客基础赚速+20000",
+      "use": {
+        "type": "ginseng",
+        "btn": "使用",
+        "title": "使用千年人参"
+      }
+    },
     "wood_comb": {
       "name": "木梳",
       "desc": "赠送给挚友，友好+1"
@@ -54,10 +152,6 @@
     "energy_pill": {
       "name": "精力丹",
       "desc": "恢复3点精力"
-    },
-    "zui_xian_niang": {
-      "name": "醉仙酿",
-      "desc": "李白赋诗升级所需"
     },
     "stage_box": {
       "name": "关卡宝箱",
@@ -80,34 +174,7 @@
       "name": "奇香果",
       "desc": "刷新珍兽技能"
     },
-    "feng_shen_zhi": {
-      "name": "封神志",
-      "desc": "兑换封神灵兽"
-    },
-    "shan_hai_shi": {
-      "name": "山海石",
-      "desc": "兑换山海异兽"
-    },
-    "hong_huang_huo": {
-      "name": "鸿荒火",
-      "desc": "兑换上古凶兽"
-    },
-    "jiu_yuan_shui": {
-      "name": "九渊之水",
-      "desc": "兑换蛮荒主兽"
-    },
-    "long_zhuo_xi": {
-      "name": "龙擢星玺",
-      "desc": "兑换星神圣兽"
-    },
-    "xing_wu_po": {
-      "name": "星武珀石",
-      "desc": "兑换星神圣兽"
-    },
-    "xing_shu_lin": {
-      "name": "星枢麟角",
-      "desc": "兑换星神圣兽"
-    },
+    
     "lottery_ticket": {
       "name": "抽奖券",
       "desc": "用于闯荡页面的抽奖"
@@ -120,15 +187,7 @@
       "name": "挚友帖",
       "desc": "用于兑换挚友"
     },
-    "ginseng_1000": {
-      "name": "千年人参",
-      "desc": "指定门客基础赚速+20000",
-      "use": {
-        "type": "ginseng",
-        "btn": "使用",
-        "title": "使用千年人参"
-      }
-    },
+   
     "vitality_pill": {
       "name": "活力丹",
       "desc": "使用后徒弟槽位活力+5"
@@ -137,15 +196,53 @@
       "name": "许愿石",
       "desc": "用于刷新挚友店铺技能，必定获得20%-30%加成"
     },
-    "hero_box": {
-      "name": "门客盒子",
-      "desc": "打开后可从所有门客中选择一个获得",
+    "reputation_card": {
+      "name": "声望卡",
+      "desc": "使用后声望 +10",
       "use": {
-        "type": "hero_box",
-        "btn": "打开"
+        "type": "quantity",
+        "btn": "使用",
+        "title": "使用声望卡"
       }
     },
-    "zongjiang_ling": {
+    "reputation_card_adv": {
+      "name": "高级声望卡",
+      "desc": "使用后声望 +100",
+      "use": {
+        "type": "quantity",
+        "btn": "使用",
+        "title": "使用高级声望卡"
+      }
+    },
+    "rose_perfume": {
+      "name": "玫瑰香水",
+      "desc": "与指定挚友吟诗作对（谈心）"
+    },
+    "xia_way": {
+      "name": "侠义之道",
+      "desc": "后续玩法更新后使用"
+    },
+    "nong_way": {
+      "name": "农业之道",
+      "desc": "后续玩法更新后使用"
+    },
+    "shi_way": {
+      "name": "仕途之道",
+      "desc": "后续玩法更新后使用"
+    },
+    "gong_way": {
+      "name": "工业之道",
+      "desc": "后续玩法更新后使用"
+    },
+    "shang_way": {
+      "name": "经商之道",
+      "desc": "后续玩法更新后使用"
+    },
+    "zui_xian_niang": {
+      "name": "醉仙酿",
+      "desc": "李白赋诗升级所需"
+    },
+     "zongjiang_ling": {
       "name": "宗匠令",
       "desc": "兑换一代宗匠系列门客所需"
     },
@@ -257,129 +354,34 @@
       "name": "玲珑荷包",
       "desc": "兑换门客【小八】所需"
     },
-    "reputation_card": {
-      "name": "声望卡",
-      "desc": "使用后声望 +10",
-      "use": {
-        "type": "quantity",
-        "btn": "使用",
-        "title": "使用声望卡"
-      }
+    "feng_shen_zhi": {
+      "name": "封神志",
+      "desc": "兑换封神灵兽"
     },
-    "reputation_card_adv": {
-      "name": "高级声望卡",
-      "desc": "使用后声望 +100",
-      "use": {
-        "type": "quantity",
-        "btn": "使用",
-        "title": "使用高级声望卡"
-      }
+    "shan_hai_shi": {
+      "name": "山海石",
+      "desc": "兑换山海异兽"
     },
-    "rose_perfume": {
-      "name": "玫瑰香水",
-      "desc": "与指定挚友吟诗作对（谈心）"
+    "hong_huang_huo": {
+      "name": "鸿荒火",
+      "desc": "兑换上古凶兽"
     },
-    "xia_way": {
-      "name": "侠义之道",
-      "desc": "后续玩法更新后使用"
+    "jiu_yuan_shui": {
+      "name": "九渊之水",
+      "desc": "兑换蛮荒主兽"
     },
-    "nong_way": {
-      "name": "农业之道",
-      "desc": "后续玩法更新后使用"
+    "long_zhuo_xi": {
+      "name": "龙擢星玺",
+      "desc": "兑换星神圣兽"
     },
-    "shi_way": {
-      "name": "仕途之道",
-      "desc": "后续玩法更新后使用"
+    "xing_wu_po": {
+      "name": "星武珀石",
+      "desc": "兑换星神圣兽"
     },
-    "gong_way": {
-      "name": "工业之道",
-      "desc": "后续玩法更新后使用"
+    "xing_shu_lin": {
+      "name": "星枢麟角",
+      "desc": "兑换星神圣兽"
     },
-    "shang_way": {
-      "name": "经商之道",
-      "desc": "后续玩法更新后使用"
-    },
-    "recruit_bronze": {
-      "name": "募工铜牌",
-      "desc": "使用后随机店铺店员+1",
-      "use": {
-        "type": "quantity",
-        "btn": "使用",
-        "title": "使用募工铜牌"
-      }
-    },
-    "recruit_silver": {
-      "name": "募工银牌",
-      "desc": "使用后随机店铺店员+3",
-      "use": {
-        "type": "quantity",
-        "btn": "使用",
-        "title": "使用募工银牌"
-      }
-    },
-    "recruit_gold": {
-      "name": "募工金牌",
-      "desc": "使用后随机店铺店员+5",
-      "use": {
-        "type": "quantity",
-        "btn": "使用",
-        "title": "使用募工金牌"
-      }
-    },
-    "huo_qi": {
-      "name": "火器",
-      "desc": "使用后随机一名侠门客基础赚速+500",
-      "use": {
-        "type": "quantity",
-        "btn": "使用",
-        "title": "使用火器"
-      }
-    },
-    "ci_qi": {
-      "name": "瓷器",
-      "desc": "使用后随机一名商门客基础赚速+500",
-      "use": {
-        "type": "quantity",
-        "btn": "使用",
-        "title": "使用瓷器"
-      }
-    },
-    "qiong_jiang": {
-      "name": "琼浆",
-      "desc": "使用后随机一名工门客基础赚速+500",
-      "use": {
-        "type": "quantity",
-        "btn": "使用",
-        "title": "使用琼浆"
-      }
-    },
-    "cha_ye": {
-      "name": "茶叶",
-      "desc": "使用后随机一名农门客基础赚速+500",
-      "use": {
-        "type": "quantity",
-        "btn": "使用",
-        "title": "使用茶叶"
-      }
-    },
-    "xuan_zhi": {
-      "name": "宣纸",
-      "desc": "使用后随机一名士门客基础赚速+500",
-      "use": {
-        "type": "quantity",
-        "btn": "使用",
-        "title": "使用宣纸"
-      }
-    },
-    "random_book": {
-      "name": "随机书籍",
-      "desc": "打开后随机获得一本：仕途/农业/工业/经商/侠义之道",
-      "use": {
-        "type": "quantity",
-        "btn": "打开",
-        "title": "打开随机书籍"
-      }
-    }
   },
   "initial": {
     "shop_blueprint": 999,
