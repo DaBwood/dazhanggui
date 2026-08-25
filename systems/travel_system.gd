@@ -72,6 +72,82 @@ func do_travel() -> Dictionary:
 		return _do_travel_item()
 	return _do_travel_event()
 
+# 【新增】一键游历：按点击时的当前体力值为次数上限连续游历
+# 杜康事件回复的体力只加不扣，因此结束后体力可能不为0
+# 返回结构化汇总（次数/声望/类型计数/物品/挚友/事件收益明细），供 UI 弹窗展示
+func do_travel_all() -> Dictionary:
+	_settle_stamina()
+	if g.stamina < 1:
+		return {"ok": false, "msg": "体力不足"}
+	var times = g.stamina   # 次数快照：只消耗现有体力，杜康回复的不纳入本次
+	# ---- 状态快照（循环结束后做 diff 得出各项明细） ----
+	var yuanbao_before = g.yuanbao
+	var stamina_before = g.stamina
+	var yuelao_before = g.yuelao_count
+	var guanyin_before = g.guanyin_count
+	var items_before = g.items.duplicate()
+	var beast_fruit_before = g.beast_fruit
+	var aroma_fruit_before = g.aroma_fruit
+	var friendly_before = {}            # 已拥有挚友的友好度快照（同时用于识别新解锁）
+	for fid in g.friends.keys():
+		friendly_before[fid] = g.friends[fid].friendly
+	var affection_before = g.friend_affection.duplicate()   # 表2挚友好感进度快照
+	var income_before = {}              # 门客基础赚速快照（今日新菜事件）
+	for hid in g.heroes.keys():
+		income_before[hid] = g.heroes[hid].base_income
+	# ---- 连续游历：逐次调用单次游历，统计类型计数 ----
+	var type_count = {"location": 0, "item": 0, "event": 0}
+	var done = 0
+	for i in times:
+		var result = do_travel()
+		if not result.get("ok", false):
+			break   # 理论上不会发生（次数已按体力快照），兜底防意外死循环
+		done += 1
+		type_count[result.get("type", "")] = type_count.get(result.get("type", ""), 0) + 1
+	# ---- diff 汇总：所有变化均来自本次连续游历（循环内无其他系统并发） ----
+	var summary = {
+		"ok": true,
+		"times": done,                                        # 实际游历次数
+		"reputation": g.TRAVEL_REPUTATION * done,             # 声望总收益
+		"type_count": type_count,                             # 地点/物品/事件各多少次
+		"stamina_after": g.stamina,                           # 结束后剩余体力（含杜康回复）
+		"yuanbao_gain": g.yuanbao - yuanbao_before,           # 财神到元宝总收益
+		"yuelao_gain": g.yuelao_count - yuelao_before,        # 月老祝福净增层数
+		"guanyin_gain": g.guanyin_count - guanyin_before,     # 观音祝福净增层数
+		"du_kang_gain": g.stamina - stamina_before + done,    # 杜康回复总量（=剩余-初始+消耗）
+		"items_gain": {},          # 背包物品净增 {item_id: 数量}
+		"beast_fruit_gain": g.beast_fruit - beast_fruit_before,   # 珍兽果净增（独立货币）
+		"aroma_fruit_gain": g.aroma_fruit - aroma_fruit_before,   # 奇香果净增（独立货币）
+		"unlock_friends": [],      # 本次新解锁的挚友 id 列表
+		"friendly_gain": {},       # 已拥有挚友友好净增 {fid: 增量}
+		"affection_gain": {},      # 表2挚友好感净增 {fid: {gain, now, need}}
+		"hero_income_gain": {},    # 今日新菜：门客基础赚速净增 {hid: 增量}
+	}
+	# 背包物品 diff（新出现的物品按 before=0 处理）
+	for item_id in g.items.keys():
+		var item_diff = g.items[item_id] - items_before.get(item_id, 0)
+		if item_diff > 0:
+			summary.items_gain[item_id] = item_diff
+	# 挚友 diff：快照里没有的 id = 本次新解锁；友好度有变化的记入 friendly_gain
+	for fid in g.friends.keys():
+		if not friendly_before.has(fid):
+			summary.unlock_friends.append(fid)
+		else:
+			var friendly_diff = g.friends[fid].friendly - friendly_before[fid]
+			if friendly_diff > 0:
+				summary.friendly_gain[fid] = friendly_diff
+	# 表2好感 diff（已解锁的会被 erase，自然不在此列）
+	for fid in g.friend_affection.keys():
+		var aff_diff = g.friend_affection[fid] - affection_before.get(fid, 0)
+		if aff_diff > 0:
+			summary.affection_gain[fid] = {"gain": aff_diff, "now": g.friend_affection[fid], "need": g.TRAVEL_AFFECTION.get(fid, 0)}
+	# 门客基础赚速 diff（今日新菜）
+	for hid in g.heroes.keys():
+		var income_diff = g.heroes[hid].base_income - income_before.get(hid, 0)
+		if income_diff > 0:
+			summary.hero_income_gain[hid] = income_diff
+	return summary
+
 # 游历到地点：随机一个地点，从该地点「已拥有挚友 + 未拥有的表2挚友」中随机相遇
 # 已拥有挚友友好+1；未拥有表2挚友好感+1，达标即获得
 func _do_travel_location() -> Dictionary:

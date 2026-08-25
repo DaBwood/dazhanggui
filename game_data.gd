@@ -997,6 +997,10 @@ func get_stamina() -> int:
 func do_travel() -> Dictionary:
 	return travel_system.do_travel()
 
+# 【新增】一键游历：转发到 TravelSystem.do_travel_all（消耗当前全部体力，返回结构化汇总）
+func do_travel_all() -> Dictionary:
+	return travel_system.do_travel_all()
+
 func _do_travel_location() -> Dictionary:
 	return travel_system._do_travel_location()
 
