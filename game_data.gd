@@ -399,6 +399,11 @@ var beast_fruit: int = 0
 
 var aroma_fruit: int = 0
 
+# ========== 庄园状态（第4批新增；逻辑在 systems/manor_system.gd） ==========
+var manor_plots: Dictionary = {}      # {品种id: [{"level":品种等级,"land":土地血统等级}×4]} 每块独立
+var manor_goods: Dictionary = {}      # 庄园仓库 {产物名: 数量}（独立仓库，不进背包）
+var manor_last_settle: int = 0        # 上次产量结算时间戳（在线懒结算用）
+
 # ========== 钱庄（特殊建筑）==========
 var hq = {
 	"name": "钱庄",
@@ -469,6 +474,8 @@ var travel_system   # 游历系统
 var charity_system   # 行善系统
 var lottery_system   # 抽奖系统
 var mall_system   # 商城/VIP系统
+var manor_system   # 庄园系统（第4批新增）
+var _manor_configs: Dictionary = {}   # 庄园配置（manor.json，由 _load_all_configs 加载）
 
 # ==================== 初始化 ====================
 # 初始化：创建各子系统（纯逻辑模块，持有本中枢引用），再加载全部配置
@@ -484,6 +491,7 @@ func _init():
 	charity_system = CharitySystem.new(self)
 	lottery_system = LotterySystem.new(self)
 	mall_system = MallSystem.new(self)
+	manor_system = ManorSystem.new(self)
 	_load_all_configs()
 
 # ==================== 配置加载 ====================
@@ -505,8 +513,10 @@ func _load_all_configs():
 	_vip_rewards = _load_json("res://data/vip_rewards.json")
 	_shop_configs = _load_json("res://data/shops.json")
 	_beast_configs = _load_json(BEAST_CONFIG_PATH)
+	_manor_configs = _load_json("res://data/manor.json")   # 【第4批新增】庄园配置
 	_load_items_config()   # 【重构新增】道具表
 	_load_travel_config()  # 【重构新增】游历配置
+	
 
 # 【第1批新增】加载 res://data/items.json：道具定义 + 新档初始数量（未列出的道具自动补0）
 func _load_items_config():
@@ -651,7 +661,7 @@ func save_game():
 	}
 	# 各子系统把自己的字段合并进来（新系统加存档字段只需改它自己的 get_save_data）
 	var systems = [hero_system, friend_system, apprentice_system, beast_system, shop_system,
-		stage_system, item_system, travel_system, charity_system, lottery_system, mall_system]
+		stage_system, item_system, travel_system, charity_system, lottery_system, mall_system,manor_system]
 	for sys in systems:
 		save_data.merge(sys.get_save_data(), true)
 	var file = FileAccess.open(SAVE_PATH, FileAccess.WRITE)
@@ -690,7 +700,7 @@ func load_game():
 
 	# ===== 各子系统认领自己的字段（含旧存档兼容逻辑） =====
 	var systems = [hero_system, friend_system, apprentice_system, beast_system, shop_system,
-		stage_system, item_system, travel_system, charity_system, lottery_system, mall_system]
+		stage_system, item_system, travel_system, charity_system, lottery_system, mall_system,manor_system]
 	for sys in systems:
 		sys.load_save_data(data)
 
@@ -851,7 +861,7 @@ func get_all_beast_ids() -> Array:
 	return beast_system.get_all_beast_ids()
 
 func get_beast_instance(beast_id: String, index: int = 0):
-	beast_system.get_beast_instance(beast_id, index)
+	return beast_system.get_beast_instance(beast_id, index)
 
 func get_beast_instance_count(beast_id: String) -> int:
 	return beast_system.get_beast_instance_count(beast_id)
@@ -1044,3 +1054,73 @@ func is_vip_reward_claimed(level: int) -> bool:
 
 func claim_vip_reward(level: int) -> bool:
 	return mall_system.claim_vip_reward(level)
+
+# ==================== 【转发】庄园系统 → systems/manor_system.gd ====================
+
+# 品种表（kind = "crops" 农场 / "animals" 牧场）
+func get_manor_species_list(kind: String):
+	return manor_system.get_species_list(kind)
+
+# 品种是否已解锁（身份等级驱动）
+func is_manor_species_unlocked(species_id: String):
+	return manor_system.is_species_unlocked(species_id)
+
+# 某品种已解锁的地/圈数量（0~4）
+func get_manor_unlocked_plots(species_id: String):
+	return manor_system.get_unlocked_plot_count(species_id)
+
+# 第N块解锁所需身份等级
+func get_manor_plot_need_identity(species_id: String, plot_index: int):
+	return manor_system.get_plot_need_identity(species_id, plot_index)
+
+# 每品种的地/圈数量（配置驱动，当前为4）
+func get_manor_plots_per_species():
+	return manor_system.get_plots_per_species()
+
+# 某一块的数据 {"level": 品种等级, "land": 土地/血统等级}
+func get_manor_plot(species_id: String, plot_index: int):
+	return manor_system.get_plot(species_id, plot_index)
+
+# 品种等级上限 = 土地/血统等级 × 50
+func get_manor_plot_level_cap(land_level: int):
+	return manor_system.get_plot_level_cap(land_level)
+
+# 单块产量/分钟 = (60+品种等级-1) × (1+土地血统×25%)
+func get_manor_plot_rate(species_id: String, plot_index: int):
+	return manor_system.get_plot_rate(species_id, plot_index)
+
+# 品种总产量/分钟（已解锁地块之和）
+func get_manor_species_rate(species_id: String):
+	return manor_system.get_species_rate(species_id)
+
+# 品种升级铜钱费用 = 5000×当前等级²
+func get_manor_level_up_cost(cur_level: int):
+	return manor_system.get_level_up_cost(cur_level)
+
+# 土地/血统升级图纸费用（前5次20张，之后+5/+10/+15循环）
+func get_manor_land_up_cost(cur_land: int):
+	return manor_system.get_land_up_cost(cur_land)
+
+# 升级某块品种等级（耗铜钱）
+func upgrade_manor_plot_level(species_id: String, plot_index: int):
+	return manor_system.upgrade_plot_level(species_id, plot_index)
+
+# 升级某块土地/血统（耗商铺图纸）
+func upgrade_manor_plot_land(species_id: String, plot_index: int):
+	return manor_system.upgrade_plot_land(species_id, plot_index)
+
+# 仓库产物数量
+func get_manor_goods_count(product: String):
+	return manor_system.get_goods_count(product)
+
+# 在线懒结算（每秒调用）
+func settle_manor():
+	return manor_system.settle()
+
+# 离线结算（登录时调用，须在更新 last_login_time 之前）
+func settle_manor_offline():
+	return manor_system.settle_offline()
+
+# 连升某块品种等级（勾选"等级十连"时调用；逐次结算，失败即停）
+func upgrade_manor_plot_level_batch(species_id: String, plot_index: int, times: int = 10):
+	return manor_system.upgrade_plot_level_batch(species_id, plot_index, times)

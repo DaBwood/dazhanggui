@@ -1,0 +1,221 @@
+{
+  "settings": {
+    "base_rate": 60,
+    "rate_per_level": 1,
+    "land_pct_per_level": 0.25,
+    "level_up_money_base": 5000,
+    "blueprint_flat": 20,
+    "blueprint_flat_count": 5,
+    "blueprint_increments": [
+      5,
+      10,
+      15
+    ],
+    "plots_per_species": 4,
+    "plot_identity_steps": [
+      0,
+      4,
+      8,
+      12
+    ],
+    "max_land_level": 20,
+    "level_per_land": 50,
+    "offline_cap_hours": 24
+  },
+  "crops": [
+    {
+      "id": "white_radish",
+      "name": "白萝卜",
+      "product": "白萝卜",
+      "unlock_identity": 1
+    },
+    {
+      "id": "carrot",
+      "name": "胡萝卜",
+      "product": "胡萝卜",
+      "unlock_identity": 4
+    },
+    {
+      "id": "potato",
+      "name": "土豆",
+      "product": "土豆",
+      "unlock_identity": 7
+    },
+    {
+      "id": "bamboo_shoot",
+      "name": "笋",
+      "product": "笋",
+      "unlock_identity": 10
+    },
+    {
+      "id": "onion",
+      "name": "洋葱",
+      "product": "洋葱",
+      "unlock_identity": 13
+    },
+    {
+      "id": "cabbage",
+      "name": "卷心菜",
+      "product": "卷心菜",
+      "unlock_identity": 16
+    },
+    {
+      "id": "pumpkin",
+      "name": "南瓜",
+      "product": "南瓜",
+      "unlock_identity": 19
+    },
+    {
+      "id": "watermelon",
+      "name": "西瓜",
+      "product": "西瓜",
+      "unlock_identity": 22
+    },
+    {
+      "id": "tomato",
+      "name": "西红柿",
+      "product": "西红柿",
+      "unlock_identity": 25
+    },
+    {
+      "id": "bell_pepper",
+      "name": "灯笼椒",
+      "product": "灯笼椒",
+      "unlock_identity": 28
+    },
+    {
+      "id": "eggplant",
+      "name": "茄子",
+      "product": "茄子",
+      "unlock_identity": 31
+    },
+    {
+      "id": "strawberry",
+      "name": "草莓",
+      "product": "草莓",
+      "unlock_identity": 34
+    },
+    {
+      "id": "tangerine",
+      "name": "橘子",
+      "product": "橘子",
+      "unlock_identity": 37
+    },
+    {
+      "id": "apple",
+      "name": "苹果",
+      "product": "苹果",
+      "unlock_identity": 40
+    },
+    {
+      "id": "pear",
+      "name": "梨",
+      "product": "梨",
+      "unlock_identity": 43
+    },
+    {
+      "id": "mango",
+      "name": "芒果",
+      "product": "芒果",
+      "unlock_identity": 46
+    },
+    {
+      "id": "wax_apple",
+      "name": "莲雾",
+      "product": "莲雾",
+      "unlock_identity": 49
+    },
+    {
+      "id": "flat_peach",
+      "name": "蟠桃",
+      "product": "蟠桃",
+      "unlock_identity": 52
+    },
+    {
+      "id": "banana",
+      "name": "香蕉",
+      "product": "香蕉",
+      "unlock_identity": 55
+    },
+    {
+      "id": "lychee",
+      "name": "荔枝",
+      "product": "荔枝",
+      "unlock_identity": 58
+    }
+  ],
+  "animals": [
+    {
+      "id": "chicken",
+      "name": "鸡",
+      "product": "鸡蛋",
+      "unlock_identity": 2
+    },
+    {
+      "id": "dog",
+      "name": "狗",
+      "product": "狗牙",
+      "unlock_identity": 5
+    },
+    {
+      "id": "pig",
+      "name": "猪",
+      "product": "猪肉",
+      "unlock_identity": 8
+    },
+    {
+      "id": "weasel",
+      "name": "鼬",
+      "product": "鼬尾",
+      "unlock_identity": 11
+    },
+    {
+      "id": "sheep",
+      "name": "羊",
+      "product": "羊毛",
+      "unlock_identity": 14
+    },
+    {
+      "id": "cow",
+      "name": "牛",
+      "product": "牛奶",
+      "unlock_identity": 17
+    },
+    {
+      "id": "donkey",
+      "name": "驴",
+      "product": "马蹄",
+      "unlock_identity": 20
+    },
+    {
+      "id": "deer",
+      "name": "鹿",
+      "product": "鹿角",
+      "unlock_identity": 23
+    },
+    {
+      "id": "cat",
+      "name": "猫",
+      "product": "猫爪",
+      "unlock_identity": 26
+    },
+    {
+      "id": "fox",
+      "name": "狐狸",
+      "product": "狐狸尾",
+      "unlock_identity": 29
+    },
+    {
+      "id": "bear",
+      "name": "熊",
+      "product": "熊掌",
+      "unlock_identity": 32
+    },
+    {
+      "id": "snake",
+      "name": "蛇",
+      "product": "蛇胆",
+      "unlock_identity": 35
+    }
+  ]
+}
