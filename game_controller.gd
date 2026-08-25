@@ -28,7 +28,7 @@ var _current_popup: Control = null
 
 func _ready():
 	#打印场景树
-	#print_tree_pretty()
+	print_scene_tree_to_file()
 	
 	randomize()
 	data = GameData.new() 
@@ -1679,6 +1679,17 @@ func _on_travel():
 	update_bag_list()
 	update_friend_page()
 
+# 【重构新增】只刷新游历页顶部的体力/声望/按钮状态，不重建好感列表（避免定时重建打断滚动）
+func _refresh_travel_header():
+	if not has_node("PageContainer/AdventurePage/TravelView"): return
+	var view = $PageContainer/AdventurePage/TravelView
+	if not view.visible: return
+	var stamina_now = data.get_stamina()   # 懒结算体力恢复
+	view.get_node("TravelInfo").text = "体力：%d/%d  |  声望：%s" % [stamina_now, data.STAMINA_MAX, format_number(data.reputation)]
+	var btn = view.find_child("TravelBtn", true, false)
+	if btn:
+		btn.disabled = stamina_now < 1
+
 # ========== 统一弹窗管理 ==========
 func open_popup(panel: Control):
 	_current_popup = panel
@@ -2406,6 +2417,7 @@ func on_hq_click():
 func on_auto_earn():
 	data.money += data.get_total_auto_income()
 	update_all_ui()
+	_refresh_travel_header()   # 【重构新增】游历页打开期间定时刷新体力显示
 
 #钱庄升级
 func on_hq_upgrade():
@@ -5257,3 +5269,31 @@ func on_exit():
 	@warning_ignore("narrowing_conversion")
 	data.last_logout_time = Time.get_unix_time_from_system()
 	data.save_game()
+
+# 打印当前完整场景树到 txt 文件
+# 输出路径：user://scene_tree.txt（电脑上可用 项目菜单→打开用户数据目录 找到）
+# 递归记录每个节点的：缩进层级、名称、类型、visible 状态
+func print_scene_tree_to_file():
+	var lines = []
+	_collect_node_lines(get_tree().root, 0, lines)
+	var file = FileAccess.open("res://scene_tree.txt", FileAccess.WRITE)
+	if file:
+		file.store_string("\n".join(lines))
+		file.close()
+		# 打印绝对路径，方便直接去找文件
+		print("场景树已导出：", ProjectSettings.globalize_path("user://scene_tree.txt"))
+	else:
+		push_error("场景树导出失败")
+
+# 递归收集单个节点及其所有子节点的信息（供 print_scene_tree_to_file 调用）
+func _collect_node_lines(node: Node, depth: int, lines: Array):
+	# 每深一层加两个空格缩进，同时标出节点类型和可见性
+	var indent = ""
+	for i in range(depth):
+		indent += "  "
+	var visible_txt = ""
+	if node is CanvasItem:
+		visible_txt = "  visible=%s" % str(node.visible)
+	lines.append("%s%s (%s)%s" % [indent, node.name, node.get_class(), visible_txt])
+	for child in node.get_children():
+		_collect_node_lines(child, depth + 1, lines)

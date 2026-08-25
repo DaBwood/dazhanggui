@@ -171,86 +171,13 @@ var charity_click_count: int = 0       # 今日行善次数（决定消耗）
 var charity_last_day: String = ""      # 上次行善日期，跨天重置次数
 
 #==============道具物品=========================
-const ITEM_CONFIG = {
-	"shop_blueprint":  {"name": "商铺图纸", "desc": "用于解锁新商铺"},
-	"hq_blueprint":    {"name": "钱庄图纸", "desc": "用于升级钱庄建筑"},
-	"aptitude_pill":   {"name": "资质丹",   "desc": "提升门客资质"},
-	"experience":      {"name": "阅历",     "desc": "门客升级所需经验"},
-	"abacus":          {"name": "算盘",     "desc": "提升店铺算力效率"},
-	"fengyasong": {"name": "风雅颂", "desc": "门客突破所需"},
-	"exp_box":         {"name": "阅历箱",   "desc": "打开获得99999阅历", "use": {"type": "quantity", "btn": "打开", "title": "打开阅历箱"}},      
-	"ginseng":         {"name": "百年人参", "desc": "指定门客基础赚速+2000", "use": {"type": "ginseng", "btn": "使用", "title": "使用百年人参"}},
-	"wood_comb":      {"name": "木梳",   "desc": "赠送给挚友，友好+1"},
-	"rouge":          {"name": "胭脂",   "desc": "赠送给挚友，才华+1"},
-	"energy_pill":    {"name": "精力丹", "desc": "恢复3点精力"},
-	"zui_xian_niang":  {"name": "醉仙酿", "desc": "李白赋诗升级所需"},
-	"stage_box": {"name": "关卡宝箱", "desc": "通关小关获得的宝箱"},
-	"hour_card":       {"name": "小时卡",   "desc": "使用后获得当前总赚速一小时的铜钱", "use": {"type": "quantity", "btn": "使用", "title": "使用小时卡"}},
-	"beast_fruit":     {"name": "珍兽果",   "desc": "升级珍兽等级"},
-	"aroma_fruit":     {"name": "奇香果",   "desc": "刷新珍兽技能"},
-	"feng_shen_zhi":   {"name": "封神志",   "desc": "兑换封神灵兽"},
-	"shan_hai_shi":    {"name": "山海石",   "desc": "兑换山海异兽"},
-	"hong_huang_huo":  {"name": "鸿荒火",   "desc": "兑换上古凶兽"},
-	"jiu_yuan_shui":   {"name": "九渊之水", "desc": "兑换蛮荒主兽"},
-	"long_zhuo_xi":    {"name": "龙擢星玺", "desc": "兑换星神圣兽"},
-	"xing_wu_po":      {"name": "星武珀石", "desc": "兑换星神圣兽"},
-	"xing_shu_lin":    {"name": "星枢麟角", "desc": "兑换星神圣兽"},
-	"lottery_ticket": {"name": "抽奖券", "desc": "用于闯荡页面的抽奖"},
-	"hero_token":      {"name": "门客帖",   "desc": "用于兑换门客"},
-	"friend_token":    {"name": "挚友帖",   "desc": "用于兑换挚友"},
-	"ginseng_1000":    {"name": "千年人参", "desc": "指定门客基础赚速+20000", "use": {"type": "ginseng", "btn": "使用", "title": "使用千年人参"}},
-	"vitality_pill":   {"name": "活力丹",   "desc": "使用后徒弟槽位活力+5"},
-	"wish_stone":      {"name": "许愿石",   "desc": "用于刷新挚友店铺技能，必定获得20%-30%加成"},
-	"hero_box":        {"name": "门客盒子", "desc": "打开后可从所有门客中选择一个获得", "use": {"type": "hero_box", "btn": "打开"}},
-	# ===== 系列兑换道具 =====
-	"zongjiang_ling":   {"name": "宗匠令",   "desc": "兑换一代宗匠系列门客所需"},
-	"kaishan_ling":     {"name": "开山令",   "desc": "兑换开山鼻祖系列门客所需"},
-	"panzhu_zhuiyu":    {"name": "攀竹缀玉", "desc": "兑换门客【马湘兰】所需"},
-	"zhimeng_zhuiyu":   {"name": "织梦缀玉", "desc": "兑换门客【董小宛】所需"},
-	"yingge_zhuiyu":    {"name": "莺歌缀玉", "desc": "兑换门客【卞玉京】所需"},
-	"luohua_zhuiyu":    {"name": "落花缀玉", "desc": "兑换门客【李香君】所需"},
-	"liuyun_zhuiyu":    {"name": "流云缀玉", "desc": "兑换门客【寇白门】所需"},
-	"xuanhe_qixi":      {"name": "宣和七玺", "desc": "兑换门客【宋徽宗】所需"},
-	"tiankui_lingqi":   {"name": "天魁令旗", "desc": "兑换门客【宋江】所需"},
-	"yuanhun_dou":      {"name": "冤魂斗",   "desc": "兑换门客【活阎王】所需"},
-	"quanxiang_guan":   {"name": "权相之冠", "desc": "兑换门客【蔡京】所需"},
-	"fangtian_huaji":   {"name": "方天画戟", "desc": "兑换门客【吕布】所需"},
-	"taia_jian":        {"name": "泰阿剑",   "desc": "兑换门客【秦始皇】所需"},
-	"hufu_junling":     {"name": "虎符军令", "desc": "兑换门客【孙武】所需"},
-	"suitang_huaben":   {"name": "隋唐话本", "desc": "兑换门客【秦琼尉迟恭】所需"},
-	"bawang_qiang":     {"name": "霸王枪",   "desc": "兑换门客【项羽】所需"},
-	"huanglong_jinduan": {"name": "黄龙锦缎", "desc": "兑换门客【宋太祖】所需"},
-	"tiangong_zanchui": {"name": "天工錾锤", "desc": "兑换门客【石敢当】所需"},
-	"qisheng_mianju":   {"name": "七圣面具", "desc": "兑换门客【百戏圣刀】所需"},
-	"danqing_pan":      {"name": "丹青盘",   "desc": "兑换门客【敦煌匠神】所需"},
-	"cangbao_tu":       {"name": "藏宝图",   "desc": "兑换门客【滚海蛟】所需"},
-	"huojian_qiang":    {"name": "火尖枪",   "desc": "兑换门客【哪吒】所需"},
-	"shoulie_guren":    {"name": "狩猎骨刃", "desc": "兑换门客【敖武】所需"},
-	"chengzu_chiling":  {"name": "成祖敕令", "desc": "兑换门客【郑和】所需"},
-	"wulong_xiuqiu":    {"name": "舞龙绣球", "desc": "兑换门客【龙骧】所需"},
-	"yugu_dao":         {"name": "鱼骨刀",   "desc": "兑换门客【罗海王】所需"},
-	"yuye_jinhua":      {"name": "玉叶金花", "desc": "兑换门客【小柒】所需"},
-	"linglong_hebao":   {"name": "玲珑荷包", "desc": "兑换门客【小八】所需"},
-	"reputation_card":      {"name": "声望卡",     "desc": "使用后声望 +10", "use": {"type": "quantity", "btn": "使用", "title": "使用声望卡"}},
-	"reputation_card_adv":  {"name": "高级声望卡", "desc": "使用后声望 +100", "use": {"type": "quantity", "btn": "使用", "title": "使用高级声望卡"}},
-	"rose_perfume":     {"name": "玫瑰香水", "desc": "与指定挚友吟诗作对（谈心）"},
-	"xia_way":          {"name": "侠义之道", "desc": "后续玩法更新后使用"},
-	"nong_way":         {"name": "农业之道", "desc": "后续玩法更新后使用"},
-	"shi_way":          {"name": "仕途之道", "desc": "后续玩法更新后使用"},
-	"gong_way":         {"name": "工业之道", "desc": "后续玩法更新后使用"},
-	"shang_way":        {"name": "经商之道", "desc": "后续玩法更新后使用"},
-	"recruit_bronze":   {"name": "募工铜牌", "desc": "使用后随机店铺店员+1", "use": {"type": "quantity", "btn": "使用", "title": "使用募工铜牌"}},
-	"recruit_silver":   {"name": "募工银牌", "desc": "使用后随机店铺店员+3", "use": {"type": "quantity", "btn": "使用", "title": "使用募工银牌"}},
-	"recruit_gold":     {"name": "募工金牌", "desc": "使用后随机店铺店员+5", "use": {"type": "quantity", "btn": "使用", "title": "使用募工金牌"}},
-	"huo_qi":      {"name": "火器",   "desc": "使用后随机一名侠门客基础赚速+500", "use": {"type": "quantity", "btn": "使用", "title": "使用火器"}},
-	"ci_qi":       {"name": "瓷器",   "desc": "使用后随机一名商门客基础赚速+500", "use": {"type": "quantity", "btn": "使用", "title": "使用瓷器"}},
-	"qiong_jiang": {"name": "琼浆",   "desc": "使用后随机一名工门客基础赚速+500", "use": {"type": "quantity", "btn": "使用", "title": "使用琼浆"}},
-	"cha_ye":      {"name": "茶叶",   "desc": "使用后随机一名农门客基础赚速+500", "use": {"type": "quantity", "btn": "使用", "title": "使用茶叶"}},
-	"xuan_zhi":    {"name": "宣纸",   "desc": "使用后随机一名士门客基础赚速+500", "use": {"type": "quantity", "btn": "使用", "title": "使用宣纸"}},
-	"random_book": {"name": "随机书籍", "desc": "打开后随机获得一本：仕途/农业/工业/经商/侠义之道", "use": {"type": "quantity", "btn": "打开", "title": "打开随机书籍"}},
-	
+# 【重构】道具表外置到 res://data/items.json，启动时由 _load_items_config() 加载
+# controller 仍通过 data.ITEM_CONFIG 访问，用法完全不变
+var ITEM_CONFIG: Dictionary = {}
 
-}
+#=========道具初始数量===========
+# 【重构】由 _load_items_config() 按 items.json 的 initial 段填充；未列出的道具自动补0
+var items: Dictionary = {}
 
 # ========== 门客帖兑换表 ==========
 const TOKEN_EXCHANGE_HEROES = [
@@ -435,49 +362,7 @@ func _load_json(path: String) -> Dictionary:
 
 
 
-#=========道具初始数量===========
-var items = {
-	"shop_blueprint": 999,
-	"hq_blueprint": 999,
-	"aptitude_pill": 999,
-	"experience": 999999,
-	"abacus": 999,
-	"fengyasong": 999,
-	"exp_box": 999,      
-	"ginseng": 999,
-	"wood_comb":200000,
-	"rouge": 999,
-	"energy_pill":999,
-	"zui_xian_niang": 48600,
-	"hour_card": 0,
-	"beast_fruit": 0,
-	"aroma_fruit": 0,
-	"feng_shen_zhi": 0,
-	"shan_hai_shi": 0,
-	"hong_huang_huo": 0,
-	"jiu_yuan_shui": 0,
-	"long_zhuo_xi": 0,
-	"xing_wu_po": 0,
-	"xing_shu_lin": 0,
-	"lottery_ticket":0,
-	"hero_token": 0,
-	"friend_token": 0,
-	"ginseng_1000": 0,
-	"vitality_pill": 0,
-	"wish_stone": 0,
-	"hero_box": 0,
-	"zongjiang_ling": 100, "kaishan_ling": 0,
-	"panzhu_zhuiyu": 0, "zhimeng_zhuiyu": 0, "yingge_zhuiyu": 0, "luohua_zhuiyu": 0, "liuyun_zhuiyu": 100,
-	"xuanhe_qixi": 0, "tiankui_lingqi": 0, "yuanhun_dou": 0, "quanxiang_guan": 100, "fangtian_huaji": 0,
-	"taia_jian": 0, "hufu_junling":100, "suitang_huaben": 0, "bawang_qiang": 0, "huanglong_jinduan": 100,
-	"tiangong_zanchui": 0, "qisheng_mianju": 0, "danqing_pan": 0, "cangbao_tu": 0, "huojian_qiang": 0,
-	"shoulie_guren": 0, "chengzu_chiling": 0, "wulong_xiuqiu": 0, "yugu_dao": 0,
-	"yuye_jinhua": 0, "linglong_hebao":100,
-	"reputation_card": 0, "reputation_card_adv": 0,"rose_perfume": 0,
-	"xia_way": 0, "nong_way": 0, "shi_way": 0, "gong_way": 0, "shang_way": 0,
-	"recruit_bronze": 0, "recruit_silver": 0, "recruit_gold": 0,
-	"huo_qi": 0, "ci_qi": 0, "qiong_jiang": 0, "cha_ye": 0, "xuan_zhi": 0, "random_book": 0,
-}
+
 
 const SURNAMES = ["赵","钱","孙","李","周","吴","郑","王","冯","陈","褚","卫","蒋","沈","韩","杨","朱","秦","尤","许"]
 const NAME_PARTS = ["富贵","旺财","来福","德财","金宝","元宝","招财","进宝","大发","鸿运","兴隆","昌盛","鼎盛","荣华","锦绣","吉祥","如意","平安","康泰","兴旺"]
@@ -515,15 +400,16 @@ var hq = {
 }
 
 # ========== 【新增】游历体力系统 ==========
-const STAMINA_MAX = 30                 # 体力自动恢复上限（杜康事件可超上限）
-const STAMINA_RECOVER_SECONDS = 1200   # 每20分钟恢复1点体力
+var STAMINA_MAX: int = 30                # 体力自动恢复上限（杜康事件可超上限）
+var STAMINA_RECOVER_SECONDS: int = 1200  # 每20分钟恢复1点体力
 
 var stamina: int = STAMINA_MAX         # 当前体力（游历消耗，1点/次）
 var stamina_time: int = 0              # 上次体力恢复结算时间戳（懒结算用）
 
 # 懒结算体力：每20分钟恢复1点，30只是自动恢复的上限（杜康事件可超上限）
 func _settle_stamina():
-	var now = Time.get_unix_time_from_system()
+
+	var now = int(Time.get_unix_time_from_system())
 	if stamina_time <= 0:
 		stamina_time = now
 		return
@@ -531,8 +417,8 @@ func _settle_stamina():
 	if stamina >= STAMINA_MAX:
 		stamina_time = now
 		return
-	@warning_ignore("narrowing_conversion")
-	var regen = int((now - stamina_time) / STAMINA_RECOVER_SECONDS)
+	@warning_ignore("integer_division")
+	var regen = (now - stamina_time) / STAMINA_RECOVER_SECONDS
 	if regen > 0:
 		stamina = min(STAMINA_MAX, stamina + regen)
 		@warning_ignore("narrowing_conversion")
@@ -544,69 +430,25 @@ func get_stamina() -> int:
 	return stamina
 
 # ========== 【新增】游历系统（XLS表1：地点/物品/事件） ==========
-const TRAVEL_REPUTATION = 20          # 每次游历固定获得声望
-const TRAVEL_LOCATION_CHANCE = 0.5    # 游历到地点概率50%
-const TRAVEL_ITEM_CHANCE = 0.4        # 获得物品概率40%（剩余10%为事件）
+var TRAVEL_REPUTATION: int = 20          # 每次游历固定获得的声望
+var TRAVEL_LOCATION_CHANCE: float = 0.5  # 抽到"地点"的概率
+var TRAVEL_ITEM_CHANCE: float = 0.4      # 抽到"物品"的概率（其余10%为事件）
+# 【重构新增】游历事件数值：原为硬编码，外置便于调节
+var EV_CAI_SHEN_YUANBAO: int = 1000      # 财神到：元宝+N
+var EV_DU_KANG_MIN: int = 1              # 杜康赠酒：体力+MIN~MAX
+var EV_DU_KANG_MAX: int = 3
+var EV_NEW_DISH_INCOME: int = 2000       # 今日新菜：基础赚速+N
 
 # 游历地点表：id -> {name=显示名, friends=该地点可相遇挚友ID列表（含表2挚友）}
-const TRAVEL_LOCATIONS = {
-	"si_miao": {"name": "寺庙", "friends": ["zhuo_gui_shi", "tang_pingguo", "xun_ma_shi", "xiao_qigai", "wan_wan", "jing_an", "ying_chun", "bi_bi_dong", "xiwangmu", "yu_tu", "shi_bo_shi", "wanghou_fuhao"]},
-	"shu_yuan": {"name": "书院", "friends": ["ji_zhou", "mo_li", "shu_xiang_nv", "ma_xianglan_friend", "yuan_xiao_guniang", "jun_zhu", "zhu_sha", "nvwa", "jin_shu", "xiao_wu_friend", "zhi_nv", "xinniang_zhimei"]},
-	"ke_zhan": {"name": "客栈", "friends": ["tushan_honghong", "mu_shu", "qi_shi", "ya_huan", "xiao_shijie", "hua_zhao", "yao_ying", "qiu_ying", "zi_yu", "hua_lang", "hu_yao_zhanggui"]},
-	"chuan_wu": {"name": "船坞", "friends": ["xun_ying_shaonv", "ji_ye", "yu_ji", "cao_yuan_nvhai", "li_xiangjun_friend", "meng_qier", "xiyu_nvzi", "hui_yin", "hua_mulan_friend", "xihu_chuangniang", "xiao_mujiang"]},
-	"chou_duan_zhuang": {"name": "绸缎庄", "friends": ["xiu_niang", "dong_xiaowan_friend", "xinniang", "li_shishi", "zhen_xian_nv", "ma_ma", "sha_lan", "xing_lan", "qi_ling", "yu_ge", "xiao_lu_nv"]},
-	"biao_ju": {"name": "镖局", "friends": ["xiao_shimei", "ning_yin", "mai_san_nv", "cu_ju_nv", "qian_ren_xue", "kou_baimen_friend", "hong_ying", "rong", "jiu_yue", "xiao_ning", "he_xi", "luo", "huang_ye_linglan", "zhi_nv", "wu_nv_wu"]},
-	"shan_zhai": {"name": "山寨", "friends": ["miao_jiang_shengnv", "yi_shi_new", "dao_gu", "lie_ren", "yu_lu", "zhao_yang", "yin_niang", "wang_zhaojun_friend", "nvba", "tushanshi", "cai_shi_guan"]},
-	"ya_men": {"name": "衙门", "friends": ["ling_ye_mao_nv", "yi_shi", "bu_kuai", "jiang_men_nvzi", "tan_you", "yun_zhi", "shen_meizhuang", "wu_xie", "hua_wuque", "change", "jingwei", "gu_guo_gongzhu"]},
-	"cha_guan": {"name": "茶馆", "friends": ["nan_gong_wan", "qing_ning", "hua_yi_shi", "xi_zi", "si_tang", "cai_yao_nv", "bian_yujing_friend", "dou_fu_nv", "qi_guang", "zhou_meili", "ni_huang_junzhu", "shou_gong_shaonv", "xiao_hudie", "niu_lang"]},
-	"miao_yin_fang": {"name": "妙音坊", "friends": ["jian_wuzhe", "shao_jiangjun", "lang_zi", "wu_nv", "pi_pa_nv", "mi_tan", "hong_niangzi"]},
-}
+# 【重构】三张表外置到 res://data/travel.json，启动时由 _load_travel_config() 加载
+var TRAVEL_LOCATIONS: Dictionary = {}
 
 # 表2：好感解锁挚友（未拥有时游历相遇好感+1，达到要求即 unlock_friend 获得）
-const TRAVEL_AFFECTION = {
-	"hong_niangzi": 30,
-	"mi_tan": 25,
-	"lang_zi": 25,
-	"shao_jiangjun": 25,
-	"jun_zhu": 105,
-	"yuan_xiao_guniang": 50,
-	"xiao_qigai": 15,
-	"pi_pa_nv": 15,
-	"dou_fu_nv": 30,
-	"xi_zi": 10,
-	"cu_ju_nv": 30,
-	"wu_nv": 15,
-	"lie_ren": 35,
-	"xiao_shijie": 25,
-	"jian_wuzhe": 10,
-	"mai_san_nv": 4,
-	"zhen_xian_nv": 3,
-}
+var TRAVEL_AFFECTION: Dictionary = {}
 
 # 游历物品池：20项等概率，{item=道具ID, count=抽中后给N个}
 # 注意：表格里的"许愿果"映射到现有许愿石 wish_stone；珍兽果/奇香果是独立货币，结算时加变量不加items
-const TRAVEL_ITEM_POOL = [
-	{"item": "huo_qi", "count": 1},
-	{"item": "ci_qi", "count": 1},
-	{"item": "qiong_jiang", "count": 1},
-	{"item": "cha_ye", "count": 1},
-	{"item": "xuan_zhi", "count": 1},
-	{"item": "recruit_bronze", "count": 1},
-	{"item": "vitality_pill", "count": 1},
-	{"item": "energy_pill", "count": 1},
-	{"item": "random_book", "count": 20},
-	{"item": "fengyasong", "count": 1},
-	{"item": "wood_comb", "count": 1},
-	{"item": "rouge", "count": 1},
-	{"item": "aptitude_pill", "count": 1},
-	{"item": "abacus", "count": 1},
-	{"item": "recruit_silver", "count": 1},
-	{"item": "recruit_gold", "count": 1},
-	{"item": "aroma_fruit", "count": 1},
-	{"item": "wish_stone", "count": 1},
-	{"item": "beast_fruit", "count": 1},
-	{"item": "beast_fruit", "count": 20},
-]
+var TRAVEL_ITEM_POOL: Array = []
 
 # 未拥有表2挚友的好感进度（fid -> 好感值），达标获得后清除
 var friend_affection: Dictionary = {}
@@ -681,8 +523,8 @@ func _do_travel_event() -> Dictionary:
 	var event_id = events[randi() % events.size()]
 	match event_id:
 		"cai_shen":
-			yuanbao += 1000
-			return {"ok": true, "type": "event", "msg": "遭遇【财神到】！元宝+1000，声望+%d" % TRAVEL_REPUTATION}
+			yuanbao += EV_CAI_SHEN_YUANBAO   # 【重构】数值走变量（travel.json可调）
+			return {"ok": true, "type": "event", "msg": "遭遇【财神到】！元宝+%d，声望+%d" % [EV_CAI_SHEN_YUANBAO, TRAVEL_REPUTATION]}
 		"yue_lao":
 			yuelao_count += 1
 			return {"ok": true, "type": "event", "msg": "遭遇【月老】！获得1层祝福：下次谈心（能领养徒弟时）将与友好最高的挚友谈心（当前累计%d层），声望+%d" % [yuelao_count, TRAVEL_REPUTATION]}
@@ -690,13 +532,13 @@ func _do_travel_event() -> Dictionary:
 			guanyin_count += 1
 			return {"ok": true, "type": "event", "msg": "遭遇【观音】！获得1层祝福：下次谈心（能领养徒弟时）必为双胞胎（当前累计%d层），声望+%d" % [guanyin_count, TRAVEL_REPUTATION]}
 		"du_kang":
-			# 杜康赠酒：体力+1~3，不受30点自动恢复上限限制
+			# 杜康赠酒：体力+MIN~MAX，不受自动恢复上限限制
 			_settle_stamina()
-			var gain = randi_range(1, 3)
+			var gain = randi_range(EV_DU_KANG_MIN, EV_DU_KANG_MAX)   # 【重构】数值走变量
 			stamina += gain
 			return {"ok": true, "type": "event", "msg": "遭遇【杜康】！共饮美酒，体力+%d（当前%d点），声望+%d" % [gain, stamina, TRAVEL_REPUTATION]}
 		"new_dish":
-			# 今日新菜：当前总赚速最高的已拥有门客基础赚速+2000
+			# 今日新菜：当前总赚速最高的已拥有门客基础赚速+N
 			var best_id = ""
 			var best_income = -1
 			for hid in heroes.keys():
@@ -706,8 +548,9 @@ func _do_travel_event() -> Dictionary:
 					best_id = hid
 			if best_id == "":
 				return {"ok": true, "type": "event", "msg": "遭遇【今日新菜】，但还没有门客可以享用，声望+%d" % TRAVEL_REPUTATION}
-			heroes[best_id].base_income += 2000
-			return {"ok": true, "type": "event", "msg": "遭遇【今日新菜】！【%s】大快朵颐，基础赚速+2000，声望+%d" % [heroes[best_id].name, TRAVEL_REPUTATION]}
+			heroes[best_id].base_income += EV_NEW_DISH_INCOME   # 【重构】数值走变量
+			return {"ok": true, "type": "event", "msg": "遭遇【今日新菜】！【%s】大快朵颐，基础赚速+%d，声望+%d" % [heroes[best_id].name, EV_NEW_DISH_INCOME, TRAVEL_REPUTATION]}
+	# 安全兜底：match 五个分支均已return，此行理论上不可达
 	return {"ok": false, "msg": "未知事件"}
 
 # 是否存在已解锁的空徒弟槽位（月老/观音祝福生效的前提）
@@ -754,6 +597,41 @@ func _load_all_configs():
 	_vip_rewards = _load_json("res://data/vip_rewards.json")
 	_shop_configs = _load_json("res://data/shops.json")
 	_beast_configs = _load_json(BEAST_CONFIG_PATH)
+	_load_items_config()   # 【重构新增】道具表
+	_load_travel_config()  # 【重构新增】游历配置
+
+# 【重构新增】加载 res://data/items.json：道具定义 + 新档初始数量（未列出的道具自动补0）
+func _load_items_config():
+	var d = _load_json("res://data/items.json")
+	ITEM_CONFIG = d.get("config", {})
+	items.clear()
+	var init: Dictionary = d.get("initial", {})
+	for item_id in ITEM_CONFIG.keys():
+		# JSON读出的数字全是float，统一转int，避免计数和"%d"显示出错
+		items[item_id] = int(init.get(item_id, 0))
+
+# 【重构新增】加载 res://data/travel.json：settings数值 + 地点表 + 表2好感表 + 物品池
+func _load_travel_config():
+	var d = _load_json("res://data/travel.json")
+	var s: Dictionary = d.get("settings", {})
+	# settings缺项时保留代码里的默认值兜底
+	STAMINA_MAX = int(s.get("stamina_max", STAMINA_MAX))
+	STAMINA_RECOVER_SECONDS = int(s.get("stamina_recover_seconds", STAMINA_RECOVER_SECONDS))
+	TRAVEL_REPUTATION = int(s.get("reputation_per_travel", TRAVEL_REPUTATION))
+	TRAVEL_LOCATION_CHANCE = float(s.get("location_chance", TRAVEL_LOCATION_CHANCE))
+	TRAVEL_ITEM_CHANCE = float(s.get("item_chance", TRAVEL_ITEM_CHANCE))
+	EV_CAI_SHEN_YUANBAO = int(s.get("cai_shen_yuanbao", EV_CAI_SHEN_YUANBAO))
+	EV_DU_KANG_MIN = int(s.get("du_kang_stamina_min", EV_DU_KANG_MIN))
+	EV_DU_KANG_MAX = int(s.get("du_kang_stamina_max", EV_DU_KANG_MAX))
+	EV_NEW_DISH_INCOME = int(s.get("new_dish_income", EV_NEW_DISH_INCOME))
+	TRAVEL_LOCATIONS = d.get("locations", {})
+	TRAVEL_AFFECTION = d.get("affection", {})
+	TRAVEL_ITEM_POOL = d.get("item_pool", [])
+	# JSON数字全是float，好感阈值和物品数量统一转int
+	for fid in TRAVEL_AFFECTION.keys():
+		TRAVEL_AFFECTION[fid] = int(TRAVEL_AFFECTION[fid])
+	for entry in TRAVEL_ITEM_POOL:
+		entry["count"] = int(entry["count"])
 
 # 获取门客配置（只读模板）
 func get_hero_config(hero_id: String) -> Dictionary:

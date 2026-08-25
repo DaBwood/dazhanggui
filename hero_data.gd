@@ -1,13 +1,6 @@
 class_name HeroData
 extends RefCounted
 
-# 门客配置统一走 GameData，这里只保留计算逻辑
-@warning_ignore("unused_parameter")
-static func get_hero_config(hero_id: String) -> Dictionary:
-	# 由于 HeroData 是 RefCounted 且 static，无法直接访问 GameData 实例
-	# 所以让调用方传配置，或者从 GameData 单例取
-	# 推荐：让调用方传 hero 字典，计算函数保持不变
-	return {}
 
 #门客总资质
 static func get_total_aptitude(hero: Dictionary) -> int:

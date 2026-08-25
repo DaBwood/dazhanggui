@@ -1,140 +1,92 @@
- ┖╴control
-	┠╴Background
-	┠╴TopBar
-	┃  ┠╴Label
-	┃  ┖╴ItemLabel
-	┠╴PageContainer
-	┃  ┠╴ShopPage
-	┃  ┃  ┠╴HQEntryBtn
-	┃  ┃  ┖╴ShopScroll
-	┃  ┃     ┠╴ShopList
-	┃  ┃     ┠╴@TextureRect@2
-	┃  ┃     ┠╴@TextureRect@3
-	┃  ┃     ┠╴_h_scroll
-	┃  ┃     ┠╴_v_scroll
-	┃  ┃     ┖╴_focus
-	┃  ┠╴HeroPage
-	┃  ┃  ┖╴HeroScroll
-	┃  ┃     ┠╴HeroList
-	┃  ┃     ┠╴@TextureRect@4
-	┃  ┃     ┠╴@TextureRect@5
-	┃  ┃     ┠╴_h_scroll
-	┃  ┃     ┠╴_v_scroll
-	┃  ┃     ┖╴_focus
-	┃  ┠╴BagPage
-	┃  ┠╴MansionPage
-	┃  ┠╴StagePage
-	┃  ┠╴BeastPage
-	┃  ┖╴AdventurePage
-	┠╴BottomNav
-	┃  ┠╴NavMansionBtn
-	┃  ┠╴NavShopBtn
-	┃  ┠╴NavHeroBtn
-	┃  ┠╴NavStageBtn
-	┃  ┖╴NavBagBtn
-	┠╴Overlay
-	┠╴RechargePage
-	┃  ┖╴RechargeContainer
-	┃     ┠╴TabBar
-	┃     ┃  ┠╴TapYuanbao
-	┃     ┃  ┠╴TapDaily
-	┃     ┃  ┖╴TapSpecial
-	┃     ┠╴ContentContainer
-	┃     ┃  ┠╴YuanbaiContainer
-	┃     ┃  ┃  ┖╴RechargeGrid
-	┃     ┃  ┠╴DailyGiftContainer
-	┃     ┃  ┖╴SpecialPackContainer
-	┃     ┖╴CloseBtn
-	┠╴VIPPanel
-	┃  ┖╴VBoxContainer
-	┃     ┠╴Title
-	┃     ┠╴VIPLevel
-	┃     ┠╴VIPExpInfo
-	┃     ┠╴VIPProgress
-	┃     ┠╴HSeparator
-	┃     ┠╴VIPList
-	┃     ┖╴CloseBtn
-	┠╴HQPanel
-	┃  ┠╴VBoxContainer
-	┃  ┃  ┠╴HQName
-	┃  ┃  ┠╴HQInfo
-	┃  ┃  ┖╴HBoxContainer
-	┃  ┃     ┠╴HQClickBtn
-	┃  ┃     ┖╴HQUpgradeBtn
-	┃  ┖╴CloseBtn
-	┠╴ShopPanel
-	┃  ┠╴VBoxContainer
-	┃  ┃  ┠╴ShopName
-	┃  ┃  ┠╴ShopInfo
-	┃  ┃  ┠╴HBoxContainer
-	┃  ┃  ┃  ┠╴ShopUpgradeBtn
-	┃  ┃  ┃  ┠╴ShopHireBtn
-	┃  ┃  ┃  ┖╴BatchHireCheck
-	┃  ┃  ┖╴AssignContainer
-	┃  ┃     ┠╴AssignSlot_0
-	┃  ┃     ┃  ┠╴AssignLabel
-	┃  ┃     ┃  ┖╴AssignBtn
-	┃  ┃     ┠╴AssignSlot_1
-	┃  ┃     ┃  ┠╴AssignLabel
-	┃  ┃     ┃  ┖╴AssignBtn
-	┃  ┃     ┠╴AssignSlot_2
-	┃  ┃     ┃  ┠╴AssignLabel
-	┃  ┃     ┃  ┖╴AssignBtn
-	┃  ┃     ┠╴AssignSlot_3
-	┃  ┃     ┃  ┠╴AssignLabel
-	┃  ┃     ┃  ┖╴AssignBtn
-	┃  ┃     ┖╴AssignSlot_4
-	┃  ┃        ┠╴AssignLabel
-	┃  ┃        ┖╴AssignBtn
-	┃  ┖╴ShopCloseBtn
-	┠╴HeroPanel
-	┃  ┠╴HeroName
-	┃  ┠╴HeroIncome
-	┃  ┠╴HeroCloseBtn
-	┃  ┠╴ScrollContainer
-	┃  ┃  ┠╴SkillList
-	┃  ┃  ┠╴@TextureRect@6
-	┃  ┃  ┠╴@TextureRect@7
-	┃  ┃  ┠╴_h_scroll
-	┃  ┃  ┠╴_v_scroll
-	┃  ┃  ┖╴_focus
-	┃  ┖╴LevelUpBox
-	┃     ┠╴LevelUpInfo
-	┃     ┖╴LevelUpBtnBox
-	┃        ┠╴LevelUpBtn
-	┃        ┖╴BatchCheck
-	┠╴FriendPanel
-	┃  ┠╴FriendListView
-	┃  ┃  ┖╴ScrollContainer
-	┃  ┃     ┠╴VBoxContainer
-	┃  ┃     ┠╴@TextureRect@8
-	┃  ┃     ┠╴@TextureRect@9
-	┃  ┃     ┠╴_h_scroll
-	┃  ┃     ┠╴_v_scroll
-	┃  ┃     ┖╴_focus
-	┃  ┠╴FriendDetailView
-	┃  ┃  ┠╴FriendName
-	┃  ┃  ┠╴FriendAttr
-	┃  ┃  ┠╴ShopSkills
-	┃  ┃  ┠╴FriendBond
-	┃  ┃  ┠╴BoundHeroes
-	┃  ┃  ┠╴HBoxContainer
-	┃  ┃  ┃  ┖╴GiftBtn
-	┃  ┃  ┖╴FriendSkillList
-	┃  ┃     ┠╴FixedSkillBox
-	┃  ┃     ┃  ┠╴FixedSkillName
-	┃  ┃     ┃  ┠╴FixedSkillInfo
-	┃  ┃     ┃  ┠╴FixedSkillBtn
-	┃  ┃     ┃  ┖╴FixedSkillChek
-	┃  ┃     ┖╴PercentSkillBox
-	┃  ┃        ┠╴PercentSkillName
-	┃  ┃        ┠╴PercentSkillInfo
-	┃  ┃        ┠╴PercentSkillBtn
-	┃  ┃        ┖╴PercentSkillChek
-	┃  ┠╴ChatOpBox
-	┃  ┃  ┠╴Bg
-	┃  ┃  ┖╴InnerBox
-	┃  ┃     ┠╴ChatBtn
-	┃  ┃     ┖╴BatchChatCheck
-	┃  ┖╴CloseBtn
-	┖╴Timer
+root (Window)
+  control (Control)  visible=true
+    Background (ColorRect)  visible=true
+    TopBar (HBoxContainer)  visible=true
+      Label (Label)  visible=true
+      ItemLabel (Label)  visible=true
+    PageContainer (Control)  visible=true
+      ShopPage (Control)  visible=true
+        HQEntryBtn (Button)  visible=true
+        ShopScroll (ScrollContainer)  visible=true
+          ShopList (GridContainer)  visible=true
+      HeroPage (Control)  visible=true
+        HeroScroll (ScrollContainer)  visible=true
+          HeroList (GridContainer)  visible=true
+      BagPage (Control)  visible=true
+      MansionPage (Control)  visible=true
+      StagePage (VBoxContainer)  visible=true
+      BeastPage (Control)  visible=true
+      AdventurePage (Control)  visible=true
+    BottomNav (HBoxContainer)  visible=true
+      NavMansionBtn (Button)  visible=true
+      NavShopBtn (Button)  visible=true
+      NavHeroBtn (Button)  visible=true
+      NavAdventureBtn (Button)  visible=true
+      NavBagBtn (Button)  visible=true
+    Overlay (ColorRect)  visible=false
+    RechargePage (Panel)  visible=false
+      RechargeContainer (VBoxContainer)  visible=true
+        TabBar (HBoxContainer)  visible=true
+          TapYuanbao (Button)  visible=true
+          TapDaily (Button)  visible=true
+          TapSpecial (Button)  visible=true
+        ContentContainer (VBoxContainer)  visible=true
+          YuanbaiContainer (VBoxContainer)  visible=true
+            RechargeGrid (GridContainer)  visible=true
+          DailyGiftContainer (VBoxContainer)  visible=false
+          SpecialPackContainer (VBoxContainer)  visible=true
+        CloseBtn (Button)  visible=true
+    VIPPanel (Panel)  visible=false
+      VBoxContainer (VBoxContainer)  visible=true
+        Title (Label)  visible=true
+        VIPLevel (Label)  visible=true
+        VIPExpInfo (Label)  visible=true
+        VIPProgress (ProgressBar)  visible=true
+        HSeparator (HSeparator)  visible=true
+        VIPList (VBoxContainer)  visible=true
+        CloseBtn (Button)  visible=true
+    HQPanel (Panel)  visible=false
+      VBoxContainer (VBoxContainer)  visible=true
+        HQName (Label)  visible=true
+        HQInfo (Label)  visible=true
+        HBoxContainer (HBoxContainer)  visible=true
+          HQClickBtn (Button)  visible=true
+          HQUpgradeBtn (Button)  visible=true
+      CloseBtn (Button)  visible=true
+    ShopPanel (Panel)  visible=false
+      VBoxContainer (VBoxContainer)  visible=true
+        ShopName (Label)  visible=true
+        ShopInfo (Label)  visible=true
+        HBoxContainer (HBoxContainer)  visible=true
+          ShopUpgradeBtn (Button)  visible=true
+          ShopHireBtn (Button)  visible=true
+          BatchHireCheck (CheckBox)  visible=true
+        AssignContainer (VBoxContainer)  visible=true
+          AssignSlot_0 (HBoxContainer)  visible=true
+            AssignLabel (Label)  visible=true
+            AssignBtn (Button)  visible=true
+          AssignSlot_1 (HBoxContainer)  visible=true
+            AssignLabel (Label)  visible=true
+            AssignBtn (Button)  visible=true
+          AssignSlot_2 (HBoxContainer)  visible=true
+            AssignLabel (Label)  visible=true
+            AssignBtn (Button)  visible=true
+          AssignSlot_3 (HBoxContainer)  visible=true
+            AssignLabel (Label)  visible=true
+            AssignBtn (Button)  visible=true
+          AssignSlot_4 (HBoxContainer)  visible=true
+            AssignLabel (Label)  visible=true
+            AssignBtn (Button)  visible=true
+      ShopCloseBtn (Button)  visible=true
+    HeroPanel (Panel)  visible=false
+      HeroName (Label)  visible=true
+      HeroIncome (Label)  visible=true
+      HeroCloseBtn (Button)  visible=true
+      ScrollContainer (ScrollContainer)  visible=true
+        SkillList (VBoxContainer)  visible=true
+      LevelUpBox (HBoxContainer)  visible=true
+        LevelUpInfo (Label)  visible=true
+        LevelUpBtnBox (VBoxContainer)  visible=true
+          LevelUpBtn (Button)  visible=true
+          BatchCheck (CheckBox)  visible=true
+    Timer (Timer)
