@@ -53,6 +53,10 @@ func generate_mansion_list():
 		{"name": "徒弟", "func": "on_apprentice"},   # 【新增】
 	]
 	
+	# 挚友目标：全部达成后入口不再显示
+	if not data.all_friend_goals_done():
+		modules.append({"name": "挚友目标", "func": "on_friend_goals"})
+	
 	for m in modules:
 		var cell = PanelContainer.new()
 		# 【改】允许 cell 扩展填满
@@ -79,23 +83,22 @@ func generate_mansion_list():
 		vbox.add_child(btn)
 		
 		grid.add_child(cell)
-	# 挚友目标：全部达成后入口不再显示
-	if not data.all_friend_goals_done():
-		modules.append({"name": "挚友目标", "func": "on_friend_goals"})
+	
+
 
 # 显示挚友目标弹窗：列出每个挚友的解锁目标与当前进度
 func show_friend_goals_popup():
-	var popup = c._create_base_popup("挚友目标", 560)
-	var vbox = popup.get_node("panel") # 若你的基础弹窗容器节点名不同，改成实际容器节点名
+	# 第二个参数是 Vector2 尺寸；不传位置则自动按视口居中
+	var panel = c._create_base_popup("挚友目标", Vector2(520, 380))
+	var vbox = panel.get_child(0)   # 基础弹窗的内容容器就是面板的第一个子节点
 
-	for goal in data._goal_configs:
-		var fid = goal.get("friend_id", "")
-		var need = int(goal.get("count", 0))
+	# 目标列表走中枢转发器，字段名与 goals.json 一致：friend / stat / need / desc
+	for goal in data.get_friend_goal_list():
+		var fid = goal.get("friend", "")
+		var need = int(goal.get("need", 1))
 		var cur = data.get_friend_goal_stat(goal.get("stat", ""))
-		var done = data.is_goal_done(fid)
-		var fname = fid
-		if data._friend_configs.has(fid):
-			fname = data._friend_configs[fid].get("name", fid)
+		var done = data.is_friend_goal_done(goal)
+		var fname = data.get_goal_friend_name(fid)
 
 		var label = Label.new()
 		label.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
@@ -105,7 +108,9 @@ func show_friend_goals_popup():
 			label.text = "⬜ %s：%s（%d/%d）" % [fname, goal.get("desc", "目标"), min(cur, need), need]
 		vbox.add_child(label)
 
-	c._add_ok_button(popup, "关闭")
+	# 关闭按钮：回调里释放整个弹窗
+	c._add_ok_button(vbox, func(): panel.queue_free(), "关闭")
+	c.add_child(panel)
 
 # 进府邸时重建列表（刷新挚友目标进度；原本无动态数据为 pass）
 func update_mansion_list():

@@ -1237,8 +1237,9 @@ func is_friend_goal_done(goal: Dictionary):
 func get_friend_goal_progress(goal: Dictionary):
 	return goal_system.get_stat(goal.get("stat", ""))
 
-# 目标挚友显示名
-func get_friend_goal_name(friend_id: String):
+
+# 挚友显示名（查 friends.json，兜底返回 id）
+func get_goal_friend_name(friend_id: String) -> String:
 	return goal_system.get_friend_name(friend_id)
 
 # 全部目标是否达成（府邸目标区隐藏依据）
@@ -1248,3 +1249,7 @@ func all_friend_goals_done():
 # 检查并自动解锁已达成挚友，返回新解锁名字列表（供弹窗）
 func check_friend_goals():
 	return goal_system.check_goals()
+
+# 某目标统计项当前值（首充特判在系统内处理）
+func get_friend_goal_stat(stat: String) -> int:
+	return goal_system.get_stat(stat)

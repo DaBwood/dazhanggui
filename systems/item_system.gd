@@ -102,6 +102,12 @@ func use_item(item_id: String, count: int) -> Dictionary:
 			for bid in book_gains.keys():
 				book_parts.append("【%s】×%d" % [g.ITEM_CONFIG[bid].name, book_gains[bid]])
 			return {"ok": true, "msg": "获得：" + "、".join(book_parts)}
+		"stamina_pill":
+			# 体力丹：每颗恢复1点游历体力，允许超过上限；先懒结算恢复量再加，避免互相覆盖
+			g.items.stamina_pill -= count
+			g.get_stamina()   # 懒结算体力恢复（超过上限时不会截断）
+			g.stamina += count
+			return {"ok": true, "msg": "游历体力 +%d" % count}
 	return {"ok": false, "msg": "该道具不可使用"}
 
 # 门客帖兑换（门客/挚友统一消耗 hero_token）
