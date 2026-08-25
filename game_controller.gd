@@ -311,7 +311,37 @@ func on_auto_earn():
 	var unlocked = data.check_friend_goals()
 	for fname in unlocked:
 		_show_stage_hint("达成挚友目标，解锁挚友【%s】！" % fname, 4.0)
+		# 【新增】一键贸易节拍：勾选期间每秒自动贸易一次；挂在本函数故离开关卡页也持续跑
+	if data.stage_auto_trade:
+		_on_stage_auto_trade_tick(data.stage_auto_trade_tick())
 	update_all_ui()
+
+# 【新增】一键贸易节拍结果处理：
+# 途中节点提示（通关/Boss出现/谈判成功）只在玩家位于关卡页时弹出，不在则静默；
+# 停止事件不立即弹——原因已写入 data.stage_auto_stop_reason，等玩家点进关卡页时由 update_stage_page 消费弹出
+func _on_stage_auto_trade_tick(result: Dictionary):
+	var event = result.get("event", "none")
+	match event:
+		"next_sub":
+			# 通关小关发宝箱，同步背包显示；提示仅关卡页可见时弹（文案与手动贸易一致）
+			update_bag_list()
+			if current_page == "stage":
+				_show_stage_hint("通关！宝箱×1  阅历+%d" % result.get("exp_reward", 0))
+		"boss_ready":
+			if current_page == "stage":
+				_show_stage_hint("贸易完成，Boss 已出现！")
+		"boss_win":
+			# 进新章后刷新入口按钮（与手动谈判一致）
+			update_entry_buttons()
+			if current_page == "stage":
+				_show_stage_hint("谈判成功！声望 +10，抽奖券 +1")
+		"stop_money", "stop_power":
+			# 玩家正好在关卡页时刷新页面，让 update_stage_page 立刻消费停止原因并弹出
+			if current_page == "stage":
+				update_stage_page()
+	# 有实质进展且玩家正在关卡页时，刷新关卡页显示（标题/进度/按钮状态）
+	if event != "none" and current_page == "stage":
+		update_stage_page()
 
 func _show_quantity_selector(item_id: String, title_text: String, on_confirm: Callable):
 	_close_quantity_selector()

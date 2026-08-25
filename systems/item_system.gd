@@ -108,6 +108,37 @@ func use_item(item_id: String, count: int) -> Dictionary:
 			g.get_stamina()   # 懒结算体力恢复（超过上限时不会截断）
 			g.stamina += count
 			return {"ok": true, "msg": "游历体力 +%d" % count}
+		"stage_box":
+			# 【新增】关卡宝箱：每个宝箱按 stage_box.json 概率表独立随机一次，奖励汇总后返回
+			if g.STAGE_BOX_POOL.is_empty(): return {"ok": false, "msg": "宝箱配置为空"}
+			g.items.stage_box -= count
+			# 先算总权重（配置允许概率和不为1，按权重占比roll）
+			var total_weight = 0.0
+			for entry in g.STAGE_BOX_POOL:
+				total_weight += float(entry.get("chance", 0))
+			if total_weight <= 0.0: return {"ok": false, "msg": "宝箱配置为空"}
+			var gains = {}   # 汇总：item_id -> 总数量
+			for i in range(count):
+				var roll = randf() * total_weight
+				var acc = 0.0
+				for entry in g.STAGE_BOX_POOL:
+					acc += float(entry.get("chance", 0))
+					if roll < acc:
+						var rid = entry.item
+						var rcount = int(entry.get("count", 1))
+						# 珍兽果/奇香果是独立货币（与游历一致），其余进背包
+						match rid:
+							"beast_fruit": g.beast_fruit += rcount
+							"aroma_fruit": g.aroma_fruit += rcount
+							_: g.items[rid] = g.items.get(rid, 0) + rcount
+						gains[rid] = gains.get(rid, 0) + rcount
+						break
+			# 汇总文本（飘字兜底用）；gains 明细供 UI 弹窗展示
+			var parts = []
+			for rid in gains.keys():
+				var rname = g.ITEM_CONFIG.get(rid, {}).get("name", rid)
+				parts.append("【%s】×%d" % [rname, gains[rid]])
+			return {"ok": true, "msg": "获得：" + "、".join(parts), "gains": gains}
 	return {"ok": false, "msg": "该道具不可使用"}
 
 # 门客帖兑换（门客/挚友统一消耗 hero_token）

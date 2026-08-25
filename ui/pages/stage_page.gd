@@ -56,11 +56,27 @@ func generate_stage_page():
 	boss_info.add_theme_color_override("font_color", Color("#ff8888"))
 	vbox.add_child(boss_info)
 	
-	# 贸易按钮
+	# 【改】贸易按钮行：贸易按钮 + 「一键贸易」勾选框同行居中（原贸易按钮直接挂 vbox）
+	var trade_row = HBoxContainer.new()
+	trade_row.name = "TradeRow"
+	trade_row.alignment = BoxContainer.ALIGNMENT_CENTER
+	trade_row.add_theme_constant_override("separation", 12)
+	vbox.add_child(trade_row)
+	
+	# 贸易按钮（改挂到 trade_row）
 	var trade_btn = Button.new()
 	trade_btn.name = "TradeBtn"
 	trade_btn.custom_minimum_size = Vector2(240, 50)
-	vbox.add_child(trade_btn)
+	trade_row.add_child(trade_btn)
+	
+	# 【新增】一键贸易勾选框：勾选后每秒自动贸易（离开本页也继续），铜钱/战力不足自动停止
+	# 状态存数据层 data.stage_auto_trade（节点重建后从这里恢复勾选；不进存档，重开游戏默认关）
+	var auto_check = CheckBox.new()
+	auto_check.name = "StageAutoCheck"
+	auto_check.text = "一键贸易"
+	auto_check.button_pressed = data.stage_auto_trade
+	auto_check.toggled.connect(_on_stage_auto_toggled)
+	trade_row.add_child(auto_check)
 	
 	# Boss谈判按钮
 	var boss_btn = Button.new()
@@ -79,10 +95,20 @@ func update_stage_page():
 	if not c.has_node("PageContainer/StagePage/StageVBox"): return
 	var vbox = c.get_node("PageContainer/StagePage/StageVBox")
 	
+	# 【新增】一键贸易停止原因：进入/刷新本页时消费并弹出（停止当下不弹，点进关卡页才弹）
+	if data.stage_auto_stop_reason != "":
+		c._show_stage_hint("一键贸易已停止：%s" % data.stage_auto_stop_reason, 4.0)
+		data.stage_auto_stop_reason = ""
+	
+	# 【新增】勾选框状态与数据层同步（自动停止后取消勾选；set_pressed_no_signal 避免触发 toggled 回写）
+	var auto_check = vbox.find_child("StageAutoCheck", true, false)
+	if auto_check:
+		auto_check.set_pressed_no_signal(data.stage_auto_trade)
+	
 	var title = vbox.get_node("StageTitle")
 	var info = vbox.get_node("StageInfo")
 	var boss_info = vbox.get_node("BossInfo")
-	var trade_btn = vbox.get_node("TradeBtn")
+	var trade_btn = vbox.get_node("TradeRow/TradeBtn")
 	var boss_btn = vbox.get_node("BossBtn")
 	
 	var main = data.stage_main
@@ -133,7 +159,7 @@ func update_stage_page():
 func on_stage_trade():
 	var result = data.do_stage_trade()
 	if not result.ok:
-		c.flash_red("PageContainer/StagePage/StageVBox/TradeBtn")
+		c.flash_red("PageContainer/StagePage/StageVBox/TradeRow/TradeBtn")
 		return
 	
 	update_stage_page()
@@ -163,3 +189,7 @@ func on_stage_boss():
 	c.update_all_ui()
 	c.update_bag_list()
 	c.update_entry_buttons()
+
+# 【新增】一键贸易勾选切换：状态写入数据层；节拍由 game_controller.on_auto_earn 每秒驱动，离开本页也继续跑
+func _on_stage_auto_toggled(pressed: bool):
+	data.stage_auto_trade = pressed

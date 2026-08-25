@@ -186,6 +186,8 @@ var charity_last_day: String = ""      # 上次行善日期，跨天重置次数
 # 【重构】道具表外置到 res://data/items.json，启动时由 _load_items_config() 加载
 # controller 仍通过 data.ITEM_CONFIG 访问，用法完全不变
 var ITEM_CONFIG: Dictionary = {}
+# 【新增】关卡宝箱掉落表：外置到 res://data/stage_box.json，启动时由 _load_stage_box_config() 加载
+var STAGE_BOX_POOL: Array = []
 
 # ========== 门客帖兑换表 ==========
 const TOKEN_EXCHANGE_HEROES = [
@@ -341,6 +343,11 @@ var stage_main: int = 1
 var stage_sub: int = 1
 
 var stage_trade_count: int = 0
+
+# 【新增】一键贸易开关：仅在线期间有效，不进存档（关掉游戏重开后默认关闭，需重新勾选）
+var stage_auto_trade: bool = false
+# 【新增】一键贸易停止原因：停止当下不弹提示，玩家点进关卡页时消费并弹出（不进存档）
+var stage_auto_stop_reason: String = ""
 
 var reputation: int = 0
 
@@ -534,6 +541,7 @@ func _load_all_configs():
 	_goal_configs = _load_json("res://data/goals.json")   # 【第6批新增】挚友目标配置
 	_load_items_config()   # 【重构新增】道具表
 	_load_travel_config()  # 【重构新增】游历配置
+	_load_stage_box_config()  # 【新增】关卡宝箱掉落表
 	
 
 # 【第1批新增】加载 res://data/items.json：道具定义 + 新档初始数量（未列出的道具自动补0）
@@ -568,6 +576,11 @@ func _load_travel_config():
 		TRAVEL_AFFECTION[fid] = int(TRAVEL_AFFECTION[fid])
 	for entry in TRAVEL_ITEM_POOL:
 		entry["count"] = int(entry["count"])
+
+# 【新增】加载 res://data/stage_box.json：关卡宝箱掉落表（item=道具id, count=数量, chance=概率权重）
+func _load_stage_box_config():
+	var d = _load_json("res://data/stage_box.json")
+	STAGE_BOX_POOL = d.get("pool", [])
 
 # 获取门客配置（只读模板）
 func get_hero_config(hero_id: String) -> Dictionary:
@@ -976,6 +989,9 @@ func do_stage_trade() -> Dictionary:
 func do_stage_boss() -> Dictionary:
 	return stage_system.do_stage_boss()
 
+# 【新增】一键贸易节拍：转发到 StageSystem.auto_trade_tick（每秒一次，返回事件供 controller 提示）
+func stage_auto_trade_tick() -> Dictionary:
+	return stage_system.auto_trade_tick()
 
 # ==================== 【转发】道具系统 → systems/item_system.gd ====================
 

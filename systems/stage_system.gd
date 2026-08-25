@@ -90,3 +90,35 @@ func do_stage_boss() -> Dictionary:
 		return {"ok": true, "win": true, "boss_income": boss_income, "hero_power": hero_power}
 	else:
 		return {"ok": true, "win": false, "boss_income": boss_income, "hero_power": hero_power}
+
+# ============ 【新增】一键贸易 ============
+
+# 一键贸易节拍（每秒由 game_controller.on_auto_earn 驱动一次；开启后离开关卡页也持续跑）
+# 逻辑：Boss 已就绪→战力够则自动谈判进下一章，战力不足则停止；未就绪→自动贸易一次，铜钱不足则停止
+# 返回 {"event": ...} 供 controller 决定提示（"none"=无事发生）：
+#   "next_sub" 通关小关 / "boss_ready" Boss出现 / "boss_win" 谈判成功进下一章
+#   "stop_money" 铜钱不足停止 / "stop_power" 战力不足停止
+func auto_trade_tick() -> Dictionary:
+	# Boss 已出现：只谈判，不再贸易（boss_ready 状态下 do_stage_trade 仍会扣钱发宝箱，必须拦截）
+	if is_stage_boss_ready():
+		var boss_income = get_stage_boss_income()
+		var hero_power = g.get_heroes_total_income()
+		if hero_power > boss_income:
+			var boss_result = do_stage_boss()
+			return {"event": "boss_win", "boss_income": boss_result.boss_income, "hero_power": boss_result.hero_power}
+		# 战力不足：停止并记录原因，等玩家点进关卡页时弹出提示
+		g.stage_auto_trade = false
+		g.stage_auto_stop_reason = "战力不足以谈判Boss"
+		return {"event": "stop_power"}
+	# 未遇 Boss：自动贸易一次（逻辑与手动点击完全一致）
+	var trade_result = do_stage_trade()
+	if not trade_result.get("ok", false):
+		g.stage_auto_trade = false
+		g.stage_auto_stop_reason = "铜钱不足"
+		return {"event": "stop_money"}
+	match trade_result.get("type", ""):
+		"next_sub":
+			return {"event": "next_sub", "exp_reward": trade_result.get("exp_reward", 0)}
+		"boss_ready":
+			return {"event": "boss_ready"}
+	return {"event": "none"}

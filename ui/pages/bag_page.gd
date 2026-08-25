@@ -116,7 +116,11 @@ func _on_item_use_confirmed(spin: SpinBox):
 	if result.get("ok", false):
 		update_bag_list()
 		c.update_all_ui()
-		c._show_stage_hint(result.get("msg", "使用成功"))
+		# 【改动】带 gains 明细的道具（关卡宝箱）弹窗展示明细，其余维持飘字提示
+		if result.has("gains"):
+			_show_item_gains_popup("打开关卡宝箱", result.gains)
+		else:
+			c._show_stage_hint(result.get("msg", "使用成功"))
 	else:
 		c._show_stage_hint(result.get("msg", "使用失败"))
 
@@ -267,3 +271,29 @@ func _on_hero_box_selected(hero_id: String):
 	update_bag_list()
 	c.generate_hero_list() 
 
+# 【新增】道具获得明细弹窗（关卡宝箱等批量开启道具用）：按配置表顺序逐项列出获得物，点确定关闭
+func _show_item_gains_popup(title: String, gains: Dictionary):
+	var popup = c._create_base_popup(title, Vector2(420, 480), Vector2(366, 100))
+	popup.name = "ItemGainsPopup"
+	var vb = popup.get_child(0)
+	var scroll = ScrollContainer.new()
+	scroll.custom_minimum_size = Vector2(0, 340)
+	vb.add_child(scroll)
+	var list = VBoxContainer.new()
+	list.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	scroll.add_child(list)
+	# 按 ITEM_CONFIG 配置顺序展示（未在配置里的 id 排最后，防御性处理）
+	var ordered = []
+	for iid in data.ITEM_CONFIG.keys():
+		if gains.has(iid):
+			ordered.append(iid)
+	for iid in gains.keys():
+		if not ordered.has(iid):
+			ordered.append(iid)
+	for iid in ordered:
+		var lbl = Label.new()
+		lbl.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+		lbl.text = "【%s】×%d" % [data.ITEM_CONFIG.get(iid, {}).get("name", iid), gains[iid]]
+		list.add_child(lbl)
+	c._add_ok_button(vb, func(): popup.queue_free(), "确定")
+	c.add_child(popup)

@@ -175,7 +175,12 @@
 	},
 	"stage_box": {
 	  "name": "关卡宝箱",
-	  "desc": "通关小关获得的宝箱"
+	  "desc": "通关小关获得的宝箱",
+	  "use": {
+		"type": "quantity",
+		"btn": "打开",
+		"title": "打开关卡宝箱"
+	  }
 	},
 	"hour_card": {
 	  "name": "小时卡",
@@ -413,7 +418,7 @@
 	"xing_shu_lin": {
 	  "name": "星枢麟角",
 	  "desc": "兑换星神圣兽"
-	},
+	}
   },
   "initial": {
 	"shop_blueprint": 999,
