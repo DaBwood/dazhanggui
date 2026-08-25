@@ -40,18 +40,25 @@ func generate_adventure_page():
 	title.add_theme_color_override("font_color", Color("#ffd700"))
 	vbox.add_child(title)
 	
+	# 【新增】入口按钮 3 列网格（入口多了不再纵向溢出；后续新入口按钮都挂到这个网格里）
+	var entry_grid = GridContainer.new()
+	entry_grid.name = "AdventureEntryGrid"
+	entry_grid.columns = 3
+	entry_grid.size_flags_horizontal = Control.SIZE_SHRINK_CENTER
+	vbox.add_child(entry_grid)
+	
 	var stage_btn = Button.new()
 	stage_btn.text = "关卡"
 	stage_btn.custom_minimum_size = Vector2(240, 60)
 	stage_btn.pressed.connect(c.switch_page.bind("stage"))
-	vbox.add_child(stage_btn)
+	entry_grid.add_child(stage_btn)
 	
 	var exchange_btn = Button.new()
 	exchange_btn.name = "ExchangeBtn"
 	exchange_btn.text = "兑换"
 	exchange_btn.custom_minimum_size = Vector2(240, 60)
 	exchange_btn.pressed.connect(c.show_exchange_view)
-	vbox.add_child(exchange_btn)
+	entry_grid.add_child(exchange_btn)
 	
 	# 兑换子页面（目录：珍兽兑换 / 门客帖兑换）
 	var exchange_view = VBoxContainer.new()
@@ -75,24 +82,24 @@ func generate_adventure_page():
 	exchange_view.add_child(entry_box)
 	
 	# 3列网格放所有入口，防止按钮太多溢出
-	var entry_grid = GridContainer.new()
-	entry_grid.columns = 3
-	entry_grid.add_theme_constant_override("h_separation", 16)
-	entry_grid.add_theme_constant_override("v_separation", 16)
-	entry_grid.size_flags_horizontal = Control.SIZE_SHRINK_CENTER
-	entry_box.add_child(entry_grid)
+	var excg_entry_grid = GridContainer.new()
+	excg_entry_grid.columns = 3
+	excg_entry_grid.add_theme_constant_override("h_separation", 16)
+	excg_entry_grid.add_theme_constant_override("v_separation", 16)
+	excg_entry_grid.size_flags_horizontal = Control.SIZE_SHRINK_CENTER
+	entry_box.add_child(excg_entry_grid)
 	
 	var beast_entry_btn = Button.new()
 	beast_entry_btn.text = "珍兽兑换"
 	beast_entry_btn.custom_minimum_size = Vector2(240, 60)
 	beast_entry_btn.pressed.connect(c.show_beast_exchange_view)
-	entry_grid.add_child(beast_entry_btn)
+	excg_entry_grid.add_child(beast_entry_btn)
 	
 	var token_entry_btn = Button.new()
 	token_entry_btn.text = "门客帖兑换"
 	token_entry_btn.custom_minimum_size = Vector2(240, 60)
 	token_entry_btn.pressed.connect(c.show_token_exchange_view)
-	entry_grid.add_child(token_entry_btn)
+	excg_entry_grid.add_child(token_entry_btn)
 	
 	# 系列兑换入口（配置表驱动，加系列只改 game_data 的表）
 	for i in range(data.SERIES_EXCHANGE.size()):
@@ -100,7 +107,7 @@ func generate_adventure_page():
 		s_btn.text = data.SERIES_EXCHANGE[i].series
 		s_btn.custom_minimum_size = Vector2(240, 60)
 		s_btn.pressed.connect(c.show_series_exchange_view.bind(i))
-		entry_grid.add_child(s_btn)
+		excg_entry_grid.add_child(s_btn)
 	
 	# --- 珍兽兑换子页面 ---
 	var beast_view = VBoxContainer.new()
@@ -179,7 +186,7 @@ func generate_adventure_page():
 	lottery_btn.text = "抽奖"
 	lottery_btn.custom_minimum_size = Vector2(240, 60)
 	lottery_btn.pressed.connect(c.show_lottery_view)
-	vbox.add_child(lottery_btn)
+	entry_grid.add_child(lottery_btn)
 	
 	# --- 抽奖子页面 ---
 	var lottery_view = VBoxContainer.new()
@@ -238,7 +245,7 @@ func generate_adventure_page():
 	charity_btn.text = "行善"
 	charity_btn.custom_minimum_size = Vector2(240, 60)
 	charity_btn.pressed.connect(c.show_charity_view)
-	vbox.add_child(charity_btn)
+	entry_grid.add_child(charity_btn)
 	
 	# --- 行善子页面 ---
 	var charity_view = VBoxContainer.new()
@@ -293,7 +300,7 @@ func generate_adventure_page():
 	travel_btn.text = "游历"
 	travel_btn.custom_minimum_size = Vector2(240, 60)
 	travel_btn.pressed.connect(c.show_travel_view)
-	vbox.add_child(travel_btn)
+	entry_grid.add_child(travel_btn)
 	
 	# --- 【新增】游历子页面 ---
 	var travel_view = VBoxContainer.new()
@@ -359,6 +366,9 @@ func generate_adventure_page():
 	
 	# 【第4批新增】庄园入口与子视图（构建逻辑在 pages/manor_view.gd，此处仅挂接）
 	c.build_manor_view(page, vbox)
+	
+	# 【第5批新增】商战入口与子视图（构建逻辑在 pages/war_view.gd，此处仅挂接）
+	c.build_war_view(page, vbox)
 
 func update_adventure_page():
 	# 页面静态，无需动态更新

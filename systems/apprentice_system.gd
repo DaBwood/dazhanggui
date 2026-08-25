@@ -266,4 +266,5 @@ func marry_apprentice(index: int, spouse: Dictionary) -> bool:
 	a.spouse = spouse
 	a.spouse_income = spouse.get("income", 0)
 	a.state = "married"
+	g.goal_system.add_stat("marry_count")   # 【第6批新增】挚友目标：联姻计数
 	return true

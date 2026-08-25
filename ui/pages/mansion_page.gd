@@ -79,7 +79,34 @@ func generate_mansion_list():
 		vbox.add_child(btn)
 		
 		grid.add_child(cell)
+	# 挚友目标：全部达成后入口不再显示
+	if not data.all_friend_goals_done():
+		modules.append({"name": "挚友目标", "func": "on_friend_goals"})
 
+# 显示挚友目标弹窗：列出每个挚友的解锁目标与当前进度
+func show_friend_goals_popup():
+	var popup = c._create_base_popup("挚友目标", 560)
+	var vbox = popup.get_node("panel") # 若你的基础弹窗容器节点名不同，改成实际容器节点名
+
+	for goal in data._goal_configs:
+		var fid = goal.get("friend_id", "")
+		var need = int(goal.get("count", 0))
+		var cur = data.get_friend_goal_stat(goal.get("stat", ""))
+		var done = data.is_goal_done(fid)
+		var fname = fid
+		if data._friend_configs.has(fid):
+			fname = data._friend_configs[fid].get("name", fid)
+
+		var label = Label.new()
+		label.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+		if done:
+			label.text = "✅ %s：已达成（%d/%d）" % [fname, min(cur, need), need]
+		else:
+			label.text = "⬜ %s：%s（%d/%d）" % [fname, goal.get("desc", "目标"), min(cur, need), need]
+		vbox.add_child(label)
+
+	c._add_ok_button(popup, "关闭")
+
+# 进府邸时重建列表（刷新挚友目标进度；原本无动态数据为 pass）
 func update_mansion_list():
-	# 目前无动态数据，预留
-	pass
+	generate_mansion_list()

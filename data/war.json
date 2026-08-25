@@ -1,0 +1,47 @@
+{
+  "settings": {
+    "tax_cap_minutes": 500,
+    "tax_mult_base": 1.0,
+    "tax_mult_span": 1.58,
+    "tax_mult_curve_levels": 98,
+    "tax_mult_curve_exp": 1.5,
+    "tax_max_level": 200,
+    "tax_up_cost_base": 10,
+    "squad_size": 6,
+    "npc_power_min": 0.8,
+    "npc_power_max": 1.3,
+    "points_rate_win": 0.01,
+    "yin_rate_win": 0.005,
+    "lose_reward_pct": 0.3
+  },
+  "exchange": [
+    {
+      "item": "hour_card",
+      "cost": 2100
+    },
+    {
+      "item": "shop_blueprint",
+      "cost": 80
+    },
+    {
+      "item": "abacus",
+      "cost": 50
+    },
+    {
+      "item": "fengyasong",
+      "cost": 220
+    },
+    {
+      "item": "ginseng_1000",
+      "cost": 150
+    },
+    {
+      "item": "patient_manual",
+      "cost": 600
+    },
+    {
+      "item": "cricket_cage",
+      "cost": 1500
+    }
+  ]
+}

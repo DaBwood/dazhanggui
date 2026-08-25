@@ -43,6 +43,7 @@ func use_item(item_id: String, count: int) -> Dictionary:
 			return {"ok": true, "msg": "获得阅历 ×%d" % (99999 * count)}
 		"hour_card":
 			g.items.hour_card -= count
+			g.goal_system.add_stat("hour_card_used", count)   # 【第6批新增】挚友目标：小时卡使用计数
 			var gain = g.get_total_auto_income() * 3600 * count
 			g.money += gain
 			return {"ok": true, "msg": "获得铜钱 ×%d" % gain}

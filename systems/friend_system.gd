@@ -251,6 +251,18 @@ func gift_friend(friend_id: String, item_id: String) -> bool:
 		"energy_pill":
 			g.items.energy_pill -= 1
 			g.energy = min(100, g.energy + 3)
+		"tong_zan":
+			# 铜簪：友好度+2
+			f.friendly += 2
+		"yin_erhuan":
+			# 银耳环：友好度+5
+			f.friendly += 5
+		"xiang_nang":
+			# 香囊：才华+2
+			f.talent += 2
+		"huarong_xia":
+			# 花容匣：才华+5
+			f.talent += 5
 		_:
 			return false
 	return true

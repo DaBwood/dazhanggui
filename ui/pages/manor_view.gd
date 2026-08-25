@@ -27,7 +27,7 @@ func build_manor_view(page, vbox):
 	manor_btn.text = "庄园"
 	manor_btn.custom_minimum_size = Vector2(240, 60)
 	manor_btn.pressed.connect(c.show_manor_view)
-	vbox.add_child(manor_btn)
+	vbox.get_node("AdventureEntryGrid").add_child(manor_btn)
 	
 	# --- 庄园子页面 ---
 	var view = VBoxContainer.new()

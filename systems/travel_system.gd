@@ -64,6 +64,7 @@ func do_travel() -> Dictionary:
 		return {"ok": false, "msg": "体力不足"}
 	g.stamina -= 1
 	g.reputation += g.TRAVEL_REPUTATION
+	g.goal_system.add_stat("travel_count")   # 【第6批新增】挚友目标：累计游历计数
 	var roll = randf()
 	if roll < g.TRAVEL_LOCATION_CHANCE:
 		return _do_travel_location()

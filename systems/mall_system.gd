@@ -72,6 +72,7 @@ func do_recharge(amount: int) -> bool:
 	g.yuanbao += amount * 10
 	g.vip_exp += amount * 10
 	g.vip_level = get_vip_level()  # 根据经验重新计算等级
+	g.goal_system.add_stat("recharge_done")
 	return true
 
 # ========== VIP 等级函数 ==========

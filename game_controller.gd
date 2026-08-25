@@ -46,6 +46,7 @@ var travel_view   # 闯荡-游历子视图
 var mall_panel   # 商城/充值/VIP弹窗
 var player_panel   # 玩家信息/身份/每日奖励弹窗
 var manor_view   # 庄园视图（第4批新增）
+var war_view   # 商战视图（第5批新增）
 
 func _ready():
 	#打印场景树
@@ -71,6 +72,7 @@ func _ready():
 	mall_panel = MallPanel.new(self)
 	player_panel = PlayerPanel.new(self)
 	manor_view = ManorView.new(self)
+	war_view = WarView.new(self)
 	data.load_game()  # ← 先读档
 
 	# 计算离线收益
@@ -232,7 +234,8 @@ func switch_page(page_id: String):
 		hide_lottery_view()
 		hide_charity_view()
 		hide_travel_view()
-		hide_manor_view()      
+		hide_manor_view()
+		hide_war_view()     
 		update_adventure_page()
 	
 	if page_id == "apprentice": update_apprentice_page()
@@ -304,6 +307,10 @@ func _show_unlock_hint(role_name: String, vip_level: int):
 func on_auto_earn():
 	data.money += data.get_total_auto_income()
 	data.settle_manor()   # 【第4批新增】庄园每秒懒结算产量入仓库
+	# 【第6批新增】每秒检查挚友目标，达成即自动解锁并弹提示（各玩法的计数钩子在 data 层，这里统一反馈）
+	var unlocked = data.check_friend_goals()
+	for fname in unlocked:
+		_show_stage_hint("达成挚友目标，解锁挚友【%s】！" % fname, 4.0)
 	update_all_ui()
 
 func _show_quantity_selector(item_id: String, title_text: String, on_confirm: Callable):
@@ -1187,6 +1194,10 @@ func _update_vip_panel():
 func _on_claim_vip_reward(level: int):
 	return mall_panel._on_claim_vip_reward(level)
 
+# 打开挚友目标弹窗
+func on_friend_goals():
+	return mansion_page.show_friend_goals_popup()
+
 # ==================== 【转发】玩家信息/身份/每日奖励弹窗 → pages/player_panel.gd ====================
 
 func open_player_panel():
@@ -1227,3 +1238,21 @@ func hide_manor_view():
 # 刷新庄园界面
 func update_manor_view():
 	return manor_view.update_manor_view()
+
+# ==================== 【转发】商战视图 → pages/war_view.gd ====================
+
+# 在闯荡页注入商战入口按钮与子视图（由 adventure_page 构建时调用）
+func build_war_view(page, vbox):
+	return war_view.build_war_view(page, vbox)
+
+# 打开商战
+func show_war_view():
+	return war_view.show_war_view()
+
+# 返回闯荡主页
+func hide_war_view():
+	return war_view.hide_war_view()
+
+# 刷新商战界面
+func update_war_view():
+	return war_view.update_war_view()

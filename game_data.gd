@@ -156,6 +156,7 @@ const MALL_PACKS = [
 	{"name": "小时卡礼包", "desc": "小时卡×999",                        "cost": 998,   "items": {"hour_card": 999}},
 	{"name": "活力礼包",   "desc": "木梳×1000 + 胭脂×1000 + 活力丹×2000 + 玫瑰香水×1", "cost": 1988,  "items": {"wood_comb": 1000, "rouge": 1000, "vitality_pill": 2000, "rose_perfume": 1}},
 	{"name": "声望礼包",   "desc": "声望卡×100 + 高级声望卡×10", "cost": 988,  "items": {"reputation_card": 100, "reputation_card_adv": 10}},
+	{"name": "体力礼包", "desc": "体力丹×100 + 木梳×100 + 胭脂×100", "cost": 1988, "items": {"stamina_pill": 100, "wood_comb": 100, "rouge": 100}},
 	
 ]
 
@@ -404,6 +405,16 @@ var manor_plots: Dictionary = {}      # {品种id: [{"level":品种等级,"land"
 var manor_goods: Dictionary = {}      # 庄园仓库 {产物名: 数量}（独立仓库，不进背包）
 var manor_last_settle: int = 0        # 上次产量结算时间戳（在线懒结算用）
 
+# ========== 商战状态（第5批新增；逻辑在 systems/war_system.gd） ==========
+var war_tax_level: int = 1            # 税所等级（上限200）
+var war_tax_accum: float = 0.0        # 税所已累积秒数（封顶500分钟）
+var war_tax_last: int = 0             # 上次累积结算时间戳
+var war_squads: Array = []            # 小队编队 [[hero_id×6]...]，空位为""
+var war_last_battle: Dictionary = {}  # {小队序号: "YYYY-MM-DD"} 每队每天1战
+var war_points: float = 0.0           # 商战积分（兑换商店货币）
+var war_tax_yin: float = 0.0          # 商战税引（税所升级货币）
+# ========== 挚友目标计数（第6批新增；逻辑在 systems/goal_system.gd） ==========
+var goal_stats: Dictionary = {}   # {统计项: 累计值} recharge_done/war_kills/travel_count/hour_card_used/marry_count
 # ========== 钱庄（特殊建筑）==========
 var hq = {
 	"name": "钱庄",
@@ -476,7 +487,10 @@ var lottery_system   # 抽奖系统
 var mall_system   # 商城/VIP系统
 var manor_system   # 庄园系统（第4批新增）
 var _manor_configs: Dictionary = {}   # 庄园配置（manor.json，由 _load_all_configs 加载）
-
+var war_system   # 商战系统（第5批新增）
+var _war_configs: Dictionary = {}   # 商战配置（war.json，由 _load_all_configs 加载）
+var goal_system   # 挚友目标系统（第6批新增）
+var _goal_configs: Dictionary = {}   # 挚友目标配置（goals.json，由 _load_all_configs 加载）
 # ==================== 初始化 ====================
 # 初始化：创建各子系统（纯逻辑模块，持有本中枢引用），再加载全部配置
 func _init():
@@ -492,6 +506,8 @@ func _init():
 	lottery_system = LotterySystem.new(self)
 	mall_system = MallSystem.new(self)
 	manor_system = ManorSystem.new(self)
+	war_system = WarSystem.new(self)
+	goal_system = GoalSystem.new(self)
 	_load_all_configs()
 
 # ==================== 配置加载 ====================
@@ -514,6 +530,8 @@ func _load_all_configs():
 	_shop_configs = _load_json("res://data/shops.json")
 	_beast_configs = _load_json(BEAST_CONFIG_PATH)
 	_manor_configs = _load_json("res://data/manor.json")   # 【第4批新增】庄园配置
+	_war_configs = _load_json("res://data/war.json")   # 【第5批新增】商战配置
+	_goal_configs = _load_json("res://data/goals.json")   # 【第6批新增】挚友目标配置
 	_load_items_config()   # 【重构新增】道具表
 	_load_travel_config()  # 【重构新增】游历配置
 	
@@ -661,7 +679,8 @@ func save_game():
 	}
 	# 各子系统把自己的字段合并进来（新系统加存档字段只需改它自己的 get_save_data）
 	var systems = [hero_system, friend_system, apprentice_system, beast_system, shop_system,
-		stage_system, item_system, travel_system, charity_system, lottery_system, mall_system,manor_system]
+		stage_system, item_system, travel_system, charity_system, lottery_system, mall_system,
+		manor_system,war_system,goal_system]
 	for sys in systems:
 		save_data.merge(sys.get_save_data(), true)
 	var file = FileAccess.open(SAVE_PATH, FileAccess.WRITE)
@@ -700,7 +719,8 @@ func load_game():
 
 	# ===== 各子系统认领自己的字段（含旧存档兼容逻辑） =====
 	var systems = [hero_system, friend_system, apprentice_system, beast_system, shop_system,
-		stage_system, item_system, travel_system, charity_system, lottery_system, mall_system,manor_system]
+		stage_system, item_system, travel_system, charity_system, lottery_system, mall_system,
+		manor_system,war_system,goal_system]
 	for sys in systems:
 		sys.load_save_data(data)
 
@@ -1124,3 +1144,107 @@ func settle_manor_offline():
 # 连升某块品种等级（勾选"等级十连"时调用；逐次结算，失败即停）
 func upgrade_manor_plot_level_batch(species_id: String, plot_index: int, times: int = 10):
 	return manor_system.upgrade_plot_level_batch(species_id, plot_index, times)
+
+# ==================== 【转发】商战系统 → systems/war_system.gd ====================
+
+# 税所加成倍数（1 + 1.58×((等级-1)/98)^1.5）
+func get_war_tax_multiplier():
+	return war_system.get_tax_multiplier()
+
+# 税所累积上限（分钟）
+func get_war_tax_cap_minutes():
+	return war_system.get_tax_cap_minutes()
+
+# 税所升级消耗税引（10×当前等级²）
+func get_war_tax_up_cost():
+	return war_system.get_tax_up_cost()
+
+# 已累积挂机时间（分钟）
+func get_war_tax_accum_minutes():
+	return war_system.get_tax_accum_minutes()
+
+# 当前可领取金额
+func get_war_tax_pending_income():
+	return war_system.get_tax_pending_income()
+
+# 领取税所收益
+func claim_war_tax():
+	return war_system.claim_tax()
+
+# 升级税所（耗商战税引）
+func upgrade_war_tax():
+	return war_system.upgrade_tax()
+
+# 小队数量上限（门客总数÷6）
+func get_war_max_squads():
+	return war_system.get_max_squads()
+
+# 某小队编队数据（6格，空位""）
+func get_war_squad(squad_index: int):
+	return war_system.get_squad(squad_index)
+
+# 门客所在小队（-1=未编队）
+func get_war_hero_squad(hero_id: String):
+	return war_system.get_hero_squad(hero_id)
+
+# 编入门客到某队某格
+func assign_war_hero(squad_index: int, slot: int, hero_id: String):
+	return war_system.assign_hero(squad_index, slot, hero_id)
+
+# 移出某队某格门客
+func remove_war_hero(squad_index: int, slot: int):
+	return war_system.remove_hero(squad_index, slot)
+
+# 小队战力（队内门客赚速之和）
+func get_war_squad_power(squad_index: int):
+	return war_system.get_squad_power(squad_index)
+
+# 今日是否可出战
+func can_war_battle(squad_index: int):
+	return war_system.can_battle(squad_index)
+
+# 出战（NPC商队定胜负，胜全奖/负30%）
+func war_battle(squad_index: int):
+	return war_system.battle(squad_index)
+
+# 兑换商店表
+func get_war_exchange_list():
+	return war_system.get_exchange_list()
+
+# 商战积分兑换道具
+func war_exchange(item_id: String):
+	return war_system.exchange_item(item_id)
+
+# 已拥有门客 id 列表（组队选择器用）
+func get_war_hero_list():
+	return war_system.get_hero_list()
+
+# 门客显示名（组队选择器用）
+func get_war_hero_name(hero_id: String):
+	return war_system.get_hero_name(hero_id)
+
+# ==================== 【转发】挚友目标系统 → systems/goal_system.gd ====================
+
+# 挚友目标表
+func get_friend_goal_list():
+	return goal_system.get_goal_list()
+
+# 单个目标是否达成
+func is_friend_goal_done(goal: Dictionary):
+	return goal_system.is_goal_done(goal)
+
+# 某目标当前进度值
+func get_friend_goal_progress(goal: Dictionary):
+	return goal_system.get_stat(goal.get("stat", ""))
+
+# 目标挚友显示名
+func get_friend_goal_name(friend_id: String):
+	return goal_system.get_friend_name(friend_id)
+
+# 全部目标是否达成（府邸目标区隐藏依据）
+func all_friend_goals_done():
+	return goal_system.all_goals_done()
+
+# 检查并自动解锁已达成挚友，返回新解锁名字列表（供弹窗）
+func check_friend_goals():
+	return goal_system.check_goals()

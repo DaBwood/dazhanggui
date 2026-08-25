@@ -781,80 +781,103 @@ func on_gift_friend():
 	if current_friend_id == "": return
 	_show_gift_selector()
 
+# 打开赠礼选择器：滚动列表 + 限高 + 视口手动定位，防止礼物多了之后面板偏下、被底栏遮挡
 func _show_gift_selector():
 	var parent = c.get_node("PageContainer/FriendPage")
 	if parent.has_node("GiftSelector"): return
-	
+
+	# 视口尺寸：项目根节点未铺满视口，不能依赖锚点，统一用视口手动算
+	# 视口尺寸：页面类不是节点，要通过控制器 c 取视口
+	var vs = c.get_viewport().get_visible_rect().size
+	var panel_w = 440
+	# 最大高度 = 视口高 - 顶部信息栏(约120) - 底部导航(约120)，保证上下都不被压
+	var panel_h = min(560, vs.y - 240)
+
 	var panel = PanelContainer.new()
 	panel.name = "GiftSelector"
-	panel.custom_minimum_size = Vector2(420, 260)   # 调小，确保在面板内
-	panel.position = (parent.size - panel.custom_minimum_size) / 2
-	panel.z_index = 30   # 原来是 20，改大确保盖在最上
+	panel.custom_minimum_size = Vector2(panel_w, panel_h)
+	# 水平居中；垂直居中后再上移40，视觉上更靠上，且不会碰到顶栏
+	panel.position = Vector2((vs.x - panel_w) / 2, max(110, (vs.y - panel_h) / 2 - 40))
+	panel.z_index = 30   # 盖在页面最上层
 	var style = StyleBoxFlat.new()
 	style.bg_color = Color("#1e1b2e")   # 深色背景，不透
 	style.set_corner_radius_all(8)
 	panel.add_theme_stylebox_override("panel", style)
-	
+
 	var vbox = VBoxContainer.new()
-	vbox.alignment = BoxContainer.ALIGNMENT_CENTER
-	vbox.add_theme_constant_override("separation", 14)
+	vbox.add_theme_constant_override("separation", 10)
 	panel.add_child(vbox)
-	
+
 	var title = Label.new()
 	title.text = "选择礼物"
 	title.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	vbox.add_child(title)
-	
+
+	# 滚动容器：礼物行全放这里，超出高度可滚动，面板本身不再被撑高
+	var scroll = ScrollContainer.new()
+	scroll.custom_minimum_size = Vector2(panel_w - 20, panel_h - 110)   # 扣掉标题和取消按钮的高度
+	scroll.size_flags_vertical = Control.SIZE_EXPAND_FILL
+	vbox.add_child(scroll)
+
+	var list_vbox = VBoxContainer.new()
+	list_vbox.add_theme_constant_override("separation", 10)
+	list_vbox.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	scroll.add_child(list_vbox)
+
 	var gifts = [
 		{"id": "wood_comb", "name": "木梳", "effect": "友好+1"},
 		{"id": "rouge", "name": "胭脂", "effect": "才华+1"},
+		{"id": "tong_zan", "name": "铜簪", "effect": "友好+2"},
+		{"id": "yin_erhuan", "name": "银耳环", "effect": "友好+5"},
+		{"id": "xiang_nang", "name": "香囊", "effect": "才华+2"},
+		{"id": "huarong_xia", "name": "花容匣", "effect": "才华+5"},
 	]
 	for g in gifts:
 		var count = data.items.get(g.id, 0)
-		
-		# 每行：信息 + 滑块 + 输入框 + 确认
+
+		# 每行：信息 + 滑块 + 输入框 + 确认（行节点名保持不变，_refresh_gift_selector 靠它刷新）
 		var row = VBoxContainer.new()
 		row.name = "GiftRow_" + g.id
-		row.add_theme_constant_override("separation", 4)
-		vbox.add_child(row)
-		
+		row.add_theme_constant_override("separation", 2)
+		list_vbox.add_child(row)
+
 		var info = Label.new()
 		info.text = "%s（%s）  拥有：%s" % [g.name, g.effect, c.format_number(count)]
 		info.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 		row.add_child(info)
-		
+
 		var hbox = HBoxContainer.new()
 		hbox.alignment = BoxContainer.ALIGNMENT_CENTER
 		hbox.add_theme_constant_override("separation", 8)
 		row.add_child(hbox)
-		
+
 		var slider = HSlider.new()
 		slider.min_value = 0
 		slider.max_value = count
 		slider.value = 0
-		slider.custom_minimum_size = Vector2(140, 30)
+		slider.custom_minimum_size = Vector2(140, 24)
 		hbox.add_child(slider)
-		
+
 		var spin = SpinBox.new()
 		spin.min_value = 0
 		spin.max_value = count
 		spin.value = 0
 		hbox.add_child(spin)
-		
+
 		slider.value_changed.connect(spin.set_value)
 		spin.value_changed.connect(slider.set_value)
-		
+
 		var confirm_btn = Button.new()
 		confirm_btn.text = "赠送"
 		confirm_btn.custom_minimum_size = Vector2(70, 32)
 		confirm_btn.pressed.connect(_on_gift_item_confirmed.bind(spin, g.id))
 		hbox.add_child(confirm_btn)
-	
+
 	var cancel = Button.new()
 	cancel.text = "取消"
 	cancel.pressed.connect(_close_gift_selector)
 	vbox.add_child(cancel)
-	
+
 	parent.add_child(panel)
 
 func _close_gift_selector():
@@ -885,6 +908,10 @@ func _refresh_gift_selector():
 	var gifts = [
 		{"id": "wood_comb", "name": "木梳", "effect": "友好+1"},
 		{"id": "rouge", "name": "胭脂", "effect": "才华+1"},
+		{"id": "tong_zan", "name": "铜簪", "effect": "友好+2"},
+		{"id": "yin_erhuan", "name": "银耳环", "effect": "友好+5"},
+		{"id": "xiang_nang", "name": "香囊", "effect": "才华+2"},
+		{"id": "huarong_xia", "name": "花容匣", "effect": "才华+5"}
 	]
 	for g in gifts:
 		var row = parent.get_node("GiftSelector").find_child("GiftRow_" + g.id, true, false)
