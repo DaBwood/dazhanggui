@@ -83,11 +83,11 @@ func use_item(item_id: String, count: int) -> Dictionary:
 			var buff_gains = {}
 			for i in range(count):
 				var hid = buff_pool[randi() % buff_pool.size()]
-				g.heroes[hid].base_income += 500
+				g.heroes[hid].extra_income += 500
 				buff_gains[hid] = buff_gains.get(hid, 0) + 500
 			var buff_parts = []
 			for hid in buff_gains.keys():
-				buff_parts.append("【%s】基础赚速+%d" % [g.heroes[hid].name, buff_gains[hid]])
+				buff_parts.append("【%s】额外赚速+%d" % [g.heroes[hid].name, buff_gains[hid]])
 			return {"ok": true, "msg": "、".join(buff_parts)}
 		"random_book":
 			# 【新增】随机书籍：每打开1个，从五种之道中随机获得一本

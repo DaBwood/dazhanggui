@@ -248,7 +248,7 @@ func _show_travel_all_popup(summary: Dictionary):
 		if summary.du_kang_gain > 0:
 			_add_summary_line(list, "杜康赠酒：体力 +%d" % summary.du_kang_gain)
 		for hid in summary.hero_income_gain.keys():
-			_add_summary_line(list, "今日新菜：【%s】基础赚速 +%s" % [data.heroes[hid].name, c.format_number(summary.hero_income_gain[hid])])
+			_add_summary_line(list, "今日新菜：【%s】额外赚速 +%s" % [data.heroes[hid].name, c.format_number(summary.hero_income_gain[hid])])
 	# 收尾：剩余体力（杜康回复的会体现在这里，可能不为0）
 	_add_summary_line(list, "剩余体力：%d/%d" % [summary.stamina_after, data.STAMINA_MAX])
 	c._add_ok_button(vb, func(): popup.queue_free(), "确定")

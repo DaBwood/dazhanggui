@@ -746,23 +746,15 @@ func exchange_series_hero(hero_id: String, item_id: String, cost: int, friend_id
 func unlock_hero(hero_id: String) -> bool:
 	return hero_system.unlock_hero(hero_id)
 
-func get_hero_extra_income(hero_id: String) -> int:
-	return hero_system.get_hero_extra_income(hero_id)
-
-func get_hero_percent_bonus(hero_id: String) -> float:
-	return hero_system.get_hero_percent_bonus(hero_id)
-
-func get_hero_aptitude_bonus(hero_id: String) -> int:
-	return hero_system.get_hero_aptitude_bonus(hero_id)
-
 func get_hero_income(hero_id: String) -> int:
-	return hero_system.get_hero_income(hero_id)
+	return HeroData.get_income(self, hero_id)   # 【改】直转 HeroData（原经 hero_system 中转）
 
 func get_hero_contribution(hero_id: String) -> int:
-	return hero_system.get_hero_contribution(hero_id)
+	return HeroData.get_global_contribution(self, hero_id)   # 【改】直转 HeroData
 
 func get_heroes_total_income() -> int:
-	return hero_system.get_heroes_total_income()
+	return HeroData.get_total_income(self)   # 【改】直转 HeroData
+
 
 func upgrade_hero_level(hero_id: String, batch: bool = false) -> int:
 	return hero_system.upgrade_hero_level(hero_id, batch)

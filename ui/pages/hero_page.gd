@@ -111,7 +111,7 @@ func update_hero_panel():
 	if current_hero_id == "" or not data.heroes.has(current_hero_id): return
 	var h = data.heroes[current_hero_id]
 	var income = data.get_hero_income(current_hero_id)
-	var total_aptitude = HeroData.get_total_aptitude(h)
+	var total_aptitude = HeroData.get_total_aptitude(data, current_hero_id)   # 【改】面板资质 = 总资质（含珍兽），与赚速同口径；适配新签名
 	var quality_tag = ""
 	if h.has("quality") and h.quality > 0:
 		quality_tag = "[%s]" % HeroData.get_quality_name(h.quality)

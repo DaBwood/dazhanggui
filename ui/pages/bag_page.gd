@@ -200,9 +200,9 @@ func _on_ginseng_target_selected(hero_id: String):
 	
 	data.items[item_id] -= count
 	if item_id == "ginseng":
-		data.heroes[hero_id].base_income += 2000 * count
+		data.heroes[hero_id].extra_income += 2000 * count
 	else:
-		data.heroes[hero_id].base_income += 20000 * count
+		data.heroes[hero_id].extra_income += 20000 * count
 	
 	_pending_ginseng_count = 0
 	_pending_ginseng_type = ""

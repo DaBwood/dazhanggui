@@ -92,9 +92,9 @@ func do_travel_all() -> Dictionary:
 	for fid in g.friends.keys():
 		friendly_before[fid] = g.friends[fid].friendly
 	var affection_before = g.friend_affection.duplicate()   # 表2挚友好感进度快照
-	var income_before = {}              # 门客基础赚速快照（今日新菜事件）
+	var income_before = {}              # 门客额外赚速快照（今日新菜事件）
 	for hid in g.heroes.keys():
-		income_before[hid] = g.heroes[hid].base_income
+		income_before[hid] = g.heroes[hid].get("extra_income", 0)
 	# ---- 连续游历：逐次调用单次游历，统计类型计数 ----
 	var type_count = {"location": 0, "item": 0, "event": 0}
 	var done = 0
@@ -121,7 +121,7 @@ func do_travel_all() -> Dictionary:
 		"unlock_friends": [],      # 本次新解锁的挚友 id 列表
 		"friendly_gain": {},       # 已拥有挚友友好净增 {fid: 增量}
 		"affection_gain": {},      # 表2挚友好感净增 {fid: {gain, now, need}}
-		"hero_income_gain": {},    # 今日新菜：门客基础赚速净增 {hid: 增量}
+		"hero_income_gain": {},    # 今日新菜：门客基额外速净增 {hid: 增量}
 	}
 	# 背包物品 diff（新出现的物品按 before=0 处理）
 	for item_id in g.items.keys():
@@ -141,9 +141,9 @@ func do_travel_all() -> Dictionary:
 		var aff_diff = g.friend_affection[fid] - affection_before.get(fid, 0)
 		if aff_diff > 0:
 			summary.affection_gain[fid] = {"gain": aff_diff, "now": g.friend_affection[fid], "need": g.TRAVEL_AFFECTION.get(fid, 0)}
-	# 门客基础赚速 diff（今日新菜）
+	# 门客额外赚速 diff（今日新菜）
 	for hid in g.heroes.keys():
-		var income_diff = g.heroes[hid].base_income - income_before.get(hid, 0)
+		var income_diff = g.heroes[hid].get("extra_income", 0) - income_before.get(hid, 0)
 		if income_diff > 0:
 			summary.hero_income_gain[hid] = income_diff
 	return summary
@@ -195,7 +195,7 @@ func _do_travel_item() -> Dictionary:
 	return {"ok": true, "type": "item", "msg": "游历途中获得【%s】×%d，声望+%d" % [item_name, count, g.TRAVEL_REPUTATION]}
 
 # 游历遭遇事件：5个事件等概率
-# 财神到=元宝+1000；月老/观音=祝福层数+1（可累计）；杜康=体力+1~3（可超上限）；今日新菜=赚速最高门客基础赚速+2000
+# 财神到=元宝+1000；月老/观音=祝福层数+1（可累计）；杜康=体力+1~3（可超上限）；今日新菜=赚速最高门客额外赚速+2000
 func _do_travel_event() -> Dictionary:
 	var events = ["cai_shen", "yue_lao", "guan_yin", "du_kang", "new_dish"]
 	var event_id = events[randi() % events.size()]
@@ -226,7 +226,7 @@ func _do_travel_event() -> Dictionary:
 					best_id = hid
 			if best_id == "":
 				return {"ok": true, "type": "event", "msg": "遭遇【今日新菜】，但还没有门客可以享用，声望+%d" % g.TRAVEL_REPUTATION}
-			g.heroes[best_id].base_income += g.EV_NEW_DISH_INCOME   # 【重构】数值走变量
-			return {"ok": true, "type": "event", "msg": "遭遇【今日新菜】！【%s】大快朵颐，基础赚速+%d，声望+%d" % [g.heroes[best_id].name, g.EV_NEW_DISH_INCOME, g.TRAVEL_REPUTATION]}
+			g.heroes[best_id].extra_income += g.EV_NEW_DISH_INCOME   # 【重构】数值走变量
+			return {"ok": true, "type": "event", "msg": "遭遇【今日新菜】！【%s】大快朵颐，额外赚速+%d，声望+%d" % [g.heroes[best_id].name, g.EV_NEW_DISH_INCOME, g.TRAVEL_REPUTATION]}
 	# 安全兜底：match 五个分支均已return，此行理论上不可达
 	return {"ok": false, "msg": "未知事件"}

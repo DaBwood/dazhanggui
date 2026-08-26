@@ -25,10 +25,12 @@ func load_save_data(s: Dictionary):
 	if s.has("heroes"):
 		# 只覆盖存档里有的门客（保留老进度）；存档没有的新门客保持初始值
 		g.heroes = s.heroes.duplicate(true)
-	# 清理存档中已不存在的门客（防止配置删了存档还残留）
-	for hero_id in g.heroes.keys():
-		if not g._hero_configs.has(hero_id):
-			g.heroes.erase(hero_id)
+	# 【新增】存档迁移：旧档门客的 base_income 字段改名为 extra_income
+	# （该字段实为"额外赚速池"，与基础赚速公式无关；旧档已攒数值原样保留，含旧版升级攒入的部分）
+	for hero in g.heroes.values():
+		if hero.has("base_income"):
+			hero["extra_income"] = hero.get("extra_income", 0) + int(hero["base_income"])
+			hero.erase("base_income")
 
 # ============ 以下为原 game_data.gd 搬迁函数（逻辑未改，仅成员访问加了 g. 前缀） ============
 
@@ -52,62 +54,6 @@ func unlock_hero(hero_id: String) -> bool:
 	if cfg.is_empty(): return false
 	g.heroes[hero_id] = cfg
 	return true
-
-# 门客的额外赚速总和（人参 + 挚友固定加成）
-func get_hero_extra_income(hero_id: String) -> int:
-	if not g.heroes.has(hero_id): return 0
-	var extra = g.heroes[hero_id].get("base_income", 0)
-	for fid in g.friends.keys():
-		if hero_id in g.friends[fid].bound_heroes:
-			extra += g.get_friend_fixed_bonus(fid)
-	return extra
-
-# 门客的百分比加成总和（挚友 + 预留灵兽/藏宝）
-func get_hero_percent_bonus(hero_id: String) -> float:
-	if not g.heroes.has(hero_id): return 0.0
-	var bonus = 0.0
-	for fid in g.friends.keys():
-		if hero_id in g.friends[fid].bound_heroes:
-			bonus += g.get_friend_percent_bonus(fid)
-	# 珍兽百分比加成
-	var beast = g.get_hero_beast_bonus(hero_id)
-	bonus += beast.percent
-	# TODO: 藏宝加成
-	return bonus
-
-func get_hero_aptitude_bonus(hero_id: String) -> int:
-	if not g.heroes.has(hero_id): return 0
-	var bonus = 0
-	# 珍兽资质加成
-	var beast_id = g.heroes[hero_id].get("equipped_beast", "")
-	if beast_id != "":
-		var idx = g.heroes[hero_id].get("equipped_beast_index", 0)
-		bonus += g.get_beast_aptitude(beast_id, idx)
-	return bonus
-
-# 门客总赚速（供 UI 显示）
-func get_hero_income(hero_id: String) -> int:
-	if not g.heroes.has(hero_id): return 0
-	var h = g.heroes[hero_id]
-	var total_apt = HeroData.get_total_aptitude(h) + get_hero_aptitude_bonus(hero_id)
-	var base = int(total_apt * h.level * pow(h.breakthrough_count, 2))
-	var percent = get_hero_percent_bonus(hero_id)
-	var extra = get_hero_extra_income(hero_id)
-	return int(base * (1.0 + percent) + extra)
-
-# 门客对全局的贡献（供自动收入）
-func get_hero_contribution(hero_id: String) -> int:
-	var income = get_hero_income(hero_id)
-	if income == 0: return 0
-	var h = g.heroes[hero_id]
-	return int(income * h.breakthrough_count * 0.5)
-
-# 门客总赚钱（战力）= 所有门客 get_hero_income 之和
-func get_heroes_total_income() -> int:
-	var total = 0
-	for hero_id in g.heroes.keys():
-		total += get_hero_income(hero_id)
-	return total
 
 #门客升级
 func upgrade_hero_level(hero_id: String, batch: bool = false) -> int:
@@ -135,7 +81,6 @@ func upgrade_hero_level(hero_id: String, batch: bool = false) -> int:
 	if levels > 0:
 		g.items.experience -= total_cost
 		hero.level += levels
-		hero.base_income += levels * hero.breakthrough_count * hero.breakthrough_count * 100
 		return levels
 	return 0
 
