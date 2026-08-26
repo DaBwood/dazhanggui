@@ -174,10 +174,14 @@ func _show_ginseng_selector():
 	var list = VBoxContainer.new()
 	scroll.add_child(list)
 	
-	for hero_id in data.heroes.keys():
+	# 【改】门客按实时赚速降序排列（原按字典顺序）
+	var hero_ids = data.heroes.keys()
+	hero_ids.sort_custom(func(a, b): return data.get_hero_income(a) > data.get_hero_income(b))
+	for hero_id in hero_ids:
 		var h = data.heroes[hero_id]
 		var btn = Button.new()
-		btn.text = "【%s】%s Lv.%d" % [h.name, h.category, h.level]
+		# 【改】按钮文本补上赚速（排序依据可见，否则顺序看起来是乱的；与其他选择器样式一致）
+		btn.text = "【%s】%s Lv.%d | %s/秒" % [h.name, h.category, h.level, c.format_number(data.get_hero_income(hero_id))]
 		btn.pressed.connect(_on_ginseng_target_selected.bind(hero_id))
 		list.add_child(btn)
 	

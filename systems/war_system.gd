@@ -114,7 +114,7 @@ func claim_tax() -> Dictionary:
 # ============ 小队 ============
 # 小队数量上限 = 门客总数 ÷ 6（向下取整）
 func get_max_squads() -> int:
-	return int(g.heroes.size() / int(get_settings().get("squad_size", 6)))
+	return int(g.heroes.size() / int(get_settings().get("squad_size", 6)))+1
 
 # 取小队数据（6格，空位为""；首次访问自动补齐）
 func get_squad(squad_index: int) -> Array:

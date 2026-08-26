@@ -365,7 +365,10 @@ func _show_hero_equip_selector(beast_id: String, instance_index: int):
 	var list = VBoxContainer.new()
 	scroll.add_child(list)
 	
-	for hero_id in data.heroes.keys():
+	# 【改】门客按实时赚速降序排列（原按字典顺序）
+	var hero_ids = data.heroes.keys()
+	hero_ids.sort_custom(func(a, b): return data.get_hero_income(a) > data.get_hero_income(b))
+	for hero_id in hero_ids:
 		var h = data.heroes[hero_id]
 		var btn = Button.new()
 		var income = data.get_hero_income(hero_id)

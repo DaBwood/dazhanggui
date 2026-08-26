@@ -222,7 +222,10 @@ func _on_slot(squad_index: int, slot: int):
 	var list = VBoxContainer.new()
 	list.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	scroll.add_child(list)
-	for hid in data.get_war_hero_list():
+	# 【改】门客按实时赚速降序排列（原按字典顺序；get_war_hero_list 返回新数组，排序不影响数据源）
+	var hero_list = data.get_war_hero_list()
+	hero_list.sort_custom(func(a, b): return data.get_hero_income(a) > data.get_hero_income(b))
+	for hid in hero_list:
 		var owner = data.get_war_hero_squad(hid)
 		if owner >= 0 and hid != cur: continue    # 已入队，跳过
 		var b = Button.new()
