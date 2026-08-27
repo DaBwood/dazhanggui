@@ -1,0 +1,865 @@
+{
+  "_comment": "垂钓配置。pools=时段_天气鱼池；common_pool=任意时间天气可钓；新增钓点时在 locations 加项并在 extra_pools 配该钓点额外渔获（与基础池叠加）；新增钓具在 gears 加项。quality_weights=品质权重；dex_rewards=图鉴首获奖励（按品级）；tasks=任务表（deliver=交付钓鱼仓库物品/count=垂钓计数，count_type: any任意渔获, putong_up普通以上）。奖励id对应items.json，beast_fruit走独立货币。；common_pool 的 kind: fish=渔获(始终可钓)/item=道具(仅已接对应交付任务时可钓到)；pack_*=元宝礼包。",
+  "settings": {
+    "dilong_recover_seconds": 3600,
+    "dilong_initial": 10,
+    "task_chance": 0.1,
+    "task_max": 3,
+    "weather_seconds": 21600,
+    "quality_weights": {
+      "无双": 3,
+      "传奇": 12,
+      "普通": 30,
+      "无": 55
+    },
+    "pack_cost": 1988,
+    "pack_dilong": 50,
+    "pack_chilong": 50
+  },
+  "locations": [
+    {
+      "id": "pond",
+      "name": "瀑湖"
+    }
+  ],
+  "gears": [
+    {
+      "id": "bamboo_rod",
+      "name": "竹钓竿"
+    }
+  ],
+  "extra_pools": {},
+  "pools": {
+    "白天_晴天": [
+      {
+        "id": "longxian_jujing",
+        "name": "龙涎巨鲸",
+        "quality": "无双"
+      },
+      {
+        "id": "dachi_you",
+        "name": "大赤鱿",
+        "quality": "传奇"
+      },
+      {
+        "id": "lanxue_kaiyu",
+        "name": "蓝血凯鱼",
+        "quality": "传奇"
+      },
+      {
+        "id": "youguang_lanwei",
+        "name": "幽光蓝鲔",
+        "quality": "普通"
+      },
+      {
+        "id": "jin_li",
+        "name": "锦鲤",
+        "quality": "无"
+      },
+      {
+        "id": "xiang_tun",
+        "name": "箱鲀",
+        "quality": "无"
+      },
+      {
+        "id": "ciqi_diao",
+        "name": "刺鳍鲷",
+        "quality": "无"
+      },
+      {
+        "id": "shuidi_yu",
+        "name": "水滴鱼",
+        "quality": "无"
+      },
+      {
+        "id": "dongxing_ban",
+        "name": "东星斑",
+        "quality": "无"
+      },
+      {
+        "id": "wucai_sheyu",
+        "name": "五彩蛇鱼",
+        "quality": "无"
+      },
+      {
+        "id": "qing_yu",
+        "name": "青鱼",
+        "quality": "无"
+      },
+      {
+        "id": "dai_yu",
+        "name": "带鱼",
+        "quality": "无"
+      },
+      {
+        "id": "fei_yu",
+        "name": "鲱鱼",
+        "quality": "无"
+      },
+      {
+        "id": "feiyu",
+        "name": "飞鱼",
+        "quality": "无"
+      }
+    ],
+    "白天_雨天": [
+      {
+        "id": "haibawang",
+        "name": "海霸王",
+        "quality": "无双"
+      },
+      {
+        "id": "haijingling",
+        "name": "海精灵",
+        "quality": "传奇"
+      },
+      {
+        "id": "ye_yao",
+        "name": "夜鳐",
+        "quality": "传奇"
+      },
+      {
+        "id": "shanhu_gui",
+        "name": "珊瑚龟",
+        "quality": "普通"
+      },
+      {
+        "id": "ankang_yu",
+        "name": "安康鱼",
+        "quality": "普通"
+      },
+      {
+        "id": "changbi_xun",
+        "name": "长鼻鲟",
+        "quality": "无"
+      },
+      {
+        "id": "caise_jiyu",
+        "name": "彩色鲫鱼",
+        "quality": "无"
+      },
+      {
+        "id": "hongmei_daoren",
+        "name": "红眉道人",
+        "quality": "无"
+      },
+      {
+        "id": "dou_yu",
+        "name": "斗鱼",
+        "quality": "无"
+      },
+      {
+        "id": "lian_yu",
+        "name": "鲢鱼",
+        "quality": "无"
+      },
+      {
+        "id": "dao_chang",
+        "name": "刀鲳",
+        "quality": "无"
+      },
+      {
+        "id": "yin_long",
+        "name": "银龙",
+        "quality": "无"
+      },
+      {
+        "id": "damaha_yu",
+        "name": "大马哈鱼",
+        "quality": "无"
+      },
+      {
+        "id": "banjie_xia",
+        "name": "斑结虾",
+        "quality": "无"
+      },
+      {
+        "id": "lvqi_mamiantun",
+        "name": "绿鳍马面鲀",
+        "quality": "无"
+      }
+    ],
+    "白天_雪天": [
+      {
+        "id": "jiangwei_yu",
+        "name": "江鲔鱼",
+        "quality": "无双"
+      },
+      {
+        "id": "yusan_qiyu",
+        "name": "雨伞旗鱼",
+        "quality": "传奇"
+      },
+      {
+        "id": "qianting_luo",
+        "name": "潜艇螺",
+        "quality": "传奇"
+      },
+      {
+        "id": "liujiao_rongyuan",
+        "name": "六角蝾螈",
+        "quality": "普通"
+      },
+      {
+        "id": "ye_hailong",
+        "name": "叶海龙",
+        "quality": "普通"
+      },
+      {
+        "id": "songjiang_luyu",
+        "name": "松江鲈鱼",
+        "quality": "无"
+      },
+      {
+        "id": "zhen_diao",
+        "name": "真鲷",
+        "quality": "无"
+      },
+      {
+        "id": "duobao_yu",
+        "name": "多宝鱼",
+        "quality": "无"
+      },
+      {
+        "id": "hong_zun",
+        "name": "虹鳟",
+        "quality": "无"
+      },
+      {
+        "id": "hua_haima",
+        "name": "花海马",
+        "quality": "无"
+      },
+      {
+        "id": "li_yu",
+        "name": "鲤鱼",
+        "quality": "无"
+      },
+      {
+        "id": "lu_yu",
+        "name": "鲈鱼",
+        "quality": "无"
+      },
+      {
+        "id": "qiudao_yu",
+        "name": "秋刀鱼",
+        "quality": "无"
+      },
+      {
+        "id": "luofei_yu",
+        "name": "罗非鱼",
+        "quality": "无"
+      },
+      {
+        "id": "yinxue_yu",
+        "name": "银鳕鱼",
+        "quality": "无"
+      },
+      {
+        "id": "chiyue_shuimu",
+        "name": "赤月水母",
+        "quality": "无"
+      }
+    ],
+    "黑夜_晴天": [
+      {
+        "id": "niji_zhanjing",
+        "name": "逆戟战鲸",
+        "quality": "无双"
+      },
+      {
+        "id": "renzhe_shuimu",
+        "name": "忍者水母",
+        "quality": "传奇"
+      },
+      {
+        "id": "fanche_yu",
+        "name": "翻车鱼",
+        "quality": "普通"
+      },
+      {
+        "id": "jinxiu_longxia",
+        "name": "锦绣龙虾",
+        "quality": "普通"
+      },
+      {
+        "id": "jiao_die",
+        "name": "角鲽",
+        "quality": "普通"
+      },
+      {
+        "id": "majiao_yu",
+        "name": "马鲛鱼",
+        "quality": "无"
+      },
+      {
+        "id": "huashi_ban",
+        "name": "花石斑",
+        "quality": "无"
+      },
+      {
+        "id": "pipi_xia",
+        "name": "皮皮虾",
+        "quality": "无"
+      },
+      {
+        "id": "yong_yu",
+        "name": "鳙鱼",
+        "quality": "无"
+      },
+      {
+        "id": "shiren_chang",
+        "name": "食人鲳",
+        "quality": "无"
+      },
+      {
+        "id": "shading_yu",
+        "name": "沙丁鱼",
+        "quality": "无"
+      },
+      {
+        "id": "yisheng_yu",
+        "name": "医生鱼",
+        "quality": "无"
+      },
+      {
+        "id": "qing_xie",
+        "name": "青蟹",
+        "quality": "无"
+      },
+      {
+        "id": "haiyue_shuimu",
+        "name": "海月水母",
+        "quality": "无"
+      },
+      {
+        "id": "ni_qiu",
+        "name": "泥鳅",
+        "quality": "无"
+      }
+    ],
+    "黑夜_雨天": [
+      {
+        "id": "chui_sha",
+        "name": "锤鲨",
+        "quality": "无双"
+      },
+      {
+        "id": "changwei_sha",
+        "name": "长尾鲨",
+        "quality": "传奇"
+      },
+      {
+        "id": "ci_tun",
+        "name": "刺豚",
+        "quality": "普通"
+      },
+      {
+        "id": "suo_you",
+        "name": "蓑鲉",
+        "quality": "普通"
+      },
+      {
+        "id": "wushi_zhangyu",
+        "name": "巫师章鱼",
+        "quality": "普通"
+      },
+      {
+        "id": "ban_gui",
+        "name": "斑鳜",
+        "quality": "无"
+      },
+      {
+        "id": "hong_long",
+        "name": "红龙",
+        "quality": "无"
+      },
+      {
+        "id": "heixian_xue",
+        "name": "黑线鳕",
+        "quality": "无"
+      },
+      {
+        "id": "jushen_ciweiyu",
+        "name": "橘身刺尾鱼",
+        "quality": "无"
+      },
+      {
+        "id": "jincao_yu",
+        "name": "金草鱼",
+        "quality": "无"
+      },
+      {
+        "id": "jin_chang",
+        "name": "金鲳",
+        "quality": "无"
+      },
+      {
+        "id": "zhadan_yu",
+        "name": "炸弹鱼",
+        "quality": "无"
+      },
+      {
+        "id": "qidai_shiban",
+        "name": "七带石斑",
+        "quality": "无"
+      },
+      {
+        "id": "xiaochou_yu",
+        "name": "小丑鱼",
+        "quality": "无"
+      },
+      {
+        "id": "huanghou_shenxianyu",
+        "name": "皇后神仙鱼",
+        "quality": "无"
+      }
+    ],
+    "黑夜_雪天": [
+      {
+        "id": "dujiao_jing",
+        "name": "独角鲸",
+        "quality": "无双"
+      },
+      {
+        "id": "ju_yao",
+        "name": "锯鳐",
+        "quality": "传奇"
+      },
+      {
+        "id": "wang_daiyu",
+        "name": "王带鱼",
+        "quality": "普通"
+      },
+      {
+        "id": "jian_yu",
+        "name": "剑鱼",
+        "quality": "普通"
+      },
+      {
+        "id": "xiaofeixiang_zhangyu",
+        "name": "小飞象章鱼",
+        "quality": "普通"
+      },
+      {
+        "id": "wu_li",
+        "name": "乌鳢",
+        "quality": "无"
+      },
+      {
+        "id": "sanwen_yu",
+        "name": "三文鱼",
+        "quality": "无"
+      },
+      {
+        "id": "lanbaoshi_yu",
+        "name": "蓝宝石鱼",
+        "quality": "无"
+      },
+      {
+        "id": "cao_yu",
+        "name": "草鱼",
+        "quality": "无"
+      },
+      {
+        "id": "nian_yu",
+        "name": "鲶鱼",
+        "quality": "无"
+      },
+      {
+        "id": "hongniang_yu",
+        "name": "红娘鱼",
+        "quality": "无"
+      },
+      {
+        "id": "kuandai_shiban",
+        "name": "宽带石斑",
+        "quality": "无"
+      },
+      {
+        "id": "gongbei_haima",
+        "name": "弓背海马",
+        "quality": "无"
+      },
+      {
+        "id": "caomei_biyu",
+        "name": "草莓鼻鱼",
+        "quality": "无"
+      }
+    ]
+  },
+  "common_pool": [
+    {
+      "id": "jin_long",
+      "name": "金龙",
+      "quality": "传奇",
+      "kind": "fish"
+    },
+    {
+      "id": "diwang_xie",
+      "name": "帝王蟹",
+      "quality": "普通",
+      "kind": "fish"
+    },
+    {
+      "id": "shuijing_wa",
+      "name": "水晶瓦",
+      "quality": "无双",
+      "kind": "item"
+    },
+    {
+      "id": "huangjin_jia",
+      "name": "黄金甲",
+      "quality": "传奇",
+      "kind": "item"
+    },
+    {
+      "id": "jin_fu",
+      "name": "金斧",
+      "quality": "传奇",
+      "kind": "item"
+    },
+    {
+      "id": "panlong_bi",
+      "name": "盘龙壁",
+      "quality": "普通",
+      "kind": "item"
+    },
+    {
+      "id": "hao_jiao",
+      "name": "号角",
+      "quality": "普通",
+      "kind": "item"
+    },
+    {
+      "id": "ling_yu",
+      "name": "灵玉",
+      "quality": "无",
+      "kind": "item"
+    },
+    {
+      "id": "mu_cuo",
+      "name": "木锉",
+      "quality": "无",
+      "kind": "item"
+    },
+    {
+      "id": "jiu_ping",
+      "name": "酒瓶",
+      "quality": "无",
+      "kind": "item"
+    },
+    {
+      "id": "rou_bao",
+      "name": "肉包",
+      "quality": "无",
+      "kind": "item"
+    }
+  ],
+  "tasks": [
+    {
+      "id": "t01",
+      "type": "deliver",
+      "target": "shuijing_wa",
+      "need": 1,
+      "desc": "交付1个水晶瓦",
+      "rewards": {
+        "yu_shi": 900,
+        "shop_blueprint": 20,
+        "hour_card": 1,
+        "recruit_bronze": 30
+      }
+    },
+    {
+      "id": "t02",
+      "type": "count",
+      "count_type": "any",
+      "need": 12,
+      "desc": "垂钓12只鱼",
+      "rewards": {
+        "yu_shi": 250,
+        "fengyasong": 2
+      }
+    },
+    {
+      "id": "t03",
+      "type": "deliver",
+      "target": "hao_jiao",
+      "need": 2,
+      "desc": "交付2个号角",
+      "rewards": {
+        "yu_shi": 300,
+        "wood_comb": 8,
+        "tong_zan": 8,
+        "energy_pill": 3
+      }
+    },
+    {
+      "id": "t04",
+      "type": "deliver",
+      "target": "ling_yu",
+      "need": 4,
+      "desc": "交付4个灵玉",
+      "rewards": {
+        "yu_shi": 300,
+        "random_book": 30,
+        "minjing_shouji": 30,
+        "beast_fruit": 30
+      }
+    },
+    {
+      "id": "t05",
+      "type": "count",
+      "count_type": "putong_up",
+      "need": 8,
+      "desc": "垂钓8只普通以上的鱼",
+      "rewards": {
+        "yu_shi": 600,
+        "fengyasong": 5
+      }
+    },
+    {
+      "id": "t06",
+      "type": "count",
+      "count_type": "any",
+      "need": 20,
+      "desc": "垂钓20只鱼",
+      "rewards": {
+        "yu_shi": 200,
+        "tong_zan": 5,
+        "xiang_nang": 5,
+        "wish_stone": 5
+      }
+    },
+    {
+      "id": "t07",
+      "type": "deliver",
+      "target": "rou_bao",
+      "need": 5,
+      "desc": "交付5个肉包",
+      "rewards": {
+        "yu_shi": 200,
+        "shop_blueprint": 5,
+        "hour_card": 1,
+        "recruit_bronze": 30
+      }
+    },
+    {
+      "id": "t08",
+      "type": "deliver",
+      "target": "jiu_ping",
+      "need": 4,
+      "desc": "交付4个酒瓶",
+      "rewards": {
+        "yu_shi": 300,
+        "patient_manual": 3,
+        "jia_niang": 3,
+        "chanwu_card": 3
+      }
+    },
+    {
+      "id": "t09",
+      "type": "deliver",
+      "target": "panlong_bi",
+      "need": 2,
+      "desc": "交付2个盘龙壁",
+      "rewards": {
+        "yu_shi": 300,
+        "rouge": 10,
+        "xiang_nang": 10,
+        "energy_pill": 5
+      }
+    },
+    {
+      "id": "t10",
+      "type": "deliver",
+      "target": "mu_cuo",
+      "need": 4,
+      "desc": "交付4个木锉",
+      "rewards": {
+        "yu_shi": 300,
+        "vitality_pill": 50,
+        "energy_pill": 5,
+        "stamina_pill": 5
+      }
+    },
+    {
+      "id": "t11",
+      "type": "deliver",
+      "target": "jin_fu",
+      "need": 1,
+      "desc": "交付1个金斧",
+      "rewards": {
+        "yu_shi": 500,
+        "random_book": 50,
+        "minjing_shouji": 50,
+        "beast_fruit": 50
+      }
+    },
+    {
+      "id": "t12",
+      "type": "count",
+      "count_type": "any",
+      "need": 10,
+      "desc": "垂钓10只鱼",
+      "rewards": {
+        "yu_shi": 50,
+        "wood_comb": 5,
+        "rouge": 5,
+        "wish_stone": 5
+      }
+    },
+    {
+      "id": "t13",
+      "type": "deliver",
+      "target": "huangjin_jia",
+      "need": 1,
+      "desc": "交付1个黄金甲",
+      "rewards": {
+        "yu_shi": 500,
+        "wood_comb": 100,
+        "rouge": 100,
+        "energy_pill": 10
+      }
+    }
+  ],
+  "dex_rewards": {
+    "无双": {
+      "yu_shi": 4800,
+      "yu_huang": 30,
+      "tanmu_zan": 30,
+      "aptitude_pill": 15
+    },
+    "传奇": {
+      "yu_shi": 2400,
+      "yu_huang": 16,
+      "tanmu_zan": 16,
+      "aptitude_pill": 8
+    },
+    "普通": {
+      "yu_shi": 1500,
+      "yu_huang": 8,
+      "tanmu_zan": 8,
+      "aptitude_pill": 4
+    },
+    "无": {
+      "yu_shi": 900,
+      "jia_niang": 6,
+      "patient_manual": 6,
+      "shop_blueprint": 6
+    }
+  },
+  "fish_equip": {
+    "_comment": "渔获装备养成（模型A按种类养成，数据存 fishing_fish_dev）。max_tier=满阶；无双赚钱=阶×income_pct_per_tier(加门客百分比加成)；传奇/普通赚钱=income_flat_start~income_flat_end按阶等差插值(加extra固定赚速)；promote_cost_mode: ceil_div10=ceil(当前阶/10)只 / tier=当前阶只 / tier_x2=2×当前阶只，消耗同名鱼库存，被装备的鱼种库存至少保留1只；skills按unlock_tier解锁，每级加apt_per_level资质(上限skill_max_level级)，升级需skill_xp_per_level经验；fodder_xp=材料经验值：yu_shi鱼食(背包)、无=无品级鱼(任意喂)、普通/传奇=该鱼种满阶后库存才可喂、无双不可喂。一鱼一门客。",
+    "无双": {
+      "max_tier": 100,
+      "income_pct_per_tier": 0.05,
+      "promote_cost_mode": "ceil_div10",
+      "skill_xp_per_level": 1500,
+      "skill_max_level": 100,
+      "skills": [
+        {
+          "name": "极.如鱼得水",
+          "unlock_tier": 1,
+          "apt_per_level": 5
+        },
+        {
+          "name": "极.鱼跃鸢飞",
+          "unlock_tier": 2,
+          "apt_per_level": 5
+        },
+        {
+          "name": "极.吞舟之鱼",
+          "unlock_tier": 5,
+          "apt_per_level": 5
+        },
+        {
+          "name": "极.察见渊鱼",
+          "unlock_tier": 10,
+          "apt_per_level": 5
+        },
+        {
+          "name": "极.鱼跃龙门",
+          "unlock_tier": 20,
+          "apt_per_level": 5
+        },
+        {
+          "name": "极.鱼龙变化",
+          "unlock_tier": 35,
+          "apt_per_level": 5
+        },
+        {
+          "name": "极.白露潜鱼",
+          "unlock_tier": 60,
+          "apt_per_level": 5
+        },
+        {
+          "name": "极.鱼游濠上",
+          "unlock_tier": 90,
+          "apt_per_level": 5
+        }
+      ]
+    },
+    "传奇": {
+      "max_tier": 30,
+      "income_flat_start": 70000,
+      "income_flat_end": 11300000,
+      "promote_cost_mode": "tier",
+      "skill_xp_per_level": 1200,
+      "skill_max_level": 100,
+      "skills": [
+        {
+          "name": "精.如鱼得水",
+          "unlock_tier": 1,
+          "apt_per_level": 4
+        },
+        {
+          "name": "精.鱼跃鸢飞",
+          "unlock_tier": 3,
+          "apt_per_level": 4
+        },
+        {
+          "name": "精.吞舟之鱼",
+          "unlock_tier": 8,
+          "apt_per_level": 4
+        },
+        {
+          "name": "精.察见渊鱼",
+          "unlock_tier": 15,
+          "apt_per_level": 4
+        }
+      ]
+    },
+    "普通": {
+      "max_tier": 30,
+      "income_flat_start": 70000,
+      "income_flat_end": 10650000,
+      "promote_cost_mode": "tier_x2",
+      "skill_xp_per_level": 900,
+      "skill_max_level": 100,
+      "skills": [
+        {
+          "name": "如鱼得水",
+          "unlock_tier": 1,
+          "apt_per_level": 3
+        },
+        {
+          "name": "鱼跃鸢飞",
+          "unlock_tier": 4,
+          "apt_per_level": 3
+        },
+        {
+          "name": "吞舟之鱼",
+          "unlock_tier": 10,
+          "apt_per_level": 3
+        }
+      ]
+    },
+    "fodder_xp": {
+      "yu_shi": 1,
+      "无": 30,
+      "普通": 130,
+      "传奇": 2000
+    }
+  }
+}

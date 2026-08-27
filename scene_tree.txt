@@ -78,15 +78,4 @@ root (Window)
             AssignLabel (Label)  visible=true
             AssignBtn (Button)  visible=true
       ShopCloseBtn (Button)  visible=true
-    HeroPanel (Panel)  visible=false
-      HeroName (Label)  visible=true
-      HeroIncome (Label)  visible=true
-      HeroCloseBtn (Button)  visible=true
-      ScrollContainer (ScrollContainer)  visible=true
-        SkillList (VBoxContainer)  visible=true
-      LevelUpBox (HBoxContainer)  visible=true
-        LevelUpInfo (Label)  visible=true
-        LevelUpBtnBox (VBoxContainer)  visible=true
-          LevelUpBtn (Button)  visible=true
-          BatchCheck (CheckBox)  visible=true
     Timer (Timer)

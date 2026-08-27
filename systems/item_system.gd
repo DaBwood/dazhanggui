@@ -108,6 +108,18 @@ func use_item(item_id: String, count: int) -> Dictionary:
 			g.get_stamina()   # 懒结算体力恢复（超过上限时不会截断）
 			g.stamina += count
 			return {"ok": true, "msg": "游历体力 +%d" % count}
+		"chanwu_card":
+				# 【第8批新增】产物卡：每张获得当前庄园12小时的全部产物（入庄园仓库，不进背包）
+				g.items.chanwu_card -= count
+				var prod_gains: Dictionary = g.manor_system.add_hours_production(12.0 * count)
+				if prod_gains.is_empty():
+					# 庄园还没有任何已解锁品种，退回道具
+					g.items.chanwu_card += count
+					return {"ok": false, "msg": "庄园还没有已解锁的品种"}
+				var prod_parts = []
+				for pname in prod_gains.keys():
+					prod_parts.append("【%s】×%d" % [pname, int(prod_gains[pname])])
+				return {"ok": true, "msg": "获得12小时产物：" + "、".join(prod_parts), "gains": prod_gains}
 		"stage_box":
 			# 【新增】关卡宝箱：每个宝箱按 stage_box.json 概率表独立随机一次，奖励汇总后返回
 			if g.STAGE_BOX_POOL.is_empty(): return {"ok": false, "msg": "宝箱配置为空"}

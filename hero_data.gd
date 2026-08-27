@@ -19,12 +19,18 @@ static func get_total_aptitude(g, hero_id: String) -> int:
 		total += skill.level * skill.aptitude_per_level
 	if hero.has("promotion"):
 		total += hero.promotion.level * hero.promotion.aptitude_per_level
+	
 	# 珍兽资质加成（装备珍兽的资质计入总资质）
 	var beast_id = hero.get("equipped_beast", "")
 	if beast_id != "":
 		total += g.get_beast_aptitude(beast_id, hero.get("equipped_beast_index", 0))
 	# 【新增】宅院门客卷二资质加成（按固定门客分组反查对应卷轴等级）
 	total += g.get_courtyard_hero_aptitude_bonus(hero_id)
+	# 【第8批新增】渔获技能资质
+	total += g.get_hero_fish_aptitude(hero_id)
+	# 【服装系统】服装技能资质 + 同category门客光环资质
+	total += g.get_hero_costume_aptitude(hero_id)   
+	
 	return total
 
 # 门客品质名
@@ -52,6 +58,8 @@ static func get_extra_income(g, hero_id: String) -> int:
 			extra += g.get_friend_fixed_bonus(fid)
 	# 【新增】宅院门客卷一固定赚速加成（每级+5000，按固定门客分组生效）
 	extra += g.get_courtyard_hero_income_bonus(hero_id)
+	# 【第8批新增】渔获固定赚速（传奇/普通）
+	extra += g.get_hero_fish_flat_income(hero_id)   
 	return extra
 
 # 门客的百分比加成总和（挚友 + 珍兽；TODO: 藏宝加成）
@@ -64,6 +72,10 @@ static func get_percent_bonus(g, hero_id: String) -> float:
 			bonus += g.get_friend_percent_bonus(fid)
 	var beast = g.get_hero_beast_bonus(hero_id)
 	bonus += beast.percent
+	# 【第8批新增】无双渔获 阶×5%
+	bonus += g.get_hero_fish_percent(hero_id)
+	# 【服装系统】系列服装光环（群体+3%×关联系列件数 / 自身+3%×件数）
+	bonus += g.get_hero_costume_series_pct(hero_id)  
 	return bonus
 
 # 门客总赚速 = 基础赚速 × (1 + 百分比加成) + 额外赚速

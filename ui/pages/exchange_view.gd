@@ -22,7 +22,10 @@ func _init(p_c):
 
 func _on_exchange_back_pressed():
 	var ev = c.get_node("PageContainer/AdventurePage/ExchangeView")
-	if ev.get_node("SeriesExchangeView").visible:
+	# 【服装系统】服装兑换子视图在最外层判断（代码构建，可能尚不存在）
+	if ev.has_node("CostumeExchangeView") and ev.get_node("CostumeExchangeView").visible:
+		c.costume_view.hide_costume_exchange_view()
+	elif ev.get_node("SeriesExchangeView").visible:
 		hide_series_exchange_view()     # 在系列兑换 → 退回目录
 	elif ev.get_node("BeastExchangeView").visible:
 		hide_beast_exchange_view()
@@ -41,6 +44,10 @@ func show_exchange_view():
 	if ev.has_node("ExchangeEntryBox"): ev.get_node("ExchangeEntryBox").visible = true
 	if ev.has_node("BeastExchangeView"): ev.get_node("BeastExchangeView").visible = false
 	if ev.has_node("TokenExchangeView"): ev.get_node("TokenExchangeView").visible = false
+	# 【服装系统】代码构建的服装兑换子视图：进入兑换页时确保已创建并隐藏，同时挂入口按钮
+	c.costume_view.ensure_costume_exchange_view()
+	if ev.has_node("CostumeExchangeView"): ev.get_node("CostumeExchangeView").visible = false
+	_ensure_costume_entry_btn(ev)
 
 func hide_exchange_view():
 	if not c.has_node("PageContainer/AdventurePage"): return
@@ -340,3 +347,15 @@ func _on_exchange_beast(beast_id: String):
 			update_beast_exchange_view()
 	else:
 		c._show_stage_hint("兑换失败")
+
+# 【服装系统】兑换目录追加「服装兑换」入口按钮（代码创建，只建一次）
+func _ensure_costume_entry_btn(ev):
+	if not ev.has_node("ExchangeEntryBox"): return
+	var box = ev.get_node("ExchangeEntryBox")
+	if box.get_node_or_null("CostumeExchangeBtn") != null: return
+	var btn = Button.new()
+	btn.name = "CostumeExchangeBtn"
+	btn.text = "服装兑换"
+	btn.custom_minimum_size = Vector2(220, 80)   # 容器会自动排列；尺寸不合适可微调
+	btn.pressed.connect(c.costume_view.show_costume_exchange_view)
+	box.add_child(btn)

@@ -14,9 +14,6 @@ bg_color = Color(0.13867968, 0.13867983, 0.12607783, 1)
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_62e2m"]
 bg_color = Color(0.0071415594, 0.0071415617, 0.007141554, 1)
 
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_qtu10"]
-bg_color = Color(0.05457376, 0.05457379, 0.054573722, 1)
-
 [node name="control" type="Control" unique_id=1611249931]
 layout_mode = 3
 anchors_preset = 0
@@ -167,7 +164,7 @@ text = "背包"
 
 [node name="Overlay" type="ColorRect" parent="." unique_id=1151962551]
 visible = false
-z_index = 1
+z_index = -10
 layout_mode = 0
 offset_right = 1152.0
 offset_bottom = 648.0
@@ -429,70 +426,6 @@ offset_top = -10.0
 offset_right = 615.0
 offset_bottom = 21.0
 text = "✕ "
-
-[node name="HeroPanel" type="Panel" parent="." unique_id=462287886]
-visible = false
-z_index = 2
-layout_mode = 0
-offset_left = 326.0
-offset_top = 124.0
-offset_right = 826.0
-offset_bottom = 524.0
-theme_override_styles/panel = SubResource("StyleBoxFlat_qtu10")
-
-[node name="HeroName" type="Label" parent="HeroPanel" unique_id=1642015587]
-layout_mode = 0
-offset_left = 20.0
-offset_top = 20.0
-offset_right = 60.0
-offset_bottom = 43.0
-
-[node name="HeroIncome" type="Label" parent="HeroPanel" unique_id=1352230536]
-layout_mode = 0
-offset_left = 20.0
-offset_top = 60.0
-offset_right = 60.0
-offset_bottom = 83.0
-
-[node name="HeroCloseBtn" type="Button" parent="HeroPanel" unique_id=923600435]
-custom_minimum_size = Vector2(28, 28)
-layout_mode = 0
-offset_left = 470.0
-offset_right = 498.0
-offset_bottom = 31.0
-text = "X"
-
-[node name="ScrollContainer" type="ScrollContainer" parent="HeroPanel" unique_id=2080348750]
-layout_mode = 0
-offset_left = 20.0
-offset_top = 110.0
-offset_right = 480.0
-offset_bottom = 350.0
-
-[node name="SkillList" type="VBoxContainer" parent="HeroPanel/ScrollContainer" unique_id=1754006406]
-layout_mode = 2
-size_flags_vertical = 0
-
-[node name="LevelUpBox" type="HBoxContainer" parent="HeroPanel" unique_id=1790861493]
-layout_mode = 0
-offset_left = 275.0
-offset_top = 30.0
-offset_right = 340.0
-offset_bottom = 73.0
-
-[node name="LevelUpInfo" type="Label" parent="HeroPanel/LevelUpBox" unique_id=64696787]
-layout_mode = 2
-
-[node name="LevelUpBtnBox" type="VBoxContainer" parent="HeroPanel/LevelUpBox" unique_id=197963921]
-layout_mode = 2
-
-[node name="LevelUpBtn" type="Button" parent="HeroPanel/LevelUpBox/LevelUpBtnBox" unique_id=1958403097]
-layout_mode = 2
-
-[node name="BatchCheck" type="CheckBox" parent="HeroPanel/LevelUpBox/LevelUpBtnBox" unique_id=1428309525]
-layout_mode = 2
-theme_override_font_sizes/font_size = 12
-text = "十连"
 
 [node name="Timer" type="Timer" parent="." unique_id=719061768]
 autostart = true

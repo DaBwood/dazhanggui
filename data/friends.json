@@ -624,6 +624,20 @@
 			"du_kang"
 		]
 	},
+	"huan_xi": {
+		"name": "幻戏", 
+		"friendly": 100, 
+		"talent": 100, 
+		"bond": 0, 
+		"fixed_skill_level": 0, 
+		"percent_skill_level": 0,
+		"bound_heroes": [
+			"lan_feihong",
+			 "baixi_shengdao",
+			 "zhang_qiling", 
+			"sun_bin"
+		]
+	},
 	"ma_xianglan_friend": {
 		"name": "马湘兰",
 		"friendly": 100,

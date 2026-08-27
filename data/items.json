@@ -132,7 +132,7 @@
 		"title": "使用百年人参"
 	  }
 	},
-	 "ginseng_1000": {
+	"ginseng_1000": {
 	  "name": "千年人参",
 	  "desc": "指定门客基础赚速+20000",
 	  "use": {
@@ -146,28 +146,28 @@
 	  "desc": "赠送给挚友，友好+1"
 	},
 	"tong_zan": {
-	"name": "铜簪",
-	"desc": "赠送挚友，友好度+2",
-	"type": "gift"
+	  "name": "铜簪",
+	  "desc": "赠送挚友，友好度+2",
+	  "type": "gift"
 	},
 	"yin_erhuan": {
-	"name": "银耳环",
-	"desc": "赠送挚友，友好度+5",
-	"type": "gift"
+	  "name": "银耳环",
+	  "desc": "赠送挚友，友好度+5",
+	  "type": "gift"
 	},
 	"rouge": {
 	  "name": "胭脂",
 	  "desc": "赠送给挚友，才华+1"
 	},
 	"xiang_nang": {
-	"name": "香囊",
-	"desc": "赠送挚友，才华+2",
-	"type": "gift"
+	  "name": "香囊",
+	  "desc": "赠送挚友，才华+2",
+	  "type": "gift"
 	},
 	"huarong_xia": {
-	"name": "花容匣",
-	"desc": "赠送挚友，才华+5",
-	"type": "gift"
+	  "name": "花容匣",
+	  "desc": "赠送挚友，才华+5",
+	  "type": "gift"
 	},
 	"energy_pill": {
 	  "name": "精力丹",
@@ -200,9 +200,9 @@
 	  "desc": "刷新珍兽技能"
 	},
 	"stamina_pill": {
-	"name": "体力丹",
-	"desc": "使用后恢复1点游历体力，可超过体力上限",
-	"type": "use"
+	  "name": "体力丹",
+	  "desc": "使用后恢复1点游历体力，可超过体力上限",
+	  "type": "use"
 	},
 	"lottery_ticket": {
 	  "name": "抽奖券",
@@ -216,7 +216,6 @@
 	  "name": "挚友帖",
 	  "desc": "用于兑换挚友"
 	},
-   
 	"vitality_pill": {
 	  "name": "活力丹",
 	  "desc": "使用后徒弟槽位活力+5"
@@ -268,18 +267,18 @@
 	  "desc": "后续玩法更新后使用"
 	},
 	"patient_manual": {
-		"name": "病人手册", 
-		"desc": "记载各类病症诊治之法的手册（后续玩法使用）"
+	  "name": "病人手册",
+	  "desc": "记载各类病症诊治之法的手册（后续玩法使用）"
 	},
 	"cricket_cage": {
-		"name": "促织笼",
-		 "desc": "豢养促织的笼子（后续玩法使用）"
+	  "name": "促织笼",
+	  "desc": "豢养促织的笼子（后续玩法使用）"
 	},
 	"zui_xian_niang": {
 	  "name": "醉仙酿",
 	  "desc": "李白赋诗升级所需"
 	},
-	 "zongjiang_ling": {
+	"zongjiang_ling": {
 	  "name": "宗匠令",
 	  "desc": "兑换一代宗匠系列门客所需"
 	},
@@ -418,6 +417,68 @@
 	"xing_shu_lin": {
 	  "name": "星枢麟角",
 	  "desc": "兑换星神圣兽"
+	},
+	"yu_shi": {
+	  "name": "鱼食",
+	  "desc": "垂钓相关的饵料（后续玩法更新后使用）",
+	  "hide_in_bag": true
+	},
+	"minjing_shouji": {
+	  "name": "市井手记",
+	  "desc": "记录市井百态的手记（后续玩法更新后使用）"
+	},
+	"jia_niang": {
+	  "name": "佳酿",
+	  "desc": "窖藏多年的美酒（后续玩法更新后使用）"
+	},
+	"chanwu_card": {
+	  "name": "产物卡",
+	  "desc": "使用后获得当前庄园12小时的全部产物",
+	  "use": {
+		"type": "quantity",
+		"btn": "使用",
+		"title": "使用产物卡"
+	  }
+	},
+	"yu_huang": {
+	  "name": "玉璜",
+	  "desc": "半璧形的古玉（后续玩法更新后使用）"
+	},
+	"tanmu_zan": {
+	  "name": "檀木簪",
+	  "desc": "檀木雕琢的发簪（后续玩法更新后使用）"
+	},
+	"shengshi_zhong": {
+	  "name": "盛世钟",
+	  "desc": "清平盛世系列服装的兑换道具（后续玩法产出）"
+	},
+	"jingzhong_bei": {
+	  "name": "精忠碑",
+	  "desc": "精忠报国系列服装的兑换道具（后续玩法产出）"
+	},
+	"feng_yu": {
+	  "name": "凤羽",
+	  "desc": "五凤来仪系列服装的兑换道具（后续玩法产出）"
+	},
+	"jin_furong": {
+	  "name": "金芙蓉",
+	  "desc": "百花齐放系列服装的兑换道具（后续玩法产出）"
+	},
+	"jian_wan": {
+	  "name": "剑丸",
+	  "desc": "君子如剑系列服装的兑换道具（后续玩法产出）"
+	},
+	"tian_xing": {
+	  "name": "天星",
+	  "desc": "汴梁女团系列服装的兑换道具（后续玩法产出）"
+	},
+	"bogu_juan": {
+	  "name": "博古卷",
+	  "desc": "传世珍宝系列服装的兑换道具（后续玩法产出）"
+	},
+	"fengyou_wuyue_shi": {
+	  "name": "凤游五岳石",
+	  "desc": "山河五岳系列服装的兑换道具（后续玩法产出）"
 	}
   },
   "initial": {
@@ -502,6 +563,12 @@
 	"tong_zan": 0,
 	"yin_erhuan": 0,
 	"xiang_nang": 0,
-	"huarong_xia": 0
+	"huarong_xia": 0,
+	"yu_shi": 0,
+	"minjing_shouji": 0,
+	"jia_niang": 0,
+	"chanwu_card": 0,
+	"yu_huang": 0,
+	"tanmu_zan": 0
   }
 }

@@ -48,6 +48,9 @@ var player_panel   # 玩家信息/身份/每日奖励弹窗
 var manor_view   # 庄园视图（第4批新增）
 var courtyard_view   # 宅院视图（第7批新增，作为庄园第三页签）
 var war_view   # 商战视图（第5批新增）
+var fishing_view   # 垂钓视图（第8批新增）
+var fish_equip_view   # 门客渔获装备弹窗（第8批新增）
+var costume_view   # 【服装系统】服装视图
 
 func _ready():
 	#打印场景树
@@ -75,6 +78,9 @@ func _ready():
 	manor_view = ManorView.new(self)
 	courtyard_view = CourtyardView.new(self)   # 【第7批新增】宅院页签内容
 	war_view = WarView.new(self)
+	fishing_view = FishingView.new(self)   # 【第8批新增】垂钓视图
+	fish_equip_view = FishEquipView.new(self)   # 【第8批新增】渔获装备弹窗
+	costume_view = CostumeView.new(self)
 	data.load_game()  # ← 先读档
 
 	# 计算离线收益
@@ -237,7 +243,8 @@ func switch_page(page_id: String):
 		hide_charity_view()
 		hide_travel_view()
 		hide_manor_view()
-		hide_war_view()     
+		hide_war_view() 
+		hide_fishing_view()   # 【第8批新增】关闭垂钓子视图    
 		update_adventure_page()
 	
 	if page_id == "apprentice": update_apprentice_page()
@@ -617,8 +624,12 @@ func _create_base_popup(title_text: String, popup_size: Vector2, pos: Vector2 = 
 	panel.z_index = 30
 	
 	var style = StyleBoxFlat.new()
-	style.bg_color = Color("#1e1b2e")
+	# 【改】底色提亮一档（原 #1e1b2e 与全屏门客面板同色，弹窗会融进背景）
+	style.bg_color = Color("#2a2640")
 	style.set_corner_radius_all(12)
+	# 【新增】2px 淡紫描边，弹窗边界一眼可辨（想换金色描边就改成 "#a8893f"）
+	style.set_border_width_all(2)
+	style.border_color = Color("#6a5f9e")
 	panel.add_theme_stylebox_override("panel", style)
 	
 	var vbox = VBoxContainer.new()
@@ -1292,3 +1303,21 @@ func hide_war_view():
 # 刷新商战界面
 func update_war_view():
 	return war_view.update_war_view()
+
+# ==================== 【转发】垂钓视图 → pages/fishing_view.gd（第8批新增） ====================
+
+# 在闯荡页注入垂钓入口按钮与子视图（由 adventure_page 构建时调用）
+func build_fishing_view(page, vbox):
+	return fishing_view.build_fishing_view(page, vbox)
+
+# 打开垂钓
+func show_fishing_view():
+	return fishing_view.show_fishing_view()
+
+# 返回闯荡主页
+func hide_fishing_view():
+	return fishing_view.hide_fishing_view()
+
+# 打开门客渔获装备弹窗（由 hero_page 渔获按钮触发）
+func show_fish_equip_view(hero_id: String):
+	return fish_equip_view.show_fish_equip_view(hero_id)

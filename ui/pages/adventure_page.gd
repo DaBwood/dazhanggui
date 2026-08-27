@@ -369,6 +369,9 @@ func generate_adventure_page():
 	
 	# 【第5批新增】商战入口与子视图（构建逻辑在 pages/war_view.gd，此处仅挂接）
 	c.build_war_view(page, vbox)
+	
+	# 【第8批新增】垂钓入口与子视图（构建逻辑在 pages/fishing_view.gd，此处仅挂接）
+	c.build_fishing_view(page, vbox)
 
 func update_adventure_page():
 	# 页面静态，无需动态更新

@@ -188,6 +188,20 @@ func _add_production(minutes: float):
 			var product = cfg.get("product", cfg.get("name", sid))
 			g.manor_goods[product] = g.manor_goods.get(product, 0.0) + get_species_rate(sid) * minutes
 
+# 【第8批新增】产物卡用：按当前产量把 N 小时的全部产物直接入庄园仓库，返回 {产物名: 数量} 明细供弹窗展示
+func add_hours_production(hours: float) -> Dictionary:
+	var gains = {}
+	if hours <= 0.0: return gains
+	for kind in ["crops", "animals"]:
+		for cfg in get_species_list(kind):
+			var sid = cfg.get("id", "")
+			if get_unlocked_plot_count(sid) <= 0: continue
+			var product = cfg.get("product", cfg.get("name", sid))
+			var amount = get_species_rate(sid) * hours * 60.0   # 产量/分钟 × 分钟数
+			g.manor_goods[product] = g.manor_goods.get(product, 0.0) + amount
+			gains[product] = gains.get(product, 0.0) + amount
+	return gains
+
 # 在线懒结算：按距上次结算的时间差入库（挂在每秒自动收益处调用）
 func settle():
 	var now = int(Time.get_unix_time_from_system())

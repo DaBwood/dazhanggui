@@ -415,6 +415,17 @@ var manor_last_settle: int = 0        # 上次产量结算时间戳（在线懒�
 # ========== 宅院状态（第7批新增；逻辑在 systems/courtyard_system.gd） ==========
 var courtyard_levels: Dictionary = {} # {技艺id: {project1/project2: {vol1/vol2: 卷轴等级}}}
 
+# ========== 垂钓状态（第8批新增；逻辑在 systems/fishing_system.gd） ==========
+var fishing_dilong: int = 10            # 地龙（钓鱼消耗，1个/次，每小时恢复1个，无上限）
+var fishing_chilong: int = 0            # 赤龙（下一钓点的消耗道具，垂钓礼包获取，预留）
+var fishing_dilong_time: int = 0        # 上次地龙恢复结算时间戳（懒结算用）
+var fishing_weather: String = ""        # 当前天气（晴天/雨天/雪天）
+var fishing_weather_expire: int = 0     # 天气过期时间戳（每次随机持续6小时）
+var fishing_storage: Dictionary = {}    # 钓鱼仓库 {渔获id: 数量}（独立仓库，不进背包）
+var fishing_tasks: Array = []           # 已接钓鱼任务 [{id, progress}]，上限3个
+var fishing_dex: Dictionary = {}        # 垂钓图鉴 {渔获id: 1已解锁未领取/2已领取}
+var fishing_fish_dev: Dictionary = {}   # 渔获养成 {渔获id: {tier, skills, xp}}（第8批新增·按种类养成）
+
 # ========== 商战状态（第5批新增；逻辑在 systems/war_system.gd） ==========
 var war_tax_level: int = 1            # 税所等级（上限200）
 var war_tax_accum: float = 0.0        # 税所已累积秒数（封顶500分钟）
@@ -503,6 +514,10 @@ var war_system   # 商战系统（第5批新增）
 var _war_configs: Dictionary = {}   # 商战配置（war.json，由 _load_all_configs 加载）
 var goal_system   # 挚友目标系统（第6批新增）
 var _goal_configs: Dictionary = {}   # 挚友目标配置（goals.json，由 _load_all_configs 加载）
+var fishing_system   # 垂钓系统（第8批新增）
+var _fishing_configs: Dictionary = {}   # 垂钓配置（fishing.json，由 _load_all_configs 加载）
+var costume_system    # 【服装系统】
+var costume_configs   # 【服装系统】服装配置
 # ==================== 初始化 ====================
 # 初始化：创建各子系统（纯逻辑模块，持有本中枢引用），再加载全部配置
 func _init():
@@ -521,6 +536,8 @@ func _init():
 	courtyard_system = CourtyardSystem.new(self)   # 【第7批新增】宅院技艺卷轴系统
 	war_system = WarSystem.new(self)
 	goal_system = GoalSystem.new(self)
+	fishing_system = FishingSystem.new(self)   # 【第8批新增】垂钓系统
+	costume_system = CostumeSystem.new(self)
 	_load_all_configs()
 
 # ==================== 配置加载 ====================
@@ -546,6 +563,8 @@ func _load_all_configs():
 	_courtyard_configs = _load_json("res://data/courtyard.json")   # 【第7批新增】宅院技艺配置
 	_war_configs = _load_json("res://data/war.json")   # 【第5批新增】商战配置
 	_goal_configs = _load_json("res://data/goals.json")   # 【第6批新增】挚友目标配置
+	_fishing_configs = _load_json("res://data/fishing.json")   # 【第8批新增】垂钓配置
+	costume_configs = _load_json("res://data/costumes.json")   # 【服装系统】
 	_load_items_config()   # 【重构新增】道具表
 	_load_travel_config()  # 【重构新增】游历配置
 	_load_stage_box_config()  # 【新增】关卡宝箱掉落表
@@ -700,7 +719,7 @@ func save_game():
 	# 各子系统把自己的字段合并进来（新系统加存档字段只需改它自己的 get_save_data）
 	var systems = [hero_system, friend_system, apprentice_system, beast_system, shop_system,
 		stage_system, item_system, travel_system, charity_system, lottery_system, mall_system,
-		manor_system,courtyard_system,war_system,goal_system]
+		manor_system,courtyard_system,war_system,goal_system,goal_system,fishing_system]
 	for sys in systems:
 		save_data.merge(sys.get_save_data(), true)
 	var file = FileAccess.open(SAVE_PATH, FileAccess.WRITE)
@@ -740,7 +759,7 @@ func load_game():
 	# ===== 各子系统认领自己的字段（含旧存档兼容逻辑） =====
 	var systems = [hero_system, friend_system, apprentice_system, beast_system, shop_system,
 		stage_system, item_system, travel_system, charity_system, lottery_system, mall_system,
-		manor_system,courtyard_system,war_system,goal_system]
+		manor_system,courtyard_system,war_system,goal_system,goal_system,fishing_system]
 	for sys in systems:
 		sys.load_save_data(data)
 
@@ -1325,3 +1344,29 @@ func check_friend_goals():
 # 某目标统计项当前值（首充特判在系统内处理）
 func get_friend_goal_stat(stat: String) -> int:
 	return goal_system.get_stat(stat)
+
+# ==================== 【转发】垂钓系统 → systems/fishing_system.gd（第8批新增） ====================
+
+# 抛竿一次（返回 {ok, type:"fish"/"task", ...}）
+func do_fishing():
+	return fishing_system.do_fishing()
+
+# 当前地龙数量（懒结算后）
+func get_fishing_dilong():
+	return fishing_system.get_dilong()
+
+# ===== 【转发】渔获加成 → fishing_system（供 HeroData 聚合调用，第8批新增） =====
+func get_hero_fish_percent(hero_id: String):
+	return fishing_system.get_fish_percent_bonus(fishing_system.get_hero_fish(hero_id))
+
+func get_hero_fish_flat_income(hero_id: String):
+	return fishing_system.get_fish_flat_income(fishing_system.get_hero_fish(hero_id))
+
+func get_hero_fish_aptitude(hero_id: String):
+	return fishing_system.get_fish_skill_aptitude(fishing_system.get_hero_fish(hero_id))
+#服装加成门客
+func get_hero_costume_aptitude(hero_id: String) -> int:
+	return costume_system.get_hero_costume_aptitude(hero_id)
+
+func get_hero_costume_series_pct(hero_id: String) -> float:
+	return costume_system.get_hero_costume_series_pct(hero_id)

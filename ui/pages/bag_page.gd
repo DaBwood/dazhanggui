@@ -55,6 +55,8 @@ func generate_bag_list():
 	# 为每种物品生成格子
 	for item_id in data.ITEM_CONFIG.keys():
 		var cfg = data.ITEM_CONFIG[item_id]
+		# 【新增】带 hide_in_bag 标记的道具不在背包显示（如鱼食：垂钓专用材料，在喂养弹窗里看数量）
+		if cfg.get("hide_in_bag", false): continue
 		var count = data.items.get(item_id, 0)
 		if item_id == "lottery_ticket":
 			count = data.lottery_ticket

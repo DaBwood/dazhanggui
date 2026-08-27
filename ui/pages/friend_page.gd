@@ -330,6 +330,21 @@ func _update_friend_page_detail():
 		else:
 			btn.visible = false
 
+	# 【服装系统】服装按钮（挚友详情左侧、技能行下方；绝对定位，位置不合适可微调 position）
+	var cos_btn = detail.get_node_or_null("FriendCostumeBtn")
+	if cos_btn == null:
+		cos_btn = Button.new()
+		cos_btn.name = "FriendCostumeBtn"
+		cos_btn.text = "服装"
+		cos_btn.add_theme_font_size_override("font_size", 14)
+		cos_btn.position = Vector2(30, 320)
+		cos_btn.size = Vector2(120, 40)
+		detail.add_child(cos_btn)
+	# 信号重连（先断后连，防止切换挚友后串数据）
+	for conn in cos_btn.pressed.get_connections():
+		cos_btn.pressed.disconnect(conn.callable)
+	cos_btn.pressed.connect(c.costume_view.show_friend_costume_popup.bind(current_friend_id))
+
 func _on_shop_skill_clicked(skill_index: int):
 	_selected_shop_skill_index = skill_index
 	_show_shop_skill_detail(skill_index)
