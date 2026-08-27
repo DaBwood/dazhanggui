@@ -71,6 +71,8 @@ func unlock_friend(friend_id: String) -> bool:
 	if cfg.is_empty(): return false
 	g.friends[friend_id] = cfg
 	_init_friend_shop_skills(friend_id)
+	# 【新增】宅院挚友卷补发：挚友解锁时继承其固定分组已累计的友好/才华加成
+	g.apply_courtyard_friend_unlock_bonus(friend_id)
 	return true
 
 # ========== 计算函数 ==========

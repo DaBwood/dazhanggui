@@ -66,8 +66,9 @@ func get_shop_auto_income(shop_id: String) -> int:
 	var s = g.shops[shop_id]
 	#基础赚速
 	var base = int(s.auto_base * pow(s.income_mult, s.level - 1))
-	#店员赚速
-	var staff = s.staff * s.staff_income
+	# 店员赚速（【新增】叠加宅院商铺卷一：每个店员赚速 +0.1×卷一等级）
+	var staff_income = float(s.staff_income) + g.get_courtyard_shop_staff_income_bonus(shop_id)
+	var staff = s.staff * staff_income
 	
 	# 门客派遣加成
 	var hero_bonus = 0.0
@@ -85,8 +86,8 @@ func get_shop_auto_income(shop_id: String) -> int:
 	#基础+店员
 	var subtotal = base + staff
 	
-	#总百分比
-	var bonus = 1.0 + get_global_bonus_percent()+hero_bonus + friend_shop_bonus
+	# 总百分比（【新增】叠加宅院商铺卷二：店铺总赚速 +25%×卷二等级）
+	var bonus = 1.0 + get_global_bonus_percent() + hero_bonus + friend_shop_bonus + g.get_courtyard_shop_percent_bonus(shop_id)
 	#返回最终赚速
 	return int(subtotal * bonus)
 

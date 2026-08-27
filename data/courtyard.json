@@ -1,0 +1,722 @@
+{
+  "settings": {
+	"cost_formulas": {
+	  "comment": "单级消耗 = a + b × 当前等级^p（单位：产物个数，最低1个）",
+	  "shop":   { "vol1": {"a": 0, "b": 0.00525, "p": 3.4},     "vol2": {"a": 200000, "b": 88000, "p": 1.0} },
+	  "hero":   { "vol1": {"a": 0, "b": 0.00000108, "p": 5.0},  "vol2": {"a": 4700000, "b": 1800000, "p": 0.8} },
+	  "friend": { "vol1": {"a": 1550000, "b": 8200, "p": 1.0},  "vol2": {"a": 1550000, "b": 8200, "p": 1.0} }
+	},
+	"shop_staff_income_per_level": 0.1,
+	"shop_percent_per_level": 0.25,
+	"hero_income_per_level": 5000,
+	"hero_aptitude_per_level": 1,
+	"friend_friendly_per_level": 1,
+	"friend_talent_per_level": 1
+  },
+  "techniques": [
+	{
+	  "id": "cellaring",
+	  "name": "窖藏",
+	  "product": "白萝卜",
+	  "project1": {
+		"type": "shop",
+		"target": "ke_zhan",
+		"target_name": "客栈"
+	  },
+	  "project2": {
+		"type": "hero",
+		"heroes": [
+		  "luo_haiwang",
+		  "liu_xizi",
+		  "hu_lu_xianren",
+          "cai_yufu"
+		]
+	  }
+	},
+	{
+	  "id": "sorted_storage",
+	  "name": "分类储存",
+	  "product": "胡萝卜",
+	  "project1": {
+		"type": "shop",
+		"target": "yi_guan",
+		"target_name": "医馆"
+	  },
+	  "project2": {
+		"type": "hero",
+		"heroes": [
+		  "li_gushi",
+		  "huo_yanwang",
+		  "wu_shiren",
+          "bi_sheng"
+		]
+	  }
+	},
+	{
+	  "id": "four_diagnosis",
+	  "name": "望闻问切",
+	  "product": "土豆",
+	  "project1": {
+		"type": "shop",
+		"target": "shuoshu_tan",
+		"target_name": "说书摊"
+	  },
+	  "project2": {
+		"type": "hero",
+		"heroes": [
+		  "lu_ban",
+		  "qin_shihuang",
+		  "du_kang",
+          "xiao_yuer"
+		]
+	  }
+	},
+	{
+	  "id": "acupuncture",
+	  "name": "针灸",
+	  "product": "鸡蛋",
+	  "project1": {
+		"type": "friend",
+		"friends": [
+		  "ya_huan",
+		  "hong_ying",
+		  "qi_guang",
+		  "dong_xiaowan_friend",
+		  "shu_xiang_nv",
+		  "sha_lan",
+		  "hui_yin",
+		  "shi_bo_shi",
+		  "pi_pa_nv",
+          "ni_huang_junzhu"
+		]
+	  },
+	  "project2": {
+		"type": "hero",
+		"heroes": [
+		  "hu_qigai",
+		  "zhen_tufu",
+		  "zhu_daliang",
+          "lv_bu"
+		]
+	  }
+	},
+	{
+	  "id": "herb_processing",
+	  "name": "草药炮制",
+	  "product": "笋",
+	  "project1": {
+		"type": "shop",
+		"target": "xiangliao_pu",
+		"target_name": "香料铺"
+	  },
+	  "project2": {
+		"type": "hero",
+		"heroes": [
+		  "li_xiangjun",
+		  "ma_xianglan",
+		  "long_xiang",
+          "ge_langzhong"
+		]
+	  }
+	},
+	{
+	  "id": "double_axe",
+	  "name": "双刃斧",
+	  "product": "羊毛",
+	  "project1": {
+		"type": "friend",
+		"friends": [
+		  "hua_yi_shi",
+		  "ling_ye_mao_nv",
+		  "shou_gong_shaonv",
+		  "ji_ye",
+		  "mi_tan",
+		  "shen_meizhuang",
+		  "yao_ying",
+		  "change",
+		  "xiu_niang",
+          "xun_ying_shaonv"
+		]
+	  },
+	  "project2": {
+		"type": "hero",
+		"heroes": [
+		  "hong_laoxie",
+		  "yan_xiansheng",
+		  "wang_zhaojun",
+          "shi_gandang"
+		]
+	  }
+	},
+	{
+	  "id": "bow_saw",
+	  "name": "弓锯",
+	  "product": "狗牙",
+	  "project1": {
+		"type": "friend",
+		"friends": [
+		  "jin_shu",
+		  "zhen_xian_nv",
+		  "nvba",
+		  "xiao_lu_nv",
+		  "dou_fu_nv",
+		  "ning_yin",
+		  "wan_wan",
+		  "xiao_shijie",
+		  "cu_ju_nv",
+          "tushan_honghong"
+		]
+	  },
+	  "project2": {
+		"type": "hero",
+		"heroes": [
+		  "zhang_qiling",
+		  "chiyou",
+		  "sun_bin",
+          "qian_caizhu"
+		]
+	  }
+	},
+	{
+	  "id": "two_man_saw",
+	  "name": "双人锯",
+	  "product": "洋葱",
+	  "project1": {
+		"type": "shop",
+		"target": "dang_pu",
+		"target_name": "当铺"
+	  },
+	  "project2": {
+		"type": "hero",
+		"heroes": [
+		  "luo_caifeng",
+		  "yan_xiaoer",
+		  "zheng_guonong",
+          "dong_xiaowan"
+		]
+	  }
+	},
+	{
+	  "id": "breeding",
+	  "name": "配种",
+	  "product": "猪肉",
+	  "project1": {
+		"type": "friend",
+		"friends": [
+		  "jian_wuzhe",
+		  "bu_kuai",
+		  "yao_pingguo",
+		  "yi_shi",
+		  "nan_gong_wan",
+		  "qi_shi",
+		  "hu_yao_zhanggui",
+		  "qian_ren_xue",
+		  "lie_ren",
+          "yin_niang"
+		]
+	  },
+	  "project2": {
+		"type": "hero",
+		"heroes": [
+		  "zhou_yu",
+		  "feng_mier",
+		  "jia_jiguan",
+          "zheng_he"
+		]
+	  }
+	},
+	{
+	  "id": "horse_judging",
+	  "name": "相马术",
+	  "product": "卷心菜",
+	  "project1": {
+		"type": "shop",
+		"target": "yao_pu",
+		"target_name": "药铺"
+	  },
+	  "project2": {
+		"type": "hero",
+		"heroes": [
+		  "liang_waiqi",
+		  "haotian_shangdi",
+		  "si_lang",
+          "zhang_laobo"
+		]
+	  }
+	},
+	{
+	  "id": "sericulture",
+	  "name": "育蚕治丝",
+	  "product": "牛奶",
+	  "project1": {
+		"type": "friend",
+		"friends": [
+		  "dao_gu",
+		  "bian_yujing_friend",
+		  "hong_niangzi",
+		  "luo",
+		  "miao_jiang_shengnv",
+		  "yuan_xiao_guniang",
+		  "zi_yu",
+		  "xinniang",
+		  "yu_lu",
+          "qi_ling"
+		]
+	  },
+	  "project2": {
+		"type": "hero",
+		"heroes": [
+		  "bai_yuechu",
+		  "donghuang_taiyi",
+		  "dunhuang_jiangshen",
+          "ya_jiu"
+		]
+	  }
+	},
+	{
+	  "id": "saddle_making",
+	  "name": "马鞍制作",
+	  "product": "南瓜",
+	  "project1": {
+		"type": "shop",
+		"target": "jiu_si",
+		"target_name": "酒肆"
+	  },
+	  "project2": {
+		"type": "hero",
+		"heroes": [
+		  "luo_sunshan",
+		  "liu_maoxing",
+		  "li_shenshou",
+          "qin_qiong_yuchi_gong"
+		]
+	  }
+	},
+	{
+	  "id": "reeling_cart",
+	  "name": "缫车",
+	  "product": "猫爪",
+	  "project1": {
+		"type": "friend",
+		"friends": [
+		  "shao_jiangjun",
+		  "hua_lang",
+		  "yu_tu",
+		  "xiao_qigai",
+		  "zhuo_gui_shi",
+		  "xiao_ning",
+		  "yi_shi_new",
+		  "xiao_shimei",
+		  "wu_nv",
+          "jingwei"
+		]
+	  },
+	  "project2": {
+		"type": "hero",
+		"heroes": [
+		  "song_taizu",
+		  "guanxingshi",
+          "xie_lu"
+		]
+	  }
+	},
+	{
+	  "id": "animal_husbandry",
+	  "name": "畜牧",
+	  "product": "西瓜",
+	  "project1": {
+		"type": "shop",
+		"target": "yi_zhan",
+		"target_name": "驿站"
+	  },
+	  "project2": {
+		"type": "hero",
+		"heroes": [
+		  "xiang_en",
+		  "tang_hulu",
+          "song_huizong"
+		]
+	  }
+	},
+	{
+	  "id": "tie_dyeing",
+	  "name": "三缬印染",
+	  "product": "西红柿",
+	  "project1": {
+		"type": "shop",
+		"target": "jiu_fang",
+		"target_name": "酒坊"
+	  },
+	  "project2": {
+		"type": "hero",
+		"heroes": [
+		  "wan_jinya",
+		  "gao_jianli",
+          "xiao_wu"
+		]
+	  }
+	},
+	{
+	  "id": "lever_principle",
+	  "name": "杠杆原理",
+	  "product": "鼬毛",
+	  "project1": {
+		"type": "friend",
+		"friends": [
+		  "xun_ma_shi",
+		  "he_xi",
+		  "xihu_chuangniang",
+		  "gu_guo_gongzhu",
+		  "wu_nv_wu",
+		  "nvwa",
+		  "cai_shi_guan",
+		  "bi_bi_dong",
+		  "tan_you",
+          "yu_ji"
+		]
+	  },
+	  "project2": {
+		"type": "hero",
+		"heroes": [
+		  "xiang_yu",
+		  "liu_bukuai",
+          "ao_wu"
+		]
+	  }
+	},
+	{
+	  "id": "pottery",
+	  "name": "陶艺",
+	  "product": "灯笼椒",
+	  "project1": {
+		"type": "shop",
+		"target": "miaoyin_fang",
+		"target_name": "妙音坊"
+	  },
+	  "project2": {
+		"type": "hero",
+		"heroes": [
+		  "houyi",
+		  "li_jianchi",
+          "cai_jing"
+		]
+	  }
+	},
+	{
+	  "id": "cormorant_fishing",
+	  "name": "鸬鹚捕鱼",
+	  "product": "马蹄",
+	  "project1": {
+		"type": "friend",
+		"friends": [
+		  "ji_zhou",
+		  "xi_zi",
+		  "cai_yao_nv",
+		  "yu_ge",
+		  "yun_zhi",
+		  "tang_pingguo",
+		  "hua_mulan_friend",
+		  "xiyu_nvzi",
+		  "li_shishi",
+          "hua_wuque"
+		]
+	  },
+	  "project2": {
+		"type": "hero",
+		"heroes": [
+		  "fang_huotou",
+		  "mei_changsu",
+          "zhuang_gengfu"
+		]
+	  }
+	},
+	{
+	  "id": "brewing",
+	  "name": "酿酒术",
+	  "product": "茄子",
+	  "project1": {
+		"type": "shop",
+		"target": "changle_fang",
+		"target_name": "长乐坊"
+	  },
+	  "project2": {
+		"type": "hero",
+		"heroes": [
+		  "yang_jian",
+		  "qin_jianxian",
+          "lei_en"
+		]
+	  }
+	},
+	{
+	  "id": "casting_net",
+	  "name": "手抛网",
+	  "product": "狐尾",
+	  "project1": {
+		"type": "friend",
+		"friends": [
+		  "xiao_mujiang",
+		  "lang_zi",
+		  "niu_lang",
+		  "qing_ning",
+		  "xiao_wu_friend",
+		  "qiu_ying",
+		  "huang_ye_linglan",
+		  "xiwangmu",
+          "kou_baimen_friend"
+		]
+	  },
+	  "project2": {
+		"type": "hero",
+		"heroes": [
+		  "kou_baimen",
+		  "dayu",
+          "ding_xiren"
+		]
+	  }
+	},
+	{
+	  "id": "mortise_tenon",
+	  "name": "榫卯结构",
+	  "product": "草莓",
+	  "project1": {
+		"type": "shop",
+		"target": "chengyi_pu",
+		"target_name": "成衣铺"
+	  },
+	  "project2": {
+		"type": "hero",
+		"heroes": [
+		  "baixi_shengdao",
+		  "zhang_sanfeng",
+          "xiao_ba"
+		]
+	  }
+	},
+	{
+	  "id": "leisi",
+	  "name": "耒耜",
+	  "product": "橘子",
+	  "project1": {
+		"type": "shop",
+		"target": "suanming_tan",
+		"target_name": "算命摊"
+	  },
+	  "project2": {
+		"type": "hero",
+		"heroes": [
+		  "he_yashi",
+		  "ne_zha",
+          "zheng_chuzi"
+		]
+	  }
+	},
+	{
+	  "id": "calendar",
+	  "name": "历法",
+	  "product": "蜂蜜",
+	  "project1": {
+		"type": "friend",
+		"friends": [
+		  "jiang_men_nvzi",
+		  "mai_san_nv",
+		  "zhou_meili",
+		  "mu_shu",
+		  "ma_xianglan_friend",
+		  "wanghou_fuhao",
+		  "ma_ma",
+		  "xinniang_zhimei",
+          "wu_xie"
+		]
+	  },
+	  "project2": {
+		"type": "hero",
+		"heroes": [
+		  "song_jiang",
+		  "cao_tiejiang",
+          "xing_huwei"
+		]
+	  }
+	},
+	{
+	  "id": "solar_terms",
+	  "name": "时令节气",
+	  "product": "鹿茸",
+	  "project1": {
+		"type": "friend",
+		"friends": [
+		  "li_xiangjun_friend",
+		  "zhao_yang",
+		  "ying_chun",
+		  "meng_qier",
+		  "jiu_yue",
+		  "jun_zhu",
+		  "zhu_sha",
+		  "rong",
+          "zhi_nv"
+		]
+	  },
+	  "project2": {
+		"type": "hero",
+		"heroes": [
+		  "jisi_fuhao",
+		  "hua_mulan",
+          "leng_erpi"
+		]
+	  }
+	},
+	{
+	  "id": "curved_plow",
+	  "name": "曲辕犁",
+	  "product": "苹果",
+	  "project1": {
+		"type": "shop",
+		"target": "chema_hang",
+		"target_name": "车马行"
+	  },
+	  "project2": {
+		"type": "hero",
+		"heroes": [
+		  "tian_shiren",
+		  "zhu_huolang",
+          "kang_chashi"
+		]
+	  }
+	},
+	{
+	  "id": "windlass",
+	  "name": "辘轳",
+	  "product": "蛇胆",
+	  "project1": {
+		"type": "friend",
+		"friends": [
+		  "hua_zhao",
+		  "mo_li",
+		  "si_tang",
+		  "tushanshi",
+		  "cao_yuan_nvhai",
+		  "xiao_hudie",
+		  "jing_an",
+		  "xing_lan",
+          "wang_zhaojun_friend"
+		]
+	  },
+	  "project2": {
+		"type": "hero",
+		"heroes": [
+		  "lan_feihong",
+		  "yao_wuzuo",
+          "liu_silang"
+		]
+	  }
+	},
+	{
+	  "id": "wheelbarrow",
+	  "name": "独轮车",
+	  "product": "梨",
+	  "project1": {
+		"type": "shop",
+		"target": "cha_si",
+		"target_name": "茶肆"
+	  },
+	  "project2": {
+		"type": "hero",
+		"heroes": [
+		  "xiao_qi",
+		  "fuxi",
+          "wu_biaoshi"
+		]
+	  }
+	},
+	{
+	  "id": "handcart",
+	  "name": "手推车",
+	  "product": "芒果",
+	  "project1": {
+		"type": "shop",
+		"target": "zao_tang",
+		"target_name": "澡堂"
+	  },
+	  "project2": {
+		"type": "hero",
+		"heroes": [
+		  "zhao_liehu",
+		  "ou_yezi",
+          "yun_youren"
+		]
+	  }
+	},
+	{
+	  "id": "waterwheel",
+	  "name": "水车",
+	  "product": "莲雾",
+	  "project1": {
+		"type": "shop",
+		"target": "yao_chang",
+		"target_name": "窑厂"
+	  },
+	  "project2": {
+		"type": "hero",
+		"heroes": [
+		  "jia_houzi",
+		  "shen_suanzi",
+          "pi_yingjiang"
+		]
+	  }
+	},
+	{
+	  "id": "folded_forging",
+	  "name": "折叠锻打",
+	  "product": "蟠桃",
+	  "project1": {
+		"type": "shop",
+		"target": "chuan_wu",
+		"target_name": "船坞"
+	  },
+	  "project2": {
+		"type": "hero",
+		"heroes": [
+		  "wu_daozi",
+		  "su_wu",
+          "bian_yujing"
+		]
+	  }
+	},
+	{
+	  "id": "clay_tempering",
+	  "name": "覆土烧刃",
+	  "product": "香蕉",
+	  "project1": {
+		"type": "shop",
+		"target": "xi_lou",
+		"target_name": "戏楼"
+	  },
+	  "project2": {
+		"type": "hero",
+		"heroes": [
+		  "li_bai",
+		  "niu_fushi",
+          "sun_wu"
+		]
+	  }
+	},
+	{
+	  "id": "quenching",
+	  "name": "淬火技艺",
+	  "product": "荔枝",
+	  "project1": {
+		"type": "shop",
+		"target": "biao_ju",
+		"target_name": "镖局"
+	  },
+	  "project2": {
+		"type": "hero",
+		"heroes": [
+		  "gun_haijiao",
+		  "zong_ze",
+          "shen_wansan"
+		]
+	  }
+	}
+  ]
+}

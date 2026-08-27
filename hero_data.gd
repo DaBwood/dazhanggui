@@ -9,7 +9,7 @@ extends RefCounted
 
 # ============ 资质 ============
 
-# 门客总资质 = 初始资质 + 资质技能 + 晋升 + 珍兽资质
+# 门客总资质 = 初始资质 + 资质技能 + 晋升 + 珍兽资质 + 宅院门客卷二
 # 【改】签名带 g，珍兽资质并入（原只算门客自身）；以后新资质来源加在这里
 static func get_total_aptitude(g, hero_id: String) -> int:
 	if not g.heroes.has(hero_id): return 0
@@ -23,6 +23,8 @@ static func get_total_aptitude(g, hero_id: String) -> int:
 	var beast_id = hero.get("equipped_beast", "")
 	if beast_id != "":
 		total += g.get_beast_aptitude(beast_id, hero.get("equipped_beast_index", 0))
+	# 【新增】宅院门客卷二资质加成（按固定门客分组反查对应卷轴等级）
+	total += g.get_courtyard_hero_aptitude_bonus(hero_id)
 	return total
 
 # 门客品质名
@@ -39,7 +41,7 @@ static func get_base_income(g, hero_id: String) -> int:
 	var hero = g.heroes[hero_id]
 	return int(get_total_aptitude(g, hero_id) * hero.level * hero.breakthrough_count)
 
-# 门客的额外赚速总和 = 额外赚速池 + 挚友固定加成
+# 门客的额外赚速总和 = 额外赚速池 + 挚友固定加成 + 宅院门客卷一
 # 额外赚速池（hero.extra_income）：人参/五道道具/今日新菜等固定数值加成的累计
 # 【新增】从 hero_system.get_hero_extra_income 搬入
 static func get_extra_income(g, hero_id: String) -> int:
@@ -48,6 +50,8 @@ static func get_extra_income(g, hero_id: String) -> int:
 	for fid in g.friends.keys():
 		if hero_id in g.friends[fid].bound_heroes:
 			extra += g.get_friend_fixed_bonus(fid)
+	# 【新增】宅院门客卷一固定赚速加成（每级+5000，按固定门客分组生效）
+	extra += g.get_courtyard_hero_income_bonus(hero_id)
 	return extra
 
 # 门客的百分比加成总和（挚友 + 珍兽；TODO: 藏宝加成）

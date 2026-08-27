@@ -27,6 +27,16 @@ func load_save_data(s: Dictionary):
 	if s.has("manor_plots"): g.manor_plots = s.manor_plots.duplicate(true)
 	if s.has("manor_goods"): g.manor_goods = s.manor_goods.duplicate(true)
 	if s.has("manor_last_settle"): g.manor_last_settle = int(s.manor_last_settle)
+	# 【新增】宅院表格统一产物名：旧存档的仓库/地块迁移到新配置，避免产物凭空消失
+	if g.manor_plots.has("bear"):
+		g.manor_plots["bee"] = g.manor_plots["bear"]
+		g.manor_plots.erase("bear")
+	var goods_name_map = {"鼬尾": "鼬毛", "鹿角": "鹿茸", "狐狸尾": "狐尾", "熊掌": "蜂蜜"}
+	for old_name in goods_name_map.keys():
+		if g.manor_goods.has(old_name):
+			var new_name = goods_name_map[old_name]
+			g.manor_goods[new_name] = g.manor_goods.get(new_name, 0.0) + g.manor_goods[old_name]
+			g.manor_goods.erase(old_name)
 	# 清理存档中已不存在的品种（防止配置删了存档还残留）
 	for sid in g.manor_plots.keys():
 		if get_species_cfg(sid).is_empty():

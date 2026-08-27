@@ -46,6 +46,7 @@ var travel_view   # 闯荡-游历子视图
 var mall_panel   # 商城/充值/VIP弹窗
 var player_panel   # 玩家信息/身份/每日奖励弹窗
 var manor_view   # 庄园视图（第4批新增）
+var courtyard_view   # 宅院视图（第7批新增，作为庄园第三页签）
 var war_view   # 商战视图（第5批新增）
 
 func _ready():
@@ -72,6 +73,7 @@ func _ready():
 	mall_panel = MallPanel.new(self)
 	player_panel = PlayerPanel.new(self)
 	manor_view = ManorView.new(self)
+	courtyard_view = CourtyardView.new(self)   # 【第7批新增】宅院页签内容
 	war_view = WarView.new(self)
 	data.load_game()  # ← 先读档
 
@@ -311,7 +313,7 @@ func on_auto_earn():
 	var unlocked = data.check_friend_goals()
 	for fname in unlocked:
 		_show_stage_hint("达成挚友目标，解锁挚友【%s】！" % fname, 4.0)
-		# 【新增】一键贸易节拍：勾选期间每秒自动贸易一次；挂在本函数故离开关卡页也持续跑
+	# 【新增】一键贸易节拍：勾选期间每秒自动贸易一次；挂在本函数故离开关卡页也持续跑
 	if data.stage_auto_trade:
 		_on_stage_auto_trade_tick(data.stage_auto_trade_tick())
 	update_all_ui()
@@ -1268,6 +1270,10 @@ func hide_manor_view():
 # 刷新庄园界面
 func update_manor_view():
 	return manor_view.update_manor_view()
+
+# 刷新宅院页签列表（由 ManorView 在切到“宅院”时调用）
+func update_courtyard_view(list: VBoxContainer):
+	return courtyard_view.update_courtyard_view(list)
 
 # ==================== 【转发】商战视图 → pages/war_view.gd ====================
 

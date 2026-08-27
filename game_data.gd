@@ -1,7 +1,7 @@
 # ============================================================
 # 《大掌柜》数据中枢（第2批重构版）
 # 职责：全部状态变量 / 常量表 / 配置加载 / 存档读写 / 身份与每日奖励
-#       + 持有11个子系统并转发其API（对外接口与旧版完全一致，controller零改动）
+#       + 持有各子系统并转发其API（对外接口与旧版完全一致，controller零改动）
 # ============================================================
 class_name GameData
 extends RefCounted
@@ -409,8 +409,11 @@ var aroma_fruit: int = 0
 
 # ========== 庄园状态（第4批新增；逻辑在 systems/manor_system.gd） ==========
 var manor_plots: Dictionary = {}      # {品种id: [{"level":品种等级,"land":土地血统等级}×4]} 每块独立
-var manor_goods: Dictionary = {}      # 庄园仓库 {产物名: 数量}（独立仓库，不进背包）
+var manor_goods: Dictionary = {}      # 庄园仓库 {产物名: 数量}（独立仓库，不进背包，宅院升级消耗这里）
 var manor_last_settle: int = 0        # 上次产量结算时间戳（在线懒结算用）
+
+# ========== 宅院状态（第7批新增；逻辑在 systems/courtyard_system.gd） ==========
+var courtyard_levels: Dictionary = {} # {技艺id: {project1/project2: {vol1/vol2: 卷轴等级}}}
 
 # ========== 商战状态（第5批新增；逻辑在 systems/war_system.gd） ==========
 var war_tax_level: int = 1            # 税所等级（上限200）
@@ -494,6 +497,8 @@ var lottery_system   # 抽奖系统
 var mall_system   # 商城/VIP系统
 var manor_system   # 庄园系统（第4批新增）
 var _manor_configs: Dictionary = {}   # 庄园配置（manor.json，由 _load_all_configs 加载）
+var courtyard_system   # 宅院系统（第7批新增）
+var _courtyard_configs: Dictionary = {}   # 宅院配置（courtyard.json，由 _load_all_configs 加载）
 var war_system   # 商战系统（第5批新增）
 var _war_configs: Dictionary = {}   # 商战配置（war.json，由 _load_all_configs 加载）
 var goal_system   # 挚友目标系统（第6批新增）
@@ -513,6 +518,7 @@ func _init():
 	lottery_system = LotterySystem.new(self)
 	mall_system = MallSystem.new(self)
 	manor_system = ManorSystem.new(self)
+	courtyard_system = CourtyardSystem.new(self)   # 【第7批新增】宅院技艺卷轴系统
 	war_system = WarSystem.new(self)
 	goal_system = GoalSystem.new(self)
 	_load_all_configs()
@@ -537,6 +543,7 @@ func _load_all_configs():
 	_shop_configs = _load_json("res://data/shops.json")
 	_beast_configs = _load_json(BEAST_CONFIG_PATH)
 	_manor_configs = _load_json("res://data/manor.json")   # 【第4批新增】庄园配置
+	_courtyard_configs = _load_json("res://data/courtyard.json")   # 【第7批新增】宅院技艺配置
 	_war_configs = _load_json("res://data/war.json")   # 【第5批新增】商战配置
 	_goal_configs = _load_json("res://data/goals.json")   # 【第6批新增】挚友目标配置
 	_load_items_config()   # 【重构新增】道具表
@@ -693,7 +700,7 @@ func save_game():
 	# 各子系统把自己的字段合并进来（新系统加存档字段只需改它自己的 get_save_data）
 	var systems = [hero_system, friend_system, apprentice_system, beast_system, shop_system,
 		stage_system, item_system, travel_system, charity_system, lottery_system, mall_system,
-		manor_system,war_system,goal_system]
+		manor_system,courtyard_system,war_system,goal_system]
 	for sys in systems:
 		save_data.merge(sys.get_save_data(), true)
 	var file = FileAccess.open(SAVE_PATH, FileAccess.WRITE)
@@ -733,7 +740,7 @@ func load_game():
 	# ===== 各子系统认领自己的字段（含旧存档兼容逻辑） =====
 	var systems = [hero_system, friend_system, apprentice_system, beast_system, shop_system,
 		stage_system, item_system, travel_system, charity_system, lottery_system, mall_system,
-		manor_system,war_system,goal_system]
+		manor_system,courtyard_system,war_system,goal_system]
 	for sys in systems:
 		sys.load_save_data(data)
 
@@ -754,7 +761,6 @@ func get_hero_contribution(hero_id: String) -> int:
 
 func get_heroes_total_income() -> int:
 	return HeroData.get_total_income(self)   # 【改】直转 HeroData
-
 
 func upgrade_hero_level(hero_id: String, batch: bool = false) -> int:
 	return hero_system.upgrade_hero_level(hero_id, batch)
@@ -985,6 +991,7 @@ func do_stage_boss() -> Dictionary:
 func stage_auto_trade_tick() -> Dictionary:
 	return stage_system.auto_trade_tick()
 
+
 # ==================== 【转发】道具系统 → systems/item_system.gd ====================
 
 func use_item(item_id: String, count: int) -> Dictionary:
@@ -1156,6 +1163,59 @@ func settle_manor_offline():
 # 连升某块品种等级（勾选"等级十连"时调用；逐次结算，失败即停）
 func upgrade_manor_plot_level_batch(species_id: String, plot_index: int, times: int = 10):
 	return manor_system.upgrade_plot_level_batch(species_id, plot_index, times)
+
+# ==================== 【转发】宅院系统 → systems/courtyard_system.gd ====================
+
+# 宅院全局配置（效果数值/消耗系数，UI显示与实际计算共用）
+func get_courtyard_settings():
+	return courtyard_system.get_settings()
+
+# 宅院技艺列表（32个技艺，UI列表用）
+func get_courtyard_technique_list():
+	return courtyard_system.get_technique_list()
+
+# 某项目卷轴当前等级（volume = "vol1" / "vol2"）
+func get_courtyard_scroll_level(tech_id: String, project_key: String, volume: String):
+	return courtyard_system.get_scroll_level(tech_id, project_key, volume)
+
+# 【改】卷二100级解锁设定已作废，对应转发器已删除
+
+# 【改】升级消耗公式重构：单级消耗 = a + b × 当前等级^p（最低1个产物）
+# 参数按 项目类型×卷 配置在 courtyard.json 的 settings.cost_formulas 里，拟合自目标消耗表
+func get_courtyard_scroll_cost(tech_id: String, project_key: String, volume: String):
+	return courtyard_system.get_scroll_cost(tech_id, project_key, volume)
+
+# 升级单个卷轴（消耗庄园仓库产物）
+func upgrade_courtyard_scroll(tech_id: String, project_key: String, volume: String):
+	return courtyard_system.upgrade_scroll(tech_id, project_key, volume)
+
+# 卷轴十连升级（【改】卷一卷二通用，volume指定升哪卷；逐次结算，产物不足即停）
+func upgrade_courtyard_scroll_batch(tech_id: String, project_key: String, volume: String = "vol1", times: int = 10):
+	return courtyard_system.upgrade_scroll_batch(tech_id, project_key, volume, times)
+
+# 门客卷一固定赚速加成（HeroData 聚合时调用）
+func get_courtyard_hero_income_bonus(hero_id: String):
+	return courtyard_system.get_hero_income_bonus(hero_id)
+
+# 门客卷二资质加成（HeroData 聚合时调用）
+func get_courtyard_hero_aptitude_bonus(hero_id: String):
+	return courtyard_system.get_hero_aptitude_bonus(hero_id)
+
+# 商铺卷一店员赚速加成（ShopSystem 计算店铺收益时调用）
+func get_courtyard_shop_staff_income_bonus(shop_id: String):
+	return courtyard_system.get_shop_staff_income_bonus(shop_id)
+
+# 商铺卷二店铺百分比加成（ShopSystem 计算店铺收益时调用）
+func get_courtyard_shop_percent_bonus(shop_id: String):
+	return courtyard_system.get_shop_percent_bonus(shop_id)
+
+# 挚友卷已累计的友好/才华加成（挚友解锁补发用）
+func get_courtyard_friend_stat_bonus(friend_id: String):
+	return courtyard_system.get_friend_stat_bonus(friend_id)
+
+# 挚友解锁时补发宅院挚友卷属性
+func apply_courtyard_friend_unlock_bonus(friend_id: String):
+	return courtyard_system.apply_friend_unlock_bonus(friend_id)
 
 # ==================== 【转发】商战系统 → systems/war_system.gd ====================
 
