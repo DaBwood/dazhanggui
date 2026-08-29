@@ -35,7 +35,7 @@ func _build_technique_button(cfg: Dictionary) -> Button:
 	btn.text = "%s\n产物：%s" % [cfg.get("name", cfg.get("id", "")), cfg.get("product", "")]
 	btn.custom_minimum_size = Vector2(160, 58)
 	btn.size_flags_horizontal = Control.SIZE_EXPAND_FILL
-	btn.add_theme_font_size_override("font_size", 14)
+	btn.add_theme_font_size_override("font_size", 16)
 	btn.pressed.connect(_on_technique_button.bind(String(cfg.get("id", ""))))
 	return btn
 

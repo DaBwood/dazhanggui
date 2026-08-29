@@ -22,7 +22,7 @@ func _init(p_c):
 # ============ 以下为原 game_controller.gd 搬迁函数（逻辑未改，仅根节点访问加了 c. 前缀） ============
 
 func generate_bag_list():
-	print("【诊断】ui/pages 的 bag_page 生效了")   # 临时诊断，确认后删
+	#print("【诊断】ui/pages 的 bag_page 生效了")   # 临时诊断，确认后删
 	if not c.has_node("PageContainer/BagPage"): return
 	var bag_page = c.get_node("PageContainer/BagPage")
 	
@@ -85,7 +85,8 @@ func generate_bag_list():
 		var desc_lbl = Label.new()
 		desc_lbl.text = cfg.desc
 		desc_lbl.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
-		desc_lbl.add_theme_font_size_override("font_size", 14)
+		desc_lbl.add_theme_font_size_override("font_size", 16)
+		desc_lbl.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART   # 【新增】长描述自动换行，不再撑宽格子
 		vbox.add_child(desc_lbl)
 		
 		# 可使用道具：按 ITEM_CONFIG 的 use 配置自动生成按钮

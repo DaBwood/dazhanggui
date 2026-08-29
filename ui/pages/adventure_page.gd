@@ -325,7 +325,7 @@ func generate_adventure_page():
 	var t_buff = Label.new()
 	t_buff.name = "TravelBuffInfo"
 	t_buff.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
-	t_buff.add_theme_font_size_override("font_size", 14)
+	t_buff.add_theme_font_size_override("font_size", 16)
 	travel_view.add_child(t_buff)
 	
 	# 游历按钮

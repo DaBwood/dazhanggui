@@ -54,7 +54,9 @@ var costume_view   # 【服装系统】服装视图
 
 func _ready():
 	
-	
+	# Web 端访问不到系统字体，中文会变豆腐块；显式指定全局回退字体
+	# （走 fallback 通道，桌面端拉丁字符仍是原字体，显示不变）
+	ThemeDB.fallback_font = load("res://fonts/msyh.ttc")
 	
 	_build_scene_shell()          # 【新增】代码建壳，必须是第一行
 

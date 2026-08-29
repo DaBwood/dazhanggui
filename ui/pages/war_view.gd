@@ -46,7 +46,7 @@ func build_war_view(page, vbox):
 	var res_lbl = Label.new()
 	res_lbl.name = "WarRes"
 	res_lbl.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
-	res_lbl.add_theme_font_size_override("font_size", 14)
+	res_lbl.add_theme_font_size_override("font_size", 16)
 	res_lbl.add_theme_color_override("font_color", Color("#ffd700"))
 	view.add_child(res_lbl)
 	

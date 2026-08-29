@@ -113,13 +113,13 @@ func _create_beast_exchange_card(beast_id: String) -> Button:
 	var quality_lbl = Label.new()
 	quality_lbl.text = cfg.quality
 	quality_lbl.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
-	quality_lbl.add_theme_font_size_override("font_size", 14)
+	quality_lbl.add_theme_font_size_override("font_size", 16)
 	vbox.add_child(quality_lbl)
 	
 	var cost_lbl = Label.new()
 	cost_lbl.text = "兑换（%d/100）" % ex_count
 	cost_lbl.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
-	cost_lbl.add_theme_font_size_override("font_size", 14)
+	cost_lbl.add_theme_font_size_override("font_size", 16)
 	vbox.add_child(cost_lbl)
 	
 	cell.pressed.connect(_on_exchange_beast.bind(beast_id))
@@ -198,7 +198,7 @@ func _create_role_exchange_card(role_type: String, role_id: String, cost: int) -
 	
 	var status_lbl = Label.new()
 	status_lbl.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
-	status_lbl.add_theme_font_size_override("font_size", 14)
+	status_lbl.add_theme_font_size_override("font_size", 16)
 	vbox.add_child(status_lbl)
 	
 	if owned:
@@ -275,12 +275,12 @@ func _create_series_exchange_card(entry: Dictionary, series: Dictionary) -> Butt
 	if grant_friend:
 		item_lbl.text += "\n（赠同名挚友）"
 	item_lbl.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
-	item_lbl.add_theme_font_size_override("font_size", 14)
+	item_lbl.add_theme_font_size_override("font_size", 16)
 	vbox.add_child(item_lbl)
 	
 	var status_lbl = Label.new()
 	status_lbl.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
-	status_lbl.add_theme_font_size_override("font_size", 14)
+	status_lbl.add_theme_font_size_override("font_size", 16)
 	vbox.add_child(status_lbl)
 	
 	if owned:

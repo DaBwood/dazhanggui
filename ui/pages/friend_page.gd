@@ -274,14 +274,14 @@ func _create_friend_card(cname: String, friendly: int, talent: int, locked: bool
 		var attr_lbl = Label.new()
 		attr_lbl.text = "友好：%d  |  才华：%d" % [friendly, talent]
 		attr_lbl.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
-		attr_lbl.add_theme_font_size_override("font_size", 14)
+		attr_lbl.add_theme_font_size_override("font_size", 16)
 		vbox.add_child(attr_lbl)
 	else:
 		var lock_lbl = Label.new()
 		lock_lbl.text = "未解锁"
 		lock_lbl.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 		lock_lbl.add_theme_color_override("font_color", Color("#888888"))
-		lock_lbl.add_theme_font_size_override("font_size", 14)
+		lock_lbl.add_theme_font_size_override("font_size", 16)
 		vbox.add_child(lock_lbl)
 		cell.modulate = Color(0.5, 0.5, 0.5, 0.7)
 

@@ -17,13 +17,17 @@ config/icon="uid://daabjbo6mg710"
 
 [display]
 
-window/size/viewport_width=720
-window/size/viewport_height=1280
+window/size/viewport_width=600
+window/size/viewport_height=1067
 window/size/window_width_override=432
 window/size/window_height_override=768
 window/stretch/mode="canvas_items"
 window/stretch/aspect="expand"
 window/handheld/orientation=1
+
+[gui]
+
+theme/custom_font="uid://c7gma1rwqnkdn"
 
 [physics]
 

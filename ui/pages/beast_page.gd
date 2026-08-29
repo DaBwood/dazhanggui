@@ -41,25 +41,25 @@ func _create_beast_card() -> Button:
 	var info_lbl = Label.new()
 	info_lbl.name = "BeastInfoLabel"
 	info_lbl.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
-	info_lbl.add_theme_font_size_override("font_size", 14)
+	info_lbl.add_theme_font_size_override("font_size", 16)
 	vbox.add_child(info_lbl)
 	
 	var apt_lbl = Label.new()
 	apt_lbl.name = "BeastAptLabel"
 	apt_lbl.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
-	apt_lbl.add_theme_font_size_override("font_size", 14)
+	apt_lbl.add_theme_font_size_override("font_size", 16)
 	vbox.add_child(apt_lbl)
 	
 	var bonus_lbl = Label.new()
 	bonus_lbl.name = "BeastBonusLabel"
 	bonus_lbl.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
-	bonus_lbl.add_theme_font_size_override("font_size", 14)
+	bonus_lbl.add_theme_font_size_override("font_size", 16)
 	vbox.add_child(bonus_lbl)
 	
 	var hero_lbl = Label.new()
 	hero_lbl.name = "BeastHeroLabel"
 	hero_lbl.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
-	hero_lbl.add_theme_font_size_override("font_size", 14)
+	hero_lbl.add_theme_font_size_override("font_size", 16)
 	vbox.add_child(hero_lbl)
 	
 	return cell

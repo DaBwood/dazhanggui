@@ -171,7 +171,7 @@ func _build_dev_panel(vb, fish_id: String):
 	var head = Label.new()
 	head.text = "—— 技能（喂鱼升级，加资质）——"
 	head.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
-	head.add_theme_font_size_override("font_size", 14)
+	head.add_theme_font_size_override("font_size", 16)
 	head.add_theme_color_override("font_color", Color("#ffd700"))
 	list.add_child(head)
 

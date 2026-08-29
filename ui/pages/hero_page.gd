@@ -76,13 +76,13 @@ func _create_hero_card(hero_id: String, locked: bool) -> Button:
 	var income_lbl = Label.new()
 	income_lbl.name = "IncomeLabel"
 	income_lbl.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
-	income_lbl.add_theme_font_size_override("font_size", 14)
+	income_lbl.add_theme_font_size_override("font_size", 16)
 	vbox.add_child(income_lbl)
 	
 	var status_lbl = Label.new()
 	status_lbl.name = "StatusLabel"
 	status_lbl.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
-	status_lbl.add_theme_font_size_override("font_size", 14)
+	status_lbl.add_theme_font_size_override("font_size", 16)
 	vbox.add_child(status_lbl)
 	
 	if locked:
@@ -177,7 +177,7 @@ func _ensure_hero_panel_code():
 	promo_btn.position = Vector2(vw.x - 150, 170)
 	promo_btn.size = Vector2(130, 44)
 	promo_btn.visible = false
-	promo_btn.add_theme_font_size_override("font_size", 14)
+	promo_btn.add_theme_font_size_override("font_size", 16)
 	panel.add_child(promo_btn)
 
 	# 升级区（右列下方，固定在技能栏上方；无赋诗时上方留空，预留门客立绘位）
@@ -265,7 +265,7 @@ func update_hero_panel():
 		cos_btn = Button.new()
 		cos_btn.name = "CostumeBtn"
 		cos_btn.text = "服装"
-		cos_btn.add_theme_font_size_override("font_size", 14)
+		cos_btn.add_theme_font_size_override("font_size", 16)
 		c.get_node("HeroPanel").add_child(cos_btn)
 	cos_btn.size = btn_size
 	cos_btn.position = Vector2(20, 100)   # 【改】移到缘分上方
@@ -280,7 +280,7 @@ func update_hero_panel():
 		fate_btn = Button.new()
 		fate_btn.name = "FateBtn"
 		fate_btn.text = "缘分"
-		fate_btn.add_theme_font_size_override("font_size", 14)
+		fate_btn.add_theme_font_size_override("font_size", 16)
 		c.get_node("HeroPanel").add_child(fate_btn)
 	fate_btn.size = btn_size
 	fate_btn.position = Vector2(20, 148)   # 【改】下移一行
@@ -294,7 +294,7 @@ func update_hero_panel():
 	if beast_btn == null:
 		beast_btn = Button.new()
 		beast_btn.name = "BeastEquipBtn"
-		beast_btn.add_theme_font_size_override("font_size", 14)
+		beast_btn.add_theme_font_size_override("font_size", 16)
 		c.get_node("HeroPanel").add_child(beast_btn)
 	beast_btn.size = btn_size
 	beast_btn.position = Vector2(20, 196)   # 【改】下移
@@ -316,7 +316,7 @@ func update_hero_panel():
 	if fish_btn == null:
 		fish_btn = Button.new()
 		fish_btn.name = "FishEquipBtn"
-		fish_btn.add_theme_font_size_override("font_size", 14)
+		fish_btn.add_theme_font_size_override("font_size", 16)
 		c.get_node("HeroPanel").add_child(fish_btn)
 	fish_btn.size = btn_size
 	fish_btn.position = Vector2(148, 196)   # 【改】下移
