@@ -97,7 +97,7 @@ func generate_beast_page():
 	
 	var grid = GridContainer.new()
 	grid.name = "BeastGrid"
-	grid.columns = 4
+	grid.columns = 3
 	grid.add_theme_constant_override("h_separation", 12)
 	grid.add_theme_constant_override("v_separation", 12)
 	grid.size_flags_horizontal = Control.SIZE_EXPAND_FILL

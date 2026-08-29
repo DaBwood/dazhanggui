@@ -37,7 +37,7 @@ func generate_hero_list():
 	# 创建网格
 	var grid = GridContainer.new()
 	grid.name = "HeroGrid"
-	grid.columns = 4
+	grid.columns = 3
 	grid.add_theme_constant_override("h_separation", 12)
 	grid.add_theme_constant_override("v_separation", 12)
 	grid.size_flags_horizontal = Control.SIZE_EXPAND_FILL

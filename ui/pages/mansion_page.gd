@@ -29,7 +29,7 @@ func generate_mansion_list():
 	else:
 		grid = GridContainer.new()
 		grid.name = "MansionGrid"
-		grid.columns = 5
+		grid.columns = 3
 		# 【删】grid.custom_minimum_size = Vector2(1100, 500)
 		# 【新增】让 grid 铺满 page
 		grid.set_anchors_preset(Control.PRESET_FULL_RECT)

@@ -22,6 +22,7 @@ func _init(p_c):
 # ============ 以下为原 game_controller.gd 搬迁函数（逻辑未改，仅根节点访问加了 c. 前缀） ============
 
 func generate_bag_list():
+	print("【诊断】ui/pages 的 bag_page 生效了")   # 临时诊断，确认后删
 	if not c.has_node("PageContainer/BagPage"): return
 	var bag_page = c.get_node("PageContainer/BagPage")
 	
@@ -42,7 +43,7 @@ func generate_bag_list():
 	else:
 		grid = GridContainer.new()
 		grid.name = "BagGrid"
-		grid.columns = 4
+		grid.columns = 3
 		grid.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 		grid.add_theme_constant_override("h_separation", 8)
 		grid.add_theme_constant_override("v_separation", 8)
@@ -63,7 +64,7 @@ func generate_bag_list():
 		
 		var cell = PanelContainer.new()
 		cell.name = item_id + "_cell"
-		cell.custom_minimum_size = Vector2(250, 120)
+		cell.custom_minimum_size = Vector2(0, 120)
 		cell.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 		
 		var vbox = VBoxContainer.new()

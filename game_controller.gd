@@ -53,8 +53,10 @@ var fish_equip_view   # 门客渔获装备弹窗（第8批新增）
 var costume_view   # 【服装系统】服装视图
 
 func _ready():
-	#打印场景树
-	print_scene_tree_to_file()
+	
+	
+	
+	_build_scene_shell()          # 【新增】代码建壳，必须是第一行
 
 	randomize()
 	data = GameData.new()
@@ -146,6 +148,13 @@ func _ready():
 
 	# 正常退出时存档
 	tree_exiting.connect(on_exit)
+	
+	_apply_portrait_layout()      # 【新增】壳层布局
+	get_tree().root.size_changed.connect(_apply_portrait_layout)   # 【新增】窗口变化重排
+	
+	#print_scene_tree_to_file()
+	
+	#_debug_page_rects()
 
 func format_number(n: int) -> String:
 	if n < 10000:
@@ -543,11 +552,7 @@ func apply_theme():
 	for lbl in find_children("*", "Label"):
 		lbl.add_theme_font_size_override("font_size", 18)
 		lbl.add_theme_color_override("font_color", Color("#f2e9e4"))
-	# 底部导航按钮铺满
-	if has_node("BottomNav"):
-		for btn in $BottomNav.get_children():
-			if btn is Button:
-				btn.custom_minimum_size = Vector2(230, 60)  # 1152/3 = 384
+	
 
 func style_nav_buttons():
 	if not has_node("BottomNav"): return
@@ -619,8 +624,16 @@ func flash_red(node_path: String):
 
 func _create_base_popup(title_text: String, popup_size: Vector2, pos: Vector2 = Vector2.ZERO) -> PanelContainer:
 	var panel = PanelContainer.new()
+	# 【改】竖屏适配：弹窗尺寸钳制不超视口（四周留边）；写死的位置也钳制在屏幕内不出界
+	var vs = get_viewport_rect().size
+	popup_size = Vector2(minf(popup_size.x, vs.x - 40), minf(popup_size.y, vs.y - 80))
 	panel.custom_minimum_size = popup_size
-	panel.position = pos if pos != Vector2.ZERO else (get_viewport_rect().size - popup_size) / 2
+	if pos != Vector2.ZERO:
+		panel.position.x = clampf(pos.x, 8.0, maxf(8.0, vs.x - popup_size.x - 8))
+		panel.position.y = clampf(pos.y, 8.0, maxf(8.0, vs.y - popup_size.y - 8))
+	else:
+		# 未指定位置：自动居中
+		panel.position = (vs - popup_size) / 2
 	panel.z_index = 30
 	
 	var style = StyleBoxFlat.new()
@@ -712,6 +725,7 @@ func _collect_node_lines(node: Node, depth: int, lines: Array):
 	lines.append("%s%s (%s)%s" % [indent, node.name, node.get_class(), visible_txt])
 	for child in node.get_children():
 		_collect_node_lines(child, depth + 1, lines)
+
 
 # ==================== 页面方法转发区 ====================
 # ==================== 【转发】府邸页 → pages/mansion_page.gd ====================
@@ -1321,3 +1335,390 @@ func hide_fishing_view():
 # 打开门客渔获装备弹窗（由 hero_page 渔获按钮触发）
 func show_fish_equip_view(hero_id: String):
 	return fish_equip_view.show_fish_equip_view(hero_id)
+
+
+# ============================================================
+# 【场景收编】壳层结构 + 壳层布局（2026-08-29）
+# 用法：整段粘贴到 game_controller.gd 末尾（class 内顶层）
+# 原则：control.tscn 只保留根 Control + 挂脚本，全部节点代码创建
+#   _build_scene_shell()    建结构（_ready 第一行调用，只跑一次）
+#   _apply_portrait_layout() 摆位置（_ready 末尾 + 窗口尺寸变化时调用）
+# ============================================================
+
+# ── 静态文字集中在这里，按你游戏内实际显示核对 ──
+const NAV_LABELS = ["府邸", "商铺", "门客", "闯荡", "背包"]   # 底栏5键（门客/闯荡/背包已和截图核对，前两个按页面注释推断）
+const RECHARGE_TAB_LABELS = ["元宝", "每日礼包", "特惠礼包"]    # 充值页3个页签
+const TXT_VIP_TITLE = "VIP 特权"
+const TXT_HQ_CLICK = "💰 点击赚钱"
+const TXT_BATCH_HIRE = "十连招募"
+const TXT_CLOSE = "关闭"
+
+
+# ============ 建结构 ============
+func _build_scene_shell():
+	# 场景里还留着旧节点时不重复建（先去编辑器精简 control.tscn 再运行）
+	if has_node("Background"):
+		push_warning("场景旧节点未清空，跳过代码建壳；请把 control.tscn 精简到只剩根节点")
+		return
+
+	# ── 背景 ──
+	var bg = ColorRect.new()
+	bg.name = "Background"
+	add_child(bg)
+
+	# ── 顶栏（AvatarBox/加号按钮由后续代码自己加）──
+	var top_bar = HBoxContainer.new()
+	top_bar.name = "TopBar"
+	top_bar.add_theme_constant_override("separation", 12)
+	add_child(top_bar)
+	var top_label = Label.new()
+	top_label.name = "Label"
+	top_bar.add_child(top_label)
+	var item_label = Label.new()   # 场景遗留节点，代码未引用，保留兼容
+	item_label.name = "ItemLabel"
+	top_bar.add_child(item_label)
+
+	# ── 页面容器 + 各页面 ──
+	var pc = Control.new()
+	pc.name = "PageContainer"
+	add_child(pc)
+
+	# 商铺页：钱庄入口（顶部通栏）+ 店铺列表（下方滚动）
+	# （generate_shop_list 要求 ShopScroll/ShopList 必须存在，不能省）
+	var shop_pg = Control.new()
+	shop_pg.name = "ShopPage"
+	pc.add_child(shop_pg)
+	var hq_btn = Button.new()
+	hq_btn.name = "HQEntryBtn"
+	hq_btn.text = "钱庄"   # 占位，update 时代码会改写完整文字
+	hq_btn.set_anchors_preset(Control.PRESET_TOP_WIDE)
+	hq_btn.offset_bottom = 64   # 锚点预设后必须补高度偏移，否则高度为0看不见
+	shop_pg.add_child(hq_btn)
+	var shop_scroll = ScrollContainer.new()
+	shop_scroll.name = "ShopScroll"
+	shop_scroll.set_anchors_preset(Control.PRESET_FULL_RECT)
+	shop_scroll.offset_top = 72   # 给钱庄入口让位
+	shop_pg.add_child(shop_scroll)
+	var shop_list = GridContainer.new()
+	shop_list.name = "ShopList"
+	shop_list.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	shop_scroll.add_child(shop_list)
+
+	# 门客页：滚动容器（网格由 hero_page 代码填充）
+	# （generate_hero_list 直接 get_node("HeroScroll")，不能省）
+	var hero_pg = Control.new()
+	hero_pg.name = "HeroPage"
+	pc.add_child(hero_pg)
+	var hero_scroll = ScrollContainer.new()
+	hero_scroll.name = "HeroScroll"
+	hero_scroll.set_anchors_preset(Control.PRESET_FULL_RECT)
+	hero_pg.add_child(hero_scroll)
+
+	# 背包/府邸/珍兽/闯荡：空容器，内容由各页面模块代码生成
+	for page_name in ["BagPage", "MansionPage", "BeastPage", "AdventurePage"]:
+		var pg = Control.new()
+		pg.name = page_name
+		pc.add_child(pg)
+	# 关卡页：场景里就是 VBoxContainer，保持原类型（stage_page 依赖容器排版）
+	var stage_pg = VBoxContainer.new()
+	stage_pg.name = "StagePage"
+	pc.add_child(stage_pg)
+	# （FriendPage / ApprenticePage 由各自模块代码创建，此处不建）
+
+	# ── 底部导航（5键等分；文字见顶部常量）──
+	var nav = HBoxContainer.new()
+	nav.name = "BottomNav"
+	nav.add_theme_constant_override("separation", 4)
+	add_child(nav)
+	var nav_names = ["NavMansionBtn", "NavShopBtn", "NavHeroBtn", "NavAdventureBtn", "NavBagBtn"]
+	for i in nav_names.size():
+		var btn = Button.new()
+		btn.name = nav_names[i]
+		btn.text = NAV_LABELS[i]
+		btn.custom_minimum_size = Vector2(0, 60)   # 只定高度不定宽度
+		btn.size_flags_horizontal = Control.SIZE_EXPAND_FILL   # 宽度等分
+		nav.add_child(btn)
+
+	# ── 遮罩（弹窗弹出时挡住背景点击）──
+	var overlay = ColorRect.new()
+	overlay.name = "Overlay"
+	overlay.color = Color(0, 0, 0, 0.55)
+	overlay.visible = false
+	add_child(overlay)
+
+	# ── 4个场景弹窗（HeroPanel 由 hero_page 代码重建，不在此列）──
+	_build_recharge_page()
+	_build_vip_panel()
+	_build_hq_panel()
+	_build_shop_panel()
+
+	# ── 每秒收益计时器（on_auto_earn 按"每秒"结算，wait_time 必须是 1.0）──
+	var timer = Timer.new()
+	timer.name = "Timer"
+	timer.wait_time = 1.0
+	timer.autostart = true
+	add_child(timer)
+
+
+# 统一建场景弹窗：Panel + 全矩形内边距 VBox，底色与弹窗工厂一致
+# （尺寸为默认值，_apply_portrait_layout 会居中 + 钳进视口）
+func _make_scene_popup(p_name: String, p_size: Vector2, vbox_name: String = "VBoxContainer") -> Panel:
+	var p = Panel.new()
+	p.name = p_name
+	p.visible = false
+	p.size = p_size
+	var style = StyleBoxFlat.new()
+	style.bg_color = Color("#2a2640")
+	style.set_corner_radius_all(12)
+	style.set_border_width_all(2)
+	style.border_color = Color("#6a5f9e")
+	p.add_theme_stylebox_override("panel", style)
+	var vbox = VBoxContainer.new()
+	vbox.name = vbox_name   # 注意：RechargePage 的代码按 "RechargeContainer" 查找，其余按 "VBoxContainer"
+	vbox.set_anchors_preset(Control.PRESET_FULL_RECT)
+	vbox.offset_left = 16
+	vbox.offset_right = -16
+	vbox.offset_top = 12
+	vbox.offset_bottom = -12
+	p.add_child(vbox)
+	add_child(p)
+	return p
+
+
+# 充值页（TabBar 3页签 + 3个内容容器 + CloseBtn 在 VBox 内）
+func _build_recharge_page():
+	var recharge = _make_scene_popup("RechargePage", Vector2(620, 860), "RechargeContainer")
+	var rc = recharge.get_node("RechargeContainer")
+	var tab_bar = HBoxContainer.new()
+	tab_bar.name = "TabBar"
+	tab_bar.alignment = BoxContainer.ALIGNMENT_CENTER
+	rc.add_child(tab_bar)
+	var tab_names = ["TapYuanbao", "TapDaily", "TapSpecial"]
+	for i in 3:
+		var t = Button.new()
+		t.name = tab_names[i]
+		t.text = RECHARGE_TAB_LABELS[i]
+		t.custom_minimum_size = Vector2(140, 44)
+		tab_bar.add_child(t)
+	var content = VBoxContainer.new()
+	content.name = "ContentContainer"
+	content.size_flags_vertical = Control.SIZE_EXPAND_FILL
+	rc.add_child(content)
+	var yuanbai = VBoxContainer.new()   # 元宝充值列表
+	yuanbai.name = "YuanbaiContainer"
+	content.add_child(yuanbai)
+	var grid = GridContainer.new()      # 列数由 mall_panel 代码设置
+	grid.name = "RechargeGrid"
+	grid.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	yuanbai.add_child(grid)
+	var daily = VBoxContainer.new()
+	daily.name = "DailyGiftContainer"
+	daily.visible = false
+	content.add_child(daily)
+	var special = VBoxContainer.new()
+	special.name = "SpecialPackContainer"
+	content.add_child(special)
+	var rc_close = Button.new()
+	rc_close.name = "CloseBtn"
+	rc_close.text = TXT_CLOSE
+	rc.add_child(rc_close)
+
+
+# VIP 面板（标题/等级/经验/进度条/列表/CloseBtn 全在 VBox 内）
+func _build_vip_panel():
+	var vip = _make_scene_popup("VIPPanel", Vector2(520, 720))
+	var vb = vip.get_node("VBoxContainer")
+	var title = Label.new()
+	title.name = "Title"
+	title.text = TXT_VIP_TITLE
+	title.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	title.add_theme_color_override("font_color", Color("#ffd700"))
+	vb.add_child(title)
+	for n in ["VIPLevel", "VIPExpInfo"]:
+		var l = Label.new()
+		l.name = n
+		vb.add_child(l)
+	var progress = ProgressBar.new()
+	progress.name = "VIPProgress"
+	progress.max_value = 100
+	progress.show_percentage = false
+	vb.add_child(progress)
+	vb.add_child(HSeparator.new())
+	var vip_list = VBoxContainer.new()
+	vip_list.name = "VIPList"
+	vip_list.size_flags_vertical = Control.SIZE_EXPAND_FILL
+	vb.add_child(vip_list)
+	var vip_close = Button.new()
+	vip_close.name = "CloseBtn"
+	vip_close.text = TXT_CLOSE
+	vb.add_child(vip_close)
+
+
+# 钱庄面板（注意：CloseBtn 是 HQPanel 直接子节点，不在 VBox 内）
+func _build_hq_panel():
+	var hq = _make_scene_popup("HQPanel", Vector2(480, 320))
+	var hb = hq.get_node("VBoxContainer")
+	var hq_name = Label.new()
+	hq_name.name = "HQName"
+	hb.add_child(hq_name)
+	var hq_info = Label.new()
+	hq_info.name = "HQInfo"
+	hb.add_child(hq_info)
+	var hq_row = HBoxContainer.new()
+	hq_row.name = "HBoxContainer"
+	hb.add_child(hq_row)
+	var hq_click = Button.new()
+	hq_click.name = "HQClickBtn"
+	hq_click.text = TXT_HQ_CLICK
+	hq_row.add_child(hq_click)
+	var hq_up = Button.new()
+	hq_up.name = "HQUpgradeBtn"
+	hq_row.add_child(hq_up)
+	var hq_close = Button.new()
+	hq_close.name = "CloseBtn"
+	hq_close.text = TXT_CLOSE
+	hq_close.position = Vector2(hq.size.x - 90, 8)   # 右上角
+	hq_close.custom_minimum_size = Vector2(80, 36)
+	hq.add_child(hq_close)
+
+
+# 店铺面板（5个派遣位 AssignSlot_0..4 + ShopCloseBtn 直接子节点）
+func _build_shop_panel():
+	var shop = _make_scene_popup("ShopPanel", Vector2(560, 640))
+	var sb = shop.get_node("VBoxContainer")
+	var s_name = Label.new()
+	s_name.name = "ShopName"
+	sb.add_child(s_name)
+	var s_info = Label.new()
+	s_info.name = "ShopInfo"
+	sb.add_child(s_info)
+	var s_row = HBoxContainer.new()
+	s_row.name = "HBoxContainer"
+	sb.add_child(s_row)
+	var s_up = Button.new()
+	s_up.name = "ShopUpgradeBtn"
+	s_row.add_child(s_up)
+	var s_hire = Button.new()
+	s_hire.name = "ShopHireBtn"
+	s_row.add_child(s_hire)
+	var s_batch = CheckBox.new()
+	s_batch.name = "BatchHireCheck"
+	s_batch.text = TXT_BATCH_HIRE
+	s_row.add_child(s_batch)
+	var assign_box = VBoxContainer.new()
+	assign_box.name = "AssignContainer"
+	assign_box.size_flags_vertical = Control.SIZE_EXPAND_FILL
+	sb.add_child(assign_box)
+	for i in 5:
+		var slot = HBoxContainer.new()
+		slot.name = "AssignSlot_%d" % i
+		assign_box.add_child(slot)
+		var lbl = Label.new()
+		lbl.name = "AssignLabel"
+		lbl.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+		slot.add_child(lbl)
+		var btn = Button.new()
+		btn.name = "AssignBtn"
+		slot.add_child(btn)
+	var s_close = Button.new()
+	s_close.name = "ShopCloseBtn"
+	s_close.text = TXT_CLOSE
+	s_close.position = Vector2(shop.size.x - 90, 8)   # 右上角
+	s_close.custom_minimum_size = Vector2(80, 36)
+	shop.add_child(s_close)
+
+
+# ============ 摆位置（启动 + 窗口尺寸变化时调用）============
+# 原则：一律显式 position+size，不用锚点预设。
+# （锚点预设会"保持节点当前矩形"，把 0 尺寸焊死——商铺/门客/背包页面空白的根因）
+func _apply_portrait_layout():
+	var vs = get_viewport_rect().size   # 逻辑像素（720×1280，stretch 后不受窗口物理大小影响）
+
+	# 根节点、背景、遮罩铺满视口
+	set_anchors_preset(Control.PRESET_TOP_LEFT)   # 【新增】先归零根节点锚点，否则 size 设置被锚点顶回（编辑器警告来源）
+	position = Vector2.ZERO
+	size = vs
+	for path in ["Background", "Overlay"]:
+		if has_node(path):
+			var n = get_node(path)
+			n.set_anchors_preset(Control.PRESET_TOP_LEFT)
+			n.position = Vector2.ZERO
+			n.size = vs
+
+	# 顶栏：顶部通栏，高 50
+	if has_node("TopBar"):
+		$TopBar.custom_minimum_size = Vector2.ZERO
+		$TopBar.set_anchors_preset(Control.PRESET_TOP_LEFT)
+		$TopBar.position = Vector2.ZERO
+		$TopBar.size = Vector2(vs.x, 50)
+
+	# 底栏：底部通栏，高 60，按钮等分
+	if has_node("BottomNav"):
+		$BottomNav.custom_minimum_size = Vector2.ZERO
+		$BottomNav.set_anchors_preset(Control.PRESET_TOP_LEFT)
+		$BottomNav.position = Vector2(0, vs.y - 60)
+		$BottomNav.size = Vector2(vs.x, 60)
+		for btn in $BottomNav.get_children():
+			if btn is Button:
+				btn.custom_minimum_size = Vector2(0, 60)
+				btn.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+
+	# 页面容器：顶栏与底栏之间；各页面显式铺满
+	if has_node("PageContainer"):
+		$PageContainer.set_anchors_preset(Control.PRESET_TOP_LEFT)
+		$PageContainer.position = Vector2(0, 50)
+		$PageContainer.size = Vector2(vs.x, vs.y - 110)
+		for pg in $PageContainer.get_children():
+			if pg is Control:
+				pg.set_anchors_preset(Control.PRESET_TOP_LEFT)
+				pg.position = Vector2.ZERO
+				pg.size = $PageContainer.size
+
+	# 商铺页内部：钱庄入口顶部通栏(高64) + 店铺列表铺满剩余
+	if has_node("PageContainer/ShopPage/HQEntryBtn"):
+		var hq_btn = $PageContainer/ShopPage/HQEntryBtn
+		hq_btn.set_anchors_preset(Control.PRESET_TOP_LEFT)
+		hq_btn.position = Vector2.ZERO
+		hq_btn.size = Vector2(vs.x, 64)
+	if has_node("PageContainer/ShopPage/ShopScroll"):
+		var shop_scroll = $PageContainer/ShopPage/ShopScroll
+		shop_scroll.set_anchors_preset(Control.PRESET_TOP_LEFT)
+		shop_scroll.position = Vector2(0, 72)
+		shop_scroll.size = Vector2(vs.x, vs.y - 182)   # 182 = 顶栏50 + 钱庄入口72 + 底栏60
+
+	# 门客页 / 背包页的滚动区铺满整页
+	for path in ["PageContainer/HeroPage/HeroScroll", "PageContainer/BagPage/BagScroll"]:
+		if has_node(path):
+			var sc = get_node(path)
+			sc.set_anchors_preset(Control.PRESET_TOP_LEFT)
+			sc.position = Vector2.ZERO
+			sc.size = Vector2(vs.x, vs.y - 110)
+
+	# 场景弹窗：居中并钳进视口（HeroPanel 由 hero_page 自建自管，不在此列）
+	for path in ["RechargePage", "VIPPanel", "HQPanel", "ShopPanel"]:
+		if has_node(path):
+			var p = get_node(path)
+			p.set_anchors_preset(Control.PRESET_TOP_LEFT)
+			var sz = p.size
+			if sz.x > vs.x - 40 or sz.y > vs.y - 80:
+				sz = Vector2(minf(sz.x, vs.x - 40), minf(sz.y, vs.y - 80))
+				p.size = sz
+			p.position = ((vs - sz) / 2).max(Vector2.ZERO)
+
+# 【临时诊断】打印关键容器矩形，定位空白页根因；定位后删除
+func _debug_page_rects():
+	await get_tree().process_frame
+	await get_tree().process_frame   # 等两帧，确保容器完成布局
+	var paths = [
+		"TopBar", "BottomNav", "PageContainer",
+		"PageContainer/MansionPage", "PageContainer/MansionPage/MansionGrid",
+		"PageContainer/ShopPage", "PageContainer/ShopPage/ShopScroll", "PageContainer/ShopPage/ShopScroll/ShopList",
+		"PageContainer/HeroPage", "PageContainer/HeroPage/HeroScroll", "PageContainer/HeroPage/HeroScroll/HeroGrid",
+		"PageContainer/BagPage", "PageContainer/BagPage/BagScroll", "PageContainer/BagPage/BagScroll/BagGrid",
+	]
+	for path in paths:
+		if has_node(path):
+			var n = get_node(path)
+			print(path, "  position=", n.position, "  size=", n.size)
+		else:
+			print(path, "  【不存在】")
