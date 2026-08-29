@@ -57,14 +57,15 @@ func get_hero_cos_state(hero_id: String, cos_id: String) -> Dictionary:
 	if not g.heroes.has(hero_id): return {}
 	return g.heroes[hero_id].get("costumes", {}).get(cos_id, {})
 
-# 门客是否已解锁某件服装
+# 门客是否已解锁某件服装（有base字段才算解锁，仅有stock不算）
 func is_hero_cos_unlocked(hero_id: String, cos_id: String) -> bool:
-	return not get_hero_cos_state(hero_id, cos_id).is_empty()
+	return get_hero_cos_state(hero_id, cos_id).has("base")
 
 # 服装技能总等级 = 资质丹等级 + 服装额外等级（额外等级在200满级之上）
+# 未解锁（含只有stock无base）返回0
 func get_cos_skill_level(hero_id: String, cos_id: String) -> int:
 	var st = get_hero_cos_state(hero_id, cos_id)
-	if st.is_empty(): return 0
+	if not st.has("base"): return 0
 	return int(st.get("base", 1)) + int(st.get("extra", 0))
 
 # 服装技能资质 = 总等级 × 每级资质（素装2/华服2/锦衣3）
@@ -75,7 +76,7 @@ func get_cos_skill_aptitude(hero_id: String, cos_id: String) -> int:
 	return get_cos_skill_level(hero_id, cos_id) * per
 
 # ============ 门客服装兑换 ============
-# 兑换门客服装：消耗 100 个系列专属道具；首次=解锁（送额外等级），重复=额外等级+15
+# 【改】兑换后只加库存(stock)，不自动解锁/升级，由玩家在门客面板手动操作
 # 返回 {ok, msg}
 func exchange_hero_costume(hero_id: String, cos_id: String) -> Dictionary:
 	if not g.heroes.has(hero_id): return {"ok": false, "msg": "尚未拥有该门客"}
@@ -94,14 +95,41 @@ func exchange_hero_costume(hero_id: String, cos_id: String) -> Dictionary:
 	if not g.heroes[hero_id].has("costumes"):
 		g.heroes[hero_id]["costumes"] = {}
 	var cos_dict = g.heroes[hero_id]["costumes"]
-	if cos_dict.has(cos_id):
-		# 重复兑换：额外等级+15
-		cos_dict[cos_id]["extra"] = int(cos_dict[cos_id].get("extra", 0)) + int(_settings().get("dup_bonus", 15))
-		return {"ok": true, "msg": "【%s】额外等级+%d" % [cfg.get("name", cos_id), int(_settings().get("dup_bonus", 15))]}
-	# 首次解锁：资质丹等级从1开始，按品质白送额外等级（素装+10/华服+20/锦衣+30）
+	if not cos_dict.has(cos_id):
+		cos_dict[cos_id] = {}
+	var st = cos_dict[cos_id]
+	st["stock"] = int(st.get("stock", 0)) + 1
+	return {"ok": true, "msg": "获得【%s】×1，请在门客面板解锁" % cfg.get("name", cos_id)}
+
+# 【新增】手动解锁服装：消耗1库存，创建 {base:1, extra:bonus, halo:0}
+# 返回 {ok, msg}
+func unlock_hero_cos(hero_id: String, cos_id: String) -> Dictionary:
+	if not g.heroes.has(hero_id): return {"ok": false, "msg": "尚未拥有该门客"}
+	var st = get_hero_cos_state(hero_id, cos_id)
+	if st.is_empty(): return {"ok": false, "msg": "尚未获得该服装"}
+	if st.has("base"): return {"ok": false, "msg": "已解锁"}
+	var stock = int(st.get("stock", 0))
+	if stock < 1: return {"ok": false, "msg": "库存不足"}
+	var cfg = _get_hero_cos_cfg(hero_id, cos_id)
 	var bonus = int(_settings().get("unlock_bonus", {}).get(cfg.get("quality", "素装"), 10))
-	cos_dict[cos_id] = {"base": 1, "extra": bonus, "halo": 0}
+	st["stock"] = stock - 1
+	st["base"] = 1
+	st["extra"] = bonus
+	st["halo"] = 0
 	return {"ok": true, "msg": "解锁服装【%s】，额外等级+%d，获得同名光环技能" % [cfg.get("name", cos_id), bonus]}
+
+# 【新增】手动升级服装（消耗库存加额外等级）：消耗1库存，extra+15
+# 返回 {ok, msg}
+func upgrade_hero_cos_extra(hero_id: String, cos_id: String) -> Dictionary:
+	if not g.heroes.has(hero_id): return {"ok": false, "msg": "尚未拥有该门客"}
+	var st = get_hero_cos_state(hero_id, cos_id)
+	if not st.has("base"): return {"ok": false, "msg": "服装未解锁"}
+	var stock = int(st.get("stock", 0))
+	if stock < 1: return {"ok": false, "msg": "库存不足"}
+	var bonus = int(_settings().get("dup_bonus", 15))
+	st["stock"] = stock - 1
+	st["extra"] = int(st.get("extra", 0)) + bonus
+	return {"ok": true, "msg": "【%s】额外等级+%d" % [_get_hero_cos_cfg(hero_id, cos_id).get("name", cos_id), bonus]}
 
 # ============ 服装技能升级（资质丹，仅升基础等级，上限200） ============
 # 升下一级所需资质丹（与资质技能同曲线：1.05^(lv-1)，至少1）
@@ -112,7 +140,7 @@ func get_cos_skill_cost(base_level: int) -> int:
 # 返回 {ok, levels, msg}
 func upgrade_cos_skill(hero_id: String, cos_id: String, mode: String = "single") -> Dictionary:
 	var st = get_hero_cos_state(hero_id, cos_id)
-	if st.is_empty(): return {"ok": false, "msg": "服装未解锁"}
+	if not st.has("base"): return {"ok": false, "msg": "服装未解锁"}
 	var max_lv = int(_settings().get("skill_max_level", 200))
 	var base = int(st.get("base", 1))
 	if base >= max_lv: return {"ok": false, "msg": "已满级"}
@@ -133,20 +161,22 @@ func upgrade_cos_skill(hero_id: String, cos_id: String, mode: String = "single")
 	return {"ok": true, "levels": levels}
 
 # ============ 门客光环技能（玉璜升级） ============
-# 光环等级上限 = min(100, 服装总等级×10)
+# 光环等级上限 = min(100, 服装总等级×10)；未解锁返回0
 func get_halo_cap(hero_id: String, cos_id: String) -> int:
+	var st = get_hero_cos_state(hero_id, cos_id)
+	if not st.has("base"): return 0
 	var per = int(_settings().get("halo_cap_per_costume_level", 10))
 	return min(int(_settings().get("halo_max_level", 100)), get_cos_skill_level(hero_id, cos_id) * per)
 
-# 升到 target_level 级所需玉璜：1-10级每级10个，之后每10级递增5
+# 【修】整数除法警告：/10 → /10.0，结果再转 int，逻辑不变
 func get_halo_cost(target_level: int) -> int:
-	return int(_settings().get("halo_cost_base", 10)) + int(_settings().get("halo_cost_step", 5)) * int((target_level - 1) / 10)
+	return int(_settings().get("halo_cost_base", 10)) + int(_settings().get("halo_cost_step", 5)) * int((target_level - 1) / 10.0)
 
 # 升级光环；mode: single=1级 / bulk=一键升到上限或玉璜耗尽
 # 返回 {ok, levels, msg}
 func upgrade_halo(hero_id: String, cos_id: String, mode: String = "single") -> Dictionary:
 	var st = get_hero_cos_state(hero_id, cos_id)
-	if st.is_empty(): return {"ok": false, "msg": "服装未解锁"}
+	if not st.has("base"): return {"ok": false, "msg": "服装未解锁"}
 	var cap = get_halo_cap(hero_id, cos_id)
 	var lv = int(st.get("halo", 0))
 	if lv >= cap:
@@ -176,12 +206,14 @@ func get_hero_costume_aptitude(hero_id: String) -> int:
 	for cfg in get_hero_costume_cfgs(hero_id):
 		total += get_cos_skill_aptitude(hero_id, cfg.get("id", ""))
 	# 光环资质：同category门客的已解锁光环，每级+1（含自身）
+	# 【改】跳过只有stock没有base的未解锁服装
 	var my_cat = g.heroes[hero_id].get("category", "")
 	var per = int(_settings().get("halo_apt_per_level", 1))
 	for hid in g.heroes.keys():
 		if g.heroes[hid].get("category", "") != my_cat: continue
 		var cos_dict = g.heroes[hid].get("costumes", {})
 		for cos_id in cos_dict.keys():
+			if not cos_dict[cos_id].has("base"): continue   # 跳过未解锁的
 			total += int(cos_dict[cos_id].get("halo", 0)) * per
 	return total
 

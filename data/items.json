@@ -9,6 +9,22 @@
 		"btn": "打开"
 	  }
 	},
+	"friend_box": {
+		"name": "挚友盒子",
+		"desc": "打开后可从所有挚友中选择一个获得",
+		"use": {
+			"type": "friend_box",
+			"btn": "打开"
+		}
+	},
+	"item_box": {
+		"name": "物品盒子",
+		"desc": "打开后可选择任意道具获得（支持批量）",
+		"use": {
+			"type": "item_box",
+			"btn": "打开"
+		}
+	},
 	"shop_blueprint": {
 	  "name": "商铺图纸",
 	  "desc": "用于解锁新商铺"

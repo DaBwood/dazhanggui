@@ -30,12 +30,13 @@ func load_save_data(s: Dictionary):
 
 # ============ 以下为原 game_data.gd 搬迁函数（逻辑未改，仅成员访问加了 g. 前缀） ============
 
-# 购买特惠礼包（自娱自乐版，直接成功）
-func buy_special_pack(pack: Dictionary) -> bool:
-	g.vip_exp += pack.cost * 10
+# 购买特惠礼包（自娱自乐版，直接成功）；quantity 为预留批量参数，UI 层后续可接入
+func buy_special_pack(pack: Dictionary, quantity: int = 1) -> bool:
+	if quantity <= 0: return false
+	g.vip_exp += pack.cost * 10 * quantity
 	g.vip_level = get_vip_level()
 	for item_id in pack.items.keys():
-		g.items[item_id] = g.items.get(item_id, 0) + pack.items[item_id]
+		g.items[item_id] = g.items.get(item_id, 0) + pack.items[item_id] * quantity
 	return true
 
 # 购买商城礼包（通用，加礼包只改上面的表）

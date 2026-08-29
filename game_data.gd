@@ -138,14 +138,9 @@ var identity_rewards_claimed: Dictionary = {}
 # ========== 特惠礼包配置表 ==========
 # 字段：name 礼包名 / desc 内容描述 / cost 价格(元) / items 道具及数量
 const SPECIAL_PACKS = [
-	{"name": "封神志×100",   "desc": "兑换封神灵兽",                 "cost": 10000, "items": {"feng_shen_zhi": 100}},
-	{"name": "山海石×100",   "desc": "兑换山海异兽",                 "cost": 10000, "items": {"shan_hai_shi": 100}},
-	{"name": "鸿荒火×100",   "desc": "兑换上古凶兽",                 "cost": 10000, "items": {"hong_huang_huo": 100}},
-	{"name": "九渊之水×100", "desc": "兑换蛮荒主兽",                 "cost": 10000, "items": {"jiu_yuan_shui": 100}},
-	{"name": "星枢麟角×100", "desc": "兑换星神圣兽",                 "cost": 50000, "items": {"xing_shu_lin": 100}},
-	{"name": "许愿石礼包",   "desc": "木梳×2000 + 胭脂×2000 + 许愿石×200", "cost": 1998, "items": {"wood_comb": 2000, "rouge": 2000, "wish_stone": 200}},
-	{"name": "门客盒子礼包", "desc": "门客盒子×1",                   "cost": 10000, "items": {"hero_box": 1}},
-	{"name": "门客帖礼包",   "desc": "门客帖×10",                    "cost": 1000,  "items": {"hero_token": 10}},
+	{"name": "门客盒子",   "desc": "打开后可从所有门客中选择一个获得",     "cost": 1, "items": {"hero_box": 1}},
+	{"name": "挚友盒子",   "desc": "打开后可从所有挚友中选择一个获得",     "cost": 1, "items": {"friend_box": 1}},
+	{"name": "物品盒子",   "desc": "打开后可选择任意道具获得（支持批量）",  "cost": 1, "items": {"item_box": 1000}},
 ]
 
 # ========== 元宝商城礼包表 ==========

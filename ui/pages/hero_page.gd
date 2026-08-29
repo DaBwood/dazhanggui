@@ -253,13 +253,28 @@ func update_hero_panel():
 	if c.has_node("HeroPanel/BeastInfoBox"):
 		c.get_node("HeroPanel/BeastInfoBox").queue_free()
 	
-	# ========== 左列按钮：第1行 缘分；第2行 珍兽+渔获 并排 ==========
+# ========== 左列按钮：第1行 服装；第2行 缘分；第3行 珍兽+渔获 并排 ==========
 	var beast_id = data.heroes[current_hero_id].get("equipped_beast", "")
 	var beast_idx = data.heroes[current_hero_id].get("equipped_beast_index", 0)
 	# 【修复】显式固定尺寸：新建 Button 当帧 size 为 (0,0)，不能用 size 做定位依据
 	var btn_size = Vector2(120, 40)
 	
-	# 缘分按钮（左列第1行）：点击弹窗显示该门客的缘分挚友
+	# 【服装系统】服装按钮（左列第1行）：点击打开该门客的服装弹窗
+	var cos_btn = c.get_node("HeroPanel").get_node_or_null("CostumeBtn")
+	if cos_btn == null:
+		cos_btn = Button.new()
+		cos_btn.name = "CostumeBtn"
+		cos_btn.text = "服装"
+		cos_btn.add_theme_font_size_override("font_size", 14)
+		c.get_node("HeroPanel").add_child(cos_btn)
+	cos_btn.size = btn_size
+	cos_btn.position = Vector2(20, 100)   # 【改】移到缘分上方
+	# 信号重连（先断后连，防止切换门客后串数据）
+	for conn in cos_btn.pressed.get_connections():
+		cos_btn.pressed.disconnect(conn.callable)
+	cos_btn.pressed.connect(c.costume_view.show_hero_costume_popup.bind(current_hero_id))
+	
+	# 缘分按钮（左列第2行）：点击弹窗显示该门客的缘分挚友
 	var fate_btn = c.get_node("HeroPanel").get_node_or_null("FateBtn")
 	if fate_btn == null:
 		fate_btn = Button.new()
@@ -268,13 +283,13 @@ func update_hero_panel():
 		fate_btn.add_theme_font_size_override("font_size", 14)
 		c.get_node("HeroPanel").add_child(fate_btn)
 	fate_btn.size = btn_size
-	fate_btn.position = Vector2(20, 100)
+	fate_btn.position = Vector2(20, 148)   # 【改】下移一行
 	# 信号重连（先断后连，防止切换门客后串数据）
 	for conn in fate_btn.pressed.get_connections():
 		fate_btn.pressed.disconnect(conn.callable)
 	fate_btn.pressed.connect(_on_fate_btn_clicked.bind(current_hero_id))
 	
-	# 珍兽按钮（左列第2行第1格）
+	# 珍兽按钮（左列第3行第1格）
 	var beast_btn = c.get_node("HeroPanel").get_node_or_null("BeastEquipBtn")
 	if beast_btn == null:
 		beast_btn = Button.new()
@@ -282,7 +297,7 @@ func update_hero_panel():
 		beast_btn.add_theme_font_size_override("font_size", 14)
 		c.get_node("HeroPanel").add_child(beast_btn)
 	beast_btn.size = btn_size
-	beast_btn.position = Vector2(20, 148)
+	beast_btn.position = Vector2(20, 196)   # 【改】下移
 	
 	for conn in beast_btn.pressed.get_connections():
 		beast_btn.pressed.disconnect(conn.callable)
@@ -296,7 +311,7 @@ func update_hero_panel():
 		beast_btn.text = "珍兽"
 		beast_btn.pressed.connect(_show_beast_selector_for_hero)
 	
-	# 渔获按钮（左列第2行第2格，与珍兽并排；该行后续还会加2个按钮，x 依次 +128）
+	# 渔获按钮（左列第3行第2格，与珍兽并排）
 	var fish_btn = c.get_node("HeroPanel").get_node_or_null("FishEquipBtn")
 	if fish_btn == null:
 		fish_btn = Button.new()
@@ -304,7 +319,7 @@ func update_hero_panel():
 		fish_btn.add_theme_font_size_override("font_size", 14)
 		c.get_node("HeroPanel").add_child(fish_btn)
 	fish_btn.size = btn_size
-	fish_btn.position = Vector2(148, 148)
+	fish_btn.position = Vector2(148, 196)   # 【改】下移
 	# 信号重连（先断后连，防止切换门客后串数据）
 	for conn in fish_btn.pressed.get_connections():
 		fish_btn.pressed.disconnect(conn.callable)
@@ -314,21 +329,13 @@ func update_hero_panel():
 	else:
 		fish_btn.text = "渔获"
 	fish_btn.pressed.connect(c.show_fish_equip_view.bind(current_hero_id))
-
-	# 【服装系统】服装按钮（左列第2行第3格）：点击打开该门客的服装弹窗
-	var cos_btn = c.get_node("HeroPanel").get_node_or_null("CostumeBtn")
-	if cos_btn == null:
-		cos_btn = Button.new()
-		cos_btn.name = "CostumeBtn"
-		cos_btn.text = "服装"
-		cos_btn.add_theme_font_size_override("font_size", 14)
-		c.get_node("HeroPanel").add_child(cos_btn)
-	cos_btn.size = btn_size
-	cos_btn.position = Vector2(276, 148)
-	# 信号重连（先断后连，防止切换门客后串数据）
-	for conn in cos_btn.pressed.get_connections():
-		cos_btn.pressed.disconnect(conn.callable)
-	cos_btn.pressed.connect(c.costume_view.show_hero_costume_popup.bind(current_hero_id))
+	
+	# 把技能列表下移到最后一个按钮下方，避免重叠
+	if c.get_node("HeroPanel").has_node("ScrollContainer"):
+		var scroll = c.get_node("HeroPanel/ScrollContainer")
+		var needed_y = fish_btn.position.y + fish_btn.size.y + 8   # 【改】基准改为渔获按钮底部
+		if scroll.position.y < needed_y:
+			scroll.position.y = needed_y
 	
 	# 【v3新增】赋诗/晋升按钮（右列上方）：有晋升内容的门客才显示，点击弹窗升级
 	var promo_btn = c.get_node("HeroPanel").get_node_or_null("PromoBtn")

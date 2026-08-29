@@ -47,7 +47,10 @@ func show_hero_costume_popup(hero_id: String):
 	c._add_ok_button(vb, func(): popup.queue_free(), "关闭")
 	c.add_child(popup)
 
-# 填充门客服装列表：已解锁=亮（显示总等级）/未解锁=灰（显示兑换价或暂未开放）
+# 填充门客服装列表：
+#   已解锁=亮（显示总等级；有库存则显示"升级"按钮）
+#   有库存未解锁=显示"解锁"按钮
+#   无库存=灰（显示兑换按钮或暂未开放）
 func _fill_hero_costume_list(list: VBoxContainer, hero_id: String):
 	for child in list.get_children():
 		child.queue_free()
@@ -69,47 +72,85 @@ func _fill_hero_costume_list(list: VBoxContainer, hero_id: String):
 		lbl.clip_text = true
 		var quality = cfg.get("quality", "素装")
 		var series = cfg.get("series", "")
-		if data.costume_system.is_hero_cos_unlocked(hero_id, cos_id):
+		var st = data.costume_system.get_hero_cos_state(hero_id, cos_id)
+		var is_unlocked = data.costume_system.is_hero_cos_unlocked(hero_id, cos_id)
+		var stock = int(st.get("stock", 0))
+		
+		if is_unlocked:
 			# 已解锁：显示服装技能总等级（基础+额外）
 			lbl.text = "【%s】%s Lv.%d" % [quality, cfg.get("name", cos_id), data.costume_system.get_cos_skill_level(hero_id, cos_id)]
 			lbl.add_theme_color_override("font_color", _quality_color(quality))
 			row.add_child(lbl)
-			# 重复兑换按钮：+15额外等级（仅系列服装可兑换）
-			if series != "":
-				var dup_btn = Button.new()
-				dup_btn.text = "再兑+15级"
-				dup_btn.custom_minimum_size = Vector2(100, 32)
-				dup_btn.add_theme_font_size_override("font_size", 12)
-				dup_btn.pressed.connect(_on_exchange_hero_cos.bind(hero_id, cos_id))
-				row.add_child(dup_btn)
+			# 已解锁且有库存：显示"升级"按钮（消耗1库存，加额外等级）
+			if stock > 0:
+				var up_btn = Button.new()
+				up_btn.text = "升级（库存%d）" % stock
+				up_btn.custom_minimum_size = Vector2(100, 32)
+				up_btn.add_theme_font_size_override("font_size", 12)
+				up_btn.pressed.connect(_on_cos_extra_upgrade.bind(hero_id, cos_id))
+				row.add_child(up_btn)
 		else:
+			# 未解锁
 			lbl.text = "【%s】%s" % [quality, cfg.get("name", cos_id)]
-			lbl.add_theme_color_override("font_color", Color("#777777"))   # 未解锁置灰
 			row.add_child(lbl)
-			if series == "":
-				var lock_lbl = Label.new()
-				lock_lbl.text = "暂未开放"
-				lock_lbl.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
-				lock_lbl.add_theme_font_size_override("font_size", 12)
-				lock_lbl.add_theme_color_override("font_color", Color("#aaaaaa"))
-				row.add_child(lock_lbl)
+			if stock > 0:
+				# 有库存但未解锁：显示"解锁"按钮
+				var unlock_btn = Button.new()
+				unlock_btn.text = "解锁（库存%d）" % stock
+				unlock_btn.custom_minimum_size = Vector2(100, 32)
+				unlock_btn.add_theme_font_size_override("font_size", 12)
+				unlock_btn.pressed.connect(_on_cos_unlock.bind(hero_id, cos_id))
+				row.add_child(unlock_btn)
+				lbl.add_theme_color_override("font_color", Color("#aaaaaa"))   # 有库存但待解锁，淡灰
 			else:
-				# 可兑换：显示价格（100个系列道具），不足禁用
-				var s = data.costume_system._get_series_cfg(series)
-				var cost = int(data.costume_system._settings().get("exchange_cost", 100))
-				var have = int(data.items.get(s.get("cost_item", ""), 0))
-				var buy_btn = Button.new()
-				buy_btn.text = "%s %d/%d" % [s.get("item_name", ""), have, cost]
-				buy_btn.custom_minimum_size = Vector2(130, 32)
-				buy_btn.add_theme_font_size_override("font_size", 12)
-				buy_btn.disabled = have < cost
-				buy_btn.pressed.connect(_on_exchange_hero_cos.bind(hero_id, cos_id))
-				row.add_child(buy_btn)
+				# 无库存
+				lbl.add_theme_color_override("font_color", Color("#777777"))   # 未拥有置灰
+				if series == "":
+					var lock_lbl = Label.new()
+					lock_lbl.text = "暂未开放"
+					lock_lbl.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
+					lock_lbl.add_theme_font_size_override("font_size", 12)
+					lock_lbl.add_theme_color_override("font_color", Color("#aaaaaa"))
+					row.add_child(lock_lbl)
+				else:
+					# 可兑换：显示价格（100个系列道具），不足禁用
+					var s = data.costume_system._get_series_cfg(series)
+					var cost = int(data.costume_system._settings().get("exchange_cost", 100))
+					var have = int(data.items.get(s.get("cost_item", ""), 0))
+					var buy_btn = Button.new()
+					buy_btn.text = "%s %d/%d" % [s.get("item_name", ""), have, cost]
+					buy_btn.custom_minimum_size = Vector2(130, 32)
+					buy_btn.add_theme_font_size_override("font_size", 12)
+					buy_btn.disabled = have < cost
+					buy_btn.pressed.connect(_on_exchange_hero_cos.bind(hero_id, cos_id))
+					row.add_child(buy_btn)
 		list.add_child(row)
 
 # 门客服装兑换回调：兑换后原地刷新列表 + 门客面板（资质/赚速变化）
 func _on_exchange_hero_cos(hero_id: String, cos_id: String):
 	var res = data.costume_system.exchange_hero_costume(hero_id, cos_id)
+	c._show_stage_hint(res.get("msg", ""))
+	if res.get("ok", false):
+		var popup = c.get_node_or_null("HeroCostumePopup")
+		if popup:
+			_fill_hero_costume_list(popup.find_child("CosList", true, false), hero_id)
+		c.hero_page.update_hero_panel()
+		c.update_all_ui()
+
+# 【新增】手动解锁服装回调：消耗1库存，创建服装状态
+func _on_cos_unlock(hero_id: String, cos_id: String):
+	var res = data.costume_system.unlock_hero_cos(hero_id, cos_id)
+	c._show_stage_hint(res.get("msg", ""))
+	if res.get("ok", false):
+		var popup = c.get_node_or_null("HeroCostumePopup")
+		if popup:
+			_fill_hero_costume_list(popup.find_child("CosList", true, false), hero_id)
+		c.hero_page.update_hero_panel()
+		c.update_all_ui()
+
+# 【新增】手动升级服装（消耗库存加额外等级）回调
+func _on_cos_extra_upgrade(hero_id: String, cos_id: String):
+	var res = data.costume_system.upgrade_hero_cos_extra(hero_id, cos_id)
 	c._show_stage_hint(res.get("msg", ""))
 	if res.get("ok", false):
 		var popup = c.get_node_or_null("HeroCostumePopup")
@@ -297,18 +338,37 @@ func _add_series_section(list: VBoxContainer, series: Dictionary):
 			owner_owned = data.heroes.has(owner_id)
 			owner_name = data.heroes[owner_id].name if owner_owned else data.get_hero_config(owner_id).get("name", owner_id)
 		var quality = cfg.get("quality", "素装")
-		var owned_cnt = 0
-		if is_friend:
-			owned_cnt = data.costume_system.get_friend_cos_copies(owner_id, cfg.get("id", ""))
-		elif owner_owned:
-			owned_cnt = 1 if data.costume_system.is_hero_cos_unlocked(owner_id, cfg.get("id", "")) else 0
 		var state_txt = ""
-		if owned_cnt > 0:
-			state_txt = "（已兑换x%d）" % owned_cnt if is_friend else "（已解锁，再兑+15级）"
-		elif not owner_owned:
-			state_txt = "（未拥有%s）" % ("挚友" if is_friend else "门客")
+		if is_friend:
+			var copies = data.costume_system.get_friend_cos_copies(owner_id, cfg.get("id", ""))
+			if copies > 0:
+				state_txt = "（已兑换x%d）" % copies
+			else:
+				state_txt = "（未拥有挚友）"
+		elif owner_owned:
+			var cos_st = data.costume_system.get_hero_cos_state(owner_id, cfg.get("id", ""))
+			var is_unlocked = data.costume_system.is_hero_cos_unlocked(owner_id, cfg.get("id", ""))
+			var stock = int(cos_st.get("stock", 0))
+			if is_unlocked:
+				state_txt = "（已解锁"
+				if stock > 0:
+					state_txt += "，库存%d" % stock
+				state_txt += "）"
+			elif stock > 0:
+				state_txt = "（未解锁，库存%d）" % stock
+			else:
+				state_txt = "（未拥有）"
+		else:
+			state_txt = "（未拥有门客）"
 		lbl.text = "【%s】%s - %s%s" % [quality, cfg.get("name", ""), owner_name, state_txt]
-		lbl.add_theme_color_override("font_color", _quality_color(quality) if owned_cnt > 0 else Color("#ffffff"))
+		# 颜色判断：挚友已兑换 / 门客已解锁或有库存 → 品质色；否则白色
+		var use_quality_color = false
+		if is_friend:
+			use_quality_color = data.costume_system.get_friend_cos_copies(owner_id, cfg.get("id", "")) > 0
+		elif owner_owned:
+			var cos_st2 = data.costume_system.get_hero_cos_state(owner_id, cfg.get("id", ""))
+			use_quality_color = data.costume_system.is_hero_cos_unlocked(owner_id, cfg.get("id", "")) or int(cos_st2.get("stock", 0)) > 0
+		lbl.add_theme_color_override("font_color", _quality_color(quality) if use_quality_color else Color("#ffffff"))
 		row.add_child(lbl)
 		var buy_btn = Button.new()
 		buy_btn.text = "兑换"

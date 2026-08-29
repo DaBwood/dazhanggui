@@ -103,6 +103,10 @@ func generate_bag_list():
 					use_btn.pressed.connect(func(): c._show_quantity_selector(item_id, title, _on_ginseng_confirmed))
 				"hero_box":
 					use_btn.pressed.connect(_show_hero_box_selector)
+				"friend_box":
+					use_btn.pressed.connect(_show_friend_box_selector)
+				"item_box":
+					use_btn.pressed.connect(_show_item_box_selector)
 			vbox.add_child(use_btn)
 
 		
@@ -261,6 +265,129 @@ func _show_hero_box_selector():
 	vbox.add_child(cancel)
 	
 	c.add_child(panel)
+
+# 【新增】挚友盒子选择弹窗：列出所有未拥有的挚友，点击即获得（不可重复）
+func _show_friend_box_selector():
+	if c.has_node("FriendBoxSelector"): return
+	
+	var panel = c._create_base_popup("选择挚友", Vector2(460, 500), Vector2(346, 120))
+	panel.name = "FriendBoxSelector"
+	var vbox = panel.get_child(0)
+	
+	var scroll = ScrollContainer.new()
+	scroll.custom_minimum_size = Vector2(440, 380)
+	vbox.add_child(scroll)
+	
+	var list = VBoxContainer.new()
+	scroll.add_child(list)
+	
+	var has_unlockable = false
+	for friend_id in data.get_all_friend_ids():
+		if data.friends.has(friend_id): continue  # 已拥有的跳过
+		
+		var cfg = data.get_friend_config(friend_id)
+		var btn = Button.new()
+		var vip_lv = data.get_friend_unlock_vip(friend_id)
+		btn.text = "【%s】%s  |  VIP%d解锁" % [cfg.name, "挚友", vip_lv]
+		btn.pressed.connect(_on_friend_box_selected.bind(friend_id))
+		list.add_child(btn)
+		has_unlockable = true
+	
+	if not has_unlockable:
+		var empty = Label.new()
+		empty.text = "所有挚友已拥有"
+		empty.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+		list.add_child(empty)
+	
+	var cancel = Button.new()
+	cancel.text = "取消"
+	cancel.pressed.connect(func(): c._safe_close("FriendBoxSelector"))
+	vbox.add_child(cancel)
+	
+	c.add_child(panel)
+
+# 【新增】挚友盒子选择回调
+func _on_friend_box_selected(friend_id: String):
+	if data.items.get("friend_box", 0) < 1:
+		c._safe_close("FriendBoxSelector")
+		return
+	
+	data.items.friend_box -= 1
+	data.unlock_friend(friend_id)
+	
+	var cfg = data.get_friend_config(friend_id)
+	c._safe_close("FriendBoxSelector")
+	c._show_stage_hint("获得挚友【%s】" % cfg.name)
+	c.update_all_ui()
+	update_bag_list()
+
+# 【新增】物品盒子选择弹窗（支持批量）：顶部选使用数量，下面选道具，点击即结算
+func _show_item_box_selector():
+	if c.has_node("ItemBoxSelector"): return
+	
+	var have = data.items.get("item_box", 0)
+	if have <= 0: return
+	
+	var panel = c._create_base_popup("物品盒子（拥有%d个）" % have, Vector2(460, 520), Vector2(346, 100))
+	panel.name = "ItemBoxSelector"
+	var vbox = panel.get_child(0)
+	
+	# 数量选择行
+	var qty_row = HBoxContainer.new()
+	qty_row.add_theme_constant_override("separation", 8)
+	vbox.add_child(qty_row)
+	var qty_lbl = Label.new()
+	qty_lbl.text = "使用数量："
+	qty_row.add_child(qty_lbl)
+	var qty_spin = SpinBox.new()
+	qty_spin.name = "ItemBoxQtySpin"
+	qty_spin.min_value = 1
+	qty_spin.max_value = have
+	qty_spin.value = 1
+	qty_spin.custom_minimum_size = Vector2(120, 32)
+	qty_row.add_child(qty_spin)
+	
+	var scroll = ScrollContainer.new()
+	scroll.custom_minimum_size = Vector2(440, 360)
+	vbox.add_child(scroll)
+	
+	var list = VBoxContainer.new()
+	scroll.add_child(list)
+	
+	# 排除盒子类道具，防止递归
+	var exclude_ids = ["hero_box", "friend_box", "item_box"]
+	for item_id in data.ITEM_CONFIG.keys():
+		if item_id in exclude_ids: continue
+		
+		var cfg = data.ITEM_CONFIG[item_id]
+		var btn = Button.new()
+		btn.text = "【%s】%s" % [cfg.name, cfg.desc]
+		# 点击时读取当前 SpinBox 的值作为使用数量
+		btn.pressed.connect(_on_item_box_selected.bind(item_id, qty_spin))
+		list.add_child(btn)
+	
+	var cancel = Button.new()
+	cancel.text = "取消"
+	cancel.pressed.connect(func(): c._safe_close("ItemBoxSelector"))
+	vbox.add_child(cancel)
+	
+	c.add_child(panel)
+
+# 【新增】物品盒子选择回调（批量）：扣除N个盒子，获得N个选定道具
+func _on_item_box_selected(item_id: String, qty_spin: SpinBox):
+	var count = int(qty_spin.value)
+	if data.items.get("item_box", 0) < count:
+		c._safe_close("ItemBoxSelector")
+		return
+	
+	data.items.item_box -= count
+	data.items[item_id] = data.items.get(item_id, 0) + count
+	
+	var cfg = data.ITEM_CONFIG.get(item_id, {})
+	c._safe_close("ItemBoxSelector")
+	c._show_stage_hint("使用%d个物品盒子，获得【%s】×%d" % [count, cfg.get("name", item_id), count])
+	c.update_all_ui()
+	update_bag_list()
 
 func _on_hero_box_selected(hero_id: String):
 	if data.items.get("hero_box", 0) < 1:
