@@ -132,9 +132,9 @@ func upgrade_hero_cos_extra(hero_id: String, cos_id: String) -> Dictionary:
 	return {"ok": true, "msg": "【%s】额外等级+%d" % [_get_hero_cos_cfg(hero_id, cos_id).get("name", cos_id), bonus]}
 
 # ============ 服装技能升级（资质丹，仅升基础等级，上限200） ============
-# 升下一级所需资质丹（与资质技能同曲线：1.05^(lv-1)，至少1）
-func get_cos_skill_cost(base_level: int) -> int:
-	return max(1, int(ceil(pow(1.05, base_level - 1))))
+#  【改】升下一级所需资质丹：固定消耗=该品质每级资质增量（素装2/华服2/锦衣3），不再随等级增长
+func get_cos_skill_cost(quality: String = "素装") -> int:
+	return int(_settings().get("apt_per_level", {}).get(quality, 2))
 
 # 升级服装技能；mode: single=1级 / bulk=一键升到200或资质丹耗尽
 # 返回 {ok, levels, msg}
@@ -146,9 +146,13 @@ func upgrade_cos_skill(hero_id: String, cos_id: String, mode: String = "single")
 	if base >= max_lv: return {"ok": false, "msg": "已满级"}
 	var pills = int(g.items.get("aptitude_pill", 0))
 	if pills <= 0: return {"ok": false, "msg": "资质丹不足"}
+	# 【新增】品质决定固定消耗（素装2/华服2/锦衣3），每级相同，提出循环只算一次
+	# 【修】原循环内 get_cos_skill_cost(base) 把等级(int)当品质(String)传参，
+	#        字典查不到永远返回兜底值2——锦衣每级应吃3丹被吃成2丹
+	var quality = _get_hero_cos_cfg(hero_id, cos_id).get("quality", "素装")
+	var cost = get_cos_skill_cost(quality)
 	var levels = 0
 	while base < max_lv:
-		var cost = get_cos_skill_cost(base)
 		if pills < cost: break
 		pills -= cost
 		base += 1

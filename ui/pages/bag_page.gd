@@ -22,7 +22,6 @@ func _init(p_c):
 # ============ 以下为原 game_controller.gd 搬迁函数（逻辑未改，仅根节点访问加了 c. 前缀） ============
 
 func generate_bag_list():
-	#print("【诊断】ui/pages 的 bag_page 生效了")   # 临时诊断，确认后删
 	if not c.has_node("PageContainer/BagPage"): return
 	var bag_page = c.get_node("PageContainer/BagPage")
 	
@@ -43,7 +42,7 @@ func generate_bag_list():
 	else:
 		grid = GridContainer.new()
 		grid.name = "BagGrid"
-		grid.columns = 3
+		grid.columns = 5
 		grid.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 		grid.add_theme_constant_override("h_separation", 8)
 		grid.add_theme_constant_override("v_separation", 8)
@@ -53,66 +52,117 @@ func generate_bag_list():
 	for child in grid.get_children():
 		child.queue_free()
 	
-	# 为每种物品生成格子
+	# 【改】为每种物品生成简洁按钮，只显示名称
 	for item_id in data.ITEM_CONFIG.keys():
 		var cfg = data.ITEM_CONFIG[item_id]
-		# 【新增】带 hide_in_bag 标记的道具不在背包显示（如鱼食：垂钓专用材料，在喂养弹窗里看数量）
-		if cfg.get("hide_in_bag", false): continue
+		
+		# 跳过隐藏道具（如鱼食）
+		if cfg.get("hide_in_bag", false):
+			continue
+		
 		var count = data.items.get(item_id, 0)
 		if item_id == "lottery_ticket":
 			count = data.lottery_ticket
-		
-		var cell = PanelContainer.new()
-		cell.name = item_id + "_cell"
-		cell.custom_minimum_size = Vector2(0, 120)
-		cell.size_flags_horizontal = Control.SIZE_EXPAND_FILL
-		
-		var vbox = VBoxContainer.new()
-		vbox.alignment = BoxContainer.ALIGNMENT_CENTER
-		cell.add_child(vbox)
-		
-		var name_lbl = Label.new()
-		name_lbl.text = cfg.name
-		name_lbl.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
-		vbox.add_child(name_lbl)
-		
-		var count_lbl = Label.new()
-		count_lbl.name = "CountLabel"
-		count_lbl.text = "x%d" % count
-		count_lbl.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
-		vbox.add_child(count_lbl)
-		
-		var desc_lbl = Label.new()
-		desc_lbl.text = cfg.desc
-		desc_lbl.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
-		desc_lbl.add_theme_font_size_override("font_size", 16)
-		desc_lbl.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART   # 【新增】长描述自动换行，不再撑宽格子
-		vbox.add_child(desc_lbl)
-		
-		# 可使用道具：按 ITEM_CONFIG 的 use 配置自动生成按钮
-		# type: quantity=数量选择后data.use_item结算 / ginseng=数量选择后选门客 / hero_box=直接选门客
-		var use_cfg = cfg.get("use", {})
-		if not use_cfg.is_empty():
-			var use_btn = Button.new()
-			use_btn.text = use_cfg.get("btn", "使用")
-			use_btn.custom_minimum_size = Vector2(60, 28)
-			use_btn.add_theme_font_size_override("font_size", 12)
-			var title = use_cfg.get("title", "使用" + cfg.name)
-			match use_cfg.get("type", ""):
-				"quantity":
-					use_btn.pressed.connect(func(): c._show_quantity_selector(item_id, title, _on_item_use_confirmed))
-				"ginseng":
-					use_btn.pressed.connect(func(): c._show_quantity_selector(item_id, title, _on_ginseng_confirmed))
-				"hero_box":
-					use_btn.pressed.connect(_show_hero_box_selector)
-				"friend_box":
-					use_btn.pressed.connect(_show_friend_box_selector)
-				"item_box":
-					use_btn.pressed.connect(_show_item_box_selector)
-			vbox.add_child(use_btn)
 
-		
-		grid.add_child(cell)
+		var btn = Button.new()
+		btn.name = item_id + "_btn"
+		btn.text = "%s\nx%d" % [cfg.name, count]   # 名称第一行，数量第二行
+		btn.custom_minimum_size = Vector2(0, 50)    # 不限制宽度，高度44容纳两行
+		btn.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+		# 文字样式
+		btn.add_theme_font_size_override("font_size", 14)
+		btn.add_theme_color_override("font_color", Color(0.9, 0.85, 0.75))
+		btn.add_theme_color_override("font_pressed_color", Color(1.0, 0.95, 0.8))
+		btn.add_theme_color_override("font_hover_color", Color(1.0, 1.0, 1.0))
+		# 按钮样式：深色底+淡边框
+		var btn_style = StyleBoxFlat.new()
+		btn_style.bg_color = Color(0.15, 0.14, 0.18)
+		btn_style.border_color = Color(0.35, 0.32, 0.40)
+		btn_style.border_width_bottom = 2
+		btn_style.corner_radius_top_left = 3
+		btn_style.corner_radius_top_right = 3
+		btn_style.corner_radius_bottom_left = 3
+		btn_style.corner_radius_bottom_right = 3
+		btn.add_theme_stylebox_override("normal", btn_style)
+		var hover_style = btn_style.duplicate()
+		hover_style.bg_color = Color(0.22, 0.20, 0.28)
+		hover_style.border_color = Color(0.50, 0.45, 0.60)
+		btn.add_theme_stylebox_override("hover", hover_style)
+		var press_style = btn_style.duplicate()
+		press_style.bg_color = Color(0.10, 0.09, 0.13)
+		btn.add_theme_stylebox_override("pressed", press_style)
+		# 点击打开详情弹窗
+		btn.pressed.connect(_show_item_detail_popup.bind(item_id))
+		grid.add_child(btn)
+
+# 【新增】物品详情弹窗：显示名称、数量、描述，可用道具附带使用按钮
+func _show_item_detail_popup(item_id: String):
+	var cfg = data.ITEM_CONFIG.get(item_id, {})
+	var count = data.items.get(item_id, 0)
+	if item_id == "lottery_ticket":
+		count = data.lottery_ticket
+	
+	var popup = c._create_base_popup(cfg.get("name", "物品详情"), Vector2(360, 260))
+	popup.name = "ItemDetailPopup"
+	var vbox = popup.get_child(0)
+	
+	# 数量
+	var count_lbl = Label.new()
+	count_lbl.text = "数量：x%d" % count
+	count_lbl.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	vbox.add_child(count_lbl)
+	
+	# 描述
+	var desc_lbl = Label.new()
+	desc_lbl.text = cfg.get("desc", "")
+	desc_lbl.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+	desc_lbl.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	vbox.add_child(desc_lbl)
+	
+	# 可使用道具：在弹窗内附加使用按钮
+	var use_cfg = cfg.get("use", {})
+	if not use_cfg.is_empty() and count > 0:
+		var use_btn = Button.new()
+		use_btn.text = use_cfg.get("btn", "使用")
+		use_btn.custom_minimum_size = Vector2(100, 36)
+		var title = use_cfg.get("title", "使用" + cfg.get("name", ""))
+		match use_cfg.get("type", ""):
+			"quantity", "stage_box":
+				use_btn.pressed.connect(func():
+					popup.queue_free()
+					c._show_quantity_selector(item_id, title, _on_item_use_confirmed)
+				)
+			"ginseng":
+				use_btn.pressed.connect(func():
+					popup.queue_free()
+					c._show_quantity_selector(item_id, title, _on_ginseng_confirmed)
+				)
+			"hero_box":
+				use_btn.pressed.connect(func():
+					popup.queue_free()
+					_show_hero_box_selector()
+				)
+			"friend_box":
+				use_btn.pressed.connect(func():
+					popup.queue_free()
+					if has_method("_show_friend_box_selector"):
+						_show_friend_box_selector()
+					else:
+						c._show_stage_hint("挚友盒子功能开发中")
+				)
+			"item_box":
+				use_btn.pressed.connect(func():
+					popup.queue_free()
+					if has_method("_show_item_box_selector"):
+						_show_item_box_selector()
+					else:
+						c._show_stage_hint("物品盒子功能开发中")
+				)
+		vbox.add_child(use_btn)
+	
+	c._add_ok_button(vbox, func(): popup.queue_free(), "关闭")
+	c.add_child(popup)
+
 
 func _on_item_use_confirmed(spin: SpinBox):
 	var count = int(spin.value)
@@ -133,14 +183,7 @@ func _on_item_use_confirmed(spin: SpinBox):
 		c._show_stage_hint(result.get("msg", "使用失败"))
 
 func update_bag_list():
-	if not c.has_node("PageContainer/BagPage/BagScroll/BagGrid"): return
-	var grid = c.get_node("PageContainer/BagPage/BagScroll/BagGrid")
-	for cell in grid.get_children():
-		var item_id = cell.name.replace("_cell", "")
-		var count_lbl = cell.find_child("CountLabel", true, false)
-		if count_lbl:
-			var count = data.lottery_ticket if item_id == "lottery_ticket" else data.items.get(item_id, 0)
-			count_lbl.text = "x%d" % count
+	generate_bag_list()
 
 func _on_ginseng_confirmed(spin: SpinBox):
 	var count = int(spin.value)

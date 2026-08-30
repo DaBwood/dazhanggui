@@ -25,7 +25,7 @@ func build_war_view(page, vbox):
 	# --- 商战入口 ---
 	var war_btn = Button.new()
 	war_btn.text = "商战"
-	war_btn.custom_minimum_size = Vector2(240, 60)
+	war_btn.custom_minimum_size = Vector2(180, 60)
 	war_btn.pressed.connect(c.show_war_view)
 	vbox.get_node("AdventureEntryGrid").add_child(war_btn)
 	

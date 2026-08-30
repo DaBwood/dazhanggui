@@ -428,7 +428,7 @@ func _get_level_up_btn_text(h) -> String:
 		return "升级"
 	var batch = c.get_node("HeroPanel/LevelUpBox/LevelUpBtnBox/BatchCheck").button_pressed
 	if not batch:
-		return "升级\n%d" % int(ceil(100 * pow(1.05, h.level - 1)))
+		return "升级\n%d" % int(ceil(100 * pow(1.05, h.level)))
 	var max_lv = 50 + h.breakthrough_count * 50
 	var total = 0
 	for lv in range(h.level, min(h.level + 10, max_lv)):
@@ -553,8 +553,9 @@ func on_aptitude_skill_upgrade(skill_index: int, mode: String = "single"):
 	if skill.level >= skill.max_level:
 		return
 	
+	var cost_per_level = int(skill.get("aptitude_per_level", 1))  # 【新增】每级固定消耗=每级加的资质数
 	var pill_count = data.items.get("aptitude_pill", 0)
-	if pill_count <= 0:
+	if pill_count <= cost_per_level:
 		return
 	
 	var levels_to_upgrade: int
@@ -562,10 +563,10 @@ func on_aptitude_skill_upgrade(skill_index: int, mode: String = "single"):
 		levels_to_upgrade = 1
 	else:  # bulk 一键升满
 		var remaining = skill.max_level - skill.level
-		levels_to_upgrade = min(pill_count, remaining)
+		levels_to_upgrade = min(pill_count / cost_per_level, remaining)  # 【改】按每级N丹折算可升级数
 	
 	if levels_to_upgrade > 0:
-		data.items.aptitude_pill -= levels_to_upgrade
+		data.items.aptitude_pill -= levels_to_upgrade * cost_per_level  # 【改】扣 级数×每级N丹（原扣级数×1）
 		skill.level += levels_to_upgrade
 		update_hero_panel()
 		c.update_all_ui()
@@ -742,7 +743,7 @@ func _fill_skill_tab(list):
 	var h = data.heroes[current_hero_id]
 	for i in range(h.aptitude_skills.size()):
 		var skill = h.aptitude_skills[i]
-		var apt_cost = max(1, int(ceil(pow(1.05, skill.level - 1))))
+		var apt_cost = int(skill.get("aptitude_per_level", 1))  # 【改】固定消耗=每级资质增量，替换原 1.05^(lv-1) 曲线
 		
 		var apt_row = HBoxContainer.new()
 		apt_row.size_flags_horizontal = Control.SIZE_EXPAND_FILL
@@ -836,7 +837,7 @@ func _fill_costume_tab(list):
 		var extra = int(st.get("extra", 0))
 		var max_lv = int(cs._settings().get("skill_max_level", 200))
 		var apt = cs.get_cos_skill_aptitude(current_hero_id, cos_id)
-		var cost = cs.get_cos_skill_cost(base)
+		var cost = cs.get_cos_skill_cost(cfg.get("quality", "素装"))  # 【改】传品质取固定消耗（原传 base 等级，永远显示2）
 
 		var row = HBoxContainer.new()
 		row.size_flags_horizontal = Control.SIZE_EXPAND_FILL

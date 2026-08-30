@@ -49,14 +49,14 @@ func generate_adventure_page():
 	
 	var stage_btn = Button.new()
 	stage_btn.text = "关卡"
-	stage_btn.custom_minimum_size = Vector2(240, 60)
+	stage_btn.custom_minimum_size = Vector2(180, 60)
 	stage_btn.pressed.connect(c.switch_page.bind("stage"))
 	entry_grid.add_child(stage_btn)
 	
 	var exchange_btn = Button.new()
 	exchange_btn.name = "ExchangeBtn"
 	exchange_btn.text = "兑换"
-	exchange_btn.custom_minimum_size = Vector2(240, 60)
+	exchange_btn.custom_minimum_size = Vector2(180, 60)
 	exchange_btn.pressed.connect(c.show_exchange_view)
 	entry_grid.add_child(exchange_btn)
 	
@@ -91,13 +91,13 @@ func generate_adventure_page():
 	
 	var beast_entry_btn = Button.new()
 	beast_entry_btn.text = "珍兽兑换"
-	beast_entry_btn.custom_minimum_size = Vector2(240, 60)
+	beast_entry_btn.custom_minimum_size = Vector2(180, 60)
 	beast_entry_btn.pressed.connect(c.show_beast_exchange_view)
 	excg_entry_grid.add_child(beast_entry_btn)
 	
 	var token_entry_btn = Button.new()
 	token_entry_btn.text = "门客帖兑换"
-	token_entry_btn.custom_minimum_size = Vector2(240, 60)
+	token_entry_btn.custom_minimum_size = Vector2(180, 60)
 	token_entry_btn.pressed.connect(c.show_token_exchange_view)
 	excg_entry_grid.add_child(token_entry_btn)
 	
@@ -105,7 +105,7 @@ func generate_adventure_page():
 	for i in range(data.SERIES_EXCHANGE.size()):
 		var s_btn = Button.new()
 		s_btn.text = data.SERIES_EXCHANGE[i].series
-		s_btn.custom_minimum_size = Vector2(240, 60)
+		s_btn.custom_minimum_size = Vector2(180, 60)
 		s_btn.pressed.connect(c.show_series_exchange_view.bind(i))
 		excg_entry_grid.add_child(s_btn)
 	
@@ -184,7 +184,7 @@ func generate_adventure_page():
 	var lottery_btn = Button.new()
 	lottery_btn.name = "LotteryBtn"
 	lottery_btn.text = "抽奖"
-	lottery_btn.custom_minimum_size = Vector2(240, 60)
+	lottery_btn.custom_minimum_size = Vector2(180, 60)
 	lottery_btn.pressed.connect(c.show_lottery_view)
 	entry_grid.add_child(lottery_btn)
 	
@@ -243,7 +243,7 @@ func generate_adventure_page():
 	# --- 行善入口 ---
 	var charity_btn = Button.new()
 	charity_btn.text = "行善"
-	charity_btn.custom_minimum_size = Vector2(240, 60)
+	charity_btn.custom_minimum_size = Vector2(180, 60)
 	charity_btn.pressed.connect(c.show_charity_view)
 	entry_grid.add_child(charity_btn)
 	
@@ -298,7 +298,7 @@ func generate_adventure_page():
 	# --- 【新增】游历入口（与行善并列） ---
 	var travel_btn = Button.new()
 	travel_btn.text = "游历"
-	travel_btn.custom_minimum_size = Vector2(240, 60)
+	travel_btn.custom_minimum_size = Vector2(180, 60)
 	travel_btn.pressed.connect(c.show_travel_view)
 	entry_grid.add_child(travel_btn)
 	

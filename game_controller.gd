@@ -27,7 +27,7 @@ var _current_popup: Control = null
 
 # ========== 徒弟页面 ==========
 
-# 提亲弹窗
+var _bars_visible = true  # 【新增】顶栏/底栏显隐状态位：二级页（挚友详情）全屏时=false，_apply_portrait_layout 重排时尊重它
 
 # ===== 页面逻辑模块（第3批重构；_ready 中创建，页面经 c 共享本脚本） =====
 var mansion_page   # 府邸页
@@ -627,9 +627,16 @@ func flash_red(node_path: String):
 func _create_base_popup(title_text: String, popup_size: Vector2, pos: Vector2 = Vector2.ZERO) -> PanelContainer:
 	var panel = PanelContainer.new()
 	# 【改】竖屏适配：弹窗尺寸钳制不超视口（四周留边）；写死的位置也钳制在屏幕内不出界
+	# 【改】竖屏适配：弹窗尺寸钳制不超视口（四周留边）
 	var vs = get_viewport_rect().size
 	popup_size = Vector2(minf(popup_size.x, vs.x - 40), minf(popup_size.y, vs.y - 80))
 	panel.custom_minimum_size = popup_size
+	# 【改】一律居中，忽略 pos 参数——旧 pos 全是横屏 1152×648 写死的坐标，
+	#       钳制只能保证不出界、弹窗会贴边歪斜（30+处调用的 pos 都已失效，参数保留不删省得改签名）
+	panel.position = (vs - popup_size) / 2
+	panel.z_index = 30
+	# 【新增】内容把面板撑大时按真实尺寸二次居中（custom_minimum_size 只是下限，不是实际尺寸）
+	panel.ready.connect(_recenter_popup.bind(panel))
 	if pos != Vector2.ZERO:
 		panel.position.x = clampf(pos.x, 8.0, maxf(8.0, vs.x - popup_size.x - 8))
 		panel.position.y = clampf(pos.y, 8.0, maxf(8.0, vs.y - popup_size.y - 8))
@@ -661,6 +668,15 @@ func _create_base_popup(title_text: String, popup_size: Vector2, pos: Vector2 = 
 		vbox.add_child(title)
 	
 	return panel
+
+# 【新增】弹窗二次居中：等两帧布局完成后按真实 size 居中。
+# 解决内容最小尺寸大于声明 popup_size 时（如长列表/宽网格撑大面板），按声明尺寸居中导致的偏移
+func _recenter_popup(panel: Control):
+	await get_tree().process_frame
+	await get_tree().process_frame
+	if not is_instance_valid(panel): return
+	var vs = get_viewport_rect().size
+	panel.position = ((vs - panel.size) / 2).max(Vector2(8, 8))  # 钳个最小边距，超大内容也不至于顶出左上
 
 func _add_ok_button(parent: Node, callback: Callable, text: String = "确定") -> Button:
 	var btn = Button.new()
@@ -1397,6 +1413,7 @@ func _build_scene_shell():
 	hq_btn.offset_bottom = 64   # 锚点预设后必须补高度偏移，否则高度为0看不见
 	shop_pg.add_child(hq_btn)
 	var shop_scroll = ScrollContainer.new()
+	shop_scroll.horizontal_scroll_mode = ScrollContainer.SCROLL_MODE_DISABLED  # 【新增】禁横向滚动，内容超宽只裁切不再出横滚条
 	shop_scroll.name = "ShopScroll"
 	shop_scroll.set_anchors_preset(Control.PRESET_FULL_RECT)
 	shop_scroll.offset_top = 72   # 给钱庄入口让位
@@ -1629,6 +1646,11 @@ func _build_shop_panel():
 	s_close.custom_minimum_size = Vector2(80, 36)
 	shop.add_child(s_close)
 
+# 【新增】顶栏/底栏显隐开关：进入二级页隐藏（全屏），返回时恢复
+# 只改状态位再触发重排，实际矩形计算全在 _apply_portrait_layout 里（单一事实来源）
+func _set_bars_visible(p_visible: bool):      # 【改】参数 visible→p_visible，遮蔽基类 CanvasItem.visible 属性报警告
+	_bars_visible = p_visible                 # 【改】跟随参数改名
+	_apply_portrait_layout()
 
 # ============ 摆位置（启动 + 窗口尺寸变化时调用）============
 # 原则：一律显式 position+size，不用锚点预设。
@@ -1653,6 +1675,7 @@ func _apply_portrait_layout():
 		$TopBar.set_anchors_preset(Control.PRESET_TOP_LEFT)
 		$TopBar.position = Vector2.ZERO
 		$TopBar.size = Vector2(vs.x, 50)
+		$TopBar.visible = _bars_visible  # 【新增】二级页全屏时隐藏顶栏
 
 	# 底栏：底部通栏，高 60，按钮等分
 	if has_node("BottomNav"):
@@ -1664,17 +1687,18 @@ func _apply_portrait_layout():
 			if btn is Button:
 				btn.custom_minimum_size = Vector2(0, 60)
 				btn.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+		$BottomNav.visible = _bars_visible  # 【新增】二级页全屏时隐藏底栏
 
 	# 页面容器：顶栏与底栏之间；各页面显式铺满
 	if has_node("PageContainer"):
 		$PageContainer.set_anchors_preset(Control.PRESET_TOP_LEFT)
-		$PageContainer.position = Vector2(0, 50)
-		$PageContainer.size = Vector2(vs.x, vs.y - 110)
-		for pg in $PageContainer.get_children():
-			if pg is Control:
-				pg.set_anchors_preset(Control.PRESET_TOP_LEFT)
-				pg.position = Vector2.ZERO
-				pg.size = $PageContainer.size
+		# 【改】尊重 _bars_visible：二级页全屏时扩满整个视口，窗口重排不会打回夹心布局
+		if _bars_visible:
+			$PageContainer.position = Vector2(0, 50)
+			$PageContainer.size = Vector2(vs.x, vs.y - 110)
+		else:
+			$PageContainer.position = Vector2.ZERO
+			$PageContainer.size = vs
 
 	# 商铺页内部：钱庄入口顶部通栏(高64) + 店铺列表铺满剩余
 	if has_node("PageContainer/ShopPage/HQEntryBtn"):

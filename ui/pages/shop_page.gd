@@ -32,7 +32,8 @@ func generate_shop_list():
 	for shop_id in data.SHOP_ORDER:
 		var btn = Button.new()
 		btn.name = shop_id + "_entry"
-		btn.custom_minimum_size = Vector2(0, 60)
+		btn.custom_minimum_size = Vector2(0, 64)  # 【改】60→64，容纳两行文字
+		btn.clip_text = true                      # 【新增】防长文本把按钮最小宽度撑出视口（横滚条根因）
 		btn.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 		btn.pressed.connect(on_shop_entry_pressed.bind(shop_id))
 		list.add_child(btn)
@@ -201,18 +202,19 @@ func update_entry_buttons():
 		var cfg = data.get_shop_config(shop_id)
 		if cfg.is_empty(): continue
 		
+		# 【改】文字拆两行，单行太长会撑宽网格列（600视口2列装不下）
 		if data.shops.has(shop_id):
 			var s = data.shops[shop_id]
 			var income = data.get_shop_auto_income(shop_id)
-			btn.text = "【%s】Lv.%d  |  赚速 %s/秒  |  店员 %d人" % [s.name, s.level, c.format_number(income), s.staff]
+			btn.text = "【%s】Lv.%d\n赚速 %s/秒  |  店员 %d人" % [s.name, s.level, c.format_number(income), s.staff]
 			btn.modulate = Color.WHITE
 			btn.disabled = false
 		elif data.can_unlock_shop(shop_id):
-			btn.text = "【%s】点击解锁（第%d章）" % [cfg.name, data.get_shop_unlock_chapter(shop_id)]
+			btn.text = "【%s】\n点击解锁（第%d章）" % [cfg.name, data.get_shop_unlock_chapter(shop_id)]
 			btn.modulate = Color("#e0c070")
 			btn.disabled = false
 		else:
-			btn.text = "【%s】未解锁（第%d章）" % [cfg.name, data.get_shop_unlock_chapter(shop_id)]
+			btn.text = "【%s】\n未解锁（第%d章）" % [cfg.name, data.get_shop_unlock_chapter(shop_id)]
 			btn.modulate = Color(0.4, 0.4, 0.4, 0.6)
 			btn.disabled = true
 

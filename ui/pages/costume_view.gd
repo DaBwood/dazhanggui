@@ -36,7 +36,7 @@ func show_hero_costume_popup(hero_id: String):
 	popup.name = "HeroCostumePopup"
 	var vb = popup.get_child(0)
 	var scroll = ScrollContainer.new()
-	scroll.custom_minimum_size = Vector2(600, 380)
+	scroll.custom_minimum_size = Vector2(500, 380)
 	vb.add_child(scroll)
 	var list = VBoxContainer.new()
 	list.size_flags_horizontal = Control.SIZE_EXPAND_FILL
@@ -168,7 +168,7 @@ func show_friend_costume_popup(friend_id: String):
 	popup.name = "FriendCostumePopup"
 	var vb = popup.get_child(0)
 	var scroll = ScrollContainer.new()
-	scroll.custom_minimum_size = Vector2(600, 380)
+	scroll.custom_minimum_size = Vector2(500, 380)
 	vb.add_child(scroll)
 	var list = VBoxContainer.new()
 	list.size_flags_horizontal = Control.SIZE_EXPAND_FILL

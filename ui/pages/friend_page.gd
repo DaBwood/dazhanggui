@@ -110,19 +110,33 @@ func generate_friend_page():
 	top_vbox.add_theme_constant_override("separation", 4)
 	top_band.add_child(top_vbox)
 
+		# 【改】返回键收成小箭头，与名字同一行——省出原来独占的一行高度给立绘
+	var name_row = HBoxContainer.new()
+	name_row.name = "NameRow"
+	name_row.add_theme_constant_override("separation", 8)
+	top_vbox.add_child(name_row)
+
 	var back_btn = Button.new()
 	back_btn.name = "BackBtn"
-	back_btn.text = "< 返回挚友列表"
+	back_btn.text = "<"                                # 【改】原"< 返回挚友列表"
+	back_btn.custom_minimum_size = Vector2(44, 44)     # 【新增】小方块按钮
 	back_btn.pressed.connect(hide_friend_detail)
-	top_vbox.add_child(back_btn)  # 【改】原 detail.add_child，现挂进底条
+	name_row.add_child(back_btn)                       # 【改】原挂 top_vbox 独占一行
 
-	# 挚友名字（全宽居中）
+	# 挚友名字（占据剩余宽度并居中）
 	var name_lbl = Label.new()
 	name_lbl.name = "FriendName"
 	name_lbl.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	name_lbl.size_flags_horizontal = Control.SIZE_EXPAND_FILL  # 【新增】撑满中间剩余宽度，文字才在正中
 	name_lbl.add_theme_font_size_override("font_size", 22)
 	name_lbl.add_theme_color_override("font_color", Color("#ffd700"))
-	top_vbox.add_child(name_lbl)  # 【改】原 detail.add_child
+	name_row.add_child(name_lbl)                       # 【改】原挂 top_vbox
+
+	# 【新增】右侧占位块：与返回键同宽，抵消箭头占的 44px，名字视觉居中不偏右
+	var name_spacer = Control.new()
+	name_spacer.custom_minimum_size = Vector2(44, 0)
+	name_spacer.mouse_filter = Control.MOUSE_FILTER_IGNORE  # 不挡点击
+	name_row.add_child(name_spacer)
 
 	# 属性行：友好 | 才华 | 美名（纯文本一行展示）
 	var attr_box = HBoxContainer.new()
@@ -156,6 +170,7 @@ func generate_friend_page():
 	left_area.custom_minimum_size = Vector2(110, 0)
 	left_area.size_flags_vertical = Control.SIZE_EXPAND_FILL
 	main_hbox.add_child(left_area)
+	left_area.alignment = BoxContainer.ALIGNMENT_END  # 【新增】底条收缩后由父容器负责把标签栏贴到底部
 
 	# 【新增】标签栏外套半透明纯色底条（立绘背景上保证可读性）
 	var tab_bg = PanelContainer.new()
@@ -163,7 +178,6 @@ func generate_friend_page():
 	var tab_style = StyleBoxFlat.new()
 	tab_style.bg_color = Color(0.05, 0.04, 0.10, 0.55)
 	tab_bg.add_theme_stylebox_override("panel", tab_style)
-	tab_bg.size_flags_vertical = Control.SIZE_EXPAND_FILL  # 撑起左列高度，标签才能贴底
 	left_area.add_child(tab_bg)
 
 	var tab_bar = VBoxContainer.new()
@@ -292,6 +306,7 @@ func show_friend_detail(friend_id: String):
 	if not c.has_node("PageContainer/FriendPage"): return
 	var page = c.get_node("PageContainer/FriendPage")
 	page.get_node("ListView").visible = false
+	c._set_bars_visible(false)  # 【新增】进入详情页：隐藏顶栏底栏，立绘全屏
 	page.get_node("FriendDetail").visible = true
 	# 【新增】加载并显示该挚友立绘背景（无图则保持纯色底）
 	_load_friend_portrait(friend_id)
@@ -303,6 +318,7 @@ func hide_friend_detail():
 	if not c.has_node("PageContainer/FriendPage"): return
 	var page = c.get_node("PageContainer/FriendPage")
 	page.get_node("ListView").visible = true
+	c._set_bars_visible(true)   # 【新增】返回列表：恢复顶栏底栏
 	page.get_node("FriendDetail").visible = false
 	# 【新增】返回列表时隐藏立绘背景
 	page.get_node("PortraitBg").visible = false
@@ -318,7 +334,7 @@ func _update_friend_page_detail():
 		data._init_friend_shop_skills(fid)
 
 	# 名字
-	detail.get_node("TopBand/TopVBox/FriendName").text = "【%s】" % f.name
+	detail.get_node("TopBand/TopVBox/NameRow/FriendName").text = "【%s】" % f.name  # 【改】名字入 NameRow，路径加层
 
 	# 友好/才华/美名（【改】节点名 FriendlyBtn/TalentBtn → FriendlyLabel/TalentLabel，纯文本）
 	var attr_box = detail.get_node("TopBand/TopVBox/AttrBox")
