@@ -4,7 +4,9 @@
 # 配置外置 res://data/fishing.json（由 GameData._load_all_configs 加载进 g._fishing_configs）
 # 规则要点：
 #   时段按现实时间 06:00-18:00 白天 / 18:00-06:00 黑夜；天气晴雨雪随机，每次持续6小时（懒结算）
-#   每次钓鱼消耗1地龙，地龙每小时恢复1个、无上限（懒结算）；赤龙为下一钓点消耗道具（预留）
+#   每次钓鱼消耗1个钓点道具：瀑湖=地龙（每小时恢复1个、无上限，懒结算）；天池=赤龙（不恢复，仅礼包/活动获取）【改】
+#   天池（tianchi）：鱼池=瀑湖基础池+极.无双额外池；极.无双权重1、图鉴奖励翻倍、养成=晋升6%/阶+技能6资质/级【新增】
+#   渔获可带 unlock_fish/unlock_tier 解锁条件：对应鱼种养成阶数达标才入池（如龙涎巨鲸20阶→绵阳海兔）【新增】
 #   任务不满3个时每次钓鱼有10%几率改为触发任务；满3个则跳过任务roll
 #   渔获存钓鱼仓库（g.fishing_storage），不进背包；首次获得解锁图鉴可领奖励
 #   道具类（kind=item，水晶瓦/黄金甲等9种）仅在已接对应交付任务时才进入鱼池
@@ -22,7 +24,7 @@ extends RefCounted
 var g
 
 # 品质顺延顺序（roll到的品质当前池无候选时按此顺序向下找）
-const QUALITY_ORDER: Array = ["无双", "传奇", "普通", "无"]
+const QUALITY_ORDER: Array = ["极.无双", "无双", "传奇", "普通", "无"]   # 【改】新增极.无双档（最高档，顺延顺序龙头）
 
 # 由 GameData._init 创建本系统时注入中枢引用
 func _init(p_g):
@@ -41,6 +43,8 @@ func get_save_data() -> Dictionary:
 		"fishing_tasks": g.fishing_tasks,                   # 已接任务 [{id, progress}]
 		"fishing_dex": g.fishing_dex,                       # 图鉴 {渔获id: 1已解锁未领取/2已领取}
 		"fishing_fish_dev": g.fishing_fish_dev,             # 渔获养成 {渔获id: {tier, skills:{索引:等级}, xp:{索引:当前经验}}}
+		"fishing_dilong_spent": g.fishing_dilong_spent,       # 【新增】地龙累计消耗（保底进度）
+		"fishing_chilong_spent": g.fishing_chilong_spent,     # 【新增】赤龙累计消耗（保底进度）
 	}
 
 # 从扁平存档表认领本系统字段（老存档缺字段则保持初始值，自动兼容）
@@ -54,6 +58,8 @@ func load_save_data(s: Dictionary):
 	if s.has("fishing_tasks"): g.fishing_tasks = s.fishing_tasks.duplicate(true)
 	if s.has("fishing_dex"): g.fishing_dex = s.fishing_dex.duplicate(true)
 	if s.has("fishing_fish_dev"): g.fishing_fish_dev = s.fishing_fish_dev.duplicate(true)
+	if s.has("fishing_dilong_spent"): g.fishing_dilong_spent = int(s.fishing_dilong_spent)     # 【新增】旧档缺字段保持0，不追溯
+	if s.has("fishing_chilong_spent"): g.fishing_chilong_spent = int(s.fishing_chilong_spent)   # 【新增】
 
 # ============ 配置读取 ============
 # settings 数值段（缺项给默认值兜底）
@@ -72,6 +78,44 @@ func get_location_name(location_id: String = "pond") -> String:
 		if loc.get("id", "") == location_id:
 			return loc.get("name", location_id)
 	return location_id
+
+# 【新增】全部钓点配置（供界面列出/切换钓点）
+func get_locations() -> Array:
+	return g._fishing_configs.get("locations", [])
+
+# 【新增】钓点的消耗道具键（locations 配置的 bait 字段：dilong地龙/chilong赤龙，缺省地龙）
+func get_location_bait(location_id: String = "pond") -> String:
+	for loc in get_locations():
+		if loc.get("id", "") == location_id:
+			return loc.get("bait", "dilong")
+	return "dilong"
+
+# 【新增】钓点消耗道具的显示名
+func get_bait_name(location_id: String = "pond") -> String:
+	return "赤龙" if get_location_bait(location_id) == "chilong" else "地龙"
+
+# 【新增】钓点消耗道具当前数量（地龙先懒结算；赤龙不自动恢复，直接读数）
+func get_bait_count(location_id: String = "pond") -> int:
+	if get_location_bait(location_id) == "chilong":
+		return int(g.fishing_chilong)
+	return get_dilong()
+
+# 【新增】抛竿扣1个对应钓点的消耗道具，不足返回false（赤龙只出不进，地龙走懒结算）
+# 抛竿扣1个对应钓点的消耗道具，不足返回false（赤龙只出不进，地龙走懒结算）
+func _consume_bait(location_id: String) -> bool:
+	if get_location_bait(location_id) == "chilong":
+		if g.fishing_chilong < 1:
+			return false
+		g.fishing_chilong -= 1
+		g.fishing_chilong_spent += 1   # 【新增】累计消耗=天池保底进度
+		return true
+	_settle_dilong()
+	if g.fishing_dilong < 1:
+		return false
+	g.fishing_dilong -= 1
+	g.fishing_dilong_spent += 1   # 【新增】累计消耗=瀑湖保底进度
+	return true
+
 
 # ============ 时段 / 天气 ============
 # 当前时段：现实时间 06:00-18:00 为白天，其余为黑夜（不入存档，实时读取）
@@ -116,21 +160,37 @@ func get_dilong() -> int:
 
 # ============ 鱼池 ============
 # 取当前可钓池：时段_天气基础池 + 任意池渔获 + 已接交付任务对应的道具 + 该钓点额外池（新增钓点只改JSON）
+# 【改】所有来源统一过 is_fish_catchable 解锁过滤（带 unlock_fish 的鱼种需养成达标才入池）
 func get_current_pool(location_id: String = "pond") -> Array:
 	var key = "%s_%s" % [get_period(), get_weather()]
 	var pool: Array = []
-	pool.append_array(g._fishing_configs.get("pools", {}).get(key, []))
+	for f in g._fishing_configs.get("pools", {}).get(key, []):   # 【改】append_array 改逐个过滤
+		if is_fish_catchable(f):
+			pool.append(f)
 	# 任意池：渔获（金龙/帝王蟹）始终可钓；道具（kind=item）仅在已接对应交付任务时可钓
 	for f in g._fishing_configs.get("common_pool", []):
 		if f.get("kind", "fish") == "fish":
-			pool.append(f)
+			if is_fish_catchable(f):   # 【改】统一过解锁过滤（当前任意池无条件鱼，恒通过）
+				pool.append(f)
 		elif _has_deliver_task_for(f.id):
 			pool.append(f)
-	# 钓点额外池：后续新增钓点时在 extra_pools 配置，与基础池叠加
+	# 钓点额外池：天池的极.无双在这里叠加
 	var extra: Dictionary = g._fishing_configs.get("extra_pools", {}).get(location_id, {})
-	pool.append_array(extra.get(key, []))
-	pool.append_array(extra.get("common", []))
+	for f in extra.get(key, []):   # 【改】append_array 改逐个过滤
+		if is_fish_catchable(f):
+			pool.append(f)
+	for f in extra.get("common", []):   # 【改】同上
+		if is_fish_catchable(f):
+			pool.append(f)
 	return pool
+
+# 【新增】渔获当前是否可钓：无解锁条件恒可钓；有 unlock_fish 时需该鱼种养成阶数≥unlock_tier（如龙涎巨鲸20阶解锁绵阳海兔）
+func is_fish_catchable(f: Dictionary) -> bool:
+	var uf = f.get("unlock_fish", "")
+	if uf == "":
+		return true
+	return get_fish_tier(uf) >= int(f.get("unlock_tier", 20))
+
 
 # 是否已接目标为 target 的交付类任务（决定道具是否入池）
 func _has_deliver_task_for(target: String) -> bool:
@@ -144,10 +204,11 @@ func _has_deliver_task_for(target: String) -> bool:
 # 抛竿一次：扣1地龙 → （任务未满3个时10%触发任务）→ roll品质 → 品质内均分 → 入仓库/解锁图鉴/累计任务
 # 返回 {ok, type: "fish"/"task", ...} 供视图弹窗
 func do_fishing(location_id: String = "pond") -> Dictionary:
-	_settle_dilong()
-	if g.fishing_dilong < 1:
+	# 【改】按钓点扣对应消耗道具（原固定扣地龙）
+	if not _consume_bait(location_id):
+		if get_location_bait(location_id) == "chilong":   # 【新增】赤龙不足提示（不自动恢复）
+			return {"ok": false, "reason": "赤龙不足，可通过礼包/活动获取"}
 		return {"ok": false, "reason": "地龙不足，每小时恢复1个"}
-	g.fishing_dilong -= 1
 
 	# 任务触发：已接任务数 < 上限时有10%几率本次改为接到任务（无渔获）；满3个跳过任务roll
 	var task_max = _setting_int("task_max", 3)
@@ -656,6 +717,77 @@ func feed_skill_max(fish_id: String, skill_index: int) -> Dictionary:
 	if used_total.is_empty():
 		return {"ok": false, "reason": "材料不足"}
 	return {"ok": true, "from_level": from_lv, "to_level": int(dev.skills.get(key, 0)), "used": used_total}
+
+
+# ============ 保底兑换 ============
+# 【新增】钓点保底配置（fishing.json settings.exchange：cost=单次消耗数，quality=兑换品质）
+func get_exchange_cfg(location_id: String) -> Dictionary:
+	return _settings().get("exchange", {}).get(location_id, {})
+
+# 【新增】该钓点当前累计消耗数（按钓点道具分地龙/赤龙两个计数）
+func get_exchange_spent(location_id: String) -> int:
+	if get_location_bait(location_id) == "chilong":
+		return int(g.fishing_chilong_spent)
+	return int(g.fishing_dilong_spent)
+
+# 【新增】当前可兑换只数（累计消耗÷单次消耗，溢出部分保留、可累计多份）
+func get_exchange_times(location_id: String) -> int:
+	var cost = int(get_exchange_cfg(location_id).get("cost", 0))
+	if cost <= 0:
+		return 0
+	@warning_ignore("integer_division")
+	return int(get_exchange_spent(location_id) / cost)
+
+# 【新增】保底可兑换的渔获列表：该品质全部渔获（基础池+本钓点额外池，含未解锁条件鱼，玩家自选）
+func get_exchange_fish(location_id: String) -> Array:
+	var quality: String = get_exchange_cfg(location_id).get("quality", "无双")
+	var seen = {}
+	var list = []
+	for key in g._fishing_configs.get("pools", {}).keys():
+		for f in g._fishing_configs.pools[key]:
+			if f.get("quality", "") == quality and not seen.has(f.id):
+				seen[f.id] = true
+				list.append(f)
+	var extras: Dictionary = g._fishing_configs.get("extra_pools", {}).get(location_id, {})
+	for key in extras.keys():
+		for f in extras[key]:
+			if f.get("quality", "") == quality and not seen.has(f.id):
+				seen[f.id] = true
+				list.append(f)
+	return list
+
+# 【新增】兑换一只：扣单次进度（溢出保留），渔获入钓鱼仓库+首获解锁图鉴；不算"垂钓"不计任务进度
+func exchange_fish(location_id: String, fish_id: String) -> Dictionary:
+	var cfg = get_exchange_cfg(location_id)
+	var cost = int(cfg.get("cost", 0))
+	if cost <= 0:
+		return {"ok": false, "reason": "该钓点无兑换"}
+	# 校验目标在可兑换列表内
+	var ok_fish = false
+	var fname = fish_id
+	for f in get_exchange_fish(location_id):
+		if f.id == fish_id:
+			ok_fish = true
+			fname = f.get("name", fish_id)
+	if not ok_fish:
+		return {"ok": false, "reason": "该渔获不可兑换"}
+	# 扣进度（分道具扣对应计数）
+	if get_location_bait(location_id) == "chilong":
+		if g.fishing_chilong_spent < cost:
+			return {"ok": false, "reason": "进度不足"}
+		g.fishing_chilong_spent -= cost
+	else:
+		if g.fishing_dilong_spent < cost:
+			return {"ok": false, "reason": "进度不足"}
+		g.fishing_dilong_spent -= cost
+	# 发鱼+图鉴
+	g.fishing_storage[fish_id] = int(g.fishing_storage.get(fish_id, 0)) + 1
+	var dex_new = false
+	if not g.fishing_dex.has(fish_id):
+		g.fishing_dex[fish_id] = 1   # 1=已解锁未领取
+		dex_new = true
+	return {"ok": true, "id": fish_id, "name": fname, "quality": cfg.get("quality", "无双"), "dex_new": dex_new}
+
 
 # ============ 内部工具 ============
 # 发放奖励到背包；beast_fruit/aroma_fruit 走 GameData 独立货币（与关卡宝箱一致）

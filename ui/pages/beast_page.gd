@@ -24,7 +24,7 @@ func _init(p_c):
 
 func _create_beast_card() -> Button:
 	var cell = Button.new()
-	cell.custom_minimum_size = Vector2(200, 240)
+	cell.custom_minimum_size = Vector2(180, 240)
 	cell.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	
 	var vbox = VBoxContainer.new()

@@ -420,6 +420,8 @@ var fishing_storage: Dictionary = {}    # 钓鱼仓库 {渔获id: 数量}（独�
 var fishing_tasks: Array = []           # 已接钓鱼任务 [{id, progress}]，上限3个
 var fishing_dex: Dictionary = {}        # 垂钓图鉴 {渔获id: 1已解锁未领取/2已领取}
 var fishing_fish_dev: Dictionary = {}   # 渔获养成 {渔获id: {tier, skills, xp}}（第8批新增·按种类养成）
+var fishing_dilong_spent: int = 0    # 【新增】地龙累计消耗（瀑湖保底进度，兑换一次扣500，溢出保留继续累计）
+var fishing_chilong_spent: int = 0   # 【新增】赤龙累计消耗（天池保底进度，兑换一次扣200，同上）
 
 # ========== 商战状态（第5批新增；逻辑在 systems/war_system.gd） ==========
 var war_tax_level: int = 1            # 税所等级（上限200）

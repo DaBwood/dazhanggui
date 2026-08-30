@@ -11,6 +11,8 @@ extends RefCounted
 var c      # game_controller 根脚本引用
 var data   # GameData 数据中枢引用
 
+var _loc: String = "pond"   # 【新增】当前选中钓点（pond瀑湖/tianchi天池），仅界面状态不入存档
+
 # 由 game_controller._ready 创建本模块时注入引用
 func _init(p_c):
 	c = p_c
@@ -161,12 +163,23 @@ func update_fishing_view():
 	_refresh_dots()
 
 # 刷新信息栏（时段·天气·地龙·赤龙）
+# 刷新信息栏（钓点·时段·天气·地龙·赤龙）+ 钓鱼/撒网/钓点按钮文本随选中钓点刷新
 func _refresh_info():
 	if not c.has_node("PageContainer/AdventurePage/FishingView"): return
 	var view = c.get_node("PageContainer/AdventurePage/FishingView")
 	var fs = data.fishing_system
 	var remain_h = int(fs.get_weather_remain() / 3600)
-	view.get_node("FishingInfo").text = "%s · %s（约%d小时后变天） ｜ 地龙：%d ｜ 赤龙：%d" % [fs.get_period(), fs.get_weather(), remain_h, fs.get_dilong(), int(data.fishing_chilong)]
+	var bait = fs.get_bait_name(_loc)   # 【新增】当前钓点的消耗道具名
+	view.get_node("FishingInfo").text = "钓点：%s ｜ %s · %s（约%d小时后变天） ｜ 地龙：%d ｜ 赤龙：%d" % [fs.get_location_name(_loc), fs.get_period(), fs.get_weather(), remain_h, fs.get_dilong(), int(data.fishing_chilong)]   # 【改】加选中钓点名
+	# 【新增】钓鱼/撒网按钮文本随钓点换消耗道具名
+	var do_btn = view.find_child("FishingDoBtn", true, false)
+	if do_btn: do_btn.text = "钓鱼\n-1%s" % bait
+	var net_btn = view.find_child("FishingNetBtn", true, false)
+	if net_btn: net_btn.text = "撒网捕鱼\n-10%s" % bait
+	# 【新增】钓点按钮文本=当前选中钓点名
+	var loc_btn = view.find_child("FishingLocBtn", true, false)
+	if loc_btn: loc_btn.text = fs.get_location_name(_loc)
+
 
 # 任务/图鉴红点显隐
 func _refresh_dots():
@@ -182,7 +195,7 @@ func _refresh_dots():
 # 点击钓鱼：调系统抛竿，结果显示在结果栏；触发任务/新图鉴时额外提示
 func _on_fishing():
 	var fs = data.fishing_system
-	var res: Dictionary = fs.do_fishing()
+	var res: Dictionary = fs.do_fishing(_loc)   # 【改】传入当前选中钓点
 	var view = c.get_node("PageContainer/AdventurePage/FishingView")
 	var result_lbl = view.get_node("FishingResult")
 	if not res.get("ok", false):
@@ -214,7 +227,7 @@ func _on_fishing():
 # 撒网捕鱼：依次钓10次，汇总弹窗展示渔获计数与触发的任务
 func _on_fishing_multi():
 	var fs = data.fishing_system
-	var res: Dictionary = fs.do_fishing_multi(10)
+	var res: Dictionary = fs.do_fishing_multi(10, _loc)   # 【改】传入当前选中钓点
 	var view = c.get_node("PageContainer/AdventurePage/FishingView")
 	var result_lbl = view.get_node("FishingResult")
 	if not res.get("ok", false):
@@ -264,15 +277,39 @@ func _on_fishing_multi():
 
 # 品质颜色（无双红/传奇橙/普通蓝/无白）
 func _quality_color(q: String) -> Color:
-	return Color({"无双": "#ff4d4d", "传奇": "#ffa500", "普通": "#4da6ff", "无": "#ffffff"}.get(q, "#ffffff"))
+	return Color({"极.无双": "#ffd700", "无双": "#ff4d4d", "传奇": "#ffa500", "普通": "#4da6ff", "无": "#ffffff"}.get(q, "#ffffff"))   # 【改】极.无双=金色
 
 # ============ 钓点（瀑湖）弹窗 ============
-# 点击钓点按钮：弹窗显示当前时段天气下可获取的渔获（仅 kind=fish，不含道具），按品级分组
+# 点击钓点按钮：弹窗上半=钓点切换行（各钓点名+消耗道具存量，当前钓点金色高亮），下半=选中钓点当前鱼池（仅渔获按品级分组）
 func _on_location_btn():
+	var popup = c._create_base_popup("钓点", Vector2(520, 600))   # 【改】加高放切换行
+	popup.name = "FishingLocPopup"   # 【新增】命名以便切换后原地重填
+	c.add_child(popup)
+	_fill_location_popup(popup)
+
+# 【新增】重填钓点弹窗（切换钓点后原地刷新；保留 vb 第一个子节点标题）
+func _fill_location_popup(popup):
 	var fs = data.fishing_system
-	var loc_name = fs.get_location_name()
-	var popup = c._create_base_popup("%s · 当前鱼池" % loc_name, Vector2(520, 520))
 	var vb = popup.get_child(0)
+	for child in vb.get_children():
+		if child is Label and child.text == "钓点": continue
+		child.queue_free()
+
+	# 钓点切换行
+	var loc_row = HBoxContainer.new()
+	loc_row.alignment = BoxContainer.ALIGNMENT_CENTER
+	loc_row.add_theme_constant_override("separation", 16)
+	vb.add_child(loc_row)
+	for loc_cfg in fs.get_locations():
+		var lid: String = loc_cfg.get("id", "")
+		var btn = Button.new()
+		btn.custom_minimum_size = Vector2(200, 52)
+		btn.text = "%s\n%s：%d" % [loc_cfg.get("name", lid), fs.get_bait_name(lid), fs.get_bait_count(lid)]
+		if lid == _loc:
+			btn.add_theme_color_override("font_color", Color("#ffd700"))   # 当前钓点高亮，不再响应点击
+		else:
+			btn.pressed.connect(_on_switch_location.bind(popup, lid))
+		loc_row.add_child(btn)
 
 	var hint = Label.new()
 	hint.text = "%s · %s 可钓到的渔获" % [fs.get_period(), fs.get_weather()]
@@ -290,8 +327,8 @@ func _on_location_btn():
 	list.add_theme_constant_override("separation", 4)
 	scroll.add_child(list)
 
-	# 当前鱼池按品级分组（只列渔获，不列道具）
-	var pool = fs.get_current_pool()
+	# 选中钓点的当前鱼池按品级分组（只列渔获，不列道具；未解锁的条件鱼不在池中自然不显示）
+	var pool = fs.get_current_pool(_loc)
 	for q in FishingSystem.QUALITY_ORDER:
 		var head = Label.new()
 		head.text = "—— %s ——" % q
@@ -307,9 +344,42 @@ func _on_location_btn():
 		body.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
 		body.text = "、".join(names) if not names.is_empty() else "（无）"
 		list.add_child(body)
-
+	
+	# 【新增】保底兑换区（弹窗底部）：未满显示进度且禁用；满后变"兑换"并亮红点；进度可累计多份
+	var ex_cfg: Dictionary = fs.get_exchange_cfg(_loc)
+	var ex_cost: int = int(ex_cfg.get("cost", 0))
+	if ex_cost > 0:
+		var times = fs.get_exchange_times(_loc)
+		var ex_center = HBoxContainer.new()   # 【修】包一层居中容器——裸Control在VBox里靠左，是"歪"的根因
+		ex_center.alignment = BoxContainer.ALIGNMENT_CENTER
+		vb.add_child(ex_center)
+		var ex_wrap = Control.new()
+		ex_wrap.custom_minimum_size = Vector2(460, 48)   # 显式尺寸，红点按此常量定位（不用当帧size）
+		ex_center.add_child(ex_wrap)
+		var ex_btn = Button.new()
+		ex_btn.set_anchors_preset(Control.PRESET_TOP_LEFT)   # 锚点归零后显式定位（老坑）
+		ex_btn.position = Vector2(0, 0)
+		ex_btn.size = Vector2(460, 48)
+		if times > 0:
+			ex_btn.text = "兑换【%s】渔获（可兑%d只）" % [ex_cfg.get("quality", "无双"), times]
+			ex_btn.pressed.connect(_on_exchange_btn)
+		else:
+			ex_btn.text = "%s保底：%d/%d（每消耗%d%s兑1只）" % [ex_cfg.get("quality", "无双"), fs.get_exchange_spent(_loc), ex_cost, ex_cost, fs.get_bait_name(_loc)]
+			ex_btn.disabled = true
+		ex_wrap.add_child(ex_btn)
+		var ex_dot = _make_red_dot()
+		ex_dot.position = Vector2(444, 2)   # 红点定位在460宽按钮右上角
+		ex_dot.visible = times > 0
+		ex_wrap.add_child(ex_dot)
+	
 	c._add_ok_button(vb, func(): popup.queue_free(), "关闭")
-	c.add_child(popup)
+
+# 【新增】切换钓点：更新选中钓点并原地重填弹窗+刷新主界面信息栏
+func _on_switch_location(popup, lid: String):
+	_loc = lid
+	_fill_location_popup(popup)
+	_refresh_info()
+
 
 # ============ 元宝礼包 ============
 # 打开礼包弹窗：1988元宝购买 地龙×50+赤龙×50
@@ -321,7 +391,7 @@ func _on_pack_btn():
 	lbl.name = "PackInfo"
 	lbl.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	lbl.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
-	lbl.text = "1988元宝 → 地龙×50 + 赤龙×50\n（赤龙为下一钓点消耗道具）\n当前元宝：%d" % int(data.yuanbao)
+	lbl.text = "1988元宝 → 地龙×50 + 赤龙×50\n（赤龙用于天池钓点）\n当前元宝：%d" % int(data.yuanbao)
 	vb.add_child(lbl)
 
 	var buy_btn = Button.new()
@@ -524,6 +594,53 @@ func _on_claim_dex(fish_id: String):
 		if scroll: scroll.set_deferred("scroll_vertical", sv)   # 保留滚动位置
 	_refresh_dots()
 	_show_gains_popup("图鉴奖励", res.get("gains", {}))
+
+
+# 【新增】保底兑换自选弹窗：列出该钓点保底品质的全部渔获（含拥有数），点击即兑换
+func _on_exchange_btn():
+	var fs = data.fishing_system
+	var ex_cfg: Dictionary = fs.get_exchange_cfg(_loc)
+	var popup = c._create_base_popup("兑换 · %s" % ex_cfg.get("quality", "无双"), Vector2(460, 520))
+	popup.name = "FishingExchangePopup"
+	var vb = popup.get_child(0)
+	var scroll = ScrollContainer.new()
+	scroll.custom_minimum_size = Vector2(0, 380)
+	scroll.size_flags_vertical = Control.SIZE_EXPAND_FILL
+	vb.add_child(scroll)
+	var list = VBoxContainer.new()
+	list.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	list.add_theme_constant_override("separation", 6)
+	scroll.add_child(list)
+	for f in fs.get_exchange_fish(_loc):
+		var row = HBoxContainer.new()
+		row.add_theme_constant_override("separation", 8)
+		var lbl = Label.new()
+		lbl.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+		lbl.text = "%s（拥有×%d）" % [f.get("name", f.id), int(data.fishing_storage.get(f.id, 0))]
+		lbl.add_theme_color_override("font_color", _quality_color(f.get("quality", "无")))
+		row.add_child(lbl)
+		var btn = Button.new()
+		btn.text = "兑换"
+		btn.custom_minimum_size = Vector2(80, 40)
+		btn.pressed.connect(_on_exchange_fish.bind(f.id))
+		row.add_child(btn)
+		list.add_child(row)
+	c._add_ok_button(vb, func(): popup.queue_free(), "关闭")
+	c.add_child(popup)
+
+# 【新增】执行兑换：关自选弹窗，原地重填钓点弹窗（进度扣减/红点更新），结果显示在结果栏，刷新图鉴红点
+func _on_exchange_fish(fish_id: String):
+	var res: Dictionary = data.fishing_system.exchange_fish(_loc, fish_id)
+	var sel = _find_popup("FishingExchangePopup")
+	if sel: sel.queue_free()
+	if not res.get("ok", false):
+		return
+	var view = c.get_node("PageContainer/AdventurePage/FishingView")
+	view.get_node("FishingResult").text = "兑换获得【%s】%s！" % [res.get("quality", ""), res.get("name", "")]
+	var loc_popup = _find_popup("FishingLocPopup")
+	if loc_popup: _fill_location_popup(loc_popup)   # 原地刷新进度/红点
+	_refresh_dots()   # 首获解锁图鉴会亮图鉴红点
+
 
 # ============ 内部工具 ============
 # 在 game_controller 根节点下按名字找弹窗

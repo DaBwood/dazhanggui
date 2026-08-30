@@ -48,7 +48,7 @@ func _fill_equip_popup(popup):
 	hint.add_theme_font_size_override("font_size", 13)
 	hint.add_theme_color_override("font_color", Color("#aaaaaa"))
 	hint.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
-	hint.text = "仅无双/传奇/普通渔获可装备，一种渔获只能装备一名门客"
+	hint.text = "仅极.无双/无双/传奇/普通渔获可装备，一种渔获只能装备一名门客"   # 【改】补极.无双
 	vb.add_child(hint)
 
 	if fish_id == "":
@@ -321,4 +321,4 @@ func _close_popup(popup_name: String):
 
 # 品质颜色（无双红/传奇橙/普通蓝/无白）
 func _quality_color(q: String) -> Color:
-	return Color({"无双": "#ff4d4d", "传奇": "#ffa500", "普通": "#4da6ff", "无": "#ffffff"}.get(q, "#ffffff"))
+	return Color({"极.无双": "#ffd700", "无双": "#ff4d4d", "传奇": "#ffa500", "普通": "#4da6ff", "无": "#ffffff"}.get(q, "#ffffff"))   # 【改】极.无双=金色
