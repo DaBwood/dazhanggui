@@ -25,6 +25,14 @@
 			"btn": "打开"
 		}
 	},
+	"manhuang_box": {
+	  "name": "蛮荒礼盒",
+	  "desc": "打开后自选一种蛮荒兑换道具×100（九渊之水/玉灵芝/虎魄耀石/龙魂精元/扶桑枝）",
+	  "use": {
+		"type": "manhuang_box",
+		"btn": "打开"
+	  }
+	},
 	"shop_blueprint": {
 	  "name": "商铺图纸",
 	  "desc": "用于解锁新商铺"
@@ -422,6 +430,22 @@
 	  "name": "九渊之水",
 	  "desc": "兑换蛮荒主兽"
 	},
+	"yu_ling_zhi": {
+	  "name": "玉灵芝",
+	  "desc": "兑换蛮荒主兽·乘黄"
+	},
+	"hu_po_yao_shi": {
+	  "name": "虎魄耀石",
+	  "desc": "兑换蛮荒主兽·陆吾"
+	},
+	"long_hun_jing_yuan": {
+	  "name": "龙魂精元",
+	  "desc": "兑换蛮荒主兽·应龙"
+	},
+	"fu_sang_zhi": {
+	  "name": "扶桑枝",
+	  "desc": "兑换蛮荒主兽·金乌"
+	},
 	"long_zhuo_xi": {
 	  "name": "龙擢星玺",
 	  "desc": "兑换星神圣兽"
@@ -585,6 +609,7 @@
 	"jia_niang": 0,
 	"chanwu_card": 0,
 	"yu_huang": 0,
-	"tanmu_zan": 0
+	"tanmu_zan": 0,
+	"manhuang_box": 5
   }
 }

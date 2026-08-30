@@ -86,8 +86,8 @@ func do_travel_all() -> Dictionary:
 	var yuelao_before = g.yuelao_count
 	var guanyin_before = g.guanyin_count
 	var items_before = g.items.duplicate()
-	var beast_fruit_before = g.beast_fruit
-	var aroma_fruit_before = g.aroma_fruit
+	var beast_fruit_before = int(g.items.get("beast_fruit", 0))   # 【改】快照改读道具
+	var aroma_fruit_before = int(g.items.get("aroma_fruit", 0))   # 【改】
 	var friendly_before = {}            # 已拥有挚友的友好度快照（同时用于识别新解锁）
 	for fid in g.friends.keys():
 		friendly_before[fid] = g.friends[fid].friendly
@@ -116,8 +116,8 @@ func do_travel_all() -> Dictionary:
 		"guanyin_gain": g.guanyin_count - guanyin_before,     # 观音祝福净增层数
 		"du_kang_gain": g.stamina - stamina_before + done,    # 杜康回复总量（=剩余-初始+消耗）
 		"items_gain": {},          # 背包物品净增 {item_id: 数量}
-		"beast_fruit_gain": g.beast_fruit - beast_fruit_before,   # 珍兽果净增（独立货币）
-		"aroma_fruit_gain": g.aroma_fruit - aroma_fruit_before,   # 奇香果净增（独立货币）
+		"beast_fruit_gain": int(g.items.get("beast_fruit", 0)) - beast_fruit_before,   # 【改】道具轨差值
+		"aroma_fruit_gain": int(g.items.get("aroma_fruit", 0)) - aroma_fruit_before,   # 【改】
 		"unlock_friends": [],      # 本次新解锁的挚友 id 列表
 		"friendly_gain": {},       # 已拥有挚友友好净增 {fid: 增量}
 		"affection_gain": {},      # 表2挚友好感净增 {fid: {gain, now, need}}
@@ -184,13 +184,8 @@ func _do_travel_item() -> Dictionary:
 	var item_id = entry.item
 	var count = entry.count
 	# 珍兽果/奇香果是独立货币（珍兽页面消费用变量），其余进背包
-	match item_id:
-		"beast_fruit":
-			g.beast_fruit += count
-		"aroma_fruit":
-			g.aroma_fruit += count
-		_:
-			g.items[item_id] = g.items.get(item_id, 0) + count
+	# 【改】珍兽果/奇香果不再是独立货币，全部进背包
+	g.items[item_id] = int(g.items.get(item_id, 0)) + count
 	var item_name = g.ITEM_CONFIG.get(item_id, {}).get("name", item_id)
 	return {"ok": true, "type": "item", "msg": "游历途中获得【%s】×%d，声望+%d" % [item_name, count, g.TRAVEL_REPUTATION]}
 

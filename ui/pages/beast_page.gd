@@ -107,7 +107,7 @@ func generate_beast_page():
 func update_beast_page():
 	if not c.has_node("PageContainer/BeastPage/BeastVBox"): return
 	var vbox = c.get_node("PageContainer/BeastPage/BeastVBox")
-	vbox.get_node("BeastRes").text = "珍兽果：%d  |  奇香果：%d" % [data.beast_fruit, data.aroma_fruit]
+	vbox.get_node("BeastRes").text = "珍兽果：%d  |  奇香果：%d" % [int(data.items.get("beast_fruit", 0)), int(data.items.get("aroma_fruit", 0))]   # 【改】读道具轨
 	
 	var grid = vbox.find_child("BeastGrid", true, false)
 	if grid == null: return
@@ -204,12 +204,11 @@ func open_beast_detail(beast_id: String, instance_index: int):
 	up_btn.pressed.connect(_on_beast_upgrade.bind(beast_id, instance_index))
 	apt_row.add_child(up_btn)
 	
-	# 光环
-	var aura_lbl = Label.new()
-	aura_lbl.name = "BeastAuraLbl"
-	aura_lbl.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
-	aura_lbl.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
-	vbox.add_child(aura_lbl)
+	# 【改】光环区：单标签改多行容器（每只光环一行：名称+数值+升级按钮），内容在 _update_beast_detail 重填
+	var aura_box = VBoxContainer.new()
+	aura_box.name = "BeastAuraBox"
+	aura_box.add_theme_constant_override("separation", 4)
+	vbox.add_child(aura_box)
 	
 	# 技能列表标题行
 	var skill_title_row = HBoxContainer.new()
@@ -279,7 +278,6 @@ func _update_beast_detail(beast_id: String, instance_index: int):
 	var quality_lbl = vbox.get_node("BeastQualityLbl")
 	var apt_lbl = vbox.find_child("BeastAptLbl", true, false)
 	var up_btn = vbox.find_child("BeastUpBtn", true, false)
-	var aura_lbl = vbox.get_node("BeastAuraLbl")
 	var skill_bonus_lbl = vbox.find_child("BeastSkillBonusLbl", true, false)
 	var equip_btn = vbox.get_node("BeastEquipBtn")
 	
@@ -289,18 +287,12 @@ func _update_beast_detail(beast_id: String, instance_index: int):
 	quality_lbl.text = "品质：%s" % cfg.quality
 	apt_lbl.text = "资质：%d（基础%d + 等级%d×8）" % [apt, cfg.aptitude, instance.level - 1]
 	
-	up_btn.text = "升级" if instance.level < 200 else "已满级"
-	up_btn.disabled = instance.level >= 200 or data.beast_fruit < 80
+	var max_lv = data.beast_system.get_beast_max_level(beast_id, instance_index)   # 【改】上限含光环三加成（原写死200）
+	up_btn.text = ("升级\n珍兽果%d/80" % int(data.items.get("beast_fruit", 0))) if instance.level < max_lv else "已满级"   # 【改】读道具轨+显示消耗
+	up_btn.disabled = instance.level >= max_lv or int(data.items.get("beast_fruit", 0)) < 80   # 【改】
 	
-	# 光环显示具体列表
-	var auras = cfg.get("auras", [])
-	if auras.is_empty():
-		aura_lbl.text = "光环：无"
-	else:
-		var aura_texts = []
-		for a in auras:
-			aura_texts.append(a)
-		aura_lbl.text = "光环：%s" % " | ".join(aura_texts)
+	# 【改】光环区重填（一光环一行，带数值与升级按钮；原"光环：a|b|c"单标签逻辑删除）
+	_fill_aura_box(vbox.get_node("BeastAuraBox"), beast_id, instance_index)
 	
 	skill_bonus_lbl.text = "技能加成：%.0f%%" % (skill_bonus * 100)
 	
@@ -457,7 +449,7 @@ func _show_beast_skill_refresh_panel():
 	if skill.percent < 0.249:
 		var aroma_check = CheckBox.new()
 		aroma_check.name = "AromaCheck"
-		aroma_check.text = "使用奇香果（拥有：%d）" % data.aroma_fruit
+		aroma_check.text = "使用奇香果（拥有：%d）" % int(data.items.get("aroma_fruit", 0))
 		vbox.add_child(aroma_check)
 	
 	# 按钮区
@@ -507,14 +499,14 @@ func _update_beast_skill_refresh_panel():
 		else:
 			var use_aroma = aroma_check != null and aroma_check.button_pressed
 			if use_aroma:
-				status_lbl.text = "奇香果：%d/1" % data.aroma_fruit
+				status_lbl.text = "奇香果：%d/1" % int(data.items.get("aroma_fruit", 0))
 			else:
 				var cost = 100 * int(pow(2, skill.refresh_count))
 				status_lbl.text = "刷新消耗：%s 铜钱" % c.format_number(cost)
 			status_lbl.remove_theme_color_override("font_color")
 	
 	if aroma_check:
-		aroma_check.text = "使用奇香果（拥有：%d）" % data.aroma_fruit
+		aroma_check.text = "使用奇香果（拥有：%d）" % int(data.items.get("aroma_fruit", 0))
 		if skill.percent >= 0.249:
 			aroma_check.visible = false
 	
@@ -583,3 +575,83 @@ func _close_beast_detail():
 	else:
 		c.get_node("Overlay").hide()
 		c._current_popup = null
+
+# 【新增】填充光环区：光环一=系列自动加成（不可升级）；光环二=+5%/级（星神为全局技能倍率），集齐系列解锁升级；光环三=+1等级上限/级，光环二满级解锁；无光环兽显示"无"
+func _fill_aura_box(aura_box, beast_id: String, instance_index: int):
+	for child in aura_box.get_children():
+		child.queue_free()
+	var bs = data.beast_system
+	var cfg = data.get_beast_config(beast_id)
+	var auras = cfg.get("auras", [])
+	if auras.is_empty():
+		var none_lbl = Label.new()
+		none_lbl.text = "光环：无"
+		none_lbl.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+		aura_box.add_child(none_lbl)
+		return
+	# 光环一：系列光环（不可升级）
+	var r1 = HBoxContainer.new()
+	r1.add_theme_constant_override("separation", 8)
+	var l1 = Label.new()
+	l1.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	l1.text = "%s：+%.0f%%　（系列光环·随数量自动加成）" % [auras[0], bs.get_aura1_bonus(beast_id) * 100]
+	r1.add_child(l1)
+	aura_box.add_child(r1)
+	# 光环二：每级+5%（星神系列为全局技能倍率），集齐系列解锁升级
+	if auras.size() >= 2:
+		var lv2 = bs.get_aura2_lv(beast_id, instance_index)
+		var r2 = HBoxContainer.new()
+		r2.add_theme_constant_override("separation", 8)
+		var l2 = Label.new()
+		l2.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+		if bs.is_star_series(beast_id):
+			l2.text = "%s：全珍兽技能加成×%d%%　（Lv.%d/20）" % [auras[1], int(bs.get_star_skill_multiplier() * 100), lv2]
+		else:
+			l2.text = "%s：+%.0f%%　（Lv.%d/20）" % [auras[1], bs.get_aura2_bonus(beast_id, instance_index) * 100, lv2]
+		r2.add_child(l2)
+		r2.add_child(_make_aura_btn(beast_id, instance_index, 2))
+		aura_box.add_child(r2)
+	# 光环三：每级+1等级上限，光环二满级解锁（星神系列无光环三，整行不显示）
+	if auras.size() >= 3:
+		var lv3 = bs.get_aura3_lv(beast_id, instance_index)
+		var r3 = HBoxContainer.new()
+		r3.add_theme_constant_override("separation", 8)
+		var l3 = Label.new()
+		l3.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+		l3.text = "%s：全体珍兽上限+%d　（Lv.%d/20）" % [auras[2], lv3, lv3]   # 【改】标明光环三全局生效
+		r3.add_child(l3)
+		r3.add_child(_make_aura_btn(beast_id, instance_index, 3))
+		aura_box.add_child(r3)
+
+# 【新增】光环升级按钮：满级/未解锁置灰显示条件；可升级时显示消耗（当前等级×10个兑换道具），道具不足置灰
+func _make_aura_btn(beast_id: String, instance_index: int, which: int) -> Button:
+	var bs = data.beast_system
+	var cfg = data.get_beast_config(beast_id)
+	var lv = bs.get_aura2_lv(beast_id, instance_index) if which == 2 else bs.get_aura3_lv(beast_id, instance_index)
+	var unlocked = bs.can_upgrade_aura2(beast_id) if which == 2 else bs.can_upgrade_aura3(beast_id, instance_index)
+	var btn = Button.new()
+	btn.custom_minimum_size = Vector2(170, 32)
+	if lv >= 20:
+		btn.text = "已满级"
+		btn.disabled = true
+	elif not unlocked:
+		btn.text = "集齐系列解锁" if which == 2 else "光环二满级解锁"
+		btn.disabled = true
+	else:
+		var item = cfg.get("exchange_item", "")
+		var iname = data.ITEM_CONFIG.get(item, {}).get("name", item)
+		var cost = bs.get_aura_upgrade_cost(beast_id, instance_index, which)
+		btn.text = "升级（%s×%d）" % [iname, cost]
+		btn.disabled = int(data.items.get(item, 0)) < cost
+		btn.pressed.connect(_on_aura_upgrade.bind(beast_id, instance_index, which))
+	return btn
+
+# 【新增】光环升级回调：成功后面板原地重填+刷新珍兽页/背包（赚速经 HeroData 自动对账）
+func _on_aura_upgrade(beast_id: String, instance_index: int, which: int):
+	var res: Dictionary = data.beast_system.upgrade_aura(beast_id, instance_index, which)
+	if not res.get("ok", false):
+		c._show_stage_hint(res.get("reason", "升级失败"))
+		return
+	_update_beast_detail(beast_id, instance_index)
+	c.update_beast_page()
+	c.update_bag_list()

@@ -47,8 +47,8 @@ func buy_mall_pack(pack: Dictionary) -> bool:
 		g.items[item_id] = g.items.get(item_id, 0) + pack.items[item_id]
 	if pack.has("beast"):
 		g.add_beast(pack.beast)
-	g.beast_fruit += pack.get("beast_fruit", 0)
-	g.aroma_fruit += pack.get("aroma_fruit", 0)
+	g.items["beast_fruit"] = int(g.items.get("beast_fruit", 0)) + int(pack.get("beast_fruit", 0))   # 【改】珍兽果改走道具
+	g.items["aroma_fruit"] = int(g.items.get("aroma_fruit", 0)) + int(pack.get("aroma_fruit", 0))   # 【改】
 	return true
 
 # 购买声望礼包：988元宝 → 高级声望卡×10 + 声望卡×100
@@ -63,8 +63,8 @@ func buy_test_beast_pack() -> bool:
 	if g.yuanbao < 19888: return false
 	g.yuanbao -= 19888
 	g.add_beast("zou_yu")
-	g.beast_fruit += 988
-	g.aroma_fruit += 988
+	g.items["beast_fruit"] = int(g.items.get("beast_fruit", 0)) + 988   # 【改】
+	g.items["aroma_fruit"] = int(g.items.get("aroma_fruit", 0)) + 988   # 【改】
 	return true
 
 # 充值（自娱自乐版，直接成功）

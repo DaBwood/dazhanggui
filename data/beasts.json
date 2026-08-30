@@ -131,7 +131,7 @@
 	"aptitude": 120,
 	"skill_count": 18,
 	"auras": ["蛮荒主兽","九天乘风","长生霄汉"],
-	"exchange_item": "jiu_yuan_shui",
+	"exchange_item": "yu_ling_zhi",
 	"max_count": 1
   },
   "jin_wu": {
@@ -140,7 +140,7 @@
 	"aptitude": 120,
 	"skill_count": 18,
 	"auras": ["蛮荒主兽","金乌负日","不灭炎阳"],
-	"exchange_item": "jiu_yuan_shui",
+	"exchange_item": "fu_sang_zhi",
 	"max_count": 1
   },
   "ying_long": {
@@ -149,7 +149,7 @@
 	"aptitude": 120,
 	"skill_count": 18,
 	"auras": ["蛮荒主兽","龙吟方泽","逆鳞之殇"],
-	"exchange_item": "jiu_yuan_shui",
+	"exchange_item": "long_hun_jing_yuan",
 	"max_count": 1
   },
   "lu_wu": {
@@ -158,7 +158,7 @@
 	"aptitude": 120,
 	"skill_count": 18,
 	"auras": ["蛮荒主兽","虎啸山丘","罡风之煞"],
-	"exchange_item": "jiu_yuan_shui",
+	"exchange_item": "hu_po_yao_shi",
 	"max_count": 1
   },
   "meng_zhang_cang_long": {

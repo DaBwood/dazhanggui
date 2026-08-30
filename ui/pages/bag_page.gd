@@ -158,6 +158,11 @@ func _show_item_detail_popup(item_id: String):
 					else:
 						c._show_stage_hint("物品盒子功能开发中")
 				)
+			"manhuang_box":
+				use_btn.pressed.connect(func():
+					popup.queue_free()
+					_show_manhuang_box_selector()   # 【新增】蛮荒礼盒：自选一种道具×100
+				)
 		vbox.add_child(use_btn)
 	
 	c._add_ok_button(vbox, func(): popup.queue_free(), "关闭")
@@ -475,3 +480,41 @@ func _show_item_gains_popup(title: String, gains: Dictionary):
 		list.add_child(lbl)
 	c._add_ok_button(vb, func(): popup.queue_free(), "确定")
 	c.add_child(popup)
+
+# 【新增】蛮荒礼盒选择器：列出4种蛮荒兑换道具（显示现有数量+对应珍兽），点"选择"扣1礼盒得该道具×100
+func _show_manhuang_box_selector():
+	var popup = c._create_base_popup("蛮荒礼盒", Vector2(420, 420))
+	var vbox = popup.get_child(0)
+	var hint = Label.new()
+	hint.text = "选择一种道具，获得 ×100"
+	hint.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	vbox.add_child(hint)
+	# 礼盒可兑的5种道具（道具id, 对应珍兽名）
+	var options = [["jiu_yuan_shui", "相柳"],["yu_ling_zhi", "乘黄"], ["hu_po_yao_shi", "陆吾"], ["long_hun_jing_yuan", "应龙"], ["fu_sang_zhi", "金乌"]]
+	for opt in options:
+		var iid: String = opt[0]
+		var row = HBoxContainer.new()
+		row.add_theme_constant_override("separation", 8)
+		var lbl = Label.new()
+		lbl.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+		lbl.text = "%s（%s）拥有：%d" % [data.ITEM_CONFIG.get(iid, {}).get("name", iid), opt[1], int(data.items.get(iid, 0))]
+		row.add_child(lbl)
+		var btn = Button.new()
+		btn.text = "选择"
+		btn.custom_minimum_size = Vector2(80, 40)
+		btn.pressed.connect(_on_manhuang_box_pick.bind(popup, iid))
+		row.add_child(btn)
+		vbox.add_child(row)
+	c._add_ok_button(vbox, func(): popup.queue_free(), "关闭")
+	c.add_child(popup)
+
+# 【新增】蛮荒礼盒确认：扣1个礼盒、发100个所选道具，刷新背包
+func _on_manhuang_box_pick(popup, item_id: String):
+	if int(data.items.get("manhuang_box", 0)) < 1:
+		c._show_stage_hint("蛮荒礼盒不足！")
+		return
+	data.items["manhuang_box"] -= 1
+	data.items[item_id] = int(data.items.get(item_id, 0)) + 100
+	popup.queue_free()
+	c._show_stage_hint("获得【%s】×100" % data.ITEM_CONFIG.get(item_id, {}).get("name", item_id))
+	c.update_bag_list()

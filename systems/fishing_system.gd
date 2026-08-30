@@ -796,12 +796,7 @@ func _give_rewards(rewards: Dictionary) -> Dictionary:
 	var gains = {}
 	for item_id in rewards.keys():
 		var n = int(rewards[item_id])
-		if item_id == "beast_fruit":
-			g.beast_fruit += n
-		elif item_id == "aroma_fruit":
-			g.aroma_fruit += n
-		else:
-			g.items[item_id] = int(g.items.get(item_id, 0)) + n
+		g.items[item_id] = int(g.items.get(item_id, 0)) + n   # 【改】珍兽果/奇香果不再特判，统一进背包
 		gains[item_id] = n
 	return gains
 

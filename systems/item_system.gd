@@ -139,10 +139,8 @@ func use_item(item_id: String, count: int) -> Dictionary:
 						var rid = entry.item
 						var rcount = int(entry.get("count", 1))
 						# 珍兽果/奇香果是独立货币（与游历一致），其余进背包
-						match rid:
-							"beast_fruit": g.beast_fruit += rcount
-							"aroma_fruit": g.aroma_fruit += rcount
-							_: g.items[rid] = g.items.get(rid, 0) + rcount
+						# 【改】珍兽果/奇香果不再是独立货币，全部进背包
+						g.items[rid] = int(g.items.get(rid, 0)) + rcount
 						gains[rid] = gains.get(rid, 0) + rcount
 						break
 			# 汇总文本（飘字兜底用）；gains 明细供 UI 弹窗展示

@@ -18,8 +18,6 @@ func _init(p_g):
 func get_save_data() -> Dictionary:
 	return {
 		"beasts": g.beasts,   # 珍兽数据
-		"beast_fruit": g.beast_fruit,   # 珍兽果
-		"aroma_fruit": g.aroma_fruit,   # 奇香果
 	}
 
 # 从扁平存档表认领本系统字段（含旧存档兼容逻辑；老存档缺字段则保持初始值）
@@ -34,8 +32,13 @@ func load_save_data(s: Dictionary):
 				for sk in inst.get("skills", []):
 					if not sk.has("refresh_count"):
 						sk.refresh_count = 0
-	if s.has("beast_fruit"): g.beast_fruit = s.beast_fruit
-	if s.has("aroma_fruit"): g.aroma_fruit = s.aroma_fruit
+				if not inst.has("aura2_lv"): inst["aura2_lv"] = 1   # 【新增】旧档兼容：光环二初始1级
+				if not inst.has("aura3_lv"): inst["aura3_lv"] = 1   # 【新增】旧档兼容：光环三初始1级
+	if s.has("beast_fruit"):
+		g.items["beast_fruit"] = int(g.items.get("beast_fruit", 0)) + int(s.beast_fruit)
+	if s.has("aroma_fruit"):
+		g.items["aroma_fruit"] = int(g.items.get("aroma_fruit", 0)) + int(s.aroma_fruit)
+	
 
 # ============ 以下为原 game_data.gd 搬迁函数（逻辑未改，仅成员访问加了 g. 前缀） ============
 
@@ -74,16 +77,12 @@ func get_beast_skill_bonus(beast_id: String, instance_index: int = 0) -> float:
 	var total = 0.0
 	for sk in skills:
 		total += sk.get("percent", 0.0)
-	return total
+	return total * get_star_skill_multiplier()   # 【改】星神圣兽光环二：全珍兽技能加成×倍率（无星神兽时倍率1.0）
 
-func get_beast_aura_bonus(beast_id: String, _instance_index: int = 0) -> float:
-	var cfg = get_beast_config(beast_id)
-	var auras = cfg.get("auras", [])
-	if auras.is_empty(): return 0.0
-	var special_count = _get_special_beast_count()
-	var bonus = 0.10 + (special_count - 1) * 0.10
-	bonus += 0.05
-	return bonus
+# 【改】光环总加成=光环一（系列数量自动）+光环二（每级5%）；光环三加等级上限不加%；星神光环二走全局倍率不在此计
+func get_beast_aura_bonus(beast_id: String, instance_index: int = 0) -> float:
+	return get_aura1_bonus(beast_id) + get_aura2_bonus(beast_id, instance_index)
+
 
 func _get_special_beast_count() -> int:
 	var count = 0
@@ -113,7 +112,7 @@ func add_beast(beast_id: String) -> bool:
 	var cfg = get_beast_config(beast_id)
 	if cfg.is_empty(): return false
 	var max_count = cfg.get("max_count", 1)
-	var init_data = {"level": 1, "equipped_hero": "", "skills": _init_beast_skills(cfg.get("skill_count", 0))}
+	var init_data = {"level": 1, "equipped_hero": "", "skills": _init_beast_skills(cfg.get("skill_count", 0)), "aura2_lv": 1, "aura3_lv": 1}   # 【改】新增光环二/三等级，初始1级
 	if max_count == 1:
 		if g.beasts.has(beast_id): return false
 		g.beasts[beast_id] = init_data
@@ -125,9 +124,9 @@ func add_beast(beast_id: String) -> bool:
 func upgrade_beast(beast_id: String, instance_index: int = 0) -> bool:
 	var instance = get_beast_instance(beast_id, instance_index)
 	if instance == null: return false
-	if instance.level >= 200: return false
-	if g.beast_fruit < 80: return false
-	g.beast_fruit -= 80
+	if instance.level >= get_beast_max_level(beast_id, instance_index): return false   # 【改】上限=200+光环三等级（原写死200）
+	if int(g.items.get("beast_fruit", 0)) < 80: return false   # 【改】珍兽果改走道具
+	g.items["beast_fruit"] -= 80   # 【改】
 	instance.level += 1
 	return true
 
@@ -144,8 +143,8 @@ func refresh_beast_skill(beast_id: String, instance_index: int, skill_index: int
 	
 	if use_aroma:
 		# 奇香果刷新：固定消耗1个，15%-25%
-		if g.aroma_fruit < 1: return false
-		g.aroma_fruit -= 1
+		if int(g.items.get("aroma_fruit", 0)) < 1: return false   # 【改】奇香果改走道具
+		g.items["aroma_fruit"] -= 1   # 【改】
 		skill.refresh_count += 1
 		var new_val = randf_range(0.15, 0.251)
 		if new_val > 0.25: new_val = 0.25
@@ -212,3 +211,104 @@ func unequip_beast(hero_id: String) -> bool:
 	g.heroes[hero_id].equipped_beast = ""
 	g.heroes[hero_id].equipped_beast_index = 0
 	return true
+
+# ============ 光环养成（2026-08-30 重构） ============
+# 光环一（auras[0]系列光环）：10%+(特殊系列兽数量-1)×10%，随数量自动涨，不可升级
+# 光环二（auras[1]）：初始1级、每级+5%，集齐同系列珍兽解锁升级，满级20，消耗该兽兑换道具 当前等级×10 个
+#   特例·星神圣兽光环二：不加%，效果=全珍兽技能加成×(2.0+0.1×(等级-1))，多只星神兽取最高级
+# 光环三（auras[2]）：初始1级、每级+1珍兽等级上限，光环二满20级解锁升级，消耗同上；星神系列无光环三
+# 等级存珍兽实例 aura2_lv/aura3_lv（初始1级，旧档自动补1）
+
+# 【新增】光环一加成（系列光环，随已拥有特殊系列兽数量自动涨，不可升级）
+func get_aura1_bonus(beast_id: String) -> float:
+	var cfg = get_beast_config(beast_id)
+	if cfg.get("auras", []).is_empty(): return 0.0   # 无光环兽（驺虞）不加
+	var special_count = _get_special_beast_count()
+	if special_count <= 0: return 0.0
+	return 0.10 + (special_count - 1) * 0.10
+
+# 【新增】光环二/三当前等级（初始1级，旧档缺省补1）
+func get_aura2_lv(beast_id: String, instance_index: int = 0) -> int:
+	var inst = get_beast_instance(beast_id, instance_index)
+	if inst == null: return 1
+	return int(inst.get("aura2_lv", 1))
+
+func get_aura3_lv(beast_id: String, instance_index: int = 0) -> int:
+	var inst = get_beast_instance(beast_id, instance_index)
+	if inst == null: return 1
+	return int(inst.get("aura3_lv", 1))
+
+# 【新增】是否星神圣兽系列（光环二效果特殊：全局技能倍率）
+func is_star_series(beast_id: String) -> bool:
+	return get_beast_config(beast_id).get("quality", "") == "星神圣兽"
+
+# 【新增】光环二加成：每级+5%；星神系列走全局倍率此处计0
+func get_aura2_bonus(beast_id: String, instance_index: int = 0) -> float:
+	if is_star_series(beast_id): return 0.0
+	return 0.05 * get_aura2_lv(beast_id, instance_index)
+
+# 【改】星神光环二全局倍率：每只已拥有星神兽贡献 100%+10%×(等级-1)，多只【累加】；无星神兽返回1.0
+func get_star_skill_multiplier() -> float:
+	var bonus = 0.0
+	for bid in g.beasts.keys():
+		if get_beast_config(bid).get("quality", "") != "星神圣兽": continue
+		var inst = get_beast_instance(bid, 0)
+		if inst == null: continue
+		bonus += 1.0 + 0.1 * float(int(inst.get("aura2_lv", 1)) - 1)   # 每只独立贡献，累加
+	return 1.0 + bonus
+
+# 【改】珍兽等级上限=200 + 所有已拥有特殊珍兽的光环三等级之和（光环三全局生效、多只累加；无光环三的兽自身也享受）
+func get_beast_max_level(_beast_id: String, _instance_index: int = 0) -> int:
+	var extra = 0
+	for bid in g.beasts.keys():
+		if get_beast_config(bid).get("auras", []).size() < 3: continue   # 只统计有光环三的特殊珍兽
+		var d = g.beasts[bid]
+		var instances = d if d is Array else [d]   # 兼容多实例存储结构（特殊兽实际都是单实例）
+		for inst in instances:
+			extra += int(inst.get("aura3_lv", 1))
+	return 200 + extra
+
+# 【新增】系列是否集齐（同品质珍兽全部拥有）→ 光环二升级解锁条件
+func is_series_complete(beast_id: String) -> bool:
+	var quality = get_beast_config(beast_id).get("quality", "")
+	if quality == "": return false
+	for bid in g._beast_configs.keys():
+		if g._beast_configs[bid].get("quality", "") == quality:
+			if not g.beasts.has(bid): return false
+	return true
+
+# 【新增】光环二/三升级解锁状态
+func can_upgrade_aura2(beast_id: String) -> bool:
+	return is_series_complete(beast_id)
+
+func can_upgrade_aura3(beast_id: String, instance_index: int = 0) -> bool:
+	return get_aura2_lv(beast_id, instance_index) >= 20   # 光环二满级解锁光环三
+
+# 【新增】光环升级消耗：当前等级×10 个该兽兑换道具（1→2花10、2→3花20……19→20花190）
+func get_aura_upgrade_cost(beast_id: String, instance_index: int, which: int) -> int:
+	var lv = get_aura2_lv(beast_id, instance_index) if which == 2 else get_aura3_lv(beast_id, instance_index)
+	return lv * 10
+
+# 【新增】光环升级：校验光环位/满级20/解锁条件/兑换道具消耗，成功等级+1
+func upgrade_aura(beast_id: String, instance_index: int, which: int) -> Dictionary:
+	var cfg = get_beast_config(beast_id)
+	var auras = cfg.get("auras", [])
+	if which == 2 and auras.size() < 2: return {"ok": false, "reason": "无光环二"}
+	if which == 3 and auras.size() < 3: return {"ok": false, "reason": "无光环三"}
+	var inst = get_beast_instance(beast_id, instance_index)
+	if inst == null: return {"ok": false, "reason": "珍兽不存在"}
+	var lv = get_aura2_lv(beast_id, instance_index) if which == 2 else get_aura3_lv(beast_id, instance_index)
+	if lv >= 20: return {"ok": false, "reason": "已满级"}
+	if which == 2 and not can_upgrade_aura2(beast_id):
+		return {"ok": false, "reason": "集齐【%s】系列珍兽后解锁升级" % cfg.get("quality", "")}
+	if which == 3 and not can_upgrade_aura3(beast_id, instance_index):
+		return {"ok": false, "reason": "光环二满级后解锁升级"}
+	var item = cfg.get("exchange_item", "")
+	if item == "": return {"ok": false, "reason": "该珍兽无兑换道具"}
+	var cost = lv * 10
+	if int(g.items.get(item, 0)) < cost:
+		return {"ok": false, "reason": "【%s】不足（需要%d个）" % [g.ITEM_CONFIG.get(item, {}).get("name", item), cost]}
+	g.items[item] = int(g.items.get(item, 0)) - cost
+	if which == 2: inst["aura2_lv"] = lv + 1
+	else: inst["aura3_lv"] = lv + 1
+	return {"ok": true, "lv": lv + 1}
