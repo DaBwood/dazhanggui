@@ -30,6 +30,8 @@ static func get_total_aptitude(g, hero_id: String) -> int:
 	total += g.get_hero_fish_aptitude(hero_id)
 	# 【服装系统】服装技能资质 + 同category门客光环资质
 	total += g.get_hero_costume_aptitude(hero_id)   
+	# 【新增】兽魂词条资质（装备珍兽魂盘的激发格词条之和）
+	total += g.get_hero_soul_aptitude(hero_id)
 	
 	return total
 
@@ -76,6 +78,8 @@ static func get_percent_bonus(g, hero_id: String) -> float:
 	bonus += g.get_hero_fish_percent(hero_id)
 	# 【服装系统】系列服装光环（群体+3%×关联系列件数 / 自身+3%×件数）
 	bonus += g.get_hero_costume_series_pct(hero_id)  
+	# 【新增】兽魂赚速%（装备珍兽魂盘的激发格，按魂盘等级3/5/10/15/20%每格）
+	bonus += g.get_hero_soul_percent(hero_id)
 	return bonus
 
 # 门客总赚速 = 基础赚速 × (1 + 百分比加成) + 额外赚速

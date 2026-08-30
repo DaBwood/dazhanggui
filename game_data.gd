@@ -508,6 +508,10 @@ var war_system   # 商战系统（第5批新增）
 var _war_configs: Dictionary = {}   # 商战配置（war.json，由 _load_all_configs 加载）
 var goal_system   # 挚友目标系统（第6批新增）
 var _goal_configs: Dictionary = {}   # 挚友目标配置（goals.json，由 _load_all_configs 加载）
+var soul_system   # 【新增】兽魂系统（魂盘+魂石，逻辑在 systems/soul_system.gd）
+var _soul_configs: Dictionary = {}   # 【新增】兽魂配置（soulstones.json，由 _load_all_configs 加载）
+var soul_stones: Dictionary = {}   # 【新增】魂石仓库 {uid: 魂石数据}（soul_system 读写，存档由它认领）
+var soul_stone_seq: int = 0   # 【新增】魂石uid自增序号
 var fishing_system   # 垂钓系统（第8批新增）
 var _fishing_configs: Dictionary = {}   # 垂钓配置（fishing.json，由 _load_all_configs 加载）
 var costume_system    # 【服装系统】
@@ -530,8 +534,10 @@ func _init():
 	courtyard_system = CourtyardSystem.new(self)   # 【第7批新增】宅院技艺卷轴系统
 	war_system = WarSystem.new(self)
 	goal_system = GoalSystem.new(self)
+	soul_system = SoulSystem.new(self)   # 【新增】兽魂系统
 	fishing_system = FishingSystem.new(self)   # 【第8批新增】垂钓系统
 	costume_system = CostumeSystem.new(self)
+	
 	_load_all_configs()
 
 # ==================== 配置加载 ====================
@@ -557,6 +563,7 @@ func _load_all_configs():
 	_courtyard_configs = _load_json("res://data/courtyard.json")   # 【第7批新增】宅院技艺配置
 	_war_configs = _load_json("res://data/war.json")   # 【第5批新增】商战配置
 	_goal_configs = _load_json("res://data/goals.json")   # 【第6批新增】挚友目标配置
+	_soul_configs = _load_json("res://data/soulstones.json")   # 【新增】兽魂配置
 	_fishing_configs = _load_json("res://data/fishing.json")   # 【第8批新增】垂钓配置
 	costume_configs = _load_json("res://data/costumes.json")   # 【服装系统】
 	_load_items_config()   # 【重构新增】道具表
@@ -713,7 +720,7 @@ func save_game():
 	# 各子系统把自己的字段合并进来（新系统加存档字段只需改它自己的 get_save_data）
 	var systems = [hero_system, friend_system, apprentice_system, beast_system, shop_system,
 		stage_system, item_system, travel_system, charity_system, lottery_system, mall_system,
-		manor_system,courtyard_system,war_system,goal_system,goal_system,fishing_system]
+		manor_system,courtyard_system,war_system,goal_system,goal_system,fishing_system,soul_system]
 	for sys in systems:
 		save_data.merge(sys.get_save_data(), true)
 	var file = FileAccess.open(SAVE_PATH, FileAccess.WRITE)
@@ -753,7 +760,7 @@ func load_game():
 	# ===== 各子系统认领自己的字段（含旧存档兼容逻辑） =====
 	var systems = [hero_system, friend_system, apprentice_system, beast_system, shop_system,
 		stage_system, item_system, travel_system, charity_system, lottery_system, mall_system,
-		manor_system,courtyard_system,war_system,goal_system,goal_system,fishing_system]
+		manor_system,courtyard_system,war_system,goal_system,goal_system,fishing_system,soul_system]
 	for sys in systems:
 		sys.load_save_data(data)
 
@@ -1364,3 +1371,13 @@ func get_hero_costume_aptitude(hero_id: String) -> int:
 
 func get_hero_costume_series_pct(hero_id: String) -> float:
 	return costume_system.get_hero_costume_series_pct(hero_id)
+
+# ==================== 【转发】兽魂系统 → systems/soul_system.gd ====================
+
+# 门客当前兽魂赚速加成（0.03=+3%，经其装备珍兽的魂盘激发格计算；HeroData.get_percent_bonus 调用）
+func get_hero_soul_percent(hero_id: String) -> float:
+	return soul_system.get_hero_soul_percent(hero_id)
+
+# 门客当前兽魂资质加成（激发格词条之和；HeroData.get_total_aptitude 调用）
+func get_hero_soul_aptitude(hero_id: String) -> int:
+	return soul_system.get_hero_soul_aptitude(hero_id)

@@ -163,6 +163,10 @@ func _show_item_detail_popup(item_id: String):
 					popup.queue_free()
 					_show_manhuang_box_selector()   # 【新增】蛮荒礼盒：自选一种道具×100
 				)
+			"soul_stone_box":   # 【新增】魂石宝箱：直接开出随机优秀魂石
+					use_btn.pressed.connect(func(): _on_soul_box_open(item_id, "normal"))
+			"soul_wushuang_box":   # 【新增】无双魂石箱：开出四格同色无双魂石
+					use_btn.pressed.connect(func(): _on_soul_box_open(item_id, "wushuang"))
 		vbox.add_child(use_btn)
 	
 	c._add_ok_button(vbox, func(): popup.queue_free(), "关闭")
@@ -355,6 +359,21 @@ func _show_friend_box_selector():
 	vbox.add_child(cancel)
 	
 	c.add_child(panel)
+
+# 【新增】开启魂石宝箱：扣1个箱子→soul_system.open_box→提示获得的魂石（品质/各格颜色词条）
+func _on_soul_box_open(item_id: String, kind: String):
+	if int(data.items.get(item_id, 0)) < 1:
+		c._show_stage_hint("没有可开启的" + data.ITEM_CONFIG.get(item_id, {}).get("name", "宝箱"))
+		return
+	data.items[item_id] = int(data.items.get(item_id, 0)) - 1
+	var res: Dictionary = data.soul_system.open_box(kind)
+	var st: Dictionary = res.get("stone", {})
+	var parts = []
+	for cell in st.get("cells", []):
+		parts.append("%s+%d" % [cell.get("color", "?"), int(cell.get("apt", 0))])
+	c._show_stage_hint("获得【%s】魂石（%d格）：%s" % [st.get("quality", "?"), st.get("cells", []).size(), "  ".join(parts)])
+	update_bag_list()   # 若你本地按钮化后刷新函数名不同，换成本地同一个刷新调用
+	c.update_all_ui()
 
 # 【新增】挚友盒子选择回调
 func _on_friend_box_selected(friend_id: String):

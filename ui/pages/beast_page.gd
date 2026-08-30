@@ -169,6 +169,8 @@ func update_beast_page():
 			grid.add_child(cell)
 
 
+# 【改】珍兽详情：弹窗改全屏页（z_index=20，盖门客面板z10；兽魂页z35再盖它）
+# 节点名保持 BeastDetailPanel、仍挂 c 根节点、child(0)=VBoxContainer——_update_beast_detail 等引用全部不用动
 func open_beast_detail(beast_id: String, instance_index: int):
 	_close_beast_detail()
 	_current_beast_id = beast_id
@@ -178,9 +180,43 @@ func open_beast_detail(beast_id: String, instance_index: int):
 	var instance = data.get_beast_instance(beast_id, instance_index)
 	if instance == null: return
 	
-	var panel = c._create_base_popup("【%s】" % cfg.name, Vector2(520, 620), Vector2(316, 30))
+	# 全屏根面板：禁用锚点预设（项目坑#3），显式 position+size 铺满窗口；不透明底色直接盖住下层页面
+	var panel = Panel.new()
 	panel.name = "BeastDetailPanel"
-	var vbox = panel.get_child(0)
+	panel.z_index = 20
+	panel.position = Vector2.ZERO
+	panel.size = c.get_viewport_rect().size
+	var bg = StyleBoxFlat.new()
+	bg.bg_color = Color("#1e1b2e")
+	panel.add_theme_stylebox_override("panel", bg)
+	
+	# 内容根容器：必须是 child(0)（_update_beast_detail 按 get_child(0) 取）；显式尺寸铺满
+	var vbox = VBoxContainer.new()
+	vbox.position = Vector2.ZERO
+	vbox.size = panel.size
+	vbox.add_theme_constant_override("separation", 10)
+	panel.add_child(vbox)
+	
+	# 顶栏：返回 + 标题（标题原由 _create_base_popup 生成，全屏化后自建）
+	var top = HBoxContainer.new()
+	top.custom_minimum_size = Vector2(0, 56)
+	top.add_theme_constant_override("separation", 12)
+	vbox.add_child(top)
+	var back_btn = Button.new()
+	back_btn.text = "< 返回"
+	back_btn.custom_minimum_size = Vector2(120, 44)
+	back_btn.pressed.connect(_close_beast_detail)
+	top.add_child(back_btn)
+	var title = Label.new()
+	title.text = "【%s】" % cfg.name
+	title.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	title.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	title.add_theme_font_size_override("font_size", 22)
+	title.add_theme_color_override("font_color", Color("#ffd700"))
+	top.add_child(title)
+	var pad = Control.new()   # 右侧占位，让标题视觉居中
+	pad.custom_minimum_size = Vector2(120, 44)
+	top.add_child(pad)
 	
 	# 品质
 	var quality_lbl = Label.new()
@@ -188,7 +224,7 @@ func open_beast_detail(beast_id: String, instance_index: int):
 	quality_lbl.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	vbox.add_child(quality_lbl)
 	
-	# 资质行（文字 + 升级按钮）
+	# 资质行（文字 + 兽魂按钮 + 升级按钮）
 	var apt_row = HBoxContainer.new()
 	apt_row.alignment = BoxContainer.ALIGNMENT_CENTER
 	apt_row.add_theme_constant_override("separation", 12)
@@ -198,13 +234,20 @@ func open_beast_detail(beast_id: String, instance_index: int):
 	apt_lbl.name = "BeastAptLbl"
 	apt_row.add_child(apt_lbl)
 	
+	# 兽魂按钮（打开该珍兽的魂盘：镶嵌魂石给装备门客加赚速/资质）
+	var soul_btn = Button.new()
+	soul_btn.text = "兽魂"
+	soul_btn.custom_minimum_size = Vector2(80, 32)
+	soul_btn.pressed.connect(c.soul_view.show_soul_view.bind(beast_id, instance_index))
+	apt_row.add_child(soul_btn)
+	
 	var up_btn = Button.new()
 	up_btn.name = "BeastUpBtn"
 	up_btn.custom_minimum_size = Vector2(120, 32)
 	up_btn.pressed.connect(_on_beast_upgrade.bind(beast_id, instance_index))
 	apt_row.add_child(up_btn)
 	
-	# 【改】光环区：单标签改多行容器（每只光环一行：名称+数值+升级按钮），内容在 _update_beast_detail 重填
+	# 光环区：多行容器（每只光环一行：名称+数值+升级按钮），内容在 _update_beast_detail 重填
 	var aura_box = VBoxContainer.new()
 	aura_box.name = "BeastAuraBox"
 	aura_box.add_theme_constant_override("separation", 4)
@@ -226,11 +269,12 @@ func open_beast_detail(beast_id: String, instance_index: int):
 	skill_bonus_lbl.name = "BeastSkillBonusLbl"
 	skill_title_row.add_child(skill_bonus_lbl)
 	
-	# 技能网格滚动区
+	# 技能网格滚动区（全屏后空间充裕，改弹性填充吃满剩余高度）
 	var skill_scroll = ScrollContainer.new()
 	skill_scroll.name = "BeastSkillScroll"
-	skill_scroll.custom_minimum_size = Vector2(0, 220)
+	skill_scroll.custom_minimum_size = Vector2(0, 320)
 	skill_scroll.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	skill_scroll.size_flags_vertical = Control.SIZE_EXPAND_FILL
 	vbox.add_child(skill_scroll)
 	
 	var skill_grid = GridContainer.new()
@@ -258,15 +302,12 @@ func open_beast_detail(beast_id: String, instance_index: int):
 	equip_btn.pressed.connect(_on_beast_equip_toggle.bind(beast_id, instance_index))
 	vbox.add_child(equip_btn)
 	
-	var close_btn = Button.new()
-	close_btn.text = "关闭"
-	close_btn.pressed.connect(_close_beast_detail)
-	vbox.add_child(close_btn)
+	# 【删】原底部"关闭"按钮：全屏页统一走顶部"< 返回"
 	
 	c.add_child(panel)
-	c._current_popup = panel
-	c.get_node("Overlay").show()
+	# 【删】原 _current_popup/Overlay 两行：全屏页不透明直盖下层，不进弹窗管理（点外面关弹窗那套就是套娃关不掉的根因）
 	_update_beast_detail(beast_id, instance_index)
+
 
 func _update_beast_detail(beast_id: String, instance_index: int):
 	if not c.has_node("BeastDetailPanel"): return
@@ -556,6 +597,7 @@ func _close_beast_skill_refresh_panel():
 	if panel:
 		panel.queue_free()
 
+# 【改】全屏页关闭：只清节点，不再碰 _current_popup/Overlay（全屏页不透明直盖下层，返回即露出）
 func _close_beast_detail():
 	# 先关闭内层面板
 	if c.has_node("BeastDetailPanel/BeastSkillRefreshPanel"):
@@ -567,14 +609,9 @@ func _close_beast_detail():
 		var old = c.get_node("BeastDetailPanel")
 		old.get_parent().remove_child(old)
 		old.queue_free()
-	# 如果下层 HeroPanel 还开着...
+	# 下层门客面板若开着，刷新一次对账（珍兽装备/资质可能变了）
 	if c.has_node("HeroPanel") and c.get_node("HeroPanel").visible:
-		c._current_popup = c.get_node("HeroPanel")
-		c.get_node("Overlay").show()
 		c.update_hero_panel()
-	else:
-		c.get_node("Overlay").hide()
-		c._current_popup = null
 
 # 【新增】填充光环区：光环一=系列自动加成（不可升级）；光环二=+5%/级（星神为全局技能倍率），集齐系列解锁升级；光环三=+1等级上限/级，光环二满级解锁；无光环兽显示"无"
 func _fill_aura_box(aura_box, beast_id: String, instance_index: int):

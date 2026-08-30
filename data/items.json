@@ -298,6 +298,20 @@
 	  "name": "促织笼",
 	  "desc": "豢养促织的笼子（后续玩法使用）"
 	},
+	"wuse_shi": {
+		"name": "五色石",
+		"desc": "蕴含五行之力的彩石，用于解锁兽魂魂盘的格子"
+	},
+	"soul_stone_box": {
+		"name": "魂石宝箱",
+		"desc": "打开后随机获得一块优秀品质的魂石",
+		"use": { "type": "soul_stone_box", "btn": "打开" }
+	},
+	"soul_wushuang_box": {
+		"name": "无双魂石箱",
+		"desc": "打开后获得一块四格同色的无双品质魂石",
+		"use": { "type": "soul_wushuang_box", "btn": "打开" }
+	},
 	"zui_xian_niang": {
 	  "name": "醉仙酿",
 	  "desc": "李白赋诗升级所需"
