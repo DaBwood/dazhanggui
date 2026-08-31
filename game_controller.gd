@@ -5,12 +5,19 @@
 # ============================================================
 extends Control
 
+const AUTOSAVE_INTERVAL = 30   # 【新增】自动存档间隔（秒）：on_auto_earn 每秒计数，满即写盘
+
 var data: GameData 
 
 #页面切换
 var current_page: String = "shop"   # shop / hero / bag
 
 var _quantity_item_id: String = ""   # 数量选择器当前操作的道具ID
+
+# 【新增】自动存档计数（秒）
+var _autosave_sec: int = 0
+# 【新增】Web 端页面隐藏回调引用（JavaScriptBridge 回调是 RefCounted，必须持有引用否则被释放后回调失效）
+var _web_hide_cb = null
 
 #按钮信号连接
 var _signals_connected: bool = false
@@ -152,6 +159,12 @@ func _ready():
 
 	# 正常退出时存档
 	tree_exiting.connect(on_exit)
+	
+	# 【新增】Web 端页面被划走/切后台瞬间补一次存档（pagehide + visibilitychange 双保险）
+	_setup_web_save_hook()
+
+	# 【新增】顶栏右侧「退出」按钮：存档后正常退出（Web 端尝试关页面，被拦截则提示手动关）
+	_init_exit_button()
 	
 	_apply_portrait_layout()      # 【新增】壳层布局
 	get_tree().root.size_changed.connect(_apply_portrait_layout)   # 【新增】窗口变化重排
@@ -337,6 +350,11 @@ func on_auto_earn():
 	if data.stage_auto_trade:
 		_on_stage_auto_trade_tick(data.stage_auto_trade_tick())
 	update_all_ui()
+	# 【新增】定期自动存档：每 AUTOSAVE_INTERVAL 秒写一次盘（手机 Web 端收不到退出通知，靠它兜底进度）
+	_autosave_sec += 1
+	if _autosave_sec >= AUTOSAVE_INTERVAL:
+		_autosave_sec = 0
+		data.save_game()
 
 # 【新增】一键贸易节拍结果处理：
 # 途中节点提示（通关/Boss出现/谈判成功）只在玩家位于关卡页时弹出，不在则静默；
@@ -721,6 +739,79 @@ func on_exit():
 	@warning_ignore("narrowing_conversion")
 	data.last_logout_time = Time.get_unix_time_from_system()
 	data.save_game()
+
+
+# ============ 存档三保险（2026-08-31 新增）：定期存档 + Web切后台补存 + 退出按钮 ============
+# 背景：手机 Web 端划掉标签页不会触发 tree_exiting，旧版"只在退出时存档"导致怎么玩都不落盘
+
+# 【新增】Web 端切后台补存档：监听 pagehide/visibilitychange，页面隐藏瞬间写盘
+func _setup_web_save_hook():
+	if not OS.has_feature("web"): return   # 仅 Web 平台需要
+	_web_hide_cb = JavaScriptBridge.create_callback(_on_web_page_hide)
+	var win = JavaScriptBridge.get_interface("window")
+	win.__dzg_on_hide = _web_hide_cb
+	JavaScriptBridge.eval("""
+		window.addEventListener('pagehide', function(){ if (window.__dzg_on_hide) window.__dzg_on_hide(); });
+		document.addEventListener('visibilitychange', function(){ if (document.hidden && window.__dzg_on_hide) window.__dzg_on_hide(); });
+	""", true)
+
+# 【新增】页面隐藏回调（JS → GDScript）：补一次存档
+func _on_web_page_hide(_args):
+	if data != null:
+		data.save_game()
+
+# 【新增】顶栏右侧「退出」按钮（挂 TopBar 末尾=最右；apply_theme 在其之前跑，故自带配色不挨全量美化）
+func _init_exit_button():
+	if not has_node("TopBar"): return
+	if $TopBar.has_node("ExitBtn"): return
+	var btn = Button.new()
+	btn.name = "ExitBtn"
+	btn.text = "退出"
+	btn.custom_minimum_size = Vector2(52, 30)
+	btn.add_theme_font_size_override("font_size", 14)
+	btn.add_theme_color_override("font_color", Color("#c9bfa8"))
+	btn.pressed.connect(_on_exit_btn_pressed)
+	$TopBar.add_child(btn)
+
+# 【新增】点退出：二次确认弹窗（说明会自动存档）
+func _on_exit_btn_pressed():
+	_safe_close("ExitConfirmPopup")
+	var popup = _create_base_popup("退出游戏", Vector2(420, 220))
+	popup.name = "ExitConfirmPopup"
+	popup.z_index = 30   # 弹窗层
+	var vb = popup.get_child(0)
+	var lbl = Label.new()
+	lbl.text = "退出前会自动存档\n确定退出游戏吗？"
+	lbl.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	lbl.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+	vb.add_child(lbl)
+	var row = HBoxContainer.new()
+	row.alignment = BoxContainer.ALIGNMENT_CENTER
+	row.add_theme_constant_override("separation", 20)
+	vb.add_child(row)
+	var ok = Button.new()
+	ok.text = "存档并退出"
+	ok.custom_minimum_size = Vector2(140, 40)
+	ok.pressed.connect(_on_exit_confirmed)
+	row.add_child(ok)
+	var cancel = Button.new()
+	cancel.text = "取消"
+	cancel.custom_minimum_size = Vector2(120, 40)
+	cancel.pressed.connect(func(): _safe_close("ExitConfirmPopup"))
+	row.add_child(cancel)
+	add_child(popup)
+
+# 【新增】确认退出：先存档；非 Web 直接退出程序；Web 尝试 window.close()——
+# 多数浏览器拦截脚本关窗，拦不住就提示手动关闭（反正档已落盘，随时关都安全）
+func _on_exit_confirmed():
+	data.save_game()
+	_safe_close("ExitConfirmPopup")
+	if OS.has_feature("web"):
+		JavaScriptBridge.eval("window.close();", true)
+		_show_stage_hint("已存档，可安全关闭页面", 5.0)
+	else:
+		get_tree().quit()
+
 
 func print_scene_tree_to_file():
 	var lines = []
@@ -1732,21 +1823,3 @@ func _apply_portrait_layout():
 				sz = Vector2(minf(sz.x, vs.x - 40), minf(sz.y, vs.y - 80))
 				p.size = sz
 			p.position = ((vs - sz) / 2).max(Vector2.ZERO)
-
-# 【临时诊断】打印关键容器矩形，定位空白页根因；定位后删除
-func _debug_page_rects():
-	await get_tree().process_frame
-	await get_tree().process_frame   # 等两帧，确保容器完成布局
-	var paths = [
-		"TopBar", "BottomNav", "PageContainer",
-		"PageContainer/MansionPage", "PageContainer/MansionPage/MansionGrid",
-		"PageContainer/ShopPage", "PageContainer/ShopPage/ShopScroll", "PageContainer/ShopPage/ShopScroll/ShopList",
-		"PageContainer/HeroPage", "PageContainer/HeroPage/HeroScroll", "PageContainer/HeroPage/HeroScroll/HeroGrid",
-		"PageContainer/BagPage", "PageContainer/BagPage/BagScroll", "PageContainer/BagPage/BagScroll/BagGrid",
-	]
-	for path in paths:
-		if has_node(path):
-			var n = get_node(path)
-			print(path, "  position=", n.position, "  size=", n.size)
-		else:
-			print(path, "  【不存在】")

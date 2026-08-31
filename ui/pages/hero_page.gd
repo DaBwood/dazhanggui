@@ -559,7 +559,7 @@ func on_aptitude_skill_upgrade(skill_index: int, mode: String = "single"):
 	
 	var cost_per_level = int(skill.get("aptitude_per_level", 1))  # 【新增】每级固定消耗=每级加的资质数
 	var pill_count = data.items.get("aptitude_pill", 0)
-	if pill_count <= cost_per_level:
+	if pill_count < cost_per_level:
 		return
 	
 	var levels_to_upgrade: int

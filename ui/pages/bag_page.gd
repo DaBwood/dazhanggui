@@ -424,6 +424,15 @@ func _show_item_box_selector():
 	qty_spin.custom_minimum_size = Vector2(120, 32)
 	qty_row.add_child(qty_spin)
 	
+	# 【新增】快捷加量按钮：手机 Web 虚拟键盘输入无效（引擎已知bug），绕开键盘用按钮步进
+	# 点击给 SpinBox 加值；Range 赋值自动钳到 max_value，不会加过头
+	for step in [100, 1000]:
+		var add_btn = Button.new()
+		add_btn.text = "+%d" % step
+		add_btn.custom_minimum_size = Vector2(64, 32)
+		add_btn.pressed.connect(func(): qty_spin.value += step)
+		qty_row.add_child(add_btn)
+	
 	var scroll = ScrollContainer.new()
 	scroll.custom_minimum_size = Vector2(440, 360)
 	vbox.add_child(scroll)
@@ -438,7 +447,9 @@ func _show_item_box_selector():
 		
 		var cfg = data.ITEM_CONFIG[item_id]
 		var btn = Button.new()
-		btn.text = "【%s】%s" % [cfg.name, cfg.desc]
+		btn.text = cfg.name
+		# 【新增】手机端：按钮默认 STOP 拦截触摸滚动，改 PASS 让滑动穿透到 ScrollContainer
+		btn.mouse_filter = Control.MOUSE_FILTER_PASS
 		# 点击时读取当前 SpinBox 的值作为使用数量
 		btn.pressed.connect(_on_item_box_selected.bind(item_id, qty_spin))
 		list.add_child(btn)
