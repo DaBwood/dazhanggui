@@ -126,6 +126,22 @@ func get_board_level(beast_id: String, instance_index: int = 0) -> int:
 func get_capacity(beast_id: String, instance_index: int = 0) -> int:
 	return int(_settings().get("base_capacity", 3)) + get_board_level(beast_id, instance_index) - 1
 
+
+# 【新增】满盘进度：covered=已放置魂石占用的格数，total=已解锁格数
+# 放置校验保证不重叠且限已解锁格，故 covered 永远 ≤ total，covered==total 即填满
+func get_fill_progress(beast_id: String, instance_index: int = 0) -> Dictionary:
+	var total = get_unlocked_cells(beast_id, instance_index).size()
+	var covered = 0
+	for uid in _get_board(beast_id, instance_index).get("stones", {}).keys():
+		covered += g.soul_stones.get(uid, {}).get("cells", []).size()
+	return {"covered": covered, "total": total}
+
+# 【新增】魂盘是否填满：所有已解锁格都被魂石占住（不要求颜色激发，占满即算）
+func is_board_full(beast_id: String, instance_index: int = 0) -> bool:
+	var p = get_fill_progress(beast_id, instance_index)
+	return int(p.total) > 0 and int(p.covered) >= int(p.total)
+
+
 # 解锁下一格的消耗：当前魂盘等级 × 5
 func get_unlock_cost(beast_id: String, instance_index: int = 0) -> int:
 	return get_board_level(beast_id, instance_index) * int(_settings().get("unlock_cost_per_level", 5))
@@ -249,6 +265,10 @@ func get_board_bonus(beast_id: String, instance_index: int = 0) -> Dictionary:
 			res.percent += pct
 			res.apt += int(cell.get("apt", 0))
 			res.inspired += 1
+	# 【新增】满盘光环：已解锁格被魂石全部填满时，按魂盘等级追加赚钱百分比
+	# （配置 full_pct：1级5%/2级10%/3级15%/4级20%/5级30%，直接并入 percent）
+	if is_board_full(beast_id, instance_index):
+		res.percent += float(_settings().get("full_pct", {}).get(str(lv), 0.0))
 	return res
 
 # 门客维度的魂魂加成（找该门客装备的珍兽 → 其魂盘）

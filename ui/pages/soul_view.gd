@@ -3,8 +3,9 @@
 # 纯代码 UI 模块：var c（game_controller 根脚本）、var data（GameData 中枢）
 # 层级：SoulPage 挂 c 根节点 z_index=35——盖过珍兽详情（全屏化后z20/全屏化前z30弹窗）；
 #       本页的词条/确认/重塑弹窗 z_index=40，再压 SoulPage 一档；飘字 z50 不受影响
-# 交互：仓库魂石卡 点按=词条弹窗 / 按住拖动=上盘（拖起时所有合法锚点格亮绿框，
-#       只有放得下松手才生效，放不下自动回仓库列表）；点占用格=取下回仓库；点锁定格=解锁
+# 交互：仓库魂石卡 点按=词条弹窗 / 按住拖动=上盘（幻影与魂盘格子同大同距、指尖拖动；
+#       不做落点预判，松手时按幻影在魂盘上的实际位置整体换算形状落点，放得下才落子，
+#       放不下自动回仓库列表）；点占用格=取下回仓库；点锁定格=解锁
 # ============================================================
 class_name SoulView
 extends RefCounted
@@ -14,12 +15,12 @@ extends RefCounted
 class SoulCell extends PanelContainer:
 	var view          # SoulView 引用（由创建处注入）
 	var cell: int = -1
-	# 拖放悬停校验：只有放得下的格子才接受落下（亮绿框在拖起时已整盘标好）
+	# 拖放悬停校验：不按单个格子算，统一按幻影当前位置换算形状落点校验
 	func _can_drop_data(_pos, drop_data):
-		return view != null and view._cell_can_drop(cell, drop_data)
-	# 落下：以本格为锚点放置
+		return view != null and view._board_can_drop(drop_data)
+	# 落下：按幻影位置换算的形状落点放置
 	func _drop_data(_pos, drop_data):
-		if view != null: view._cell_drop(cell, drop_data)
+		if view != null: view._board_drop(drop_data)
 	# 点按：锁定格=解锁 / 占用格=取下 / 空格=提示拖动
 	func _gui_input(event):
 		if event is InputEventMouseButton and event.button_index == MOUSE_BUTTON_LEFT and not event.pressed:
@@ -30,11 +31,10 @@ class StoneCard extends PanelContainer:
 	var view
 	var uid: String = ""
 	var _dragging: bool = false   # 区分点按与拖动：拖起来过就不再当点按
-	# 拖动开始：生成跟随指尖的形状预览，通知界面标绿合法锚点
+	# 拖动开始：通知界面生成跟随指尖的形状幻影
 	func _get_drag_data(_pos):
 		if view == null: return null
 		_dragging = true
-		set_drag_preview(view._make_drag_preview(uid))
 		view._on_stone_drag_start(uid)
 		return {"uid": uid}
 	# 松开：没拖过=点按→词条弹窗
@@ -43,22 +43,45 @@ class StoneCard extends PanelContainer:
 			if not _dragging and view != null:
 				view._show_stone_info(uid)
 			_dragging = false
-	# 拖动结束（无论成功与否）：清绿框；没放下的魂石本来就没动过，天然"弹回"仓库
+	# 拖动结束（无论成功与否）：清幻影；没放下的魂石本来就没动过，天然"弹回"仓库
 	func _notification(what):
 		if what == NOTIFICATION_DRAG_END:
 			_dragging = false
 			if view != null: view._on_stone_drag_end()
+
+
+# 【新增】魂盘网格本体也当拖放目标：格子之间的缝隙不属于任何 SoulCell，
+# 多格魂石"完全对正"松手时指尖正好落在缝里，没有网格兜底就会判定无处安放
+class SoulBoardGrid extends GridContainer:
+	var view
+	# 缝隙悬停/落下：与格子同一套逻辑，统一按幻影位置换算形状落点
+	func _can_drop_data(_pos, drop_data):
+		return view != null and view._board_can_drop(drop_data)
+	func _drop_data(_pos, drop_data):
+		if view != null: view._board_drop(drop_data)
+
+
+# 【新增】拖动跟随幻影：引擎拖放期间每帧把全局位置钉在指尖；拖放一结束就自毁
+# （引擎自带 set_drag_preview 在部分环境不渲染，故改手动幻影；自毁是兜底，正常由 _on_stone_drag_end 清除）
+class DragGhost extends Control:
+	func _process(_delta):
+		if get_viewport() != null and get_viewport().gui_is_dragging():
+			global_position = get_global_mouse_position() - size / 2
+		else:
+			queue_free()
 
 var c      # game_controller 根脚本引用
 var data   # GameData 数据中枢引用
 
 const CELL_PX = 96   # 魂盘单格边长
 const GAP = 8        # 格子间距
+const STONE_BTN = 88 # 【新增】仓库魂石方形按钮边长（最宽形状4格×20px=80，装得下）
+const STONE_COLS = 6 # 【新增】仓库每行按钮数（6×88+5×8=568，居中在600宽里）
 
 var _beast_id: String = ""      # 当前操作珍兽ID（页面打开期间）
 var _beast_index: int = 0       # 当前操作珍兽实例序号
 var _drag_uid: String = ""      # 正在拖动的魂石uid
-var _board_cells: Dictionary = {}   # {格序号: SoulCell}，拖动时批量标绿用
+var _board_grid = null          # 当前魂盘 GridContainer（落点换算用）
 var _recast_picks: Array = []   # 重塑弹窗中已选的魂石uid（最多2块）
 
 # 由 game_controller._ready 创建本模块时注入引用
@@ -79,6 +102,7 @@ func show_soul_view(beast_id: String, instance_index: int = 0):
 	_close_node("SoulConfirmPopup")
 	_close_node("SoulRecastPopup")
 	_close_node("SoulInfoPopup")
+	_close_node("SoulAuraPopup")   # 【新增】满盘光环详情弹窗也随页面关闭
 
 	# 根面板：禁用锚点预设（项目坑#3），显式 position+size 铺满窗口
 	var page = Panel.new()
@@ -136,6 +160,7 @@ func _on_back():
 	_close_node("SoulRecastPopup")
 	_close_node("SoulInfoPopup")
 	_close_node("SoulPage")
+	_close_node("SoulAuraPopup")   # 【新增】满盘光环详情弹窗也随页面关闭
 
 # 重填动态内容区（保留仓库滚动位置）
 func _fill_body(body):
@@ -143,7 +168,6 @@ func _fill_body(body):
 	var sv = scroll.scroll_vertical if scroll else 0
 	for child in body.get_children():
 		child.queue_free()
-	_board_cells.clear()
 
 	var ss = data.soul_system
 	var lv = ss.get_board_level(_beast_id, _beast_index)
@@ -180,23 +204,24 @@ func _fill_body(body):
 	var grid_wrap = HBoxContainer.new()
 	grid_wrap.alignment = BoxContainer.ALIGNMENT_CENTER
 	body.add_child(grid_wrap)
-	var grid = GridContainer.new()
+	var grid = SoulBoardGrid.new()   # 【改】网格本体也当拖放目标：格缝松手由网格接住换算落点
+	grid.view = self
+	grid.mouse_filter = Control.MOUSE_FILTER_STOP   # 【新增】明确截停命中测试，缝隙处的拖放由本类处理
 	grid.columns = 5
 	grid.add_theme_constant_override("h_separation", GAP)
 	grid.add_theme_constant_override("v_separation", GAP)
 	grid_wrap.add_child(grid)
+	_board_grid = grid   # 存引用：拖放落点按幻影相对本网格的位置换算
 	var unlocked = ss.get_unlocked_cells(_beast_id, _beast_index)
 	for cell in range(25):
-		var node = _make_cell(cell, unlocked, category_now)
-		_board_cells[cell] = node
-		grid.add_child(node)
+		grid.add_child(_make_cell(cell, unlocked, category_now))
 
 	# 拖拽提示
 	var hint = Label.new()
 	hint.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	hint.add_theme_font_size_override("font_size", 13)
 	hint.add_theme_color_override("font_color", Color("#aaaaaa"))
-	hint.text = "按住下方魂石拖到魂盘（金框=锚点，对齐绿框格松手）；点盘中魂石=取下"
+	hint.text = "按住下方魂石拖到魂盘，松手时形状落在哪就放哪（放不下会自动弹回）；点盘中魂石=取下"
 	body.add_child(hint)
 
 	# 操作行：重置（二次确认） / 重塑
@@ -217,6 +242,24 @@ func _fill_body(body):
 	recast_btn.pressed.connect(_show_recast_popup)
 	op.add_child(recast_btn)
 
+# 【新增】魂盘光环按钮：填满已解锁格=金色点亮，未填满=灰色；点击弹出加成详情
+	var aura_btn = Button.new()
+	aura_btn.text = "魂盘光环"
+	aura_btn.custom_minimum_size = Vector2(140, 40)
+	var aura_sb = StyleBoxFlat.new()
+	aura_sb.set_corner_radius_all(6)
+	if ss.is_board_full(_beast_id, _beast_index):
+		aura_sb.bg_color = Color("#5a4a12")          # 亮：金底金边金字
+		aura_sb.set_border_width_all(2)
+		aura_sb.border_color = Color("#ffd700")
+		aura_btn.add_theme_color_override("font_color", Color("#ffd700"))
+	else:
+		aura_sb.bg_color = Color("#262233")          # 灰：暗底灰字
+		aura_btn.add_theme_color_override("font_color", Color("#777777"))
+	aura_btn.add_theme_stylebox_override("normal", aura_sb)
+	aura_btn.pressed.connect(_show_aura_popup)
+	op.add_child(aura_btn)
+
 	# 魂石仓库
 	var inv_title = Label.new()
 	inv_title.text = "—— 魂石仓库（点按看词条，拖动上盘）——"
@@ -228,10 +271,16 @@ func _fill_body(body):
 	scroll2.name = "StoneScroll"
 	scroll2.size_flags_vertical = Control.SIZE_EXPAND_FILL
 	body.add_child(scroll2)
-	var list = VBoxContainer.new()
-	list.size_flags_horizontal = Control.SIZE_EXPAND_FILL
-	list.add_theme_constant_override("separation", 8)
-	scroll2.add_child(list)
+	# 【改】仓库改方形按钮网格：HBox 撑满宽度只为把网格整体居中
+	var center_row = HBoxContainer.new()
+	center_row.alignment = BoxContainer.ALIGNMENT_CENTER
+	center_row.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	scroll2.add_child(center_row)
+	var list = GridContainer.new()
+	list.columns = STONE_COLS
+	list.add_theme_constant_override("h_separation", GAP)
+	list.add_theme_constant_override("v_separation", GAP)
+	center_row.add_child(list)
 	_build_stone_list(list)
 
 	# 恢复仓库滚动位置
@@ -268,7 +317,6 @@ func _make_cell(cell: int, unlocked: Array, category_now: String) -> SoulCell:
 	if uid == "":
 		style.bg_color = Color("#242038")   # 空格
 		node.add_theme_stylebox_override("panel", style)
-		node.set_meta("base_style", style)  # 拖动标绿后要还原，存一份底样式
 		return node
 
 	# 占用格：找出本格在魂石 cells 里的颜色/词条
@@ -291,7 +339,6 @@ func _make_cell(cell: int, unlocked: Array, category_now: String) -> SoulCell:
 		style.set_border_width_all(3)
 		style.border_color = Color("#ffd700")
 	node.add_theme_stylebox_override("panel", style)
-	node.set_meta("base_style", style)
 	return node
 
 # 点按格子：锁定→解锁；占用→取下；空→提示拖动
@@ -312,57 +359,67 @@ func _on_cell_tapped(cell: int):
 	c.update_all_ui()   # 加成变化，顶栏赚速对账
 
 # ============ 拖放 ============
-# 拖起：标绿所有合法锚点格（放得下=过界/重叠/未解锁/容量全通过）
+# 拖起：生成指尖幻影（与魂盘格子同大同距）；不做落点预判，落点松手时才算
 func _on_stone_drag_start(uid: String):
 	_drag_uid = uid
-	for cell in _board_cells.keys():
-		var chk: Dictionary = data.soul_system.can_place_stone(_beast_id, _beast_index, uid, cell)
-		if chk.get("ok", false):
-			_set_cell_highlight(_board_cells[cell], true)
+	_spawn_drag_ghost(uid)
 
-# 拖动结束：清掉全部绿框
+# 拖动结束：清幻影
 func _on_stone_drag_end():
 	_drag_uid = ""
-	for cell in _board_cells.keys():
-		_set_cell_highlight(_board_cells[cell], false)
+	_clear_drag_ghost()
 
-# 格子是否接受落下（与标绿同一套校验，双保险）
-func _cell_can_drop(cell: int, drop_data) -> bool:
+# 幻影当前位置换算出的形状落点格序号（幻影左上角=形状包围盒左上角，四舍五入对齐盘格；出界返回-1）
+func _ghost_anchor() -> int:
+	var ghost = _find_node("SoulDragGhost")
+	if ghost == null or _board_grid == null: return -1
+	var pitch = CELL_PX + GAP
+	var rel = ghost.global_position - _board_grid.global_position
+	var tx = int(round(rel.x / pitch))
+	var ty = int(round(rel.y / pitch))
+	return ty * 5 + tx   # 可能落在盘外（负的或超24）——can_place_stone 会判"超出盘外"
+
+# 拖放悬停校验：按幻影当前位置整体换算形状落点，放得下才接受（按形状来，不按锚点）
+func _board_can_drop(drop_data) -> bool:
 	if not (drop_data is Dictionary) or not drop_data.has("uid"): return false
-	return data.soul_system.can_place_stone(_beast_id, _beast_index, drop_data.uid, cell).get("ok", false)
+	var anchor = _ghost_anchor()
+	if anchor < 0 or anchor >= 25: return false
+	return data.soul_system.can_place_stone(_beast_id, _beast_index, drop_data.uid, anchor).get("ok", false)
 
-# 落下放置（锚点=该格）
-func _cell_drop(cell: int, drop_data):
-	var res: Dictionary = data.soul_system.place_stone(_beast_id, _beast_index, drop_data.uid, cell)
+# 落下放置：按幻影位置换算的落点放置（校验与悬停同一套，双保险）
+func _board_drop(drop_data):
+	var anchor = _ghost_anchor()
+	if anchor < 0 or anchor >= 25: return
+	var res: Dictionary = data.soul_system.place_stone(_beast_id, _beast_index, drop_data.uid, anchor)
 	if not res.get("ok", false):
-		c._show_stage_hint(res.get("reason", "放不下"))
-		return
+		return   # 放不下：静默弹回仓库（拖动本来就什么都没改）
 	_refresh_body()
 	c.update_all_ui()   # 加成变化，顶栏赚速对账
 
-# 单格绿框开关（底样式存在 meta 里，关掉时还原）
-func _set_cell_highlight(node: SoulCell, on: bool):
-	if on:
-		var hl = StyleBoxFlat.new()
-		hl.bg_color = Color("#1d3a24")
-		hl.set_border_width_all(3)
-		hl.border_color = Color("#5cd65c")
-		hl.set_corner_radius_all(6)
-		node.add_theme_stylebox_override("panel", hl)
-	elif node.has_meta("base_style"):
-		node.add_theme_stylebox_override("panel", node.get_meta("base_style"))
+# 【改】拖动跟随图形：引擎 set_drag_preview 在部分环境不渲染，改手动幻影（DragGhost 每帧跟指尖，拖完自毁）
+func _spawn_drag_ghost(uid: String):
+	_clear_drag_ghost()   # 防御：上一次没清干净就先清
+	var mini_panel = _make_shape_mini(uid, CELL_PX, CELL_PX + GAP, 0)   # 【改】与魂盘格子同大同距，拖到哪就是哪
+	mini_panel.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	var ghost = DragGhost.new()
+	ghost.name = "SoulDragGhost"
+	ghost.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	ghost.z_index = 60   # 拖动中压过一切（飘字z50），一目了然
+	ghost.size = mini_panel.size
+	ghost.add_child(mini_panel)
+	c.add_child(ghost)
+	# 出生即对齐指尖，免得第一帧闪在左上角
+	ghost.global_position = c.get_global_mouse_position() - ghost.size / 2
 
-# 拖动预览：形状小图居中跟随指尖
-func _make_drag_preview(uid: String) -> Control:
-	var pv = Control.new()   # 【修】原名 wrap，与内置函数同名报警告
-	var mini_panel = _make_shape_mini(uid, 34)   # 【修】原名 mini，与内置函数同名报警告
-	mini_panel.position = -mini_panel.size / 2   # 居中在指尖
-	pv.add_child(mini_panel)
-	return pv
+# 【新增】清拖动幻影（DragGhost 自己也有自毁兜底，这里防重复 queue_free）
+func _clear_drag_ghost():
+	var p = _find_node("SoulDragGhost")
+	if p and not p.is_queued_for_deletion():
+		p.queue_free()
 
 # ============ 魂石仓库 ============
-# 每行一张魂石卡：左=形状小图（锚点金框），右=品质/格数/词条概要；点按=词条弹窗，拖动=上盘
-func _build_stone_list(list: VBoxContainer):
+# 【改】方形按钮网格：一格一块魂石只显示形状（边框颜色=品质），点按=词条弹窗，拖动=上盘
+func _build_stone_list(grid: GridContainer):
 	var ss = data.soul_system
 	var any = false
 	for uid in data.soul_stones.keys():
@@ -372,47 +429,36 @@ func _build_stone_list(list: VBoxContainer):
 		var card = StoneCard.new()
 		card.view = self
 		card.uid = uid
-		card.custom_minimum_size = Vector2(0, 72)
+		card.custom_minimum_size = Vector2(STONE_BTN, STONE_BTN)   # 【改】方形按钮，一行能放多个
 		var card_style = StyleBoxFlat.new()
 		card_style.bg_color = Color("#242038")
 		card_style.set_corner_radius_all(6)
+		# 【新增】边框颜色=品质色：文字概要去掉后靠边框认品质；不想要可删这两行
+		card_style.set_border_width_all(2)
+		card_style.border_color = _quality_color(st.get("quality", "优秀"))
 		card.add_theme_stylebox_override("panel", card_style)
 
-		var row = HBoxContainer.new()
-		row.mouse_filter = Control.MOUSE_FILTER_IGNORE   # 让卡片本体接收点击/拖动
-		row.add_theme_constant_override("separation", 12)
-		card.add_child(row)
-
-		# 形状小图（显式尺寸，不依赖容器当帧排版）
-		var shape_view = _make_shape_mini(uid, 20)   # 【修】原名 mini，与内置函数同名报警告
+		# 形状小图居中（CenterContainer 设 IGNORE，不挡卡片本体的点击/拖动）
+		var center = CenterContainer.new()
+		center.mouse_filter = Control.MOUSE_FILTER_IGNORE
+		card.add_child(center)
+		var shape_view = _make_shape_mini(uid, 20)   # 最宽形状4格×20=80，装在88按钮里
 		shape_view.mouse_filter = Control.MOUSE_FILTER_IGNORE
-		row.add_child(shape_view)
+		center.add_child(shape_view)
 
-		# 文字概要
-		var txt = Label.new()
-		txt.mouse_filter = Control.MOUSE_FILTER_IGNORE
-		txt.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
-		txt.size_flags_horizontal = Control.SIZE_EXPAND_FILL
-		txt.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
-		var parts = []
-		for cell in st.get("cells", []):
-			parts.append("%s+%d" % [cell.get("color", "?"), int(cell.get("apt", 0))])
-		txt.text = "【%s】%d格\n%s" % [st.get("quality", ""), st.get("cells", []).size(), "  ".join(parts)]
-		txt.add_theme_color_override("font_color", _quality_color(st.get("quality", "优秀")))
-		row.add_child(txt)
-
-		list.add_child(card)
+		grid.add_child(card)
 	if not any:
 		var empty = Label.new()
 		empty.text = "仓库空空如也\n（背包使用【魂石宝箱】/【无双魂石箱】获得魂石）"
 		empty.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
-		empty.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
 		empty.add_theme_color_override("font_color", Color("#888888"))
-		list.add_child(empty)
+		grid.add_child(empty)
 
-# 画魂石形状小图：按形状包围盒显式摆色块（每格px见方）；锚点（偏移0,0）画金框——
-# 锚点格有魂石块就描在金框上，没有（如┘形）就画个空金框，拖放时以这个角对齐落点
-func _make_shape_mini(uid: String, px: int) -> Panel:
+
+# 画魂石形状小图：按形状包围盒显式摆色块。px=单格边长；step=格距（0=紧排，仓库小图用）；
+# 幻影传 px=CELL_PX、step=CELL_PX+GAP，与魂盘格子同大同距——幻影左上角即形状包围盒左上角，落点按它换算
+func _make_shape_mini(uid: String, px: int, step: int = 0, inset: int = 1) -> Panel:
+	if step <= 0: step = px
 	var st: Dictionary = data.soul_stones.get(uid, {})
 	var shape: Array = st.get("shape", [[0, 0]])
 	var cells: Array = st.get("cells", [])
@@ -426,43 +472,28 @@ func _make_shape_mini(uid: String, px: int) -> Panel:
 		maxx = maxi(maxx, int(off[0]))
 		miny = mini(miny, int(off[1]))
 		maxy = maxi(maxy, int(off[1]))
-	var w = (maxx - minx + 1) * px
-	var h = (maxy - miny + 1) * px
+	var w = (maxx - minx) * step + px
+	var h = (maxy - miny) * step + px
 	var panel = Panel.new()
 	panel.custom_minimum_size = Vector2(w, h)
 	panel.size = Vector2(w, h)
 	var back = StyleBoxFlat.new()
 	back.bg_color = Color(0, 0, 0, 0)   # 透明底，只画色块
 	panel.add_theme_stylebox_override("panel", back)
-	var anchor_drawn = false
+	panel.mouse_filter = Control.MOUSE_FILTER_IGNORE   # 【修】纯装饰：默认STOP会截获拖放命中，挡住落点判定
 	for i in range(shape.size()):
 		var off = shape[i]
 		var blk = Panel.new()
-		blk.position = Vector2((int(off[0]) - minx) * px + 1, (int(off[1]) - miny) * px + 1)
-		blk.size = Vector2(px - 2, px - 2)
+		blk.mouse_filter = Control.MOUSE_FILTER_IGNORE   # 【修】色块默认STOP会截获拖放命中——单格魂石幻影就是一整块色块，不忽略就永远放不上
+		blk.position = Vector2((int(off[0]) - minx) * step + inset, (int(off[1]) - miny) * step + inset)
+		blk.size = Vector2(px - inset * 2, px - inset * 2)
 		var sb = StyleBoxFlat.new()
 		var color_name = "?"
 		if i < cells.size(): color_name = cells[i].get("color", "?")
 		sb.bg_color = _career_color(color_name)
 		sb.set_corner_radius_all(3)
-		if int(off[0]) == 0 and int(off[1]) == 0:
-			sb.set_border_width_all(2)   # 锚点格：金框
-			sb.border_color = Color("#ffd700")
-			anchor_drawn = true
 		blk.add_theme_stylebox_override("panel", sb)
 		panel.add_child(blk)
-	if not anchor_drawn:
-		# 锚点处没有魂石块（┘形）：画空金框标示锚点角
-		var marker = Panel.new()
-		marker.position = Vector2(1, 1)
-		marker.size = Vector2(px - 2, px - 2)
-		var mb = StyleBoxFlat.new()
-		mb.bg_color = Color(0, 0, 0, 0)
-		mb.set_border_width_all(2)
-		mb.border_color = Color("#ffd700")
-		mb.set_corner_radius_all(3)
-		marker.add_theme_stylebox_override("panel", mb)
-		panel.add_child(marker)
 	return panel
 
 # 点按魂石卡：词条详情弹窗（z40，压全屏页一档）
@@ -492,7 +523,7 @@ func _show_stone_info(uid: String):
 	tip.add_theme_font_size_override("font_size", 13)
 	tip.add_theme_color_override("font_color", Color("#aaaaaa"))
 	tip.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
-	tip.text = "颜色与装备门客职业一致的格才激发加成\n按住卡片拖到魂盘放置（金框=锚点）"
+	tip.text = "颜色与装备门客职业一致的格才激发加成\n按住卡片拖到魂盘，形状落在哪就放哪"
 	vb.add_child(tip)
 	c._add_ok_button(vb, func(): popup.queue_free(), "关闭")
 	c.add_child(popup)
@@ -653,6 +684,68 @@ func _on_recast_do():
 		c._show_stage_hint("升品成功！获得【%s】魂石" % st.get("quality", ""))
 	else:
 		c._show_stage_hint("未升品，【%s】魂石已重新随机" % st.get("quality", ""))
+
+# ============ 魂盘光环详情 ============
+# 【新增】满盘加成详情弹窗：当前状态（激活/未激活）+ 填满进度 + 规则说明 + 各等级加成表
+func _show_aura_popup():
+	_close_node("SoulAuraPopup")
+	var ss = data.soul_system
+	var lv = ss.get_board_level(_beast_id, _beast_index)
+	var full = ss.is_board_full(_beast_id, _beast_index)
+	var prog = ss.get_fill_progress(_beast_id, _beast_index)
+	# 各等级满盘加成（读配置 full_pct，带兜底默认值）
+	var full_pct: Dictionary = ss._settings().get("full_pct", {"1": 0.05, "2": 0.1, "3": 0.15, "4": 0.2, "5": 0.3})
+	var popup = c._create_base_popup("魂盘光环", Vector2(420, 420))
+	popup.name = "SoulAuraPopup"
+	popup.z_index = 40   # 压过 SoulPage(35)
+	var vb = popup.get_child(0)
+
+	# 当前状态行：激活显示当前加成，未激活显示触发条件
+	var state = Label.new()
+	state.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	state.add_theme_font_size_override("font_size", 17)
+	if full:
+		state.text = "已激活：赚速 +%d%%" % int(float(full_pct.get(str(lv), 0.0)) * 100)
+		state.add_theme_color_override("font_color", Color("#ffd700"))
+	else:
+		state.text = "未激活（填满所有已解锁格后生效）"
+		state.add_theme_color_override("font_color", Color("#888888"))
+	vb.add_child(state)
+
+	# 填满进度行
+	var prog_lbl = Label.new()
+	prog_lbl.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	prog_lbl.text = "当前进度：%d/%d 格（魂盘Lv.%d）" % [int(prog.covered), int(prog.total), lv]
+	vb.add_child(prog_lbl)
+
+	# 规则说明
+	var rule = Label.new()
+	rule.text = "用魂石把当前所有已解锁格填满（不要求颜色激发）\n装备门客额外获得赚速百分比加成"
+	rule.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	rule.add_theme_font_size_override("font_size", 13)
+	rule.add_theme_color_override("font_color", Color("#aaaaaa"))
+	rule.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+	vb.add_child(rule)
+
+	# 各等级加成表（当前等级标金 + "◀ 当前"）
+	var table_title = Label.new()
+	table_title.text = "—— 各等级满盘加成 ——"
+	table_title.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	table_title.add_theme_font_size_override("font_size", 14)
+	table_title.add_theme_color_override("font_color", Color("#ffd700"))
+	vb.add_child(table_title)
+	for i in range(1, 6):
+		var row_lbl = Label.new()
+		row_lbl.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+		var cur = "  ◀ 当前" if i == lv else ""
+		row_lbl.text = "魂盘Lv.%d：赚速 +%d%%%s" % [i, int(float(full_pct.get(str(i), 0.0)) * 100), cur]
+		if i == lv:
+			row_lbl.add_theme_color_override("font_color", Color("#ffd700"))
+		vb.add_child(row_lbl)
+
+	c._add_ok_button(vb, func(): popup.queue_free(), "关闭")
+	c.add_child(popup)
+
 
 # ============ 内部工具 ============
 # 原地重填动态内容区
