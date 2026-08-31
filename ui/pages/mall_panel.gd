@@ -350,7 +350,7 @@ func _update_vip_panel():
 
 		var lv_label = Label.new()
 		lv_label.text = "VIP%d" % level
-		lv_label.custom_minimum_size.x = 70
+		lv_label.custom_minimum_size.x = 50
 		if level == current_level:
 			lv_label.add_theme_color_override("font_color", Color("#ffd700"))
 		row.add_child(lv_label)
@@ -373,13 +373,13 @@ func _update_vip_panel():
 		else:
 			reward_text = "无特殊奖励"
 		reward_label.text = reward_text
-		reward_label.custom_minimum_size.x = 200
+		reward_label.custom_minimum_size.x = 140
 		reward_label.add_theme_color_override("font_color", Color("#888888"))
 		row.add_child(reward_label)
 
 		# 领取按钮
 		var claim_btn = Button.new()
-		claim_btn.custom_minimum_size.x = 100
+		claim_btn.custom_minimum_size.x = 80
 		if data.get_vip_level() < level:
 			claim_btn.text = "未达成"
 			claim_btn.disabled = true
@@ -407,4 +407,3 @@ func _on_claim_vip_reward(level: int):
 	else:
 		# 提示失败原因（可简化）
 		pass
-

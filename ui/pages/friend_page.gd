@@ -270,25 +270,33 @@ func update_friend_page():
 
 func _create_friend_card(cname: String, friendly: int, talent: int, locked: bool) -> Button:
 	var cell = Button.new()
-	cell.custom_minimum_size = Vector2(200, 240)
+	cell.custom_minimum_size = Vector2(180, 240)
 	cell.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	# 【修】手机端：按钮默认 STOP 拦截触摸滚动，改 PASS 让滑动事件穿透到 ScrollContainer
+	cell.mouse_filter = Control.MOUSE_FILTER_PASS
 
 	var vbox = VBoxContainer.new()
-	vbox.alignment = BoxContainer.ALIGNMENT_CENTER
+	# 【改】ALIGNMENT_CENTER→BEGIN，卡片内容靠顶部排列，避免中间留白过多
+	vbox.alignment = BoxContainer.ALIGNMENT_BEGIN
 	vbox.add_theme_constant_override("separation", 6)
+	vbox.set_anchors_preset(Control.PRESET_FULL_RECT)
 	cell.add_child(vbox)
-
+	
 	var name_lbl = Label.new()
 	name_lbl.text = "【%s】" % cname
 	name_lbl.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	name_lbl.add_theme_font_size_override("font_size", 18)
+	# 【修】Label 横向铺满 VBox，文本在等宽区域内居中，与下方属性左右对齐
+	name_lbl.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	vbox.add_child(name_lbl)
-
+	
 	if not locked:
 		var attr_lbl = Label.new()
-		attr_lbl.text = "友好：%d  |  才华：%d" % [friendly, talent]
+		attr_lbl.text = "友好：%d\n才华：%d" % [friendly, talent]
 		attr_lbl.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 		attr_lbl.add_theme_font_size_override("font_size", 16)
+		# 【修】同上，横向铺满确保对齐
+		attr_lbl.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 		vbox.add_child(attr_lbl)
 	else:
 		var lock_lbl = Label.new()
@@ -296,8 +304,9 @@ func _create_friend_card(cname: String, friendly: int, talent: int, locked: bool
 		lock_lbl.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 		lock_lbl.add_theme_color_override("font_color", Color("#888888"))
 		lock_lbl.add_theme_font_size_override("font_size", 16)
+		# 【修】同上
+		lock_lbl.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 		vbox.add_child(lock_lbl)
-		cell.modulate = Color(0.5, 0.5, 0.5, 0.7)
 
 	return cell
 
@@ -322,6 +331,8 @@ func hide_friend_detail():
 	page.get_node("FriendDetail").visible = false
 	# 【新增】返回列表时隐藏立绘背景
 	page.get_node("PortraitBg").visible = false
+	# 【修】返回列表后刷新挚友列表（谈心/赠礼/升级等操作后数据已变，列表需重绘）
+	update_friend_page()
 
 # ============ 详情页更新（重构） ============
 func _update_friend_page_detail():
@@ -475,6 +486,8 @@ func _show_skill_popup():
 		btn.name = "PopupShopSkill_%d" % i
 		btn.custom_minimum_size = Vector2(0, 32)
 		btn.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+		# 【修】手机端：按钮默认 STOP 拦截触摸滚动，改 PASS 让滑动事件穿透到 ScrollContainer
+		btn.mouse_filter = Control.MOUSE_FILTER_PASS
 		btn.pressed.connect(_on_shop_skill_clicked.bind(i))
 		shop_grid.add_child(btn)
 	

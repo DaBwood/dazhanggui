@@ -69,6 +69,8 @@ func generate_bag_list():
 		btn.text = "%s\nx%d" % [cfg.name, count]   # 名称第一行，数量第二行
 		btn.custom_minimum_size = Vector2(0, 50)    # 不限制宽度，高度44容纳两行
 		btn.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+		# 【修】手机端：按钮默认 STOP 会拦截触摸滚动，改 PASS 让滑动事件穿透到 ScrollContainer
+		btn.mouse_filter = Control.MOUSE_FILTER_PASS
 		# 文字样式
 		btn.add_theme_font_size_override("font_size", 14)
 		btn.add_theme_color_override("font_color", Color(0.9, 0.85, 0.75))
@@ -216,11 +218,17 @@ func _show_ginseng_selector():
 	var panel = PanelContainer.new()
 	panel.name = "GinsengSelector"
 	panel.custom_minimum_size = Vector2(500, 400)
-	panel.position = Vector2(326, 150)
-	
+	var vs = c.get_viewport_rect().size
+	panel.position = Vector2((vs.x - 500) / 2, (vs.y - 400) / 2)
 	var vbox = VBoxContainer.new()
 	vbox.alignment = BoxContainer.ALIGNMENT_CENTER
 	panel.add_child(vbox)
+	
+	 # 【修】补弹窗背景样式，解决默认背景过淡与底层混淆
+	var sel_style = StyleBoxFlat.new()
+	sel_style.bg_color = Color("#1e1b2e")   # 弹窗统一底色；觉得不够深可改 #15121e
+	sel_style.set_corner_radius_all(12)
+	panel.add_theme_stylebox_override("panel", sel_style)
 	
 	var title = Label.new()
 	title.text = "选择门客使用%s" % data.ITEM_CONFIG.get(_pending_ginseng_type, {}).get("name", "人参")

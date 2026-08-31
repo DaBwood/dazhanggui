@@ -26,6 +26,8 @@ func _create_beast_card() -> Button:
 	var cell = Button.new()
 	cell.custom_minimum_size = Vector2(180, 240)
 	cell.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	# 【修】手机端：按钮默认 STOP 拦截触摸滚动，改 PASS 让滑动事件穿透到 ScrollContainer
+	cell.mouse_filter = Control.MOUSE_FILTER_PASS
 	
 	var vbox = VBoxContainer.new()
 	vbox.alignment = BoxContainer.ALIGNMENT_CENTER
@@ -404,6 +406,7 @@ func _show_hero_equip_selector(beast_id: String, instance_index: int):
 	for hero_id in hero_ids:
 		var h = data.heroes[hero_id]
 		var btn = Button.new()
+		
 		var income = data.get_hero_income(hero_id)
 		
 		# 【新增】装备状态

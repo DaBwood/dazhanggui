@@ -61,6 +61,8 @@ func _create_hero_card(hero_id: String, locked: bool) -> Button:
 	cell.name = hero_id + ("_hero_locked" if locked else "_hero")
 	cell.custom_minimum_size = Vector2(180, 240)
 	cell.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	# 【修】手机端：按钮默认 STOP 拦截触摸滚动，改 PASS 让滑动事件穿透到 ScrollContainer
+	cell.mouse_filter = Control.MOUSE_FILTER_PASS
 	
 	var vbox = VBoxContainer.new()
 	vbox.alignment = BoxContainer.ALIGNMENT_CENTER
@@ -502,6 +504,8 @@ func _show_beast_selector_for_hero():
 			var instance = data.get_beast_instance(beast_id, i)
 			if instance == null: continue
 			var btn = Button.new()
+			# 【修】手机端：按钮默认 STOP 拦截触摸滚动，改 PASS 让滑动事件穿透到 ScrollContainer
+			btn.mouse_filter = Control.MOUSE_FILTER_PASS
 			var apt = data.get_beast_aptitude(beast_id, i)
 			var bonus = data.get_beast_skill_bonus(beast_id, i) + data.get_beast_aura_bonus(beast_id, i)
 			

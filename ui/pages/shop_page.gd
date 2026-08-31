@@ -61,8 +61,17 @@ func _show_hero_assign_selector(slot: int):
 	var selector = PanelContainer.new()
 	selector.name = "AssignSelector"
 	selector.custom_minimum_size = Vector2(500, 400)
-	selector.position = Vector2(326, 150)
+	 # 【修】原硬编码 Vector2(326,150) 在 600 宽基准分辨率下导致弹窗偏右出界，
+	#       改按当前视口尺寸动态居中（与 _create_base_popup 居中逻辑一致）
+	var vs = c.get_viewport_rect().size
+	selector.position = Vector2((vs.x - 500) / 2, (vs.y - 400) / 2)
 	selector.z_index = 20
+	
+	 # 【修】补弹窗背景样式，解决默认背景过淡与底层混淆
+	var sel_style = StyleBoxFlat.new()
+	sel_style.bg_color = Color("#1e1b2e")   # 弹窗统一底色；觉得不够深可改 #15121e
+	sel_style.set_corner_radius_all(12)
+	selector.add_theme_stylebox_override("panel", sel_style)
 	
 	var vbox = VBoxContainer.new()
 	vbox.alignment = BoxContainer.ALIGNMENT_CENTER
@@ -90,6 +99,8 @@ func _show_hero_assign_selector(slot: int):
 		var btn = Button.new()
 		var income = data.get_hero_income(hero_id)
 		btn.text = "【%s】%s Lv.%d | %s/秒" % [h.name, h.category, h.level, c.format_number(income)]
+		# 【修】手机端：按钮默认 STOP 拦截触摸滚动，改 PASS 让滑动事件穿透到 ScrollContainer
+		btn.mouse_filter = Control.MOUSE_FILTER_PASS
 		btn.pressed.connect(_on_hero_assigned.bind(hero_id, slot))
 		list.add_child(btn)
 	
