@@ -1,0 +1,136 @@
+{
+  "_comment": "魂力培养配置（魂体+魂骨，2026-08-31 新增，数值源自 魂骨.xlsx）。settings: slots/slot_names=6槽位(解锁不分顺序) / initial_unlocked=初始解锁槽数 / bone_max_tier=魂骨升阶上限 / body_max_level=魂体等级上限 / skill_max_level=技能等级上限 / body_level_cost=魂体每级龙芝草 / body_apt_per_level=魂体每级资质 / body_cost_item/skill_cost_item=消耗道具id / resonance_base=按已装魂骨数给基础资质 / mark_base/mark_step=印记倍率(≥base枚起每多1枚+step，不足不惩罚×1.0)。skills=技能库(type: income=赚钱技能加固定赚速 / apt=资质技能加资质；per_star=每星每级效果；cost_per_star=每星每级升级消耗淬骨精尘)。qualities=5品级：apt_per_tier=每阶资质 / core_item/core_cost=升阶晶核及每阶消耗 / mark=印记数 / income_pct_per_tier=每阶赚钱百分比(仅百万年) / recycle_dust=回收返还淬骨精尘(另返对应晶核×1) / skills=该品级固定技能表(star=星数；value_per_level=可选，覆盖 per_star×star)。",
+  "settings": {
+	"slots": ["tou", "zuo_bi", "you_bi", "qu_gan", "zuo_tui", "you_tui"],
+	"slot_names": {
+	  "tou": "头骨",
+	  "zuo_bi": "左臂骨",
+	  "you_bi": "右臂骨",
+	  "qu_gan": "躯干骨",
+	  "zuo_tui": "左腿骨",
+	  "you_tui": "右腿骨"
+	},
+	"initial_unlocked": 1,
+	"bone_max_tier": 20,
+	"body_max_level": 200,
+	"skill_max_level": 50,
+	"body_level_cost": 60,
+	"body_apt_per_level": 6,
+	"body_cost_item": "long_zhi_cao",
+	"skill_cost_item": "cui_gu_jing_chen",
+	"resonance_base": {
+	  "1": 50,
+	  "2": 60,
+	  "3": 70,
+	  "4": 80,
+	  "5": 90,
+	  "6": 100
+	},
+	"mark_base": 4,
+	"mark_step": 0.1
+  },
+  "skills": {
+	"ye_man": {
+	  "name": "野蛮横扫",
+	  "type": "income",
+	  "per_star": 4500,
+	  "cost_per_star": 3
+	},
+	"huan_ying": {
+	  "name": "幻影突袭",
+	  "type": "income",
+	  "per_star": 4500,
+	  "cost_per_star": 3
+	},
+	"sha_chen": {
+	  "name": "沙尘瀑布",
+	  "type": "apt",
+	  "per_star": 1,
+	  "cost_per_star": 10
+	},
+	"di_mai": {
+	  "name": "地脉震踏",
+	  "type": "apt",
+	  "per_star": 1,
+	  "cost_per_star": 10
+	},
+	"bu_qu": {
+	  "name": "不屈魂体",
+	  "type": "apt",
+	  "per_star": 1,
+	  "cost_per_star": 10
+	}
+  },
+  "qualities": {
+	"百年": {
+	  "color": "#4da6ff",
+	  "apt_per_tier": 5,
+	  "core_item": "jinghe_bainian",
+	  "core_cost": 13,
+	  "mark": 1,
+	  "income_pct_per_tier": 0,
+	  "recycle_dust": 120,
+	  "skills": [
+		{ "id": "ye_man", "star": 1 }
+	  ]
+	},
+	"千年": {
+	  "color": "#bf80ff",
+	  "apt_per_tier": 10,
+	  "core_item": "jinghe_qiannian",
+	  "core_cost": 5,
+	  "mark": 4,
+	  "income_pct_per_tier": 0,
+	  "recycle_dust": 540,
+	  "skills": [
+		{ "id": "ye_man", "star": 1 },
+		{ "id": "huan_ying", "star": 1 }
+	  ]
+	},
+	"万年": {
+	  "color": "#ffa500",
+	  "apt_per_tier": 30,
+	  "core_item": "jinghe_wannian",
+	  "core_cost": 4,
+	  "mark": 5,
+	  "income_pct_per_tier": 0,
+	  "recycle_dust": 1760,
+	  "skills": [
+		{ "id": "ye_man", "star": 2 },
+		{ "id": "huan_ying", "star": 2 },
+		{ "id": "sha_chen", "star": 1 }
+	  ]
+	},
+	"十万年": {
+	  "color": "#ff4d4d",
+	  "apt_per_tier": 80,
+	  "core_item": "jinghe_shiwannian",
+	  "core_cost": 2,
+	  "mark": 6,
+	  "income_pct_per_tier": 0,
+	  "recycle_dust": 4220,
+	  "skills": [
+		{ "id": "ye_man", "star": 4 },
+		{ "id": "huan_ying", "star": 3 },
+		{ "id": "sha_chen", "star": 3 },
+		{ "id": "di_mai", "star": 2 }
+	  ]
+	},
+	"百万年": {
+	  "color": "#ffd700",
+	  "apt_per_tier": 200,
+	  "core_item": "jinghe_baiwannian",
+	  "core_cost": 1,
+	  "mark": 7,
+	  "income_pct_per_tier": 0.1,
+	  "recycle_dust": 8640,
+	  "skills": [
+		{ "id": "ye_man", "star": 5 },
+		{ "id": "huan_ying", "star": 5, "value_per_level": 22500 },
+		{ "id": "sha_chen", "star": 5 },
+		{ "id": "di_mai", "star": 5 },
+		{ "id": "bu_qu", "star": 5 }
+	  ]
+	}
+  }
+}

@@ -169,6 +169,11 @@ func _show_item_detail_popup(item_id: String):
 					use_btn.pressed.connect(func(): _on_soul_box_open(item_id, "normal"))
 			"soul_wushuang_box":   # 【新增】无双魂石箱：开出四格同色无双魂石
 					use_btn.pressed.connect(func(): _on_soul_box_open(item_id, "wushuang"))
+			"hun_gu_box":   # 【新增】魂骨盒子：自选部位+品级魂骨入仓库
+				use_btn.pressed.connect(func():
+					popup.queue_free()
+					_show_hungu_box_selector()
+				)
 		vbox.add_child(use_btn)
 	
 	c._add_ok_button(vbox, func(): popup.queue_free(), "关闭")
@@ -555,4 +560,46 @@ func _on_manhuang_box_pick(popup, item_id: String):
 	data.items[item_id] = int(data.items.get(item_id, 0)) + 100
 	popup.queue_free()
 	c._show_stage_hint("获得【%s】×100" % data.ITEM_CONFIG.get(item_id, {}).get("name", item_id))
+	c.update_bag_list()
+
+
+# 【新增】魂骨盒子选择器：5品级×6部位网格（每行一品级，按钮=部位），点击扣1盒子得对应魂骨
+func _show_hungu_box_selector():
+	var popup = c._create_base_popup("魂骨盒子（拥有%d个）" % int(data.items.get("hun_gu_box", 0)), Vector2(560, 520))
+	popup.name = "HunGuBoxSelector"
+	var vbox = popup.get_child(0)
+	var hint = Label.new()
+	hint.text = "选择 部位+品级，获得对应魂骨"
+	hint.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	vbox.add_child(hint)
+	var sp = data.soulpower_system
+	var qualities: Dictionary = data._soulpower_configs.get("qualities", {})
+	for q in qualities.keys():
+		var row = HBoxContainer.new()
+		row.alignment = BoxContainer.ALIGNMENT_CENTER
+		row.add_theme_constant_override("separation", 6)
+		var qlbl = Label.new()
+		qlbl.text = q
+		qlbl.custom_minimum_size = Vector2(70, 40)
+		qlbl.add_theme_color_override("font_color", Color(qualities[q].get("color", "#ffffff")))
+		row.add_child(qlbl)
+		for slot in sp.get_slots():
+			var btn = Button.new()
+			btn.text = sp.get_slot_name(slot).replace("骨", "")   # 按钮只显示部位名（头/左臂/躯干…）
+			btn.custom_minimum_size = Vector2(74, 40)
+			btn.pressed.connect(_on_hungu_box_pick.bind(popup, slot, q))
+			row.add_child(btn)
+		vbox.add_child(row)
+	c._add_ok_button(vbox, func(): popup.queue_free(), "关闭")
+	c.add_child(popup)
+
+# 【新增】魂骨盒子确认：扣1个盒子，生成对应部位+品级魂骨入魂骨仓库（魂力培养页可见）
+func _on_hungu_box_pick(popup, slot: String, quality: String):
+	if int(data.items.get("hun_gu_box", 0)) < 1:
+		c._show_stage_hint("魂骨盒子不足！")
+		return
+	data.items["hun_gu_box"] -= 1
+	data.soulpower_system.gen_bone(slot, quality)
+	popup.queue_free()
+	c._show_stage_hint("获得【%s·%s】（珍兽详情 → 魂力培养 装配）" % [quality, data.soulpower_system.get_slot_name(slot)])
 	c.update_bag_list()

@@ -243,6 +243,13 @@ func open_beast_detail(beast_id: String, instance_index: int):
 	soul_btn.pressed.connect(c.soul_view.show_soul_view.bind(beast_id, instance_index))
 	apt_row.add_child(soul_btn)
 	
+	# 【新增】魂力按钮（打开该珍兽的魂力培养页：魂体升级/魂骨装配养成）
+	var hunli_btn = Button.new()
+	hunli_btn.text = "魂力"
+	hunli_btn.custom_minimum_size = Vector2(80, 32)
+	hunli_btn.pressed.connect(c.soulpower_view.show_hunli_view.bind(beast_id, instance_index))
+	apt_row.add_child(hunli_btn)
+	
 	var up_btn = Button.new()
 	up_btn.name = "BeastUpBtn"
 	up_btn.custom_minimum_size = Vector2(120, 32)

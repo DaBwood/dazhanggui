@@ -68,6 +68,12 @@
 		"title": "使用募工金牌"
 	  }
 	},
+	"hun_gu_box": {
+		"name": "魂骨盒子",
+		"desc": "打开后自选部位和品级，获得一块魂骨",
+		"use": { "type": "hun_gu_box", "btn": "打开" 
+		}
+	},
 	"huo_qi": {
 	  "name": "火器",
 	  "desc": "使用后随机一名侠门客基础赚速+500",
@@ -428,6 +434,34 @@
 	  "name": "玲珑荷包",
 	  "desc": "兑换门客【小八】所需"
 	},
+	"long_zhi_cao": {
+		"name": "龙芝草",
+		"desc": "魂体升级材料，每级消耗60个"
+	},
+	"cui_gu_jing_chen": {
+		"name": "淬骨精尘",
+		"desc": "魂骨技能升级材料（赚钱技能 星数×3/级，资质技能 星数×10/级）"
+	},
+	"jinghe_bainian": {
+		"name": "百年晶核",
+		"desc": "百年魂骨升阶材料，每阶消耗13个"
+	},
+	"jinghe_qiannian": {
+		"name": "千年晶核",
+		"desc": "千年魂骨升阶材料，每阶消耗5个"
+	},
+	"jinghe_wannian": {
+		"name": "万年晶核",
+		"desc": "万年魂骨升阶材料，每阶消耗4个"
+	},
+	"jinghe_shiwannian": {
+		"name": "十万年晶核",
+		"desc": "十万年魂骨升阶材料，每阶消耗2个"
+	},
+	"jinghe_baiwannian": {
+		"name": "百万年晶核",
+		"desc": "百万年魂骨升阶材料，每阶消耗1个"
+	},
 	"feng_shen_zhi": {
 	  "name": "封神志",
 	  "desc": "兑换封神灵兽"
@@ -624,6 +658,14 @@
 	"chanwu_card": 0,
 	"yu_huang": 0,
 	"tanmu_zan": 0,
-	"manhuang_box": 5
+	"manhuang_box": 5,
+	"long_zhi_cao": 5000,
+	"cui_gu_jing_chen": 5000,
+	"jinghe_bainian": 50,
+	"jinghe_qiannian": 50,
+	"jinghe_wannian": 50,
+	"jinghe_shiwannian": 50,
+	"jinghe_baiwannian": 50,
+	"hun_gu_box": 20
   }
 }

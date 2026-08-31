@@ -59,6 +59,7 @@ var fishing_view   # 垂钓视图（第8批新增）
 var fish_equip_view   # 门客渔获装备弹窗（第8批新增）
 var costume_view   # 【服装系统】服装视图
 var soul_view   # 【新增】兽魂视图（珍兽魂盘+魂石镶嵌）
+var soulpower_view   # 【新增】魂力培养视图（珍兽魂体+魂骨装配）
 
 func _ready():
 	
@@ -94,6 +95,7 @@ func _ready():
 	fish_equip_view = FishEquipView.new(self)   # 【第8批新增】渔获装备弹窗
 	costume_view = CostumeView.new(self)
 	soul_view = SoulView.new(self)   # 【新增】兽魂视图
+	soulpower_view = SoulpowerView.new(self)   # 【新增】魂力培养视图
 	data.load_game()  # ← 先读档
 
 	# 计算离线收益

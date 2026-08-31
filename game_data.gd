@@ -512,6 +512,10 @@ var soul_system   # 【新增】兽魂系统（魂盘+魂石，逻辑在 systems
 var _soul_configs: Dictionary = {}   # 【新增】兽魂配置（soulstones.json，由 _load_all_configs 加载）
 var soul_stones: Dictionary = {}   # 【新增】魂石仓库 {uid: 魂石数据}（soul_system 读写，存档由它认领）
 var soul_stone_seq: int = 0   # 【新增】魂石uid自增序号
+var soulpower_system   # 【新增】魂力培养系统（魂体+魂骨，逻辑在 systems/soulpower_system.gd）
+var _soulpower_configs: Dictionary = {}   # 【新增】魂力培养配置（soulpower.json，由 _load_all_configs 加载）
+var soul_bones: Dictionary = {}   # 【新增】魂骨仓库 {uid: 魂骨数据}（soulpower_system 读写，存档由它认领）
+var soul_bone_seq: int = 0   # 【新增】魂骨uid自增序号
 var fishing_system   # 垂钓系统（第8批新增）
 var _fishing_configs: Dictionary = {}   # 垂钓配置（fishing.json，由 _load_all_configs 加载）
 var costume_system    # 【服装系统】
@@ -535,6 +539,7 @@ func _init():
 	war_system = WarSystem.new(self)
 	goal_system = GoalSystem.new(self)
 	soul_system = SoulSystem.new(self)   # 【新增】兽魂系统
+	soulpower_system = SoulpowerSystem.new(self)   # 【新增】魂力培养系统
 	fishing_system = FishingSystem.new(self)   # 【第8批新增】垂钓系统
 	costume_system = CostumeSystem.new(self)
 	
@@ -564,6 +569,7 @@ func _load_all_configs():
 	_war_configs = _load_json("res://data/war.json")   # 【第5批新增】商战配置
 	_goal_configs = _load_json("res://data/goals.json")   # 【第6批新增】挚友目标配置
 	_soul_configs = _load_json("res://data/soulstones.json")   # 【新增】兽魂配置
+	_soulpower_configs = _load_json("res://data/soulpower.json")   # 【新增】魂力培养配置
 	_fishing_configs = _load_json("res://data/fishing.json")   # 【第8批新增】垂钓配置
 	costume_configs = _load_json("res://data/costumes.json")   # 【服装系统】
 	_load_items_config()   # 【重构新增】道具表
@@ -720,7 +726,8 @@ func save_game():
 	# 各子系统把自己的字段合并进来（新系统加存档字段只需改它自己的 get_save_data）
 	var systems = [hero_system, friend_system, apprentice_system, beast_system, shop_system,
 		stage_system, item_system, travel_system, charity_system, lottery_system, mall_system,
-		manor_system,courtyard_system,war_system,goal_system,goal_system,fishing_system,soul_system]
+		manor_system,courtyard_system,war_system,goal_system,goal_system,fishing_system,soul_system,
+		soulpower_system]
 	for sys in systems:
 		save_data.merge(sys.get_save_data(), true)
 	var file = FileAccess.open(SAVE_PATH, FileAccess.WRITE)
@@ -760,7 +767,8 @@ func load_game():
 	# ===== 各子系统认领自己的字段（含旧存档兼容逻辑） =====
 	var systems = [hero_system, friend_system, apprentice_system, beast_system, shop_system,
 		stage_system, item_system, travel_system, charity_system, lottery_system, mall_system,
-		manor_system,courtyard_system,war_system,goal_system,goal_system,fishing_system,soul_system]
+		manor_system,courtyard_system,war_system,goal_system,goal_system,fishing_system,soul_system,
+		soulpower_system]
 	for sys in systems:
 		sys.load_save_data(data)
 
@@ -1381,3 +1389,18 @@ func get_hero_soul_percent(hero_id: String) -> float:
 # 门客当前兽魂资质加成（激发格词条之和；HeroData.get_total_aptitude 调用）
 func get_hero_soul_aptitude(hero_id: String) -> int:
 	return soul_system.get_hero_soul_aptitude(hero_id)
+
+
+# ==================== 【转发】魂力培养系统 → systems/soulpower_system.gd ====================
+
+# 门客当前魂力资质加成（魂体等级+魂骨+技能+共鸣；HeroData.get_total_aptitude 调用）
+func get_hero_hunli_aptitude(hero_id: String) -> int:
+	return soulpower_system.get_hero_hunli_aptitude(hero_id)
+
+# 门客当前魂力固定赚速加成（魂骨赚钱技能；HeroData.get_extra_income 调用）
+func get_hero_hunli_income(hero_id: String) -> int:
+	return soulpower_system.get_hero_hunli_income(hero_id)
+
+# 门客当前魂力赚钱百分比（百万年魂骨 阶×10%；HeroData.get_percent_bonus 调用）
+func get_hero_hunli_percent(hero_id: String) -> float:
+	return soulpower_system.get_hero_hunli_percent(hero_id)

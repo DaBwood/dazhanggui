@@ -32,6 +32,8 @@ static func get_total_aptitude(g, hero_id: String) -> int:
 	total += g.get_hero_costume_aptitude(hero_id)   
 	# 【新增】兽魂词条资质（装备珍兽魂盘的激发格词条之和）
 	total += g.get_hero_soul_aptitude(hero_id)
+	# 【新增】魂力资质（装备珍兽魂体：等级+魂骨+技能+共鸣）
+	total += g.get_hero_hunli_aptitude(hero_id)
 	
 	return total
 
@@ -61,7 +63,10 @@ static func get_extra_income(g, hero_id: String) -> int:
 	# 【新增】宅院门客卷一固定赚速加成（每级+5000，按固定门客分组生效）
 	extra += g.get_courtyard_hero_income_bonus(hero_id)
 	# 【第8批新增】渔获固定赚速（传奇/普通）
-	extra += g.get_hero_fish_flat_income(hero_id)   
+	extra += g.get_hero_fish_flat_income(hero_id)
+	# 【新增】魂力固定赚速（装备珍兽魂骨的赚钱技能）
+	extra += g.get_hero_hunli_income(hero_id)
+	   
 	return extra
 
 # 门客的百分比加成总和（挚友 + 珍兽；TODO: 藏宝加成）
@@ -80,6 +85,9 @@ static func get_percent_bonus(g, hero_id: String) -> float:
 	bonus += g.get_hero_costume_series_pct(hero_id)  
 	# 【新增】兽魂赚速%（装备珍兽魂盘的激发格，按魂盘等级3/5/10/15/20%每格）
 	bonus += g.get_hero_soul_percent(hero_id)
+	# 【新增】魂力赚钱%（装备珍兽的百万年魂骨 阶×10%）
+	bonus += g.get_hero_hunli_percent(hero_id)
+	
 	return bonus
 
 # 门客总赚速 = 基础赚速 × (1 + 百分比加成) + 额外赚速
