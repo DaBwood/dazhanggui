@@ -306,7 +306,7 @@
 	"type": "consumable",
 	"price": 0,
 	"hide_in_bag": false
-},
+	},
 	"wuse_shi": {
 		"name": "五色石",
 		"desc": "蕴含五行之力的彩石，用于解锁兽魂魂盘的格子"
@@ -320,6 +320,31 @@
 		"name": "无双魂石箱",
 		"desc": "打开后获得一块四格同色的无双品质魂石",
 		"use": { "type": "soul_wushuang_box", "btn": "打开" }
+	},
+	"cuzhi_migao": {
+		"name": "促织蜜膏",
+		"desc": "用于加速促织培育，每个可减少1分钟培育时间",
+		"type": "consumable"
+	},
+	"wuxing_yan": {
+		"name": "五行岩",
+		"desc": "五行系列促织蜕壳所需的道具"
+	},
+	"sanguo_yan": {
+		"name": "三国岩",
+		"desc": "三国系列促织蜕壳所需的道具"
+	},
+	"jianghu_yan": {
+		"name": "江湖岩",
+		"desc": "江湖系列促织蜕壳所需的道具"
+	},
+	"shanhai_yan": {
+		"name": "山海岩",
+		"desc": "山海系列促织蜕壳所需的道具"
+	},
+	"wuling_yan": {
+		"name": "五灵岩",
+		"desc": "五灵系列促织蜕壳所需的道具"
 	},
 	"zui_xian_niang": {
 	  "name": "醉仙酿",

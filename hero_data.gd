@@ -56,7 +56,8 @@ static func get_base_income(g, hero_id: String) -> int:
 # 【新增】从 hero_system.get_hero_extra_income 搬入
 static func get_extra_income(g, hero_id: String) -> int:
 	if not g.heroes.has(hero_id): return 0
-	var extra = g.heroes[hero_id].get("extra_income", 0)
+	var hero = g.heroes[hero_id]
+	var extra = hero.get("extra_income", 0)
 	for fid in g.friends.keys():
 		if hero_id in g.friends[fid].bound_heroes:
 			extra += g.get_friend_fixed_bonus(fid)
@@ -66,13 +67,17 @@ static func get_extra_income(g, hero_id: String) -> int:
 	extra += g.get_hero_fish_flat_income(hero_id)
 	# 【新增】魂力固定赚速（装备珍兽魂骨的赚钱技能）
 	extra += g.get_hero_hunli_income(hero_id)
-	   
+	
+	# 【促织培育】部位固定赚速（按职业汇总极无双促织）
+	extra += g.cuzhi_system.get_career_peiyu_flat_income(hero.get("category", ""))
+	
 	return extra
 
 # 门客的百分比加成总和（挚友 + 珍兽；TODO: 藏宝加成）
 # 【新增】从 hero_system.get_hero_percent_bonus 搬入
 static func get_percent_bonus(g, hero_id: String) -> float:
 	if not g.heroes.has(hero_id): return 0.0
+	var hero = g.heroes[hero_id]
 	var bonus = 0.0
 	for fid in g.friends.keys():
 		if hero_id in g.friends[fid].bound_heroes:
@@ -89,6 +94,8 @@ static func get_percent_bonus(g, hero_id: String) -> float:
 	bonus += g.get_hero_hunli_percent(hero_id)
 	
 	bonus += g.cuzhi_system.get_temple_bonus(hero_id)
+	# 【促织培育】阶段百分比加成（按职业汇总极无双促织）
+	bonus += g.cuzhi_system.get_career_peiyu_percent(hero.get("category", ""))
 	
 	return bonus
 

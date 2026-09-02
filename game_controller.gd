@@ -359,6 +359,11 @@ func on_auto_earn():
 	update_all_ui()
 	# 【新增】定期自动存档：每 AUTOSAVE_INTERVAL 秒写一次盘（手机 Web 端收不到退出通知，靠它兜底进度）
 	_autosave_sec += 1
+	
+	# 【促织培育】每秒检查罐倒计时
+	if data.cuzhi_jars.size() > 0:
+		data.cuzhi_system.tick_jars()
+	
 	if _autosave_sec >= AUTOSAVE_INTERVAL:
 		_autosave_sec = 0
 		data.save_game()

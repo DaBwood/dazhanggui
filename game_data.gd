@@ -527,6 +527,9 @@ var cuzhi_temple: Dictionary = {}      # key=门客id, value=已升级次数
 var cuzhi_spent: int = 0               # 累计消耗促织笼数（保底进度）
 var cuzhi_system                       # 促织系统实例
 var cuzhi_worm_masters: Dictionary = {}  # {hero_id: {level: 等级, star: 星级, cricket_id: 激活用的促织id}}
+# 【促织培育系统】存档字段
+var cuzhi_jars: Array = []           # 促织罐 [{cid:"", part:"", start_time:unix, duration_sec:int}, ...]
+var cuzhi_unlocked_jars: int = 2     # 已解锁罐数量（初始2，每45级+1，上限4）
 
 # ==================== 初始化 ====================
 # 初始化：创建各子系统（纯逻辑模块，持有本中枢引用），再加载全部配置
@@ -735,7 +738,7 @@ func save_game():
 	# 各子系统把自己的字段合并进来（新系统加存档字段只需改它自己的 get_save_data）
 	var systems = [hero_system, friend_system, apprentice_system, beast_system, shop_system,
 		stage_system, item_system, travel_system, charity_system, lottery_system, mall_system,
-		manor_system,courtyard_system,war_system,goal_system,goal_system,fishing_system,soul_system,
+		manor_system,courtyard_system,war_system,goal_system,fishing_system,soul_system,
 		soulpower_system,cuzhi_system,]
 	for sys in systems:
 		save_data.merge(sys.get_save_data(), true)
@@ -776,7 +779,7 @@ func load_game():
 	# ===== 各子系统认领自己的字段（含旧存档兼容逻辑） =====
 	var systems = [hero_system, friend_system, apprentice_system, beast_system, shop_system,
 		stage_system, item_system, travel_system, charity_system, lottery_system, mall_system,
-		manor_system,courtyard_system,war_system,goal_system,goal_system,fishing_system,soul_system,
+		manor_system,courtyard_system,war_system,goal_system,fishing_system,soul_system,
 		soulpower_system,cuzhi_system,]
 	for sys in systems:
 		sys.load_save_data(data)

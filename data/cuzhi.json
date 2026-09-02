@@ -80,6 +80,32 @@
 		"山海": ["孙大圣", "瑞年兽", "逍遥游", "蛮荒骷", "九色仙"],
 		"五灵": ["青玉虬", "朱炽炎", "白雷陨", "玄甲衣", "夜幽冥"]
 	},
+	"phases": [
+		{"name": "虫秧", "max_level": 10, "stage_pct": 0.00, "time_hours": 24, "income_per_level": 50000},
+		{"name": "褪青", "max_level": 25, "stage_pct": 0.25, "time_hours": 36, "income_per_level": 100000},
+		{"name": "生光", "max_level": 40, "stage_pct": 0.50, "time_hours": 48, "income_per_level": 200000},
+		{"name": "明纹", "max_level": 60, "stage_pct": 0.75, "time_hours": 60, "income_per_level": 500000},
+		{"name": "润色", "max_level": 80, "stage_pct": 1.00, "time_hours": 72, "income_per_level": 1000000},
+		{"name": "定相", "max_level": 100, "stage_pct": 1.25, "time_hours": 84, "income_per_level": 2000000}
+	],
+	"parts": {
+		"head": "头壳",
+		"jaw": "牙钳",
+		"wing": "翅翼"
+	},
+	"molt_items": {
+		"五行": "wuxing_yan",
+		"三国": "sanguo_yan",
+		"江湖": "jianghu_yan",
+		"山海": "shanhai_yan",
+		"五灵": "wuling_yan"
+	},
+	"jar_unlock": {
+		"initial": 2,
+		"per_levels": 45,
+		"max": 4
+	},
+	"unlock_rank": 3,
 	"ranks": ["小卒", "副尉", "校尉", "上尉", "都尉", "护军", "少将", "大将", "上将", "镇军将", "辅国将", "柱国将"],
 	"rank_init": {
 	"1": {"rank": 0, "max_rank": 8},

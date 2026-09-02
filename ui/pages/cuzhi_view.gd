@@ -35,7 +35,9 @@ var _current_temple_career: String = ""
 var _worm_list: VBoxContainer        # 【新增】虫师门客列表
 var _worm_career_btns: Array = []    # 【新增】虫师分类按钮
 var _current_worm_career: String = "shi"  # 【新增】当前虫师职业
-
+var _peiyu: Control           # 【新增】促织堂视图
+var _jar_grid: GridContainer  # 【新增】促织罐网格
+var _peiyu_cricket_list: VBoxContainer  # 【新增】促织列表
 
 func _init(p_c):
 	c = p_c
@@ -86,7 +88,10 @@ func build_cuzhi_view(page: Control, vbox: VBoxContainer):
 	_worm = _build_worm_view()
 	_worm.visible = false
 	_panel.add_child(_worm)
-
+	
+	_peiyu = _build_peiyu_view()
+	_peiyu.visible = false
+	_panel.add_child(_peiyu)
 
 func show_cuzhi_view():
 	_panel.visible = true
@@ -134,6 +139,7 @@ func _build_main_view() -> Control:
 		{"name": "促织庙", "desc": "消耗缘分提升门客", "callback": _on_temple},
 		{"name": "特惠商城", "desc": "购买促织笼", "callback": _on_shop},
 		{"name": "虫师", "desc": "培养促织虫书", "callback": _on_worm},
+		{"name": "促织堂", "desc": "培育极无双促织", "callback": _on_peiyu},
 	]
 	for e in entries:
 		var card = _make_entry_card(e.name, e.desc)
@@ -223,6 +229,7 @@ func _show_view(v: Control):
 	_temple.visible = false
 	_shop.visible = false
 	_worm.visible = false
+	_peiyu.visible = false
 	v.visible = true
 
 func _show_main():
@@ -692,6 +699,7 @@ func _build_shop_view() -> Control:
 		{"name": "促织笼 ×1", "price": 10, "count": 1},
 		{"name": "促织笼 ×10", "price": 90, "count": 10},
 		{"name": "促织笼 ×50", "price": 400, "count": 50},
+		{"name": "促织蜜膏礼包", "price": 288, "items": {"cuzhi_migao": 60, "wood_comb": 12, "rouge": 12}},
 	]
 	for g in goods:
 		var row = _make_shop_row(g)
@@ -741,6 +749,11 @@ func _make_shop_row(g: Dictionary) -> Panel:
 		c.update_money_label()
 		_refresh_shop()
 	)
+	
+	if g.has("items"):
+			for item_id in g.items.keys():
+				data.items[item_id] = data.items.get(item_id, 0) + g.items[item_id]
+	
 	hbox.add_child(buy_btn)
 
 	return panel
@@ -1049,3 +1062,319 @@ func _make_sub_back(parent: Control) -> Button:
 
 func _cfg() -> Dictionary:
 	return sys._cfg
+
+
+func _on_peiyu():
+	_show_view(_peiyu)
+	_refresh_peiyu()
+
+
+# ========== 促织堂 ==========
+func _build_peiyu_view() -> Control:
+	var root = Control.new()
+	root.size = Vector2(600, 900)
+
+	_make_sub_title("促织堂", root)
+	var back = _make_sub_back(root)
+	back.pressed.connect(_show_main)
+
+	var hint = Label.new()
+	hint.name = "PeiyuHint"
+	hint.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	hint.add_theme_font_size_override("font_size", 16)
+	hint.add_theme_color_override("font_color", Color("#aaaaaa"))
+	hint.position = Vector2(0, 70)
+	hint.size = Vector2(600, 30)
+	root.add_child(hint)
+
+	var jar_title = Label.new()
+	jar_title.text = "促织罐"
+	jar_title.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	jar_title.add_theme_font_size_override("font_size", 20)
+	jar_title.add_theme_color_override("font_color", TITLE_COL)
+	jar_title.position = Vector2(0, 105)
+	jar_title.size = Vector2(600, 30)
+	root.add_child(jar_title)
+
+	_jar_grid = GridContainer.new()
+	_jar_grid.columns = 2
+	_jar_grid.position = Vector2(60, 140)
+	_jar_grid.size = Vector2(480, 200)
+	_jar_grid.add_theme_constant_override("h_separation", 16)
+	_jar_grid.add_theme_constant_override("v_separation", 16)
+	root.add_child(_jar_grid)
+
+	var list_title = Label.new()
+	list_title.text = "极无双促织"
+	list_title.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	list_title.add_theme_font_size_override("font_size", 20)
+	list_title.add_theme_color_override("font_color", TITLE_COL)
+	list_title.position = Vector2(0, 350)
+	list_title.size = Vector2(600, 30)
+	root.add_child(list_title)
+
+	var scroll = ScrollContainer.new()
+	scroll.position = Vector2(20, 390)
+	scroll.size = Vector2(560, 480)
+	scroll.horizontal_scroll_mode = ScrollContainer.SCROLL_MODE_DISABLED
+	root.add_child(scroll)
+
+	_peiyu_cricket_list = VBoxContainer.new()
+	_peiyu_cricket_list.add_theme_constant_override("separation", 8)
+	scroll.add_child(_peiyu_cricket_list)
+
+	return root
+
+func _refresh_peiyu():
+	# 解锁提示
+	var hint = _peiyu.get_node_or_null("PeiyuHint")
+	if hint:
+		if sys.is_peiyu_unlocked():
+			hint.text = "已解锁培育功能 | 罐数：%d/%d" % [sys.get_jar_count(), sys.get_max_jar_count()]
+		else:
+			hint.text = "需任意促织达到八品·上尉解锁"
+
+	# 刷新罐
+	for ch in _jar_grid.get_children():
+		ch.queue_free()
+
+	var jars = data.cuzhi_jars
+	for i in range(jars.size()):
+		var jar = jars[i]
+		var card = _make_jar_card(i, jar)
+		_jar_grid.add_child(card)
+
+	# 刷新促织列表
+	for ch in _peiyu_cricket_list.get_children():
+		ch.queue_free()
+
+	var list = sys.get_caught_list()
+	for item in list:
+		if int(item.data.quality) != 6:
+			continue
+		var row = _make_peiyu_cricket_row(item)
+		_peiyu_cricket_list.add_child(row)
+
+func _make_jar_card(idx: int, jar: Dictionary) -> Button:
+	var btn = Button.new()
+	btn.custom_minimum_size = Vector2(220, 90)
+	btn.size = Vector2(220, 90)
+	btn.mouse_filter = Control.MOUSE_FILTER_PASS
+
+	var is_used = jar.get("cid", "") != ""
+	var col = Color("#66ff66") if is_used else Color("#888888")
+	var sty = StyleBoxFlat.new()
+	sty.bg_color = CARD
+	sty.border_color = col
+	sty.border_width_bottom = 2
+	sty.border_width_left = 2
+	sty.border_width_right = 2
+	sty.border_width_top = 2
+	sty.corner_radius_bottom_left = 6
+	sty.corner_radius_bottom_right = 6
+	sty.corner_radius_top_left = 6
+	sty.corner_radius_top_right = 6
+	btn.add_theme_stylebox_override("normal", sty)
+
+	var vbox = VBoxContainer.new()
+	vbox.alignment = BoxContainer.ALIGNMENT_CENTER
+	vbox.anchors_preset = Control.PRESET_FULL_RECT
+	btn.add_child(vbox)
+
+	var idx_lbl = Label.new()
+	idx_lbl.text = "罐 %d" % (idx + 1)
+	idx_lbl.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	idx_lbl.add_theme_color_override("font_color", TITLE_COL)
+	vbox.add_child(idx_lbl)
+
+	if is_used:
+		var cdata = sys._crickets_by_id.get(jar.cid)
+		var pname = _cfg().get("parts", {}).get(jar.part, jar.part)
+		var name_lbl = Label.new()
+		name_lbl.text = "%s - %s" % [cdata.name if cdata else "?", pname]
+		name_lbl.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+		name_lbl.add_theme_font_size_override("font_size", 14)
+		vbox.add_child(name_lbl)
+
+		var remain = sys.get_remaining_seconds(jar)
+		var time_lbl = Label.new()
+		if remain > 0:
+			time_lbl.text = _fmt_time(remain)
+			time_lbl.add_theme_color_override("font_color", Color("#ffaa00"))
+		else:
+			time_lbl.text = "可收获"
+			time_lbl.add_theme_color_override("font_color", Color("#66ff66"))
+		time_lbl.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+		time_lbl.add_theme_font_size_override("font_size", 14)
+		vbox.add_child(time_lbl)
+
+		btn.pressed.connect(func(): _show_jar_action(jar))
+	else:
+		var empty_lbl = Label.new()
+		empty_lbl.text = "空闲"
+		empty_lbl.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+		empty_lbl.add_theme_color_override("font_color", Color("#888888"))
+		vbox.add_child(empty_lbl)
+
+	return btn
+
+func _fmt_time(sec: int) -> String:
+	var h = int(sec / 3600.0)
+	var m = int((sec % 3600) / 60.0)
+	var s = sec % 60
+	if h > 0:
+		return "%d:%02d:%02d" % [h, m, s]
+	return "%02d:%02d" % [m, s]
+
+func _show_jar_action(jar: Dictionary):
+	if jar.get("cid", "") == "":
+		return
+	var remain = sys.get_remaining_seconds(jar)
+	var cdata = sys._crickets_by_id.get(jar.cid)
+	var pname = _cfg().get("parts", {}).get(jar.part, jar.part)
+
+	var popup = c._create_base_popup("培育中", Vector2(400, 320))
+	popup.z_index = 30
+	c.add_child(popup)
+	var vbox = popup.get_child(0)
+
+	var info = Label.new()
+	info.text = "%s - %s\\n剩余时间：%s" % [cdata.name if cdata else "?", pname, _fmt_time(remain)]
+	info.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	info.add_theme_font_size_override("font_size", 18)
+	vbox.add_child(info)
+
+	# 加速
+	var have = data.items.get("cuzhi_migao", 0)
+	var have_lbl = Label.new()
+	have_lbl.text = "拥有促织蜜膏：%d" % have
+	have_lbl.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	have_lbl.add_theme_color_override("font_color", Color("#ffaa00"))
+	vbox.add_child(have_lbl)
+
+	var hbox = HBoxContainer.new()
+	hbox.alignment = BoxContainer.ALIGNMENT_CENTER
+	vbox.add_child(hbox)
+
+	for count in [1, 10, 60]:
+		var btn = Button.new()
+		btn.text = "+%d" % count
+		btn.custom_minimum_size = Vector2(70, 40)
+		btn.disabled = have < count or remain <= 0
+		btn.pressed.connect(func():
+			if sys.speedup(jar, count):
+				c._show_stage_hint("加速成功！")
+				popup.queue_free()
+				_refresh_peiyu()
+		)
+		hbox.add_child(btn)
+
+	c._add_ok_button(vbox, func(): popup.queue_free(), "关闭")
+
+func _make_peiyu_cricket_row(item: Dictionary) -> Button:
+	var cid = item.id
+	var cdata = item.data
+	var btn = Button.new()
+	btn.custom_minimum_size = Vector2(540, 90)
+	btn.size = Vector2(540, 90)
+	btn.mouse_filter = Control.MOUSE_FILTER_PASS
+
+	var col = Color(sys.get_quality_color(cdata.quality))
+	var sty = StyleBoxFlat.new()
+	sty.bg_color = CARD
+	sty.border_color = col
+	sty.border_width_bottom = 2
+	sty.border_width_left = 2
+	sty.border_width_right = 2
+	sty.border_width_top = 2
+	sty.corner_radius_bottom_left = 6
+	sty.corner_radius_bottom_right = 6
+	sty.corner_radius_top_left = 6
+	sty.corner_radius_top_right = 6
+	btn.add_theme_stylebox_override("normal", sty)
+
+	var hbox = HBoxContainer.new()
+	hbox.alignment = BoxContainer.ALIGNMENT_CENTER
+	hbox.anchors_preset = Control.PRESET_FULL_RECT
+	btn.add_child(hbox)
+
+	var name_lbl = Label.new()
+	name_lbl.text = cdata.name
+	name_lbl.custom_minimum_size = Vector2(100, 0)
+	name_lbl.add_theme_color_override("font_color", col)
+	hbox.add_child(name_lbl)
+
+	var phase = sys.get_current_phase(cid)
+	var phase_cfg = sys.get_phase_cfg(phase)
+	var phase_name = phase_cfg.get("name", "未知")
+	var parts = data.cuzhi_caught[cid].get("parts", {"head": 0, "jaw": 0, "wing": 0})   
+	var part_str = "头%d 牙%d 翅%d" % [parts.head, parts.jaw, parts.wing]
+
+	var info = Label.new()
+	info.text = "%s | %s" % [phase_name, part_str]
+	info.custom_minimum_size = Vector2(180, 0)
+	info.add_theme_color_override("font_color", Color("#aaaaaa"))
+	hbox.add_child(info)
+
+	# 蜕壳按钮
+	var can_molt = sys.can_molt(cid)
+	var molt_btn = Button.new()
+	molt_btn.text = "蜕壳"
+	molt_btn.custom_minimum_size = Vector2(70, 36)
+	molt_btn.disabled = not can_molt
+	molt_btn.pressed.connect(func():
+		if sys.do_molt(cid):
+			c._show_stage_hint("蜕壳成功！")
+			_refresh_peiyu()
+	)
+	hbox.add_child(molt_btn)
+
+	# 培育按钮
+	var busy = sys.is_cricket_busy(cid)
+	var peiyu_btn = Button.new()
+	peiyu_btn.text = "培育中" if busy else "培育"
+	peiyu_btn.custom_minimum_size = Vector2(70, 36)
+	peiyu_btn.disabled = busy or not sys.is_peiyu_unlocked()
+	peiyu_btn.pressed.connect(func(): _show_part_selector(cid, cdata))
+	hbox.add_child(peiyu_btn)
+
+	return btn
+
+func _show_part_selector(cid: String, _cdata: Dictionary):
+	var popup = c._create_base_popup("选择培育部位", Vector2(400, 300))
+	popup.z_index = 30
+	c.add_child(popup)
+	var vbox = popup.get_child(0)
+
+	var phase = sys.get_current_phase(cid)
+	var phase_cfg = sys.get_phase_cfg(phase)
+	var max_lv = phase_cfg.get("max_level", 0)
+
+	for part in ["head", "jaw", "wing"]:
+		var cur_lv = sys.get_part_level(cid, part)
+		var pname = _cfg().get("parts", {}).get(part, part)
+		var is_max = cur_lv >= max_lv
+		var jar_busy = sys.is_cricket_busy(cid)
+
+		var hbox = HBoxContainer.new()
+		hbox.alignment = BoxContainer.ALIGNMENT_CENTER
+		vbox.add_child(hbox)
+
+		var lbl = Label.new()
+		lbl.text = "%s：%d/%d" % [pname, cur_lv, max_lv]
+		lbl.custom_minimum_size = Vector2(150, 0)
+		hbox.add_child(lbl)
+
+		var btn = Button.new()
+		btn.text = "已满" if is_max else ("培育中" if jar_busy else "培育")
+		btn.custom_minimum_size = Vector2(100, 40)
+		btn.disabled = is_max or jar_busy or not sys.is_any_jar_free()
+		btn.pressed.connect(func():
+			if sys.start_peiyu(cid, part):
+				c._show_stage_hint("开始培育 %s！" % pname)
+				popup.queue_free()
+				_refresh_peiyu()
+		)
+		hbox.add_child(btn)
+
+	c._add_ok_button(vbox, func(): popup.queue_free(), "关闭")
