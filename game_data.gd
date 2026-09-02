@@ -525,7 +525,9 @@ var cuzhi_caught: Dictionary = {}      # key=促织id, value={"level":1,"exp":0}
 var cuzhi_fate: Dictionary = {}        # key=职业, value=缘分点数
 var cuzhi_temple: Dictionary = {}      # key=门客id, value=已升级次数
 var cuzhi_spent: int = 0               # 累计消耗促织笼数（保底进度）
-var cuzhi_system: CuzhiSystem
+var cuzhi_system                       # 促织系统实例
+var cuzhi_worm_masters: Dictionary = {}  # {hero_id: {level: 等级, star: 星级, cricket_id: 激活用的促织id}}
+
 # ==================== 初始化 ====================
 # 初始化：创建各子系统（纯逻辑模块，持有本中枢引用），再加载全部配置
 func _init():

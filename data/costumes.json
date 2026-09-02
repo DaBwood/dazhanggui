@@ -1,3410 +1,3410 @@
 {
   "settings": {
-    "skill_max_level": 200,
-    "apt_per_level": {
-      "素装": 2,
-      "华服": 2,
-      "锦衣": 3
-    },
-    "unlock_bonus": {
-      "素装": 10,
-      "华服": 20,
-      "锦衣": 30
-    },
-    "dup_bonus": 15,
-    "halo_max_level": 100,
-    "halo_apt_per_level": 1,
-    "halo_cost_base": 10,
-    "halo_cost_step": 5,
-    "halo_cap_per_costume_level": 10,
-    "exchange_cost": 100,
-    "friend_unlock": {
-      "素装": [
-        300,
-        300
-      ],
-      "华服": [
-        500,
-        500
-      ],
-      "锦衣": [
-        800,
-        800
-      ]
-    },
-    "friend_dup": {
-      "素装": [
-        500,
-        500
-      ],
-      "华服": [
-        800,
-        800
-      ],
-      "锦衣": [
-        1000,
-        1000
-      ]
-    },
-    "series_group_pct": 0.03,
-    "series_self_pct": 0.03
+	"skill_max_level": 200,
+	"apt_per_level": {
+	  "素装": 2,
+	  "华服": 2,
+	  "锦衣": 3
+	},
+	"unlock_bonus": {
+	  "素装": 10,
+	  "华服": 20,
+	  "锦衣": 30
+	},
+	"dup_bonus": 15,
+	"halo_max_level": 100,
+	"halo_apt_per_level": 1,
+	"halo_cost_base": 10,
+	"halo_cost_step": 5,
+	"halo_cap_per_costume_level": 10,
+	"exchange_cost": 100,
+	"friend_unlock": {
+	  "素装": [
+		300,
+		300
+	  ],
+	  "华服": [
+		500,
+		500
+	  ],
+	  "锦衣": [
+		800,
+		800
+	  ]
+	},
+	"friend_dup": {
+	  "素装": [
+		500,
+		500
+	  ],
+	  "华服": [
+		800,
+		800
+	  ],
+	  "锦衣": [
+		1000,
+		1000
+	  ]
+	},
+	"series_group_pct": 0.03,
+	"series_self_pct": 0.03
   },
   "hero_costumes": {
-    "li_bai": [
-      {
-        "id": "li_bai_cos01",
-        "name": "将进酒",
-        "quality": "华服",
-        "series": ""
-      },
-      {
-        "id": "li_bai_cos02",
-        "name": "夜宿山寺",
-        "quality": "锦衣",
-        "series": ""
-      },
-      {
-        "id": "li_bai_cos03",
-        "name": "修道初成",
-        "quality": "素装",
-        "series": ""
-      },
-      {
-        "id": "li_bai_cos04",
-        "name": "千机百衍",
-        "quality": "素装",
-        "series": ""
-      },
-      {
-        "id": "li_bai_cos05",
-        "name": "纵横海外",
-        "quality": "素装",
-        "series": ""
-      },
-      {
-        "id": "li_bai_cos06",
-        "name": "名镇天南",
-        "quality": "素装",
-        "series": ""
-      },
-      {
-        "id": "li_bai_cos07",
-        "name": "灵界天尊",
-        "quality": "华服",
-        "series": ""
-      },
-      {
-        "id": "li_bai_cos08",
-        "name": "御剑诛魔",
-        "quality": "华服",
-        "series": ""
-      }
-    ],
-    "bai_yuechu": [
-      {
-        "id": "bai_yuechu_cos01",
-        "name": "红线眷侣",
-        "quality": "素装",
-        "series": ""
-      },
-      {
-        "id": "bai_yuechu_cos02",
-        "name": "东方月初",
-        "quality": "素装",
-        "series": ""
-      },
-      {
-        "id": "bai_yuechu_cos03",
-        "name": "在你身边",
-        "quality": "素装",
-        "series": ""
-      },
-      {
-        "id": "bai_yuechu_cos04",
-        "name": "相思之炎",
-        "quality": "素装",
-        "series": ""
-      },
-      {
-        "id": "bai_yuechu_cos05",
-        "name": "泪星陨落",
-        "quality": "华服",
-        "series": ""
-      }
-    ],
-    "dong_xiaowan": [
-      {
-        "id": "dong_xiaowan_cos01",
-        "name": "青鸾御风",
-        "quality": "华服",
-        "series": "五凤来仪"
-      },
-      {
-        "id": "dong_xiaowan_cos02",
-        "name": "千里江山图",
-        "quality": "华服",
-        "series": "传世珍宝"
-      },
-      {
-        "id": "dong_xiaowan_cos03",
-        "name": "北岳常恒",
-        "quality": "华服",
-        "series": ""
-      },
-      {
-        "id": "dong_xiaowan_cos04",
-        "name": "琴音萦梦",
-        "quality": "华服",
-        "series": "汴梁女团"
-      },
-      {
-        "id": "dong_xiaowan_cos05",
-        "name": "巧丝青莲",
-        "quality": "锦衣",
-        "series": "百花齐放"
-      }
-    ],
-    "xiao_qi": [
-      {
-        "id": "xiao_qi_cos01",
-        "name": "凝神一箭",
-        "quality": "素装",
-        "series": ""
-      },
-      {
-        "id": "xiao_qi_cos02",
-        "name": "桃李年华",
-        "quality": "素装",
-        "series": ""
-      },
-      {
-        "id": "xiao_qi_cos03",
-        "name": "翠林撷趣",
-        "quality": "素装",
-        "series": ""
-      },
-      {
-        "id": "xiao_qi_cos04",
-        "name": "花信之约",
-        "quality": "素装",
-        "series": ""
-      },
-      {
-        "id": "xiao_qi_cos05",
-        "name": "绘梦商海",
-        "quality": "华服",
-        "series": ""
-      }
-    ],
-    "sun_bin": [
-      {
-        "id": "sun_bin_cos01",
-        "name": "田忌赛马",
-        "quality": "素装",
-        "series": ""
-      },
-      {
-        "id": "sun_bin_cos02",
-        "name": "景天",
-        "quality": "素装",
-        "series": ""
-      },
-      {
-        "id": "sun_bin_cos03",
-        "name": "鼓乐齐鸣",
-        "quality": "华服",
-        "series": "清平盛世"
-      }
-    ],
-    "wang_zhaojun": [
-      {
-        "id": "wang_zhaojun_cos01",
-        "name": "篝火蹁跹",
-        "quality": "华服",
-        "series": ""
-      },
-      {
-        "id": "wang_zhaojun_cos02",
-        "name": "宁胡阙氏",
-        "quality": "锦衣",
-        "series": ""
-      },
-      {
-        "id": "wang_zhaojun_cos03",
-        "name": "倚梅心事",
-        "quality": "素装",
-        "series": ""
-      },
-      {
-        "id": "wang_zhaojun_cos04",
-        "name": "百舞惊鸿",
-        "quality": "素装",
-        "series": ""
-      },
-      {
-        "id": "wang_zhaojun_cos05",
-        "name": "梨花落雪",
-        "quality": "素装",
-        "series": ""
-      },
-      {
-        "id": "wang_zhaojun_cos06",
-        "name": "卷土重来",
-        "quality": "素装",
-        "series": ""
-      },
-      {
-        "id": "wang_zhaojun_cos07",
-        "name": "夙愿终成",
-        "quality": "华服",
-        "series": ""
-      }
-    ],
-    "cai_jing": [
-      {
-        "id": "cai_jing_cos01",
-        "name": "权倾朝野",
-        "quality": "素装",
-        "series": ""
-      }
-    ],
-    "wu_daozi": [
-      {
-        "id": "wu_daozi_cos01",
-        "name": "送子天王",
-        "quality": "素装",
-        "series": ""
-      },
-      {
-        "id": "wu_daozi_cos02",
-        "name": "醉墨淋漓",
-        "quality": "华服",
-        "series": "清平盛世"
-      }
-    ],
-    "song_huizong": [
-      {
-        "id": "song_huizong_cos01",
-        "name": "铁画银钩",
-        "quality": "素装",
-        "series": ""
-      }
-    ],
-    "liu_maoxing": [
-      {
-        "id": "liu_maoxing_cos01",
-        "name": "彗星炒饭",
-        "quality": "素装",
-        "series": ""
-      },
-      {
-        "id": "liu_maoxing_cos02",
-        "name": "神龙少年",
-        "quality": "素装",
-        "series": ""
-      },
-      {
-        "id": "liu_maoxing_cos03",
-        "name": "楼麟覆灭",
-        "quality": "素装",
-        "series": ""
-      },
-      {
-        "id": "liu_maoxing_cos04",
-        "name": "大宇宙烧卖",
-        "quality": "素装",
-        "series": ""
-      },
-      {
-        "id": "liu_maoxing_cos05",
-        "name": "出神入化",
-        "quality": "华服",
-        "series": ""
-      }
-    ],
-    "ma_xianglan": [
-      {
-        "id": "ma_xianglan_cos01",
-        "name": "鸑鷟欲出",
-        "quality": "华服",
-        "series": "五凤来仪"
-      },
-      {
-        "id": "ma_xianglan_cos02",
-        "name": "睡虎地秦简",
-        "quality": "华服",
-        "series": "传世珍宝"
-      },
-      {
-        "id": "ma_xianglan_cos03",
-        "name": "东岳岱宗",
-        "quality": "华服",
-        "series": ""
-      },
-      {
-        "id": "ma_xianglan_cos04",
-        "name": "弦音似火",
-        "quality": "华服",
-        "series": "汴梁女团"
-      },
-      {
-        "id": "ma_xianglan_cos05",
-        "name": "空谷幽兰",
-        "quality": "锦衣",
-        "series": "百花齐放"
-      }
-    ],
-    "xie_lu": [
-      {
-        "id": "xie_lu_cos01",
-        "name": "革故鼎新",
-        "quality": "素装",
-        "series": ""
-      },
-      {
-        "id": "xie_lu_cos02",
-        "name": "孤胆钢棍",
-        "quality": "素装",
-        "series": ""
-      },
-      {
-        "id": "xie_lu_cos03",
-        "name": "灵藏库",
-        "quality": "素装",
-        "series": ""
-      },
-      {
-        "id": "xie_lu_cos04",
-        "name": "千锤百炼",
-        "quality": "素装",
-        "series": ""
-      }
-    ],
-    "gao_jianli": [
-      {
-        "id": "gao_jianli_cos01",
-        "name": "枕弦醉风",
-        "quality": "素装",
-        "series": ""
-      },
-      {
-        "id": "gao_jianli_cos02",
-        "name": "悲伤离歌",
-        "quality": "华服",
-        "series": "精忠报国"
-      },
-      {
-        "id": "gao_jianli_cos03",
-        "name": "鱼肠",
-        "quality": "华服",
-        "series": "君子如剑"
-      }
-    ],
-    "xiao_ba": [
-      {
-        "id": "xiao_ba_cos01",
-        "name": "卯时烟火",
-        "quality": "素装",
-        "series": ""
-      },
-      {
-        "id": "xiao_ba_cos02",
-        "name": "凌云商策",
-        "quality": "素装",
-        "series": ""
-      },
-      {
-        "id": "xiao_ba_cos03",
-        "name": "西域风尘",
-        "quality": "素装",
-        "series": ""
-      },
-      {
-        "id": "xiao_ba_cos04",
-        "name": "春山品茗",
-        "quality": "素装",
-        "series": ""
-      },
-      {
-        "id": "xiao_ba_cos05",
-        "name": "金律司衡",
-        "quality": "华服",
-        "series": ""
-      }
-    ],
-    "yan_xiansheng": [
-      {
-        "id": "yan_xiansheng_cos01",
-        "name": "小惩大诫",
-        "quality": "素装",
-        "series": ""
-      },
-      {
-        "id": "yan_xiansheng_cos02",
-        "name": "童心未泯",
-        "quality": "素装",
-        "series": ""
-      },
-      {
-        "id": "yan_xiansheng_cos03",
-        "name": "金牌教练",
-        "quality": "素装",
-        "series": ""
-      }
-    ],
-    "huo_yanwang": [
-      {
-        "id": "huo_yanwang_cos01",
-        "name": "猛龙过江",
-        "quality": "素装",
-        "series": ""
-      }
-    ],
-    "bian_yujing": [
-      {
-        "id": "bian_yujing_cos01",
-        "name": "鹓雏降财",
-        "quality": "华服",
-        "series": "五凤来仪"
-      },
-      {
-        "id": "bian_yujing_cos02",
-        "name": "长信宫灯",
-        "quality": "华服",
-        "series": "传世珍宝"
-      },
-      {
-        "id": "bian_yujing_cos03",
-        "name": "南岳玑衡",
-        "quality": "华服",
-        "series": ""
-      },
-      {
-        "id": "bian_yujing_cos04",
-        "name": "碧玉声歌",
-        "quality": "华服",
-        "series": "汴梁女团"
-      },
-      {
-        "id": "bian_yujing_cos05",
-        "name": "凌霜秋菊",
-        "quality": "锦衣",
-        "series": "百花齐放"
-      }
-    ],
-    "yang_jian": [
-      {
-        "id": "yang_jian_cos01",
-        "name": "劈山救母",
-        "quality": "素装",
-        "series": ""
-      },
-      {
-        "id": "yang_jian_cos02",
-        "name": "天眼",
-        "quality": "素装",
-        "series": ""
-      },
-      {
-        "id": "yang_jian_cos03",
-        "name": "五雷决",
-        "quality": "素装",
-        "series": ""
-      },
-      {
-        "id": "yang_jian_cos04",
-        "name": "八九玄功",
-        "quality": "素装",
-        "series": ""
-      },
-      {
-        "id": "yang_jian_cos05",
-        "name": "法天象地",
-        "quality": "华服",
-        "series": ""
-      },
-      {
-        "id": "yang_jian_cos06",
-        "name": "佛怒唐莲",
-        "quality": "素装",
-        "series": ""
-      },
-      {
-        "id": "yang_jian_cos07",
-        "name": "千手修罗",
-        "quality": "素装",
-        "series": ""
-      },
-      {
-        "id": "yang_jian_cos08",
-        "name": "昊天锤",
-        "quality": "素装",
-        "series": ""
-      },
-      {
-        "id": "yang_jian_cos09",
-        "name": "蓝银皇",
-        "quality": "素装",
-        "series": ""
-      },
-      {
-        "id": "yang_jian_cos10",
-        "name": "海神",
-        "quality": "华服",
-        "series": ""
-      },
-      {
-        "id": "yang_jian_cos11",
-        "name": "修罗神",
-        "quality": "华服",
-        "series": ""
-      },
-      {
-        "id": "yang_jian_cos12",
-        "name": "双神同体",
-        "quality": "华服",
-        "series": ""
-      }
-    ],
-    "zong_ze": [
-      {
-        "id": "zong_ze_cos01",
-        "name": "满门忠烈",
-        "quality": "素装",
-        "series": ""
-      },
-      {
-        "id": "zong_ze_cos02",
-        "name": "感恩狂欢",
-        "quality": "素装",
-        "series": ""
-      },
-      {
-        "id": "zong_ze_cos03",
-        "name": "虎视眈眈",
-        "quality": "素装",
-        "series": ""
-      },
-      {
-        "id": "zong_ze_cos04",
-        "name": "醉卧沙场",
-        "quality": "华服",
-        "series": "精忠报国"
-      },
-      {
-        "id": "zong_ze_cos05",
-        "name": "湛卢",
-        "quality": "华服",
-        "series": "君子如剑"
-      }
-    ],
-    "hong_laoxie": [
-      {
-        "id": "hong_laoxie_cos01",
-        "name": "古墓异响",
-        "quality": "素装",
-        "series": ""
-      },
-      {
-        "id": "hong_laoxie_cos02",
-        "name": "深海探宝",
-        "quality": "素装",
-        "series": ""
-      },
-      {
-        "id": "hong_laoxie_cos03",
-        "name": "搬山道人",
-        "quality": "素装",
-        "series": ""
-      }
-    ],
-    "su_wu": [
-      {
-        "id": "su_wu_cos01",
-        "name": "月下刺猹",
-        "quality": "素装",
-        "series": ""
-      },
-      {
-        "id": "su_wu_cos02",
-        "name": "北海牧歌",
-        "quality": "素装",
-        "series": ""
-      },
-      {
-        "id": "su_wu_cos03",
-        "name": "大汉使者",
-        "quality": "华服",
-        "series": "精忠报国"
-      },
-      {
-        "id": "su_wu_cos04",
-        "name": "龙渊",
-        "quality": "华服",
-        "series": "君子如剑"
-      }
-    ],
-    "lan_feihong": [
-      {
-        "id": "lan_feihong_cos01",
-        "name": "浴火重生",
-        "quality": "华服",
-        "series": ""
-      },
-      {
-        "id": "lan_feihong_cos02",
-        "name": "迦楼罗刀",
-        "quality": "华服",
-        "series": ""
-      },
-      {
-        "id": "lan_feihong_cos03",
-        "name": "绝境逢生",
-        "quality": "华服",
-        "series": ""
-      },
-      {
-        "id": "lan_feihong_cos04",
-        "name": "御前对决",
-        "quality": "华服",
-        "series": ""
-      }
-    ],
-    "ne_zha": [
-      {
-        "id": "ne_zha_cos01",
-        "name": "莲花塑身",
-        "quality": "素装",
-        "series": ""
-      },
-      {
-        "id": "ne_zha_cos02",
-        "name": "哪吒闹海",
-        "quality": "华服",
-        "series": ""
-      }
-    ],
-    "kou_baimen": [
-      {
-        "id": "kou_baimen_cos01",
-        "name": "鸿鹄展翅",
-        "quality": "华服",
-        "series": "五凤来仪"
-      },
-      {
-        "id": "kou_baimen_cos02",
-        "name": "越王勾践剑",
-        "quality": "华服",
-        "series": "传世珍宝"
-      },
-      {
-        "id": "kou_baimen_cos03",
-        "name": "西岳太华",
-        "quality": "华服",
-        "series": ""
-      },
-      {
-        "id": "kou_baimen_cos04",
-        "name": "声妙入神",
-        "quality": "华服",
-        "series": "汴梁女团"
-      },
-      {
-        "id": "kou_baimen_cos05",
-        "name": "傲雪寒梅",
-        "quality": "锦衣",
-        "series": "百花齐放"
-      }
-    ],
-    "lu_ban": [
-      {
-        "id": "lu_ban_cos01",
-        "name": "废寝忘食",
-        "quality": "素装",
-        "series": ""
-      },
-      {
-        "id": "lu_ban_cos02",
-        "name": "一叶巧思",
-        "quality": "素装",
-        "series": ""
-      },
-      {
-        "id": "lu_ban_cos03",
-        "name": "飞流",
-        "quality": "素装",
-        "series": ""
-      },
-      {
-        "id": "lu_ban_cos04",
-        "name": "筑翅飞天",
-        "quality": "华服",
-        "series": "清平盛世"
-      }
-    ],
-    "ou_yezi": [
-      {
-        "id": "ou_yezi_cos01",
-        "name": "龙渊神剑",
-        "quality": "素装",
-        "series": ""
-      },
-      {
-        "id": "ou_yezi_cos02",
-        "name": "蒙挚",
-        "quality": "素装",
-        "series": ""
-      },
-      {
-        "id": "ou_yezi_cos03",
-        "name": "铸剑世家",
-        "quality": "素装",
-        "series": ""
-      },
-      {
-        "id": "ou_yezi_cos04",
-        "name": "铸剑为犁",
-        "quality": "华服",
-        "series": "清平盛世"
-      }
-    ],
-    "hua_mulan": [
-      {
-        "id": "hua_mulan_cos01",
-        "name": "寒锋破虏",
-        "quality": "华服",
-        "series": ""
-      },
-      {
-        "id": "hua_mulan_cos02",
-        "name": "巾帼归阙",
-        "quality": "锦衣",
-        "series": ""
-      }
-    ],
-    "shen_wansan": [
-      {
-        "id": "shen_wansan_cos01",
-        "name": "靖王",
-        "quality": "素装",
-        "series": ""
-      },
-      {
-        "id": "shen_wansan_cos02",
-        "name": "吴刚",
-        "quality": "素装",
-        "series": ""
-      },
-      {
-        "id": "shen_wansan_cos03",
-        "name": "烟火迎春",
-        "quality": "素装",
-        "series": ""
-      }
-    ],
-    "shi_gandang": [
-      {
-        "id": "shi_gandang_cos01",
-        "name": "雷霆万钧",
-        "quality": "素装",
-        "series": ""
-      }
-    ],
-    "zhen_tufu": [
-      {
-        "id": "zhen_tufu_cos01",
-        "name": "山中野彘",
-        "quality": "素装",
-        "series": ""
-      },
-      {
-        "id": "zhen_tufu_cos02",
-        "name": "举铁大师",
-        "quality": "素装",
-        "series": ""
-      },
-      {
-        "id": "zhen_tufu_cos03",
-        "name": "三只小猪",
-        "quality": "素装",
-        "series": ""
-      },
-      {
-        "id": "zhen_tufu_cos04",
-        "name": "沐日光华",
-        "quality": "素装",
-        "series": ""
-      },
-      {
-        "id": "zhen_tufu_cos05",
-        "name": "圣诞老人",
-        "quality": "素装",
-        "series": ""
-      },
-      {
-        "id": "zhen_tufu_cos06",
-        "name": "王胖子",
-        "quality": "素装",
-        "series": ""
-      },
-      {
-        "id": "zhen_tufu_cos07",
-        "name": "曲魂",
-        "quality": "素装",
-        "series": ""
-      }
-    ],
-    "xiang_en": [
-      {
-        "id": "xiang_en_cos01",
-        "name": "高高在上",
-        "quality": "素装",
-        "series": ""
-      },
-      {
-        "id": "xiang_en_cos02",
-        "name": "玉龙锅",
-        "quality": "素装",
-        "series": ""
-      },
-      {
-        "id": "xiang_en_cos03",
-        "name": "味觉之秘",
-        "quality": "素装",
-        "series": ""
-      },
-      {
-        "id": "xiang_en_cos04",
-        "name": "神速破军",
-        "quality": "华服",
-        "series": ""
-      }
-    ],
-    "xiao_wu": [
-      {
-        "id": "xiao_wu_cos01",
-        "name": "生死诀别",
-        "quality": "华服",
-        "series": ""
-      }
-    ],
-    "luo_caifeng": [
-      {
-        "id": "luo_caifeng_cos01",
-        "name": "一步之遥",
-        "quality": "素装",
-        "series": ""
-      },
-      {
-        "id": "luo_caifeng_cos02",
-        "name": "量雪裁衣",
-        "quality": "素装",
-        "series": ""
-      },
-      {
-        "id": "luo_caifeng_cos03",
-        "name": "伴柳成双",
-        "quality": "素装",
-        "series": ""
-      },
-      {
-        "id": "luo_caifeng_cos04",
-        "name": "荷衣蕙带",
-        "quality": "素装",
-        "series": ""
-      }
-    ],
-    "feng_mier": [
-      {
-        "id": "feng_mier_cos01",
-        "name": "蜂口取蜜",
-        "quality": "素装",
-        "series": ""
-      },
-      {
-        "id": "feng_mier_cos02",
-        "name": "消暑蜜饮",
-        "quality": "素装",
-        "series": ""
-      },
-      {
-        "id": "feng_mier_cos03",
-        "name": "蜜雪冰乘",
-        "quality": "素装",
-        "series": ""
-      },
-      {
-        "id": "feng_mier_cos04",
-        "name": "崖间采蜜",
-        "quality": "素装",
-        "series": ""
-      }
-    ],
-    "li_shenshou": [
-      {
-        "id": "li_shenshou_cos01",
-        "name": "百鸟朝凤",
-        "quality": "素装",
-        "series": ""
-      },
-      {
-        "id": "li_shenshou_cos02",
-        "name": "自得其乐",
-        "quality": "素装",
-        "series": ""
-      }
-    ],
-    "zhang_sanfeng": [
-      {
-        "id": "zhang_sanfeng_cos01",
-        "name": "醉翁游侠",
-        "quality": "素装",
-        "series": ""
-      },
-      {
-        "id": "zhang_sanfeng_cos02",
-        "name": "风华正茂",
-        "quality": "华服",
-        "series": "精忠报国"
-      },
-      {
-        "id": "zhang_sanfeng_cos03",
-        "name": "纯钧",
-        "quality": "华服",
-        "series": "君子如剑"
-      }
-    ],
-    "fang_huotou": [
-      {
-        "id": "fang_huotou_cos01",
-        "name": "火树银花",
-        "quality": "素装",
-        "series": ""
-      },
-      {
-        "id": "fang_huotou_cos02",
-        "name": "壮志凌云",
-        "quality": "素装",
-        "series": ""
-      },
-      {
-        "id": "fang_huotou_cos03",
-        "name": "邪火凤凰",
-        "quality": "素装",
-        "series": ""
-      },
-      {
-        "id": "fang_huotou_cos04",
-        "name": "科学狂人",
-        "quality": "华服",
-        "series": ""
-      }
-    ],
-    "ding_xiren": [
-      {
-        "id": "ding_xiren_cos01",
-        "name": "布袋江湖",
-        "quality": "素装",
-        "series": ""
-      },
-      {
-        "id": "ding_xiren_cos02",
-        "name": "杖头木偶",
-        "quality": "素装",
-        "series": ""
-      },
-      {
-        "id": "ding_xiren_cos03",
-        "name": "百变千面",
-        "quality": "素装",
-        "series": ""
-      },
-      {
-        "id": "ding_xiren_cos04",
-        "name": "画地为牢",
-        "quality": "素装",
-        "series": ""
-      },
-      {
-        "id": "ding_xiren_cos05",
-        "name": "重楼",
-        "quality": "素装",
-        "series": ""
-      }
-    ],
-    "lv_bu": [
-      {
-        "id": "lv_bu_cos01",
-        "name": "白起",
-        "quality": "素装",
-        "series": ""
-      }
-    ],
-    "gun_haijiao": [
-      {
-        "id": "gun_haijiao_cos01",
-        "name": "海洋龙卷",
-        "quality": "素装",
-        "series": ""
-      }
-    ],
-    "dunhuang_jiangshen": [
-      {
-        "id": "dunhuang_jiangshen_cos01",
-        "name": "入梦敦煌",
-        "quality": "素装",
-        "series": ""
-      }
-    ],
-    "du_kang": [
-      {
-        "id": "du_kang_cos01",
-        "name": "酿酒宗师",
-        "quality": "素装",
-        "series": ""
-      },
-      {
-        "id": "du_kang_cos02",
-        "name": "歌舞升平",
-        "quality": "华服",
-        "series": "清平盛世"
-      }
-    ],
-    "li_xiangjun": [
-      {
-        "id": "li_xiangjun_cos01",
-        "name": "凤舞九天",
-        "quality": "华服",
-        "series": "五凤来仪"
-      },
-      {
-        "id": "li_xiangjun_cos02",
-        "name": "曾侯乙编钟",
-        "quality": "华服",
-        "series": "传世珍宝"
-      },
-      {
-        "id": "li_xiangjun_cos03",
-        "name": "中岳嵩山",
-        "quality": "华服",
-        "series": ""
-      },
-      {
-        "id": "li_xiangjun_cos04",
-        "name": "一舞倾心",
-        "quality": "华服",
-        "series": "汴梁女团"
-      },
-      {
-        "id": "li_xiangjun_cos05",
-        "name": "醉卧桃花",
-        "quality": "锦衣",
-        "series": "百花齐放"
-      }
-    ],
-    "sun_wu": [
-      {
-        "id": "sun_wu_cos01",
-        "name": "兵法至圣",
-        "quality": "素装",
-        "series": ""
-      }
-    ],
-    "bi_sheng": [
-      {
-        "id": "bi_sheng_cos01",
-        "name": "灵光乍现",
-        "quality": "素装",
-        "series": ""
-      },
-      {
-        "id": "bi_sheng_cos02",
-        "name": "鬼斧神工",
-        "quality": "华服",
-        "series": "精忠报国"
-      },
-      {
-        "id": "bi_sheng_cos03",
-        "name": "承影",
-        "quality": "华服",
-        "series": "君子如剑"
-      }
-    ],
-    "qian_caizhu": [
-      {
-        "id": "qian_caizhu_cos01",
-        "name": "花鸟富贵",
-        "quality": "素装",
-        "series": ""
-      }
-    ],
-    "hu_lu_xianren": [
-      {
-        "id": "hu_lu_xianren_cos01",
-        "name": "逍遥子",
-        "quality": "素装",
-        "series": ""
-      },
-      {
-        "id": "hu_lu_xianren_cos02",
-        "name": "风吟",
-        "quality": "素装",
-        "series": ""
-      },
-      {
-        "id": "hu_lu_xianren_cos03",
-        "name": "金雷",
-        "quality": "素装",
-        "series": ""
-      },
-      {
-        "id": "hu_lu_xianren_cos04",
-        "name": "阳焱",
-        "quality": "素装",
-        "series": ""
-      },
-      {
-        "id": "hu_lu_xianren_cos05",
-        "name": "龙幽",
-        "quality": "素装",
-        "series": ""
-      },
-      {
-        "id": "hu_lu_xianren_cos06",
-        "name": "影",
-        "quality": "素装",
-        "series": ""
-      },
-      {
-        "id": "hu_lu_xianren_cos07",
-        "name": "海无量",
-        "quality": "素装",
-        "series": ""
-      },
-      {
-        "id": "hu_lu_xianren_cos08",
-        "name": "惊涛骇浪",
-        "quality": "素装",
-        "series": ""
-      },
-      {
-        "id": "hu_lu_xianren_cos09",
-        "name": "匿迹潜形",
-        "quality": "素装",
-        "series": ""
-      },
-      {
-        "id": "hu_lu_xianren_cos10",
-        "name": "葫里乾坤",
-        "quality": "素装",
-        "series": ""
-      },
-      {
-        "id": "hu_lu_xianren_cos11",
-        "name": "神娃爆诞",
-        "quality": "华服",
-        "series": ""
-      },
-      {
-        "id": "hu_lu_xianren_cos12",
-        "name": "星蚀",
-        "quality": "华服",
-        "series": ""
-      }
-    ],
-    "yan_xiaoer": [
-      {
-        "id": "yan_xiaoer_cos01",
-        "name": "一柱擎天",
-        "quality": "素装",
-        "series": ""
-      }
-    ],
-    "cao_tiejiang": [
-      {
-        "id": "cao_tiejiang_cos01",
-        "name": "暴打地鼠",
-        "quality": "素装",
-        "series": ""
-      }
-    ],
-    "si_lang": [
-      {
-        "id": "si_lang_cos01",
-        "name": "大显身手",
-        "quality": "素装",
-        "series": ""
-      }
-    ],
-    "wu_shiren": [
-      {
-        "id": "wu_shiren_cos01",
-        "name": "邪眸白虎",
-        "quality": "素装",
-        "series": ""
-      }
-    ],
-    "tang_hulu": [
-      {
-        "id": "tang_hulu_cos01",
-        "name": "酸甜童忆",
-        "quality": "素装",
-        "series": ""
-      }
-    ],
-    "zheng_chuzi": [
-      {
-        "id": "zheng_chuzi_cos01",
-        "name": "香肠专卖",
-        "quality": "素装",
-        "series": ""
-      }
-    ],
-    "zheng_guonong": [
-      {
-        "id": "zheng_guonong_cos01",
-        "name": "种瓜得瓜",
-        "quality": "素装",
-        "series": ""
-      }
-    ],
-    "zhu_huolang": [
-      {
-        "id": "zhu_huolang_cos01",
-        "name": "琳琅满目",
-        "quality": "素装",
-        "series": ""
-      }
-    ],
-    "xiao_yuer": [
-      {
-        "id": "xiao_yuer_cos01",
-        "name": "小魔星",
-        "quality": "素装",
-        "series": ""
-      },
-      {
-        "id": "xiao_yuer_cos02",
-        "name": "嬉闹江湖",
-        "quality": "素装",
-        "series": ""
-      },
-      {
-        "id": "xiao_yuer_cos03",
-        "name": "五绝神功",
-        "quality": "素装",
-        "series": ""
-      },
-      {
-        "id": "xiao_yuer_cos04",
-        "name": "神掌挫敌",
-        "quality": "素装",
-        "series": ""
-      },
-      {
-        "id": "xiao_yuer_cos05",
-        "name": "双骄决战",
-        "quality": "华服",
-        "series": ""
-      },
-      {
-        "id": "xiao_yuer_cos06",
-        "name": "震慑江湖",
-        "quality": "华服",
-        "series": ""
-      }
-    ],
-    "mei_changsu": [
-      {
-        "id": "mei_changsu_cos01",
-        "name": "麒麟才子",
-        "quality": "素装",
-        "series": ""
-      },
-      {
-        "id": "mei_changsu_cos02",
-        "name": "梅岭火寒",
-        "quality": "素装",
-        "series": ""
-      },
-      {
-        "id": "mei_changsu_cos03",
-        "name": "江左盟主",
-        "quality": "素装",
-        "series": ""
-      },
-      {
-        "id": "mei_changsu_cos04",
-        "name": "赤焰少帅",
-        "quality": "素装",
-        "series": ""
-      },
-      {
-        "id": "mei_changsu_cos05",
-        "name": "长林王爷",
-        "quality": "素装",
-        "series": ""
-      },
-      {
-        "id": "mei_changsu_cos06",
-        "name": "风起云涌",
-        "quality": "华服",
-        "series": ""
-      }
-    ],
-    "zhang_qiling": [
-      {
-        "id": "zhang_qiling_cos01",
-        "name": "黑金古刀",
-        "quality": "素装",
-        "series": ""
-      },
-      {
-        "id": "zhang_qiling_cos02",
-        "name": "永生之海",
-        "quality": "素装",
-        "series": ""
-      },
-      {
-        "id": "zhang_qiling_cos03",
-        "name": "麒麟当道",
-        "quality": "素装",
-        "series": ""
-      },
-      {
-        "id": "zhang_qiling_cos04",
-        "name": "三日静寂",
-        "quality": "素装",
-        "series": ""
-      },
-      {
-        "id": "zhang_qiling_cos05",
-        "name": "青铜门下",
-        "quality": "华服",
-        "series": ""
-      }
-    ],
-    "lei_en": [
-      {
-        "id": "lei_en_cos01",
-        "name": "游刃有余",
-        "quality": "素装",
-        "series": ""
-      },
-      {
-        "id": "lei_en_cos02",
-        "name": "唯强独尊",
-        "quality": "素装",
-        "series": ""
-      },
-      {
-        "id": "lei_en_cos03",
-        "name": "贪狼壶",
-        "quality": "素装",
-        "series": ""
-      },
-      {
-        "id": "lei_en_cos04",
-        "name": "初获七星",
-        "quality": "华服",
-        "series": ""
-      }
-    ],
-    "zhou_yu": [
-      {
-        "id": "zhou_yu_cos01",
-        "name": "蛟龙得水",
-        "quality": "素装",
-        "series": ""
-      },
-      {
-        "id": "zhou_yu_cos02",
-        "name": "栩栩如生",
-        "quality": "素装",
-        "series": ""
-      },
-      {
-        "id": "zhou_yu_cos03",
-        "name": "永灵刀",
-        "quality": "素装",
-        "series": ""
-      },
-      {
-        "id": "zhou_yu_cos04",
-        "name": "知足常乐",
-        "quality": "华服",
-        "series": ""
-      }
-    ],
-    "ya_jiu": [
-      {
-        "id": "ya_jiu_cos01",
-        "name": "庙会新星",
-        "quality": "锦衣",
-        "series": ""
-      }
-    ],
-    "dayu": [
-      {
-        "id": "dayu_cos01",
-        "name": "九川归海",
-        "quality": "锦衣",
-        "series": ""
-      }
-    ],
-    "leng_erpi": [
-      {
-        "id": "leng_erpi_cos01",
-        "name": "身不由己",
-        "quality": "锦衣",
-        "series": ""
-      }
-    ]
+	"li_bai": [
+	  {
+		"id": "li_bai_cos01",
+		"name": "将进酒",
+		"quality": "华服",
+		"series": ""
+	  },
+	  {
+		"id": "li_bai_cos02",
+		"name": "夜宿山寺",
+		"quality": "锦衣",
+		"series": ""
+	  },
+	  {
+		"id": "li_bai_cos03",
+		"name": "修道初成",
+		"quality": "素装",
+		"series": ""
+	  },
+	  {
+		"id": "li_bai_cos04",
+		"name": "千机百衍",
+		"quality": "素装",
+		"series": ""
+	  },
+	  {
+		"id": "li_bai_cos05",
+		"name": "纵横海外",
+		"quality": "素装",
+		"series": ""
+	  },
+	  {
+		"id": "li_bai_cos06",
+		"name": "名镇天南",
+		"quality": "素装",
+		"series": ""
+	  },
+	  {
+		"id": "li_bai_cos07",
+		"name": "灵界天尊",
+		"quality": "华服",
+		"series": ""
+	  },
+	  {
+		"id": "li_bai_cos08",
+		"name": "御剑诛魔",
+		"quality": "华服",
+		"series": ""
+	  }
+	],
+	"bai_yuechu": [
+	  {
+		"id": "bai_yuechu_cos01",
+		"name": "红线眷侣",
+		"quality": "素装",
+		"series": ""
+	  },
+	  {
+		"id": "bai_yuechu_cos02",
+		"name": "东方月初",
+		"quality": "素装",
+		"series": ""
+	  },
+	  {
+		"id": "bai_yuechu_cos03",
+		"name": "在你身边",
+		"quality": "素装",
+		"series": ""
+	  },
+	  {
+		"id": "bai_yuechu_cos04",
+		"name": "相思之炎",
+		"quality": "素装",
+		"series": ""
+	  },
+	  {
+		"id": "bai_yuechu_cos05",
+		"name": "泪星陨落",
+		"quality": "华服",
+		"series": ""
+	  }
+	],
+	"dong_xiaowan": [
+	  {
+		"id": "dong_xiaowan_cos01",
+		"name": "青鸾御风",
+		"quality": "华服",
+		"series": "五凤来仪"
+	  },
+	  {
+		"id": "dong_xiaowan_cos02",
+		"name": "千里江山图",
+		"quality": "华服",
+		"series": "传世珍宝"
+	  },
+	  {
+		"id": "dong_xiaowan_cos03",
+		"name": "北岳常恒",
+		"quality": "华服",
+		"series": ""
+	  },
+	  {
+		"id": "dong_xiaowan_cos04",
+		"name": "琴音萦梦",
+		"quality": "华服",
+		"series": "汴梁女团"
+	  },
+	  {
+		"id": "dong_xiaowan_cos05",
+		"name": "巧丝青莲",
+		"quality": "锦衣",
+		"series": "百花齐放"
+	  }
+	],
+	"xiao_qi": [
+	  {
+		"id": "xiao_qi_cos01",
+		"name": "凝神一箭",
+		"quality": "素装",
+		"series": ""
+	  },
+	  {
+		"id": "xiao_qi_cos02",
+		"name": "桃李年华",
+		"quality": "素装",
+		"series": ""
+	  },
+	  {
+		"id": "xiao_qi_cos03",
+		"name": "翠林撷趣",
+		"quality": "素装",
+		"series": ""
+	  },
+	  {
+		"id": "xiao_qi_cos04",
+		"name": "花信之约",
+		"quality": "素装",
+		"series": ""
+	  },
+	  {
+		"id": "xiao_qi_cos05",
+		"name": "绘梦商海",
+		"quality": "华服",
+		"series": ""
+	  }
+	],
+	"sun_bin": [
+	  {
+		"id": "sun_bin_cos01",
+		"name": "田忌赛马",
+		"quality": "素装",
+		"series": ""
+	  },
+	  {
+		"id": "sun_bin_cos02",
+		"name": "景天",
+		"quality": "素装",
+		"series": ""
+	  },
+	  {
+		"id": "sun_bin_cos03",
+		"name": "鼓乐齐鸣",
+		"quality": "华服",
+		"series": "清平盛世"
+	  }
+	],
+	"wang_zhaojun": [
+	  {
+		"id": "wang_zhaojun_cos01",
+		"name": "篝火蹁跹",
+		"quality": "华服",
+		"series": ""
+	  },
+	  {
+		"id": "wang_zhaojun_cos02",
+		"name": "宁胡阙氏",
+		"quality": "锦衣",
+		"series": ""
+	  },
+	  {
+		"id": "wang_zhaojun_cos03",
+		"name": "倚梅心事",
+		"quality": "素装",
+		"series": ""
+	  },
+	  {
+		"id": "wang_zhaojun_cos04",
+		"name": "百舞惊鸿",
+		"quality": "素装",
+		"series": ""
+	  },
+	  {
+		"id": "wang_zhaojun_cos05",
+		"name": "梨花落雪",
+		"quality": "素装",
+		"series": ""
+	  },
+	  {
+		"id": "wang_zhaojun_cos06",
+		"name": "卷土重来",
+		"quality": "素装",
+		"series": ""
+	  },
+	  {
+		"id": "wang_zhaojun_cos07",
+		"name": "夙愿终成",
+		"quality": "华服",
+		"series": ""
+	  }
+	],
+	"cai_jing": [
+	  {
+		"id": "cai_jing_cos01",
+		"name": "权倾朝野",
+		"quality": "素装",
+		"series": ""
+	  }
+	],
+	"wu_daozi": [
+	  {
+		"id": "wu_daozi_cos01",
+		"name": "送子天王",
+		"quality": "素装",
+		"series": ""
+	  },
+	  {
+		"id": "wu_daozi_cos02",
+		"name": "醉墨淋漓",
+		"quality": "华服",
+		"series": "清平盛世"
+	  }
+	],
+	"song_huizong": [
+	  {
+		"id": "song_huizong_cos01",
+		"name": "铁画银钩",
+		"quality": "素装",
+		"series": ""
+	  }
+	],
+	"liu_maoxing": [
+	  {
+		"id": "liu_maoxing_cos01",
+		"name": "彗星炒饭",
+		"quality": "素装",
+		"series": ""
+	  },
+	  {
+		"id": "liu_maoxing_cos02",
+		"name": "神龙少年",
+		"quality": "素装",
+		"series": ""
+	  },
+	  {
+		"id": "liu_maoxing_cos03",
+		"name": "楼麟覆灭",
+		"quality": "素装",
+		"series": ""
+	  },
+	  {
+		"id": "liu_maoxing_cos04",
+		"name": "大宇宙烧卖",
+		"quality": "素装",
+		"series": ""
+	  },
+	  {
+		"id": "liu_maoxing_cos05",
+		"name": "出神入化",
+		"quality": "华服",
+		"series": ""
+	  }
+	],
+	"ma_xianglan": [
+	  {
+		"id": "ma_xianglan_cos01",
+		"name": "鸑鷟欲出",
+		"quality": "华服",
+		"series": "五凤来仪"
+	  },
+	  {
+		"id": "ma_xianglan_cos02",
+		"name": "睡虎地秦简",
+		"quality": "华服",
+		"series": "传世珍宝"
+	  },
+	  {
+		"id": "ma_xianglan_cos03",
+		"name": "东岳岱宗",
+		"quality": "华服",
+		"series": ""
+	  },
+	  {
+		"id": "ma_xianglan_cos04",
+		"name": "弦音似火",
+		"quality": "华服",
+		"series": "汴梁女团"
+	  },
+	  {
+		"id": "ma_xianglan_cos05",
+		"name": "空谷幽兰",
+		"quality": "锦衣",
+		"series": "百花齐放"
+	  }
+	],
+	"xie_lu": [
+	  {
+		"id": "xie_lu_cos01",
+		"name": "革故鼎新",
+		"quality": "素装",
+		"series": ""
+	  },
+	  {
+		"id": "xie_lu_cos02",
+		"name": "孤胆钢棍",
+		"quality": "素装",
+		"series": ""
+	  },
+	  {
+		"id": "xie_lu_cos03",
+		"name": "灵藏库",
+		"quality": "素装",
+		"series": ""
+	  },
+	  {
+		"id": "xie_lu_cos04",
+		"name": "千锤百炼",
+		"quality": "素装",
+		"series": ""
+	  }
+	],
+	"gao_jianli": [
+	  {
+		"id": "gao_jianli_cos01",
+		"name": "枕弦醉风",
+		"quality": "素装",
+		"series": ""
+	  },
+	  {
+		"id": "gao_jianli_cos02",
+		"name": "悲伤离歌",
+		"quality": "华服",
+		"series": "精忠报国"
+	  },
+	  {
+		"id": "gao_jianli_cos03",
+		"name": "鱼肠",
+		"quality": "华服",
+		"series": "君子如剑"
+	  }
+	],
+	"xiao_ba": [
+	  {
+		"id": "xiao_ba_cos01",
+		"name": "卯时烟火",
+		"quality": "素装",
+		"series": ""
+	  },
+	  {
+		"id": "xiao_ba_cos02",
+		"name": "凌云商策",
+		"quality": "素装",
+		"series": ""
+	  },
+	  {
+		"id": "xiao_ba_cos03",
+		"name": "西域风尘",
+		"quality": "素装",
+		"series": ""
+	  },
+	  {
+		"id": "xiao_ba_cos04",
+		"name": "春山品茗",
+		"quality": "素装",
+		"series": ""
+	  },
+	  {
+		"id": "xiao_ba_cos05",
+		"name": "金律司衡",
+		"quality": "华服",
+		"series": ""
+	  }
+	],
+	"yan_xiansheng": [
+	  {
+		"id": "yan_xiansheng_cos01",
+		"name": "小惩大诫",
+		"quality": "素装",
+		"series": ""
+	  },
+	  {
+		"id": "yan_xiansheng_cos02",
+		"name": "童心未泯",
+		"quality": "素装",
+		"series": ""
+	  },
+	  {
+		"id": "yan_xiansheng_cos03",
+		"name": "金牌教练",
+		"quality": "素装",
+		"series": ""
+	  }
+	],
+	"huo_yanwang": [
+	  {
+		"id": "huo_yanwang_cos01",
+		"name": "猛龙过江",
+		"quality": "素装",
+		"series": ""
+	  }
+	],
+	"bian_yujing": [
+	  {
+		"id": "bian_yujing_cos01",
+		"name": "鹓雏降财",
+		"quality": "华服",
+		"series": "五凤来仪"
+	  },
+	  {
+		"id": "bian_yujing_cos02",
+		"name": "长信宫灯",
+		"quality": "华服",
+		"series": "传世珍宝"
+	  },
+	  {
+		"id": "bian_yujing_cos03",
+		"name": "南岳玑衡",
+		"quality": "华服",
+		"series": ""
+	  },
+	  {
+		"id": "bian_yujing_cos04",
+		"name": "碧玉声歌",
+		"quality": "华服",
+		"series": "汴梁女团"
+	  },
+	  {
+		"id": "bian_yujing_cos05",
+		"name": "凌霜秋菊",
+		"quality": "锦衣",
+		"series": "百花齐放"
+	  }
+	],
+	"yang_jian": [
+	  {
+		"id": "yang_jian_cos01",
+		"name": "劈山救母",
+		"quality": "素装",
+		"series": ""
+	  },
+	  {
+		"id": "yang_jian_cos02",
+		"name": "天眼",
+		"quality": "素装",
+		"series": ""
+	  },
+	  {
+		"id": "yang_jian_cos03",
+		"name": "五雷决",
+		"quality": "素装",
+		"series": ""
+	  },
+	  {
+		"id": "yang_jian_cos04",
+		"name": "八九玄功",
+		"quality": "素装",
+		"series": ""
+	  },
+	  {
+		"id": "yang_jian_cos05",
+		"name": "法天象地",
+		"quality": "华服",
+		"series": ""
+	  },
+	  {
+		"id": "yang_jian_cos06",
+		"name": "佛怒唐莲",
+		"quality": "素装",
+		"series": ""
+	  },
+	  {
+		"id": "yang_jian_cos07",
+		"name": "千手修罗",
+		"quality": "素装",
+		"series": ""
+	  },
+	  {
+		"id": "yang_jian_cos08",
+		"name": "昊天锤",
+		"quality": "素装",
+		"series": ""
+	  },
+	  {
+		"id": "yang_jian_cos09",
+		"name": "蓝银皇",
+		"quality": "素装",
+		"series": ""
+	  },
+	  {
+		"id": "yang_jian_cos10",
+		"name": "海神",
+		"quality": "华服",
+		"series": ""
+	  },
+	  {
+		"id": "yang_jian_cos11",
+		"name": "修罗神",
+		"quality": "华服",
+		"series": ""
+	  },
+	  {
+		"id": "yang_jian_cos12",
+		"name": "双神同体",
+		"quality": "华服",
+		"series": ""
+	  }
+	],
+	"zong_ze": [
+	  {
+		"id": "zong_ze_cos01",
+		"name": "满门忠烈",
+		"quality": "素装",
+		"series": ""
+	  },
+	  {
+		"id": "zong_ze_cos02",
+		"name": "感恩狂欢",
+		"quality": "素装",
+		"series": ""
+	  },
+	  {
+		"id": "zong_ze_cos03",
+		"name": "虎视眈眈",
+		"quality": "素装",
+		"series": ""
+	  },
+	  {
+		"id": "zong_ze_cos04",
+		"name": "醉卧沙场",
+		"quality": "华服",
+		"series": "精忠报国"
+	  },
+	  {
+		"id": "zong_ze_cos05",
+		"name": "湛卢",
+		"quality": "华服",
+		"series": "君子如剑"
+	  }
+	],
+	"hong_laoxie": [
+	  {
+		"id": "hong_laoxie_cos01",
+		"name": "古墓异响",
+		"quality": "素装",
+		"series": ""
+	  },
+	  {
+		"id": "hong_laoxie_cos02",
+		"name": "深海探宝",
+		"quality": "素装",
+		"series": ""
+	  },
+	  {
+		"id": "hong_laoxie_cos03",
+		"name": "搬山道人",
+		"quality": "素装",
+		"series": ""
+	  }
+	],
+	"su_wu": [
+	  {
+		"id": "su_wu_cos01",
+		"name": "月下刺猹",
+		"quality": "素装",
+		"series": ""
+	  },
+	  {
+		"id": "su_wu_cos02",
+		"name": "北海牧歌",
+		"quality": "素装",
+		"series": ""
+	  },
+	  {
+		"id": "su_wu_cos03",
+		"name": "大汉使者",
+		"quality": "华服",
+		"series": "精忠报国"
+	  },
+	  {
+		"id": "su_wu_cos04",
+		"name": "龙渊",
+		"quality": "华服",
+		"series": "君子如剑"
+	  }
+	],
+	"lan_feihong": [
+	  {
+		"id": "lan_feihong_cos01",
+		"name": "浴火重生",
+		"quality": "华服",
+		"series": ""
+	  },
+	  {
+		"id": "lan_feihong_cos02",
+		"name": "迦楼罗刀",
+		"quality": "华服",
+		"series": ""
+	  },
+	  {
+		"id": "lan_feihong_cos03",
+		"name": "绝境逢生",
+		"quality": "华服",
+		"series": ""
+	  },
+	  {
+		"id": "lan_feihong_cos04",
+		"name": "御前对决",
+		"quality": "华服",
+		"series": ""
+	  }
+	],
+	"ne_zha": [
+	  {
+		"id": "ne_zha_cos01",
+		"name": "莲花塑身",
+		"quality": "素装",
+		"series": ""
+	  },
+	  {
+		"id": "ne_zha_cos02",
+		"name": "哪吒闹海",
+		"quality": "华服",
+		"series": ""
+	  }
+	],
+	"kou_baimen": [
+	  {
+		"id": "kou_baimen_cos01",
+		"name": "鸿鹄展翅",
+		"quality": "华服",
+		"series": "五凤来仪"
+	  },
+	  {
+		"id": "kou_baimen_cos02",
+		"name": "越王勾践剑",
+		"quality": "华服",
+		"series": "传世珍宝"
+	  },
+	  {
+		"id": "kou_baimen_cos03",
+		"name": "西岳太华",
+		"quality": "华服",
+		"series": ""
+	  },
+	  {
+		"id": "kou_baimen_cos04",
+		"name": "声妙入神",
+		"quality": "华服",
+		"series": "汴梁女团"
+	  },
+	  {
+		"id": "kou_baimen_cos05",
+		"name": "傲雪寒梅",
+		"quality": "锦衣",
+		"series": "百花齐放"
+	  }
+	],
+	"lu_ban": [
+	  {
+		"id": "lu_ban_cos01",
+		"name": "废寝忘食",
+		"quality": "素装",
+		"series": ""
+	  },
+	  {
+		"id": "lu_ban_cos02",
+		"name": "一叶巧思",
+		"quality": "素装",
+		"series": ""
+	  },
+	  {
+		"id": "lu_ban_cos03",
+		"name": "飞流",
+		"quality": "素装",
+		"series": ""
+	  },
+	  {
+		"id": "lu_ban_cos04",
+		"name": "筑翅飞天",
+		"quality": "华服",
+		"series": "清平盛世"
+	  }
+	],
+	"ou_yezi": [
+	  {
+		"id": "ou_yezi_cos01",
+		"name": "龙渊神剑",
+		"quality": "素装",
+		"series": ""
+	  },
+	  {
+		"id": "ou_yezi_cos02",
+		"name": "蒙挚",
+		"quality": "素装",
+		"series": ""
+	  },
+	  {
+		"id": "ou_yezi_cos03",
+		"name": "铸剑世家",
+		"quality": "素装",
+		"series": ""
+	  },
+	  {
+		"id": "ou_yezi_cos04",
+		"name": "铸剑为犁",
+		"quality": "华服",
+		"series": "清平盛世"
+	  }
+	],
+	"hua_mulan": [
+	  {
+		"id": "hua_mulan_cos01",
+		"name": "寒锋破虏",
+		"quality": "华服",
+		"series": ""
+	  },
+	  {
+		"id": "hua_mulan_cos02",
+		"name": "巾帼归阙",
+		"quality": "锦衣",
+		"series": ""
+	  }
+	],
+	"shen_wansan": [
+	  {
+		"id": "shen_wansan_cos01",
+		"name": "靖王",
+		"quality": "素装",
+		"series": ""
+	  },
+	  {
+		"id": "shen_wansan_cos02",
+		"name": "吴刚",
+		"quality": "素装",
+		"series": ""
+	  },
+	  {
+		"id": "shen_wansan_cos03",
+		"name": "烟火迎春",
+		"quality": "素装",
+		"series": ""
+	  }
+	],
+	"shi_gandang": [
+	  {
+		"id": "shi_gandang_cos01",
+		"name": "雷霆万钧",
+		"quality": "素装",
+		"series": ""
+	  }
+	],
+	"zhen_tufu": [
+	  {
+		"id": "zhen_tufu_cos01",
+		"name": "山中野彘",
+		"quality": "素装",
+		"series": ""
+	  },
+	  {
+		"id": "zhen_tufu_cos02",
+		"name": "举铁大师",
+		"quality": "素装",
+		"series": ""
+	  },
+	  {
+		"id": "zhen_tufu_cos03",
+		"name": "三只小猪",
+		"quality": "素装",
+		"series": ""
+	  },
+	  {
+		"id": "zhen_tufu_cos04",
+		"name": "沐日光华",
+		"quality": "素装",
+		"series": ""
+	  },
+	  {
+		"id": "zhen_tufu_cos05",
+		"name": "圣诞老人",
+		"quality": "素装",
+		"series": ""
+	  },
+	  {
+		"id": "zhen_tufu_cos06",
+		"name": "王胖子",
+		"quality": "素装",
+		"series": ""
+	  },
+	  {
+		"id": "zhen_tufu_cos07",
+		"name": "曲魂",
+		"quality": "素装",
+		"series": ""
+	  }
+	],
+	"xiang_en": [
+	  {
+		"id": "xiang_en_cos01",
+		"name": "高高在上",
+		"quality": "素装",
+		"series": ""
+	  },
+	  {
+		"id": "xiang_en_cos02",
+		"name": "玉龙锅",
+		"quality": "素装",
+		"series": ""
+	  },
+	  {
+		"id": "xiang_en_cos03",
+		"name": "味觉之秘",
+		"quality": "素装",
+		"series": ""
+	  },
+	  {
+		"id": "xiang_en_cos04",
+		"name": "神速破军",
+		"quality": "华服",
+		"series": ""
+	  }
+	],
+	"xiao_wu": [
+	  {
+		"id": "xiao_wu_cos01",
+		"name": "生死诀别",
+		"quality": "华服",
+		"series": ""
+	  }
+	],
+	"luo_caifeng": [
+	  {
+		"id": "luo_caifeng_cos01",
+		"name": "一步之遥",
+		"quality": "素装",
+		"series": ""
+	  },
+	  {
+		"id": "luo_caifeng_cos02",
+		"name": "量雪裁衣",
+		"quality": "素装",
+		"series": ""
+	  },
+	  {
+		"id": "luo_caifeng_cos03",
+		"name": "伴柳成双",
+		"quality": "素装",
+		"series": ""
+	  },
+	  {
+		"id": "luo_caifeng_cos04",
+		"name": "荷衣蕙带",
+		"quality": "素装",
+		"series": ""
+	  }
+	],
+	"feng_mier": [
+	  {
+		"id": "feng_mier_cos01",
+		"name": "蜂口取蜜",
+		"quality": "素装",
+		"series": ""
+	  },
+	  {
+		"id": "feng_mier_cos02",
+		"name": "消暑蜜饮",
+		"quality": "素装",
+		"series": ""
+	  },
+	  {
+		"id": "feng_mier_cos03",
+		"name": "蜜雪冰乘",
+		"quality": "素装",
+		"series": ""
+	  },
+	  {
+		"id": "feng_mier_cos04",
+		"name": "崖间采蜜",
+		"quality": "素装",
+		"series": ""
+	  }
+	],
+	"li_shenshou": [
+	  {
+		"id": "li_shenshou_cos01",
+		"name": "百鸟朝凤",
+		"quality": "素装",
+		"series": ""
+	  },
+	  {
+		"id": "li_shenshou_cos02",
+		"name": "自得其乐",
+		"quality": "素装",
+		"series": ""
+	  }
+	],
+	"zhang_sanfeng": [
+	  {
+		"id": "zhang_sanfeng_cos01",
+		"name": "醉翁游侠",
+		"quality": "素装",
+		"series": ""
+	  },
+	  {
+		"id": "zhang_sanfeng_cos02",
+		"name": "风华正茂",
+		"quality": "华服",
+		"series": "精忠报国"
+	  },
+	  {
+		"id": "zhang_sanfeng_cos03",
+		"name": "纯钧",
+		"quality": "华服",
+		"series": "君子如剑"
+	  }
+	],
+	"fang_huotou": [
+	  {
+		"id": "fang_huotou_cos01",
+		"name": "火树银花",
+		"quality": "素装",
+		"series": ""
+	  },
+	  {
+		"id": "fang_huotou_cos02",
+		"name": "壮志凌云",
+		"quality": "素装",
+		"series": ""
+	  },
+	  {
+		"id": "fang_huotou_cos03",
+		"name": "邪火凤凰",
+		"quality": "素装",
+		"series": ""
+	  },
+	  {
+		"id": "fang_huotou_cos04",
+		"name": "科学狂人",
+		"quality": "华服",
+		"series": ""
+	  }
+	],
+	"ding_xiren": [
+	  {
+		"id": "ding_xiren_cos01",
+		"name": "布袋江湖",
+		"quality": "素装",
+		"series": ""
+	  },
+	  {
+		"id": "ding_xiren_cos02",
+		"name": "杖头木偶",
+		"quality": "素装",
+		"series": ""
+	  },
+	  {
+		"id": "ding_xiren_cos03",
+		"name": "百变千面",
+		"quality": "素装",
+		"series": ""
+	  },
+	  {
+		"id": "ding_xiren_cos04",
+		"name": "画地为牢",
+		"quality": "素装",
+		"series": ""
+	  },
+	  {
+		"id": "ding_xiren_cos05",
+		"name": "重楼",
+		"quality": "素装",
+		"series": ""
+	  }
+	],
+	"lv_bu": [
+	  {
+		"id": "lv_bu_cos01",
+		"name": "白起",
+		"quality": "素装",
+		"series": ""
+	  }
+	],
+	"gun_haijiao": [
+	  {
+		"id": "gun_haijiao_cos01",
+		"name": "海洋龙卷",
+		"quality": "素装",
+		"series": ""
+	  }
+	],
+	"dunhuang_jiangshen": [
+	  {
+		"id": "dunhuang_jiangshen_cos01",
+		"name": "入梦敦煌",
+		"quality": "素装",
+		"series": ""
+	  }
+	],
+	"du_kang": [
+	  {
+		"id": "du_kang_cos01",
+		"name": "酿酒宗师",
+		"quality": "素装",
+		"series": ""
+	  },
+	  {
+		"id": "du_kang_cos02",
+		"name": "歌舞升平",
+		"quality": "华服",
+		"series": "清平盛世"
+	  }
+	],
+	"li_xiangjun": [
+	  {
+		"id": "li_xiangjun_cos01",
+		"name": "凤舞九天",
+		"quality": "华服",
+		"series": "五凤来仪"
+	  },
+	  {
+		"id": "li_xiangjun_cos02",
+		"name": "曾侯乙编钟",
+		"quality": "华服",
+		"series": "传世珍宝"
+	  },
+	  {
+		"id": "li_xiangjun_cos03",
+		"name": "中岳嵩山",
+		"quality": "华服",
+		"series": ""
+	  },
+	  {
+		"id": "li_xiangjun_cos04",
+		"name": "一舞倾心",
+		"quality": "华服",
+		"series": "汴梁女团"
+	  },
+	  {
+		"id": "li_xiangjun_cos05",
+		"name": "醉卧桃花",
+		"quality": "锦衣",
+		"series": "百花齐放"
+	  }
+	],
+	"sun_wu": [
+	  {
+		"id": "sun_wu_cos01",
+		"name": "兵法至圣",
+		"quality": "素装",
+		"series": ""
+	  }
+	],
+	"bi_sheng": [
+	  {
+		"id": "bi_sheng_cos01",
+		"name": "灵光乍现",
+		"quality": "素装",
+		"series": ""
+	  },
+	  {
+		"id": "bi_sheng_cos02",
+		"name": "鬼斧神工",
+		"quality": "华服",
+		"series": "精忠报国"
+	  },
+	  {
+		"id": "bi_sheng_cos03",
+		"name": "承影",
+		"quality": "华服",
+		"series": "君子如剑"
+	  }
+	],
+	"qian_caizhu": [
+	  {
+		"id": "qian_caizhu_cos01",
+		"name": "花鸟富贵",
+		"quality": "素装",
+		"series": ""
+	  }
+	],
+	"hu_lu_xianren": [
+	  {
+		"id": "hu_lu_xianren_cos01",
+		"name": "逍遥子",
+		"quality": "素装",
+		"series": ""
+	  },
+	  {
+		"id": "hu_lu_xianren_cos02",
+		"name": "风吟",
+		"quality": "素装",
+		"series": ""
+	  },
+	  {
+		"id": "hu_lu_xianren_cos03",
+		"name": "金雷",
+		"quality": "素装",
+		"series": ""
+	  },
+	  {
+		"id": "hu_lu_xianren_cos04",
+		"name": "阳焱",
+		"quality": "素装",
+		"series": ""
+	  },
+	  {
+		"id": "hu_lu_xianren_cos05",
+		"name": "龙幽",
+		"quality": "素装",
+		"series": ""
+	  },
+	  {
+		"id": "hu_lu_xianren_cos06",
+		"name": "影",
+		"quality": "素装",
+		"series": ""
+	  },
+	  {
+		"id": "hu_lu_xianren_cos07",
+		"name": "海无量",
+		"quality": "素装",
+		"series": ""
+	  },
+	  {
+		"id": "hu_lu_xianren_cos08",
+		"name": "惊涛骇浪",
+		"quality": "素装",
+		"series": ""
+	  },
+	  {
+		"id": "hu_lu_xianren_cos09",
+		"name": "匿迹潜形",
+		"quality": "素装",
+		"series": ""
+	  },
+	  {
+		"id": "hu_lu_xianren_cos10",
+		"name": "葫里乾坤",
+		"quality": "素装",
+		"series": ""
+	  },
+	  {
+		"id": "hu_lu_xianren_cos11",
+		"name": "神娃爆诞",
+		"quality": "华服",
+		"series": ""
+	  },
+	  {
+		"id": "hu_lu_xianren_cos12",
+		"name": "星蚀",
+		"quality": "华服",
+		"series": ""
+	  }
+	],
+	"yan_xiaoer": [
+	  {
+		"id": "yan_xiaoer_cos01",
+		"name": "一柱擎天",
+		"quality": "素装",
+		"series": ""
+	  }
+	],
+	"cao_tiejiang": [
+	  {
+		"id": "cao_tiejiang_cos01",
+		"name": "暴打地鼠",
+		"quality": "素装",
+		"series": ""
+	  }
+	],
+	"si_lang": [
+	  {
+		"id": "si_lang_cos01",
+		"name": "大显身手",
+		"quality": "素装",
+		"series": ""
+	  }
+	],
+	"wu_shiren": [
+	  {
+		"id": "wu_shiren_cos01",
+		"name": "邪眸白虎",
+		"quality": "素装",
+		"series": ""
+	  }
+	],
+	"tang_hulu": [
+	  {
+		"id": "tang_hulu_cos01",
+		"name": "酸甜童忆",
+		"quality": "素装",
+		"series": ""
+	  }
+	],
+	"zheng_chuzi": [
+	  {
+		"id": "zheng_chuzi_cos01",
+		"name": "香肠专卖",
+		"quality": "素装",
+		"series": ""
+	  }
+	],
+	"zheng_guonong": [
+	  {
+		"id": "zheng_guonong_cos01",
+		"name": "种瓜得瓜",
+		"quality": "素装",
+		"series": ""
+	  }
+	],
+	"zhu_huolang": [
+	  {
+		"id": "zhu_huolang_cos01",
+		"name": "琳琅满目",
+		"quality": "素装",
+		"series": ""
+	  }
+	],
+	"xiao_yuer": [
+	  {
+		"id": "xiao_yuer_cos01",
+		"name": "小魔星",
+		"quality": "素装",
+		"series": ""
+	  },
+	  {
+		"id": "xiao_yuer_cos02",
+		"name": "嬉闹江湖",
+		"quality": "素装",
+		"series": ""
+	  },
+	  {
+		"id": "xiao_yuer_cos03",
+		"name": "五绝神功",
+		"quality": "素装",
+		"series": ""
+	  },
+	  {
+		"id": "xiao_yuer_cos04",
+		"name": "神掌挫敌",
+		"quality": "素装",
+		"series": ""
+	  },
+	  {
+		"id": "xiao_yuer_cos05",
+		"name": "双骄决战",
+		"quality": "华服",
+		"series": ""
+	  },
+	  {
+		"id": "xiao_yuer_cos06",
+		"name": "震慑江湖",
+		"quality": "华服",
+		"series": ""
+	  }
+	],
+	"mei_changsu": [
+	  {
+		"id": "mei_changsu_cos01",
+		"name": "麒麟才子",
+		"quality": "素装",
+		"series": ""
+	  },
+	  {
+		"id": "mei_changsu_cos02",
+		"name": "梅岭火寒",
+		"quality": "素装",
+		"series": ""
+	  },
+	  {
+		"id": "mei_changsu_cos03",
+		"name": "江左盟主",
+		"quality": "素装",
+		"series": ""
+	  },
+	  {
+		"id": "mei_changsu_cos04",
+		"name": "赤焰少帅",
+		"quality": "素装",
+		"series": ""
+	  },
+	  {
+		"id": "mei_changsu_cos05",
+		"name": "长林王爷",
+		"quality": "素装",
+		"series": ""
+	  },
+	  {
+		"id": "mei_changsu_cos06",
+		"name": "风起云涌",
+		"quality": "华服",
+		"series": ""
+	  }
+	],
+	"zhang_qiling": [
+	  {
+		"id": "zhang_qiling_cos01",
+		"name": "黑金古刀",
+		"quality": "素装",
+		"series": ""
+	  },
+	  {
+		"id": "zhang_qiling_cos02",
+		"name": "永生之海",
+		"quality": "素装",
+		"series": ""
+	  },
+	  {
+		"id": "zhang_qiling_cos03",
+		"name": "麒麟当道",
+		"quality": "素装",
+		"series": ""
+	  },
+	  {
+		"id": "zhang_qiling_cos04",
+		"name": "三日静寂",
+		"quality": "素装",
+		"series": ""
+	  },
+	  {
+		"id": "zhang_qiling_cos05",
+		"name": "青铜门下",
+		"quality": "华服",
+		"series": ""
+	  }
+	],
+	"lei_en": [
+	  {
+		"id": "lei_en_cos01",
+		"name": "游刃有余",
+		"quality": "素装",
+		"series": ""
+	  },
+	  {
+		"id": "lei_en_cos02",
+		"name": "唯强独尊",
+		"quality": "素装",
+		"series": ""
+	  },
+	  {
+		"id": "lei_en_cos03",
+		"name": "贪狼壶",
+		"quality": "素装",
+		"series": ""
+	  },
+	  {
+		"id": "lei_en_cos04",
+		"name": "初获七星",
+		"quality": "华服",
+		"series": ""
+	  }
+	],
+	"zhou_yu": [
+	  {
+		"id": "zhou_yu_cos01",
+		"name": "蛟龙得水",
+		"quality": "素装",
+		"series": ""
+	  },
+	  {
+		"id": "zhou_yu_cos02",
+		"name": "栩栩如生",
+		"quality": "素装",
+		"series": ""
+	  },
+	  {
+		"id": "zhou_yu_cos03",
+		"name": "永灵刀",
+		"quality": "素装",
+		"series": ""
+	  },
+	  {
+		"id": "zhou_yu_cos04",
+		"name": "知足常乐",
+		"quality": "华服",
+		"series": ""
+	  }
+	],
+	"ya_jiu": [
+	  {
+		"id": "ya_jiu_cos01",
+		"name": "庙会新星",
+		"quality": "锦衣",
+		"series": ""
+	  }
+	],
+	"dayu": [
+	  {
+		"id": "dayu_cos01",
+		"name": "九川归海",
+		"quality": "锦衣",
+		"series": ""
+	  }
+	],
+	"leng_erpi": [
+	  {
+		"id": "leng_erpi_cos01",
+		"name": "身不由己",
+		"quality": "锦衣",
+		"series": ""
+	  }
+	]
   },
   "friend_costumes": {
-    "qing_ning": [
-      {
-        "id": "qing_ning_cos01",
-        "name": "心向自然",
-        "quality": "素装",
-        "series": ""
-      },
-      {
-        "id": "qing_ning_cos02",
-        "name": "流苏舞影",
-        "quality": "素装",
-        "series": ""
-      },
-      {
-        "id": "qing_ning_cos03",
-        "name": "枫野拾秋",
-        "quality": "素装",
-        "series": ""
-      },
-      {
-        "id": "qing_ning_cos04",
-        "name": "圣诞之星",
-        "quality": "素装",
-        "series": ""
-      },
-      {
-        "id": "qing_ning_cos05",
-        "name": "花想容",
-        "quality": "锦衣",
-        "series": ""
-      }
-    ],
-    "xiu_niang": [
-      {
-        "id": "xiu_niang_cos01",
-        "name": "红袖添香",
-        "quality": "素装",
-        "series": ""
-      },
-      {
-        "id": "xiu_niang_cos02",
-        "name": "黄皮冰柠茶",
-        "quality": "素装",
-        "series": ""
-      },
-      {
-        "id": "xiu_niang_cos03",
-        "name": "醉意微醺",
-        "quality": "素装",
-        "series": ""
-      },
-      {
-        "id": "xiu_niang_cos04",
-        "name": "使命必达",
-        "quality": "素装",
-        "series": ""
-      },
-      {
-        "id": "xiu_niang_cos05",
-        "name": "葵香氤氲",
-        "quality": "素装",
-        "series": ""
-      },
-      {
-        "id": "xiu_niang_cos06",
-        "name": "共庆周年",
-        "quality": "锦衣",
-        "series": ""
-      },
-      {
-        "id": "xiu_niang_cos07",
-        "name": "共赴佳期",
-        "quality": "锦衣",
-        "series": ""
-      }
-    ],
-    "ling_ye_mao_nv": [
-      {
-        "id": "ling_ye_mao_nv_cos01",
-        "name": "专属甜心",
-        "quality": "素装",
-        "series": ""
-      },
-      {
-        "id": "ling_ye_mao_nv_cos02",
-        "name": "一钩渔满",
-        "quality": "素装",
-        "series": ""
-      },
-      {
-        "id": "ling_ye_mao_nv_cos03",
-        "name": "招财猫女",
-        "quality": "素装",
-        "series": ""
-      },
-      {
-        "id": "ling_ye_mao_nv_cos04",
-        "name": "倩女喵魂",
-        "quality": "华服",
-        "series": ""
-      },
-      {
-        "id": "ling_ye_mao_nv_cos05",
-        "name": "殊途长恨",
-        "quality": "锦衣",
-        "series": ""
-      },
-      {
-        "id": "ling_ye_mao_nv_cos06",
-        "name": "爱恨交织",
-        "quality": "锦衣",
-        "series": ""
-      }
-    ],
-    "zhuo_gui_shi": [
-      {
-        "id": "zhuo_gui_shi_cos01",
-        "name": "昼伏夜出",
-        "quality": "素装",
-        "series": ""
-      },
-      {
-        "id": "zhuo_gui_shi_cos02",
-        "name": "驱邪镇妖",
-        "quality": "素装",
-        "series": ""
-      },
-      {
-        "id": "zhuo_gui_shi_cos03",
-        "name": "孤灯静森",
-        "quality": "素装",
-        "series": ""
-      },
-      {
-        "id": "zhuo_gui_shi_cos04",
-        "name": "子夜惑妖",
-        "quality": "素装",
-        "series": ""
-      },
-      {
-        "id": "zhuo_gui_shi_cos05",
-        "name": "无常",
-        "quality": "锦衣",
-        "series": ""
-      },
-      {
-        "id": "zhuo_gui_shi_cos06",
-        "name": "引渡轮回",
-        "quality": "素装",
-        "series": ""
-      }
-    ],
-    "nan_gong_wan": [
-      {
-        "id": "nan_gong_wan_cos01",
-        "name": "掩月仙颜",
-        "quality": "素装",
-        "series": ""
-      }
-    ],
-    "xun_ying_shaonv": [
-      {
-        "id": "xun_ying_shaonv_cos01",
-        "name": "雪域寒裘",
-        "quality": "素装",
-        "series": ""
-      },
-      {
-        "id": "xun_ying_shaonv_cos02",
-        "name": "策马奔腾",
-        "quality": "素装",
-        "series": ""
-      },
-      {
-        "id": "xun_ying_shaonv_cos03",
-        "name": "篝火流萤",
-        "quality": "素装",
-        "series": ""
-      },
-      {
-        "id": "xun_ying_shaonv_cos04",
-        "name": "巾帼须眉",
-        "quality": "素装",
-        "series": ""
-      },
-      {
-        "id": "xun_ying_shaonv_cos05",
-        "name": "长生天",
-        "quality": "锦衣",
-        "series": ""
-      },
-      {
-        "id": "xun_ying_shaonv_cos06",
-        "name": "钟灵酼秀",
-        "quality": "锦衣",
-        "series": ""
-      }
-    ],
-    "tushan_honghong": [
-      {
-        "id": "tushan_honghong_cos01",
-        "name": "涂山之主",
-        "quality": "素装",
-        "series": ""
-      }
-    ],
-    "dong_xiaowan_friend": [
-      {
-        "id": "dong_xiaowan_friend_cos01",
-        "name": "青鸾御风",
-        "quality": "锦衣",
-        "series": ""
-      },
-      {
-        "id": "dong_xiaowan_friend_cos02",
-        "name": "琴音萦梦",
-        "quality": "锦衣",
-        "series": ""
-      },
-      {
-        "id": "dong_xiaowan_friend_cos03",
-        "name": "千里江山图",
-        "quality": "锦衣",
-        "series": ""
-      },
-      {
-        "id": "dong_xiaowan_friend_cos04",
-        "name": "北岳常恒",
-        "quality": "锦衣",
-        "series": "山河五岳"
-      }
-    ],
-    "ji_zhou": [
-      {
-        "id": "ji_zhou_cos01",
-        "name": "焚天圣火",
-        "quality": "素装",
-        "series": ""
-      }
-    ],
-    "luo": [
-      {
-        "id": "luo_cos01",
-        "name": "冰河寻踪",
-        "quality": "素装",
-        "series": ""
-      },
-      {
-        "id": "luo_cos02",
-        "name": "相濡以沫",
-        "quality": "素装",
-        "series": ""
-      },
-      {
-        "id": "luo_cos03",
-        "name": "荣冠献瑞",
-        "quality": "素装",
-        "series": ""
-      },
-      {
-        "id": "luo_cos04",
-        "name": "暖秋枫伴",
-        "quality": "素装",
-        "series": ""
-      },
-      {
-        "id": "luo_cos05",
-        "name": "天河穹星",
-        "quality": "锦衣",
-        "series": ""
-      }
-    ],
-    "xinniang": [
-      {
-        "id": "xinniang_cos01",
-        "name": "绣织情缘",
-        "quality": "素装",
-        "series": ""
-      },
-      {
-        "id": "xinniang_cos02",
-        "name": "九宝琉璃",
-        "quality": "素装",
-        "series": ""
-      },
-      {
-        "id": "xinniang_cos03",
-        "name": "笑春风",
-        "quality": "素装",
-        "series": ""
-      },
-      {
-        "id": "xinniang_cos04",
-        "name": "红装新妇",
-        "quality": "华服",
-        "series": ""
-      },
-      {
-        "id": "xinniang_cos05",
-        "name": "红颜凤轿",
-        "quality": "锦衣",
-        "series": ""
-      },
-      {
-        "id": "xinniang_cos06",
-        "name": "十里红妆",
-        "quality": "锦衣",
-        "series": ""
-      }
-    ],
-    "tan_you": [
-      {
-        "id": "tan_you_cos01",
-        "name": "守正为心",
-        "quality": "素装",
-        "series": ""
-      }
-    ],
-    "hua_zhao": [
-      {
-        "id": "hua_zhao_cos01",
-        "name": "布花赴宴",
-        "quality": "素装",
-        "series": ""
-      }
-    ],
-    "ning_yin": [
-      {
-        "id": "ning_yin_cos01",
-        "name": "十面埋伏",
-        "quality": "素装",
-        "series": ""
-      },
-      {
-        "id": "ning_yin_cos02",
-        "name": "二泉映月",
-        "quality": "素装",
-        "series": ""
-      },
-      {
-        "id": "ning_yin_cos03",
-        "name": "箜篌引",
-        "quality": "素装",
-        "series": ""
-      },
-      {
-        "id": "ning_yin_cos04",
-        "name": "梅花三弄",
-        "quality": "素装",
-        "series": ""
-      },
-      {
-        "id": "ning_yin_cos05",
-        "name": "百鸟归巢",
-        "quality": "素装",
-        "series": ""
-      }
-    ],
-    "ji_ye": [
-      {
-        "id": "ji_ye_cos01",
-        "name": "中元夜游",
-        "quality": "素装",
-        "series": ""
-      },
-      {
-        "id": "ji_ye_cos02",
-        "name": "雪域冰莲",
-        "quality": "素装",
-        "series": ""
-      },
-      {
-        "id": "ji_ye_cos03",
-        "name": "彼岸有花",
-        "quality": "素装",
-        "series": ""
-      },
-      {
-        "id": "ji_ye_cos04",
-        "name": "音戏人心",
-        "quality": "素装",
-        "series": ""
-      },
-      {
-        "id": "ji_ye_cos05",
-        "name": "万妖之王",
-        "quality": "锦衣",
-        "series": ""
-      }
-    ],
-    "yu_ji": [
-      {
-        "id": "yu_ji_cos01",
-        "name": "虞美人",
-        "quality": "素装",
-        "series": ""
-      }
-    ],
-    "mu_shu": [
-      {
-        "id": "mu_shu_cos01",
-        "name": "知而行之",
-        "quality": "素装",
-        "series": ""
-      }
-    ],
-    "wan_wan": [
-      {
-        "id": "wan_wan_cos01",
-        "name": "簪花引",
-        "quality": "素装",
-        "series": ""
-      }
-    ],
-    "hui_yin": [
-      {
-        "id": "hui_yin_cos01",
-        "name": "粉墙黛瓦",
-        "quality": "素装",
-        "series": ""
-      },
-      {
-        "id": "hui_yin_cos02",
-        "name": "迷你雪屋",
-        "quality": "素装",
-        "series": ""
-      }
-    ],
-    "xiao_shimei": [
-      {
-        "id": "xiao_shimei_cos01",
-        "name": "烟雨江湖",
-        "quality": "素装",
-        "series": ""
-      },
-      {
-        "id": "xiao_shimei_cos02",
-        "name": "世外灵仙",
-        "quality": "素装",
-        "series": ""
-      },
-      {
-        "id": "xiao_shimei_cos03",
-        "name": "幽冥灵猫",
-        "quality": "素装",
-        "series": ""
-      },
-      {
-        "id": "xiao_shimei_cos04",
-        "name": "剑魄琴心",
-        "quality": "素装",
-        "series": ""
-      },
-      {
-        "id": "xiao_shimei_cos05",
-        "name": "红装叶戏",
-        "quality": "素装",
-        "series": ""
-      },
-      {
-        "id": "xiao_shimei_cos06",
-        "name": "圣诞赐礼",
-        "quality": "华服",
-        "series": ""
-      },
-      {
-        "id": "xiao_shimei_cos07",
-        "name": "故剑昔人",
-        "quality": "锦衣",
-        "series": ""
-      },
-      {
-        "id": "xiao_shimei_cos08",
-        "name": "墨染剑心",
-        "quality": "锦衣",
-        "series": ""
-      }
-    ],
-    "yi_shi": [
-      {
-        "id": "yi_shi_cos01",
-        "name": "旗开得胜",
-        "quality": "素装",
-        "series": ""
-      },
-      {
-        "id": "yi_shi_cos02",
-        "name": "家书万金",
-        "quality": "素装",
-        "series": ""
-      },
-      {
-        "id": "yi_shi_cos03",
-        "name": "塞北传音",
-        "quality": "素装",
-        "series": ""
-      },
-      {
-        "id": "yi_shi_cos04",
-        "name": "烽火佳人",
-        "quality": "华服",
-        "series": ""
-      },
-      {
-        "id": "yi_shi_cos05",
-        "name": "桃源游",
-        "quality": "锦衣",
-        "series": ""
-      }
-    ],
-    "miao_jiang_shengnv": [
-      {
-        "id": "miao_jiang_shengnv_cos01",
-        "name": "苗疆蛊医",
-        "quality": "素装",
-        "series": ""
-      },
-      {
-        "id": "miao_jiang_shengnv_cos02",
-        "name": "中秋赏月",
-        "quality": "素装",
-        "series": ""
-      },
-      {
-        "id": "miao_jiang_shengnv_cos03",
-        "name": "紫萱",
-        "quality": "素装",
-        "series": ""
-      },
-      {
-        "id": "miao_jiang_shengnv_cos04",
-        "name": "误落尘网",
-        "quality": "素装",
-        "series": ""
-      },
-      {
-        "id": "miao_jiang_shengnv_cos05",
-        "name": "苗孔雀",
-        "quality": "素装",
-        "series": ""
-      },
-      {
-        "id": "miao_jiang_shengnv_cos06",
-        "name": "情蛊深种",
-        "quality": "华服",
-        "series": ""
-      },
-      {
-        "id": "miao_jiang_shengnv_cos07",
-        "name": "月华洗礼",
-        "quality": "锦衣",
-        "series": ""
-      },
-      {
-        "id": "miao_jiang_shengnv_cos08",
-        "name": "苗疆神火",
-        "quality": "锦衣",
-        "series": ""
-      }
-    ],
-    "hua_yi_shi": [
-      {
-        "id": "hua_yi_shi_cos01",
-        "name": "美人亦花",
-        "quality": "素装",
-        "series": ""
-      },
-      {
-        "id": "hua_yi_shi_cos02",
-        "name": "花香解语",
-        "quality": "素装",
-        "series": ""
-      },
-      {
-        "id": "hua_yi_shi_cos03",
-        "name": "龙葵",
-        "quality": "素装",
-        "series": ""
-      },
-      {
-        "id": "hua_yi_shi_cos04",
-        "name": "樱花之约",
-        "quality": "华服",
-        "series": ""
-      }
-    ],
-    "bu_kuai": [
-      {
-        "id": "bu_kuai_cos01",
-        "name": "满弓知艳",
-        "quality": "素装",
-        "series": ""
-      },
-      {
-        "id": "bu_kuai_cos02",
-        "name": "寒月侠女",
-        "quality": "素装",
-        "series": ""
-      },
-      {
-        "id": "bu_kuai_cos03",
-        "name": "圣上敕令",
-        "quality": "素装",
-        "series": ""
-      },
-      {
-        "id": "bu_kuai_cos04",
-        "name": "龙腾虎蹴",
-        "quality": "素装",
-        "series": ""
-      }
-    ],
-    "tang_pingguo": [
-      {
-        "id": "tang_pingguo_cos01",
-        "name": "食韵摇香",
-        "quality": "素装",
-        "series": ""
-      },
-      {
-        "id": "tang_pingguo_cos02",
-        "name": "蜜语芬芳",
-        "quality": "素装",
-        "series": ""
-      },
-      {
-        "id": "tang_pingguo_cos03",
-        "name": "照猫画虎",
-        "quality": "素装",
-        "series": ""
-      },
-      {
-        "id": "tang_pingguo_cos04",
-        "name": "粽意飘香",
-        "quality": "素装",
-        "series": ""
-      },
-      {
-        "id": "tang_pingguo_cos05",
-        "name": "四时风味",
-        "quality": "锦衣",
-        "series": ""
-      },
-      {
-        "id": "tang_pingguo_cos06",
-        "name": "宴飨春秋",
-        "quality": "锦衣",
-        "series": ""
-      }
-    ],
-    "xun_ma_shi": [
-      {
-        "id": "xun_ma_shi_cos01",
-        "name": "鲜衣骏马",
-        "quality": "素装",
-        "series": ""
-      }
-    ],
-    "mo_li": [
-      {
-        "id": "mo_li_cos01",
-        "name": "遇甜而止",
-        "quality": "素装",
-        "series": ""
-      },
-      {
-        "id": "mo_li_cos02",
-        "name": "糖果甜心",
-        "quality": "素装",
-        "series": ""
-      },
-      {
-        "id": "mo_li_cos03",
-        "name": "盛夏美食",
-        "quality": "素装",
-        "series": ""
-      },
-      {
-        "id": "mo_li_cos04",
-        "name": "味界奇观",
-        "quality": "素装",
-        "series": ""
-      },
-      {
-        "id": "mo_li_cos05",
-        "name": "时光交错",
-        "quality": "锦衣",
-        "series": ""
-      }
-    ],
-    "si_tang": [
-      {
-        "id": "si_tang_cos01",
-        "name": "鉴宝识心",
-        "quality": "素装",
-        "series": ""
-      }
-    ],
-    "li_xiangjun_friend": [
-      {
-        "id": "li_xiangjun_friend_cos01",
-        "name": "凤舞九天",
-        "quality": "锦衣",
-        "series": ""
-      },
-      {
-        "id": "li_xiangjun_friend_cos02",
-        "name": "一舞倾心",
-        "quality": "锦衣",
-        "series": ""
-      },
-      {
-        "id": "li_xiangjun_friend_cos03",
-        "name": "曾侯乙编钟",
-        "quality": "锦衣",
-        "series": ""
-      },
-      {
-        "id": "li_xiangjun_friend_cos04",
-        "name": "中岳嵩山",
-        "quality": "锦衣",
-        "series": "山河五岳"
-      }
-    ],
-    "ma_xianglan_friend": [
-      {
-        "id": "ma_xianglan_friend_cos01",
-        "name": "鸑鷟欲出",
-        "quality": "锦衣",
-        "series": ""
-      },
-      {
-        "id": "ma_xianglan_friend_cos02",
-        "name": "弦音似火",
-        "quality": "锦衣",
-        "series": ""
-      },
-      {
-        "id": "ma_xianglan_friend_cos03",
-        "name": "睡虎地秦简",
-        "quality": "锦衣",
-        "series": ""
-      },
-      {
-        "id": "ma_xianglan_friend_cos04",
-        "name": "东岳岱宗",
-        "quality": "锦衣",
-        "series": "山河五岳"
-      }
-    ],
-    "dao_gu": [
-      {
-        "id": "dao_gu_cos01",
-        "name": "黄金洞",
-        "quality": "素装",
-        "series": ""
-      }
-    ],
-    "bian_yujing_friend": [
-      {
-        "id": "bian_yujing_friend_cos01",
-        "name": "鹓雏降财",
-        "quality": "锦衣",
-        "series": ""
-      },
-      {
-        "id": "bian_yujing_friend_cos02",
-        "name": "碧玉歌声",
-        "quality": "锦衣",
-        "series": ""
-      },
-      {
-        "id": "bian_yujing_friend_cos03",
-        "name": "长信宫灯",
-        "quality": "锦衣",
-        "series": ""
-      },
-      {
-        "id": "bian_yujing_friend_cos04",
-        "name": "南岳玑衡",
-        "quality": "锦衣",
-        "series": "山河五岳"
-      }
-    ],
-    "qian_ren_xue": [
-      {
-        "id": "qian_ren_xue_cos01",
-        "name": "武魂真身",
-        "quality": "素装",
-        "series": ""
-      }
-    ],
-    "kou_baimen_friend": [
-      {
-        "id": "kou_baimen_friend_cos01",
-        "name": "鸿鹄展翅",
-        "quality": "锦衣",
-        "series": ""
-      },
-      {
-        "id": "kou_baimen_friend_cos02",
-        "name": "声妙入神",
-        "quality": "锦衣",
-        "series": ""
-      },
-      {
-        "id": "kou_baimen_friend_cos03",
-        "name": "越王勾践剑",
-        "quality": "锦衣",
-        "series": ""
-      },
-      {
-        "id": "kou_baimen_friend_cos04",
-        "name": "西岳太华",
-        "quality": "锦衣",
-        "series": "山河五岳"
-      }
-    ],
-    "yi_shi_new": [
-      {
-        "id": "yi_shi_new_cos01",
-        "name": "玉背行罐",
-        "quality": "素装",
-        "series": ""
-      }
-    ],
-    "qi_shi": [
-      {
-        "id": "qi_shi_cos01",
-        "name": "泡影浮棋",
-        "quality": "素装",
-        "series": ""
-      }
-    ],
-    "xiao_qigai": [
-      {
-        "id": "xiao_qigai_cos01",
-        "name": "团圆年夜",
-        "quality": "素装",
-        "series": ""
-      }
-    ],
-    "shao_jiangjun": [
-      {
-        "id": "shao_jiangjun_cos01",
-        "name": "凯旋而归",
-        "quality": "素装",
-        "series": ""
-      }
-    ],
-    "xiyu_nvzi": [
-      {
-        "id": "xiyu_nvzi_cos01",
-        "name": "异国风情",
-        "quality": "素装",
-        "series": ""
-      },
-      {
-        "id": "xiyu_nvzi_cos02",
-        "name": "异国珠绕",
-        "quality": "素装",
-        "series": ""
-      }
-    ],
-    "yuan_xiao_guniang": [
-      {
-        "id": "yuan_xiao_guniang_cos01",
-        "name": "元宵灯会",
-        "quality": "素装",
-        "series": ""
-      }
-    ],
-    "ya_huan": [
-      {
-        "id": "ya_huan_cos01",
-        "name": "厢房寻猫",
-        "quality": "素装",
-        "series": ""
-      }
-    ],
-    "meng_qier": [
-      {
-        "id": "meng_qier_cos01",
-        "name": "酒醉迷人",
-        "quality": "素装",
-        "series": ""
-      }
-    ],
-    "xiwangmu": [
-      {
-        "id": "xiwangmu_cos01",
-        "name": "玉瓷星宫",
-        "quality": "锦衣",
-        "series": ""
-      }
-    ],
-    "nvba": [
-      {
-        "id": "nvba_cos01",
-        "name": "冷月映蝶",
-        "quality": "锦衣",
-        "series": ""
-      }
-    ],
-    "xiao_hudie": [
-      {
-        "id": "xiao_hudie_cos01",
-        "name": "陌枝新露",
-        "quality": "素装",
-        "series": ""
-      },
-      {
-        "id": "xiao_hudie_cos02",
-        "name": "蝶意莺情",
-        "quality": "素装",
-        "series": ""
-      },
-      {
-        "id": "xiao_hudie_cos03",
-        "name": "冬日仙灵",
-        "quality": "素装",
-        "series": ""
-      },
-      {
-        "id": "xiao_hudie_cos04",
-        "name": "情牵梁祝",
-        "quality": "素装",
-        "series": ""
-      },
-      {
-        "id": "xiao_hudie_cos05",
-        "name": "蝶醒春生",
-        "quality": "锦衣",
-        "series": ""
-      },
-      {
-        "id": "xiao_hudie_cos06",
-        "name": "不朽静谧",
-        "quality": "锦衣",
-        "series": ""
-      }
-    ],
-    "gu_guo_gongzhu": [
-      {
-        "id": "gu_guo_gongzhu_cos01",
-        "name": "楼兰女王",
-        "quality": "素装",
-        "series": ""
-      },
-      {
-        "id": "gu_guo_gongzhu_cos02",
-        "name": "精绝女王",
-        "quality": "素装",
-        "series": ""
-      },
-      {
-        "id": "gu_guo_gongzhu_cos03",
-        "name": "楼兰故梦",
-        "quality": "锦衣",
-        "series": ""
-      },
-      {
-        "id": "gu_guo_gongzhu_cos04",
-        "name": "圣诞之宴",
-        "quality": "素装",
-        "series": ""
-      },
-      {
-        "id": "gu_guo_gongzhu_cos05",
-        "name": "永浴爱河",
-        "quality": "素装",
-        "series": ""
-      },
-      {
-        "id": "gu_guo_gongzhu_cos06",
-        "name": "流沙溯时",
-        "quality": "锦衣",
-        "series": ""
-      }
-    ],
-    "yu_ge": [
-      {
-        "id": "yu_ge_cos01",
-        "name": "沧海月明",
-        "quality": "素装",
-        "series": ""
-      },
-      {
-        "id": "yu_ge_cos02",
-        "name": "鱼贯而出",
-        "quality": "素装",
-        "series": ""
-      },
-      {
-        "id": "yu_ge_cos03",
-        "name": "龙伴沧溟",
-        "quality": "锦衣",
-        "series": ""
-      },
-      {
-        "id": "yu_ge_cos04",
-        "name": "钓以倾心",
-        "quality": "素装",
-        "series": ""
-      },
-      {
-        "id": "yu_ge_cos05",
-        "name": "龙舟竞渡",
-        "quality": "素装",
-        "series": ""
-      },
-      {
-        "id": "yu_ge_cos06",
-        "name": "洛神赋",
-        "quality": "锦衣",
-        "series": ""
-      }
-    ],
-    "jin_shu": [
-      {
-        "id": "jin_shu_cos01",
-        "name": "红烛夜语",
-        "quality": "素装",
-        "series": ""
-      },
-      {
-        "id": "jin_shu_cos02",
-        "name": "紫灵",
-        "quality": "素装",
-        "series": ""
-      },
-      {
-        "id": "jin_shu_cos03",
-        "name": "浮世绘卷",
-        "quality": "素装",
-        "series": ""
-      },
-      {
-        "id": "jin_shu_cos04",
-        "name": "碧海青天",
-        "quality": "堇书",
-        "series": ""
-      },
-      {
-        "id": "jin_shu_cos05",
-        "name": "红楼幻梦",
-        "quality": "锦衣",
-        "series": ""
-      },
-      {
-        "id": "jin_shu_cos06",
-        "name": "青丝落雪",
-        "quality": "锦衣",
-        "series": ""
-      }
-    ],
-    "qi_ling": [
-      {
-        "id": "qi_ling_cos01",
-        "name": "青铜神树",
-        "quality": "素装",
-        "series": ""
-      },
-      {
-        "id": "qi_ling_cos02",
-        "name": "黄山客来",
-        "quality": "素装",
-        "series": ""
-      },
-      {
-        "id": "qi_ling_cos03",
-        "name": "纤香隐",
-        "quality": "素装",
-        "series": ""
-      },
-      {
-        "id": "qi_ling_cos04",
-        "name": "聊斋",
-        "quality": "素装",
-        "series": ""
-      },
-      {
-        "id": "qi_ling_cos05",
-        "name": "笔下有灵",
-        "quality": "锦衣",
-        "series": ""
-      }
-    ],
-    "yao_ying": [
-      {
-        "id": "yao_ying_cos01",
-        "name": "雪夜奇兵",
-        "quality": "素装",
-        "series": ""
-      },
-      {
-        "id": "yao_ying_cos02",
-        "name": "影绘韶华",
-        "quality": "素装",
-        "series": ""
-      },
-      {
-        "id": "yao_ying_cos03",
-        "name": "泡映夏语",
-        "quality": "素装",
-        "series": ""
-      },
-      {
-        "id": "yao_ying_cos04",
-        "name": "绘声绘影",
-        "quality": "素装",
-        "series": ""
-      },
-      {
-        "id": "yao_ying_cos05",
-        "name": "邀月共酌",
-        "quality": "锦衣",
-        "series": ""
-      }
-    ],
-    "shi_bo_shi": [
-      {
-        "id": "shi_bo_shi_cos01",
-        "name": "乘风破浪",
-        "quality": "素装",
-        "series": ""
-      },
-      {
-        "id": "shi_bo_shi_cos02",
-        "name": "约法三章",
-        "quality": "素装",
-        "series": ""
-      },
-      {
-        "id": "shi_bo_shi_cos03",
-        "name": "箭绘炎诏",
-        "quality": "素装",
-        "series": ""
-      },
-      {
-        "id": "shi_bo_shi_cos04",
-        "name": "幽灵船长",
-        "quality": "素装",
-        "series": ""
-      },
-      {
-        "id": "shi_bo_shi_cos05",
-        "name": "御海龙王",
-        "quality": "锦衣",
-        "series": ""
-      }
-    ],
-    "shou_gong_shaonv": [
-      {
-        "id": "shou_gong_shaonv_cos01",
-        "name": "古玩掌眼",
-        "quality": "素装",
-        "series": ""
-      },
-      {
-        "id": "shou_gong_shaonv_cos02",
-        "name": "木牛流马",
-        "quality": "素装",
-        "series": ""
-      },
-      {
-        "id": "shou_gong_shaonv_cos03",
-        "name": "机关造物",
-        "quality": "素装",
-        "series": ""
-      },
-      {
-        "id": "shou_gong_shaonv_cos04",
-        "name": "清凉一夏",
-        "quality": "素装",
-        "series": ""
-      },
-      {
-        "id": "shou_gong_shaonv_cos05",
-        "name": "天青色",
-        "quality": "锦衣",
-        "series": ""
-      }
-    ],
-    "xinniang_zhimei": [
-      {
-        "id": "xinniang_zhimei_cos01",
-        "name": "桂华宠儿",
-        "quality": "素装",
-        "series": ""
-      },
-      {
-        "id": "xinniang_zhimei_cos02",
-        "name": "雪见",
-        "quality": "素装",
-        "series": ""
-      },
-      {
-        "id": "xinniang_zhimei_cos03",
-        "name": "心动烟火",
-        "quality": "素装",
-        "series": ""
-      },
-      {
-        "id": "xinniang_zhimei_cos04",
-        "name": "对镜初妆",
-        "quality": "素装",
-        "series": ""
-      },
-      {
-        "id": "xinniang_zhimei_cos05",
-        "name": "听海拾贝",
-        "quality": "素装",
-        "series": ""
-      },
-      {
-        "id": "xinniang_zhimei_cos06",
-        "name": "红线牵缘",
-        "quality": "锦衣",
-        "series": ""
-      }
-    ],
-    "cai_shi_guan": [
-      {
-        "id": "cai_shi_guan_cos01",
-        "name": "月下品诗",
-        "quality": "素装",
-        "series": ""
-      },
-      {
-        "id": "cai_shi_guan_cos02",
-        "name": "端午寻诗",
-        "quality": "素装",
-        "series": ""
-      },
-      {
-        "id": "cai_shi_guan_cos03",
-        "name": "雨后新诗",
-        "quality": "素装",
-        "series": ""
-      },
-      {
-        "id": "cai_shi_guan_cos04",
-        "name": "东篱采诗",
-        "quality": "素装",
-        "series": ""
-      },
-      {
-        "id": "cai_shi_guan_cos05",
-        "name": "春江花月",
-        "quality": "锦衣",
-        "series": ""
-      }
-    ],
-    "hong_ying": [
-      {
-        "id": "hong_ying_cos01",
-        "name": "按功分赏",
-        "quality": "素装",
-        "series": ""
-      }
-    ],
-    "zhu_sha": [
-      {
-        "id": "zhu_sha_cos01",
-        "name": "予夺",
-        "quality": "素装",
-        "series": ""
-      }
-    ],
-    "sha_lan": [
-      {
-        "id": "sha_lan_cos01",
-        "name": "逆焰惊弦",
-        "quality": "素装",
-        "series": ""
-      }
-    ],
-    "yin_niang": [
-      {
-        "id": "yin_niang_cos01",
-        "name": "破浪前行",
-        "quality": "素装",
-        "series": ""
-      },
-      {
-        "id": "yin_niang_cos02",
-        "name": "飞檐走壁",
-        "quality": "素装",
-        "series": ""
-      },
-      {
-        "id": "yin_niang_cos03",
-        "name": "入局藏锋",
-        "quality": "素装",
-        "series": ""
-      },
-      {
-        "id": "yin_niang_cos04",
-        "name": "黑夜魅影",
-        "quality": "素装",
-        "series": ""
-      }
-    ],
-    "wang_zhaojun_friend": [
-      {
-        "id": "wang_zhaojun_friend_cos01",
-        "name": "星篝火舞",
-        "quality": "素装",
-        "series": ""
-      },
-      {
-        "id": "wang_zhaojun_friend_cos02",
-        "name": "梅园祈愿",
-        "quality": "素装",
-        "series": ""
-      }
-    ],
-    "qi_guang": [
-      {
-        "id": "qi_guang_cos01",
-        "name": "与春同行",
-        "quality": "素装",
-        "series": ""
-      }
-    ],
-    "rong": [
-      {
-        "id": "rong_cos01",
-        "name": "林间狩猎",
-        "quality": "素装",
-        "series": ""
-      }
-    ],
-    "ying_chun": [
-      {
-        "id": "ying_chun_cos01",
-        "name": "跃动万物",
-        "quality": "素装",
-        "series": ""
-      }
-    ],
-    "jiu_yue": [
-      {
-        "id": "jiu_yue_cos01",
-        "name": "千星成花",
-        "quality": "素装",
-        "series": ""
-      }
-    ],
-    "xiao_ning": [
-      {
-        "id": "xiao_ning_cos01",
-        "name": "凌空决意",
-        "quality": "素装",
-        "series": ""
-      }
-    ],
-    "hua_mulan_friend": [
-      {
-        "id": "hua_mulan_friend_cos01",
-        "name": "踏冰破虏",
-        "quality": "素装",
-        "series": ""
-      }
-    ],
-    "xing_lan": [
-      {
-        "id": "xing_lan_cos01",
-        "name": "鸭鸭戏水",
-        "quality": "素装",
-        "series": ""
-      },
-      {
-        "id": "xing_lan_cos02",
-        "name": "如履平地",
-        "quality": "素装",
-        "series": ""
-      }
-    ],
-    "yu_lu": [
-      {
-        "id": "yu_lu_cos01",
-        "name": "星辉漫叙",
-        "quality": "素装",
-        "series": ""
-      }
-    ],
-    "zhao_yang": [
-      {
-        "id": "zhao_yang_cos01",
-        "name": "花田踱步",
-        "quality": "素装",
-        "series": ""
-      }
-    ],
-    "he_xi": [
-      {
-        "id": "he_xi_cos01",
-        "name": "孤狼",
-        "quality": "素装",
-        "series": ""
-      }
-    ],
-    "yun_zhi": [
-      {
-        "id": "yun_zhi_cos01",
-        "name": "围炉夜话",
-        "quality": "素装",
-        "series": ""
-      },
-      {
-        "id": "yun_zhi_cos02",
-        "name": "绣影双生",
-        "quality": "素装",
-        "series": ""
-      }
-    ],
-    "wu_nv_wu": [
-      {
-        "id": "wu_nv_wu_cos01",
-        "name": "水映清涟",
-        "quality": "素装",
-        "series": ""
-      },
-      {
-        "id": "wu_nv_wu_cos02",
-        "name": "春祈秋报",
-        "quality": "素装",
-        "series": ""
-      },
-      {
-        "id": "wu_nv_wu_cos03",
-        "name": "月下行傩",
-        "quality": "素装",
-        "series": ""
-      }
-    ],
-    "yu_tu": [
-      {
-        "id": "yu_tu_cos01",
-        "name": "蟾宫丹坊",
-        "quality": "素装",
-        "series": ""
-      }
-    ],
-    "shen_meizhuang": [
-      {
-        "id": "shen_meizhuang_cos01",
-        "name": "相思惊鸿",
-        "quality": "素装",
-        "series": ""
-      }
-    ],
-    "zhou_meili": [
-      {
-        "id": "zhou_meili_cos01",
-        "name": "彗星奇迹",
-        "quality": "素装",
-        "series": ""
-      }
-    ],
-    "hu_yao_zhanggui": [
-      {
-        "id": "hu_yao_zhanggui_cos01",
-        "name": "灵狐现世",
-        "quality": "素装",
-        "series": ""
-      },
-      {
-        "id": "hu_yao_zhanggui_cos02",
-        "name": "称平斗满",
-        "quality": "素装",
-        "series": ""
-      },
-      {
-        "id": "hu_yao_zhanggui_cos03",
-        "name": "初落凡尘",
-        "quality": "素装",
-        "series": ""
-      }
-    ],
-    "xiao_lu_nv": [
-      {
-        "id": "xiao_lu_nv_cos01",
-        "name": "银月",
-        "quality": "素装",
-        "series": ""
-      },
-      {
-        "id": "xiao_lu_nv_cos02",
-        "name": "冰上芭蕾",
-        "quality": "素装",
-        "series": ""
-      },
-      {
-        "id": "xiao_lu_nv_cos03",
-        "name": "圣诞奇遇",
-        "quality": "素装",
-        "series": ""
-      }
-    ],
-    "zi_yu": [
-      {
-        "id": "zi_yu_cos01",
-        "name": "天地对弈",
-        "quality": "素装",
-        "series": ""
-      },
-      {
-        "id": "zi_yu_cos02",
-        "name": "驭帅亲征",
-        "quality": "素装",
-        "series": ""
-      }
-    ],
-    "xiao_mujiang": [
-      {
-        "id": "xiao_mujiang_cos01",
-        "name": "顽狮送福",
-        "quality": "素装",
-        "series": ""
-      },
-      {
-        "id": "xiao_mujiang_cos02",
-        "name": "雨中赠礼",
-        "quality": "素装",
-        "series": ""
-      }
-    ],
-    "xihu_chuangniang": [
-      {
-        "id": "xihu_chuangniang_cos01",
-        "name": "千年等一回",
-        "quality": "素装",
-        "series": ""
-      },
-      {
-        "id": "xihu_chuangniang_cos02",
-        "name": "游湖惊梦",
-        "quality": "素装",
-        "series": ""
-      }
-    ],
-    "niu_lang": [
-      {
-        "id": "niu_lang_cos01",
-        "name": "暮暮情深",
-        "quality": "素装",
-        "series": ""
-      }
-    ],
-    "zhi_nv": [
-      {
-        "id": "zhi_nv_cos01",
-        "name": "朝朝相思",
-        "quality": "素装",
-        "series": ""
-      }
-    ],
-    "hua_lang": [
-      {
-        "id": "hua_lang_cos01",
-        "name": "飞鹰走马",
-        "quality": "素装",
-        "series": ""
-      }
-    ],
-    "ni_huang_junzhu": [
-      {
-        "id": "ni_huang_junzhu_cos01",
-        "name": "雪中问情",
-        "quality": "华服",
-        "series": ""
-      }
-    ],
-    "qiu_ying": [
-      {
-        "id": "qiu_ying_cos01",
-        "name": "夏夜荧光",
-        "quality": "素装",
-        "series": ""
-      },
-      {
-        "id": "qiu_ying_cos02",
-        "name": "昨夜灯火",
-        "quality": "素装",
-        "series": ""
-      }
-    ],
-    "wu_xie": [
-      {
-        "id": "wu_xie_cos01",
-        "name": "天真不复",
-        "quality": "素装",
-        "series": ""
-      }
-    ],
-    "hua_wuque": [
-      {
-        "id": "hua_wuque_cos01",
-        "name": "初露锋芒",
-        "quality": "素装",
-        "series": ""
-      }
-    ],
-    "huang_ye_linglan": [
-      {
-        "id": "huang_ye_linglan_cos01",
-        "name": "兵戈抢攮",
-        "quality": "素装",
-        "series": ""
-      }
-    ],
-    "bi_bi_dong": [
-      {
-        "id": "bi_bi_dong_cos01",
-        "name": "魔镰罗刹",
-        "quality": "素装",
-        "series": ""
-      }
-    ],
-    "xiao_wu_friend": [
-      {
-        "id": "xiao_wu_friend_cos01",
-        "name": "柔骨魅兔",
-        "quality": "素装",
-        "series": ""
-      }
-    ],
-    "huan_xi": [
-      {
-        "id": "huan_xi_cos01",
-        "name": "鱼龙曼延",
-        "quality": "素装",
-        "series": ""
-      }
-    ]
+	"qing_ning": [
+	  {
+		"id": "qing_ning_cos01",
+		"name": "心向自然",
+		"quality": "素装",
+		"series": ""
+	  },
+	  {
+		"id": "qing_ning_cos02",
+		"name": "流苏舞影",
+		"quality": "素装",
+		"series": ""
+	  },
+	  {
+		"id": "qing_ning_cos03",
+		"name": "枫野拾秋",
+		"quality": "素装",
+		"series": ""
+	  },
+	  {
+		"id": "qing_ning_cos04",
+		"name": "圣诞之星",
+		"quality": "素装",
+		"series": ""
+	  },
+	  {
+		"id": "qing_ning_cos05",
+		"name": "花想容",
+		"quality": "锦衣",
+		"series": ""
+	  }
+	],
+	"xiu_niang": [
+	  {
+		"id": "xiu_niang_cos01",
+		"name": "红袖添香",
+		"quality": "素装",
+		"series": ""
+	  },
+	  {
+		"id": "xiu_niang_cos02",
+		"name": "黄皮冰柠茶",
+		"quality": "素装",
+		"series": ""
+	  },
+	  {
+		"id": "xiu_niang_cos03",
+		"name": "醉意微醺",
+		"quality": "素装",
+		"series": ""
+	  },
+	  {
+		"id": "xiu_niang_cos04",
+		"name": "使命必达",
+		"quality": "素装",
+		"series": ""
+	  },
+	  {
+		"id": "xiu_niang_cos05",
+		"name": "葵香氤氲",
+		"quality": "素装",
+		"series": ""
+	  },
+	  {
+		"id": "xiu_niang_cos06",
+		"name": "共庆周年",
+		"quality": "锦衣",
+		"series": ""
+	  },
+	  {
+		"id": "xiu_niang_cos07",
+		"name": "共赴佳期",
+		"quality": "锦衣",
+		"series": ""
+	  }
+	],
+	"ling_ye_mao_nv": [
+	  {
+		"id": "ling_ye_mao_nv_cos01",
+		"name": "专属甜心",
+		"quality": "素装",
+		"series": ""
+	  },
+	  {
+		"id": "ling_ye_mao_nv_cos02",
+		"name": "一钩渔满",
+		"quality": "素装",
+		"series": ""
+	  },
+	  {
+		"id": "ling_ye_mao_nv_cos03",
+		"name": "招财猫女",
+		"quality": "素装",
+		"series": ""
+	  },
+	  {
+		"id": "ling_ye_mao_nv_cos04",
+		"name": "倩女喵魂",
+		"quality": "华服",
+		"series": ""
+	  },
+	  {
+		"id": "ling_ye_mao_nv_cos05",
+		"name": "殊途长恨",
+		"quality": "锦衣",
+		"series": ""
+	  },
+	  {
+		"id": "ling_ye_mao_nv_cos06",
+		"name": "爱恨交织",
+		"quality": "锦衣",
+		"series": ""
+	  }
+	],
+	"zhuo_gui_shi": [
+	  {
+		"id": "zhuo_gui_shi_cos01",
+		"name": "昼伏夜出",
+		"quality": "素装",
+		"series": ""
+	  },
+	  {
+		"id": "zhuo_gui_shi_cos02",
+		"name": "驱邪镇妖",
+		"quality": "素装",
+		"series": ""
+	  },
+	  {
+		"id": "zhuo_gui_shi_cos03",
+		"name": "孤灯静森",
+		"quality": "素装",
+		"series": ""
+	  },
+	  {
+		"id": "zhuo_gui_shi_cos04",
+		"name": "子夜惑妖",
+		"quality": "素装",
+		"series": ""
+	  },
+	  {
+		"id": "zhuo_gui_shi_cos05",
+		"name": "无常",
+		"quality": "锦衣",
+		"series": ""
+	  },
+	  {
+		"id": "zhuo_gui_shi_cos06",
+		"name": "引渡轮回",
+		"quality": "素装",
+		"series": ""
+	  }
+	],
+	"nan_gong_wan": [
+	  {
+		"id": "nan_gong_wan_cos01",
+		"name": "掩月仙颜",
+		"quality": "素装",
+		"series": ""
+	  }
+	],
+	"xun_ying_shaonv": [
+	  {
+		"id": "xun_ying_shaonv_cos01",
+		"name": "雪域寒裘",
+		"quality": "素装",
+		"series": ""
+	  },
+	  {
+		"id": "xun_ying_shaonv_cos02",
+		"name": "策马奔腾",
+		"quality": "素装",
+		"series": ""
+	  },
+	  {
+		"id": "xun_ying_shaonv_cos03",
+		"name": "篝火流萤",
+		"quality": "素装",
+		"series": ""
+	  },
+	  {
+		"id": "xun_ying_shaonv_cos04",
+		"name": "巾帼须眉",
+		"quality": "素装",
+		"series": ""
+	  },
+	  {
+		"id": "xun_ying_shaonv_cos05",
+		"name": "长生天",
+		"quality": "锦衣",
+		"series": ""
+	  },
+	  {
+		"id": "xun_ying_shaonv_cos06",
+		"name": "钟灵酼秀",
+		"quality": "锦衣",
+		"series": ""
+	  }
+	],
+	"tushan_honghong": [
+	  {
+		"id": "tushan_honghong_cos01",
+		"name": "涂山之主",
+		"quality": "素装",
+		"series": ""
+	  }
+	],
+	"dong_xiaowan_friend": [
+	  {
+		"id": "dong_xiaowan_friend_cos01",
+		"name": "青鸾御风",
+		"quality": "锦衣",
+		"series": ""
+	  },
+	  {
+		"id": "dong_xiaowan_friend_cos02",
+		"name": "琴音萦梦",
+		"quality": "锦衣",
+		"series": ""
+	  },
+	  {
+		"id": "dong_xiaowan_friend_cos03",
+		"name": "千里江山图",
+		"quality": "锦衣",
+		"series": ""
+	  },
+	  {
+		"id": "dong_xiaowan_friend_cos04",
+		"name": "北岳常恒",
+		"quality": "锦衣",
+		"series": "山河五岳"
+	  }
+	],
+	"ji_zhou": [
+	  {
+		"id": "ji_zhou_cos01",
+		"name": "焚天圣火",
+		"quality": "素装",
+		"series": ""
+	  }
+	],
+	"luo": [
+	  {
+		"id": "luo_cos01",
+		"name": "冰河寻踪",
+		"quality": "素装",
+		"series": ""
+	  },
+	  {
+		"id": "luo_cos02",
+		"name": "相濡以沫",
+		"quality": "素装",
+		"series": ""
+	  },
+	  {
+		"id": "luo_cos03",
+		"name": "荣冠献瑞",
+		"quality": "素装",
+		"series": ""
+	  },
+	  {
+		"id": "luo_cos04",
+		"name": "暖秋枫伴",
+		"quality": "素装",
+		"series": ""
+	  },
+	  {
+		"id": "luo_cos05",
+		"name": "天河穹星",
+		"quality": "锦衣",
+		"series": ""
+	  }
+	],
+	"xinniang": [
+	  {
+		"id": "xinniang_cos01",
+		"name": "绣织情缘",
+		"quality": "素装",
+		"series": ""
+	  },
+	  {
+		"id": "xinniang_cos02",
+		"name": "九宝琉璃",
+		"quality": "素装",
+		"series": ""
+	  },
+	  {
+		"id": "xinniang_cos03",
+		"name": "笑春风",
+		"quality": "素装",
+		"series": ""
+	  },
+	  {
+		"id": "xinniang_cos04",
+		"name": "红装新妇",
+		"quality": "华服",
+		"series": ""
+	  },
+	  {
+		"id": "xinniang_cos05",
+		"name": "红颜凤轿",
+		"quality": "锦衣",
+		"series": ""
+	  },
+	  {
+		"id": "xinniang_cos06",
+		"name": "十里红妆",
+		"quality": "锦衣",
+		"series": ""
+	  }
+	],
+	"tan_you": [
+	  {
+		"id": "tan_you_cos01",
+		"name": "守正为心",
+		"quality": "素装",
+		"series": ""
+	  }
+	],
+	"hua_zhao": [
+	  {
+		"id": "hua_zhao_cos01",
+		"name": "布花赴宴",
+		"quality": "素装",
+		"series": ""
+	  }
+	],
+	"ning_yin": [
+	  {
+		"id": "ning_yin_cos01",
+		"name": "十面埋伏",
+		"quality": "素装",
+		"series": ""
+	  },
+	  {
+		"id": "ning_yin_cos02",
+		"name": "二泉映月",
+		"quality": "素装",
+		"series": ""
+	  },
+	  {
+		"id": "ning_yin_cos03",
+		"name": "箜篌引",
+		"quality": "素装",
+		"series": ""
+	  },
+	  {
+		"id": "ning_yin_cos04",
+		"name": "梅花三弄",
+		"quality": "素装",
+		"series": ""
+	  },
+	  {
+		"id": "ning_yin_cos05",
+		"name": "百鸟归巢",
+		"quality": "素装",
+		"series": ""
+	  }
+	],
+	"ji_ye": [
+	  {
+		"id": "ji_ye_cos01",
+		"name": "中元夜游",
+		"quality": "素装",
+		"series": ""
+	  },
+	  {
+		"id": "ji_ye_cos02",
+		"name": "雪域冰莲",
+		"quality": "素装",
+		"series": ""
+	  },
+	  {
+		"id": "ji_ye_cos03",
+		"name": "彼岸有花",
+		"quality": "素装",
+		"series": ""
+	  },
+	  {
+		"id": "ji_ye_cos04",
+		"name": "音戏人心",
+		"quality": "素装",
+		"series": ""
+	  },
+	  {
+		"id": "ji_ye_cos05",
+		"name": "万妖之王",
+		"quality": "锦衣",
+		"series": ""
+	  }
+	],
+	"yu_ji": [
+	  {
+		"id": "yu_ji_cos01",
+		"name": "虞美人",
+		"quality": "素装",
+		"series": ""
+	  }
+	],
+	"mu_shu": [
+	  {
+		"id": "mu_shu_cos01",
+		"name": "知而行之",
+		"quality": "素装",
+		"series": ""
+	  }
+	],
+	"wan_wan": [
+	  {
+		"id": "wan_wan_cos01",
+		"name": "簪花引",
+		"quality": "素装",
+		"series": ""
+	  }
+	],
+	"hui_yin": [
+	  {
+		"id": "hui_yin_cos01",
+		"name": "粉墙黛瓦",
+		"quality": "素装",
+		"series": ""
+	  },
+	  {
+		"id": "hui_yin_cos02",
+		"name": "迷你雪屋",
+		"quality": "素装",
+		"series": ""
+	  }
+	],
+	"xiao_shimei": [
+	  {
+		"id": "xiao_shimei_cos01",
+		"name": "烟雨江湖",
+		"quality": "素装",
+		"series": ""
+	  },
+	  {
+		"id": "xiao_shimei_cos02",
+		"name": "世外灵仙",
+		"quality": "素装",
+		"series": ""
+	  },
+	  {
+		"id": "xiao_shimei_cos03",
+		"name": "幽冥灵猫",
+		"quality": "素装",
+		"series": ""
+	  },
+	  {
+		"id": "xiao_shimei_cos04",
+		"name": "剑魄琴心",
+		"quality": "素装",
+		"series": ""
+	  },
+	  {
+		"id": "xiao_shimei_cos05",
+		"name": "红装叶戏",
+		"quality": "素装",
+		"series": ""
+	  },
+	  {
+		"id": "xiao_shimei_cos06",
+		"name": "圣诞赐礼",
+		"quality": "华服",
+		"series": ""
+	  },
+	  {
+		"id": "xiao_shimei_cos07",
+		"name": "故剑昔人",
+		"quality": "锦衣",
+		"series": ""
+	  },
+	  {
+		"id": "xiao_shimei_cos08",
+		"name": "墨染剑心",
+		"quality": "锦衣",
+		"series": ""
+	  }
+	],
+	"yi_shi": [
+	  {
+		"id": "yi_shi_cos01",
+		"name": "旗开得胜",
+		"quality": "素装",
+		"series": ""
+	  },
+	  {
+		"id": "yi_shi_cos02",
+		"name": "家书万金",
+		"quality": "素装",
+		"series": ""
+	  },
+	  {
+		"id": "yi_shi_cos03",
+		"name": "塞北传音",
+		"quality": "素装",
+		"series": ""
+	  },
+	  {
+		"id": "yi_shi_cos04",
+		"name": "烽火佳人",
+		"quality": "华服",
+		"series": ""
+	  },
+	  {
+		"id": "yi_shi_cos05",
+		"name": "桃源游",
+		"quality": "锦衣",
+		"series": ""
+	  }
+	],
+	"miao_jiang_shengnv": [
+	  {
+		"id": "miao_jiang_shengnv_cos01",
+		"name": "苗疆蛊医",
+		"quality": "素装",
+		"series": ""
+	  },
+	  {
+		"id": "miao_jiang_shengnv_cos02",
+		"name": "中秋赏月",
+		"quality": "素装",
+		"series": ""
+	  },
+	  {
+		"id": "miao_jiang_shengnv_cos03",
+		"name": "紫萱",
+		"quality": "素装",
+		"series": ""
+	  },
+	  {
+		"id": "miao_jiang_shengnv_cos04",
+		"name": "误落尘网",
+		"quality": "素装",
+		"series": ""
+	  },
+	  {
+		"id": "miao_jiang_shengnv_cos05",
+		"name": "苗孔雀",
+		"quality": "素装",
+		"series": ""
+	  },
+	  {
+		"id": "miao_jiang_shengnv_cos06",
+		"name": "情蛊深种",
+		"quality": "华服",
+		"series": ""
+	  },
+	  {
+		"id": "miao_jiang_shengnv_cos07",
+		"name": "月华洗礼",
+		"quality": "锦衣",
+		"series": ""
+	  },
+	  {
+		"id": "miao_jiang_shengnv_cos08",
+		"name": "苗疆神火",
+		"quality": "锦衣",
+		"series": ""
+	  }
+	],
+	"hua_yi_shi": [
+	  {
+		"id": "hua_yi_shi_cos01",
+		"name": "美人亦花",
+		"quality": "素装",
+		"series": ""
+	  },
+	  {
+		"id": "hua_yi_shi_cos02",
+		"name": "花香解语",
+		"quality": "素装",
+		"series": ""
+	  },
+	  {
+		"id": "hua_yi_shi_cos03",
+		"name": "龙葵",
+		"quality": "素装",
+		"series": ""
+	  },
+	  {
+		"id": "hua_yi_shi_cos04",
+		"name": "樱花之约",
+		"quality": "华服",
+		"series": ""
+	  }
+	],
+	"bu_kuai": [
+	  {
+		"id": "bu_kuai_cos01",
+		"name": "满弓知艳",
+		"quality": "素装",
+		"series": ""
+	  },
+	  {
+		"id": "bu_kuai_cos02",
+		"name": "寒月侠女",
+		"quality": "素装",
+		"series": ""
+	  },
+	  {
+		"id": "bu_kuai_cos03",
+		"name": "圣上敕令",
+		"quality": "素装",
+		"series": ""
+	  },
+	  {
+		"id": "bu_kuai_cos04",
+		"name": "龙腾虎蹴",
+		"quality": "素装",
+		"series": ""
+	  }
+	],
+	"tang_pingguo": [
+	  {
+		"id": "tang_pingguo_cos01",
+		"name": "食韵摇香",
+		"quality": "素装",
+		"series": ""
+	  },
+	  {
+		"id": "tang_pingguo_cos02",
+		"name": "蜜语芬芳",
+		"quality": "素装",
+		"series": ""
+	  },
+	  {
+		"id": "tang_pingguo_cos03",
+		"name": "照猫画虎",
+		"quality": "素装",
+		"series": ""
+	  },
+	  {
+		"id": "tang_pingguo_cos04",
+		"name": "粽意飘香",
+		"quality": "素装",
+		"series": ""
+	  },
+	  {
+		"id": "tang_pingguo_cos05",
+		"name": "四时风味",
+		"quality": "锦衣",
+		"series": ""
+	  },
+	  {
+		"id": "tang_pingguo_cos06",
+		"name": "宴飨春秋",
+		"quality": "锦衣",
+		"series": ""
+	  }
+	],
+	"xun_ma_shi": [
+	  {
+		"id": "xun_ma_shi_cos01",
+		"name": "鲜衣骏马",
+		"quality": "素装",
+		"series": ""
+	  }
+	],
+	"mo_li": [
+	  {
+		"id": "mo_li_cos01",
+		"name": "遇甜而止",
+		"quality": "素装",
+		"series": ""
+	  },
+	  {
+		"id": "mo_li_cos02",
+		"name": "糖果甜心",
+		"quality": "素装",
+		"series": ""
+	  },
+	  {
+		"id": "mo_li_cos03",
+		"name": "盛夏美食",
+		"quality": "素装",
+		"series": ""
+	  },
+	  {
+		"id": "mo_li_cos04",
+		"name": "味界奇观",
+		"quality": "素装",
+		"series": ""
+	  },
+	  {
+		"id": "mo_li_cos05",
+		"name": "时光交错",
+		"quality": "锦衣",
+		"series": ""
+	  }
+	],
+	"si_tang": [
+	  {
+		"id": "si_tang_cos01",
+		"name": "鉴宝识心",
+		"quality": "素装",
+		"series": ""
+	  }
+	],
+	"li_xiangjun_friend": [
+	  {
+		"id": "li_xiangjun_friend_cos01",
+		"name": "凤舞九天",
+		"quality": "锦衣",
+		"series": ""
+	  },
+	  {
+		"id": "li_xiangjun_friend_cos02",
+		"name": "一舞倾心",
+		"quality": "锦衣",
+		"series": ""
+	  },
+	  {
+		"id": "li_xiangjun_friend_cos03",
+		"name": "曾侯乙编钟",
+		"quality": "锦衣",
+		"series": ""
+	  },
+	  {
+		"id": "li_xiangjun_friend_cos04",
+		"name": "中岳嵩山",
+		"quality": "锦衣",
+		"series": "山河五岳"
+	  }
+	],
+	"ma_xianglan_friend": [
+	  {
+		"id": "ma_xianglan_friend_cos01",
+		"name": "鸑鷟欲出",
+		"quality": "锦衣",
+		"series": ""
+	  },
+	  {
+		"id": "ma_xianglan_friend_cos02",
+		"name": "弦音似火",
+		"quality": "锦衣",
+		"series": ""
+	  },
+	  {
+		"id": "ma_xianglan_friend_cos03",
+		"name": "睡虎地秦简",
+		"quality": "锦衣",
+		"series": ""
+	  },
+	  {
+		"id": "ma_xianglan_friend_cos04",
+		"name": "东岳岱宗",
+		"quality": "锦衣",
+		"series": "山河五岳"
+	  }
+	],
+	"dao_gu": [
+	  {
+		"id": "dao_gu_cos01",
+		"name": "黄金洞",
+		"quality": "素装",
+		"series": ""
+	  }
+	],
+	"bian_yujing_friend": [
+	  {
+		"id": "bian_yujing_friend_cos01",
+		"name": "鹓雏降财",
+		"quality": "锦衣",
+		"series": ""
+	  },
+	  {
+		"id": "bian_yujing_friend_cos02",
+		"name": "碧玉歌声",
+		"quality": "锦衣",
+		"series": ""
+	  },
+	  {
+		"id": "bian_yujing_friend_cos03",
+		"name": "长信宫灯",
+		"quality": "锦衣",
+		"series": ""
+	  },
+	  {
+		"id": "bian_yujing_friend_cos04",
+		"name": "南岳玑衡",
+		"quality": "锦衣",
+		"series": "山河五岳"
+	  }
+	],
+	"qian_ren_xue": [
+	  {
+		"id": "qian_ren_xue_cos01",
+		"name": "武魂真身",
+		"quality": "素装",
+		"series": ""
+	  }
+	],
+	"kou_baimen_friend": [
+	  {
+		"id": "kou_baimen_friend_cos01",
+		"name": "鸿鹄展翅",
+		"quality": "锦衣",
+		"series": ""
+	  },
+	  {
+		"id": "kou_baimen_friend_cos02",
+		"name": "声妙入神",
+		"quality": "锦衣",
+		"series": ""
+	  },
+	  {
+		"id": "kou_baimen_friend_cos03",
+		"name": "越王勾践剑",
+		"quality": "锦衣",
+		"series": ""
+	  },
+	  {
+		"id": "kou_baimen_friend_cos04",
+		"name": "西岳太华",
+		"quality": "锦衣",
+		"series": "山河五岳"
+	  }
+	],
+	"yi_shi_new": [
+	  {
+		"id": "yi_shi_new_cos01",
+		"name": "玉背行罐",
+		"quality": "素装",
+		"series": ""
+	  }
+	],
+	"qi_shi": [
+	  {
+		"id": "qi_shi_cos01",
+		"name": "泡影浮棋",
+		"quality": "素装",
+		"series": ""
+	  }
+	],
+	"xiao_qigai": [
+	  {
+		"id": "xiao_qigai_cos01",
+		"name": "团圆年夜",
+		"quality": "素装",
+		"series": ""
+	  }
+	],
+	"shao_jiangjun": [
+	  {
+		"id": "shao_jiangjun_cos01",
+		"name": "凯旋而归",
+		"quality": "素装",
+		"series": ""
+	  }
+	],
+	"xiyu_nvzi": [
+	  {
+		"id": "xiyu_nvzi_cos01",
+		"name": "异国风情",
+		"quality": "素装",
+		"series": ""
+	  },
+	  {
+		"id": "xiyu_nvzi_cos02",
+		"name": "异国珠绕",
+		"quality": "素装",
+		"series": ""
+	  }
+	],
+	"yuan_xiao_guniang": [
+	  {
+		"id": "yuan_xiao_guniang_cos01",
+		"name": "元宵灯会",
+		"quality": "素装",
+		"series": ""
+	  }
+	],
+	"ya_huan": [
+	  {
+		"id": "ya_huan_cos01",
+		"name": "厢房寻猫",
+		"quality": "素装",
+		"series": ""
+	  }
+	],
+	"meng_qier": [
+	  {
+		"id": "meng_qier_cos01",
+		"name": "酒醉迷人",
+		"quality": "素装",
+		"series": ""
+	  }
+	],
+	"xiwangmu": [
+	  {
+		"id": "xiwangmu_cos01",
+		"name": "玉瓷星宫",
+		"quality": "锦衣",
+		"series": ""
+	  }
+	],
+	"nvba": [
+	  {
+		"id": "nvba_cos01",
+		"name": "冷月映蝶",
+		"quality": "锦衣",
+		"series": ""
+	  }
+	],
+	"xiao_hudie": [
+	  {
+		"id": "xiao_hudie_cos01",
+		"name": "陌枝新露",
+		"quality": "素装",
+		"series": ""
+	  },
+	  {
+		"id": "xiao_hudie_cos02",
+		"name": "蝶意莺情",
+		"quality": "素装",
+		"series": ""
+	  },
+	  {
+		"id": "xiao_hudie_cos03",
+		"name": "冬日仙灵",
+		"quality": "素装",
+		"series": ""
+	  },
+	  {
+		"id": "xiao_hudie_cos04",
+		"name": "情牵梁祝",
+		"quality": "素装",
+		"series": ""
+	  },
+	  {
+		"id": "xiao_hudie_cos05",
+		"name": "蝶醒春生",
+		"quality": "锦衣",
+		"series": ""
+	  },
+	  {
+		"id": "xiao_hudie_cos06",
+		"name": "不朽静谧",
+		"quality": "锦衣",
+		"series": ""
+	  }
+	],
+	"gu_guo_gongzhu": [
+	  {
+		"id": "gu_guo_gongzhu_cos01",
+		"name": "楼兰女王",
+		"quality": "素装",
+		"series": ""
+	  },
+	  {
+		"id": "gu_guo_gongzhu_cos02",
+		"name": "精绝女王",
+		"quality": "素装",
+		"series": ""
+	  },
+	  {
+		"id": "gu_guo_gongzhu_cos03",
+		"name": "楼兰故梦",
+		"quality": "锦衣",
+		"series": ""
+	  },
+	  {
+		"id": "gu_guo_gongzhu_cos04",
+		"name": "圣诞之宴",
+		"quality": "素装",
+		"series": ""
+	  },
+	  {
+		"id": "gu_guo_gongzhu_cos05",
+		"name": "永浴爱河",
+		"quality": "素装",
+		"series": ""
+	  },
+	  {
+		"id": "gu_guo_gongzhu_cos06",
+		"name": "流沙溯时",
+		"quality": "锦衣",
+		"series": ""
+	  }
+	],
+	"yu_ge": [
+	  {
+		"id": "yu_ge_cos01",
+		"name": "沧海月明",
+		"quality": "素装",
+		"series": ""
+	  },
+	  {
+		"id": "yu_ge_cos02",
+		"name": "鱼贯而出",
+		"quality": "素装",
+		"series": ""
+	  },
+	  {
+		"id": "yu_ge_cos03",
+		"name": "龙伴沧溟",
+		"quality": "锦衣",
+		"series": ""
+	  },
+	  {
+		"id": "yu_ge_cos04",
+		"name": "钓以倾心",
+		"quality": "素装",
+		"series": ""
+	  },
+	  {
+		"id": "yu_ge_cos05",
+		"name": "龙舟竞渡",
+		"quality": "素装",
+		"series": ""
+	  },
+	  {
+		"id": "yu_ge_cos06",
+		"name": "洛神赋",
+		"quality": "锦衣",
+		"series": ""
+	  }
+	],
+	"jin_shu": [
+	  {
+		"id": "jin_shu_cos01",
+		"name": "红烛夜语",
+		"quality": "素装",
+		"series": ""
+	  },
+	  {
+		"id": "jin_shu_cos02",
+		"name": "紫灵",
+		"quality": "素装",
+		"series": ""
+	  },
+	  {
+		"id": "jin_shu_cos03",
+		"name": "浮世绘卷",
+		"quality": "素装",
+		"series": ""
+	  },
+	  {
+		"id": "jin_shu_cos04",
+		"name": "碧海青天",
+		"quality": "堇书",
+		"series": ""
+	  },
+	  {
+		"id": "jin_shu_cos05",
+		"name": "红楼幻梦",
+		"quality": "锦衣",
+		"series": ""
+	  },
+	  {
+		"id": "jin_shu_cos06",
+		"name": "青丝落雪",
+		"quality": "锦衣",
+		"series": ""
+	  }
+	],
+	"qi_ling": [
+	  {
+		"id": "qi_ling_cos01",
+		"name": "青铜神树",
+		"quality": "素装",
+		"series": ""
+	  },
+	  {
+		"id": "qi_ling_cos02",
+		"name": "黄山客来",
+		"quality": "素装",
+		"series": ""
+	  },
+	  {
+		"id": "qi_ling_cos03",
+		"name": "纤香隐",
+		"quality": "素装",
+		"series": ""
+	  },
+	  {
+		"id": "qi_ling_cos04",
+		"name": "聊斋",
+		"quality": "素装",
+		"series": ""
+	  },
+	  {
+		"id": "qi_ling_cos05",
+		"name": "笔下有灵",
+		"quality": "锦衣",
+		"series": ""
+	  }
+	],
+	"yao_ying": [
+	  {
+		"id": "yao_ying_cos01",
+		"name": "雪夜奇兵",
+		"quality": "素装",
+		"series": ""
+	  },
+	  {
+		"id": "yao_ying_cos02",
+		"name": "影绘韶华",
+		"quality": "素装",
+		"series": ""
+	  },
+	  {
+		"id": "yao_ying_cos03",
+		"name": "泡映夏语",
+		"quality": "素装",
+		"series": ""
+	  },
+	  {
+		"id": "yao_ying_cos04",
+		"name": "绘声绘影",
+		"quality": "素装",
+		"series": ""
+	  },
+	  {
+		"id": "yao_ying_cos05",
+		"name": "邀月共酌",
+		"quality": "锦衣",
+		"series": ""
+	  }
+	],
+	"shi_bo_shi": [
+	  {
+		"id": "shi_bo_shi_cos01",
+		"name": "乘风破浪",
+		"quality": "素装",
+		"series": ""
+	  },
+	  {
+		"id": "shi_bo_shi_cos02",
+		"name": "约法三章",
+		"quality": "素装",
+		"series": ""
+	  },
+	  {
+		"id": "shi_bo_shi_cos03",
+		"name": "箭绘炎诏",
+		"quality": "素装",
+		"series": ""
+	  },
+	  {
+		"id": "shi_bo_shi_cos04",
+		"name": "幽灵船长",
+		"quality": "素装",
+		"series": ""
+	  },
+	  {
+		"id": "shi_bo_shi_cos05",
+		"name": "御海龙王",
+		"quality": "锦衣",
+		"series": ""
+	  }
+	],
+	"shou_gong_shaonv": [
+	  {
+		"id": "shou_gong_shaonv_cos01",
+		"name": "古玩掌眼",
+		"quality": "素装",
+		"series": ""
+	  },
+	  {
+		"id": "shou_gong_shaonv_cos02",
+		"name": "木牛流马",
+		"quality": "素装",
+		"series": ""
+	  },
+	  {
+		"id": "shou_gong_shaonv_cos03",
+		"name": "机关造物",
+		"quality": "素装",
+		"series": ""
+	  },
+	  {
+		"id": "shou_gong_shaonv_cos04",
+		"name": "清凉一夏",
+		"quality": "素装",
+		"series": ""
+	  },
+	  {
+		"id": "shou_gong_shaonv_cos05",
+		"name": "天青色",
+		"quality": "锦衣",
+		"series": ""
+	  }
+	],
+	"xinniang_zhimei": [
+	  {
+		"id": "xinniang_zhimei_cos01",
+		"name": "桂华宠儿",
+		"quality": "素装",
+		"series": ""
+	  },
+	  {
+		"id": "xinniang_zhimei_cos02",
+		"name": "雪见",
+		"quality": "素装",
+		"series": ""
+	  },
+	  {
+		"id": "xinniang_zhimei_cos03",
+		"name": "心动烟火",
+		"quality": "素装",
+		"series": ""
+	  },
+	  {
+		"id": "xinniang_zhimei_cos04",
+		"name": "对镜初妆",
+		"quality": "素装",
+		"series": ""
+	  },
+	  {
+		"id": "xinniang_zhimei_cos05",
+		"name": "听海拾贝",
+		"quality": "素装",
+		"series": ""
+	  },
+	  {
+		"id": "xinniang_zhimei_cos06",
+		"name": "红线牵缘",
+		"quality": "锦衣",
+		"series": ""
+	  }
+	],
+	"cai_shi_guan": [
+	  {
+		"id": "cai_shi_guan_cos01",
+		"name": "月下品诗",
+		"quality": "素装",
+		"series": ""
+	  },
+	  {
+		"id": "cai_shi_guan_cos02",
+		"name": "端午寻诗",
+		"quality": "素装",
+		"series": ""
+	  },
+	  {
+		"id": "cai_shi_guan_cos03",
+		"name": "雨后新诗",
+		"quality": "素装",
+		"series": ""
+	  },
+	  {
+		"id": "cai_shi_guan_cos04",
+		"name": "东篱采诗",
+		"quality": "素装",
+		"series": ""
+	  },
+	  {
+		"id": "cai_shi_guan_cos05",
+		"name": "春江花月",
+		"quality": "锦衣",
+		"series": ""
+	  }
+	],
+	"hong_ying": [
+	  {
+		"id": "hong_ying_cos01",
+		"name": "按功分赏",
+		"quality": "素装",
+		"series": ""
+	  }
+	],
+	"zhu_sha": [
+	  {
+		"id": "zhu_sha_cos01",
+		"name": "予夺",
+		"quality": "素装",
+		"series": ""
+	  }
+	],
+	"sha_lan": [
+	  {
+		"id": "sha_lan_cos01",
+		"name": "逆焰惊弦",
+		"quality": "素装",
+		"series": ""
+	  }
+	],
+	"yin_niang": [
+	  {
+		"id": "yin_niang_cos01",
+		"name": "破浪前行",
+		"quality": "素装",
+		"series": ""
+	  },
+	  {
+		"id": "yin_niang_cos02",
+		"name": "飞檐走壁",
+		"quality": "素装",
+		"series": ""
+	  },
+	  {
+		"id": "yin_niang_cos03",
+		"name": "入局藏锋",
+		"quality": "素装",
+		"series": ""
+	  },
+	  {
+		"id": "yin_niang_cos04",
+		"name": "黑夜魅影",
+		"quality": "素装",
+		"series": ""
+	  }
+	],
+	"wang_zhaojun_friend": [
+	  {
+		"id": "wang_zhaojun_friend_cos01",
+		"name": "星篝火舞",
+		"quality": "素装",
+		"series": ""
+	  },
+	  {
+		"id": "wang_zhaojun_friend_cos02",
+		"name": "梅园祈愿",
+		"quality": "素装",
+		"series": ""
+	  }
+	],
+	"qi_guang": [
+	  {
+		"id": "qi_guang_cos01",
+		"name": "与春同行",
+		"quality": "素装",
+		"series": ""
+	  }
+	],
+	"rong": [
+	  {
+		"id": "rong_cos01",
+		"name": "林间狩猎",
+		"quality": "素装",
+		"series": ""
+	  }
+	],
+	"ying_chun": [
+	  {
+		"id": "ying_chun_cos01",
+		"name": "跃动万物",
+		"quality": "素装",
+		"series": ""
+	  }
+	],
+	"jiu_yue": [
+	  {
+		"id": "jiu_yue_cos01",
+		"name": "千星成花",
+		"quality": "素装",
+		"series": ""
+	  }
+	],
+	"xiao_ning": [
+	  {
+		"id": "xiao_ning_cos01",
+		"name": "凌空决意",
+		"quality": "素装",
+		"series": ""
+	  }
+	],
+	"hua_mulan_friend": [
+	  {
+		"id": "hua_mulan_friend_cos01",
+		"name": "踏冰破虏",
+		"quality": "素装",
+		"series": ""
+	  }
+	],
+	"xing_lan": [
+	  {
+		"id": "xing_lan_cos01",
+		"name": "鸭鸭戏水",
+		"quality": "素装",
+		"series": ""
+	  },
+	  {
+		"id": "xing_lan_cos02",
+		"name": "如履平地",
+		"quality": "素装",
+		"series": ""
+	  }
+	],
+	"yu_lu": [
+	  {
+		"id": "yu_lu_cos01",
+		"name": "星辉漫叙",
+		"quality": "素装",
+		"series": ""
+	  }
+	],
+	"zhao_yang": [
+	  {
+		"id": "zhao_yang_cos01",
+		"name": "花田踱步",
+		"quality": "素装",
+		"series": ""
+	  }
+	],
+	"he_xi": [
+	  {
+		"id": "he_xi_cos01",
+		"name": "孤狼",
+		"quality": "素装",
+		"series": ""
+	  }
+	],
+	"yun_zhi": [
+	  {
+		"id": "yun_zhi_cos01",
+		"name": "围炉夜话",
+		"quality": "素装",
+		"series": ""
+	  },
+	  {
+		"id": "yun_zhi_cos02",
+		"name": "绣影双生",
+		"quality": "素装",
+		"series": ""
+	  }
+	],
+	"wu_nv_wu": [
+	  {
+		"id": "wu_nv_wu_cos01",
+		"name": "水映清涟",
+		"quality": "素装",
+		"series": ""
+	  },
+	  {
+		"id": "wu_nv_wu_cos02",
+		"name": "春祈秋报",
+		"quality": "素装",
+		"series": ""
+	  },
+	  {
+		"id": "wu_nv_wu_cos03",
+		"name": "月下行傩",
+		"quality": "素装",
+		"series": ""
+	  }
+	],
+	"yu_tu": [
+	  {
+		"id": "yu_tu_cos01",
+		"name": "蟾宫丹坊",
+		"quality": "素装",
+		"series": ""
+	  }
+	],
+	"shen_meizhuang": [
+	  {
+		"id": "shen_meizhuang_cos01",
+		"name": "相思惊鸿",
+		"quality": "素装",
+		"series": ""
+	  }
+	],
+	"zhou_meili": [
+	  {
+		"id": "zhou_meili_cos01",
+		"name": "彗星奇迹",
+		"quality": "素装",
+		"series": ""
+	  }
+	],
+	"hu_yao_zhanggui": [
+	  {
+		"id": "hu_yao_zhanggui_cos01",
+		"name": "灵狐现世",
+		"quality": "素装",
+		"series": ""
+	  },
+	  {
+		"id": "hu_yao_zhanggui_cos02",
+		"name": "称平斗满",
+		"quality": "素装",
+		"series": ""
+	  },
+	  {
+		"id": "hu_yao_zhanggui_cos03",
+		"name": "初落凡尘",
+		"quality": "素装",
+		"series": ""
+	  }
+	],
+	"xiao_lu_nv": [
+	  {
+		"id": "xiao_lu_nv_cos01",
+		"name": "银月",
+		"quality": "素装",
+		"series": ""
+	  },
+	  {
+		"id": "xiao_lu_nv_cos02",
+		"name": "冰上芭蕾",
+		"quality": "素装",
+		"series": ""
+	  },
+	  {
+		"id": "xiao_lu_nv_cos03",
+		"name": "圣诞奇遇",
+		"quality": "素装",
+		"series": ""
+	  }
+	],
+	"zi_yu": [
+	  {
+		"id": "zi_yu_cos01",
+		"name": "天地对弈",
+		"quality": "素装",
+		"series": ""
+	  },
+	  {
+		"id": "zi_yu_cos02",
+		"name": "驭帅亲征",
+		"quality": "素装",
+		"series": ""
+	  }
+	],
+	"xiao_mujiang": [
+	  {
+		"id": "xiao_mujiang_cos01",
+		"name": "顽狮送福",
+		"quality": "素装",
+		"series": ""
+	  },
+	  {
+		"id": "xiao_mujiang_cos02",
+		"name": "雨中赠礼",
+		"quality": "素装",
+		"series": ""
+	  }
+	],
+	"xihu_chuangniang": [
+	  {
+		"id": "xihu_chuangniang_cos01",
+		"name": "千年等一回",
+		"quality": "素装",
+		"series": ""
+	  },
+	  {
+		"id": "xihu_chuangniang_cos02",
+		"name": "游湖惊梦",
+		"quality": "素装",
+		"series": ""
+	  }
+	],
+	"niu_lang": [
+	  {
+		"id": "niu_lang_cos01",
+		"name": "暮暮情深",
+		"quality": "素装",
+		"series": ""
+	  }
+	],
+	"zhi_nv": [
+	  {
+		"id": "zhi_nv_cos01",
+		"name": "朝朝相思",
+		"quality": "素装",
+		"series": ""
+	  }
+	],
+	"hua_lang": [
+	  {
+		"id": "hua_lang_cos01",
+		"name": "飞鹰走马",
+		"quality": "素装",
+		"series": ""
+	  }
+	],
+	"ni_huang_junzhu": [
+	  {
+		"id": "ni_huang_junzhu_cos01",
+		"name": "雪中问情",
+		"quality": "华服",
+		"series": ""
+	  }
+	],
+	"qiu_ying": [
+	  {
+		"id": "qiu_ying_cos01",
+		"name": "夏夜荧光",
+		"quality": "素装",
+		"series": ""
+	  },
+	  {
+		"id": "qiu_ying_cos02",
+		"name": "昨夜灯火",
+		"quality": "素装",
+		"series": ""
+	  }
+	],
+	"wu_xie": [
+	  {
+		"id": "wu_xie_cos01",
+		"name": "天真不复",
+		"quality": "素装",
+		"series": ""
+	  }
+	],
+	"hua_wuque": [
+	  {
+		"id": "hua_wuque_cos01",
+		"name": "初露锋芒",
+		"quality": "素装",
+		"series": ""
+	  }
+	],
+	"huang_ye_linglan": [
+	  {
+		"id": "huang_ye_linglan_cos01",
+		"name": "兵戈抢攮",
+		"quality": "素装",
+		"series": ""
+	  }
+	],
+	"bi_bi_dong": [
+	  {
+		"id": "bi_bi_dong_cos01",
+		"name": "魔镰罗刹",
+		"quality": "素装",
+		"series": ""
+	  }
+	],
+	"xiao_wu_friend": [
+	  {
+		"id": "xiao_wu_friend_cos01",
+		"name": "柔骨魅兔",
+		"quality": "素装",
+		"series": ""
+	  }
+	],
+	"huan_xi": [
+	  {
+		"id": "huan_xi_cos01",
+		"name": "鱼龙曼延",
+		"quality": "素装",
+		"series": ""
+	  }
+	]
   },
   "series": [
-    {
-      "name": "清平盛世",
-      "cost_item": "shengshi_zhong",
-      "item_name": "盛世钟",
-      "owner_type": "hero",
-      "members": [
-        {
-          "owner": "lu_ban",
-          "costume": "筑翅飞天",
-          "quality": "华服"
-        },
-        {
-          "owner": "ou_yezi",
-          "costume": "铸剑为犁",
-          "quality": "华服"
-        },
-        {
-          "owner": "sun_bin",
-          "costume": "鼓乐齐鸣",
-          "quality": "华服"
-        },
-        {
-          "owner": "wu_daozi",
-          "costume": "醉墨淋漓",
-          "quality": "华服"
-        },
-        {
-          "owner": "du_kang",
-          "costume": "歌舞升平",
-          "quality": "华服"
-        }
-      ],
-      "group_count_series": [
+	{
+	  "name": "清平盛世",
+	  "cost_item": "shengshi_zhong",
+	  "item_name": "盛世钟",
+	  "owner_type": "hero",
+	  "members": [
+		{
+		  "owner": "lu_ban",
+		  "costume": "筑翅飞天",
+		  "quality": "华服"
+		},
+		{
+		  "owner": "ou_yezi",
+		  "costume": "铸剑为犁",
+		  "quality": "华服"
+		},
+		{
+		  "owner": "sun_bin",
+		  "costume": "鼓乐齐鸣",
+		  "quality": "华服"
+		},
+		{
+		  "owner": "wu_daozi",
+		  "costume": "醉墨淋漓",
+		  "quality": "华服"
+		},
+		{
+		  "owner": "du_kang",
+		  "costume": "歌舞升平",
+		  "quality": "华服"
+		}
+	  ],
+	  "group_count_series": [
         "清平盛世"
-      ]
-    },
-    {
-      "name": "精忠报国",
-      "cost_item": "jingzhong_bei",
-      "item_name": "精忠碑",
-      "owner_type": "hero",
-      "members": [
-        {
-          "owner": "gao_jianli",
-          "costume": "悲伤离歌",
-          "quality": "华服"
-        },
-        {
-          "owner": "bi_sheng",
-          "costume": "鬼斧神工",
-          "quality": "华服"
-        },
-        {
-          "owner": "zong_ze",
-          "costume": "醉卧沙场",
-          "quality": "华服"
-        },
-        {
-          "owner": "zhang_sanfeng",
-          "costume": "风华正茂",
-          "quality": "华服"
-        },
-        {
-          "owner": "su_wu",
-          "costume": "大汉使者",
-          "quality": "华服"
-        }
-      ],
-      "group_count_series": [
-        "精忠报国",
+	  ]
+	},
+	{
+	  "name": "精忠报国",
+	  "cost_item": "jingzhong_bei",
+	  "item_name": "精忠碑",
+	  "owner_type": "hero",
+	  "members": [
+		{
+		  "owner": "gao_jianli",
+		  "costume": "悲伤离歌",
+		  "quality": "华服"
+		},
+		{
+		  "owner": "bi_sheng",
+		  "costume": "鬼斧神工",
+		  "quality": "华服"
+		},
+		{
+		  "owner": "zong_ze",
+		  "costume": "醉卧沙场",
+		  "quality": "华服"
+		},
+		{
+		  "owner": "zhang_sanfeng",
+		  "costume": "风华正茂",
+		  "quality": "华服"
+		},
+		{
+		  "owner": "su_wu",
+		  "costume": "大汉使者",
+		  "quality": "华服"
+		}
+	  ],
+	  "group_count_series": [
+		"精忠报国",
         "君子如剑"
-      ]
-    },
-    {
-      "name": "五凤来仪",
-      "cost_item": "feng_yu",
-      "item_name": "凤羽",
-      "owner_type": "hero",
-      "members": [
-        {
-          "owner": "ma_xianglan",
-          "costume": "鸑鷟欲出",
-          "quality": "华服"
-        },
-        {
-          "owner": "dong_xiaowan",
-          "costume": "青鸾御风",
-          "quality": "华服"
-        },
-        {
-          "owner": "bian_yujing",
-          "costume": "鹓雏降财",
-          "quality": "华服"
-        },
-        {
-          "owner": "kou_baimen",
-          "costume": "鸿鹄展翅",
-          "quality": "华服"
-        },
-        {
-          "owner": "li_xiangjun",
-          "costume": "凤舞九天",
-          "quality": "华服"
-        }
-      ],
-      "group_count_series": [
-        "五凤来仪",
-        "百花齐放",
-        "汴梁女团",
-        "传世珍宝",
+	  ]
+	},
+	{
+	  "name": "五凤来仪",
+	  "cost_item": "feng_yu",
+	  "item_name": "凤羽",
+	  "owner_type": "hero",
+	  "members": [
+		{
+		  "owner": "ma_xianglan",
+		  "costume": "鸑鷟欲出",
+		  "quality": "华服"
+		},
+		{
+		  "owner": "dong_xiaowan",
+		  "costume": "青鸾御风",
+		  "quality": "华服"
+		},
+		{
+		  "owner": "bian_yujing",
+		  "costume": "鹓雏降财",
+		  "quality": "华服"
+		},
+		{
+		  "owner": "kou_baimen",
+		  "costume": "鸿鹄展翅",
+		  "quality": "华服"
+		},
+		{
+		  "owner": "li_xiangjun",
+		  "costume": "凤舞九天",
+		  "quality": "华服"
+		}
+	  ],
+	  "group_count_series": [
+		"五凤来仪",
+		"百花齐放",
+		"汴梁女团",
+		"传世珍宝",
         "山河五岳"
-      ]
-    },
-    {
-      "name": "百花齐放",
-      "cost_item": "jin_furong",
-      "item_name": "金芙蓉",
-      "owner_type": "hero",
-      "members": [
-        {
-          "owner": "ma_xianglan",
-          "costume": "空谷幽兰",
-          "quality": "锦衣"
-        },
-        {
-          "owner": "dong_xiaowan",
-          "costume": "巧丝青莲",
-          "quality": "锦衣"
-        },
-        {
-          "owner": "bian_yujing",
-          "costume": "凌霜秋菊",
-          "quality": "锦衣"
-        },
-        {
-          "owner": "kou_baimen",
-          "costume": "傲雪寒梅",
-          "quality": "锦衣"
-        },
-        {
-          "owner": "li_xiangjun",
-          "costume": "醉卧桃花",
-          "quality": "锦衣"
-        }
-      ],
-      "group_count_series": [
-        "五凤来仪",
-        "百花齐放",
-        "汴梁女团",
-        "传世珍宝",
+	  ]
+	},
+	{
+	  "name": "百花齐放",
+	  "cost_item": "jin_furong",
+	  "item_name": "金芙蓉",
+	  "owner_type": "hero",
+	  "members": [
+		{
+		  "owner": "ma_xianglan",
+		  "costume": "空谷幽兰",
+		  "quality": "锦衣"
+		},
+		{
+		  "owner": "dong_xiaowan",
+		  "costume": "巧丝青莲",
+		  "quality": "锦衣"
+		},
+		{
+		  "owner": "bian_yujing",
+		  "costume": "凌霜秋菊",
+		  "quality": "锦衣"
+		},
+		{
+		  "owner": "kou_baimen",
+		  "costume": "傲雪寒梅",
+		  "quality": "锦衣"
+		},
+		{
+		  "owner": "li_xiangjun",
+		  "costume": "醉卧桃花",
+		  "quality": "锦衣"
+		}
+	  ],
+	  "group_count_series": [
+		"五凤来仪",
+		"百花齐放",
+		"汴梁女团",
+		"传世珍宝",
         "山河五岳"
-      ]
-    },
-    {
-      "name": "君子如剑",
-      "cost_item": "jian_wan",
-      "item_name": "剑丸",
-      "owner_type": "hero",
-      "members": [
-        {
-          "owner": "gao_jianli",
-          "costume": "鱼肠",
-          "quality": "华服"
-        },
-        {
-          "owner": "zhang_sanfeng",
-          "costume": "纯钧",
-          "quality": "华服"
-        },
-        {
-          "owner": "zong_ze",
-          "costume": "湛卢",
-          "quality": "华服"
-        },
-        {
-          "owner": "bi_sheng",
-          "costume": "承影",
-          "quality": "华服"
-        },
-        {
-          "owner": "su_wu",
-          "costume": "龙渊",
-          "quality": "华服"
-        }
-      ],
-      "group_count_series": [
-        "君子如剑",
+	  ]
+	},
+	{
+	  "name": "君子如剑",
+	  "cost_item": "jian_wan",
+	  "item_name": "剑丸",
+	  "owner_type": "hero",
+	  "members": [
+		{
+		  "owner": "gao_jianli",
+		  "costume": "鱼肠",
+		  "quality": "华服"
+		},
+		{
+		  "owner": "zhang_sanfeng",
+		  "costume": "纯钧",
+		  "quality": "华服"
+		},
+		{
+		  "owner": "zong_ze",
+		  "costume": "湛卢",
+		  "quality": "华服"
+		},
+		{
+		  "owner": "bi_sheng",
+		  "costume": "承影",
+		  "quality": "华服"
+		},
+		{
+		  "owner": "su_wu",
+		  "costume": "龙渊",
+		  "quality": "华服"
+		}
+	  ],
+	  "group_count_series": [
+		"君子如剑",
         "精忠报国"
-      ]
-    },
-    {
-      "name": "汴梁女团",
-      "cost_item": "tian_xing",
-      "item_name": "天星",
-      "owner_type": "hero",
-      "members": [
-        {
-          "owner": "ma_xianglan",
-          "costume": "弦音似火",
-          "quality": "华服"
-        },
-        {
-          "owner": "dong_xiaowan",
-          "costume": "琴音萦梦",
-          "quality": "华服"
-        },
-        {
-          "owner": "bian_yujing",
-          "costume": "碧玉声歌",
-          "quality": "华服"
-        },
-        {
-          "owner": "kou_baimen",
-          "costume": "声妙入神",
-          "quality": "华服"
-        },
-        {
-          "owner": "li_xiangjun",
-          "costume": "一舞倾心",
-          "quality": "华服"
-        }
-      ],
-      "group_count_series": [
-        "五凤来仪",
-        "百花齐放",
-        "汴梁女团",
-        "传世珍宝",
+	  ]
+	},
+	{
+	  "name": "汴梁女团",
+	  "cost_item": "tian_xing",
+	  "item_name": "天星",
+	  "owner_type": "hero",
+	  "members": [
+		{
+		  "owner": "ma_xianglan",
+		  "costume": "弦音似火",
+		  "quality": "华服"
+		},
+		{
+		  "owner": "dong_xiaowan",
+		  "costume": "琴音萦梦",
+		  "quality": "华服"
+		},
+		{
+		  "owner": "bian_yujing",
+		  "costume": "碧玉声歌",
+		  "quality": "华服"
+		},
+		{
+		  "owner": "kou_baimen",
+		  "costume": "声妙入神",
+		  "quality": "华服"
+		},
+		{
+		  "owner": "li_xiangjun",
+		  "costume": "一舞倾心",
+		  "quality": "华服"
+		}
+	  ],
+	  "group_count_series": [
+		"五凤来仪",
+		"百花齐放",
+		"汴梁女团",
+		"传世珍宝",
         "山河五岳"
-      ]
-    },
-    {
-      "name": "传世珍宝",
-      "cost_item": "bogu_juan",
-      "item_name": "博古卷",
-      "owner_type": "hero",
-      "members": [
-        {
-          "owner": "ma_xianglan",
-          "costume": "睡虎地秦简",
-          "quality": "华服"
-        },
-        {
-          "owner": "dong_xiaowan",
-          "costume": "千里江山图",
-          "quality": "华服"
-        },
-        {
-          "owner": "bian_yujing",
-          "costume": "长信宫灯",
-          "quality": "华服"
-        },
-        {
-          "owner": "kou_baimen",
-          "costume": "越王勾践剑",
-          "quality": "华服"
-        },
-        {
-          "owner": "li_xiangjun",
-          "costume": "曾侯乙编钟",
-          "quality": "华服"
-        }
-      ],
-      "group_count_series": [
-        "五凤来仪",
-        "百花齐放",
-        "汴梁女团",
-        "传世珍宝",
+	  ]
+	},
+	{
+	  "name": "传世珍宝",
+	  "cost_item": "bogu_juan",
+	  "item_name": "博古卷",
+	  "owner_type": "hero",
+	  "members": [
+		{
+		  "owner": "ma_xianglan",
+		  "costume": "睡虎地秦简",
+		  "quality": "华服"
+		},
+		{
+		  "owner": "dong_xiaowan",
+		  "costume": "千里江山图",
+		  "quality": "华服"
+		},
+		{
+		  "owner": "bian_yujing",
+		  "costume": "长信宫灯",
+		  "quality": "华服"
+		},
+		{
+		  "owner": "kou_baimen",
+		  "costume": "越王勾践剑",
+		  "quality": "华服"
+		},
+		{
+		  "owner": "li_xiangjun",
+		  "costume": "曾侯乙编钟",
+		  "quality": "华服"
+		}
+	  ],
+	  "group_count_series": [
+		"五凤来仪",
+		"百花齐放",
+		"汴梁女团",
+		"传世珍宝",
         "山河五岳"
-      ]
-    },
-    {
-      "name": "山河五岳",
-      "cost_item": "fengyou_wuyue_shi",
-      "item_name": "凤游五岳石",
-      "owner_type": "friend",
-      "members": [
-        {
-          "owner": "ma_xianglan_friend",
-          "costume": "东岳岱宗",
-          "quality": "锦衣"
-        },
-        {
-          "owner": "dong_xiaowan_friend",
-          "costume": "北岳常恒",
-          "quality": "锦衣"
-        },
-        {
-          "owner": "bian_yujing_friend",
-          "costume": "南岳玑衡",
-          "quality": "锦衣"
-        },
-        {
-          "owner": "kou_baimen_friend",
-          "costume": "西岳太华",
-          "quality": "锦衣"
-        },
-        {
-          "owner": "li_xiangjun_friend",
-          "costume": "中岳嵩山",
-          "quality": "锦衣"
-        }
-      ],
-      "group_count_series": []
-    }
+	  ]
+	},
+	{
+	  "name": "山河五岳",
+	  "cost_item": "fengyou_wuyue_shi",
+	  "item_name": "凤游五岳石",
+	  "owner_type": "friend",
+	  "members": [
+		{
+		  "owner": "ma_xianglan_friend",
+		  "costume": "东岳岱宗",
+		  "quality": "锦衣"
+		},
+		{
+		  "owner": "dong_xiaowan_friend",
+		  "costume": "北岳常恒",
+		  "quality": "锦衣"
+		},
+		{
+		  "owner": "bian_yujing_friend",
+		  "costume": "南岳玑衡",
+		  "quality": "锦衣"
+		},
+		{
+		  "owner": "kou_baimen_friend",
+		  "costume": "西岳太华",
+		  "quality": "锦衣"
+		},
+		{
+		  "owner": "li_xiangjun_friend",
+		  "costume": "中岳嵩山",
+		  "quality": "锦衣"
+		}
+	  ],
+	  "group_count_series": []
+	}
   ]
 }

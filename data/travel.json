@@ -1,283 +1,283 @@
 {
   "_comment": "游历配置。settings=数值调节; locations=地点及可遇见挚友; affection=表2挚友好感解锁所需次数; item_pool=物品池(等概率)",
   "settings": {
-    "stamina_max": 30,
-    "stamina_recover_seconds": 1200,
-    "reputation_per_travel": 20,
-    "location_chance": 0.5,
-    "item_chance": 0.4,
-    "cai_shen_yuanbao": 1000,
-    "du_kang_stamina_min": 1,
-    "du_kang_stamina_max": 3,
-    "new_dish_income": 2000
+	"stamina_max": 30,
+	"stamina_recover_seconds": 1200,
+	"reputation_per_travel": 20,
+	"location_chance": 0.5,
+	"item_chance": 0.4,
+	"cai_shen_yuanbao": 1000,
+	"du_kang_stamina_min": 1,
+	"du_kang_stamina_max": 3,
+	"new_dish_income": 2000
   },
   "locations": {
-    "si_miao": {
-      "name": "寺庙",
-      "friends": [
-        "zhuo_gui_shi",
-        "tang_pingguo",
-        "xun_ma_shi",
-        "xiao_qigai",
-        "wan_wan",
-        "jing_an",
-        "ying_chun",
-        "bi_bi_dong",
-        "xiwangmu",
-        "yu_tu",
-        "shi_bo_shi",
+	"si_miao": {
+	  "name": "寺庙",
+	  "friends": [
+		"zhuo_gui_shi",
+		"tang_pingguo",
+		"xun_ma_shi",
+		"xiao_qigai",
+		"wan_wan",
+		"jing_an",
+		"ying_chun",
+		"bi_bi_dong",
+		"xiwangmu",
+		"yu_tu",
+		"shi_bo_shi",
         "wanghou_fuhao"
-      ]
-    },
-    "shu_yuan": {
-      "name": "书院",
-      "friends": [
-        "ji_zhou",
-        "mo_li",
-        "shu_xiang_nv",
-        "ma_xianglan_friend",
-        "yuan_xiao_guniang",
-        "jun_zhu",
-        "zhu_sha",
-        "nvwa",
-        "jin_shu",
-        "xiao_wu_friend",
-        "zhi_nv",
+	  ]
+	},
+	"shu_yuan": {
+	  "name": "书院",
+	  "friends": [
+		"ji_zhou",
+		"mo_li",
+		"shu_xiang_nv",
+		"ma_xianglan_friend",
+		"yuan_xiao_guniang",
+		"jun_zhu",
+		"zhu_sha",
+		"nvwa",
+		"jin_shu",
+		"xiao_wu_friend",
+		"zhi_nv",
         "xinniang_zhimei"
-      ]
-    },
-    "ke_zhan": {
-      "name": "客栈",
-      "friends": [
-        "tushan_honghong",
-        "mu_shu",
-        "qi_shi",
-        "ya_huan",
-        "xiao_shijie",
-        "hua_zhao",
-        "yao_ying",
-        "qiu_ying",
-        "zi_yu",
-        "hua_lang",
+	  ]
+	},
+	"ke_zhan": {
+	  "name": "客栈",
+	  "friends": [
+		"tushan_honghong",
+		"mu_shu",
+		"qi_shi",
+		"ya_huan",
+		"xiao_shijie",
+		"hua_zhao",
+		"yao_ying",
+		"qiu_ying",
+		"zi_yu",
+		"hua_lang",
         "hu_yao_zhanggui"
-      ]
-    },
-    "chuan_wu": {
-      "name": "船坞",
-      "friends": [
-        "xun_ying_shaonv",
-        "ji_ye",
-        "yu_ji",
-        "cao_yuan_nvhai",
-        "li_xiangjun_friend",
-        "meng_qier",
-        "xiyu_nvzi",
-        "hui_yin",
-        "hua_mulan_friend",
-        "xihu_chuangniang",
+	  ]
+	},
+	"chuan_wu": {
+	  "name": "船坞",
+	  "friends": [
+		"xun_ying_shaonv",
+		"ji_ye",
+		"yu_ji",
+		"cao_yuan_nvhai",
+		"li_xiangjun_friend",
+		"meng_qier",
+		"xiyu_nvzi",
+		"hui_yin",
+		"hua_mulan_friend",
+		"xihu_chuangniang",
         "xiao_mujiang"
-      ]
-    },
-    "chou_duan_zhuang": {
-      "name": "绸缎庄",
-      "friends": [
-        "xiu_niang",
-        "dong_xiaowan_friend",
-        "xinniang",
-        "li_shishi",
-        "zhen_xian_nv",
-        "ma_ma",
-        "sha_lan",
-        "xing_lan",
-        "qi_ling",
-        "yu_ge",
+	  ]
+	},
+	"chou_duan_zhuang": {
+	  "name": "绸缎庄",
+	  "friends": [
+		"xiu_niang",
+		"dong_xiaowan_friend",
+		"xinniang",
+		"li_shishi",
+		"zhen_xian_nv",
+		"ma_ma",
+		"sha_lan",
+		"xing_lan",
+		"qi_ling",
+		"yu_ge",
         "xiao_lu_nv"
-      ]
-    },
-    "biao_ju": {
-      "name": "镖局",
-      "friends": [
-        "xiao_shimei",
-        "ning_yin",
-        "mai_san_nv",
-        "cu_ju_nv",
-        "qian_ren_xue",
-        "kou_baimen_friend",
-        "hong_ying",
-        "rong",
-        "jiu_yue",
-        "xiao_ning",
-        "he_xi",
-        "luo",
-        "huang_ye_linglan",
-        "zhi_nv",
+	  ]
+	},
+	"biao_ju": {
+	  "name": "镖局",
+	  "friends": [
+		"xiao_shimei",
+		"ning_yin",
+		"mai_san_nv",
+		"cu_ju_nv",
+		"qian_ren_xue",
+		"kou_baimen_friend",
+		"hong_ying",
+		"rong",
+		"jiu_yue",
+		"xiao_ning",
+		"he_xi",
+		"luo",
+		"huang_ye_linglan",
+		"zhi_nv",
         "wu_nv_wu"
-      ]
-    },
-    "shan_zhai": {
-      "name": "山寨",
-      "friends": [
-        "miao_jiang_shengnv",
-        "yi_shi_new",
-        "dao_gu",
-        "lie_ren",
-        "yu_lu",
-        "zhao_yang",
-        "yin_niang",
-        "wang_zhaojun_friend",
-        "nvba",
-        "tushanshi",
+	  ]
+	},
+	"shan_zhai": {
+	  "name": "山寨",
+	  "friends": [
+		"miao_jiang_shengnv",
+		"yi_shi_new",
+		"dao_gu",
+		"lie_ren",
+		"yu_lu",
+		"zhao_yang",
+		"yin_niang",
+		"wang_zhaojun_friend",
+		"nvba",
+		"tushanshi",
         "cai_shi_guan"
-      ]
-    },
-    "ya_men": {
-      "name": "衙门",
-      "friends": [
-        "ling_ye_mao_nv",
-        "yi_shi",
-        "bu_kuai",
-        "jiang_men_nvzi",
-        "tan_you",
-        "yun_zhi",
-        "shen_meizhuang",
-        "wu_xie",
-        "hua_wuque",
-        "change",
-        "jingwei",
+	  ]
+	},
+	"ya_men": {
+	  "name": "衙门",
+	  "friends": [
+		"ling_ye_mao_nv",
+		"yi_shi",
+		"bu_kuai",
+		"jiang_men_nvzi",
+		"tan_you",
+		"yun_zhi",
+		"shen_meizhuang",
+		"wu_xie",
+		"hua_wuque",
+		"change",
+		"jingwei",
         "gu_guo_gongzhu"
-      ]
-    },
-    "cha_guan": {
-      "name": "茶馆",
-      "friends": [
-        "nan_gong_wan",
-        "qing_ning",
-        "hua_yi_shi",
-        "xi_zi",
-        "si_tang",
-        "cai_yao_nv",
-        "bian_yujing_friend",
-        "dou_fu_nv",
-        "qi_guang",
-        "zhou_meili",
-        "ni_huang_junzhu",
-        "shou_gong_shaonv",
-        "xiao_hudie",
+	  ]
+	},
+	"cha_guan": {
+	  "name": "茶馆",
+	  "friends": [
+		"nan_gong_wan",
+		"qing_ning",
+		"hua_yi_shi",
+		"xi_zi",
+		"si_tang",
+		"cai_yao_nv",
+		"bian_yujing_friend",
+		"dou_fu_nv",
+		"qi_guang",
+		"zhou_meili",
+		"ni_huang_junzhu",
+		"shou_gong_shaonv",
+		"xiao_hudie",
         "niu_lang"
-      ]
-    },
-    "miao_yin_fang": {
-      "name": "妙音坊",
-      "friends": [
-        "jian_wuzhe",
-        "shao_jiangjun",
-        "lang_zi",
-        "wu_nv",
-        "pi_pa_nv",
-        "mi_tan",
+	  ]
+	},
+	"miao_yin_fang": {
+	  "name": "妙音坊",
+	  "friends": [
+		"jian_wuzhe",
+		"shao_jiangjun",
+		"lang_zi",
+		"wu_nv",
+		"pi_pa_nv",
+		"mi_tan",
         "hong_niangzi"
-      ]
-    }
+	  ]
+	}
   },
   "affection": {
-    "hong_niangzi": 30,
-    "mi_tan": 25,
-    "lang_zi": 25,
-    "shao_jiangjun": 25,
-    "jun_zhu": 105,
-    "yuan_xiao_guniang": 50,
-    "xiao_qigai": 15,
-    "pi_pa_nv": 15,
-    "dou_fu_nv": 30,
-    "xi_zi": 10,
-    "cu_ju_nv": 30,
-    "wu_nv": 15,
-    "lie_ren": 35,
-    "xiao_shijie": 25,
-    "jian_wuzhe": 10,
-    "mai_san_nv": 4,
-    "zhen_xian_nv": 3
+	"hong_niangzi": 30,
+	"mi_tan": 25,
+	"lang_zi": 25,
+	"shao_jiangjun": 25,
+	"jun_zhu": 105,
+	"yuan_xiao_guniang": 50,
+	"xiao_qigai": 15,
+	"pi_pa_nv": 15,
+	"dou_fu_nv": 30,
+	"xi_zi": 10,
+	"cu_ju_nv": 30,
+	"wu_nv": 15,
+	"lie_ren": 35,
+	"xiao_shijie": 25,
+	"jian_wuzhe": 10,
+	"mai_san_nv": 4,
+	"zhen_xian_nv": 3
   },
   "item_pool": [
-    {
-      "item": "huo_qi",
-      "count": 1
-    },
-    {
-      "item": "ci_qi",
-      "count": 1
-    },
-    {
-      "item": "qiong_jiang",
-      "count": 1
-    },
-    {
-      "item": "cha_ye",
-      "count": 1
-    },
-    {
-      "item": "xuan_zhi",
-      "count": 1
-    },
-    {
-      "item": "recruit_bronze",
-      "count": 1
-    },
-    {
-      "item": "vitality_pill",
-      "count": 1
-    },
-    {
-      "item": "energy_pill",
-      "count": 1
-    },
-    {
-      "item": "random_book",
-      "count": 20
-    },
-    {
-      "item": "fengyasong",
-      "count": 1
-    },
-    {
-      "item": "wood_comb",
-      "count": 1
-    },
-    {
-      "item": "rouge",
-      "count": 1
-    },
-    {
-      "item": "aptitude_pill",
-      "count": 1
-    },
-    {
-      "item": "abacus",
-      "count": 1
-    },
-    {
-      "item": "recruit_silver",
-      "count": 1
-    },
-    {
-      "item": "recruit_gold",
-      "count": 1
-    },
-    {
-      "item": "aroma_fruit",
-      "count": 1
-    },
-    {
-      "item": "wish_stone",
-      "count": 1
-    },
-    {
-      "item": "beast_fruit",
-      "count": 1
-    },
-    {
-      "item": "beast_fruit",
-      "count": 20
-    }
+	{
+	  "item": "huo_qi",
+	  "count": 1
+	},
+	{
+	  "item": "ci_qi",
+	  "count": 1
+	},
+	{
+	  "item": "qiong_jiang",
+	  "count": 1
+	},
+	{
+	  "item": "cha_ye",
+	  "count": 1
+	},
+	{
+	  "item": "xuan_zhi",
+	  "count": 1
+	},
+	{
+	  "item": "recruit_bronze",
+	  "count": 1
+	},
+	{
+	  "item": "vitality_pill",
+	  "count": 1
+	},
+	{
+	  "item": "energy_pill",
+	  "count": 1
+	},
+	{
+	  "item": "random_book",
+	  "count": 20
+	},
+	{
+	  "item": "fengyasong",
+	  "count": 1
+	},
+	{
+	  "item": "wood_comb",
+	  "count": 1
+	},
+	{
+	  "item": "rouge",
+	  "count": 1
+	},
+	{
+	  "item": "aptitude_pill",
+	  "count": 1
+	},
+	{
+	  "item": "abacus",
+	  "count": 1
+	},
+	{
+	  "item": "recruit_silver",
+	  "count": 1
+	},
+	{
+	  "item": "recruit_gold",
+	  "count": 1
+	},
+	{
+	  "item": "aroma_fruit",
+	  "count": 1
+	},
+	{
+	  "item": "wish_stone",
+	  "count": 1
+	},
+	{
+	  "item": "beast_fruit",
+	  "count": 1
+	},
+	{
+	  "item": "beast_fruit",
+	  "count": 20
+	}
   ]
 }

@@ -1,34 +1,34 @@
 {
   "goals": [
-    {
-      "friend": "li_shishi",
-      "stat": "recharge_done",
-      "need": 1,
-      "desc": "首次充值"
-    },
-    {
-      "friend": "jiang_men_nvzi",
-      "stat": "war_kills",
-      "need": 1000,
-      "desc": "商战累计击败"
-    },
-    {
-      "friend": "xiyu_nvzi",
-      "stat": "travel_count",
-      "need": 50,
-      "desc": "累计游历"
-    },
-    {
-      "friend": "meng_qier",
-      "stat": "hour_card_used",
-      "need": 15,
-      "desc": "累计使用小时卡"
-    },
-    {
-      "friend": "ya_huan",
-      "stat": "marry_count",
-      "need": 15,
-      "desc": "徒弟累计联姻"
-    }
+	{
+	  "friend": "li_shishi",
+	  "stat": "recharge_done",
+	  "need": 1,
+	  "desc": "首次充值"
+	},
+	{
+	  "friend": "jiang_men_nvzi",
+	  "stat": "war_kills",
+	  "need": 1000,
+	  "desc": "商战累计击败"
+	},
+	{
+	  "friend": "xiyu_nvzi",
+	  "stat": "travel_count",
+	  "need": 50,
+	  "desc": "累计游历"
+	},
+	{
+	  "friend": "meng_qier",
+	  "stat": "hour_card_used",
+	  "need": 15,
+	  "desc": "累计使用小时卡"
+	},
+	{
+	  "friend": "ya_huan",
+	  "stat": "marry_count",
+	  "need": 15,
+	  "desc": "徒弟累计联姻"
+	}
   ]
 }

@@ -669,6 +669,8 @@
 	"jinghe_wannian": 50,
 	"jinghe_shiwannian": 50,
 	"jinghe_baiwannian": 50,
-	"hun_gu_box": 20
+	"hun_gu_box": 20,
+	"cuzhi_exp_low": 0,
+	"cuzhi_exp_high": 0
   }
 }

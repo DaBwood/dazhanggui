@@ -1,6 +1,6 @@
 class_name CuzhiView
 extends RefCounted
-# 【促织园视图】闯荡子视图：促织架/捉促织/促织庙/特惠商城
+# 【促织园视图】闯荡子视图：促织架/捉促织/促织庙/特惠商城/虫师
 # 架构与其他闯荡子视图一致（RefCounted + build_xxx_view(page, vbox)）
 
 var c       # game_controller
@@ -21,15 +21,22 @@ var _shelf: Control
 var _catch: Control
 var _temple: Control
 var _shop: Control
+var _worm: Control           # 【新增】虫师主界面
+var _worm_book_list: Control # 【新增】虫书列表
 
 # 运行时缓存
 var _shelf_grid: GridContainer
 var _catch_result_lbl: Label
 var _catch_progress_lbl: Label
 var _catch_btn: Button
+var _catch_ten_btn: Button   # 【新增】十连按钮
 var _temple_list: VBoxContainer
 var _temple_career_btns: Array = []
 var _current_temple_career: String = ""
+var _worm_list: VBoxContainer        # 【新增】虫师门客列表
+var _worm_career_btns: Array = []    # 【新增】虫师分类按钮
+var _current_worm_career: String = "shi"  # 【新增】当前虫师职业
+
 
 func _init(p_c):
 	c = p_c
@@ -76,6 +83,12 @@ func build_cuzhi_view(page: Control, vbox: VBoxContainer):
 	_shop.visible = false
 	_panel.add_child(_shop)
 
+	# 【新增】虫师视图
+	_worm = _build_worm_view()
+	_worm.visible = false
+	_panel.add_child(_worm)
+
+
 func show_cuzhi_view():
 	_panel.visible = true
 	_show_main()
@@ -115,11 +128,13 @@ func _build_main_view() -> Control:
 	grid.add_theme_constant_override("v_separation", 20)
 	root.add_child(grid)
 
+	# 【改】增加虫师入口
 	var entries = [
 		{"name": "促织架", "desc": "已收集的促织", "callback": _on_shelf},
 		{"name": "捉促织", "desc": "消耗促织笼捕捉", "callback": _on_catch},
 		{"name": "促织庙", "desc": "消耗缘分提升门客", "callback": _on_temple},
 		{"name": "特惠商城", "desc": "购买促织笼", "callback": _on_shop},
+		{"name": "虫师", "desc": "培养促织虫书", "callback": _on_worm},
 	]
 	for e in entries:
 		var card = _make_entry_card(e.name, e.desc)
@@ -137,8 +152,8 @@ func _build_main_view() -> Control:
 
 func _make_entry_card(name_str: String, desc: String) -> Button:
 	var btn = Button.new()
-	btn.custom_minimum_size = Vector2(220, 220)
-	btn.size = Vector2(220, 220)
+	btn.custom_minimum_size = Vector2(220, 180)
+	btn.size = Vector2(220, 180)
 	btn.mouse_filter = Control.MOUSE_FILTER_PASS
 	var sty = StyleBoxFlat.new()
 	sty.bg_color = CARD
@@ -198,12 +213,17 @@ func _on_shop():
 	_show_view(_shop)
 	_refresh_shop()
 
+func _on_worm():
+	_show_view(_worm)
+	_refresh_worm()
+
 func _show_view(v: Control):
 	_main.visible = false
 	_shelf.visible = false
 	_catch.visible = false
 	_temple.visible = false
 	_shop.visible = false
+	_worm.visible = false
 	v.visible = true
 
 func _show_main():
@@ -291,8 +311,10 @@ func _make_cricket_card(item: Dictionary) -> Button:
 	career_lbl.add_theme_color_override("font_color", Color("#aaaaaa"))
 	vbox.add_child(career_lbl)
 
+	# 【改】显示军衔
+	var rank_info = sys.get_cricket_rank_info(item.level)
 	var lv_lbl = Label.new()
-	lv_lbl.text = "Lv.%d" % item.level
+	lv_lbl.text = rank_info.full_name
 	lv_lbl.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	lv_lbl.add_theme_font_size_override("font_size", 14)
 	lv_lbl.add_theme_color_override("font_color", Color("#ffdd88"))
@@ -305,29 +327,33 @@ func _show_cricket_detail(item: Dictionary):
 	var cdata = item.data
 	var popup = c._create_base_popup("促织详情", Vector2(400, 300))
 	popup.z_index = 30
+	c.add_child(popup)
 
-	var vbox = popup.get_child(0).get_child(0)
+	var vbox = popup.get_child(0)
 
 	var col = Color(sys.get_quality_color(cdata.quality))
+	var rank_info = sys.get_cricket_rank_info(item.level)
 	var info = Label.new()
-	info.text = "%s  %s·%s\n等级：Lv.%d" % [cdata.name, sys.get_career_name(cdata.career), sys.get_quality_name(cdata.quality), item.level]
+	info.text = "%s  %s·%s\n军衔：%s" % [cdata.name, sys.get_career_name(cdata.career), sys.get_quality_name(cdata.quality), rank_info.full_name]
 	info.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	info.add_theme_font_size_override("font_size", 18)
 	info.add_theme_color_override("font_color", col)
 	vbox.add_child(info)
 
-	var exp_needed = sys.get_levelup_exp(item.level)
+	var q = int(cdata.quality)
+	var max_lv = item.get("max_level", sys.get_cricket_max_level(q))
+	var cost = sys.get_levelup_cost(item.level, q)
 	var exp_lbl = Label.new()
-	if item.level >= _cfg().levelup.max_level:
-		exp_lbl.text = "经验：已满级"
+	if item.level >= max_lv:
+		exp_lbl.text = "军衔：已满阶"
 	else:
-		exp_lbl.text = "经验：%d / %d" % [item.exp, exp_needed]
+		exp_lbl.text = "下次升阶需消耗：%d 只同名促织" % cost
 	exp_lbl.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	exp_lbl.add_theme_color_override("font_color", Color("#aaaaaa"))
 	vbox.add_child(exp_lbl)
 
 	var desc = Label.new()
-	desc.text = "重复捉到同名促织自动转化为经验\n等级影响促织战力（后续玩法使用）"
+	desc.text = "重复捉到同名促织自动转化为升阶材料\n军衔影响促织战力（后续玩法使用）"
 	desc.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	desc.add_theme_font_size_override("font_size", 14)
 	desc.add_theme_color_override("font_color", Color("#888888"))
@@ -372,20 +398,36 @@ func _build_catch_view() -> Control:
 	csty.corner_radius_top_left = 8
 	csty.corner_radius_top_right = 8
 	_catch_btn.add_theme_stylebox_override("normal", csty)
-	_catch_btn.pressed.connect(_do_catch)
+	_catch_btn.pressed.connect(func(): _do_catch(1))
 	root.add_child(_catch_btn)
+
+	# 【新增】十连捕捉按钮
+	_catch_ten_btn = Button.new()
+	_catch_ten_btn.text = "十连捕捉（消耗10个促织笼）"
+	_catch_ten_btn.position = Vector2(180, 280)
+	_catch_ten_btn.size = Vector2(240, 60)
+	_catch_ten_btn.add_theme_font_size_override("font_size", 20)
+	var ten_sty = StyleBoxFlat.new()
+	ten_sty.bg_color = Color("#6a3a5a")
+	ten_sty.corner_radius_bottom_left = 8
+	ten_sty.corner_radius_bottom_right = 8
+	ten_sty.corner_radius_top_left = 8
+	ten_sty.corner_radius_top_right = 8
+	_catch_ten_btn.add_theme_stylebox_override("normal", ten_sty)
+	_catch_ten_btn.pressed.connect(func(): _do_catch(10))
+	root.add_child(_catch_ten_btn)
 
 	_catch_result_lbl = Label.new()
 	_catch_result_lbl.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	_catch_result_lbl.add_theme_font_size_override("font_size", 22)
-	_catch_result_lbl.position = Vector2(0, 300)
+	_catch_result_lbl.position = Vector2(0, 360)
 	_catch_result_lbl.size = Vector2(600, 200)
 	root.add_child(_catch_result_lbl)
 
 	var gua_btn = Button.new()
 	gua_btn.name = "GuaranteeBtn"
 	gua_btn.text = "保底自选"
-	gua_btn.position = Vector2(220, 520)
+	gua_btn.position = Vector2(220, 580)
 	gua_btn.size = Vector2(160, 50)
 	gua_btn.add_theme_font_size_override("font_size", 18)
 	gua_btn.pressed.connect(_show_guarantee_selector)
@@ -394,7 +436,7 @@ func _build_catch_view() -> Control:
 	return root
 
 func _refresh_catch():
-	var cage = data.get_item_count("cuzhi_cage")
+	var cage = data.items.get("cuzhi_cage", 0)
 	var clbl = _catch.get_node_or_null("CageLabel")
 	if clbl:
 		clbl.text = "当前拥有促织笼：%d" % cage
@@ -405,6 +447,8 @@ func _refresh_catch():
 	_catch_progress_lbl.text = "保底进度：%d / %d" % [prog, tgt]
 
 	_catch_btn.disabled = cage <= 0
+	if _catch_ten_btn:
+		_catch_ten_btn.disabled = cage < 10
 
 	var gua_btn = _catch.get_node_or_null("GuaranteeBtn")
 	if gua_btn:
@@ -412,65 +456,94 @@ func _refresh_catch():
 
 	_catch_result_lbl.text = ""
 
-func _do_catch():
-	if not sys.can_catch():
-		c._show_toast("促织笼不足，去商城购买吧！")
+func _do_catch(count: int = 1):
+	var cage = data.items.get("cuzhi_cage", 0)
+	if cage < count:
+		c._show_stage_hint("促织笼不足，去商城购买吧！")
 		return
 
-	var result = sys.catch_one()
-	var cdata = result.cricket
-	var col = Color(sys.get_quality_color(result.quality))
+	var results = []
+	for i in range(count):
+		if data.items.get("cuzhi_cage", 0) <= 0:
+			break
+		var result = sys.catch_one()
+		results.append(result)
 
-	var new_str = "【新】" if result.is_new else "【重复】"
-	_catch_result_lbl.text = "%s捉到了 %s！\n%s·%s" % [new_str, cdata.name, sys.get_career_name(cdata.career), sys.get_quality_name(result.quality)]
-	_catch_result_lbl.add_theme_color_override("font_color", col)
+	# 结果用弹窗显示
+	var title = "捉促织结果" if count == 1 else "十连捕捉结果"
+	var popup = c._create_base_popup(title, Vector2(500, 400))
+	popup.z_index = 30
+	c.add_child(popup)
+	var vbox = popup.get_child(0)
 
-	c._show_toast("+%d %s缘分" % [_cfg().fate_per_catch, sys.get_career_name(cdata.career)])
+	for result in results:
+		var cdata = result.cricket
+		var col = Color(sys.get_quality_color(result.quality))
+		var new_str = "【新】" if result.is_new else "【重复】"
+		var quality_name = sys.get_quality_name(result.quality)
+		var career_name = sys.get_career_name(cdata.career)
+
+		var line = Label.new()
+		if result.quality >= 5:
+			line.text = "%s%s·%s（%s） +%d %s缘分" % [new_str, cdata.name, quality_name, career_name, _cfg().fate_per_catch, career_name]
+		else:
+			line.text = "%s%s·%s（%s）" % [new_str, cdata.name, quality_name, career_name]
+		line.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+		line.add_theme_font_size_override("font_size", 16)
+		line.add_theme_color_override("font_color", col)
+		vbox.add_child(line)
+
+	c._add_ok_button(vbox, func(): popup.queue_free(), "确定")
 
 	_refresh_catch()
 
-	if result.guarantee_ready:
-		c._show_toast("保底已满！可自选一只促织")
+	if results.size() > 0 and results[-1].guarantee_ready:
+		c._show_stage_hint("保底已满！可自选一只促织")
 
 func _show_guarantee_selector():
 	if sys.get_guarantee_progress() < sys.get_guarantee_target():
 		return
 
-	var popup = c._create_base_popup("保底自选", Vector2(500, 600))
+	var popup = c._create_base_popup("保底自选", Vector2(560, 640))
 	popup.z_index = 30
+	c.add_child(popup)
 
-	var vbox = popup.get_child(0).get_child(0)
+	var vbox = popup.get_child(0)
+	vbox.alignment = BoxContainer.ALIGNMENT_BEGIN
 
 	var hint = Label.new()
-	hint.text = "累计消耗已达%d次，自选一只促织" % sys.get_guarantee_target()
+	hint.text = "累计消耗已达%d次，自选一只无双促织" % sys.get_guarantee_target()
 	hint.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	hint.add_theme_color_override("font_color", Color("#ffaa00"))
 	vbox.add_child(hint)
 
 	var scroll = ScrollContainer.new()
-	scroll.custom_minimum_size = Vector2(460, 400)
+	scroll.size_flags_vertical = Control.SIZE_EXPAND_FILL
+	scroll.custom_minimum_size = Vector2(500, 0)
 	vbox.add_child(scroll)
 
 	var grid = GridContainer.new()
-	grid.columns = 3
-	grid.add_theme_constant_override("h_separation", 10)
-	grid.add_theme_constant_override("v_separation", 10)
+	grid.columns = 2
+	grid.add_theme_constant_override("h_separation", 12)
+	grid.add_theme_constant_override("v_separation", 12)
 	scroll.add_child(grid)
 
 	var pool = sys.get_catchable_crickets()
 	for cdata in pool:
+		if int(cdata.quality) != 5:
+			continue
 		var btn = Button.new()
-		btn.custom_minimum_size = Vector2(140, 60)
-		btn.text = cdata.name + "\n" + sys.get_career_name(cdata.career)
+		btn.custom_minimum_size = Vector2(220, 70)
+		btn.text = cdata.name + "  " + sys.get_career_name(cdata.career)
 		var col = Color(sys.get_quality_color(cdata.quality))
 		btn.add_theme_color_override("font_color_normal", col)
 		btn.pressed.connect(func():
 			if sys.claim_guarantee(cdata.id):
-				c._show_toast("获得 %s！" % cdata.name)
+				c._show_stage_hint("获得 %s！" % cdata.name)
 				popup.queue_free()
 				_refresh_catch()
 			else:
-				c._show_toast("兑换失败")
+				c._show_stage_hint("兑换失败")
 		)
 		grid.add_child(btn)
 
@@ -485,52 +558,26 @@ func _build_temple_view() -> Control:
 	var back = _make_sub_back(root)
 	back.pressed.connect(_show_main)
 
-	var fate_panel = Panel.new()
-	fate_panel.position = Vector2(20, 80)
-	fate_panel.size = Vector2(560, 60)
-	var fsty = StyleBoxFlat.new()
-	fsty.bg_color = CARD
-	fsty.corner_radius_bottom_left = 6
-	fsty.corner_radius_bottom_right = 6
-	fsty.corner_radius_top_left = 6
-	fsty.corner_radius_top_right = 6
-	fate_panel.add_theme_stylebox_override("panel", fsty)
-	root.add_child(fate_panel)
-
-	var fhbox = HBoxContainer.new()
-	fhbox.alignment = BoxContainer.ALIGNMENT_CENTER
-	fhbox.anchors_preset = Control.PRESET_FULL_RECT
-	fate_panel.add_child(fhbox)
-
-	for career in ["shi", "nong", "gong", "shang", "xia"]:
-		var lbl = Label.new()
-		lbl.name = "Fate_" + career
-		lbl.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
-		lbl.add_theme_font_size_override("font_size", 14)
-		fhbox.add_child(lbl)
-
 	var filter_hbox = HBoxContainer.new()
-	filter_hbox.position = Vector2(20, 150)
-	filter_hbox.size = Vector2(560, 40)
+	filter_hbox.name = "FilterHBox"
+	filter_hbox.position = Vector2(20, 80)
+	filter_hbox.size = Vector2(560, 50)
 	filter_hbox.alignment = BoxContainer.ALIGNMENT_CENTER
+	filter_hbox.add_theme_constant_override("separation", 8)
 	root.add_child(filter_hbox)
 
-	var all_btn = Button.new()
-	all_btn.text = "全部"
-	all_btn.pressed.connect(func(): _set_temple_career(""))
-	filter_hbox.add_child(all_btn)
-	_temple_career_btns.append(all_btn)
-
+	_temple_career_btns.clear()
 	for career in ["shi", "nong", "gong", "shang", "xia"]:
 		var btn = Button.new()
-		btn.text = sys.get_career_name(career)
+		btn.name = "Filter_" + career
+		btn.custom_minimum_size = Vector2(100, 40)
 		btn.pressed.connect(func(cr=career): _set_temple_career(cr))
 		filter_hbox.add_child(btn)
 		_temple_career_btns.append(btn)
 
 	var scroll = ScrollContainer.new()
-	scroll.position = Vector2(20, 200)
-	scroll.size = Vector2(560, 640)
+	scroll.position = Vector2(20, 140)
+	scroll.size = Vector2(560, 700)
 	scroll.horizontal_scroll_mode = ScrollContainer.SCROLL_MODE_DISABLED
 	root.add_child(scroll)
 
@@ -545,24 +592,33 @@ func _set_temple_career(career: String):
 	_refresh_temple()
 
 func _refresh_temple():
+	if _current_temple_career == "":
+		_current_temple_career = "shi"
+
+	var careers = ["shi", "nong", "gong", "shang", "xia"]
+	for i in range(careers.size()):
+		var career = careers[i]
+		var btn = _temple_career_btns[i]
+		var f = sys.get_career_fate(career)
+		btn.text = "%s: %d缘分" % [sys.get_career_name(career), f]
+		if _current_temple_career == career:
+			btn.add_theme_color_override("font_color", Color("#ffdd88"))
+		else:
+			btn.add_theme_color_override("font_color", Color("#aaaaaa"))
+
 	for ch in _temple_list.get_children():
 		ch.queue_free()
 
-	for career in ["shi", "nong", "gong", "shang", "xia"]:
-		var lbl = _temple.get_node_or_null("Fate_" + career)
-		if lbl:
-			var f = sys.get_career_fate(career)
-			lbl.text = "%s:%d" % [sys.get_career_name(career), f]
-			lbl.add_theme_color_override("font_color", Color("#ffdd88") if f > 0 else Color("#888888"))
-
-	var heroes = data.heroes
-	for h in heroes:
-		if _current_temple_career != "" and h.career != _current_temple_career:
+	var career_map = {"士": "shi", "农": "nong", "工": "gong", "商": "shang", "侠": "xia"}
+	for hero_id in data.heroes:
+		var h = data.heroes[hero_id]
+		var hero_career = career_map.get(h.get("category", ""), "")
+		if hero_career != _current_temple_career:
 			continue
-		var row = _make_temple_hero_row(h)
+		var row = _make_temple_hero_row(hero_id, h)
 		_temple_list.add_child(row)
 
-func _make_temple_hero_row(h) -> Panel:
+func _make_temple_hero_row(hero_id: String, h: Dictionary) -> Panel:
 	var panel = Panel.new()
 	panel.custom_minimum_size = Vector2(540, 80)
 	panel.size = Vector2(540, 80)
@@ -585,18 +641,18 @@ func _make_temple_hero_row(h) -> Panel:
 	name_lbl.add_theme_font_size_override("font_size", 16)
 	hbox.add_child(name_lbl)
 
-	var lv = sys.get_temple_level(h.id)
-	var bonus = sys.get_temple_bonus(h.id)
+	var career_map = {"士": "shi", "农": "nong", "工": "gong", "商": "shang", "侠": "xia"}
+	var career = career_map.get(h.get("category", ""), "")
+	var lv = sys.get_temple_level(hero_id)
+	var bonus = sys.get_temple_bonus(hero_id)
 	var info = Label.new()
 	info.text = "+%d%% 赚速（Lv.%d）" % [int(bonus * 100), lv]
 	info.custom_minimum_size = Vector2(140, 0)
 	info.add_theme_color_override("font_color", Color("#66ff66"))
 	hbox.add_child(info)
 
-	var cost = sys.get_temple_cost(h.id)
-	var career = h.career
-	var _fate = sys.get_career_fate(career)
-	var can = sys.can_upgrade_temple(h.id, career)
+	var cost = sys.get_temple_cost(hero_id)
+	var can = sys.can_upgrade_temple(hero_id, career)
 
 	var cost_lbl = Label.new()
 	cost_lbl.text = "下次：%d %s缘分" % [cost, sys.get_career_name(career)]
@@ -609,10 +665,9 @@ func _make_temple_hero_row(h) -> Panel:
 	up_btn.disabled = not can
 	up_btn.custom_minimum_size = Vector2(80, 40)
 	up_btn.pressed.connect(func():
-		if sys.upgrade_temple(h.id, career):
-			c._show_toast("%s 促织庙 +1" % h.name)
+		if sys.upgrade_temple(hero_id, career):
+			c._show_stage_hint("%s 促织庙 +1" % h.name)
 			_refresh_temple()
-			data._on_income_changed()
 	)
 	hbox.add_child(up_btn)
 
@@ -679,12 +734,12 @@ func _make_shop_row(g: Dictionary) -> Panel:
 	buy_btn.custom_minimum_size = Vector2(80, 40)
 	buy_btn.pressed.connect(func():
 		if data.yuanbao < g.price:
-			c._show_toast("元宝不足！")
+			c._show_stage_hint("元宝不足！")
 			return
 		data.yuanbao -= g.price
-		data.add_item("cuzhi_cage", g.count)
-		c._show_toast("购买成功！+%d 促织笼" % g.count)
-		c._update_top_bar()
+		data.items["cuzhi_cage"] = data.items.get("cuzhi_cage", 0) + g.count
+		c._show_stage_hint("购买成功！+%d 促织笼" % g.count)
+		c.update_money_label()
 		_refresh_shop()
 	)
 	hbox.add_child(buy_btn)
@@ -693,6 +748,259 @@ func _make_shop_row(g: Dictionary) -> Panel:
 
 func _refresh_shop():
 	pass
+
+# ========== 虫师 ==========
+func _build_worm_view() -> Control:
+	var root = Control.new()
+	root.size = Vector2(600, 900)
+
+	_make_sub_title("虫师", root)
+	var back = _make_sub_back(root)
+	back.pressed.connect(_show_main)
+
+	var filter_hbox = HBoxContainer.new()
+	filter_hbox.name = "WormFilterHBox"
+	filter_hbox.position = Vector2(20, 80)
+	filter_hbox.size = Vector2(560, 50)
+	filter_hbox.alignment = BoxContainer.ALIGNMENT_CENTER
+	filter_hbox.add_theme_constant_override("separation", 8)
+	root.add_child(filter_hbox)
+
+	_worm_career_btns.clear()
+	for career in ["shi", "nong", "gong", "shang", "xia"]:
+		var btn = Button.new()
+		btn.name = "WormFilter_" + career
+		btn.custom_minimum_size = Vector2(100, 40)
+		btn.pressed.connect(func(cr=career): _set_worm_career(cr))
+		filter_hbox.add_child(btn)
+		_worm_career_btns.append(btn)
+
+	var scroll = ScrollContainer.new()
+	scroll.position = Vector2(20, 140)
+	scroll.size = Vector2(560, 700)
+	scroll.horizontal_scroll_mode = ScrollContainer.SCROLL_MODE_DISABLED
+	root.add_child(scroll)
+
+	_worm_list = VBoxContainer.new()
+	_worm_list.add_theme_constant_override("separation", 8)
+	scroll.add_child(_worm_list)
+
+	return root
+
+func _set_worm_career(career: String):
+	_current_worm_career = career
+	_refresh_worm()
+
+func _refresh_worm():
+	if _current_worm_career == "":
+		_current_worm_career = "shi"
+
+	var careers = ["shi", "nong", "gong", "shang", "xia"]
+	for i in range(careers.size()):
+		var career = careers[i]
+		var btn = _worm_career_btns[i]
+		var f = sys.get_career_fate(career)
+		btn.text = "%s: %d缘分" % [sys.get_career_name(career), f]
+		if _current_worm_career == career:
+			btn.add_theme_color_override("font_color", Color("#ffdd88"))
+		else:
+			btn.add_theme_color_override("font_color", Color("#aaaaaa"))
+
+	for ch in _worm_list.get_children():
+		ch.queue_free()
+
+	var career_map = {"士": "shi", "农": "nong", "工": "gong", "商": "shang", "侠": "xia"}
+	for hero_id in data.heroes:
+		var h = data.heroes[hero_id]
+		var hero_career = career_map.get(h.get("category", ""), "")
+		if hero_career != _current_worm_career:
+			continue
+		var row = _make_worm_hero_row(hero_id, h)
+		_worm_list.add_child(row)
+
+func _make_worm_hero_row(hero_id: String, h: Dictionary) -> Button:
+	var btn = Button.new()
+	btn.custom_minimum_size = Vector2(540, 70)
+	btn.size = Vector2(540, 70)
+
+	var sty = StyleBoxFlat.new()
+	sty.bg_color = CARD
+	sty.corner_radius_bottom_left = 6
+	sty.corner_radius_bottom_right = 6
+	sty.corner_radius_top_left = 6
+	sty.corner_radius_top_right = 6
+	btn.add_theme_stylebox_override("normal", sty)
+	btn.add_theme_stylebox_override("hover", sty)
+	btn.add_theme_stylebox_override("pressed", sty)
+
+	var hbox = HBoxContainer.new()
+	hbox.alignment = BoxContainer.ALIGNMENT_CENTER
+	hbox.anchors_preset = Control.PRESET_FULL_RECT
+	btn.add_child(hbox)
+
+	var name_lbl = Label.new()
+	name_lbl.text = h.name
+	name_lbl.custom_minimum_size = Vector2(120, 0)
+	name_lbl.add_theme_font_size_override("font_size", 18)
+	hbox.add_child(name_lbl)
+
+	# 【改】同步并显示技能数量
+	sys._sync_worm_skills(hero_id)
+	var skills = sys.get_hero_worm_skills(hero_id)
+	var info = Label.new()
+	info.text = "技能：%d 个" % skills.size()
+	info.custom_minimum_size = Vector2(140, 0)
+	info.add_theme_color_override("font_color", Color("#66ff66"))
+	hbox.add_child(info)
+
+	btn.pressed.connect(func(): _show_hero_worm_skills(hero_id, h))
+	return btn
+
+func _show_hero_worm_skills(hero_id: String, h: Dictionary):
+	sys._sync_worm_skills(hero_id)
+	var skills = sys.get_hero_worm_skills(hero_id)
+	
+	var popup = c._create_base_popup("%s 虫师技能" % h.name, Vector2(520, 640))
+	popup.z_index = 30
+	c.add_child(popup)
+
+	var vbox = popup.get_child(0)
+	vbox.alignment = BoxContainer.ALIGNMENT_BEGIN
+
+	var scroll = ScrollContainer.new()
+	scroll.size_flags_vertical = Control.SIZE_EXPAND_FILL
+	scroll.custom_minimum_size = Vector2(480, 0)
+	vbox.add_child(scroll)
+
+	var list = VBoxContainer.new()
+	list.add_theme_constant_override("separation", 8)
+	scroll.add_child(list)
+
+	for i in range(skills.size()):
+		var skill = skills[i]
+		var cid = skill.cricket_id
+		var cdata = sys._crickets_by_id.get(cid)
+		if cdata == null: continue
+		
+		var row = _make_worm_skill_row(hero_id, i, skill, cdata)
+		list.add_child(row)
+
+	c._add_ok_button(vbox, func(): popup.queue_free(), "关闭")
+
+func _make_worm_skill_row(hero_id: String, idx: int, skill: Dictionary, cdata: Dictionary) -> Button:
+	var btn = Button.new()
+	btn.custom_minimum_size = Vector2(460, 70)
+	btn.size = Vector2(460, 70)
+
+	var col = Color(sys.get_quality_color(cdata.quality))
+	var sty = StyleBoxFlat.new()
+	sty.bg_color = CARD
+	sty.border_color = col
+	sty.border_width_bottom = 2
+	sty.border_width_left = 2
+	sty.border_width_right = 2
+	sty.border_width_top = 2
+	sty.corner_radius_bottom_left = 4
+	sty.corner_radius_bottom_right = 4
+	sty.corner_radius_top_left = 4
+	sty.corner_radius_top_right = 4
+	btn.add_theme_stylebox_override("normal", sty)
+
+	var hbox = HBoxContainer.new()
+	hbox.alignment = BoxContainer.ALIGNMENT_CENTER
+	hbox.anchors_preset = Control.PRESET_FULL_RECT
+	btn.add_child(hbox)
+
+	var name_lbl = Label.new()
+	name_lbl.text = cdata.name
+	name_lbl.custom_minimum_size = Vector2(100, 0)
+	name_lbl.add_theme_color_override("font_color", col)
+	hbox.add_child(name_lbl)
+
+	var star_lbl = Label.new()
+	star_lbl.text = "★%d" % skill.star
+	star_lbl.custom_minimum_size = Vector2(50, 0)
+	star_lbl.add_theme_color_override("font_color", Color("#ffdd88"))
+	hbox.add_child(star_lbl)
+
+	var lv_lbl = Label.new()
+	lv_lbl.text = "Lv.%d" % skill.level
+	lv_lbl.custom_minimum_size = Vector2(60, 0)
+	hbox.add_child(lv_lbl)
+
+	var bonus = sys.get_worm_skill_bonus(hero_id, idx)
+	var is_pct = skill.star >= 5
+	var bonus_str = ""
+	if skill.level <= 0:
+		bonus_str = "未激活"
+	elif is_pct:
+		bonus_str = "+%.0f%%" % (bonus * 100)
+	else:
+		bonus_str = "+%s" % c.format_number(int(bonus))
+	var bonus_lbl = Label.new()
+	bonus_lbl.text = bonus_str
+	bonus_lbl.custom_minimum_size = Vector2(100, 0)
+	bonus_lbl.add_theme_color_override("font_color", Color("#66ff66"))
+	hbox.add_child(bonus_lbl)
+
+	btn.pressed.connect(func(): _show_worm_skill_upgrade(hero_id, idx, skill, cdata))
+	return btn
+
+func _show_worm_skill_upgrade(hero_id: String, idx: int, skill: Dictionary, cdata: Dictionary):
+	var is_pct = skill.star >= 5
+	var popup = c._create_base_popup("%s 技能升级" % cdata.name, Vector2(440, 320))
+	popup.z_index = 30
+	c.add_child(popup)
+
+	var vbox = popup.get_child(0)
+
+	var info = Label.new()
+	info.text = "★%d虫书  Lv.%d" % [skill.star, skill.level]
+	info.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	info.add_theme_font_size_override("font_size", 20)
+	info.add_theme_color_override("font_color", Color("#ffdd88"))
+	vbox.add_child(info)
+
+	var bonus = sys.get_worm_skill_bonus(hero_id, idx)
+	var bonus_str = ""
+	if skill.level <= 0:
+		bonus_str = "未激活"
+	elif is_pct:
+		bonus_str = "+%.0f%%" % (bonus * 100)
+	else:
+		bonus_str = "+%s" % c.format_number(int(bonus))
+	var bonus_lbl = Label.new()
+	bonus_lbl.text = "当前加成：%s" % bonus_str
+	bonus_lbl.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	vbox.add_child(bonus_lbl)
+
+	var exp_item = "cuzhi_exp_high" if skill.star >= 5 else "cuzhi_exp_low"
+	var exp_name = "高级促织心得" if skill.star >= 5 else "低级促织心得"
+	var cost = sys.get_worm_skill_upgrade_cost(hero_id, idx)
+	var can = sys.can_upgrade_worm_skill(hero_id, idx)
+	var exp_have = data.items.get(exp_item, 0)
+
+	var cost_lbl = Label.new()
+	cost_lbl.text = "拥有%s：%d  |  升级消耗：%d" % [exp_name, exp_have, cost]
+	cost_lbl.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	cost_lbl.add_theme_color_override("font_color", Color("#ffaa00") if can else Color("#ff6666"))
+	vbox.add_child(cost_lbl)
+
+	var up_btn = Button.new()
+	up_btn.text = "升级"
+	up_btn.disabled = not can
+	up_btn.pressed.connect(func():
+		if sys.upgrade_worm_skill(hero_id, idx):
+			c._show_stage_hint("升级成功！")
+			popup.queue_free()
+			_show_worm_skill_upgrade(hero_id, idx, sys.get_hero_worm_skills(hero_id)[idx], cdata)
+		else:
+			c._show_stage_hint("升级失败")
+	)
+	vbox.add_child(up_btn)
+
+	c._add_ok_button(vbox, func(): popup.queue_free(), "关闭")
+
 
 # ========== 通用组件 ==========
 func _make_sub_title(text: String, parent: Control) -> Label:
