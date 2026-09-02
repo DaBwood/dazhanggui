@@ -88,6 +88,8 @@ static func get_percent_bonus(g, hero_id: String) -> float:
 	# 【新增】魂力赚钱%（装备珍兽的百万年魂骨 阶×10%）
 	bonus += g.get_hero_hunli_percent(hero_id)
 	
+	bonus += g.cuzhi_system.get_temple_bonus(hero_id)
+	
 	return bonus
 
 # 门客总赚速 = 基础赚速 × (1 + 百分比加成) + 额外赚速

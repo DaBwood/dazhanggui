@@ -60,6 +60,7 @@ var fish_equip_view   # 门客渔获装备弹窗（第8批新增）
 var costume_view   # 【服装系统】服装视图
 var soul_view   # 【新增】兽魂视图（珍兽魂盘+魂石镶嵌）
 var soulpower_view   # 【新增】魂力培养视图（珍兽魂体+魂骨装配）
+var cuzhi_view   # 【促织园】闯荡子视图
 
 func _ready():
 	
@@ -96,6 +97,9 @@ func _ready():
 	costume_view = CostumeView.new(self)
 	soul_view = SoulView.new(self)   # 【新增】兽魂视图
 	soulpower_view = SoulpowerView.new(self)   # 【新增】魂力培养视图
+	cuzhi_view = CuzhiView.new(self)
+
+	
 	data.load_game()  # ← 先读档
 
 	# 计算离线收益
@@ -272,7 +276,8 @@ func switch_page(page_id: String):
 		hide_travel_view()
 		hide_manor_view()
 		hide_war_view() 
-		hide_fishing_view()   # 【第8批新增】关闭垂钓子视图    
+		hide_fishing_view()   # 【第8批新增】关闭垂钓子视图 
+		hide_cuzhi_view()   
 		update_adventure_page()
 	
 	if page_id == "apprentice": update_apprentice_page()
@@ -1448,6 +1453,17 @@ func hide_fishing_view():
 # 打开门客渔获装备弹窗（由 hero_page 渔获按钮触发）
 func show_fish_equip_view(hero_id: String):
 	return fish_equip_view.show_fish_equip_view(hero_id)
+
+
+# ==================== 【转发】促织园视图 → pages/cuzhi_view.gd ====================
+func build_cuzhi_view(page, vbox):
+	return cuzhi_view.build_cuzhi_view(page, vbox)
+
+func show_cuzhi_view():
+	return cuzhi_view.show_cuzhi_view()
+
+func hide_cuzhi_view():
+	return cuzhi_view.hide_cuzhi_view()
 
 
 # ============================================================

@@ -300,10 +300,13 @@
 	  "name": "病人手册",
 	  "desc": "记载各类病症诊治之法的手册（后续玩法使用）"
 	},
-	"cricket_cage": {
-	  "name": "促织笼",
-	  "desc": "豢养促织的笼子（后续玩法使用）"
-	},
+	"cuzhi_cage": {
+	"name": "促织笼",
+	"desc": "用于在促织园捕捉促织的道具",
+	"type": "consumable",
+	"price": 0,
+	"hide_in_bag": false
+},
 	"wuse_shi": {
 		"name": "五色石",
 		"desc": "蕴含五行之力的彩石，用于解锁兽魂魂盘的格子"

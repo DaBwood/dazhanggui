@@ -520,6 +520,12 @@ var fishing_system   # 垂钓系统（第8批新增）
 var _fishing_configs: Dictionary = {}   # 垂钓配置（fishing.json，由 _load_all_configs 加载）
 var costume_system    # 【服装系统】
 var costume_configs   # 【服装系统】服装配置
+# 【促织系统】存档字段
+var cuzhi_caught: Dictionary = {}      # key=促织id, value={"level":1,"exp":0}
+var cuzhi_fate: Dictionary = {}        # key=职业, value=缘分点数
+var cuzhi_temple: Dictionary = {}      # key=门客id, value=已升级次数
+var cuzhi_spent: int = 0               # 累计消耗促织笼数（保底进度）
+var cuzhi_system: CuzhiSystem
 # ==================== 初始化 ====================
 # 初始化：创建各子系统（纯逻辑模块，持有本中枢引用），再加载全部配置
 func _init():
@@ -542,6 +548,7 @@ func _init():
 	soulpower_system = SoulpowerSystem.new(self)   # 【新增】魂力培养系统
 	fishing_system = FishingSystem.new(self)   # 【第8批新增】垂钓系统
 	costume_system = CostumeSystem.new(self)
+	cuzhi_system = CuzhiSystem.new(self)
 	
 	_load_all_configs()
 
@@ -727,7 +734,7 @@ func save_game():
 	var systems = [hero_system, friend_system, apprentice_system, beast_system, shop_system,
 		stage_system, item_system, travel_system, charity_system, lottery_system, mall_system,
 		manor_system,courtyard_system,war_system,goal_system,goal_system,fishing_system,soul_system,
-		soulpower_system]
+		soulpower_system,cuzhi_system,]
 	for sys in systems:
 		save_data.merge(sys.get_save_data(), true)
 	var file = FileAccess.open(SAVE_PATH, FileAccess.WRITE)
@@ -768,7 +775,7 @@ func load_game():
 	var systems = [hero_system, friend_system, apprentice_system, beast_system, shop_system,
 		stage_system, item_system, travel_system, charity_system, lottery_system, mall_system,
 		manor_system,courtyard_system,war_system,goal_system,goal_system,fishing_system,soul_system,
-		soulpower_system]
+		soulpower_system,cuzhi_system,]
 	for sys in systems:
 		sys.load_save_data(data)
 
