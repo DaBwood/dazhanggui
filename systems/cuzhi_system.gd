@@ -117,9 +117,14 @@ func get_worm_skill_bonus(hero_id: String, skill_idx: int):
 	if skill_idx >= skills.size(): return 0
 	var skill = skills[skill_idx]
 	if skill.level <= 0: return 0
-	var cfg = _cfg.get("worm_book", {}).get("qualities", {}).get(str(skill.star), {})
-	var base = cfg.get("bonus", [0])[0]
-	return base * skill.level
+	var cfg = _cfg.get("worm_book", {}).get("qualities", {}).get(str(int(skill.star)), {})
+	var bonuses = cfg.get("bonus", [0])
+	if bonuses.is_empty(): return 0
+	var total = 0
+	for i in range(int(skill.level)):
+		var idx = i % bonuses.size()
+		total += bonuses[idx]
+	return total
 
 # 【查】某技能下次升级消耗
 func get_worm_skill_upgrade_cost(hero_id: String, skill_idx: int) -> int:
@@ -128,20 +133,53 @@ func get_worm_skill_upgrade_cost(hero_id: String, skill_idx: int) -> int:
 	var skills = master.skills
 	if skill_idx >= skills.size(): return 0
 	var skill = skills[skill_idx]
-	var cfg = _cfg.get("worm_book", {}).get("qualities", {}).get(str(skill.star), {})
+	var cfg = _cfg.get("worm_book", {}).get("qualities", {}).get(str(int(skill.star)), {})
 	var costs = cfg.get("cost", [])
 	if costs.is_empty(): return 0
-	var cost_idx = skill.level % costs.size()
+	var cost_idx = int(skill.level) % costs.size()
 	return costs[cost_idx]
 
-# 【查】能否升级某技能
+# 【查】某技能升级所需的促织军衔阶别索引
+# 规则：每升10级需要一个更高阶别
+# Lv.1~10 需小卒(0), Lv.11~20 需副尉(1), Lv.21~30 需校尉(2)...
+func get_worm_skill_required_rank(skill_level: int) -> int:
+	# 目标等级 = 当前等级 + 1
+	var target_level = skill_level + 1
+	# 所需阶别索引 = floor((目标等级 - 1) / 10)
+	return floori((target_level - 1) / 10.0)
+
+# 【查】促织某品质的初始军衔阶别索引
+func get_cricket_init_rank(quality: int) -> int:
+	var info = _cfg.rank_init.get(str(quality), {"rank": 0, "max_rank": 11})
+	return int(info.rank)
+
+# 【查】某促织当前的军衔阶别索引
+func get_cricket_rank_index(level: int) -> int:
+	return floori(level / 9.0)
+
+# 【查】能否升级某技能（增加军衔阶别检查，考虑初始阶别差异）
 func can_upgrade_worm_skill(hero_id: String, skill_idx: int) -> bool:
 	var cost = get_worm_skill_upgrade_cost(hero_id, skill_idx)
 	if cost <= 0: return false
 	var master = g.cuzhi_worm_masters.get(hero_id)
 	if master == null: return false
 	var skill = master.skills[skill_idx]
-	var item_id = "cuzhi_exp_high" if skill.star >= 5 else "cuzhi_exp_low"
+	
+	# 【新增】检查促织军衔阶别是否满足下一级要求（考虑不同品质初始阶别差异）
+	var cid = skill.cricket_id
+	var cdata = _crickets_by_id.get(cid)
+	if cdata == null: return false
+	var q = int(cdata.quality)
+	var init_rank = get_cricket_init_rank(q)           # 该促织的初始阶别
+	var cricket_level = get_cricket_level(cid)         # 促织当前等级
+	var current_rank = get_cricket_rank_index(cricket_level)  # 促织当前绝对阶别
+	var required_offset = get_worm_skill_required_rank(int(skill.level))  # 技能需要的相对提升阶数
+	var required_absolute = init_rank + required_offset  # 技能需要的绝对阶别
+	if current_rank < required_absolute:
+		return false
+	
+	# 【修复】int(skill.star) 防御 float 问题
+	var item_id = "cuzhi_exp_high" if int(skill.star) >= 5 else "cuzhi_exp_low"
 	return g.items.get(item_id, 0) >= cost
 
 # 【升】升级某技能
@@ -150,11 +188,11 @@ func upgrade_worm_skill(hero_id: String, skill_idx: int) -> bool:
 	var cost = get_worm_skill_upgrade_cost(hero_id, skill_idx)
 	var master = g.cuzhi_worm_masters[hero_id]
 	var skill = master.skills[skill_idx]
-	var item_id = "cuzhi_exp_high" if skill.star >= 5 else "cuzhi_exp_low"
+	var item_id = "cuzhi_exp_high" if int(skill.star) >= 5 else "cuzhi_exp_low"
 	g.items[item_id] = g.items.get(item_id, 0) - cost
-	skill.level += 1
+	skill.level = int(skill.level) + 1
 	return true
-
+# ========== 虫师系统（门客级别，多技能）==========
 # 【内】同步某门客的技能列表（把新获得的同职业促织加进来）
 func _sync_worm_skills(hero_id: String):
 	var hero = g.heroes.get(hero_id)
@@ -176,7 +214,7 @@ func _sync_worm_skills(hero_id: String):
 		if cdata.career != hero_career: continue
 		if cid in existing_ids: continue
 		var q = int(cdata.quality)
-		var star = _cfg.get("worm_book", {}).get("qualities", {}).get(str(q), {}).get("star", 1)
+		var star = int(_cfg.get("worm_book", {}).get("qualities", {}).get(str(q), {}).get("star", 1))
 		master.skills.append({"cricket_id": cid, "level": 0, "star": star})
 
 func _add_exp(cid: String, amount: int):

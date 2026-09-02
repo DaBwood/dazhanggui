@@ -22,7 +22,6 @@ var _catch: Control
 var _temple: Control
 var _shop: Control
 var _worm: Control           # 【新增】虫师主界面
-var _worm_book_list: Control # 【新增】虫书列表
 
 # 运行时缓存
 var _shelf_grid: GridContainer
@@ -929,7 +928,7 @@ func _make_worm_skill_row(hero_id: String, idx: int, skill: Dictionary, cdata: D
 	hbox.add_child(lv_lbl)
 
 	var bonus = sys.get_worm_skill_bonus(hero_id, idx)
-	var is_pct = skill.star >= 5
+	var is_pct = int(skill.star) >= 5
 	var bonus_str = ""
 	if skill.level <= 0:
 		bonus_str = "未激活"
@@ -947,15 +946,18 @@ func _make_worm_skill_row(hero_id: String, idx: int, skill: Dictionary, cdata: D
 	return btn
 
 func _show_worm_skill_upgrade(hero_id: String, idx: int, skill: Dictionary, cdata: Dictionary):
-	var is_pct = skill.star >= 5
-	var popup = c._create_base_popup("%s 技能升级" % cdata.name, Vector2(440, 320))
+	# 【修复】int(skill.star) 防御 float 问题
+	var is_pct = int(skill.star) >= 5
+	# 【改】弹窗高度从 320 增加到 380，容纳军衔提示行
+	var popup = c._create_base_popup("%s 技能升级" % cdata.name, Vector2(440, 380))
 	popup.z_index = 30
 	c.add_child(popup)
 
 	var vbox = popup.get_child(0)
 
 	var info = Label.new()
-	info.text = "★%d虫书  Lv.%d" % [skill.star, skill.level]
+	# 【修复】int(skill.star) 防御 float 问题
+	info.text = "★%d虫书  Lv.%d" % [int(skill.star), int(skill.level)]
 	info.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	info.add_theme_font_size_override("font_size", 20)
 	info.add_theme_color_override("font_color", Color("#ffdd88"))
@@ -974,8 +976,31 @@ func _show_worm_skill_upgrade(hero_id: String, idx: int, skill: Dictionary, cdat
 	bonus_lbl.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	vbox.add_child(bonus_lbl)
 
-	var exp_item = "cuzhi_exp_high" if skill.star >= 5 else "cuzhi_exp_low"
-	var exp_name = "高级促织心得" if skill.star >= 5 else "低级促织心得"
+	# 【新增】军衔阶别限制提示（考虑初始阶别差异）
+	var required_offset = sys.get_worm_skill_required_rank(int(skill.level))
+	var cricket_level = sys.get_cricket_level(skill.cricket_id)
+	var current_rank = sys.get_cricket_rank_index(cricket_level)
+	var cdata_q = int(cdata.quality)
+	var init_rank = sys.get_cricket_init_rank(cdata_q)
+	var required_absolute = init_rank + required_offset
+	var rank_ok = current_rank >= required_absolute
+	var current_rank_info = sys.get_cricket_rank_info(cricket_level)
+	var required_rank_name = sys.get_cricket_rank_info(required_absolute * 9).rank_name
+	var rank_lbl = Label.new()
+	if rank_ok:
+		rank_lbl.text = "促织军衔：%s（满足要求）" % current_rank_info.full_name
+		rank_lbl.add_theme_color_override("font_color", Color("#66ff66"))
+	else:
+		# 【改】提示显示还需提升多少阶
+		var need_up = required_absolute - current_rank
+		rank_lbl.text = "促织军衔：%s  |  需达到：%s（还需提升%d阶）" % [current_rank_info.full_name, required_rank_name, need_up]
+		rank_lbl.add_theme_color_override("font_color", Color("#ff6666"))
+	rank_lbl.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	vbox.add_child(rank_lbl)
+
+	# 【修复】int(skill.star) 防御 float 问题
+	var exp_item = "cuzhi_exp_high" if int(skill.star) >= 5 else "cuzhi_exp_low"
+	var exp_name = "高级促织心得" if int(skill.star) >= 5 else "低级促织心得"
 	var cost = sys.get_worm_skill_upgrade_cost(hero_id, idx)
 	var can = sys.can_upgrade_worm_skill(hero_id, idx)
 	var exp_have = data.items.get(exp_item, 0)
