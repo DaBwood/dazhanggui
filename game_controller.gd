@@ -1846,3 +1846,8 @@ func _apply_portrait_layout():
 				sz = Vector2(minf(sz.x, vs.x - 40), minf(sz.y, vs.y - 80))
 				p.size = sz
 			p.position = ((vs - sz) / 2).max(Vector2.ZERO)
+
+
+# 【新增】无双促织盒子使用入口（由 bag_page 调用）
+func show_wushuang_box_selector():
+	return cuzhi_view.show_wushuang_box_selector()

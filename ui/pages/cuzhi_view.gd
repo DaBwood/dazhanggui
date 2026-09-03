@@ -573,7 +573,7 @@ func _build_temple_view() -> Control:
 	root.add_child(filter_hbox)
 
 	_temple_career_btns.clear()
-	for career in ["shi", "nong", "gong", "shang", "xia"]:
+	for career in ["士", "农", "工", "商", "侠"]:
 		var btn = Button.new()
 		btn.name = "Filter_" + career
 		btn.custom_minimum_size = Vector2(100, 40)
@@ -615,10 +615,10 @@ func _refresh_temple():
 	for ch in _temple_list.get_children():
 		ch.queue_free()
 
-	var career_map = {"士": "shi", "农": "nong", "工": "gong", "商": "shang", "侠": "xia"}
+
 	for hero_id in data.heroes:
 		var h = data.heroes[hero_id]
-		var hero_career = career_map.get(h.get("category", ""), "")
+		var hero_career = h.get("category", "")
 		if hero_career != _current_temple_career:
 			continue
 		var row = _make_temple_hero_row(hero_id, h)
@@ -745,15 +745,14 @@ func _make_shop_row(g: Dictionary) -> Panel:
 			return
 		data.yuanbao -= g.price
 		data.items["cuzhi_cage"] = data.items.get("cuzhi_cage", 0) + g.count
+		
+		if g.has("items"):
+				for item_id in g.items.keys():
+					data.items[item_id] = data.items.get(item_id, 0) + g.items[item_id]
 		c._show_stage_hint("购买成功！+%d 促织笼" % g.count)
 		c.update_money_label()
 		_refresh_shop()
-	)
-	
-	if g.has("items"):
-			for item_id in g.items.keys():
-				data.items[item_id] = data.items.get(item_id, 0) + g.items[item_id]
-	
+		)
 	hbox.add_child(buy_btn)
 
 	return panel
@@ -779,7 +778,7 @@ func _build_worm_view() -> Control:
 	root.add_child(filter_hbox)
 
 	_worm_career_btns.clear()
-	for career in ["shi", "nong", "gong", "shang", "xia"]:
+	for career in ["士", "农", "工", "商", "侠"]:
 		var btn = Button.new()
 		btn.name = "WormFilter_" + career
 		btn.custom_minimum_size = Vector2(100, 40)
@@ -821,10 +820,9 @@ func _refresh_worm():
 	for ch in _worm_list.get_children():
 		ch.queue_free()
 
-	var career_map = {"士": "shi", "农": "nong", "工": "gong", "商": "shang", "侠": "xia"}
 	for hero_id in data.heroes:
 		var h = data.heroes[hero_id]
-		var hero_career = career_map.get(h.get("category", ""), "")
+		var hero_career = h.get("category", "")
 		if hero_career != _current_worm_career:
 			continue
 		var row = _make_worm_hero_row(hero_id, h)
@@ -1152,6 +1150,9 @@ func _refresh_peiyu():
 	for item in list:
 		if int(item.data.quality) != 6:
 			continue
+		# 【新增】过滤：只有属于系列的促织才显示在促织堂
+		if sys.get_cricket_series(item.id) == "":
+			continue
 		var row = _make_peiyu_cricket_row(item)
 		_peiyu_cricket_list.add_child(row)
 
@@ -1160,9 +1161,11 @@ func _make_jar_card(idx: int, jar: Dictionary) -> Button:
 	btn.custom_minimum_size = Vector2(220, 90)
 	btn.size = Vector2(220, 90)
 	btn.mouse_filter = Control.MOUSE_FILTER_PASS
-
+	
+	var is_unlocked = idx < sys.get_jar_count() 
 	var is_used = jar.get("cid", "") != ""
-	var col = Color("#66ff66") if is_used else Color("#888888")
+	# 【改】未解锁用灰色边框，已解锁空闲用绿色边框，培育中用亮绿色边框
+	var col = Color("#66ff66") if is_used else (Color("#888888") if is_unlocked else Color("#444444"))
 	var sty = StyleBoxFlat.new()
 	sty.bg_color = CARD
 	sty.border_color = col
@@ -1187,7 +1190,14 @@ func _make_jar_card(idx: int, jar: Dictionary) -> Button:
 	idx_lbl.add_theme_color_override("font_color", TITLE_COL)
 	vbox.add_child(idx_lbl)
 
-	if is_used:
+	if not is_unlocked:
+		# 【新增】未解锁罐
+		var lock_lbl = Label.new()
+		lock_lbl.text = "未解锁"
+		lock_lbl.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+		lock_lbl.add_theme_color_override("font_color", Color("#666666"))
+		vbox.add_child(lock_lbl)
+	elif is_used:
 		var cdata = sys._crickets_by_id.get(jar.cid)
 		var pname = _cfg().get("parts", {}).get(jar.part, jar.part)
 		var name_lbl = Label.new()
@@ -1215,6 +1225,7 @@ func _make_jar_card(idx: int, jar: Dictionary) -> Button:
 		empty_lbl.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 		empty_lbl.add_theme_color_override("font_color", Color("#888888"))
 		vbox.add_child(empty_lbl)
+
 
 	return btn
 
@@ -1256,18 +1267,33 @@ func _show_jar_action(jar: Dictionary):
 	hbox.alignment = BoxContainer.ALIGNMENT_CENTER
 	vbox.add_child(hbox)
 
-	for count in [1, 10, 60]:
-		var btn = Button.new()
-		btn.text = "+%d" % count
-		btn.custom_minimum_size = Vector2(70, 40)
-		btn.disabled = have < count or remain <= 0
-		btn.pressed.connect(func():
-			if sys.speedup(jar, count):
-				c._show_stage_hint("加速成功！")
-				popup.queue_free()
-				_refresh_peiyu()
-		)
-		hbox.add_child(btn)
+	# +10 按钮
+	var btn10 = Button.new()
+	btn10.text = "+10"
+	btn10.custom_minimum_size = Vector2(70, 40)
+	btn10.disabled = have < 10 or remain <= 0
+	btn10.pressed.connect(func():
+		if sys.speedup(jar, 10):
+			c._show_stage_hint("加速成功！")
+			popup.queue_free()
+			_refresh_peiyu()
+	)
+	hbox.add_child(btn10)
+
+	# 【新增】一键使用：自动计算实际需要多少个蜜膏，用多少扣多少
+	var need = int(ceil(remain / 600.0))   # 每个蜜膏减600秒=10分钟，向上取整
+	var use_count = mini(need, have)
+	var auto_btn = Button.new()
+	auto_btn.text = "一键使用(%d)" % use_count
+	auto_btn.custom_minimum_size = Vector2(120, 40)
+	auto_btn.disabled = use_count <= 0 or remain <= 0
+	auto_btn.pressed.connect(func():
+		if sys.speedup(jar, use_count):
+			c._show_stage_hint("加速成功！使用%d个" % use_count)
+			popup.queue_free()
+			_refresh_peiyu()
+	)
+	hbox.add_child(auto_btn)
 
 	c._add_ok_button(vbox, func(): popup.queue_free(), "关闭")
 
@@ -1309,23 +1335,34 @@ func _make_peiyu_cricket_row(item: Dictionary) -> Button:
 	var phase_name = phase_cfg.get("name", "未知")
 	var parts = data.cuzhi_caught[cid].get("parts", {"head": 0, "jaw": 0, "wing": 0})   
 	var part_str = "头%d 牙%d 翅%d" % [parts.head, parts.jaw, parts.wing]
-
+	
+	# 【新增】计算该促织当前提供的加成
+	var stage_pct = phase_cfg.get("stage_pct", 0.0)
+	var income_per_lv = phase_cfg.get("income_per_level", 0)
+	var total_lv = parts.head + parts.jaw + parts.wing
+	var flat_income = total_lv * income_per_lv
+	var bonus_str = "+%.0f%%" % (stage_pct * 100)
+	if flat_income > 0:
+		bonus_str += " +%s" % c.format_number(flat_income)
+	
 	var info = Label.new()
-	info.text = "%s | %s" % [phase_name, part_str]
+	info.text = "%s | %s \n %s" % [phase_name, part_str, bonus_str]
 	info.custom_minimum_size = Vector2(180, 0)
 	info.add_theme_color_override("font_color", Color("#aaaaaa"))
 	hbox.add_child(info)
 
 	# 蜕壳按钮
-	var can_molt = sys.can_molt(cid)
 	var molt_btn = Button.new()
 	molt_btn.text = "蜕壳"
 	molt_btn.custom_minimum_size = Vector2(70, 36)
-	molt_btn.disabled = not can_molt
+	# 【删】molt_btn.disabled = not can_molt  # 不禁用，让点击能进提示
 	molt_btn.pressed.connect(func():
-		if sys.do_molt(cid):
-			c._show_stage_hint("蜕壳成功！")
-			_refresh_peiyu()
+		if sys.can_molt(cid):
+			if sys.do_molt(cid):
+				c._show_stage_hint("蜕壳成功！")
+				_refresh_peiyu()
+		else:
+			_show_molt_blocker(cid)
 	)
 	hbox.add_child(molt_btn)
 
@@ -1339,6 +1376,29 @@ func _make_peiyu_cricket_row(item: Dictionary) -> Button:
 	hbox.add_child(peiyu_btn)
 
 	return btn
+
+
+# 【新增】蜕壳条件不满足时提示具体原因
+func _show_molt_blocker(cid: String):
+	var phase = sys.get_current_phase(cid)
+	var phases = _cfg().get("phases", [])
+	if phase >= phases.size() - 1:
+		c._show_stage_hint("该促织已达最高阶段，无法继续蜕壳")
+		return
+	var max_lv = sys.get_part_max_level(cid)
+	for part in ["head", "jaw", "wing"]:
+		if sys.get_part_level(cid, part) < max_lv:
+			c._show_stage_hint("所有部位需培育至%d级方可蜕壳" % max_lv)
+			return
+	var series = sys.get_cricket_series(cid)
+	if series == "":
+		c._show_stage_hint("该促织无系列归属，无法蜕壳")
+		return
+	var item_id = _cfg().get("molt_items", {}).get(series, "")
+	var item_name = data.ITEM_CONFIG.get(item_id, {}).get("name", item_id)
+	var have = data.items.get(item_id, 0)
+	c._show_stage_hint("蜕壳需要 %s×1（当前拥有 %d）" % [item_name, have])
+
 
 func _show_part_selector(cid: String, _cdata: Dictionary):
 	var popup = c._create_base_popup("选择培育部位", Vector2(400, 300))
@@ -1378,3 +1438,50 @@ func _show_part_selector(cid: String, _cdata: Dictionary):
 		hbox.add_child(btn)
 
 	c._add_ok_button(vbox, func(): popup.queue_free(), "关闭")
+
+
+# 【新增】打开无双促织盒子选择器（由 bag_page 调用）
+func show_wushuang_box_selector():
+	var popup = c._create_base_popup("无双促织自选", Vector2(560, 640))
+	popup.z_index = 30
+	c.add_child(popup)
+
+	var vbox = popup.get_child(0)
+	vbox.alignment = BoxContainer.ALIGNMENT_BEGIN
+
+	var hint = Label.new()
+	hint.text = "请选择一只无双促织"
+	hint.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	hint.add_theme_color_override("font_color", Color("#ffaa00"))
+	vbox.add_child(hint)
+
+	var scroll = ScrollContainer.new()
+	scroll.size_flags_vertical = Control.SIZE_EXPAND_FILL
+	scroll.custom_minimum_size = Vector2(500, 0)
+	vbox.add_child(scroll)
+
+	var grid = GridContainer.new()
+	grid.columns = 2
+	grid.add_theme_constant_override("h_separation", 12)
+	grid.add_theme_constant_override("v_separation", 12)
+	scroll.add_child(grid)
+
+	var pool = sys.get_all_crickets() 
+	for cdata in pool:
+		if int(cdata.quality) < 5:
+			continue
+		var btn = Button.new()
+		btn.custom_minimum_size = Vector2(220, 70)
+		btn.text = cdata.name + "  " + sys.get_career_name(cdata.career)
+		var col = Color(sys.get_quality_color(cdata.quality))
+		btn.add_theme_color_override("font_color_normal", col)
+		btn.pressed.connect(func():
+			if sys.do_wushuang_box_claim(cdata.id):
+				c._show_stage_hint("获得 %s！" % cdata.name)
+				popup.queue_free()
+			else:
+				c._show_stage_hint("兑换失败")
+		)
+		grid.add_child(btn)
+
+	c._add_ok_button(vbox, func(): popup.queue_free(), "取消")

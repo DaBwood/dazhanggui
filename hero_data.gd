@@ -95,7 +95,7 @@ static func get_percent_bonus(g, hero_id: String) -> float:
 	
 	bonus += g.cuzhi_system.get_temple_bonus(hero_id)
 	# 【促织培育】阶段百分比加成（按职业汇总极无双促织）
-	bonus += g.cuzhi_system.get_career_peiyu_percent(hero.get("category", ""))
+	bonus += g.cuzhi_system.get_career_peiyu_percent(hero.get("category", "")) 
 	
 	return bonus
 

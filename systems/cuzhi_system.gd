@@ -214,8 +214,7 @@ func upgrade_worm_skill(hero_id: String, skill_idx: int) -> bool:
 func _sync_worm_skills(hero_id: String):
 	var hero = g.heroes.get(hero_id)
 	if hero == null: return
-	var career_map = {"士": "shi", "农": "nong", "工": "gong", "商": "shang", "侠": "xia"}
-	var hero_career = career_map.get(hero.get("category", ""), "")
+	var hero_career = hero.get("category", "")
 	
 	if not g.cuzhi_worm_masters.has(hero_id):
 		g.cuzhi_worm_masters[hero_id] = {"skills": []}
@@ -418,6 +417,9 @@ func can_peiyu(cid: String) -> bool:
 		return false
 	if not is_peiyu_unlocked():
 		return false
+	# 【新增】只有属于系列的促织才能培育（五行/三国/江湖/山海/五灵）
+	if get_cricket_series(cid) == "":
+		return false
 	return true
 
 # ---------- 促织数据扩展（旧档兼容） ----------
@@ -580,7 +582,7 @@ func speedup(jar: Dictionary, count: int) -> bool:
 	if not can_speedup(jar, count):
 		return false
 	g.items["cuzhi_migao"] = g.items.get("cuzhi_migao", 0) - count
-	jar.duration_sec = maxi(jar.get("duration_sec", 0) - count * 60, 0)
+	jar.duration_sec = maxi(jar.get("duration_sec", 0) - count * 600, 0)
 	if is_jar_finished(jar):
 		_finish_jar(jar)
 	return true
@@ -647,3 +649,15 @@ func get_career_peiyu_flat_income(career: String) -> int:
 		var parts = g.cuzhi_caught[cid].parts
 		total += (parts.get("head", 0) + parts.get("jaw", 0) + parts.get("wing", 0)) * income_per_lv
 	return total
+
+
+# 【新增】无双促织盒子兑换：扣盒子，直接获得指定促织（quality>=5）
+func do_wushuang_box_claim(cid: String) -> bool:
+	if g.items.get("wushuang_cuzhi_box", 0) <= 0:
+		return false
+	var cdata = _crickets_by_id.get(cid)
+	if cdata == null or int(cdata.quality) < 5:
+		return false
+	g.items["wushuang_cuzhi_box"] -= 1
+	var result = _on_cricket_acquired(cid)
+	return result.ok

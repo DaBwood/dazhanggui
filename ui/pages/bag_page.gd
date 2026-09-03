@@ -172,8 +172,12 @@ func _show_item_detail_popup(item_id: String):
 			"hun_gu_box":   # 【新增】魂骨盒子：自选部位+品级魂骨入仓库
 				use_btn.pressed.connect(func():
 					popup.queue_free()
-					_show_hungu_box_selector()
-				)
+					_show_hungu_box_selector())
+			"wushuang_cuzhi_box":
+				use_btn.pressed.connect(func():
+					popup.queue_free()
+					c.show_wushuang_box_selector()
+					return)
 		vbox.add_child(use_btn)
 	
 	c._add_ok_button(vbox, func(): popup.queue_free(), "关闭")

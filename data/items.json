@@ -321,6 +321,12 @@
 		"desc": "打开后获得一块四格同色的无双品质魂石",
 		"use": { "type": "soul_wushuang_box", "btn": "打开" }
 	},
+	"wushuang_cuzhi_box": {
+		"name": "无双促织盒子",
+		"desc": "打开后可自选一只无双及以上促织",
+		"type": "consumable",
+		"use": { "type": "wushuang_cuzhi_box", "btn": "打开" }
+	},
 	"cuzhi_migao": {
 		"name": "促织蜜膏",
 		"desc": "用于加速促织培育，每个可减少1分钟培育时间",
