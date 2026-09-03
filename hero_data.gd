@@ -34,6 +34,8 @@ static func get_total_aptitude(g, hero_id: String) -> int:
 	total += g.get_hero_soul_aptitude(hero_id)
 	# 【新增】魂力资质（装备珍兽魂体：等级+魂骨+技能+共鸣）
 	total += g.get_hero_hunli_aptitude(hero_id)
+	# 【新增】促织装备资质加成（无双6/级，极无双7/级）
+	total += g.cuzhi_system.get_equip_aptitude_bonus(hero_id)
 	
 	return total
 

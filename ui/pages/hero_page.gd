@@ -16,6 +16,8 @@ var current_hero_id: String = ""
 # 【v4新增】技能栏当前标签页："skill"技能 / "shop"副业 / "costume"服装 / "halo"光环（后两者待开发）
 var current_skill_tab: String = "skill"
 
+var _cuzhi_last_use_jinghua: bool = false   # 【促织装备】上次升级用的促织精华（true）还是珍兽果（false）
+
 # 由 game_controller._ready 创建本模块时注入引用
 func _init(p_c):
 	c = p_c
@@ -332,10 +334,34 @@ func update_hero_panel():
 		fish_btn.text = "渔获"
 	fish_btn.pressed.connect(c.show_fish_equip_view.bind(current_hero_id))
 	
-	# 把技能列表下移到最后一个按钮下方，避免重叠
+		# 【新增】促织装备按钮（左列第3行第3格，与珍兽/渔获并排）
+	var cuzhi_btn = c.get_node("HeroPanel").get_node_or_null("CuzhiEquipBtn")
+	if cuzhi_btn == null:
+		cuzhi_btn = Button.new()
+		cuzhi_btn.name = "CuzhiEquipBtn"
+		cuzhi_btn.add_theme_font_size_override("font_size", 16)
+		c.get_node("HeroPanel").add_child(cuzhi_btn)
+	cuzhi_btn.size = btn_size
+	cuzhi_btn.position = Vector2(276, 196)
+	# 信号重连（先断后连，防止切换门客后串数据）
+	for conn in cuzhi_btn.pressed.get_connections():
+		cuzhi_btn.pressed.disconnect(conn.callable)
+	var equipped_cuzhi = data.cuzhi_system.get_equipped_cricket(current_hero_id)
+	if equipped_cuzhi != "":
+		var cuzhi_name = data.cuzhi_system.get_cricket_data(equipped_cuzhi).get("name", "未知")
+		var cuzhi_lv = data.cuzhi_system.get_equip_level(equipped_cuzhi)
+		cuzhi_btn.text = "【%s】Lv.%d" % [cuzhi_name, cuzhi_lv]
+	else:
+		cuzhi_btn.text = "促织"
+	cuzhi_btn.pressed.connect(_on_cuzhi_btn_clicked)
+	
+	# 【改】技能列表下移到最后一个按钮（促织）下方，避免重叠
 	if c.get_node("HeroPanel").has_node("ScrollContainer"):
 		var scroll = c.get_node("HeroPanel/ScrollContainer")
-		var needed_y = fish_btn.position.y + fish_btn.size.y + 8   # 【改】基准改为渔获按钮底部
+		var last_btn = fish_btn
+		if c.get_node("HeroPanel").has_node("CuzhiEquipBtn"):
+			last_btn = c.get_node("HeroPanel/CuzhiEquipBtn")
+		var needed_y = last_btn.position.y + last_btn.size.y + 8
 		if scroll.position.y < needed_y:
 			scroll.position.y = needed_y
 	
@@ -948,3 +974,239 @@ func _on_halo_upgrade(cos_id: String, mode: String):
 	update_hero_panel()
 	c.update_all_ui()
 	c.update_bag_list()
+
+# 【新增】促织按钮点击：已装备弹操作面板，未装备弹选择器
+func _on_cuzhi_btn_clicked():
+	var equipped = data.cuzhi_system.get_equipped_cricket(current_hero_id)
+	if equipped != "":
+		_show_cuzhi_action_panel(equipped)
+	else:
+		_show_cuzhi_selector()
+
+# 【新增】促织选择器：列出所有已拥有的无双/极无双促织
+func _show_cuzhi_selector():
+	# 【修复】立即删除旧选择器，避免同名冲突
+	_close_cuzhi_selector()
+	
+	var panel = c._create_base_popup("选择促织装备", Vector2(460, 400))
+	panel.name = "CuzhiSelector"
+	var vbox = panel.get_child(0)
+	
+	var scroll = ScrollContainer.new()
+	scroll.custom_minimum_size = Vector2(440, 280)
+	vbox.add_child(scroll)
+	
+	var list = VBoxContainer.new()
+	scroll.add_child(list)
+	
+	var crickets = data.cuzhi_system.get_equipable_crickets()
+	var has_any = false
+	for info in crickets:
+		var cid = info.id
+		var cdata = info.data
+		var btn = Button.new()
+		btn.mouse_filter = Control.MOUSE_FILTER_PASS
+		
+		var equip_level = info.equip_level
+		var max_level = data.cuzhi_system.get_equip_max_level(cid)
+		var equipped_hero = data.cuzhi_system.get_hero_by_cricket(cid)
+		
+		var status = ""
+		if equipped_hero == current_hero_id:
+			status = " [当前装备]"
+			btn.disabled = true
+		elif equipped_hero != "" and data.heroes.has(equipped_hero):
+			status = " [%s已装备]" % data.heroes[equipped_hero].name
+			btn.disabled = true
+		
+		var q_name = data.cuzhi_system.get_quality_name(int(cdata.quality))
+		btn.text = "【%s】%s 装备Lv.%d/%d%s" % [cdata.name, q_name, equip_level, max_level, status]
+		
+		if not btn.disabled:
+			btn.pressed.connect(_on_cuzhi_equipped.bind(cid))
+		list.add_child(btn)
+		has_any = true
+	
+	if not has_any:
+		var empty = Label.new()
+		empty.text = "暂无可装备促织（需拥有无双或极.无双促织）"
+		empty.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+		list.add_child(empty)
+	
+	var cancel = Button.new()
+	cancel.text = "取消"
+	cancel.pressed.connect(func(): _close_cuzhi_selector())
+	vbox.add_child(cancel)
+	
+	c.add_child(panel)
+
+# 【新增】选择促织后装备
+func _on_cuzhi_equipped(cid: String):
+	data.cuzhi_system.equip_cricket(current_hero_id, cid)
+	_close_cuzhi_selector()
+	update_hero_panel()
+	c.update_all_ui()
+
+# 【新增】促织操作面板：显示信息 + 升级 + 替换/卸下/回收
+func _show_cuzhi_action_panel(cid: String):
+	var cdata = data.cuzhi_system.get_cricket_data(cid)
+	if cdata.is_empty(): return
+	
+	# 【修复】立即删除旧面板，彻底避免同名节点冲突导致关闭按钮失效
+	_close_cuzhi_panel()
+	
+	var panel = c._create_base_popup("促织装备", Vector2(420, 560))
+	panel.name = "CuzhiActionPanel"
+	var vb = panel.get_child(0)
+	
+	# 促织信息 + 当前材料数量
+	var info_lbl = Label.new()
+	info_lbl.name = "CuzhiInfoLbl"
+	info_lbl.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	info_lbl.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+	var q_name = data.cuzhi_system.get_quality_name(int(cdata.quality))
+	var equip_level = data.cuzhi_system.get_equip_level(cid)
+	var max_level = data.cuzhi_system.get_equip_max_level(cid)
+	var apt = data.cuzhi_system.get_equip_aptitude_per_level(cid)
+	# 【修复】显示当前拥有的材料数量
+	var bf_have = data.items.get("beast_fruit", 0)
+	var jh_have = data.items.get("cuzhi_jinghua", 0)
+	info_lbl.text = "【%s】%s\n装备等级：Lv.%d / %d\n每级资质+%d\n拥有：珍兽果 %d  |  促织精华 %d" % [
+		cdata.name, q_name, equip_level, max_level, apt, bf_have, jh_have
+	]
+	vb.add_child(info_lbl)
+	
+	# 升级区
+	var can_up = data.cuzhi_system.can_upgrade_equip(cid)
+	if can_up:
+		var cost_bf = data.cuzhi_system.get_equip_cost_beast_fruit(cid)
+		var cost_jh = data.cuzhi_system.get_equip_cost_jinghua(cid)
+		
+		# 勾选框（互斥）
+		var check_box = HBoxContainer.new()
+		check_box.alignment = BoxContainer.ALIGNMENT_CENTER
+		vb.add_child(check_box)
+		
+		var check_bf = CheckBox.new()
+		check_bf.name = "CheckBeastFruit"
+		check_bf.text = "珍兽果(%d)" % cost_bf
+		# 【修复】根据上次选择恢复勾选状态
+		check_bf.button_pressed = not _cuzhi_last_use_jinghua
+		check_box.add_child(check_bf)
+		
+		var check_jh = CheckBox.new()
+		check_jh.name = "CheckJinghua"
+		check_jh.text = "促织精华(%d)" % cost_jh
+		check_jh.button_pressed = _cuzhi_last_use_jinghua
+		check_box.add_child(check_jh)
+		
+		# 互斥逻辑：必须勾选一个且只能勾选一个 + 记录选择
+		check_bf.toggled.connect(func(pressed):
+			if pressed:
+				check_jh.button_pressed = false
+				_cuzhi_last_use_jinghua = false
+			elif not check_jh.button_pressed:
+				check_bf.button_pressed = true
+		)
+		check_jh.toggled.connect(func(pressed):
+			if pressed:
+				check_bf.button_pressed = false
+				_cuzhi_last_use_jinghua = true
+			elif not check_bf.button_pressed:
+				check_jh.button_pressed = true
+		)
+		
+		# 升级按钮
+		var up_btn = Button.new()
+		up_btn.text = "升级"
+		up_btn.custom_minimum_size = Vector2(100, 40)
+		up_btn.pressed.connect(func():
+			var use_jh = check_jh.button_pressed
+			_do_cuzhi_upgrade(cid, use_jh)
+		)
+		vb.add_child(up_btn)
+	else:
+		var limit_lbl = Label.new()
+		limit_lbl.text = "已达等级上限（需提升促织军衔以解锁更高等级）"
+		limit_lbl.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+		limit_lbl.add_theme_color_override("font_color", Color("#ff6666"))
+		vb.add_child(limit_lbl)
+	
+	# 操作按钮行
+	var btn_row = HBoxContainer.new()
+	btn_row.alignment = BoxContainer.ALIGNMENT_CENTER
+	vb.add_child(btn_row)
+	
+	var replace_btn = Button.new()
+	replace_btn.text = "替换"
+	replace_btn.pressed.connect(func():
+		_close_cuzhi_panel()
+		_show_cuzhi_selector()
+	)
+	btn_row.add_child(replace_btn)
+	
+	var unequip_btn = Button.new()
+	unequip_btn.text = "卸下"
+	unequip_btn.pressed.connect(func():
+		data.cuzhi_system.unequip_cricket(current_hero_id)
+		_close_cuzhi_panel()
+		update_hero_panel()
+		c.update_all_ui()
+	)
+	btn_row.add_child(unequip_btn)
+	
+	var recycle_btn = Button.new()
+	recycle_btn.text = "回收"
+	recycle_btn.pressed.connect(func():
+		_do_cuzhi_recycle(cid)
+	)
+	btn_row.add_child(recycle_btn)
+	
+	var close_btn = Button.new()
+	close_btn.text = "关闭"
+	close_btn.pressed.connect(func(): _close_cuzhi_panel())
+	btn_row.add_child(close_btn)
+	
+	c.add_child(panel)
+
+# 【新增】执行促织装备升级
+func _do_cuzhi_upgrade(cid: String, use_jinghua: bool):
+	# 【修复】记录本次消耗类型，下次打开面板时保持勾选
+	_cuzhi_last_use_jinghua = use_jinghua
+	
+	var res = data.cuzhi_system.upgrade_equip(cid, use_jinghua)
+	if res.ok:
+		c._show_stage_hint("升级成功！当前等级 Lv.%d" % res.new_level)
+		_close_cuzhi_panel()
+		_show_cuzhi_action_panel(cid)
+		update_hero_panel()
+		c.update_all_ui()
+		c.update_bag_list()
+	else:
+		c._show_stage_hint(res.get("reason", "升级失败"))
+
+# 【新增】执行促织装备回收
+func _do_cuzhi_recycle(cid: String):
+	var res = data.cuzhi_system.recycle_equip(cid)
+	if res.ok:
+		c._show_stage_hint("回收成功！返还促织精华×%d" % res.return_jinghua)
+		_close_cuzhi_panel()
+		# 【修复】回收后促织仍装备但等级重置为1，刷新门客面板显示
+		update_hero_panel()
+		c.update_all_ui()
+		c.update_bag_list()
+	else:
+		c._show_stage_hint(res.get("reason", "回收失败"))
+
+# 【促织装备】从场景树移除并延迟删除（避免信号中断+避免同名冲突）
+func _close_cuzhi_panel():
+	if c.has_node("CuzhiActionPanel"):
+		var old = c.get_node("CuzhiActionPanel")
+		c.remove_child(old)   # 立即从树移除：视觉上关闭+名字释放
+		old.queue_free()      # 延迟释放内存：信号发完再死，不崩溃
+
+func _close_cuzhi_selector():
+	if c.has_node("CuzhiSelector"):
+		var old = c.get_node("CuzhiSelector")
+		c.remove_child(old)
+		old.queue_free()

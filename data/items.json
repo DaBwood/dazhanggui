@@ -332,6 +332,10 @@
 		"desc": "用于加速促织培育，每个可减少1分钟培育时间",
 		"type": "consumable"
 	},
+	"cuzhi_jinghua": {
+		"name": "促织精华",
+		 "desc": "用于升级门客装备的促织，回收时返还"
+	},
 	"wuxing_yan": {
 		"name": "五行岩",
 		"desc": "五行系列促织蜕壳所需的道具"

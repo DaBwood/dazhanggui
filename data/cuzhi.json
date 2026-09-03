@@ -124,7 +124,7 @@
 	},
 	"fate_per_catch": 25,
 	"levelup": {
-		"exp_per_dup": 1,
+		"exp_per_dup": 1
 	},
 	"temple": {
 		"base_cost": 50,
@@ -169,5 +169,25 @@
 		"4": 4800,
 		"5": 180,
 		"6": 270
+	},
+"equip": {
+	"initial_max_level": 100,
+	"level_cap_per_rank_tier": 50,
+	"aptitude_per_level": {
+		"5": 6,
+		"6": 7
+	},
+	"cost_beast_fruit": {
+		"5": 180,
+		"6": 210
+	},
+	"cost_jinghua": {
+		"5": 60,
+		"6": 70
+	},
+	"initial_rank_by_quality": {
+		"5": 3,
+		"6": 3
 	}
+}
 }

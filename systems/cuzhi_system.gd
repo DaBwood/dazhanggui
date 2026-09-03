@@ -32,6 +32,8 @@ func get_save_data() -> Dictionary:
 		"worm_masters": g.cuzhi_worm_masters,
 		"jars": g.cuzhi_jars,
 		"unlocked_jars": g.cuzhi_unlocked_jars,
+		"equipped": g.cuzhi_equipped,       # 【新增】装备映射
+		"equip_levels": g.cuzhi_equip_levels, # 【新增】装备等级
 	}
 
 
@@ -57,6 +59,10 @@ func load_save_data(d: Dictionary):
 		g.cuzhi_unlocked_jars = d.unlocked_jars
 	else:
 		g.cuzhi_unlocked_jars = 2
+	if d.has("equipped"):                   # 【新增】加载装备映射
+		g.cuzhi_equipped = d.equipped
+	if d.has("equip_levels"):               # 【新增】加载装备等级
+		g.cuzhi_equip_levels = d.equip_levels
 	# 旧档兼容
 	for cid in g.cuzhi_caught.keys():
 		_ensure_cricket_dev(cid)
@@ -681,3 +687,181 @@ func get_hero_worm_percent_bonus(hero_id: String) -> float:
 		if skill.level <= 0: continue
 		total += get_worm_skill_bonus(hero_id, i)
 	return total
+
+
+# ========== 促织装备系统 ==========
+
+func _get_equip_cfg() -> Dictionary:
+	return _cfg.get("equip", {})
+
+func get_cricket_data(cid: String) -> Dictionary:
+	# 【查】获取促织配置数据（public接口，供外部查询）
+	return _crickets_by_id.get(cid, {}).duplicate()
+
+func get_cricket_rank(cid: String) -> int:
+	# 【查】促织当前军衔rank值（培育/蜕壳系统写入的rank字段）
+	if not g.cuzhi_caught.has(cid): return 0
+	return get_cricket_rank_index(g.cuzhi_caught[cid].level)
+
+func get_cricket_initial_rank(cid: String) -> int:
+	# 【查】促织初始军衔（按品质查配置）
+	var cdata = _crickets_by_id.get(cid)
+	if cdata == null: return 0
+	var q = int(cdata.quality)
+	var cfg = _get_equip_cfg()
+	return cfg.get("initial_rank_by_quality", {}).get(str(q), 4)
+
+func get_rank_tier_changes(cid: String) -> int:
+	# 【查】促织从初始军衔到现在，经历了多少次大段变化（称号变化次数）
+	var current = get_cricket_rank(cid)
+	var initial = get_cricket_initial_rank(cid)
+	return max(0, current - initial)
+
+func get_equip_max_level(cid: String) -> int:
+	# 【查】促织装备等级上限 = 初始上限 + 军衔大段变化次数 × 每段增量
+	var cfg = _get_equip_cfg()
+	var base = cfg.get("initial_max_level", 100)
+	var per_tier = cfg.get("level_cap_per_rank_tier", 50)
+	var tiers = get_rank_tier_changes(cid)
+	return base + tiers * per_tier
+
+func get_equip_level(cid: String) -> int:
+	# 【查】促织当前装备等级（默认1级）
+	return g.cuzhi_equip_levels.get(cid, 1)
+
+func get_equip_aptitude_per_level(cid: String) -> int:
+	# 【查】促织每级提供的资质（无双6/极无双7）
+	var cdata = _crickets_by_id.get(cid)
+	if cdata == null: return 0
+	var q = int(cdata.quality)
+	var cfg = _get_equip_cfg()
+	return cfg.get("aptitude_per_level", {}).get(str(q), 6)
+
+func get_equip_cost_beast_fruit(cid: String) -> int:
+	# 【查】升级消耗珍兽果数量
+	var cdata = _crickets_by_id.get(cid)
+	if cdata == null: return 0
+	var q = int(cdata.quality)
+	var cfg = _get_equip_cfg()
+	return cfg.get("cost_beast_fruit", {}).get(str(q), 180)
+
+func get_equip_cost_jinghua(cid: String) -> int:
+	# 【查】升级消耗促织精华数量
+	var cdata = _crickets_by_id.get(cid)
+	if cdata == null: return 0
+	var q = int(cdata.quality)
+	var cfg = _get_equip_cfg()
+	return cfg.get("cost_jinghua", {}).get(str(q), 60)
+
+func can_upgrade_equip(cid: String) -> bool:
+	# 【查】能否升级装备：等级未达上限
+	var level = get_equip_level(cid)
+	var max_level = get_equip_max_level(cid)
+	return level < max_level
+
+func upgrade_equip(cid: String, use_jinghua: bool) -> Dictionary:
+	# 【升】升级促织装备一次
+	if not can_upgrade_equip(cid):
+		return {"ok": false, "reason": "已达等级上限（需提升促织军衔解锁更高等级）"}
+	
+	var cost: int
+	var item_id: String
+	if use_jinghua:
+		cost = get_equip_cost_jinghua(cid)
+		item_id = "cuzhi_jinghua"
+	else:
+		cost = get_equip_cost_beast_fruit(cid)
+		item_id = "beast_fruit"  # 珍兽果道具ID，若您本地不同请改此处
+	
+	if g.items.get(item_id, 0) < cost:
+		var item_name = g.ITEM_CONFIG.get(item_id, {}).get("name", item_id)
+		return {"ok": false, "reason": "%s不足" % item_name}
+	
+	# 扣道具、升级
+	g.items[item_id] -= cost
+	if not g.cuzhi_equip_levels.has(cid):
+		g.cuzhi_equip_levels[cid] = 1
+	g.cuzhi_equip_levels[cid] += 1
+	
+	return {"ok": true, "new_level": g.cuzhi_equip_levels[cid]}
+
+func recycle_equip(cid: String) -> Dictionary:
+	# 【回收】重置促织装备等级为1，返还全部促织精华（无论升级时用了什么材料）
+	var level = get_equip_level(cid)
+	if level <= 1:
+		return {"ok": false, "reason": "等级为1，无需回收"}
+	
+	var total_upgrades = level - 1
+	var jinghua_per_level = get_equip_cost_jinghua(cid)
+	var return_jinghua = total_upgrades * jinghua_per_level
+	
+	# 重置等级
+	g.cuzhi_equip_levels[cid] = 1
+	
+	# 返还促织精华
+	if not g.items.has("cuzhi_jinghua"):
+		g.items["cuzhi_jinghua"] = 0
+	g.items["cuzhi_jinghua"] += return_jinghua
+	
+	return {"ok": true, "return_jinghua": return_jinghua}
+
+func equip_cricket(hero_id: String, cid: String) -> bool:
+	# 【装备】将促织装备给门客（仅无双/极无双可装备，每种促织只能被一个门客装备）
+	if not g.cuzhi_caught.has(cid): return false
+	var cdata = _crickets_by_id.get(cid)
+	if cdata == null: return false
+	var q = int(cdata.quality)
+	if q < 5: return false
+	
+	# 检查是否已被其他门客装备
+	for h_id in g.cuzhi_equipped.keys():
+		if g.cuzhi_equipped[h_id] == cid and h_id != hero_id:
+			return false
+	
+	# 如果该门客已有装备，先卸下
+	if g.cuzhi_equipped.has(hero_id):
+		unequip_cricket(hero_id)
+	
+	g.cuzhi_equipped[hero_id] = cid
+	return true
+
+func unequip_cricket(hero_id: String) -> bool:
+	# 【卸下】门客卸下促织
+	if not g.cuzhi_equipped.has(hero_id): return false
+	g.cuzhi_equipped.erase(hero_id)
+	return true
+
+func get_equipped_cricket(hero_id: String) -> String:
+	# 【查】获取门客装备的促织id
+	return g.cuzhi_equipped.get(hero_id, "")
+
+func get_hero_by_cricket(cid: String) -> String:
+	# 【查】获取装备某促织的门客id
+	for h_id in g.cuzhi_equipped.keys():
+		if g.cuzhi_equipped[h_id] == cid:
+			return h_id
+	return ""
+
+func get_equip_aptitude_bonus(hero_id: String) -> int:
+	# 【查】门客装备促织提供的总资质加成（供 HeroData 调用）
+	var cid = get_equipped_cricket(hero_id)
+	if cid == "": return 0
+	var level = get_equip_level(cid)
+	var per_level = get_equip_aptitude_per_level(cid)
+	return level * per_level
+
+func get_equipable_crickets() -> Array:
+	# 【查】获取可装备的无双/极无双促织列表（选择器用）
+	var result = []
+	for cid in g.cuzhi_caught.keys():
+		var cdata = _crickets_by_id.get(cid)
+		if cdata == null: continue
+		var q = int(cdata.quality)
+		if q >= 5:
+			result.append({
+				"id": cid,
+				"data": cdata,
+				"cricket_level": g.cuzhi_caught[cid].level,
+				"equip_level": get_equip_level(cid),
+			})
+	return result

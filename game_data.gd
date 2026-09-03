@@ -531,6 +531,8 @@ var cuzhi_worm_masters: Dictionary = {}  # {hero_id: {level: 等级, star: 星�
 # 【促织培育系统】存档字段
 var cuzhi_jars: Array = []           # 促织罐 [{cid:"", part:"", start_time:unix, duration_sec:int}, ...]
 var cuzhi_unlocked_jars: int = 2     # 已解锁罐数量（初始2，每45级+1，上限4）
+var cuzhi_equipped: Dictionary = {}      # {hero_id: 促织id} 门客装备促织映射
+var cuzhi_equip_levels: Dictionary = {}  # {促织id: 装备等级}
 
 # ==================== 初始化 ====================
 # 初始化：创建各子系统（纯逻辑模块，持有本中枢引用），再加载全部配置
