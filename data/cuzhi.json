@@ -115,10 +115,6 @@
 	"5": {"rank": 3, "max_rank": 11},
 	"6": {"rank": 3, "max_rank": 11}
 	},
-	"levelup": {
-	"exp_per_dup": 1,
-	"max_level": 108
-	},
 	"catch_weights": {
 		"1": 400,
 		"2": 300,
@@ -129,8 +125,6 @@
 	"fate_per_catch": 25,
 	"levelup": {
 		"exp_per_dup": 1,
-		"max_level": 20,
-		"exp_table": [1, 2, 3, 5, 8, 12, 17, 23, 30, 40, 55, 75, 100, 130, 165, 205, 250, 300, 355]
 	},
 	"temple": {
 		"base_cost": 50,

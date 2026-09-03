@@ -51,8 +51,8 @@ func load_save_data(d: Dictionary):
 	else:
 		# 初始化空罐（4个）
 		g.cuzhi_jars = []
-		for i in range(4):
-			g.cuzhi_jars.append({"cid": "", "part": "", "start_time": 0, "duration_sec": 0})
+	while g.cuzhi_jars.size() < 4:
+		g.cuzhi_jars.append({"cid": "", "part": "", "start_time": 0, "duration_sec": 0})
 	if d.has("unlocked_jars"):
 		g.cuzhi_unlocked_jars = d.unlocked_jars
 	else:
@@ -371,9 +371,6 @@ func get_catchable_crickets() -> Array:
 func get_quality_name(q: int) -> String:
 	return _cfg.quality_names.get(str(q), "未知")
 
-func get_career_name(c: String) -> String:
-	return _cfg.career_names.get(c, c)
-
 func get_quality_color(q: int) -> String:
 	return _cfg.quality_colors.get(str(q), "#ffffff")
 
@@ -661,3 +658,26 @@ func do_wushuang_box_claim(cid: String) -> bool:
 	g.items["wushuang_cuzhi_box"] -= 1
 	var result = _on_cricket_acquired(cid)
 	return result.ok
+
+
+# 【查】某门客虫师技能总固定赚速加成（star 1~4 累加）
+func get_hero_worm_flat_bonus(hero_id: String) -> int:
+	var total = 0
+	var skills = get_hero_worm_skills(hero_id)
+	for i in range(skills.size()):
+		var skill = skills[i]
+		if int(skill.star) >= 5: continue
+		if skill.level <= 0: continue
+		total += int(get_worm_skill_bonus(hero_id, i))
+	return total
+
+# 【查】某门客虫师技能总百分比赚速加成（star 5~6 累加）
+func get_hero_worm_percent_bonus(hero_id: String) -> float:
+	var total = 0.0
+	var skills = get_hero_worm_skills(hero_id)
+	for i in range(skills.size()):
+		var skill = skills[i]
+		if int(skill.star) < 5: continue
+		if skill.level <= 0: continue
+		total += get_worm_skill_bonus(hero_id, i)
+	return total

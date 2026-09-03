@@ -70,6 +70,8 @@ static func get_extra_income(g, hero_id: String) -> int:
 	
 	# 【促织培育】部位固定赚速（按职业汇总极无双促织）
 	extra += g.cuzhi_system.get_career_peiyu_flat_income(hero.get("category", ""))
+	# 【虫师】虫书固定赚速加成（star 1~4 累加）
+	extra += g.cuzhi_system.get_hero_worm_flat_bonus(hero_id)
 	
 	return extra
 
@@ -92,10 +94,12 @@ static func get_percent_bonus(g, hero_id: String) -> float:
 	bonus += g.get_hero_soul_percent(hero_id)
 	# 【新增】魂力赚钱%（装备珍兽的百万年魂骨 阶×10%）
 	bonus += g.get_hero_hunli_percent(hero_id)
-	
+	#促织庙百分比加成
 	bonus += g.cuzhi_system.get_temple_bonus(hero_id)
 	# 【促织培育】阶段百分比加成（按职业汇总极无双促织）
 	bonus += g.cuzhi_system.get_career_peiyu_percent(hero.get("category", "")) 
+	# 【虫师】虫书百分比赚速加成（star 5~6 累加）
+	bonus += g.cuzhi_system.get_hero_worm_percent_bonus(hero_id)
 	
 	return bonus
 

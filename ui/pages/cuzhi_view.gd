@@ -34,10 +34,12 @@ var _temple_career_btns: Array = []
 var _current_temple_career: String = ""
 var _worm_list: VBoxContainer        # 【新增】虫师门客列表
 var _worm_career_btns: Array = []    # 【新增】虫师分类按钮
-var _current_worm_career: String = "shi"  # 【新增】当前虫师职业
+var _current_worm_career: String = "士"  # 【新增】当前虫师职业
 var _peiyu: Control           # 【新增】促织堂视图
 var _jar_grid: GridContainer  # 【新增】促织罐网格
 var _peiyu_cricket_list: VBoxContainer  # 【新增】促织列表
+var _worm_skill_popup: Control = null   # 【新增】当前打开的技能列表弹窗，用于关闭后刷新
+var _worm_skill_hero_id: String = ""    # 【新增】当前技能列表对应的门客ID
 
 func _init(p_c):
 	c = p_c
@@ -137,9 +139,9 @@ func _build_main_view() -> Control:
 		{"name": "促织架", "desc": "已收集的促织", "callback": _on_shelf},
 		{"name": "捉促织", "desc": "消耗促织笼捕捉", "callback": _on_catch},
 		{"name": "促织庙", "desc": "消耗缘分提升门客", "callback": _on_temple},
-		{"name": "特惠商城", "desc": "购买促织笼", "callback": _on_shop},
 		{"name": "虫师", "desc": "培养促织虫书", "callback": _on_worm},
 		{"name": "促织堂", "desc": "培育极无双促织", "callback": _on_peiyu},
+		{"name": "特惠商城", "desc": "购买促织笼", "callback": _on_shop}
 	]
 	for e in entries:
 		var card = _make_entry_card(e.name, e.desc)
@@ -311,7 +313,7 @@ func _make_cricket_card(item: Dictionary) -> Button:
 	vbox.add_child(name_lbl)
 
 	var career_lbl = Label.new()
-	career_lbl.text = sys.get_career_name(cdata.career) + "·" + sys.get_quality_name(cdata.quality)
+	career_lbl.text = cdata.career + "·" + sys.get_quality_name(cdata.quality)
 	career_lbl.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	career_lbl.add_theme_font_size_override("font_size", 12)
 	career_lbl.add_theme_color_override("font_color", Color("#aaaaaa"))
@@ -340,8 +342,8 @@ func _show_cricket_detail(item: Dictionary):
 	var col = Color(sys.get_quality_color(cdata.quality))
 	var rank_info = sys.get_cricket_rank_info(item.level)
 	var info = Label.new()
-	info.text = "%s  %s·%s\n军衔：%s" % [cdata.name, sys.get_career_name(cdata.career), sys.get_quality_name(cdata.quality), rank_info.full_name]
-	info.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	info.text = "%s  %s·%s\n军衔：%s" % [cdata.name, cdata.career, 
+	sys.get_quality_name(cdata.quality), rank_info.full_name]
 	info.add_theme_font_size_override("font_size", 18)
 	info.add_theme_color_override("font_color", col)
 	vbox.add_child(info)
@@ -487,13 +489,12 @@ func _do_catch(count: int = 1):
 		var col = Color(sys.get_quality_color(result.quality))
 		var new_str = "【新】" if result.is_new else "【重复】"
 		var quality_name = sys.get_quality_name(result.quality)
-		var career_name = sys.get_career_name(cdata.career)
 
 		var line = Label.new()
 		if result.quality >= 5:
-			line.text = "%s%s·%s（%s） +%d %s缘分" % [new_str, cdata.name, quality_name, career_name, _cfg().fate_per_catch, career_name]
+			line.text = "%s%s·%s（%s） +%d %s缘分" % [new_str, cdata.name, quality_name, cdata.career, _cfg().fate_per_catch, cdata.career]
 		else:
-			line.text = "%s%s·%s（%s）" % [new_str, cdata.name, quality_name, career_name]
+			line.text = "%s%s·%s（%s）" % [new_str, cdata.name, quality_name, cdata.career]
 		line.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 		line.add_theme_font_size_override("font_size", 16)
 		line.add_theme_color_override("font_color", col)
@@ -540,7 +541,7 @@ func _show_guarantee_selector():
 			continue
 		var btn = Button.new()
 		btn.custom_minimum_size = Vector2(220, 70)
-		btn.text = cdata.name + "  " + sys.get_career_name(cdata.career)
+		btn.text = cdata.name + "  " + cdata.career
 		var col = Color(sys.get_quality_color(cdata.quality))
 		btn.add_theme_color_override("font_color_normal", col)
 		btn.pressed.connect(func():
@@ -599,14 +600,14 @@ func _set_temple_career(career: String):
 
 func _refresh_temple():
 	if _current_temple_career == "":
-		_current_temple_career = "shi"
+		_current_temple_career = "士"
 
-	var careers = ["shi", "nong", "gong", "shang", "xia"]
+	var careers = ["士", "农", "工", "商", "侠"]
 	for i in range(careers.size()):
 		var career = careers[i]
 		var btn = _temple_career_btns[i]
 		var f = sys.get_career_fate(career)
-		btn.text = "%s: %d缘分" % [sys.get_career_name(career), f]
+		btn.text = "%s: %d缘分" % [career, f]
 		if _current_temple_career == career:
 			btn.add_theme_color_override("font_color", Color("#ffdd88"))
 		else:
@@ -647,8 +648,8 @@ func _make_temple_hero_row(hero_id: String, h: Dictionary) -> Panel:
 	name_lbl.add_theme_font_size_override("font_size", 16)
 	hbox.add_child(name_lbl)
 
-	var career_map = {"士": "shi", "农": "nong", "工": "gong", "商": "shang", "侠": "xia"}
-	var career = career_map.get(h.get("category", ""), "")
+
+	var career = h.get("category", "")
 	var lv = sys.get_temple_level(hero_id)
 	var bonus = sys.get_temple_bonus(hero_id)
 	var info = Label.new()
@@ -661,7 +662,7 @@ func _make_temple_hero_row(hero_id: String, h: Dictionary) -> Panel:
 	var can = sys.can_upgrade_temple(hero_id, career)
 
 	var cost_lbl = Label.new()
-	cost_lbl.text = "下次：%d %s缘分" % [cost, sys.get_career_name(career)]
+	cost_lbl.text = "下次：%d %s缘分" % [cost, career]
 	cost_lbl.custom_minimum_size = Vector2(160, 0)
 	cost_lbl.add_theme_color_override("font_color", Color("#ffaa00") if can else Color("#ff6666"))
 	hbox.add_child(cost_lbl)
@@ -804,14 +805,14 @@ func _set_worm_career(career: String):
 
 func _refresh_worm():
 	if _current_worm_career == "":
-		_current_worm_career = "shi"
+		_current_worm_career = "士"
 
-	var careers = ["shi", "nong", "gong", "shang", "xia"]
+	var careers = ["士", "农", "工", "商", "侠"]
 	for i in range(careers.size()):
 		var career = careers[i]
 		var btn = _worm_career_btns[i]
 		var f = sys.get_career_fate(career)
-		btn.text = "%s: %d缘分" % [sys.get_career_name(career), f]
+		btn.text = "%s: %d缘分" % [career, f]
 		if _current_worm_career == career:
 			btn.add_theme_color_override("font_color", Color("#ffdd88"))
 		else:
@@ -870,10 +871,18 @@ func _show_hero_worm_skills(hero_id: String, h: Dictionary):
 	sys._sync_worm_skills(hero_id)
 	var skills = sys.get_hero_worm_skills(hero_id)
 	
+	# 【新增】关闭旧的技能列表弹窗（防止重复打开多个）
+	if _worm_skill_popup != null and is_instance_valid(_worm_skill_popup):
+		_worm_skill_popup.queue_free()
+	
 	var popup = c._create_base_popup("%s 虫师技能" % h.name, Vector2(520, 640))
 	popup.z_index = 30
 	c.add_child(popup)
+	# 【新增】保存引用，供升级弹窗关闭后刷新
+	_worm_skill_popup = popup
+	_worm_skill_hero_id = hero_id
 
+	
 	var vbox = popup.get_child(0)
 	vbox.alignment = BoxContainer.ALIGNMENT_BEGIN
 
@@ -886,13 +895,16 @@ func _show_hero_worm_skills(hero_id: String, h: Dictionary):
 	list.add_theme_constant_override("separation", 8)
 	scroll.add_child(list)
 
-	for i in range(skills.size()):
-		var skill = skills[i]
+	# 【新增】按星级从小到大排序
+	var indices = range(skills.size())
+	indices.sort_custom(func(a, b): return int(skills[a].star) < int(skills[b].star))
+
+	for idx in indices:
+		var skill = skills[idx]
 		var cid = skill.cricket_id
 		var cdata = sys._crickets_by_id.get(cid)
 		if cdata == null: continue
-		
-		var row = _make_worm_skill_row(hero_id, i, skill, cdata)
+		var row = _make_worm_skill_row(hero_id, idx, skill, cdata)
 		list.add_child(row)
 
 	c._add_ok_button(vbox, func(): popup.queue_free(), "关闭")
@@ -1029,13 +1041,57 @@ func _show_worm_skill_upgrade(hero_id: String, idx: int, skill: Dictionary, cdat
 		if sys.upgrade_worm_skill(hero_id, idx):
 			c._show_stage_hint("升级成功！")
 			popup.queue_free()
+			# 【新增】刷新底层技能列表，再打开新的升级弹窗
+			_refresh_worm_skill_list()
 			_show_worm_skill_upgrade(hero_id, idx, sys.get_hero_worm_skills(hero_id)[idx], cdata)
 		else:
 			c._show_stage_hint("升级失败")
 	)
 	vbox.add_child(up_btn)
 
-	c._add_ok_button(vbox, func(): popup.queue_free(), "关闭")
+	c._add_ok_button(vbox, func(): 
+		popup.queue_free()
+		# 【新增】关闭升级弹窗后刷新底层技能列表
+		_refresh_worm_skill_list(),
+		"关闭")
+
+# 【新增】刷新当前打开的技能列表弹窗（升级/关闭后调用）
+func _refresh_worm_skill_list():
+	if _worm_skill_popup == null or not is_instance_valid(_worm_skill_popup):
+		return
+	if _worm_skill_hero_id == "":
+		return
+	
+	# 找到列表容器（在 ScrollContainer 内）
+	var vbox = _worm_skill_popup.get_child(0)
+	var scroll = null
+	var list = null
+	for ch in vbox.get_children():
+		if ch is ScrollContainer:
+			scroll = ch
+			break
+	if scroll == null or scroll.get_child_count() == 0:
+		return
+	list = scroll.get_child(0)
+	
+	# 清空旧行
+	for ch in list.get_children():
+		ch.queue_free()
+	
+	# 重新构建
+	sys._sync_worm_skills(_worm_skill_hero_id)
+	var skills = sys.get_hero_worm_skills(_worm_skill_hero_id)
+	# 【新增】按星级从小到大排序
+	var indices = range(skills.size())
+	indices.sort_custom(func(a, b): return int(skills[a].star) < int(skills[b].star))
+
+	for idx in indices:
+		var skill = skills[idx]
+		var cid = skill.cricket_id
+		var cdata = sys._crickets_by_id.get(cid)
+		if cdata == null: continue
+		var row = _make_worm_skill_row(_worm_skill_hero_id, idx, skill, cdata)
+		list.add_child(row)
 
 
 # ========== 通用组件 ==========
@@ -1472,7 +1528,7 @@ func show_wushuang_box_selector():
 			continue
 		var btn = Button.new()
 		btn.custom_minimum_size = Vector2(220, 70)
-		btn.text = cdata.name + "  " + sys.get_career_name(cdata.career)
+		btn.text = cdata.name + "  " + cdata.career
 		var col = Color(sys.get_quality_color(cdata.quality))
 		btn.add_theme_color_override("font_color_normal", col)
 		btn.pressed.connect(func():
