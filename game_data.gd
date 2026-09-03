@@ -538,6 +538,9 @@ var guardian_system   # 【新增】守护灵系统
 var guardian_spirits: Dictionary = {}  # 【新增】守护灵数据 {hero_id: {level, skills, avatar, avatars}}
 var _guardian_configs: Dictionary = {}  # 【新增】守护灵配置
 
+var token_system   # 【新增】信物系统
+var hero_tokens: Dictionary = {}   # 【新增】信物存档 {hero_id: {"level": int, "binds": [门客id, 门客id]}}
+var _token_configs: Dictionary = {}   # 【新增】信物配置（tokens.json）
 # ==================== 初始化 ====================
 # 初始化：创建各子系统（纯逻辑模块，持有本中枢引用），再加载全部配置
 func _init():
@@ -562,6 +565,7 @@ func _init():
 	costume_system = CostumeSystem.new(self)
 	cuzhi_system = CuzhiSystem.new(self)
 	guardian_system = GuardianSystem.new(self)
+	token_system = TokenSystem.new(self)   # 【新增】信物系统
 	
 	_load_all_configs()
 
@@ -593,6 +597,7 @@ func _load_all_configs():
 	_fishing_configs = _load_json("res://data/fishing.json")   # 【第8批新增】垂钓配置
 	costume_configs = _load_json("res://data/costumes.json")   # 【服装系统】
 	_guardian_configs = _load_json("res://data/guardian.json")  # 【新增】守护灵配置
+	_token_configs = _load_json("res://data/tokens.json")   # 【新增】信物配置
 	
 	_load_items_config()   # 【重构新增】道具表
 	_load_travel_config()  # 【重构新增】游历配置
@@ -749,7 +754,7 @@ func save_game():
 	var systems = [hero_system, friend_system, apprentice_system, beast_system, shop_system,
 		stage_system, item_system, travel_system, charity_system, lottery_system, mall_system,
 		manor_system,courtyard_system,war_system,goal_system,fishing_system,soul_system,
-		soulpower_system,cuzhi_system,guardian_system,]
+		soulpower_system,cuzhi_system,guardian_system,token_system,]
 	for sys in systems:
 		save_data.merge(sys.get_save_data(), true)
 	var file = FileAccess.open(SAVE_PATH, FileAccess.WRITE)
@@ -790,7 +795,7 @@ func load_game():
 	var systems = [hero_system, friend_system, apprentice_system, beast_system, shop_system,
 		stage_system, item_system, travel_system, charity_system, lottery_system, mall_system,
 		manor_system,courtyard_system,war_system,goal_system,fishing_system,soul_system,
-		soulpower_system,cuzhi_system,guardian_system,]
+		soulpower_system,cuzhi_system,guardian_system,token_system,]
 	for sys in systems:
 		sys.load_save_data(data)
 

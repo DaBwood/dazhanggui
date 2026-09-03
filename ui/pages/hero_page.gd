@@ -19,6 +19,8 @@ var current_skill_tab: String = "skill"
 var _cuzhi_last_use_jinghua: bool = false   # 【促织装备】上次升级用的促织精华（true）还是珍兽果（false）
 var _guardian_batch: bool = false   # 【新增】守护灵注灵十连勾选状态（面板生命周期内保持）
 
+var _token_batch: bool = false   # 【新增】信物十连勾选状态（面板生命周期内保持）
+
 # 由 game_controller._ready 创建本模块时注入引用
 func _init(p_c):
 	c = p_c
@@ -184,7 +186,16 @@ func _ensure_hero_panel_code():
 	promo_btn.visible = false
 	promo_btn.add_theme_font_size_override("font_size", 16)
 	panel.add_child(promo_btn)
-
+	
+	# 【新增】信物按钮（赋诗按钮上方；仅获得信物的门客显示，显隐由 update_hero_panel 控制）
+	var token_btn = Button.new()
+	token_btn.name = "TokenBtn"
+	token_btn.position = Vector2(vw.x - 150, 62)
+	token_btn.size = Vector2(130, 44)
+	token_btn.add_theme_font_size_override("font_size", 16)
+	token_btn.visible = false
+	panel.add_child(token_btn)
+	
 	# 升级区（右列下方，固定在技能栏上方；无赋诗时上方留空，预留门客立绘位）
 	var level_box = HBoxContainer.new()
 	level_box.name = "LevelUpBox"
@@ -400,6 +411,19 @@ func update_hero_panel():
 			scroll.position.y = needed_scroll_y
 		if skill_tab_bar.position.y < needed_tab_y:
 			skill_tab_bar.position.y = needed_tab_y
+	
+	# 【新增】信物按钮：获得信物的门客显示（无信物直接隐藏），点击打开信物面板
+	var token_btn = c.get_node("HeroPanel").get_node_or_null("TokenBtn")
+	if token_btn:
+		for conn in token_btn.pressed.get_connections():
+			token_btn.pressed.disconnect(conn.callable)
+		if data.token_system.has_token(current_hero_id):
+			var t_cfg = data.token_system.get_token_cfg(current_hero_id)
+			token_btn.text = "【信物】%s" % t_cfg.get("token_name", "信物")
+			token_btn.visible = true
+			token_btn.pressed.connect(_on_token_btn_clicked)
+		else:
+			token_btn.visible = false
 	
 	# 【v3新增】赋诗/晋升按钮（右列上方）：有晋升内容的门客才显示，点击弹窗升级
 	var promo_btn = c.get_node("HeroPanel").get_node_or_null("PromoBtn")
@@ -1515,3 +1539,186 @@ func _show_guardian_avatar_popup():
 			c.remove_child(old)
 			old.queue_free()
 	, "关闭")
+
+
+# ============ 【新增】信物面板 ============
+
+# 【新增】信物按钮点击：打开信物面板
+func _on_token_btn_clicked():
+	_show_token_panel()
+
+# 【新增】打开信物面板（弹窗；同位置刷新重建模式：remove_child+queue_free 防同名冲突）
+func _show_token_panel():
+	# 关闭旧面板防同名冲突
+	if c.has_node("TokenPanel"):
+		var old = c.get_node("TokenPanel")
+		c.remove_child(old)
+		old.queue_free()
+	
+	var t_cfg = data.token_system.get_token_cfg(current_hero_id)
+	if t_cfg.is_empty(): return
+	
+	var popup = c._create_base_popup("【信物】%s" % t_cfg.get("token_name", "信物"), Vector2(440, 560))
+	popup.name = "TokenPanel"
+	popup.z_index = 30
+	c.add_child(popup)
+	var vb = popup.get_child(0)
+	
+	# ── 信物技能信息（等级/效果/消耗/拥有数）──
+	var skill_lbl = Label.new()
+	skill_lbl.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	skill_lbl.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+	skill_lbl.text = "【%s】Lv.%d（无上限）\n每级+%d资质（%s与羁绊门客）\n每级消耗%d【%s】\n拥有：%d" % [
+		t_cfg.get("skill_name", "信物技能"), data.token_system.get_level(current_hero_id),
+		int(t_cfg.get("aptitude_per_level", 3)), data.heroes[current_hero_id].name,
+		int(t_cfg.get("cost_per_level", 600)), t_cfg.get("token_name", "信物"),
+		data.items.get(t_cfg.get("cost_item", ""), 0)
+	]
+	vb.add_child(skill_lbl)
+	
+	# ── 升级区（十连勾选记忆在类变量 _token_batch，升级/重建不清）──
+	var up_box = HBoxContainer.new()
+	up_box.alignment = BoxContainer.ALIGNMENT_CENTER
+	vb.add_child(up_box)
+	var up_btn = Button.new()
+	up_btn.custom_minimum_size = Vector2(130, 48)
+	up_btn.pressed.connect(func():
+		var lv = data.token_system.get_level(current_hero_id)
+		data.token_system.upgrade(current_hero_id, _token_batch)
+		if data.token_system.get_level(current_hero_id) > lv:
+			_show_token_panel()   # 重建刷新面板（勾选状态存类变量，不会丢）
+			update_hero_panel()   # 资质变化，门客面板对账
+			c.update_all_ui()
+			c.update_bag_list()
+	)
+	up_box.add_child(up_btn)
+	var batch_check = CheckBox.new()
+	batch_check.text = "十连"
+	batch_check.button_pressed = _token_batch   # 【新增】恢复上次勾选状态
+	batch_check.toggled.connect(func(pressed):
+		_token_batch = pressed   # 【新增】记录勾选变化
+		# 勾选切换时刷新按钮上的消耗数字（单级↔十连总价）
+		up_btn.text = data.token_system.get_upgrade_btn_text(current_hero_id, _token_batch)
+	)
+	up_box.add_child(batch_check)
+	up_btn.text = data.token_system.get_upgrade_btn_text(current_hero_id, _token_batch)
+	
+	# ── 羁绊绑定区：每格显示 未解锁(灰)/未绑定/已绑定，按解锁等级排序展示 ──
+	var binds = data.token_system.get_binds(current_hero_id)
+	var unlocks: Array = t_cfg.get("bind_unlock_levels", [0])
+	for idx in range(unlocks.size()):
+		var row = HBoxContainer.new()
+		row.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+		vb.add_child(row)
+		var info = Label.new()
+		info.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+		info.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
+		info.clip_text = true
+		row.add_child(info)
+		if not data.token_system.is_bind_unlocked(current_hero_id, idx):
+			# 未解锁格：灰字显示解锁条件
+			info.text = "【锁定】%s Lv.%d 解锁第%d个羁绊" % [t_cfg.get("skill_name", ""), int(unlocks[idx]), idx + 1]
+			info.add_theme_color_override("font_color", Color("#888888"))
+			continue
+		var bind_id = binds[idx]
+		if bind_id == "":
+			info.text = "第%d个羁绊：未绑定" % (idx + 1)
+			var pick_btn = Button.new()
+			pick_btn.text = "绑定"
+			pick_btn.custom_minimum_size = Vector2(80, 32)
+			pick_btn.pressed.connect(func(): _show_token_bind_selector(idx))
+			row.add_child(pick_btn)
+		else:
+			var bh = data.heroes.get(bind_id, {})
+			info.text = "第%d个羁绊：【%s】Lv.%d" % [idx + 1, bh.get("name", bind_id), bh.get("level", 1)]
+			info.add_theme_color_override("font_color", Color("#ffd700"))
+			var rebind_btn = Button.new()
+			rebind_btn.text = "换绑"
+			rebind_btn.custom_minimum_size = Vector2(70, 32)
+			rebind_btn.pressed.connect(func(): _show_token_bind_selector(idx))
+			row.add_child(rebind_btn)
+			var unbind_btn = Button.new()
+			unbind_btn.text = "解绑"
+			unbind_btn.custom_minimum_size = Vector2(70, 32)
+			unbind_btn.pressed.connect(func():
+				data.token_system.unbind(current_hero_id, idx)
+				_show_token_panel()   # 重建刷新
+				update_hero_panel()
+				c.update_all_ui()
+			)
+			row.add_child(unbind_btn)
+	
+	# 羁绊效果说明（读配置，不写死数值）
+	var hint_lbl = Label.new()
+	hint_lbl.text = "绑定后：该门客赚钱+%d%%\n%s资质+其总资质%d%%" % [
+		int(float(t_cfg.get("bind_income_pct", 0.10)) * 100),
+		data.heroes[current_hero_id].name,
+		int(float(t_cfg.get("owner_aptitude_share", 0.01)) * 100)
+	]
+	hint_lbl.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	hint_lbl.add_theme_color_override("font_color", Color("#a89ec7"))
+	vb.add_child(hint_lbl)
+	
+	c._add_ok_button(vb, func():
+		if c.has_node("TokenPanel"):
+			var old = c.get_node("TokenPanel")
+			c.remove_child(old)
+			old.queue_free()
+	, "关闭")
+
+# 【新增】羁绊门客选择器：已拥有门客（排除自己与已绑定者），按实时赚速降序
+func _show_token_bind_selector(idx: int):
+	# 关闭旧选择器防同名冲突
+	if c.has_node("TokenBindSelector"):
+		var old = c.get_node("TokenBindSelector")
+		c.remove_child(old)
+		old.queue_free()
+	
+	var popup = c._create_base_popup("选择羁绊门客", Vector2(440, 480))
+	popup.name = "TokenBindSelector"
+	popup.z_index = 35   # 高于信物面板(30)
+	c.add_child(popup)
+	var vb = popup.get_child(0)
+	
+	var scroll = ScrollContainer.new()
+	scroll.custom_minimum_size = Vector2(420, 320)
+	vb.add_child(scroll)
+	var list = VBoxContainer.new()
+	list.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	scroll.add_child(list)
+	
+	# 候选按实时赚速降序（项目排序惯例）
+	var ids = data.token_system.get_bindable_heroes(current_hero_id)
+	ids.sort_custom(func(a, b): return data.get_hero_income(a) > data.get_hero_income(b))
+	for hid in ids:
+		var btn = Button.new()
+		# 【修】手机端：按钮改 PASS 让触摸滑动穿透到 ScrollContainer
+		btn.mouse_filter = Control.MOUSE_FILTER_PASS
+		var h = data.heroes[hid]
+		btn.text = "【%s】Lv.%d  %s/秒" % [h.get("name", hid), h.get("level", 1), c.format_number(data.get_hero_income(hid))]
+		btn.pressed.connect(func():
+			var res = data.token_system.bind_hero(current_hero_id, idx, hid)
+			if res.get("ok", false):
+				_close_token_bind_selector()
+				_show_token_panel()   # 重建信物面板显示新绑定
+				update_hero_panel()
+				c.update_all_ui()
+			else:
+				c._show_stage_hint(res.get("msg", "绑定失败"))
+		)
+		list.add_child(btn)
+	
+	if ids.is_empty():
+		var empty = Label.new()
+		empty.text = "暂无可绑定门客"
+		empty.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+		list.add_child(empty)
+	
+	c._add_ok_button(vb, func(): _close_token_bind_selector(), "取消")
+
+# 【新增】关闭羁绊选择器（remove_child+queue_free 防同名冲突）
+func _close_token_bind_selector():
+	if c.has_node("TokenBindSelector"):
+		var old = c.get_node("TokenBindSelector")
+		c.remove_child(old)
+		old.queue_free()

@@ -40,7 +40,9 @@ static func get_total_aptitude(g, hero_id: String) -> int:
 	total += g.get_hero_guardian_aptitude(hero_id)
 	# 【新增】守护灵幻化固定资质
 	total += g.get_hero_guardian_avatar_aptitude(hero_id)
-	
+	# 【新增】信物资质：信物主人=技能等级×每级资质+绑定门客总资质×1%/个；被绑定门客=主人等级×每级资质
+	total += g.token_system.get_owner_aptitude(hero_id)
+	total += g.token_system.get_bound_aptitude(hero_id)
 	
 	return total
 
@@ -80,6 +82,7 @@ static func get_extra_income(g, hero_id: String) -> int:
 	# 【虫师】虫书固定赚速加成（star 1~4 累加）
 	extra += g.cuzhi_system.get_hero_worm_flat_bonus(hero_id)
 	
+	
 	return extra
 
 # 门客的百分比加成总和（挚友 + 珍兽；TODO: 藏宝加成）
@@ -113,7 +116,8 @@ static func get_percent_bonus(g, hero_id: String) -> float:
 	bonus += g.get_hero_guardian_avatar_percent(hero_id)
 	# 【新增】守护灵幻化同类门客光环
 	bonus += g.get_hero_guardian_career_bonus(hero_id)
-	
+	# 【新增】信物羁绊：被绑定门客赚钱+10%（固定百分比）
+	bonus += g.token_system.get_bound_income_pct(hero_id)
 	
 	return bonus
 
