@@ -605,6 +605,26 @@
 	"fengyou_wuyue_shi": {
 	  "name": "凤游五岳石",
 	  "desc": "山河五岳系列服装的兑换道具（后续玩法产出）"
+	},
+	"yulin_jue":{
+		"name": "蕴灵珏",
+		"desc": "守护灵注灵材料，每级消耗随等级提升"
+	},
+	"ke_ting_yiyun":{
+		"name": "柯亭遗韵",
+		"desc": "解锁守护灵幻化：蔡文姬"
+	},
+	"yan_yue_gufeng":{
+		"name": "偃月孤锋",
+		"desc": "解锁守护灵幻化：关羽"
+	},
+	"bai_he_yushan":{
+		"name": "白鹤羽扇",
+		"desc": "解锁守护灵幻化：诸葛亮"
+	},
+	"ming_kong_xuanjue":{
+		"name": "明空玄珏",
+		"desc": "解锁守护灵幻化：武则天"
 	}
   },
   "initial": {
@@ -706,6 +726,11 @@
 	"jinghe_baiwannian": 50,
 	"hun_gu_box": 20,
 	"cuzhi_exp_low": 0,
-	"cuzhi_exp_high": 0
+	"cuzhi_exp_high": 0,
+	"yulin_jue": 9999,
+	"ke_ting_yiyun": 1,
+	"yan_yue_gufeng": 1,
+	"bai_he_yushan": 1,
+	"ming_kong_xuanjue": 1
   }
 }

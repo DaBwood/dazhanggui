@@ -36,6 +36,11 @@ static func get_total_aptitude(g, hero_id: String) -> int:
 	total += g.get_hero_hunli_aptitude(hero_id)
 	# 【新增】促织装备资质加成（无双6/级，极无双7/级）
 	total += g.cuzhi_system.get_equip_aptitude_bonus(hero_id)
+	# 【新增】守护灵技能资质
+	total += g.get_hero_guardian_aptitude(hero_id)
+	# 【新增】守护灵幻化固定资质
+	total += g.get_hero_guardian_avatar_aptitude(hero_id)
+	
 	
 	return total
 
@@ -102,6 +107,13 @@ static func get_percent_bonus(g, hero_id: String) -> float:
 	bonus += g.cuzhi_system.get_career_peiyu_percent(hero.get("category", "")) 
 	# 【虫师】虫书百分比赚速加成（star 5~6 累加）
 	bonus += g.cuzhi_system.get_hero_worm_percent_bonus(hero_id)
+	# 【新增】守护灵阶段赚钱百分比
+	bonus += g.get_hero_guardian_percent(hero_id)
+	# 【新增】守护灵幻化赚钱百分比
+	bonus += g.get_hero_guardian_avatar_percent(hero_id)
+	# 【新增】守护灵幻化同类门客光环
+	bonus += g.get_hero_guardian_career_bonus(hero_id)
+	
 	
 	return bonus
 

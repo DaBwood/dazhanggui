@@ -534,6 +534,10 @@ var cuzhi_unlocked_jars: int = 2     # 已解锁罐数量（初始2，每45级+1
 var cuzhi_equipped: Dictionary = {}      # {hero_id: 促织id} 门客装备促织映射
 var cuzhi_equip_levels: Dictionary = {}  # {促织id: 装备等级}
 
+var guardian_system   # 【新增】守护灵系统
+var guardian_spirits: Dictionary = {}  # 【新增】守护灵数据 {hero_id: {level, skills, avatar, avatars}}
+var _guardian_configs: Dictionary = {}  # 【新增】守护灵配置
+
 # ==================== 初始化 ====================
 # 初始化：创建各子系统（纯逻辑模块，持有本中枢引用），再加载全部配置
 func _init():
@@ -557,6 +561,7 @@ func _init():
 	fishing_system = FishingSystem.new(self)   # 【第8批新增】垂钓系统
 	costume_system = CostumeSystem.new(self)
 	cuzhi_system = CuzhiSystem.new(self)
+	guardian_system = GuardianSystem.new(self)
 	
 	_load_all_configs()
 
@@ -587,6 +592,8 @@ func _load_all_configs():
 	_soulpower_configs = _load_json("res://data/soulpower.json")   # 【新增】魂力培养配置
 	_fishing_configs = _load_json("res://data/fishing.json")   # 【第8批新增】垂钓配置
 	costume_configs = _load_json("res://data/costumes.json")   # 【服装系统】
+	_guardian_configs = _load_json("res://data/guardian.json")  # 【新增】守护灵配置
+	
 	_load_items_config()   # 【重构新增】道具表
 	_load_travel_config()  # 【重构新增】游历配置
 	_load_stage_box_config()  # 【新增】关卡宝箱掉落表
@@ -742,7 +749,7 @@ func save_game():
 	var systems = [hero_system, friend_system, apprentice_system, beast_system, shop_system,
 		stage_system, item_system, travel_system, charity_system, lottery_system, mall_system,
 		manor_system,courtyard_system,war_system,goal_system,fishing_system,soul_system,
-		soulpower_system,cuzhi_system,]
+		soulpower_system,cuzhi_system,guardian_system,]
 	for sys in systems:
 		save_data.merge(sys.get_save_data(), true)
 	var file = FileAccess.open(SAVE_PATH, FileAccess.WRITE)
@@ -783,7 +790,7 @@ func load_game():
 	var systems = [hero_system, friend_system, apprentice_system, beast_system, shop_system,
 		stage_system, item_system, travel_system, charity_system, lottery_system, mall_system,
 		manor_system,courtyard_system,war_system,goal_system,fishing_system,soul_system,
-		soulpower_system,cuzhi_system,]
+		soulpower_system,cuzhi_system,guardian_system,]
 	for sys in systems:
 		sys.load_save_data(data)
 
@@ -1419,3 +1426,28 @@ func get_hero_hunli_income(hero_id: String) -> int:
 # 门客当前魂力赚钱百分比（百万年魂骨 阶×10%；HeroData.get_percent_bonus 调用）
 func get_hero_hunli_percent(hero_id: String) -> float:
 	return soulpower_system.get_hero_hunli_percent(hero_id)
+
+
+# ==================== 【转发】守护灵系统 → systems/guardian_system.gd ====================
+
+# 守护灵技能总资质（HeroData.get_total_aptitude 调用）
+func get_hero_guardian_aptitude(hero_id: String) -> int:
+	return guardian_system.get_total_aptitude(hero_id)
+
+# 守护灵阶段赚钱百分比总和（HeroData.get_percent_bonus 调用）
+func get_hero_guardian_percent(hero_id: String) -> float:
+	return guardian_system.get_total_income_pct(hero_id)
+
+# 守护灵幻化固定资质（HeroData.get_total_aptitude 调用）
+func get_hero_guardian_avatar_aptitude(hero_id: String) -> int:
+	var b = guardian_system.get_avatar_bonus(hero_id)
+	return b.get("aptitude", 0)
+
+# 守护灵幻化赚钱百分比（HeroData.get_percent_bonus 调用）
+func get_hero_guardian_avatar_percent(hero_id: String) -> float:
+	var b = guardian_system.get_avatar_bonus(hero_id)
+	return b.get("income_pct", 0.0)
+
+# 守护灵幻化同类门客光环（HeroData.get_percent_bonus 调用）
+func get_hero_guardian_career_bonus(hero_id: String) -> float:
+	return guardian_system.get_career_bonus_for_hero(hero_id)

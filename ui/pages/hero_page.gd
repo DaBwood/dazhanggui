@@ -17,6 +17,7 @@ var current_hero_id: String = ""
 var current_skill_tab: String = "skill"
 
 var _cuzhi_last_use_jinghua: bool = false   # 【促织装备】上次升级用的促织精华（true）还是珍兽果（false）
+var _guardian_batch: bool = false   # 【新增】守护灵注灵十连勾选状态（面板生命周期内保持）
 
 # 由 game_controller._ready 创建本模块时注入引用
 func _init(p_c):
@@ -178,7 +179,7 @@ func _ensure_hero_panel_code():
 	# 【v3新增】赋诗/晋升按钮（右列上方；默认隐藏，update_hero_panel 按门客有无晋升内容控制显隐和文本）
 	var promo_btn = Button.new()
 	promo_btn.name = "PromoBtn"
-	promo_btn.position = Vector2(vw.x - 150, 170)
+	promo_btn.position = Vector2(vw.x - 150, 120)
 	promo_btn.size = Vector2(130, 44)
 	promo_btn.visible = false
 	promo_btn.add_theme_font_size_override("font_size", 16)
@@ -187,7 +188,7 @@ func _ensure_hero_panel_code():
 	# 升级区（右列下方，固定在技能栏上方；无赋诗时上方留空，预留门客立绘位）
 	var level_box = HBoxContainer.new()
 	level_box.name = "LevelUpBox"
-	level_box.position = Vector2(vw.x - 150, 222)
+	level_box.position = Vector2(vw.x - 150, 180)
 	level_box.add_theme_constant_override("separation", 12)
 	panel.add_child(level_box)
 	var lv_info = Label.new()
@@ -213,7 +214,7 @@ func _ensure_hero_panel_code():
 	# 【v4】技能栏标签页（技能/副业/服装/光环；服装光环待开发，先占位）
 	var tab_bar = HBoxContainer.new()
 	tab_bar.name = "SkillTabBar"
-	tab_bar.position = Vector2(20, 270)
+	tab_bar.position = Vector2(20, 310)
 	tab_bar.add_theme_constant_override("separation", 8)
 	panel.add_child(tab_bar)
 	# 标签定义：[节点名, 显示文本, 标签id]；后续新增标签页在此追加一行即可
@@ -230,8 +231,8 @@ func _ensure_hero_panel_code():
 	# 技能列表（底部全宽滚动区，内容随标签页切换）
 	var scroll = ScrollContainer.new()
 	scroll.name = "ScrollContainer"
-	scroll.position = Vector2(20, 310)
-	scroll.size = Vector2(vw.x - 40, vw.y - 330)
+	scroll.position = Vector2(20, 350)
+	scroll.size = Vector2(vw.x - 40, vw.y - 370)
 	panel.add_child(scroll)
 	var skill_list = VBoxContainer.new()
 	skill_list.name = "SkillList"
@@ -301,7 +302,7 @@ func update_hero_panel():
 		beast_btn.add_theme_font_size_override("font_size", 16)
 		c.get_node("HeroPanel").add_child(beast_btn)
 	beast_btn.size = btn_size
-	beast_btn.position = Vector2(20, 196)   # 【改】下移
+	beast_btn.position = Vector2(20, 265)   # 【改】下移
 	
 	for conn in beast_btn.pressed.get_connections():
 		beast_btn.pressed.disconnect(conn.callable)
@@ -323,7 +324,7 @@ func update_hero_panel():
 		fish_btn.add_theme_font_size_override("font_size", 16)
 		c.get_node("HeroPanel").add_child(fish_btn)
 	fish_btn.size = btn_size
-	fish_btn.position = Vector2(148, 196)   # 【改】下移
+	fish_btn.position = Vector2(148, 265)   # 【改】下移
 	# 信号重连（先断后连，防止切换门客后串数据）
 	for conn in fish_btn.pressed.get_connections():
 		fish_btn.pressed.disconnect(conn.callable)
@@ -342,7 +343,7 @@ func update_hero_panel():
 		cuzhi_btn.add_theme_font_size_override("font_size", 16)
 		c.get_node("HeroPanel").add_child(cuzhi_btn)
 	cuzhi_btn.size = btn_size
-	cuzhi_btn.position = Vector2(276, 196)
+	cuzhi_btn.position = Vector2(276, 265)
 	# 信号重连（先断后连，防止切换门客后串数据）
 	for conn in cuzhi_btn.pressed.get_connections():
 		cuzhi_btn.pressed.disconnect(conn.callable)
@@ -355,15 +356,50 @@ func update_hero_panel():
 		cuzhi_btn.text = "促织"
 	cuzhi_btn.pressed.connect(_on_cuzhi_btn_clicked)
 	
+		# 【新增】守护灵按钮（左列第3行第4格，仅无双门客显示）
+	var guardian_btn = c.get_node("HeroPanel").get_node_or_null("GuardianBtn")
+	if guardian_btn == null:
+		guardian_btn = Button.new()
+		guardian_btn.name = "GuardianBtn"
+		guardian_btn.add_theme_font_size_override("font_size", 16)
+		c.get_node("HeroPanel").add_child(guardian_btn)
+	guardian_btn.size = btn_size
+	guardian_btn.position = Vector2(404, 265)  # 促织旁边（间距8px）
+	# 信号重连（先断后连，防切换门客串数据）
+	for conn in guardian_btn.pressed.get_connections():
+		guardian_btn.pressed.disconnect(conn.callable)
+	var is_wushuang = h.get("quality", 0) == 2
+	guardian_btn.visible = is_wushuang
+	if is_wushuang:
+		# 确保守护灵已初始化（旧档兼容）
+		data.guardian_system.init_guardian(current_hero_id)
+		var gs = data.guardian_system.get_guardian(current_hero_id)
+		var avatar_name = "溟灵"
+		for av in data.guardian_system.AVATARS:
+			if av.id == gs.get("avatar", "mingling"):
+				avatar_name = av.name
+				break
+		guardian_btn.text = "【%s】Lv.%d" % [avatar_name, gs.level]
+		guardian_btn.pressed.connect(_on_guardian_btn_clicked)
+	else:
+		guardian_btn.text = "守护灵"
+	
 	# 【改】技能列表下移到最后一个按钮（促织）下方，避免重叠
 	if c.get_node("HeroPanel").has_node("ScrollContainer"):
 		var scroll = c.get_node("HeroPanel/ScrollContainer")
+		var skill_tab_bar = c.get_node("HeroPanel/SkillTabBar")
 		var last_btn = fish_btn
 		if c.get_node("HeroPanel").has_node("CuzhiEquipBtn"):
 			last_btn = c.get_node("HeroPanel/CuzhiEquipBtn")
-		var needed_y = last_btn.position.y + last_btn.size.y + 8
-		if scroll.position.y < needed_y:
-			scroll.position.y = needed_y
+		# 守护灵存在且可见时，以它为最底
+		if c.get_node("HeroPanel").has_node("GuardianBtn") and c.get_node("HeroPanel/GuardianBtn").visible:
+			last_btn = c.get_node("HeroPanel/GuardianBtn")
+		var needed_scroll_y = last_btn.position.y + last_btn.size.y + 20  # 【改】间距从8加大到20
+		var needed_tab_y = needed_scroll_y - 40  # 标签栏在列表上方40px
+		if scroll.position.y < needed_scroll_y:
+			scroll.position.y = needed_scroll_y
+		if skill_tab_bar.position.y < needed_tab_y:
+			skill_tab_bar.position.y = needed_tab_y
 	
 	# 【v3新增】赋诗/晋升按钮（右列上方）：有晋升内容的门客才显示，点击弹窗升级
 	var promo_btn = c.get_node("HeroPanel").get_node_or_null("PromoBtn")
@@ -806,6 +842,49 @@ func _fill_skill_tab(list):
 		
 		apt_row.add_child(apt_btn_box)
 		list.add_child(apt_row)
+		
+	# 【新增】守护灵技能（仅无双门客，阶段解锁后才显示）
+	if h.get("quality", 0) == 2:
+		data.guardian_system.init_guardian(current_hero_id)
+		var gs = data.guardian_system.get_guardian(current_hero_id)
+		if not gs.is_empty():
+			for i in range(data.guardian_system.PHASES.size()):
+				if not data.guardian_system.is_phase_full(current_hero_id, i):
+					continue
+				var skill = gs.skills[i]
+				var apt_cost = int(skill.aptitude_per_level)
+				
+				var apt_row = HBoxContainer.new()
+				apt_row.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+				
+				var apt_info = Label.new()
+				apt_info.text = "【守护灵】%s  Lv.%d/%d  需%d资质丹" % [skill.name, skill.level, skill.max_level, apt_cost]
+				apt_info.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+				apt_info.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
+				apt_info.clip_text = true
+				apt_info.custom_minimum_size.x = 380
+				apt_row.add_child(apt_info)
+				
+				var apt_btn_box = VBoxContainer.new()
+				apt_btn_box.custom_minimum_size = Vector2(70, 0)
+				apt_btn_box.add_theme_constant_override("separation", 3)
+				
+				var apt_btn_single = Button.new()
+				apt_btn_single.text = "升级"
+				apt_btn_single.custom_minimum_size = Vector2(70, 24)
+				apt_btn_single.add_theme_font_size_override("font_size", 12)
+				apt_btn_single.pressed.connect(_on_guardian_skill_upgrade.bind(i, "single"))
+				apt_btn_box.add_child(apt_btn_single)
+				
+				var apt_btn_bulk = Button.new()
+				apt_btn_bulk.text = "一键升级"
+				apt_btn_bulk.custom_minimum_size = Vector2(70, 24)
+				apt_btn_bulk.add_theme_font_size_override("font_size", 12)
+				apt_btn_bulk.pressed.connect(_on_guardian_skill_upgrade.bind(i, "bulk"))
+				apt_btn_box.add_child(apt_btn_bulk)
+				
+				apt_row.add_child(apt_btn_box)
+				list.add_child(apt_row)
 
 # 【v4新增】填充「副业」页：店铺技能行（原 update_hero_panel 店铺段迁出，逻辑不变）
 func _fill_shop_tab(list):
@@ -1210,3 +1289,229 @@ func _close_cuzhi_selector():
 		var old = c.get_node("CuzhiSelector")
 		c.remove_child(old)
 		old.queue_free()
+
+
+# ============ 【新增】守护灵面板 ============
+
+func _on_guardian_btn_clicked():
+	_show_guardian_panel()
+
+# 【新增】打开守护灵操作面板（弹窗）
+func _show_guardian_panel():
+	# 关闭旧面板防同名冲突
+	if c.has_node("GuardianPanel"):
+		var old = c.get_node("GuardianPanel")
+		c.remove_child(old)
+		old.queue_free()
+	
+	var vw = c.get_viewport_rect().size
+	var panel = c._create_base_popup("守护灵", Vector2(min(vw.x - 40, 560), min(vw.y - 80, 720)))
+	panel.name = "GuardianPanel"
+	panel.z_index = 30
+	c.add_child(panel)
+	
+	var vb = panel.get_child(0)
+	
+	# 确保初始化
+	data.guardian_system.init_guardian(current_hero_id)
+	var gs = data.guardian_spirits.get(current_hero_id, {})
+	if gs.is_empty():
+		c._show_stage_hint("该门客没有守护灵")
+		return
+	
+	# 等级与加成信息
+	var level_lbl = Label.new()
+	level_lbl.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	var cap = data.guardian_system.get_level_cap(current_hero_id)
+	if cap < 6000:
+		level_lbl.text = "守护灵等级：Lv.%d / %d（阶段上限）" % [gs.level, cap]
+	else:
+		level_lbl.text = "守护灵等级：Lv.%d / 6000" % gs.level
+	level_lbl.add_theme_font_size_override("font_size", 18)
+	level_lbl.add_theme_color_override("font_color", Color("#ffd700"))
+	vb.add_child(level_lbl)
+	
+	var bonus_lbl = Label.new()
+	bonus_lbl.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	var apt = data.get_hero_guardian_aptitude(current_hero_id)
+	var pct = data.get_hero_guardian_percent(current_hero_id)
+	bonus_lbl.text = "资质+%d  |  赚钱+%.0f%%" % [apt, pct * 100]
+	vb.add_child(bonus_lbl)
+	
+	# 阶段列表（滚动）
+	var scroll = ScrollContainer.new()
+	scroll.custom_minimum_size = Vector2(0, 240)
+	vb.add_child(scroll)
+	var list = VBoxContainer.new()
+	list.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	scroll.add_child(list)
+	
+	for i in range(data.guardian_system.PHASES.size()):
+		var phase = data.guardian_system.PHASES[i]
+		var full = data.guardian_system.is_phase_full(current_hero_id, i)
+		var unlocked = data.guardian_system.is_phase_unlocked(current_hero_id, i)
+		
+		
+		var info = Label.new()
+		var status_text = ""
+		if full:
+			status_text = "【已注满】"
+			info.add_theme_color_override("font_color", Color("#ffd700"))   # 【新增】金色点亮
+		elif unlocked:
+			status_text = "【已解锁】"
+		else:
+			status_text = "【未解锁】"
+			info.add_theme_color_override("font_color", Color("#888888"))   # 【新增】灰色未解锁
+		
+		info.text = "%s %s  赚钱+%.0f%%  技能：%s(+%d/级)" % [
+			phase.name, status_text, phase.income_pct * 100, phase.skill_name, phase.skill_apt
+		]
+		info.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+		list.add_child(info)
+	
+	# 注灵区
+	var cost = data.guardian_system.get_level_up_cost(gs.level)
+	var has_yulin = data.items.get("yulin_jue", 0)
+	
+	var up_box = HBoxContainer.new()
+	up_box.alignment = BoxContainer.ALIGNMENT_CENTER
+	vb.add_child(up_box)
+	
+	var up_btn = Button.new()
+	up_btn.text = "注灵\n%d/%d" % [has_yulin, cost]
+	up_btn.custom_minimum_size = Vector2(120, 50)
+	up_btn.pressed.connect(_on_guardian_level_up)
+	up_box.add_child(up_btn)
+	
+	var batch_check = CheckBox.new()
+	batch_check.text = "十连"
+	batch_check.button_pressed = _guardian_batch   # 【新增】恢复上次勾选状态
+	batch_check.toggled.connect(func(pressed): _guardian_batch = pressed)  # 【新增】记录变化
+	up_box.add_child(batch_check)
+	
+	# 【改】幻化区：一个按钮打开独立弹窗，避免面板挤出去
+	var avatar_btn = Button.new()
+	avatar_btn.text = "幻化形象"
+	avatar_btn.custom_minimum_size = Vector2(120, 40)
+	avatar_btn.pressed.connect(_show_guardian_avatar_popup)
+	vb.add_child(avatar_btn)
+	
+	# 关闭
+	c._add_ok_button(vb, func():
+		if c.has_node("GuardianPanel"):
+			var old = c.get_node("GuardianPanel")
+			c.remove_child(old)
+			old.queue_free()
+	, "关闭")
+
+# 【新增】注灵升级
+func _on_guardian_level_up():
+	var batch = false
+	if c.has_node("GuardianPanel"):
+		var panel = c.get_node("GuardianPanel")
+		# 在面板子节点中找十连勾选框
+		for child in panel.get_child(0).get_children():
+			if child is HBoxContainer:
+				for c2 in child.get_children():
+					if c2 is CheckBox and c2.text == "十连":
+						batch = c2.button_pressed
+						break
+	
+	var upgraded = data.guardian_system.level_up(current_hero_id, batch)
+	if upgraded > 0:
+		_show_guardian_panel()  # 刷新面板
+		update_hero_panel()
+		c.update_all_ui()
+		c.update_bag_list()
+
+# 【改】切换幻化后同步刷新弹窗（如果打开着）
+func _on_guardian_avatar_selected(avatar_id: String):
+	data.guardian_system.set_avatar(current_hero_id, avatar_id)
+	_show_guardian_panel()  # 刷新主面板
+	if c.has_node("GuardianAvatarPopup"):
+		_show_guardian_avatar_popup()  # 刷新幻化弹窗
+	update_hero_panel()
+	c.update_all_ui()
+
+# 【改】解锁幻化后同步刷新弹窗
+func _on_guardian_avatar_unlock(avatar_id: String):
+	var res = data.guardian_system.unlock_avatar(current_hero_id, avatar_id)
+	if res:
+		_show_guardian_panel()
+		if c.has_node("GuardianAvatarPopup"):
+			_show_guardian_avatar_popup()
+		update_hero_panel()
+		c.update_all_ui()
+		c.update_bag_list()
+	else:
+		c._show_stage_hint("道具不足，无法解锁")
+
+# 【新增】守护灵技能升级回调
+func _on_guardian_skill_upgrade(skill_idx: int, mode: String):
+	var upgraded = data.guardian_system.upgrade_skill(current_hero_id, skill_idx, mode == "bulk")
+	if upgraded > 0:
+		update_hero_panel()
+		c.update_all_ui()
+		c.update_bag_list()
+
+# 【新增】打开幻化形象选择弹窗（从守护灵面板独立出来，避免内容过多挤出去）
+func _show_guardian_avatar_popup():
+	if c.has_node("GuardianAvatarPopup"):
+		var old = c.get_node("GuardianAvatarPopup")
+		c.remove_child(old)
+		old.queue_free()
+	
+	var vw = c.get_viewport_rect().size
+	var popup = c._create_base_popup("幻化形象", Vector2(min(vw.x - 40, 480), min(vw.y - 80, 600)))
+	popup.name = "GuardianAvatarPopup"
+	popup.z_index = 35  # 高于 GuardianPanel(30)
+	c.add_child(popup)
+	
+	var vb = popup.get_child(0)
+	
+	data.guardian_system.init_guardian(current_hero_id)
+	var gs = data.guardian_spirits.get(current_hero_id, {})
+	
+	for av in data.guardian_system.AVATARS:
+		var row = HBoxContainer.new()
+		row.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+		
+		var info = Label.new()
+		var has_unlocked = gs.avatars.get(av.id, false)
+		var is_current = gs.get("avatar", "mingling") == av.id
+		var item_name = ""
+		if av.unlock_item != "" and data.ITEM_CONFIG.has(av.unlock_item):
+			item_name = "（需%s）" % data.ITEM_CONFIG[av.unlock_item].name
+		
+		if is_current:
+			info.text = "【%s】当前形象" % av.name
+			info.add_theme_color_override("font_color", Color("#ffd700"))
+		elif has_unlocked:
+			info.text = "【%s】已解锁" % av.name
+		else:
+			var have = data.items.get(av.unlock_item, 0)
+			info.text = "【%s】%s %d/100" % [av.name, item_name, have]   # 【改】显示拥有/需要
+		info.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+		info.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
+		row.add_child(info)
+		
+		var btn = Button.new()
+		btn.custom_minimum_size = Vector2(80, 32)
+		if is_current:
+			btn.text = "使用中"
+			btn.disabled = true
+		elif has_unlocked:
+			btn.text = "幻化"
+			btn.pressed.connect(_on_guardian_avatar_selected.bind(av.id))
+		else:
+			btn.text = "解锁"
+			btn.pressed.connect(_on_guardian_avatar_unlock.bind(av.id))
+		row.add_child(btn)
+		vb.add_child(row)
+	
+	c._add_ok_button(vb, func():
+		if c.has_node("GuardianAvatarPopup"):
+			var old = c.get_node("GuardianAvatarPopup")
+			c.remove_child(old)
+			old.queue_free()
+	, "关闭")

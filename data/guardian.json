@@ -1,0 +1,28 @@
+{
+	"settings": {
+		"max_level": 5000,
+		"base_cost": 1,
+		"cost_increment_level": 1000,
+		"cost_increment_amount": 1,
+		"skill_max_level": 400
+	},
+	"phases": [
+		{"name": "胎元", "unlock_level": 0,   "full_level": 200,  "income_pct": 0.05, "skill_apt": 3, "need_prev_count": 0,  "skill_name": "魂脉合流"},
+		{"name": "萌芽", "unlock_level": 200, "full_level": 500,  "income_pct": 0.05, "skill_apt": 4, "need_prev_count": 0,  "skill_name": "灵风扶履"},
+		{"name": "通脉", "unlock_level": 500, "full_level": 1000, "income_pct": 0.10, "skill_apt": 4, "need_prev_count": 2,  "skill_name": "神形互照"},
+		{"name": "铸骨", "unlock_level": 1000,"full_level": 1500, "income_pct": 0.10, "skill_apt": 5, "need_prev_count": 3,  "skill_name": "一念通明"},
+		{"name": "凝神", "unlock_level": 1500,"full_level": 2000, "income_pct": 0.10, "skill_apt": 5, "need_prev_count": 5,  "skill_name": "斗转星移"},
+		{"name": "化器", "unlock_level": 2000,"full_level": 2500, "income_pct": 0.10, "skill_apt": 6, "need_prev_count": 7,  "skill_name": "灵光扶摇"},
+		{"name": "涅槃", "unlock_level": 2500,"full_level": 3000, "income_pct": 0.10, "skill_apt": 6, "need_prev_count": 10, "skill_name": "灵枢启明"},
+		{"name": "蜕茧", "unlock_level": 3000,"full_level": 4000, "income_pct": 0.10, "skill_apt": 7, "need_prev_count": 12, "skill_name": "灵息环流"},
+		{"name": "启寰", "unlock_level": 4000,"full_level": 5000, "income_pct": 0.10, "skill_apt": 7, "need_prev_count": 15, "skill_name": "形神合一"},
+		{"name": "归溯", "unlock_level": 5000,"full_level": 6000, "income_pct": 0.10, "skill_apt": 7, "need_prev_count": 15, "skill_name": "灵影映现"}
+	],
+	"avatars": [
+		{"id": "mingling",     "name": "溟灵",     "is_default": true,  "aptitude": 0,   "income_pct": 0.0,  "career_pct": 0.0,  "unlock_item": ""},
+		{"id": "cai_wenji",    "name": "蔡文姬",   "is_default": false, "aptitude": 150, "income_pct": 0.10, "career_pct": 0.10, "unlock_item": "ke_ting_yiyun"},
+		{"id": "guan_yu",      "name": "关羽",     "is_default": false, "aptitude": 150, "income_pct": 0.10, "career_pct": 0.10, "unlock_item": "yan_yue_gufeng"},
+		{"id": "zhu_ge_liang", "name": "诸葛亮",   "is_default": false, "aptitude": 150, "income_pct": 0.10, "career_pct": 0.10, "unlock_item": "bai_he_yushan"},
+		{"id": "wu_ze_tian",   "name": "武则天",   "is_default": false, "aptitude": 150, "income_pct": 0.10, "career_pct": 0.10, "unlock_item": "ming_kong_xuanjue"}
+	]
+}
