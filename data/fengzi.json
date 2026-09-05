@@ -1,0 +1,19 @@
+{
+	"_comment": "风姿系统配置（按 hero_id 索引）：门客品质达 unlock_quality（2=无双）解锁风姿；每级消耗 cost_item×cost_per_level，门客+aptitude_per_level资质（无上限）；每 skill_unlock_every 级按 skills 顺序解锁一个风姿技能（追加进技能栏：初始0级/上限 skill_max_level/每级 skill_aptitude_per_level 资质，资质丹固定消耗=资质数），同时+income_pct_per_unlock 赚钱；全部解锁（等级=skills数×skill_unlock_every）后每 cap_bonus_every 级按顺序给一个技能上限+cap_bonus_amount，不再加赚钱",
+	"fengzi": {
+		"li_bai": {
+			"fengzi_name": "醉墨挥毫",
+			"unlock_quality": 2,
+			"cost_item": "qing_lian_shi_hao",
+			"cost_per_level": 600,
+			"aptitude_per_level": 6,
+			"skills": ["神采奕奕", "玉树临风", "顾盼生辉", "轩然霞举", "气凌彭泽", "龙章凤姿", "风华绝代", "天人之姿"],
+			"skill_unlock_every": 5,
+			"skill_aptitude_per_level": 2,
+			"skill_max_level": 200,
+			"cap_bonus_every": 5,
+			"cap_bonus_amount": 10,
+			"income_pct_per_unlock": 0.05
+		}
+	}
+}

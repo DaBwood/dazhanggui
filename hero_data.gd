@@ -43,6 +43,8 @@ static func get_total_aptitude(g, hero_id: String) -> int:
 	# 【新增】信物资质：信物主人=技能等级×每级资质+绑定门客总资质×1%/个；被绑定门客=主人等级×每级资质
 	total += g.token_system.get_owner_aptitude(hero_id)
 	total += g.token_system.get_bound_aptitude(hero_id)
+	# 【新增】风姿资质：醉墨挥毫等级×每级资质（无上限）
+	total += g.fengzi_system.get_aptitude(hero_id)
 	
 	return total
 
@@ -118,6 +120,8 @@ static func get_percent_bonus(g, hero_id: String) -> float:
 	bonus += g.get_hero_guardian_career_bonus(hero_id)
 	# 【新增】信物羁绊：被绑定门客赚钱+10%（固定百分比）
 	bonus += g.token_system.get_bound_income_pct(hero_id)
+	# 【新增】风姿：已解锁技能数×5%赚钱（全部解锁后封顶）
+	bonus += g.fengzi_system.get_income_pct(hero_id)
 	
 	return bonus
 

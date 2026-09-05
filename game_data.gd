@@ -140,7 +140,7 @@ var identity_rewards_claimed: Dictionary = {}
 const SPECIAL_PACKS = [
 	{"name": "门客盒子",   "desc": "打开后可从所有门客中选择一个获得",     "cost": 1, "items": {"hero_box": 1}},
 	{"name": "挚友盒子",   "desc": "打开后可从所有挚友中选择一个获得",     "cost": 1, "items": {"friend_box": 1}},
-	{"name": "物品盒子",   "desc": "打开后可选择任意道具获得（支持批量）",  "cost": 1, "items": {"item_box": 1000}},
+	{"name": "物品盒子",   "desc": "打开后可选择任意道具获得（支持批量）",  "cost": 1, "items": {"item_box": 10000}},
 	{"name": "蛮荒礼盒",   "desc": "打开后自选一种蛮荒兑换道具×100",   "cost": 10000, "items": {"manhuang_box": 1}},   # 【改】九渊之水礼包改蛮荒礼盒（九渊之水本身保留给相柳兑换）
 	{"name": "无双促织盒子", "desc": "打开后自选一只无双及以上促织",     "cost": 648, "items": {"wushuang_cuzhi_box": 1}},
 ]
@@ -541,6 +541,11 @@ var _guardian_configs: Dictionary = {}  # 【新增】守护灵配置
 var token_system   # 【新增】信物系统
 var hero_tokens: Dictionary = {}   # 【新增】信物存档 {hero_id: {"level": int, "binds": [门客id, 门客id]}}
 var _token_configs: Dictionary = {}   # 【新增】信物配置（tokens.json）
+
+var fengzi_system   # 【新增】风姿系统
+var hero_fengzi: Dictionary = {}   # 【新增】风姿存档 {hero_id: {"level": 风姿等级}}
+var _fengzi_configs: Dictionary = {}   # 【新增】风姿配置（fengzi.json）
+
 # ==================== 初始化 ====================
 # 初始化：创建各子系统（纯逻辑模块，持有本中枢引用），再加载全部配置
 func _init():
@@ -566,6 +571,7 @@ func _init():
 	cuzhi_system = CuzhiSystem.new(self)
 	guardian_system = GuardianSystem.new(self)
 	token_system = TokenSystem.new(self)   # 【新增】信物系统
+	fengzi_system = FengziSystem.new(self)   # 【新增】风姿系统
 	
 	_load_all_configs()
 
@@ -598,6 +604,7 @@ func _load_all_configs():
 	costume_configs = _load_json("res://data/costumes.json")   # 【服装系统】
 	_guardian_configs = _load_json("res://data/guardian.json")  # 【新增】守护灵配置
 	_token_configs = _load_json("res://data/tokens.json")   # 【新增】信物配置
+	_fengzi_configs = _load_json("res://data/fengzi.json")   # 【新增】风姿配置
 	
 	_load_items_config()   # 【重构新增】道具表
 	_load_travel_config()  # 【重构新增】游历配置
@@ -754,7 +761,7 @@ func save_game():
 	var systems = [hero_system, friend_system, apprentice_system, beast_system, shop_system,
 		stage_system, item_system, travel_system, charity_system, lottery_system, mall_system,
 		manor_system,courtyard_system,war_system,goal_system,fishing_system,soul_system,
-		soulpower_system,cuzhi_system,guardian_system,token_system,]
+		soulpower_system,cuzhi_system,guardian_system,token_system,fengzi_system,]
 	for sys in systems:
 		save_data.merge(sys.get_save_data(), true)
 	var file = FileAccess.open(SAVE_PATH, FileAccess.WRITE)
@@ -795,7 +802,7 @@ func load_game():
 	var systems = [hero_system, friend_system, apprentice_system, beast_system, shop_system,
 		stage_system, item_system, travel_system, charity_system, lottery_system, mall_system,
 		manor_system,courtyard_system,war_system,goal_system,fishing_system,soul_system,
-		soulpower_system,cuzhi_system,guardian_system,token_system,]
+		soulpower_system,cuzhi_system,guardian_system,token_system,fengzi_system,]
 	for sys in systems:
 		sys.load_save_data(data)
 

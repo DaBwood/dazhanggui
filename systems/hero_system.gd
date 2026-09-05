@@ -154,7 +154,7 @@ func upgrade_promotion(hero_id: String, batch: bool = false) -> int:
 	
 	var max_times = 1
 	if batch:
-		max_times = min(promo.max_level - promo.level, int(max_item / cost))
+		max_times = min(10, promo.max_level - promo.level, int(max_item / cost))
 	else:
 		if max_item < cost: return 0
 	

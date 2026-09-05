@@ -18,8 +18,10 @@ var current_skill_tab: String = "skill"
 
 var _cuzhi_last_use_jinghua: bool = false   # 【促织装备】上次升级用的促织精华（true）还是珍兽果（false）
 var _guardian_batch: bool = false   # 【新增】守护灵注灵十连勾选状态（面板生命周期内保持）
-
+var _promo_batch: bool = false   # 【新增】赋诗十连勾选状态（面板生命周期内保持）
 var _token_batch: bool = false   # 【新增】信物十连勾选状态（面板生命周期内保持）
+var _fengzi_batch: bool = false   # 【新增】风姿十连勾选状态（面板生命周期内保持）
+
 
 # 由 game_controller._ready 创建本模块时注入引用
 func _init(p_c):
@@ -419,7 +421,7 @@ func update_hero_panel():
 			token_btn.pressed.disconnect(conn.callable)
 		if data.token_system.has_token(current_hero_id):
 			var t_cfg = data.token_system.get_token_cfg(current_hero_id)
-			token_btn.text = "【信物】%s" % t_cfg.get("token_name", "信物")
+			token_btn.text = t_cfg.get("token_name", "信物")
 			token_btn.visible = true
 			token_btn.pressed.connect(_on_token_btn_clicked)
 		else:
@@ -432,7 +434,7 @@ func update_hero_panel():
 			promo_btn.pressed.disconnect(conn.callable)
 		if h.has("promotion"):
 			var promo = h.promotion
-			promo_btn.text = "【%s】%d/%d" % [promo.get("name", "晋升"), promo.level, promo.max_level]
+			promo_btn.text = promo.get("name", "晋升")
 			promo_btn.visible = true
 			promo_btn.pressed.connect(_on_promo_btn_clicked)
 		else:
@@ -675,39 +677,108 @@ func on_promotion_upgrade(mode: String = "single"):
 		c.update_all_ui()
 		c.update_bag_list()
 
-# 【v3新增】赋诗/晋升按钮点击：弹窗内进行升级（升级/一键），弹窗内数值随升级即时刷新
+# 【改】赋诗面板重排（模仿信物面板）：技能名/进度/累计资质/消耗 + 赋诗解锁技能列表（已解锁金/未解锁灰）
+# 【改】升级区改为 升级按钮+十连勾选（原"一键升满"改十连，单次最多10级，见 hero_system.upgrade_promotion）
 func _on_promo_btn_clicked():
 	if current_hero_id == "" or not data.heroes.has(current_hero_id): return
 	var h = data.heroes[current_hero_id]
 	if not h.has("promotion"): return
 	var promo = h.promotion
 	var item_name = data.ITEM_CONFIG[promo.cost_item].name
-	var popup = c._create_base_popup(promo.get("name", "晋升"), Vector2(360, 240), Vector2(396, 200))
+	
+	var popup = c._create_base_popup("【赋诗】天生我材", Vector2(460, 620))
 	popup.name = "PromoPopup"
+	popup.z_index = 30
+	c.add_child(popup)
 	var vb = popup.get_child(0)
+	
+	# ── 技能信息：进度/每级资质/累计资质/消耗/拥有 ──
 	var info_lbl = Label.new()
 	info_lbl.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	info_lbl.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+	info_lbl.text = "【天生我材】Lv.%d/%d\n每级+%d资质（%s）  累计+%d资质\n每级消耗%d【%s】  拥有：%d" % [
+		promo.level, promo.max_level,
+		int(promo.aptitude_per_level), h.name, promo.level * int(promo.aptitude_per_level),
+		int(promo.cost_amount), item_name,
+		data.items.get(promo.cost_item, 0)
+	]
 	vb.add_child(info_lbl)
-	# 刷新弹窗内 进度/材料 文本（每次升级后调用；promo 是字典引用，值已随升级更新）
-	var refresh = func():
-		info_lbl.text = "进度：%d/%d\n%s：%d/%d" % [promo.level, promo.max_level, item_name, data.items.get(promo.cost_item, 0), promo.cost_amount]
-	refresh.call()
-	var single_btn = Button.new()
-	single_btn.text = "升级"
-	single_btn.pressed.connect(func():
-		on_promotion_upgrade("single")   # 内部已调 update_hero_panel，会同步刷新 PromoBtn 文本
-		refresh.call()
+	
+	# ── 升级区：升级按钮 + 十连勾选（勾选状态存类变量 _promo_batch，升级/重建不清）──
+	var up_box = HBoxContainer.new()
+	up_box.alignment = BoxContainer.ALIGNMENT_CENTER
+	vb.add_child(up_box)
+	var up_btn = Button.new()
+	up_btn.custom_minimum_size = Vector2(130, 48)
+	up_btn.pressed.connect(func():
+		var before = promo.level
+		on_promotion_upgrade("single" if not _promo_batch else "bulk")
+		if promo.level > before:
+			# 重建刷新（沿用信物/风姿面板同位置重建模式；解锁技能高亮同步更新）
+			if is_instance_valid(popup): popup.queue_free()
+			_on_promo_btn_clicked()
 	)
-	vb.add_child(single_btn)
-	var bulk_btn = Button.new()
-	bulk_btn.text = "一键升级"
-	bulk_btn.pressed.connect(func():
-		on_promotion_upgrade("bulk")
-		refresh.call()
+	up_box.add_child(up_btn)
+	var batch_check = CheckBox.new()
+	batch_check.text = "十连"
+	batch_check.button_pressed = _promo_batch   # 【新增】恢复上次勾选状态
+	# 勾选切换时刷新按钮上的消耗数字（单级↔十连总价）
+	batch_check.toggled.connect(func(pressed):
+		_promo_batch = pressed   # 【新增】记录勾选变化
+		if _promo_batch:
+			up_btn.text = "十连\n%d" % (int(promo.cost_amount) * 10)
+		else:
+			up_btn.text = "升级\n%d" % int(promo.cost_amount)
 	)
-	vb.add_child(bulk_btn)
+	up_box.add_child(batch_check)
+	# 初始按钮文本：单级消耗 / 十连为10级总价
+	if _promo_batch:
+		up_btn.text = "十连\n%d" % (int(promo.cost_amount) * 10)
+	else:
+		up_btn.text = "升级\n%d" % int(promo.cost_amount)
+	
+	# 【新增】风姿按钮（无双解锁风姿的门客显示，点击切到风姿面板）
+	var fengzi_btn = Button.new()
+	fengzi_btn.custom_minimum_size = Vector2(140, 36)
+	if data.fengzi_system.has_fengzi(current_hero_id):
+		fengzi_btn.text = "【风姿】%s" % data.fengzi_system.get_fengzi_cfg(current_hero_id).get("fengzi_name", "风姿")
+	else:
+		fengzi_btn.visible = false
+	fengzi_btn.pressed.connect(func():
+		if is_instance_valid(popup): popup.queue_free()   # 先关赋诗面板再开风姿面板，避免弹窗堆叠
+		_show_fengzi_panel()
+	)
+	vb.add_child(fengzi_btn)
+	
+	# ── 赋诗解锁列表：每 tier 一行（等级门槛｜品质/初始资质/解锁技能），已解锁金色、未解锁灰色 ──
+	var scroll = ScrollContainer.new()
+	scroll.custom_minimum_size = Vector2(420, 220)
+	vb.add_child(scroll)
+	var list = VBoxContainer.new()
+	list.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	list.add_theme_constant_override("separation", 4)
+	scroll.add_child(list)
+	for tier in promo.tiers:
+		var lv_req = int(tier.get("threshold", 0))
+		var reached = promo.level >= lv_req
+		# 组合该 tier 的解锁内容描述
+		var parts = []
+		if tier.has("quality"):
+			parts.append("品质→%s" % HeroData.get_quality_name(int(tier.quality)))
+		if tier.has("initial_aptitude"):
+			parts.append("初始资质→%d" % int(tier.initial_aptitude))
+		for ns in tier.get("new_skills", []):
+			parts.append("解锁【%s】+%d/级" % [ns.get("name", "?"), int(ns.get("aptitude_per_level", 0))])
+		var row = Label.new()
+		row.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+		row.text = "Lv.%d %s" % [lv_req, "｜".join(parts)]
+		if reached:
+			row.add_theme_color_override("font_color", Color("#ffd700"))
+		else:
+			row.add_theme_color_override("font_color", Color("#888888"))
+		list.add_child(row)
+	
 	c._add_ok_button(vb, func(): popup.queue_free(), "关闭")
-	c.add_child(popup)
 
 func open_hero_detail(hero_id: String):
 	open_hero_panel(hero_id)
@@ -1722,3 +1793,119 @@ func _close_token_bind_selector():
 		var old = c.get_node("TokenBindSelector")
 		c.remove_child(old)
 		old.queue_free()
+
+
+# ============ 【新增】风姿面板 ============
+
+# 【新增】打开风姿面板（弹窗；同位置刷新重建：remove_child+queue_free 防同名冲突）
+func _show_fengzi_panel():
+	if c.has_node("FengziPanel"):
+		var old = c.get_node("FengziPanel")
+		c.remove_child(old)
+		old.queue_free()
+	
+	var f_cfg = data.fengzi_system.get_fengzi_cfg(current_hero_id)
+	if f_cfg.is_empty(): return
+	data.fengzi_system.sync_skills(current_hero_id)   # 打开前幂等同步一次技能/上限
+	
+	var popup = c._create_base_popup("【风姿】%s" % f_cfg.get("fengzi_name", "风姿"), Vector2(460, 620))
+	popup.name = "FengziPanel"
+	popup.z_index = 30
+	c.add_child(popup)
+	var vb = popup.get_child(0)
+	var lv = data.fengzi_system.get_level(current_hero_id)
+	var h = data.heroes[current_hero_id]
+	var every = int(f_cfg.get("skill_unlock_every", 5))
+	var skills: Array = f_cfg.get("skills", [])
+	var unlock_all = skills.size() * every   # 全部解锁等级（8技能×5级=40）
+	
+	# ── 风姿信息（等级/效果/消耗/当前赚钱加成）──
+	var info_lbl = Label.new()
+	info_lbl.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	info_lbl.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+	info_lbl.text = "【%s】Lv.%d（无上限）\n每级+%d资质（%s）  当前赚钱+%d%%\n每级消耗%d【%s】  拥有：%d" % [
+		f_cfg.get("fengzi_name", "风姿"), lv,
+		int(f_cfg.get("aptitude_per_level", 6)), h.name,
+		int(data.fengzi_system.get_income_pct(current_hero_id) * 100),
+		int(f_cfg.get("cost_per_level", 600)),
+		data.ITEM_CONFIG.get(f_cfg.get("cost_item", ""), {}).get("name", f_cfg.get("cost_item", "")),
+		data.items.get(f_cfg.get("cost_item", ""), 0)
+	]
+	vb.add_child(info_lbl)
+	
+	# ── 升级区（十连勾选记忆在类变量 _fengzi_batch，升级/重建不清）──
+	var up_box = HBoxContainer.new()
+	up_box.alignment = BoxContainer.ALIGNMENT_CENTER
+	vb.add_child(up_box)
+	var up_btn = Button.new()
+	up_btn.custom_minimum_size = Vector2(130, 48)
+	up_btn.pressed.connect(func():
+		var before = data.fengzi_system.get_level(current_hero_id)
+		data.fengzi_system.upgrade(current_hero_id, _fengzi_batch)
+		if data.fengzi_system.get_level(current_hero_id) > before:
+			_show_fengzi_panel()   # 重建刷新（勾选状态存类变量，不会丢）
+			update_hero_panel()    # 资质/赚速变化，门客面板对账
+			c.update_all_ui()
+			c.update_bag_list()
+	)
+	up_box.add_child(up_btn)
+	var batch_check = CheckBox.new()
+	batch_check.text = "十连"
+	batch_check.button_pressed = _fengzi_batch   # 【新增】恢复上次勾选状态
+	batch_check.toggled.connect(func(pressed):
+		_fengzi_batch = pressed   # 【新增】记录勾选变化
+		# 勾选切换时刷新按钮上的消耗数字（单级↔十连总价）
+		up_btn.text = data.fengzi_system.get_upgrade_btn_text(current_hero_id, _fengzi_batch)
+	)
+	up_box.add_child(batch_check)
+	up_btn.text = data.fengzi_system.get_upgrade_btn_text(current_hero_id, _fengzi_batch)
+	
+	# ── 风姿技能列表：解锁状态 / 当前等级与上限（上限含风姿加成）──
+	var scroll = ScrollContainer.new()
+	scroll.custom_minimum_size = Vector2(420, 240)
+	vb.add_child(scroll)
+	var list = VBoxContainer.new()
+	list.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	list.add_theme_constant_override("separation", 4)
+	scroll.add_child(list)
+	for i in range(skills.size()):
+		var sname: String = skills[i]
+		# 在门客技能栏里按名字找该风姿技能
+		var found = null
+		for sk in h.aptitude_skills:
+			if sk.name == sname:
+				found = sk
+				break
+		var row = Label.new()
+		row.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+		if found == null:
+			# 未解锁：灰字显示解锁所需风姿等级
+			row.text = "【%s】未解锁（%s Lv.%d）" % [sname, f_cfg.get("fengzi_name", ""), (i + 1) * every]
+			row.add_theme_color_override("font_color", Color("#888888"))
+		else:
+			# 已解锁：Lv.当前/上限（上限被风姿加成过时金色提示）
+			row.text = "【%s】Lv.%d/%d  每级%d资质·%d资质丹" % [
+				sname, int(found.level), int(found.max_level),
+				int(f_cfg.get("skill_aptitude_per_level", 2)), int(f_cfg.get("skill_aptitude_per_level", 2))
+			]
+			if int(found.max_level) > int(f_cfg.get("skill_max_level", 200)):
+				row.add_theme_color_override("font_color", Color("#ffd700"))
+		list.add_child(row)
+	
+	# ── 规则说明（读配置，不写死数值）──
+	var hint_lbl = Label.new()
+	hint_lbl.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	hint_lbl.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+	hint_lbl.add_theme_color_override("font_color", Color("#a89ec7"))
+	hint_lbl.text = "每%d级解锁1个技能并+%d%%赚钱（%d级全部解锁）\n%d级后每%d级按顺序提升1个技能上限+%d（不再加赚钱）\n技能在门客面板【技能】页消耗资质丹升级" % [
+		every, int(float(f_cfg.get("income_pct_per_unlock", 0.05)) * 100), unlock_all,
+		unlock_all, int(f_cfg.get("cap_bonus_every", 5)), int(f_cfg.get("cap_bonus_amount", 10))
+	]
+	vb.add_child(hint_lbl)
+	
+	c._add_ok_button(vb, func():
+		if c.has_node("FengziPanel"):
+			var old = c.get_node("FengziPanel")
+			c.remove_child(old)
+			old.queue_free()
+	, "关闭")
