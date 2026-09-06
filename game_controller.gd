@@ -202,6 +202,8 @@ func _enter_game():
 	generate_friend_page()
 
 	print("信号连接完成")  # ← 加这行
+	
+	_apply_portrait_layout()
 
 
 # 【新增】登录门：全屏遮罩挡住游戏，必须先登录/注册（或离线模式）才能进游戏
@@ -2142,7 +2144,25 @@ func _apply_portrait_layout():
 		else:
 			$PageContainer.position = Vector2.ZERO
 			$PageContainer.size = vs
-
+	
+	# 页面容器：顶栏与底栏之间；各页面显式铺满
+	if has_node("PageContainer"):
+		$PageContainer.set_anchors_preset(Control.PRESET_TOP_LEFT)
+		# 【改】尊重 _bars_visible：二级页全屏时扩满整个视口，窗口重排不会打回夹心布局
+		if _bars_visible:
+			$PageContainer.position = Vector2(0, 50)
+			$PageContainer.size = Vector2(vs.x, vs.y - 110)
+		else:
+			$PageContainer.position = Vector2.ZERO
+			$PageContainer.size = vs
+		# 【新增】各页面显式铺满容器：页面里的 FULL_RECT 滚动区（BagScroll/HeroScroll…）创建瞬间
+		# 就能从父页面拿到正确尺寸，不再依赖"布局恰好在页面生成后重跑"的巧合时序
+		for pg in $PageContainer.get_children():
+			pg.set_anchors_preset(Control.PRESET_TOP_LEFT)
+			pg.position = Vector2.ZERO
+			pg.size = $PageContainer.size
+	
+	
 	# 商铺页内部：钱庄入口顶部通栏(高64) + 店铺列表铺满剩余
 	if has_node("PageContainer/ShopPage/HQEntryBtn"):
 		var hq_btn = $PageContainer/ShopPage/HQEntryBtn
