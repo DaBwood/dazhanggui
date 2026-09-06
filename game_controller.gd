@@ -30,8 +30,11 @@ var current_shop_id: String = ""
 # ========== 记录当前打开的弹窗面板 ==========
 var _current_popup: Control = null
 
-# ========== 系列兑换子页面 ==========
-
+var net: NetSystem   # 【新增】网络层（云存档）
+var _web_login_cb = null   # 【新增】Web 登录表单 JS 回调引用
+var _manual_download := false   # 【新增】标记本次下载是手动触发（恢复按钮），用于给提示
+var _game_entered := false   # 【新增】是否已进入游戏（过登录门才初始化，只进一次）
+var _net_login_pending := false   # 【新增】登录流程中：正等云端存档查询结果来决定用哪份档
 # ========== 徒弟页面 ==========
 
 var _bars_visible = true  # 【新增】顶栏/底栏显隐状态位：二级页（挚友详情）全屏时=false，_apply_portrait_layout 重排时尊重它
@@ -99,7 +102,51 @@ func _ready():
 	soulpower_view = SoulpowerView.new(self)   # 【新增】魂力培养视图
 	cuzhi_view = CuzhiView.new(self)
 
+	# 【新增】账号门：有令牌→档随账号→直接进游戏；无令牌→先登录/注册（或离线模式），过完门才初始化游戏
+	if net.token != "":
+		data.set_save_path_for(net.username)
+		_enter_game()
+		net.download_save()   # 静默比对云端（较新则弹恢复确认）
+	else:
+		_show_login_gate()
 	
+	
+	
+
+	# 正常退出时存档
+	tree_exiting.connect(on_exit)
+	
+	# 【新增】Web 端页面被划走/切后台瞬间补一次存档（pagehide + visibilitychange 双保险）
+	_setup_web_save_hook()
+
+	# 【新增】顶栏右侧「退出」按钮：存档后正常退出（Web 端尝试关页面，被拦截则提示手动关）
+	_init_exit_button()
+	
+	_apply_portrait_layout()      # 【新增】壳层布局
+	get_tree().root.size_changed.connect(_apply_portrait_layout)   # 【新增】窗口变化重排
+	
+	
+	# 【新增】网络层（云存档）：save_game 后自动上传；有令牌→启动静默比对云端；首次→引导登录（可跳过）
+	net = NetSystem.new()
+	net.name = "NetSystem"
+	add_child(net)
+	data.game_saved.connect(_on_game_saved_upload)
+	net.login_result.connect(_on_net_login_result)
+	net.download_result.connect(_on_net_download_result)
+	_init_account_button()
+	if net.token != "":
+		net.download_save()
+	elif not FileAccess.file_exists("user://net_skip.txt"):
+		_show_login_popup()
+	#print_scene_tree_to_file()
+	
+	#_debug_page_rects()
+
+
+# 【新增】进入游戏：登录门通过后才执行（原 _ready 中 data.load_game() 起的初始化段原样移入，只进一次）
+func _enter_game():
+	if _game_entered: return
+	_game_entered = true
 	data.load_game()  # ← 先读档
 
 	# 计算离线收益
@@ -163,21 +210,40 @@ func _ready():
 
 	print("信号连接完成")  # ← 加这行
 
-	# 正常退出时存档
-	tree_exiting.connect(on_exit)
-	
-	# 【新增】Web 端页面被划走/切后台瞬间补一次存档（pagehide + visibilitychange 双保险）
-	_setup_web_save_hook()
 
-	# 【新增】顶栏右侧「退出」按钮：存档后正常退出（Web 端尝试关页面，被拦截则提示手动关）
-	_init_exit_button()
-	
-	_apply_portrait_layout()      # 【新增】壳层布局
-	get_tree().root.size_changed.connect(_apply_portrait_layout)   # 【新增】窗口变化重排
-	
-	#print_scene_tree_to_file()
-	
-	#_debug_page_rects()
+# 【新增】登录门：全屏遮罩挡住游戏，必须先登录/注册（或离线模式）才能进游戏
+func _show_login_gate():
+	if has_node("LoginGate"): return
+	var gate = ColorRect.new()
+	gate.name = "LoginGate"
+	gate.color = Color(0.09, 0.08, 0.16, 1)
+	gate.set_anchors_preset(Control.PRESET_FULL_RECT)
+	gate.z_index = 90
+	add_child(gate)
+	var vb = VBoxContainer.new()
+	vb.set_anchors_preset(Control.PRESET_CENTER)
+	vb.position = Vector2(-110, -190)
+	vb.add_theme_constant_override("separation", 16)
+	gate.add_child(vb)
+	var hint = Label.new()
+	hint.text = "登录或注册后进入游戏\n存档跟随账号"
+	hint.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	vb.add_child(hint)
+	var offline = Button.new()
+	offline.text = "离线模式（不联机）"
+	offline.pressed.connect(_enter_offline)
+	vb.add_child(offline)
+	_show_login_popup()
+
+# 【新增】离线模式进游戏：不登录，用默认本地档，不与云端同步（云连不上时的保底入口）
+func _enter_offline():
+	_safe_close("LoginPopup")
+	if has_node("LoginGate"):
+		var gate = get_node("LoginGate")
+		remove_child(gate)
+		gate.queue_free()
+	_enter_game()
+
 
 func format_number(n: int) -> String:
 	if n < 10000:
@@ -848,6 +914,249 @@ func _collect_node_lines(node: Node, depth: int, lines: Array):
 	lines.append("%s%s (%s)%s" % [indent, node.name, node.get_class(), visible_txt])
 	for child in node.get_children():
 		_collect_node_lines(child, depth + 1, lines)
+
+
+# ============ 云存档（弱联网·Cloudflare Worker，2026-09-06 新增） ============
+# 原则：纯存储转发、后存覆盖先存、本地存档为断网兜底
+
+# 【新增】本地存档写盘 → 自动上传云端（未登录静默跳过；上传失败不打扰，下次自动存再传）
+func _on_game_saved_upload(save_text: String):
+	if net != null and net.token != "":
+		net.upload_save(save_text)
+
+# 【新增】登录/注册结果：成功→拆登录门、档随账号→进游戏；失败把原因写回状态行
+func _on_net_login_result(ok: bool, msg: String):
+	var popup = get_node_or_null("LoginPopup")
+	if popup:
+		var status = popup.find_child("StatusLabel", true, false)
+		if status: status.text = msg
+	if not ok: return
+	_safe_close("LoginPopup")
+	if has_node("LoginGate"):
+		var gate = get_node("LoginGate")
+		remove_child(gate)
+		gate.queue_free()
+	# 档随账号：切换存档路径（首次登录自动迁移旧默认档保底）
+	data.set_save_path_for(net.username)
+	if FileAccess.file_exists(data.save_path):
+		_enter_game()
+		net.download_save()      # 静默比对云端（较新则弹恢复确认）
+	else:
+		_net_login_pending = true
+		net.download_save()      # 本机没有该账号的档：查云端有没有
+
+
+# 【新增】下载结果统一处理：登录门流程 / 启动静默比对 / 手动恢复 共用一个入口
+func _on_net_download_result(ok: bool, has_save: bool, save_text: String, updated_at: int):
+	var was_manual = _manual_download
+	_manual_download = false
+	# 登录门流程：本地无档时等这次下载结果决定进游戏用哪份档
+	if _net_login_pending:
+		_net_login_pending = false
+		if ok and has_save and not save_text.is_empty():
+			var f0 = FileAccess.open(data.save_path, FileAccess.WRITE)
+			if f0:
+				f0.store_string(save_text)
+				f0.close()
+		_enter_game()
+		return
+	if not ok:
+		if was_manual: _show_stage_hint("网络错误，稍后再试", 3.0)
+		return
+	if not has_save or save_text.is_empty():
+		if was_manual: _show_stage_hint("云端还没有存档", 3.0)
+		return
+	if updated_at / 1000.0 <= data.last_logout_time + 5:
+		if was_manual: _show_stage_hint("云端存档不比本机新，无需恢复", 3.0)
+		return
+	# 云端较新：弹确认恢复（后续逻辑保持原样；注意里面的 data.SAVE_PATH 要改成 data.save_path）
+	_safe_close("CloudRestorePopup")
+	var popup = _create_base_popup("发现云端存档", Vector2(420, 240))
+	popup.name = "CloudRestorePopup"
+	popup.z_index = 30
+	add_child(popup)
+	var vb = popup.get_child(0)
+	var lbl = Label.new()
+	lbl.text = "云端的存档比本机新\n恢复后将重新加载游戏\n确定恢复吗？"
+	lbl.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	lbl.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+	vb.add_child(lbl)
+	var row = HBoxContainer.new()
+	row.alignment = BoxContainer.ALIGNMENT_CENTER
+	row.add_theme_constant_override("separation", 20)
+	vb.add_child(row)
+	var ok_btn = Button.new()
+	ok_btn.text = "恢复云端存档"
+	ok_btn.custom_minimum_size = Vector2(140, 40)
+	ok_btn.pressed.connect(func():
+		_safe_close("CloudRestorePopup")
+		var f = FileAccess.open(data.SAVE_PATH, FileAccess.WRITE)
+		if f:
+			f.store_string(save_text)
+			f.close()
+			get_tree().reload_current_scene()
+	)
+	row.add_child(ok_btn)
+	var cancel = Button.new()
+	cancel.text = "保留本机"
+	cancel.custom_minimum_size = Vector2(120, 40)
+	cancel.pressed.connect(func(): _safe_close("CloudRestorePopup"))
+	row.add_child(cancel)
+
+
+
+# 【新增】顶栏「账号」按钮（挂在「退出」左侧）：未登录→登录弹窗；已登录→账号面板
+func _init_account_button():
+	if not has_node("TopBar"): return
+	if $TopBar.has_node("AccountBtn"): return
+	var btn = Button.new()
+	btn.name = "AccountBtn"
+	btn.text = "账号"
+	btn.custom_minimum_size = Vector2(52, 30)
+	btn.add_theme_font_size_override("font_size", 14)
+	btn.add_theme_color_override("font_color", Color("#c9bfa8"))
+	btn.pressed.connect(_on_account_btn_pressed)
+	$TopBar.add_child(btn)
+	if $TopBar.has_node("ExitBtn"):
+		$TopBar.move_child(btn, $TopBar.get_node("ExitBtn").get_index())
+
+func _on_account_btn_pressed():
+	if net.token == "":
+		_show_login_popup()
+	else:
+		_show_account_panel()
+
+# 【新增】账号面板：当前账号/立即同步/从云端恢复/退出登录
+func _show_account_panel():
+	_safe_close("AccountPanel")
+	var popup = _create_base_popup("账号", Vector2(420, 300))
+	popup.name = "AccountPanel"
+	popup.z_index = 30
+	add_child(popup)
+	var vb = popup.get_child(0)
+	var lbl = Label.new()
+	lbl.text = "当前账号：%s" % net.username
+	lbl.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	vb.add_child(lbl)
+	var sync_btn = Button.new()
+	sync_btn.text = "立即同步存档"
+	sync_btn.custom_minimum_size = Vector2(180, 40)
+	sync_btn.pressed.connect(func():
+		data.save_game()   # 写盘同时经 game_saved 信号自动上传
+		_show_stage_hint("已同步到云端", 3.0)
+	)
+	vb.add_child(sync_btn)
+	var dl_btn = Button.new()
+	dl_btn.text = "从云端恢复"
+	dl_btn.custom_minimum_size = Vector2(180, 40)
+	dl_btn.pressed.connect(func():
+		_safe_close("AccountPanel")
+		_manual_download = true
+		net.download_save()
+	)
+	vb.add_child(dl_btn)
+	var out_btn = Button.new()
+	out_btn.text = "退出登录"
+	out_btn.custom_minimum_size = Vector2(180, 40)
+	out_btn.pressed.connect(func():
+		data.save_game()                    # 退出前最后同步一次到云端
+		net.clear_auth()
+		get_tree().reload_current_scene()   # 重载场景=回到登录门（token已清，不会直接进游戏）
+	)
+	vb.add_child(out_btn)
+	_add_ok_button(vb, func(): _safe_close("AccountPanel"), "关闭")
+
+# 【新增】登录/注册弹窗：Web 端走 HTML 原生输入框（手机虚拟键盘引擎bug绕法，见档案踩坑11）；桌面/编辑器用 LineEdit
+func _show_login_popup():
+	_safe_close("LoginPopup")
+	var popup = _create_base_popup("账号登录", Vector2(420, 320))
+	popup.name = "LoginPopup"
+	popup.z_index = 95
+	add_child(popup)
+	var vb = popup.get_child(0)
+	var status = Label.new()
+	status.name = "StatusLabel"
+	status.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	status.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+	status.text = "登录后可云存档，换设备不丢进度"
+	vb.add_child(status)
+	if OS.has_feature("web"):
+		_show_web_login_form()
+	else:
+		var user_edit = LineEdit.new()
+		user_edit.placeholder_text = "用户名"
+		vb.add_child(user_edit)
+		var pass_edit = LineEdit.new()
+		pass_edit.placeholder_text = "密码"
+		pass_edit.secret = true
+		vb.add_child(pass_edit)
+		var row = HBoxContainer.new()
+		row.alignment = BoxContainer.ALIGNMENT_CENTER
+		row.add_theme_constant_override("separation", 12)
+		vb.add_child(row)
+		var login_btn = Button.new()
+		login_btn.text = "登录"
+		login_btn.custom_minimum_size = Vector2(110, 40)
+		login_btn.pressed.connect(func(): net.login(user_edit.text.strip_edges(), pass_edit.text))
+		row.add_child(login_btn)
+		var reg_btn = Button.new()
+		reg_btn.text = "注册"
+		reg_btn.custom_minimum_size = Vector2(110, 40)
+		reg_btn.pressed.connect(func(): net.register(user_edit.text.strip_edges(), pass_edit.text))
+		row.add_child(reg_btn)
+		var off_btn = Button.new()
+		off_btn.text = "离线模式"
+		off_btn.custom_minimum_size = Vector2(110, 40)
+		off_btn.pressed.connect(_enter_offline)
+		row.add_child(off_btn)
+
+# 【新增】Web 登录表单：HTML 原生输入框居中悬浮（DOM 渲染，手机键盘正常调起）
+func _show_web_login_form():
+	if _web_login_cb == null:
+		_web_login_cb = JavaScriptBridge.create_callback(_on_web_login_form_result)
+	JavaScriptBridge.get_interface("window").__dzg_login_cb = _web_login_cb
+	JavaScriptBridge.eval("""
+		(function(){
+			var old = document.getElementById('dzg-login');
+			if (old) old.remove();
+			var div = document.createElement('div');
+			div.id = 'dzg-login';
+			div.style.cssText = 'position:fixed;left:50%;top:42%;transform:translate(-50%,-50%);' +
+				'z-index:999;background:#2a2640;border:2px solid #7a6fb0;border-radius:10px;' +
+				'padding:18px;width:240px;text-align:center;';
+			div.innerHTML =
+				'<input id="dzg-user" placeholder="用户名" ' +
+				'style="width:100%;box-sizing:border-box;margin-bottom:10px;padding:8px;border-radius:4px;border:1px solid #555;">' +
+				'<input id="dzg-pass" type="password" placeholder="密码" ' +
+				'style="width:100%;box-sizing:border-box;margin-bottom:12px;padding:8px;border-radius:4px;border:1px solid #555;">' +
+				'<button style="margin:0 4px;padding:8px 16px;">登录</button>' +
+				'<button style="margin:0 4px;padding:8px 16px;">注册</button>' +
+				'<button style="margin:0 4px;padding:8px 16px;">取消</button>';
+			var btns = div.getElementsByTagName('button');
+			btns[0].onclick = function(){ window.__dzg_login_do('login'); };
+			btns[1].onclick = function(){ window.__dzg_login_do('register'); };
+			btns[2].onclick = function(){ window.__dzg_login_do('cancel'); };
+			document.body.appendChild(div);
+			window.__dzg_login_do = function(mode){
+				var u = document.getElementById('dzg-user').value.trim();
+				var p = document.getElementById('dzg-pass').value;
+				var d = document.getElementById('dzg-login');
+				if (d) d.remove();
+				window.__dzg_login_cb(mode, u, p);
+			};
+		})()
+	""", true)
+
+# 【新增】HTML 登录表单回调（JS → GDScript）：args = [mode, 用户名, 密码]
+func _on_web_login_form_result(args):
+	var mode = str(args[0])
+	if mode == "cancel":
+		_enter_offline()   # 【改】取消=离线模式进游戏（不再记录跳过）
+		return
+	if mode == "login":
+		net.login(str(args[1]), str(args[2]))
+	elif mode == "register":
+		net.register(str(args[1]), str(args[2]))
 
 
 # ==================== 页面方法转发区 ====================

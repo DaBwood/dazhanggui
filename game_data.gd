@@ -6,9 +6,19 @@
 class_name GameData
 extends RefCounted
 
+signal game_saved(save_text: String)   # 【新增】存档写盘完成（网络层订阅后自动上传云端）
 
 #保存路径
 const SAVE_PATH = "user://save.json"
+
+# 【新增】实际使用的存档路径：登录后按账号隔离（save_<账号>.json），离线模式用默认档
+var save_path := SAVE_PATH
+
+# 【新增】按账号隔离存档：切到 save_<账号>.json；首次把旧默认档迁移一次（保底老进度不丢）
+func set_save_path_for(user: String):
+	save_path = "user://save_%s.json" % user
+	if not FileAccess.file_exists(save_path) and FileAccess.file_exists(SAVE_PATH):
+		DirAccess.copy_absolute(SAVE_PATH, save_path)
 
 const OFFLINE_RATE = 0.8
 
@@ -771,10 +781,13 @@ func save_game():
 		soulpower_system,cuzhi_system,guardian_system,token_system,fengzi_system,talent_system,]
 	for sys in systems:
 		save_data.merge(sys.get_save_data(), true)
-	var file = FileAccess.open(SAVE_PATH, FileAccess.WRITE)
+	var file = FileAccess.open(save_path, FileAccess.WRITE)
 	if file:
-		file.store_string(JSON.stringify(save_data))
+		var save_text = JSON.stringify(save_data)
+		file.store_string(save_text)
 		file.close()
+		game_saved.emit(save_text)   # 【新增】通知网络层自动上传云存档
+
 
 # 读取存档：先加载配置，核心字段由本中枢读取，其余各子系统从同一张扁平表认领自己的字段
 func load_game():
@@ -785,8 +798,8 @@ func load_game():
 	if player_name == "":
 		player_name = SURNAMES[randi() % SURNAMES.size()] + NAME_PARTS[randi() % NAME_PARTS.size()]
 
-	if not FileAccess.file_exists(SAVE_PATH): return
-	var file = FileAccess.open(SAVE_PATH, FileAccess.READ)
+	if not FileAccess.file_exists(save_path): return
+	var file = FileAccess.open(save_path, FileAccess.READ)
 	if not file: return
 	var json = JSON.new()
 	if json.parse(file.get_as_text()) != OK:
