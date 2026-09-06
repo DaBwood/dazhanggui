@@ -102,16 +102,7 @@ func _ready():
 	soulpower_view = SoulpowerView.new(self)   # 【新增】魂力培养视图
 	cuzhi_view = CuzhiView.new(self)
 
-	# 【新增】账号门：有令牌→档随账号→直接进游戏；无令牌→先登录/注册（或离线模式），过完门才初始化游戏
-	if net.token != "":
-		data.set_save_path_for(net.username)
-		_enter_game()
-		net.download_save()   # 静默比对云端（较新则弹恢复确认）
-	else:
-		_show_login_gate()
-	
-	
-	
+
 
 	# 正常退出时存档
 	tree_exiting.connect(on_exit)
@@ -134,13 +125,15 @@ func _ready():
 	net.login_result.connect(_on_net_login_result)
 	net.download_result.connect(_on_net_download_result)
 	_init_account_button()
-	if net.token != "":
-		net.download_save()
-	elif not FileAccess.file_exists("user://net_skip.txt"):
-		_show_login_popup()
-	#print_scene_tree_to_file()
 	
-	#_debug_page_rects()
+	# 【新增】账号门：有令牌→档随账号→直接进游戏；无令牌→先登录/注册（或离线模式），过完门才初始化游戏
+	if net.token != "":
+		data.set_save_path_for(net.username)
+		_enter_game()
+		net.download_save()   # 静默比对云端（较新则弹恢复确认）
+	else:
+		_show_login_gate()
+
 
 
 # 【新增】进入游戏：登录门通过后才执行（原 _ready 中 data.load_game() 起的初始化段原样移入，只进一次）
@@ -243,6 +236,7 @@ func _enter_offline():
 		remove_child(gate)
 		gate.queue_free()
 	_enter_game()
+
 
 
 func format_number(n: int) -> String:
