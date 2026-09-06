@@ -20,6 +20,8 @@ func set_save_path_for(user: String):
 	if not FileAccess.file_exists(save_path) and FileAccess.file_exists(SAVE_PATH):
 		DirAccess.copy_absolute(SAVE_PATH, save_path)
 
+var save_id: String = ""   # 【新增】存档血缘ID：同一份档的所有分支同一个ID，不同档不同ID；存档冲突判定用（名字可改不可靠、时间偏向本地）
+
 const OFFLINE_RATE = 0.8
 
 const BEAST_CONFIG_PATH = "res://data/beasts.json"
@@ -151,7 +153,7 @@ const SPECIAL_PACKS = [
 	{"name": "门客盒子",   "desc": "打开后可从所有门客中选择一个获得",     "cost": 1, "items": {"hero_box": 1}},
 	{"name": "挚友盒子",   "desc": "打开后可从所有挚友中选择一个获得",     "cost": 1, "items": {"friend_box": 1}},
 	{"name": "物品盒子",   "desc": "打开后可选择任意道具获得（支持批量）",  "cost": 1, "items": {"item_box": 10000}},
-	{"name": "蛮荒礼盒",   "desc": "打开后自选一种蛮荒兑换道具×100",   "cost": 10000, "items": {"manhuang_box": 1}},   # 【改】九渊之水礼包改蛮荒礼盒（九渊之水本身保留给相柳兑换）
+	{"name": "蛮荒礼盒",   "desc": "打开后自选一种蛮荒兑换道具×100",   "cost": 1, "items": {"manhuang_box": 1}},   # 【改】九渊之水礼包改蛮荒礼盒（九渊之水本身保留给相柳兑换）
 	{"name": "无双促织盒子", "desc": "打开后自选一只无双及以上促织",     "cost": 648, "items": {"wushuang_cuzhi_box": 1}},
 ]
 
@@ -768,6 +770,7 @@ func save_game():
 		"yuanbao": yuanbao,
 		"reputation": reputation,
 		"player_name": player_name,
+		"save_id": save_id,
 		"identity_level": identity_level,
 		"identity_rewards_claimed": identity_rewards_claimed,
 		"last_daily_reward_time": last_daily_reward_time,
@@ -817,7 +820,11 @@ func load_game():
 	if data.has("last_daily_reward_time"): last_daily_reward_time = data.last_daily_reward_time
 	if data.has("last_login_time"): last_login_time = data.last_login_time
 	if data.has("last_logout_time"): last_logout_time = data.last_logout_time
-
+	if data.has("save_id"):save_id = str(data.save_id)
+	if save_id == "":
+		# 【新增】旧档没有ID：补发一个（下次存档起生效）；无法判血缘的云端旧档按"冲突"保守处理
+		save_id = "%d_%d" % [Time.get_unix_time_from_system(), randi()]
+	
 	# ===== 各子系统认领自己的字段（含旧存档兼容逻辑） =====
 	var systems = [hero_system, friend_system, apprentice_system, beast_system, shop_system,
 		stage_system, item_system, travel_system, charity_system, lottery_system, mall_system,

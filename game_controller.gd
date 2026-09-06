@@ -35,6 +35,7 @@ var _web_login_cb = null   # 【新增】Web 登录表单 JS 回调引用
 var _manual_download := false   # 【新增】标记本次下载是手动触发（恢复按钮），用于给提示
 var _game_entered := false   # 【新增】是否已进入游戏（过登录门才初始化，只进一次）
 var _net_login_pending := false   # 【新增】登录流程中：正等云端存档查询结果来决定用哪份档
+var _net_login_conflict_check := false   # 【新增】游戏中途登录：云端有档必弹冲突选择（不做时间裁决）
 # ========== 徒弟页面 ==========
 
 var _bars_visible = true  # 【新增】顶栏/底栏显隐状态位：二级页（挚友详情）全屏时=false，_apply_portrait_layout 重排时尊重它
@@ -127,8 +128,8 @@ func _ready():
 	# 【新增】账号门：有令牌→档随账号→直接进游戏；无令牌→先登录/注册（或离线模式），过完门才初始化游戏
 	if net.token != "":
 		data.set_save_path_for(net.username)
-		_enter_game()
-		net.download_save()   # 静默比对云端（较新则弹恢复确认）
+		_net_login_pending = true   # 【改】统一走下载仲裁：等云端对比完决定用哪份档再进游戏（防本地残留档静默盖云端）
+		net.download_save()
 	else:
 		_show_login_gate()
 
@@ -903,6 +904,8 @@ func _collect_node_lines(node: Node, depth: int, lines: Array):
 
 # 【新增】本地存档写盘 → 自动上传云端（未登录静默跳过；上传失败不打扰，下次自动存再传）
 func _on_game_saved_upload(save_text: String):
+	if get_node_or_null("CloudRestorePopup") != null:
+		return   # 【新增】存档冲突弹窗开着：暂停上传，等玩家选完（否则云端先被本地盖掉，"恢复云端"失去意义）
 	if net != null and net.token != "":
 		net.upload_save(save_text)
 
@@ -923,26 +926,62 @@ func _on_net_login_result(ok: bool, msg: String):
 		gate.queue_free()
 	# 档随账号：切换存档路径（首次登录自动迁移旧默认档保底）
 	data.set_save_path_for(net.username)
-	if FileAccess.file_exists(data.save_path):
-		_enter_game()
-		net.download_save()      # 静默比对云端（较新则弹恢复确认）
+	# 【改】登录成功后一律拉云端存档仲裁，不再只看本机有没有档——set_save_path_for 的迁移
+	# 会把 save.json 复制成账号档使 file_exists 恒真，据此跳过云端查询，"迁移来的别的档"就会静默盖掉云端
+	if _game_entered:
+		_net_login_conflict_check = true   # 游戏中途登录：内存里跑着本地档，血缘不同则弹窗让玩家选
 	else:
-		_net_login_pending = true
-		net.download_save()      # 本机没有该账号的档：查云端有没有
+		_net_login_pending = true   # 登录门起步：等仲裁结果决定用哪份档、何时进游戏
+	net.download_save()
 
 
-# 【新增】下载结果统一处理：登录门流程 / 启动静默比对 / 手动恢复 共用一个入口
+# 【新增】下载结果统一处理：登录门仲裁 / 启动自动登录仲裁 / 游戏中途登录冲突 / 手动恢复 共用一个入口
 func _on_net_download_result(ok: bool, has_save: bool, save_text: String, updated_at: int):
 	var was_manual = _manual_download
 	_manual_download = false
-	# 登录门流程：本地无档时等这次下载结果决定进游戏用哪份档
+	# 游戏中途登录的冲突保障：云端档与本地档"血缘不同"才弹窗让玩家选；
+	# 同一血缘（同设备离线再登录等）本地继续玩，自动存自然同步
+	if _net_login_conflict_check:
+		_net_login_conflict_check = false
+		if ok and has_save and save_text.is_empty() == false:
+			var cloud_save_id := ""
+			var parsed = JSON.parse_string(save_text)
+			if parsed is Dictionary:
+				cloud_save_id = str(parsed.get("save_id", ""))
+			if cloud_save_id == "" or cloud_save_id != data.save_id:
+				_show_cloud_restore_popup(save_text, updated_at)
+		return
+	# 登录门/自动登录的统一下载仲裁：本地档与云端档可能是不同血缘（换账号、旧档残留），
+	# 必须先对比再决定用哪份档，杜绝"本地较新就静默盖云端"
 	if _net_login_pending:
 		_net_login_pending = false
-		if ok and has_save and not save_text.is_empty():
+		if not ok or not has_save or save_text.is_empty():
+			_enter_game()   # 云端无档/拉取失败：本地（或新档）直接进
+			return
+		var info = _read_local_save_info()
+		if not info.exists:
+			# 本机无档：云端落盘直接用（原 pending 行为）
 			var f0 = FileAccess.open(data.save_path, FileAccess.WRITE)
 			if f0:
 				f0.store_string(save_text)
 				f0.close()
+			_enter_game()
+			return
+		var cloud_save_id := ""
+		var parsed = JSON.parse_string(save_text)
+		if parsed is Dictionary:
+			cloud_save_id = str(parsed.get("save_id", ""))
+		if cloud_save_id == "" or cloud_save_id != info.save_id:
+			# 血缘不同（或云端旧档缺ID无法判定）：先进游戏（本地档），弹窗让玩家选；选恢复云端则写档重载
+			_enter_game()
+			_show_cloud_restore_popup(save_text, updated_at)
+			return
+		# 同一血缘：新的那份赢，无需弹窗
+		if updated_at / 1000.0 > info.last_logout + 5:
+			var f1 = FileAccess.open(data.save_path, FileAccess.WRITE)
+			if f1:
+				f1.store_string(save_text)
+				f1.close()
 		_enter_game()
 		return
 	if not ok:
@@ -954,41 +993,69 @@ func _on_net_download_result(ok: bool, has_save: bool, save_text: String, update
 	if updated_at / 1000.0 <= data.last_logout_time + 5:
 		if was_manual: _show_stage_hint("云端存档不比本机新，无需恢复", 3.0)
 		return
-	# 云端较新：弹确认恢复（后续逻辑保持原样；注意里面的 data.SAVE_PATH 要改成 data.save_path）
+	# 云端较新（或手动"从云端恢复"）：统一走冲突/恢复弹窗（写明双方名字+时间，恢复写当前账号档）
+	_show_cloud_restore_popup(save_text, updated_at)
+
+# 【新增】读取本地存档的仲裁信息：存在性/血缘ID/下线时间。登录仲裁必须在 load_game 之前调用
+# （此刻内存里的 last_logout_time 还是旧值/零，不代表本地档的真实时间，所以直接读文件）
+func _read_local_save_info() -> Dictionary:
+	var info := {"exists": false, "save_id": "", "last_logout": 0.0}
+	var f = FileAccess.open(data.save_path, FileAccess.READ)
+	if f == null:
+		return info
+	var text = f.get_as_text()
+	f.close()
+	var parsed = JSON.parse_string(text)
+	if parsed is Dictionary:
+		info.exists = true
+		info.save_id = str(parsed.get("save_id", ""))
+		info.last_logout = float(parsed.get("last_logout_time", 0))
+	return info
+
+# 【改】存档冲突询问：摆出云端/本地双方名字与保存时间，按钮标明谁覆盖谁；
+#       确认恢复写当前账号档 data.save_path（原来误写常量 SAVE_PATH=save.json，恢复会写错文件）
+func _show_cloud_restore_popup(save_text: String, updated_at: int):
 	_safe_close("CloudRestorePopup")
-	var popup = _create_base_popup("发现云端存档", Vector2(420, 240))
+	var popup = _create_base_popup("存档冲突", Vector2(480, 280))
 	popup.name = "CloudRestorePopup"
-	popup.z_index = 30
-	add_child(popup)
+	popup.z_index = 30   # 弹窗层
 	var vb = popup.get_child(0)
+	# 【新增】解析云端档里的角色名，和本地并排展示——玩家看得见两边是什么档再选
+	var cloud_name := "?"
+	var parsed = JSON.parse_string(save_text)
+	if parsed is Dictionary:
+		cloud_name = str(parsed.get("player_name", "?"))
 	var lbl = Label.new()
-	lbl.text = "云端的存档比本机新\n恢复后将重新加载游戏\n确定恢复吗？"
+	lbl.text = "云端存档「%s」保存于 %s\n本地「%s」保存于 %s\n要保留哪一个？" % [
+		cloud_name,
+		data.format_time(updated_at / 1000.0),
+		data.player_name,
+		data.format_time(data.last_logout_time),
+	]
 	lbl.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	lbl.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
 	vb.add_child(lbl)
 	var row = HBoxContainer.new()
 	row.alignment = BoxContainer.ALIGNMENT_CENTER
-	row.add_theme_constant_override("separation", 20)
+	row.add_theme_constant_override("separation", 24)
 	vb.add_child(row)
-	var ok_btn = Button.new()
-	ok_btn.text = "恢复云端存档"
-	ok_btn.custom_minimum_size = Vector2(140, 40)
-	ok_btn.pressed.connect(func():
-		_safe_close("CloudRestorePopup")
-		var f = FileAccess.open(data.SAVE_PATH, FileAccess.WRITE)
+	var confirm = Button.new()
+	confirm.text = "恢复云端（覆盖本地）"
+	confirm.custom_minimum_size = Vector2(180, 44)
+	confirm.pressed.connect(func():
+		# 【改】写当前账号档（原来写 data.SAVE_PATH 常量，恢复的档会进错文件）
+		var f = FileAccess.open(data.save_path, FileAccess.WRITE)
 		if f:
 			f.store_string(save_text)
 			f.close()
-			get_tree().reload_current_scene()
+		get_tree().reload_current_scene()
 	)
-	row.add_child(ok_btn)
+	row.add_child(confirm)
 	var cancel = Button.new()
-	cancel.text = "保留本机"
-	cancel.custom_minimum_size = Vector2(120, 40)
+	cancel.text = "保留本地（覆盖云端）"
+	cancel.custom_minimum_size = Vector2(180, 44)
 	cancel.pressed.connect(func(): _safe_close("CloudRestorePopup"))
 	row.add_child(cancel)
-
-
 
 func _on_account_btn_pressed():
 	if net.token == "":
