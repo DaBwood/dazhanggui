@@ -15,10 +15,27 @@ const SAVE_PATH = "user://save.json"
 var save_path := SAVE_PATH
 
 # 【新增】按账号隔离存档：切到 save_<账号>.json；首次把旧默认档迁移一次（保底老进度不丢）
-func set_save_path_for(user: String):
-	save_path = "user://save_%s.json" % user
-	if not FileAccess.file_exists(save_path) and FileAccess.file_exists(SAVE_PATH):
-		DirAccess.copy_absolute(SAVE_PATH, save_path)
+func set_save_path_for(p_username: String) -> void:
+	if p_username == "":
+		save_path = SAVE_PATH
+		return
+	save_path = "user://save_%s.json" % p_username
+	if FileAccess.file_exists(save_path):
+		return
+	if FileAccess.file_exists(SAVE_PATH):
+		var old = FileAccess.open(SAVE_PATH, FileAccess.READ)
+		var content = old.get_as_text()
+		old.close()
+		# 【新增】迁移=把源档分叉成新档：必须换新血缘ID——源档（如离线档）与账号档
+		# 共用同一ID的话，冲突判定永远认为同源，弹窗逻辑整体失效（复制救不了，必须在分叉点重发）
+		var parsed = JSON.parse_string(content)
+		if parsed is Dictionary:
+			save_id = str(Time.get_unix_time_from_system()) + "_" + str(randi())
+			parsed["save_id"] = save_id
+			content = JSON.stringify(parsed)
+		var to = FileAccess.open(save_path, FileAccess.WRITE)
+		to.store_string(content)
+		to.close()
 
 var save_id: String = ""   # 【新增】存档血缘ID：同一份档的所有分支同一个ID，不同档不同ID；存档冲突判定用（名字可改不可靠、时间偏向本地）
 
@@ -794,6 +811,10 @@ func save_game():
 
 # 读取存档：先加载配置，核心字段由本中枢读取，其余各子系统从同一张扁平表认领自己的字段
 func load_game():
+	# 【新增】血缘ID兜底：必须放在任何 return 之前——新档走"无文件早退"路径，
+	# 放认领区里永远执行不到（云端 save_id 为空的根因）
+	if save_id == "":
+		save_id = str(Time.get_unix_time_from_system()) + "_" + str(randi())
 	#先加载配置再读档
 	if _hero_configs.is_empty(): _load_all_configs()
 
@@ -820,10 +841,8 @@ func load_game():
 	if data.has("last_daily_reward_time"): last_daily_reward_time = data.last_daily_reward_time
 	if data.has("last_login_time"): last_login_time = data.last_login_time
 	if data.has("last_logout_time"): last_logout_time = data.last_logout_time
-	if data.has("save_id"):save_id = str(data.save_id)
-	if save_id == "":
-		# 【新增】旧档没有ID：补发一个（下次存档起生效）；无法判血缘的云端旧档按"冲突"保守处理
-		save_id = "%d_%d" % [Time.get_unix_time_from_system(), randi()]
+	if data.has("save_id") and str(data.save_id) != "":
+		save_id = str(data.save_id)
 	
 	# ===== 各子系统认领自己的字段（含旧存档兼容逻辑） =====
 	var systems = [hero_system, friend_system, apprentice_system, beast_system, shop_system,

@@ -18,7 +18,7 @@ var _quantity_item_id: String = ""   # 数量选择器当前操作的道具ID
 var _autosave_sec: int = 0
 # 【新增】Web 端页面隐藏回调引用（JavaScriptBridge 回调是 RefCounted，必须持有引用否则被释放后回调失效）
 var _web_hide_cb = null
-
+var _cloud_reload_pending := false   # 【新增】云端恢复弹窗开着：挂起自动存/上传
 #按钮信号连接
 var _signals_connected: bool = false
 
@@ -425,7 +425,7 @@ func on_auto_earn():
 	if data.cuzhi_jars.size() > 0:
 		data.cuzhi_system.tick_jars()
 	
-	if _autosave_sec >= AUTOSAVE_INTERVAL:
+	if _autosave_sec >= AUTOSAVE_INTERVAL and not _cloud_reload_pending:
 		_autosave_sec = 0
 		data.save_game()
 
@@ -904,8 +904,8 @@ func _collect_node_lines(node: Node, depth: int, lines: Array):
 
 # 【新增】本地存档写盘 → 自动上传云端（未登录静默跳过；上传失败不打扰，下次自动存再传）
 func _on_game_saved_upload(save_text: String):
-	if get_node_or_null("CloudRestorePopup") != null:
-		return   # 【新增】存档冲突弹窗开着：暂停上传，等玩家选完（否则云端先被本地盖掉，"恢复云端"失去意义）
+	if get_node_or_null("CloudRestorePopup") != null or get_node_or_null("CloudReloadPopup") != null:
+		return   # 存档弹窗开着：暂停上传，等玩家选完/点完
 	if net != null and net.token != "":
 		net.upload_save(save_text)
 
@@ -937,19 +937,20 @@ func _on_net_login_result(ok: bool, msg: String):
 
 # 【新增】下载结果统一处理：登录门仲裁 / 启动自动登录仲裁 / 游戏中途登录冲突 / 手动恢复 共用一个入口
 func _on_net_download_result(ok: bool, has_save: bool, save_text: String, updated_at: int):
+	print("[NET] download_result ok=", ok, " has_save=", has_save, " len=", save_text.length(), " conflict_check=", _net_login_conflict_check, " pending=", _net_login_pending)   # 【诊断】
 	var was_manual = _manual_download
 	_manual_download = false
-	# 游戏中途登录的冲突保障：云端档与本地档"血缘不同"才弹窗让玩家选；
-	# 同一血缘（同设备离线再登录等）本地继续玩，自动存自然同步
+	# 【改】产品原则：中途登录=云端无条件覆盖本地。云端有档：落盘+弹确认窗，玩家点确定后重载——
+	# 在网络回调里直接重载场景 Web 端必失败（!is_inside_tree），按钮回调重载是已验证的安全路径（同退出登录）
 	if _net_login_conflict_check:
 		_net_login_conflict_check = false
 		if ok and has_save and save_text.is_empty() == false:
-			var cloud_save_id := ""
-			var parsed = JSON.parse_string(save_text)
-			if parsed is Dictionary:
-				cloud_save_id = str(parsed.get("save_id", ""))
-			if cloud_save_id == "" or cloud_save_id != data.save_id:
-				_show_cloud_restore_popup(save_text, updated_at)
+			var f = FileAccess.open(data.save_path, FileAccess.WRITE)
+			if f:
+				f.store_string(save_text)
+				f.close()
+			_cloud_reload_pending = true   # 挂起自动存/上传，防弹窗期间离线档回写盖掉刚恢复的云端档
+			_show_cloud_reload_popup()
 		return
 	# 登录门/自动登录的统一下载仲裁：本地档与云端档可能是不同血缘（换账号、旧档残留），
 	# 必须先对比再决定用哪份档，杜绝"本地较新就静默盖云端"
@@ -990,6 +991,13 @@ func _on_net_download_result(ok: bool, has_save: bool, save_text: String, update
 	if not has_save or save_text.is_empty():
 		if was_manual: _show_stage_hint("云端还没有存档", 3.0)
 		return
+	var manual_save_id := ""
+	var parsed_manual = JSON.parse_string(save_text)
+	if parsed_manual is Dictionary:
+		manual_save_id = str(parsed_manual.get("save_id", ""))
+	if manual_save_id == "" or manual_save_id != data.save_id:
+		_show_cloud_restore_popup(save_text, updated_at)
+		return
 	if updated_at / 1000.0 <= data.last_logout_time + 5:
 		if was_manual: _show_stage_hint("云端存档不比本机新，无需恢复", 3.0)
 		return
@@ -1028,9 +1036,9 @@ func _show_cloud_restore_popup(save_text: String, updated_at: int):
 	var lbl = Label.new()
 	lbl.text = "云端存档「%s」保存于 %s\n本地「%s」保存于 %s\n要保留哪一个？" % [
 		cloud_name,
-		data.format_time(updated_at / 1000.0),
+		Time.get_datetime_string_from_unix_time(int(updated_at / 1000.0), true),
 		data.player_name,
-		data.format_time(data.last_logout_time),
+		Time.get_datetime_string_from_unix_time(int(data.last_logout_time), true),
 	]
 	lbl.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	lbl.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
@@ -1056,6 +1064,24 @@ func _show_cloud_restore_popup(save_text: String, updated_at: int):
 	cancel.custom_minimum_size = Vector2(180, 44)
 	cancel.pressed.connect(func(): _safe_close("CloudRestorePopup"))
 	row.add_child(cancel)
+
+# 【新增】云端档已落盘，等玩家点击后重载进云端档（网络回调里直接重载在 Web 端会 !is_inside_tree 失败）
+func _show_cloud_reload_popup():
+	_safe_close("CloudReloadPopup")
+	var popup = _create_base_popup("恢复完成", Vector2(420, 220))
+	popup.name = "CloudReloadPopup"
+	popup.z_index = 30
+	add_child(popup)
+	var vb = popup.get_child(0)
+	var lbl = Label.new()
+	lbl.text = "已从云端恢复存档\n点击确定重新载入游戏"
+	lbl.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	vb.add_child(lbl)
+	_add_ok_button(vb, func():
+		_cloud_reload_pending = false
+		_safe_close("CloudReloadPopup")
+		get_tree().reload_current_scene()   # 按钮回调里重载：与退出登录同一安全路径
+	, "确定")
 
 func _on_account_btn_pressed():
 	if net.token == "":
