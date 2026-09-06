@@ -83,7 +83,8 @@ static func get_extra_income(g, hero_id: String) -> int:
 	extra += g.cuzhi_system.get_career_peiyu_flat_income(hero.get("category", ""))
 	# 【虫师】虫书固定赚速加成（star 1~4 累加）
 	extra += g.cuzhi_system.get_hero_worm_flat_bonus(hero_id)
-	
+	# 【新增】天赋固定赚钱（鬼斧神工星级·替换制：只取当前星级配置值，不累加）
+	extra += g.talent_system.get_flat_income(hero_id)
 	
 	return extra
 
@@ -122,6 +123,8 @@ static func get_percent_bonus(g, hero_id: String) -> float:
 	bonus += g.token_system.get_bound_income_pct(hero_id)
 	# 【新增】风姿：已解锁技能数×5%赚钱（全部解锁后封顶）
 	bonus += g.fengzi_system.get_income_pct(hero_id)
+	# 【新增】天赋赚钱百分比（鬼斧神工星级·替换制：只取当前星级配置值，不累加）
+	bonus += g.talent_system.get_income_pct(hero_id)
 	
 	return bonus
 

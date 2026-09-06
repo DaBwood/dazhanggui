@@ -72,7 +72,7 @@ func upgrade_hero_level(hero_id: String, batch: bool = false) -> int:
 	var total_cost = 0
 	var levels = 0
 	for lv in range(hero.level, target):
-		var cost = int(ceil(100 * pow(1.05, lv)))
+		var cost = int(ceil(900 * pow(1.0158, lv)))
 		if exp_count < total_cost + cost:
 			break
 		total_cost += cost

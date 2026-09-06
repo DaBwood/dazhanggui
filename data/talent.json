@@ -1,0 +1,17 @@
+{
+	"_comment": "门客天赋系统配置。所有门客通用【技能】页=鬼斧神工：消耗门客帖精进升星（一星~七星）。stars 按星级索引：require_level=精进要求的门客等级；require_heroes_star/require_heroes_count=要求N个门客达到M星（含本人，一星~三星为0无此条件）；cost=消耗门客帖数；flat_income/income_pct=该星级的替换制加成（只取当前星级值，不累加）；skill_name/skill_aptitude_per_level=该星级解锁的技能名及每级资质（=资质丹固定消耗数）",
+	"settings": {
+		"max_star": 7,
+		"cost_item": "hero_token",
+		"skill_max_level": 200
+	},
+	"stars": {
+		"1": {"require_level": 400, "require_heroes_star": 0, "require_heroes_count": 0, "cost": 3,  "flat_income": 250000,  "income_pct": 0.10, "skill_name": "得心应手", "skill_aptitude_per_level": 1},
+		"2": {"require_level": 450, "require_heroes_star": 0, "require_heroes_count": 0, "cost": 5,  "flat_income": 500000,  "income_pct": 0.20, "skill_name": "出类拔萃", "skill_aptitude_per_level": 2},
+		"3": {"require_level": 500, "require_heroes_star": 0, "require_heroes_count": 0, "cost": 10, "flat_income": 1000000, "income_pct": 0.30, "skill_name": "炉火纯青", "skill_aptitude_per_level": 2},
+		"4": {"require_level": 550, "require_heroes_star": 3, "require_heroes_count": 15, "cost": 15, "flat_income": 2000000, "income_pct": 0.40, "skill_name": "出神入化", "skill_aptitude_per_level": 4},
+		"5": {"require_level": 700, "require_heroes_star": 4, "require_heroes_count": 20, "cost": 20, "flat_income": 3000000, "income_pct": 0.50, "skill_name": "鬼斧神工", "skill_aptitude_per_level": 5},
+		"6": {"require_level": 750, "require_heroes_star": 5, "require_heroes_count": 20, "cost": 25, "flat_income": 5000000, "income_pct": 0.60, "skill_name": "超凡入圣", "skill_aptitude_per_level": 6},
+		"7": {"require_level": 800, "require_heroes_star": 6, "require_heroes_count": 20, "cost": 30, "flat_income": 8000000, "income_pct": 0.70, "skill_name": "天人合一", "skill_aptitude_per_level": 7}
+	}
+}
