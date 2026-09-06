@@ -920,6 +920,9 @@ func _on_game_saved_upload(save_text: String):
 
 # 【新增】登录/注册结果：成功→拆登录门、档随账号→进游戏；失败把原因写回状态行
 func _on_net_login_result(ok: bool, msg: String):
+	# 【改】Web 表单收尾：成功→JS 删表单；失败→JS 恢复按钮并把原因写进表单状态行（表单已独立成卡）
+	if OS.has_feature("web"):
+		JavaScriptBridge.eval("window.__dzg_login_finish && window.__dzg_login_finish(" + ("true" if ok else "false") + "," + JSON.stringify(msg) + ")", true)
 	var popup = get_node_or_null("LoginPopup")
 	if popup:
 		var status = popup.find_child("StatusLabel", true, false)
@@ -1063,6 +1066,9 @@ func _show_account_panel():
 # 【新增】登录/注册弹窗：Web 端走 HTML 原生输入框（手机虚拟键盘引擎bug绕法，见档案踩坑11）；桌面/编辑器用 LineEdit
 func _show_login_popup():
 	_safe_close("LoginPopup")
+	if OS.has_feature("web"):
+		_show_web_login_form()
+		return
 	var popup = _create_base_popup("账号登录", Vector2(420, 320))
 	popup.name = "LoginPopup"
 	popup.z_index = 95
@@ -1074,35 +1080,32 @@ func _show_login_popup():
 	status.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
 	status.text = "登录后可云存档，换设备不丢进度"
 	vb.add_child(status)
-	if OS.has_feature("web"):
-		_show_web_login_form()
-	else:
-		var user_edit = LineEdit.new()
-		user_edit.placeholder_text = "用户名"
-		vb.add_child(user_edit)
-		var pass_edit = LineEdit.new()
-		pass_edit.placeholder_text = "密码"
-		pass_edit.secret = true
-		vb.add_child(pass_edit)
-		var row = HBoxContainer.new()
-		row.alignment = BoxContainer.ALIGNMENT_CENTER
-		row.add_theme_constant_override("separation", 12)
-		vb.add_child(row)
-		var login_btn = Button.new()
-		login_btn.text = "登录"
-		login_btn.custom_minimum_size = Vector2(110, 40)
-		login_btn.pressed.connect(func(): net.login(user_edit.text.strip_edges(), pass_edit.text))
-		row.add_child(login_btn)
-		var reg_btn = Button.new()
-		reg_btn.text = "注册"
-		reg_btn.custom_minimum_size = Vector2(110, 40)
-		reg_btn.pressed.connect(func(): net.register(user_edit.text.strip_edges(), pass_edit.text))
-		row.add_child(reg_btn)
-		var off_btn = Button.new()
-		off_btn.text = "离线模式"
-		off_btn.custom_minimum_size = Vector2(110, 40)
-		off_btn.pressed.connect(_enter_offline)
-		row.add_child(off_btn)
+	var user_edit = LineEdit.new()
+	user_edit.placeholder_text = "用户名"
+	vb.add_child(user_edit)
+	var pass_edit = LineEdit.new()
+	pass_edit.placeholder_text = "密码"
+	pass_edit.secret = true
+	vb.add_child(pass_edit)
+	var row = HBoxContainer.new()
+	row.alignment = BoxContainer.ALIGNMENT_CENTER
+	row.add_theme_constant_override("separation", 12)
+	vb.add_child(row)
+	var login_btn = Button.new()
+	login_btn.text = "登录"
+	login_btn.custom_minimum_size = Vector2(110, 40)
+	login_btn.pressed.connect(func(): net.login(user_edit.text.strip_edges(), pass_edit.text))
+	row.add_child(login_btn)
+	var reg_btn = Button.new()
+	reg_btn.text = "注册"
+	reg_btn.custom_minimum_size = Vector2(110, 40)
+	reg_btn.pressed.connect(func(): net.register(user_edit.text.strip_edges(), pass_edit.text))
+	row.add_child(reg_btn)
+	var off_btn = Button.new()
+	off_btn.text = "离线模式"
+	off_btn.custom_minimum_size = Vector2(110, 40)
+	off_btn.pressed.connect(_enter_offline)
+	row.add_child(off_btn)
 
 # 【新增】Web 登录表单：HTML 原生输入框居中悬浮（DOM 渲染，手机键盘正常调起）
 func _show_web_login_form():
@@ -1119,6 +1122,8 @@ func _show_web_login_form():
 				'z-index:999;background:#2a2640;border:2px solid #7a6fb0;border-radius:10px;' +
 				'padding:18px;width:240px;text-align:center;';
 			div.innerHTML =
+				'<div style="color:#e8c66a;font-size:16px;margin-bottom:10px;">账号登录</div>' +
+				'<div id="dzg-status" style="color:#c9bfa8;font-size:12px;min-height:18px;margin-bottom:10px;">登录后可云存档，换设备不丢进度</div>' +
 				'<input id="dzg-user" placeholder="用户名" ' +
 				'style="width:100%;box-sizing:border-box;margin-bottom:10px;padding:8px;border-radius:4px;border:1px solid #555;">' +
 				'<input id="dzg-pass" type="password" placeholder="密码" ' +
@@ -1131,12 +1136,31 @@ func _show_web_login_form():
 			btns[1].onclick = function(){ window.__dzg_login_do('register'); };
 			btns[2].onclick = function(){ window.__dzg_login_do('cancel'); };
 			document.body.appendChild(div);
+			// 提交：禁用按钮防连点，状态行显示"请求中"（结果回来前表单不删）
 			window.__dzg_login_do = function(mode){
-				var u = document.getElementById('dzg-user').value.trim();
-				var p = document.getElementById('dzg-pass').value;
 				var d = document.getElementById('dzg-login');
-				if (d) d.remove();
+				if (mode === 'cancel') {   // 取消仍即删表单走离线
+					if (d) d.remove();
+					window.__dzg_login_cb(mode, '', '');
+					return;
+				}
+				var bs = d.getElementsByTagName('button');
+				for (var i = 0; i < bs.length; i++) bs[i].disabled = true;
+				var st = document.getElementById('dzg-status');
+				if (st) st.textContent = '请求中…';
+				var u = d.querySelector('#dzg-user').value.trim();
+				var p = d.querySelector('#dzg-pass').value;
 				window.__dzg_login_cb(mode, u, p);
+			};
+			// Godot 结果回调：成功→删表单进游戏；失败→恢复按钮+状态行显示原因，用户名密码原样保留直接改着重试
+			window.__dzg_login_finish = function(ok, msg){
+				var d = document.getElementById('dzg-login');
+				if (!d) return;
+				if (ok) { d.remove(); return; }
+				var bs = d.getElementsByTagName('button');
+				for (var i = 0; i < bs.length; i++) bs[i].disabled = false;
+				var st = document.getElementById('dzg-status');
+				if (st) st.textContent = msg || '请求失败';
 			};
 		})()
 	""", true)

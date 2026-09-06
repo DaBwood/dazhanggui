@@ -89,7 +89,10 @@ func register(user: String, pwd: String):
 			save_auth()
 			login_result.emit(true, "注册成功")
 		else:
-			login_result.emit(false, d.get("msg", "网络错误(%d)" % code))
+			var reason = d.get("msg", "网络错误(%d)" % code)
+			if code == 409:
+				reason += "，可直接登录或换个用户名"   # 【新增】撞已注册时给下一步指引，别只干巴巴一句
+			login_result.emit(false, reason)
 	, false)
 
 func login(user: String, pwd: String):
