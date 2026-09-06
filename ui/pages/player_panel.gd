@@ -122,6 +122,24 @@ func open_player_panel():
 	close_btn.pressed.connect(_close_player_panel)
 	vbox.add_child(close_btn)
 	
+	# 【新增】账号/退出（原在顶栏，竖屏 600 宽被截断；移入个人面板，点名字进）
+	var sys_row = HBoxContainer.new()
+	sys_row.alignment = BoxContainer.ALIGNMENT_CENTER
+	sys_row.add_theme_constant_override("separation", 16)
+	vbox.add_child(sys_row)
+	
+	var account_btn = Button.new()
+	account_btn.text = "账号"
+	account_btn.custom_minimum_size = Vector2(90, 36)
+	account_btn.pressed.connect(c.show_account_popup)
+	sys_row.add_child(account_btn)
+	
+	var exit_btn = Button.new()
+	exit_btn.text = "退出"
+	exit_btn.custom_minimum_size = Vector2(90, 36)
+	exit_btn.pressed.connect(c.show_exit_confirm)
+	sys_row.add_child(exit_btn)
+	
 	c.add_child(panel)
 	c._current_popup = panel
 	c.get_node("Overlay").show()

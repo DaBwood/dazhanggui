@@ -110,8 +110,6 @@ func _ready():
 	# 【新增】Web 端页面被划走/切后台瞬间补一次存档（pagehide + visibilitychange 双保险）
 	_setup_web_save_hook()
 
-	# 【新增】顶栏右侧「退出」按钮：存档后正常退出（Web 端尝试关页面，被拦截则提示手动关）
-	_init_exit_button()
 	
 	_apply_portrait_layout()      # 【新增】壳层布局
 	get_tree().root.size_changed.connect(_apply_portrait_layout)   # 【新增】窗口变化重排
@@ -124,7 +122,7 @@ func _ready():
 	data.game_saved.connect(_on_game_saved_upload)
 	net.login_result.connect(_on_net_login_result)
 	net.download_result.connect(_on_net_download_result)
-	_init_account_button()
+
 	
 	# 【新增】账号门：有令牌→档随账号→直接进游戏；无令牌→先登录/注册（或离线模式），过完门才初始化游戏
 	if net.token != "":
@@ -834,18 +832,6 @@ func _on_web_page_hide(_args):
 	if data != null:
 		data.save_game()
 
-# 【新增】顶栏右侧「退出」按钮（挂 TopBar 末尾=最右；apply_theme 在其之前跑，故自带配色不挨全量美化）
-func _init_exit_button():
-	if not has_node("TopBar"): return
-	if $TopBar.has_node("ExitBtn"): return
-	var btn = Button.new()
-	btn.name = "ExitBtn"
-	btn.text = "退出"
-	btn.custom_minimum_size = Vector2(52, 30)
-	btn.add_theme_font_size_override("font_size", 14)
-	btn.add_theme_color_override("font_color", Color("#c9bfa8"))
-	btn.pressed.connect(_on_exit_btn_pressed)
-	$TopBar.add_child(btn)
 
 # 【新增】点退出：二次确认弹窗（说明会自动存档）
 func _on_exit_btn_pressed():
@@ -1003,21 +989,6 @@ func _on_net_download_result(ok: bool, has_save: bool, save_text: String, update
 	row.add_child(cancel)
 
 
-
-# 【新增】顶栏「账号」按钮（挂在「退出」左侧）：未登录→登录弹窗；已登录→账号面板
-func _init_account_button():
-	if not has_node("TopBar"): return
-	if $TopBar.has_node("AccountBtn"): return
-	var btn = Button.new()
-	btn.name = "AccountBtn"
-	btn.text = "账号"
-	btn.custom_minimum_size = Vector2(52, 30)
-	btn.add_theme_font_size_override("font_size", 14)
-	btn.add_theme_color_override("font_color", Color("#c9bfa8"))
-	btn.pressed.connect(_on_account_btn_pressed)
-	$TopBar.add_child(btn)
-	if $TopBar.has_node("ExitBtn"):
-		$TopBar.move_child(btn, $TopBar.get_node("ExitBtn").get_index())
 
 func _on_account_btn_pressed():
 	if net.token == "":
@@ -1730,6 +1701,12 @@ func _on_promote_identity():
 func _on_claim_daily_reward():
 	return player_panel._on_claim_daily_reward()
 
+# 【新增】个人面板里的账号/退出按钮入口（原顶栏按钮，竖屏被截断后移入个人面板）
+func show_account_popup():
+	return _on_account_btn_pressed()
+
+func show_exit_confirm():
+	return _on_exit_btn_pressed()
 # ==================== 【转发】庄园视图 → pages/manor_view.gd ====================
 
 # 在闯荡页注入庄园入口按钮与子视图（由 adventure_page 构建时调用）
