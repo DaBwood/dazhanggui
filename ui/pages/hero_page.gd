@@ -694,34 +694,38 @@ func on_promotion_upgrade(mode: String = "single"):
 		c.update_all_ui()
 		c.update_bag_list()
 
-# 【改】赋诗面板重排（模仿信物面板）：技能名/进度/累计资质/消耗 + 赋诗解锁技能列表（已解锁金/未解锁灰）
-# 【改】升级区改为 升级按钮+十连勾选（原"一键升满"改十连，单次最多10级，见 hero_system.upgrade_promotion）
+# 【改】晋升面板参数化 v3：标题/资质技能名/解锁列表/按钮文案全部读 promotion 配置
+# （李白=赋诗·天生我材，白月初=续缘·仙缘梦绕）；【新增】苦情契约按钮（白月初独有，位置同风姿按钮）
 func _on_promo_btn_clicked():
 	if current_hero_id == "" or not data.heroes.has(current_hero_id): return
 	var h = data.heroes[current_hero_id]
 	if not h.has("promotion"): return
 	var promo = h.promotion
+	var promo_name: String = promo.get("name", "晋升")
+	var skill_name: String = promo.get("skill_name", promo_name)
 	var item_name = data.ITEM_CONFIG[promo.cost_item].name
 	
-	var popup = c._create_base_popup("【赋诗】天生我材", Vector2(460, 620))
+	# 【改】标题参数化："赋诗等级"/"续缘等级"
+	var popup = c._create_base_popup("%s等级" % promo_name, Vector2(460, 620))
 	popup.name = "PromoPopup"
 	popup.z_index = 30
 	c.add_child(popup)
 	var vb = popup.get_child(0)
 	
-	# ── 技能信息：进度/每级资质/累计资质/消耗/拥有 ──
+	# ── 技能信息：等级+总资质 /（下级资质）/ 消耗+拥有 ──
 	var info_lbl = Label.new()
 	info_lbl.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	info_lbl.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
-	info_lbl.text = "【天生我材】Lv.%d/%d\n每级+%d资质（%s）  累计+%d资质\n每级消耗%d【%s】  拥有：%d" % [
-		promo.level, promo.max_level,
-		int(promo.aptitude_per_level), h.name, promo.level * int(promo.aptitude_per_level),
+	# 【改】技能名参数化（李白=天生我材，白月初=仙缘梦绕）
+	info_lbl.text = "%s %d级 +%d资质\n（下级+%d资质）\n每级消耗%d【%s】  拥有：%d" % [
+		skill_name, int(promo.level), int(promo.level) * int(promo.aptitude_per_level),
+		int(promo.aptitude_per_level),
 		int(promo.cost_amount), item_name,
 		data.items.get(promo.cost_item, 0)
 	]
 	vb.add_child(info_lbl)
 	
-	# ── 升级区：升级按钮 + 十连勾选（勾选状态存类变量 _promo_batch，升级/重建不清）──
+	# ── 升级区：晋升按钮 + 十次勾选（勾选状态存类变量 _promo_batch，升级/重建不清）──
 	var up_box = HBoxContainer.new()
 	up_box.alignment = BoxContainer.ALIGNMENT_CENTER
 	vb.add_child(up_box)
@@ -731,30 +735,29 @@ func _on_promo_btn_clicked():
 		var before = promo.level
 		on_promotion_upgrade("single" if not _promo_batch else "bulk")
 		if promo.level > before:
-			# 重建刷新（沿用信物/风姿面板同位置重建模式；解锁技能高亮同步更新）
+			# 重建刷新（解锁列表高亮同步更新）
 			if is_instance_valid(popup): popup.queue_free()
 			_on_promo_btn_clicked()
 	)
 	up_box.add_child(up_btn)
 	var batch_check = CheckBox.new()
-	batch_check.text = "十连"
-	batch_check.button_pressed = _promo_batch   # 【新增】恢复上次勾选状态
-	# 勾选切换时刷新按钮上的消耗数字（单级↔十连总价）
+	batch_check.text = "十次"
+	batch_check.button_pressed = _promo_batch   # 恢复上次勾选状态
+	# 【改】勾选切换刷新按钮文字（参数化：赋诗/赋诗十次、续缘/续缘十次）
 	batch_check.toggled.connect(func(pressed):
-		_promo_batch = pressed   # 【新增】记录勾选变化
+		_promo_batch = pressed   # 记录勾选变化
 		if _promo_batch:
-			up_btn.text = "十连\n%d" % (int(promo.cost_amount) * 10)
+			up_btn.text = "%s十次" % promo_name
 		else:
-			up_btn.text = "升级\n%d" % int(promo.cost_amount)
+			up_btn.text = promo_name
 	)
 	up_box.add_child(batch_check)
-	# 初始按钮文本：单级消耗 / 十连为10级总价
 	if _promo_batch:
-		up_btn.text = "十连\n%d" % (int(promo.cost_amount) * 10)
+		up_btn.text = "%s十次" % promo_name
 	else:
-		up_btn.text = "升级\n%d" % int(promo.cost_amount)
+		up_btn.text = promo_name
 	
-	# 【新增】风姿按钮（无双解锁风姿的门客显示，点击切到风姿面板）
+	# 风姿按钮（无双解锁风姿的门客显示，点击切到风姿面板）
 	var fengzi_btn = Button.new()
 	fengzi_btn.custom_minimum_size = Vector2(140, 36)
 	if data.fengzi_system.has_fengzi(current_hero_id):
@@ -762,12 +765,25 @@ func _on_promo_btn_clicked():
 	else:
 		fengzi_btn.visible = false
 	fengzi_btn.pressed.connect(func():
-		if is_instance_valid(popup): popup.queue_free()   # 先关赋诗面板再开风姿面板，避免弹窗堆叠
+		if is_instance_valid(popup): popup.queue_free()   # 先关晋升面板再开风姿面板，避免弹窗堆叠
 		_show_fengzi_panel()
 	)
 	vb.add_child(fengzi_btn)
 	
-	# ── 赋诗解锁列表：每 tier 一行（等级门槛｜品质/初始资质/解锁技能），已解锁金色、未解锁灰色 ──
+	# 【新增】苦情契约按钮：仅白月初显示（与风姿同位置，两者不会同时出现）
+	var contract_btn = Button.new()
+	contract_btn.custom_minimum_size = Vector2(140, 36)
+	if current_hero_id == data.token_system.CONTRACT_HERO:
+		contract_btn.text = "【契约】苦情契约"
+	else:
+		contract_btn.visible = false
+	contract_btn.pressed.connect(func():
+		if is_instance_valid(popup): popup.queue_free()
+		_show_contract_panel()
+	)
+	vb.add_child(contract_btn)
+	
+	# ── 晋升解锁列表：不写初始资质变化，统一"X级晋升XX，解锁技能【XX】"，已解锁金色、未解锁灰色 ──
 	var scroll = ScrollContainer.new()
 	scroll.custom_minimum_size = Vector2(420, 220)
 	vb.add_child(scroll)
@@ -778,17 +794,18 @@ func _on_promo_btn_clicked():
 	for tier in promo.tiers:
 		var lv_req = int(tier.get("threshold", 0))
 		var reached = promo.level >= lv_req
-		# 组合该 tier 的解锁内容描述
+		# 同档内容合并：晋升品质和解锁技能都作为该档的后续片段，一行写完
 		var parts = []
 		if tier.has("quality"):
-			parts.append("品质→%s" % HeroData.get_quality_name(int(tier.quality)))
-		if tier.has("initial_aptitude"):
-			parts.append("初始资质→%d" % int(tier.initial_aptitude))
+			parts.append("晋升%s" % HeroData.get_quality_name(int(tier.quality)))
 		for ns in tier.get("new_skills", []):
-			parts.append("解锁【%s】+%d/级" % [ns.get("name", "?"), int(ns.get("aptitude_per_level", 0))])
+			parts.append("解锁技能【%s】" % ns.get("name", "?"))
+		if parts.is_empty():
+			continue   # 该档无展示内容（如只调初始资质的档位）直接跳过
 		var row = Label.new()
 		row.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
-		row.text = "Lv.%d %s" % [lv_req, "｜".join(parts)]
+		# 【改】文案参数化："续缘5级晋升传奇，解锁技能【前世回忆】"
+		row.text = "%s%d级%s" % [promo_name, lv_req, "，".join(parts)]
 		if reached:
 			row.add_theme_color_override("font_color", Color("#ffd700"))
 		else:
@@ -1748,6 +1765,148 @@ func _show_token_panel():
 	c._add_ok_button(vb, func():
 		if c.has_node("TokenPanel"):
 			var old = c.get_node("TokenPanel")
+			c.remove_child(old)
+			old.queue_free()
+	, "关闭")
+
+# 【新增】苦情契约面板（白月初独有）：契约等级/当前转化赚速/升级（看技能栏资质）/指定挚友列表
+func _show_contract_panel():
+	# 关闭旧面板防同名冲突（沿用信物/风姿重建惯例）
+	if c.has_node("ContractPanel"):
+		var old = c.get_node("ContractPanel")
+		c.remove_child(old)
+		old.queue_free()
+	
+	var tsys = data.token_system
+	var lv = tsys.get_contract_level()
+	var slots = tsys.get_contract_slot_count()
+	var friends = tsys.get_contract_friends()
+	var apt = tsys.get_contract_skill_bar_aptitude()
+	var next_req = tsys.get_contract_apt_req(lv + 1)
+	
+	var popup = c._create_base_popup("【契约】苦情契约", Vector2(440, 620))
+	popup.name = "ContractPanel"
+	popup.z_index = 30
+	c.add_child(popup)
+	var vb = popup.get_child(0)
+	
+	# ── 契约信息：等级/转化%/当前赚速/下一级资质需求 ──
+	var info = Label.new()
+	info.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	info.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+	info.text = "契约 %d级（转化挚友提供赚钱的%d%%）\n当前：+%s赚速\n下级需求：技能栏资质 %d / %d" % [
+		lv, int(lv * 0.1),
+		c.format_number(tsys.get_contract_income(current_hero_id)),
+		apt, next_req
+	]
+	vb.add_child(info)
+	
+	# ── 升级按钮：不耗道具，技能栏资质够累计需求才可升 ──
+	var up_btn = Button.new()
+	up_btn.custom_minimum_size = Vector2(140, 40)
+	up_btn.text = "契约升级"
+	up_btn.disabled = apt < next_req   # 资质不够按钮置灰
+	up_btn.pressed.connect(func():
+		if data.token_system.upgrade_contract():
+			_show_contract_panel()   # 重建刷新
+			update_hero_panel()
+			c.update_all_ui()
+	)
+	vb.add_child(up_btn)
+	
+	# ── 指定挚友列表：每格 未指定(可指定)/已指定(显示提供赚钱+解除) ──
+	for i in range(slots):
+		var row = HBoxContainer.new()
+		row.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+		vb.add_child(row)
+		var row_lbl = Label.new()
+		row_lbl.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+		row_lbl.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
+		row_lbl.clip_text = true
+		row.add_child(row_lbl)
+		if i < friends.size() and data.friends.has(friends[i]):
+			var fid = friends[i]
+			row_lbl.text = "第%d位：【%s】提供赚钱 %s" % [i + 1, data.friends[fid].get("name", fid), c.format_number(tsys.get_friend_contribution(fid))]
+			row_lbl.add_theme_color_override("font_color", Color("#ffd700"))
+			var un_btn = Button.new()
+			un_btn.text = "解除"
+			un_btn.custom_minimum_size = Vector2(70, 32)
+			un_btn.pressed.connect(func():
+				data.token_system.unassign_friend(fid)
+				_show_contract_panel()   # 重建刷新
+				update_hero_panel()
+				c.update_all_ui()
+			)
+			row.add_child(un_btn)
+		else:
+			row_lbl.text = "第%d位：未指定" % (i + 1)
+			var pick_btn = Button.new()
+			pick_btn.text = "指定"
+			pick_btn.custom_minimum_size = Vector2(80, 32)
+			pick_btn.pressed.connect(func(): _show_contract_friend_selector())
+			row.add_child(pick_btn)
+	
+	# 名额与算法说明
+	var hint = Label.new()
+	hint.text = "仙缘梦绕达到5/80/200/400级各+1个指定名额（共5个）\n挚友提供赚钱=对每个绑定门客的（固定值+门客基础赚速×百分比）之和"
+	hint.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	hint.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+	hint.add_theme_font_size_override("font_size", 12)
+	hint.add_theme_color_override("font_color", Color("#a89ec7"))
+	vb.add_child(hint)
+	
+	c._add_ok_button(vb, func():
+		if c.has_node("ContractPanel"):
+			var old2 = c.get_node("ContractPanel")
+			c.remove_child(old2)
+			old2.queue_free()
+	, "关闭")
+
+# 【新增】契约挚友选择器：已拥有且未指定的挚友，按提供赚钱降序，显示具体贡献值
+func _show_contract_friend_selector():
+	# 关闭旧选择器防同名冲突
+	if c.has_node("ContractFriendSelector"):
+		var old = c.get_node("ContractFriendSelector")
+		c.remove_child(old)
+		old.queue_free()
+	
+	var popup = c._create_base_popup("选择指定挚友", Vector2(440, 480))
+	popup.name = "ContractFriendSelector"
+	popup.z_index = 35   # 高于契约面板(30)
+	c.add_child(popup)
+	var vb = popup.get_child(0)
+	
+	# 候选：已拥有、未指定的挚友，按提供赚钱降序
+	var assigned = data.token_system.get_contract_friends()
+	var candidates = []
+	for fid in data.friends.keys():
+		if assigned.has(fid): continue
+		candidates.append({"id": fid, "val": data.token_system.get_friend_contribution(fid)})
+	candidates.sort_custom(func(a, b): return a.val > b.val)
+	if candidates.is_empty():
+		var empty_lbl = Label.new()
+		empty_lbl.text = "暂无可指定的挚友"
+		empty_lbl.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+		vb.add_child(empty_lbl)
+	for cdd in candidates:
+		var fdata = data.friends[cdd.id]
+		var btn = Button.new()
+		btn.text = "【%s】提供赚钱 %s" % [fdata.get("name", cdd.id), c.format_number(cdd.val)]
+		btn.pressed.connect(func():
+			data.token_system.assign_friend(cdd.id)
+			# 关闭选择器并重建契约面板
+			if c.has_node("ContractFriendSelector"):
+				var old2 = c.get_node("ContractFriendSelector")
+				c.remove_child(old2)
+				old2.queue_free()
+			_show_contract_panel()
+			update_hero_panel()
+			c.update_all_ui()
+		)
+		vb.add_child(btn)
+	c._add_ok_button(vb, func():
+		if c.has_node("ContractFriendSelector"):
+			var old = c.get_node("ContractFriendSelector")
 			c.remove_child(old)
 			old.queue_free()
 	, "关闭")

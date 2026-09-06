@@ -13,5 +13,6 @@
 		"5": {"require_level": 700, "require_heroes_star": 4, "require_heroes_count": 20, "cost": 20, "flat_income": 3000000, "income_pct": 0.50, "skill_name": "鬼斧神工", "skill_aptitude_per_level": 5},
 		"6": {"require_level": 750, "require_heroes_star": 5, "require_heroes_count": 20, "cost": 25, "flat_income": 5000000, "income_pct": 0.60, "skill_name": "超凡入圣", "skill_aptitude_per_level": 6},
 		"7": {"require_level": 800, "require_heroes_star": 6, "require_heroes_count": 20, "cost": 30, "flat_income": 8000000, "income_pct": 0.70, "skill_name": "天人合一", "skill_aptitude_per_level": 7}
-	}
+	},
+	
 }

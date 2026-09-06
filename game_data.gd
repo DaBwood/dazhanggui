@@ -549,6 +549,7 @@ var _fengzi_configs: Dictionary = {}   # 【新增】风姿配置（fengzi.json�
 var talent_system   # 【新增】天赋系统
 var hero_talents: Dictionary = {}   # 【新增】天赋存档 {hero_id: {"star": 星级}}
 var _talent_configs: Dictionary = {}   # 【新增】天赋配置（talent.json）
+var hero_contracts: Dictionary = {}   # 【新增】苦情契约存档 {hero_id: {"level": int, "friends": [挚友id,...]}}
 
 # ==================== 初始化 ====================
 # 初始化：创建各子系统（纯逻辑模块，持有本中枢引用），再加载全部配置

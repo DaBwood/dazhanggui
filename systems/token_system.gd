@@ -11,6 +11,8 @@ extends RefCounted
 
 var g   # GameData 中枢引用（不标类型避免循环引用）
 
+static var _share_guard: bool = false   # 【新增】信物资质互算重入锁（防信物门客互绑死循环；互绑时按就近截断取值）
+
 # 由 GameData._init 创建本系统时注入中枢引用
 func _init(p_g):
 	g = p_g
@@ -18,12 +20,15 @@ func _init(p_g):
 # ============ 存档：本系统拥有的字段 ============
 # 信物存档：{hero_id: {"level": 技能等级, "binds": [羁绊门客id, 羁绊门客id]}}
 func get_save_data() -> Dictionary:
-	return {"hero_tokens": g.hero_tokens}
+	return {"hero_tokens": g.hero_tokens, "hero_contracts": g.hero_contracts}
 
 func load_save_data(s: Dictionary):
 	# 类型防御：旧档/异常档缺字段或为 null 时保持初始空表
 	if s.has("hero_tokens") and s.hero_tokens is Dictionary:
 		g.hero_tokens = s.hero_tokens.duplicate(true)
+	# 【新增】契约存档加载（类型防御同上）
+	if s.has("hero_contracts") and s.hero_contracts is Dictionary:
+		g.hero_contracts = s.hero_contracts.duplicate(true)
 
 # ============ 配置查询 ============
 # 某门客的信物配置（无则空字典；tokens.json 顶层 "tokens" 段按 hero_id 索引）
@@ -111,17 +116,21 @@ func get_bindable_heroes(hero_id: String) -> Array:
 
 # ============ 加成计算（HeroData 聚合唯一入口调用） ============
 # 信物主人资质加成 = 技能等级×每级资质 + Σ(每个绑定门客总资质 × owner_aptitude_share)
-# 【注意】这里反查绑定门客的总资质会回调 HeroData.get_total_aptitude，深度恒为1
-# （普通门客无信物递归项）。将来若新增第二个信物门客，严禁两个信物门客互绑，否则死循环
+# 【修】加静态重入锁防互绑死循环：李白↔白月初互绑时，第二层反查只回技能等级资质、
+# 不再继续反查（就近截断，数值略低但不循环）；单向绑定（普通门客）不受影响
 func get_owner_aptitude(hero_id: String) -> int:
 	if not has_token(hero_id): return 0
 	var cfg = get_token_cfg(hero_id)
 	var apt = get_level(hero_id) * int(cfg.get("aptitude_per_level", 3))
 	var share = float(cfg.get("owner_aptitude_share", 0.01))
+	if _share_guard: return apt   # 【新增】重入：只回技能等级部分，不反查绑定门客
+	_share_guard = true
 	for target in get_binds(hero_id):
 		if target != "" and g.heroes.has(target):
 			apt += int(HeroData.get_total_aptitude(g, target) * share)
+	_share_guard = false
 	return apt
+
 
 # 门客作为"被绑定者"获得的资质 = 主人的信物等级 × 每级资质
 func get_bound_aptitude(hero_id: String) -> int:
@@ -142,3 +151,91 @@ func get_bound_income_pct(hero_id: String) -> float:
 		if get_binds(owner_id).has(hero_id):
 			return float(cfg.get("bind_income_pct", 0.10))
 	return 0.0
+
+# ============ 苦情契约（白月初独有，写死） ============
+# 契约等级 = 转化指定挚友"提供赚钱"的百分比（每级+0.1%，不设上限，资质不够自然升不动）
+# 升级条件：白月初技能栏资质总和 ≥ 累计需求 S(n)=91n+1.25n(n+1)（59级≈9794资质，58级时每级需≈236）
+# 指定名额：初始1个，仙缘梦绕（=续缘等级）达 5/80/200/400 级各+1个，共5个
+# 挚友提供赚钱 = 对每个已拥有绑定门客的（挚友固定值 + 门客基础赚速×挚友百分比）求和
+const CONTRACT_HERO := "bai_yuechu"
+const CONTRACT_PCT_PER_LEVEL := 0.001   # 每级转化 0.1%
+const CONTRACT_SLOT_LEVELS := [5, 80, 200, 400]
+
+# 契约存档（无则惰性初始化）
+func _get_contract_state() -> Dictionary:
+	if not g.hero_contracts.has(CONTRACT_HERO):
+		g.hero_contracts[CONTRACT_HERO] = {"level": 0, "friends": []}
+	return g.hero_contracts[CONTRACT_HERO]
+
+# 契约当前等级
+func get_contract_level() -> int:
+	return int(_get_contract_state().get("level", 0))
+
+# 白月初技能栏资质总和（aptitude_skills 每级×每级资质）
+func get_contract_skill_bar_aptitude() -> int:
+	if not g.heroes.has(CONTRACT_HERO): return 0
+	var total := 0
+	for sk in g.heroes[CONTRACT_HERO].get("aptitude_skills", []):
+		total += int(sk.get("level", 0)) * int(sk.get("aptitude_per_level", 0))
+	return total
+
+# 升到 level 级所需累计技能栏资质（单级需求 91+2.5n 的累加，前期快后期慢）
+func get_contract_apt_req(level: int) -> int:
+	return int(91 * level + 1.25 * level * (level + 1))
+
+# 仙缘梦绕（续缘晋升技能）当前等级
+func get_contract_promo_level() -> int:
+	if g.heroes.has(CONTRACT_HERO) and g.heroes[CONTRACT_HERO].has("promotion"):
+		return int(g.heroes[CONTRACT_HERO].promotion.get("level", 0))
+	return 0
+
+# 当前指定名额（1 + 仙缘梦绕达到 5/80/200/400 级的档数，共5个）
+func get_contract_slot_count() -> int:
+	var n := 1
+	for t in CONTRACT_SLOT_LEVELS:
+		if get_contract_promo_level() >= int(t): n += 1
+	return n
+
+# 已指定挚友列表
+func get_contract_friends() -> Array:
+	return _get_contract_state().get("friends", [])
+
+# 指定挚友（校验：已拥有、未指定、名额未满）
+func assign_friend(fid: String) -> Dictionary:
+	if not g.friends.has(fid): return {"ok": false, "msg": "挚友不存在"}
+	var friends = get_contract_friends()
+	if friends.has(fid): return {"ok": false, "msg": "已指定"}
+	if friends.size() >= get_contract_slot_count(): return {"ok": false, "msg": "指定名额已满"}
+	friends.append(fid)
+	return {"ok": true}
+
+# 解除指定
+func unassign_friend(fid: String):
+	get_contract_friends().erase(fid)
+
+# 挚友"提供赚钱"总值：对每个已拥有绑定门客算（挚友固定值 + 门客基础赚速×挚友百分比）再求和
+func get_friend_contribution(fid: String) -> int:
+	if not g.friends.has(fid): return 0
+	var fixed: int = g.get_friend_fixed_bonus(fid) 
+	var pct: float = g.get_friend_percent_bonus(fid)
+	var total := 0.0
+	for hid in g.friends[fid].get("bound_heroes", []):
+		if g.heroes.has(hid):
+			total += fixed + HeroData.get_base_income(g, hid) * pct
+	return int(total)
+
+# 契约给白月初的固定赚速 = Σ指定挚友提供赚钱 × 契约等级 × 0.1%
+# 【注意】只读门客基础赚速，不回读 extra_income，无递归（契约只加赚钱不加资质）
+func get_contract_income(hero_id: String) -> int:
+	if hero_id != CONTRACT_HERO or not g.heroes.has(CONTRACT_HERO): return 0
+	var total := 0.0
+	for fid in get_contract_friends():
+		total += get_friend_contribution(fid)
+	return int(total * get_contract_level() * CONTRACT_PCT_PER_LEVEL)
+
+# 契约升级：不耗道具，技能栏资质够累计需求即可
+func upgrade_contract() -> bool:
+	var lv = get_contract_level()
+	if get_contract_apt_req(lv + 1) > get_contract_skill_bar_aptitude(): return false
+	_get_contract_state().level = lv + 1
+	return true

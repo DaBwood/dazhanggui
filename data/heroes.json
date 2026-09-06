@@ -3072,6 +3072,24 @@
 		"extra_income": 0,
 		"breakthrough_count": 1,
 		"initial_aptitude": 66,
+		"quality": 0,
+		"promotion": {
+			"name": "续缘",
+			"skill_name": "仙缘梦绕",
+			"level": 0,
+			"max_level": 500,
+			"cost_item": "ning_lei_jing",
+			"cost_amount": 600,
+			"aptitude_per_level": 6,
+			"tiers": [
+				{"threshold": 5, "quality": 1, "initial_aptitude": 99, "new_skills": [{"name": "前世回忆", "aptitude_per_level": 3}]},
+				{"threshold": 15, "new_skills": [{"name": "缘定三生", "aptitude_per_level": 3}]},
+				{"threshold": 30, "new_skills": [{"name": "相守如初", "aptitude_per_level": 3}]},
+				{"threshold": 45, "new_skills": [{"name": "续写缘章", "aptitude_per_level": 3}]},
+				{"threshold": 60, "new_skills": [{"name": "星辰签缘", "aptitude_per_level": 4}]},
+				{"threshold": 80, "quality": 2, "initial_aptitude": 333, "new_skills": []}
+			]
+		},
 		"assigned_shop": "",
 		"bound_heroes": [
 			"tushan_honghong",
@@ -3270,8 +3288,9 @@
 		],
 		"promotion": {
 			"name": "赋诗",
+			"skill_name": "天生我材",
 			"level": 0,
-			"max_level": 300,
+			"max_level": 500,
 			"cost_item": "zui_xian_niang",
 			"cost_amount": 600,
 			"aptitude_per_level": 6,

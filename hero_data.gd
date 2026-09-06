@@ -86,6 +86,9 @@ static func get_extra_income(g, hero_id: String) -> int:
 	# 【新增】天赋固定赚钱（鬼斧神工星级·替换制：只取当前星级配置值，不累加）
 	extra += g.talent_system.get_flat_income(hero_id)
 	
+	# 【新增】苦情契约固定赚速（白月初独有：指定挚友提供赚钱总值 × 契约等级 × 0.1%）
+	extra += g.token_system.get_contract_income(hero_id)
+	
 	return extra
 
 # 门客的百分比加成总和（挚友 + 珍兽；TODO: 藏宝加成）
