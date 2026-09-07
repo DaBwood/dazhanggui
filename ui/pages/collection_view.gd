@@ -14,6 +14,7 @@ var _view: String = "main"   # main=三按钮主页 ge=藏宝阁 ta=套装 tao=�
 var _ge_q: int = 0           # 藏宝阁当前品质页 0无双~4普通
 var _batch: bool = false         # 十连勾选记忆
 var _detail_status: String = ""  # 详情弹窗操作结果行
+var _body = null   # 内容区引用（整页重建时更新，避免靠节点路径找）
 
 const QUALITY_NAMES: Array = ["无双", "传奇", "卓越", "优秀", "普通"]
 const QUALITY_COLORS: Array = ["#ffd700", "#c77dff", "#4da6ff", "#69c96b", "#b0b0b0"]
@@ -70,6 +71,7 @@ func show_collection_view():
 	body.name = "CollectionBody"
 	body.size_flags_vertical = Control.SIZE_EXPAND_FILL
 	vb.add_child(body)
+	_body = body   # 【新增】持有内容区引用
 	c.add_child(page)
 	_fill_body(body)
 
@@ -104,11 +106,10 @@ func _open_view(v: String):
 
 # 【新增】仅刷新内容区（藏宝阁切品质用，避免整页闪烁）
 func _refresh_body():
-	var body = c.get_node_or_null("CollectionPage/CollectionBody")
-	if body:
-		for child in body.get_children():
+	if _body and is_instance_valid(_body):
+		for child in _body.get_children():
 			child.queue_free()
-		_fill_body(body)
+		_fill_body(_body)
 
 func _close_node(node_name: String):
 	var n = c.get_node_or_null(node_name)
@@ -300,7 +301,7 @@ func _show_detail(cid: String):
 		var item = sys.get_upgrade_item(cid)
 		var cost = sys.get_upgrade_cost(cid)
 		var have = int(data.items.get(item, 0))
-		var iname = data._item_configs.get(item, {}).get("name", item) if data._item_configs.has(item) else item
+		var iname = data.ITEM_CONFIG.get(item, {}).get("name", item)
 		var ul = Label.new()
 		ul.text = "升级：%s×%d（拥有 %d）" % [iname, cost, have]
 		vbox.add_child(ul)
@@ -565,16 +566,13 @@ func _show_results(results: Array):
 		var label = Label.new()
 		var txt = e.get("label", "")
 		if e.get("type") == "item":
-			var iname = data._item_configs.get(e.get("item", ""), {}).get("name", e.get("item", ""))
+			var iname = data.ITEM_CONFIG.get(e.get("item", ""), {}).get("name", e.get("item", ""))
 			txt = "%s×%d" % [iname, int(e.get("count", 0))]
 		label.text = "🎁 " + txt
 		list.add_child(label)
 	c._add_ok_button(vbox, func():
 		_close_node("CollectionResultPopup")
-		# 刷新淘宝页（券数）
-		var body = c.get_node_or_null("CollectionPage/CollectionBody")
-		if body:
-			_fill_body(body), "确定")
+		_refresh_body(), "确定")
 	c.add_child(panel)
 
 # 概率一览弹窗
