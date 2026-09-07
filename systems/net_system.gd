@@ -12,7 +12,7 @@ const API_BASE := "https://dazhanggui-save.dazhanggui.workers.dev"
 
 var username: String = ""
 var token: String = ""
-var _last_cloud_time := 0   # 最近一次上传/下载到的云端时间戳（毫秒）
+signal auth_expired()                 # 【新增】令牌被服务端判失效（401）：已清本地令牌，请玩家重新登录
 
 signal login_result(ok: bool, msg: String)                 # 登录/注册结果（msg 为失败原因或成功提示）
 signal upload_result(ok: bool)                             # 存档上传结果（静默处理，UI不强制消费）
@@ -110,8 +110,14 @@ func login(user: String, pwd: String):
 func upload_save(save_text: String):
 	if token == "" or save_text.is_empty(): return
 	_request("/upload", {"save": save_text}, func(code, d):
+		if code == 401:
+			# 【新增】会话过期/令牌失效：立即清令牌并通知 UI——不清的话上传从此静默失败，
+			# 玩家以为"自动同步着呢"实际永远没传上去（服务端会话 30 天，迟早踩到）
+			clear_auth()
+			auth_expired.emit()
+			upload_result.emit(false)
+			return
 		if code == 200 and d.get("ok", false):
-			_last_cloud_time = int(d.get("updated_at", 0))
 			upload_result.emit(true)
 		else:
 			upload_result.emit(false)
@@ -122,9 +128,14 @@ func download_save():
 		download_result.emit(false, false, "", 0)
 		return
 	_request("/download", {}, func(code, d):
+		if code == 401:
+			# 【新增】同 upload：令牌失效清令牌+通知（启动仲裁过期=重新亮登录门）
+			clear_auth()
+			auth_expired.emit()
+			download_result.emit(false, false, "", 0)
+			return
 		if code == 200 and d.get("ok", false):
-			_last_cloud_time = int(d.get("updated_at", 0))
-			download_result.emit(true, d.get("has_save", false), d.get("save", ""), _last_cloud_time)
+			download_result.emit(true, d.get("has_save", false), d.get("save", ""), int(d.get("updated_at", 0)))
 		else:
 			download_result.emit(false, false, "", 0)
 	)

@@ -18,7 +18,6 @@ var _quantity_item_id: String = ""   # 数量选择器当前操作的道具ID
 var _autosave_sec: int = 0
 # 【新增】Web 端页面隐藏回调引用（JavaScriptBridge 回调是 RefCounted，必须持有引用否则被释放后回调失效）
 var _web_hide_cb = null
-var _cloud_reload_pending := false   # 【新增】云端恢复弹窗开着：挂起自动存/上传
 #按钮信号连接
 var _signals_connected: bool = false
 
@@ -35,7 +34,6 @@ var _web_login_cb = null   # 【新增】Web 登录表单 JS 回调引用
 var _manual_download := false   # 【新增】标记本次下载是手动触发（恢复按钮），用于给提示
 var _game_entered := false   # 【新增】是否已进入游戏（过登录门才初始化，只进一次）
 var _net_login_pending := false   # 【新增】登录流程中：正等云端存档查询结果来决定用哪份档
-var _net_login_conflict_check := false   # 【新增】游戏中途登录：云端有档必弹冲突选择（不做时间裁决）
 # ========== 徒弟页面 ==========
 
 var _bars_visible = true  # 【新增】顶栏/底栏显隐状态位：二级页（挚友详情）全屏时=false，_apply_portrait_layout 重排时尊重它
@@ -123,12 +121,14 @@ func _ready():
 	data.game_saved.connect(_on_game_saved_upload)
 	net.login_result.connect(_on_net_login_result)
 	net.download_result.connect(_on_net_download_result)
+	net.auth_expired.connect(_on_net_auth_expired)   # 【新增】令牌被服务端判失效：提示重新登录（防静默失联）
 
 	
 	# 【新增】账号门：有令牌→档随账号→直接进游戏；无令牌→先登录/注册（或离线模式），过完门才初始化游戏
 	if net.token != "":
 		data.set_save_path_for(net.username)
 		_net_login_pending = true   # 【改】统一走下载仲裁：等云端对比完决定用哪份档再进游戏（防本地残留档静默盖云端）
+		_show_sync_mask()           # 【新增】仲裁期间挡空白（workers.dev 国内慢，最长10秒超时才回调）
 		net.download_save()
 	else:
 		_show_login_gate()
@@ -139,6 +139,7 @@ func _ready():
 func _enter_game():
 	if _game_entered: return
 	_game_entered = true
+	_hide_sync_mask()   # 【新增】云端仲裁完成进游戏（含离线/仲裁失败兜底），摘掉同步遮罩
 	data.load_game()  # ← 先读档
 
 	# 计算离线收益
@@ -238,7 +239,35 @@ func _enter_offline():
 		gate.queue_free()
 	_enter_game()
 
+# 【新增】同步遮罩：登录后到云端仲裁完成前，挡住"拆门了但游戏还没进"的空白期
+# （workers.dev 国内不稳，download 最长 10 秒超时才回调；遮罩在 _enter_game 开头统一摘）
+func _show_sync_mask():
+	if has_node("SyncMask"): return
+	var mask = ColorRect.new()
+	mask.name = "SyncMask"
+	mask.color = Color(0.09, 0.08, 0.16, 1)
+	mask.set_anchors_preset(Control.PRESET_FULL_RECT)
+	mask.z_index = 88
+	add_child(mask)
+	var lbl = Label.new()
+	lbl.text = "正在同步存档…"
+	lbl.set_anchors_preset(Control.PRESET_CENTER)
+	lbl.position = Vector2(-50, -10)
+	mask.add_child(lbl)
 
+func _hide_sync_mask():
+	if has_node("SyncMask"):
+		var mask = get_node("SyncMask")
+		remove_child(mask)
+		mask.queue_free()
+
+# 【新增】令牌失效（401）处理：net 已清本地令牌。游戏中→提示重启重登；
+# 还没进游戏（启动仲裁过期）→重新亮登录门走正常登录
+func _on_net_auth_expired():
+	if _game_entered:
+		_show_stage_hint("登录已过期，云端同步已停止，重启游戏后重新登录", 5.0)
+	else:
+		_show_login_gate()
 
 func format_number(n: int) -> String:
 	if n < 10000:
@@ -425,7 +454,7 @@ func on_auto_earn():
 	if data.cuzhi_jars.size() > 0:
 		data.cuzhi_system.tick_jars()
 	
-	if _autosave_sec >= AUTOSAVE_INTERVAL and not _cloud_reload_pending:
+	if _autosave_sec >= AUTOSAVE_INTERVAL:
 		_autosave_sec = 0
 		data.save_game()
 
@@ -908,7 +937,7 @@ func _collect_node_lines(node: Node, depth: int, lines: Array):
 
 # 【新增】本地存档写盘 → 自动上传云端（未登录静默跳过；上传失败不打扰，下次自动存再传）
 func _on_game_saved_upload(save_text: String):
-	if get_node_or_null("CloudRestorePopup") != null or get_node_or_null("CloudReloadPopup") != null:
+	if get_node_or_null("CloudRestorePopup") != null:
 		return   # 存档弹窗开着：暂停上传，等玩家选完/点完
 	if net != null and net.token != "":
 		net.upload_save(save_text)
@@ -922,7 +951,13 @@ func _on_net_login_result(ok: bool, msg: String):
 	if popup:
 		var status = popup.find_child("StatusLabel", true, false)
 		if status: status.text = msg
-	if not ok: return
+	if not ok:
+		# 【新增】防连点：登录/注册失败恢复按钮，允许改了再试
+		if popup:
+			for btn_name in ["LoginBtn", "RegBtn"]:
+				var b = popup.find_child(btn_name, true, false)
+				if b: b.disabled = false
+		return
 	_safe_close("LoginPopup")
 	if has_node("LoginGate"):
 		var gate = get_node("LoginGate")
@@ -930,32 +965,17 @@ func _on_net_login_result(ok: bool, msg: String):
 		gate.queue_free()
 	# 档随账号：切换存档路径（首次登录自动迁移旧默认档保底）
 	data.set_save_path_for(net.username)
-	# 【改】登录成功后一律拉云端存档仲裁，不再只看本机有没有档——set_save_path_for 的迁移
+	# 登录成功后一律拉云端存档仲裁，不再只看本机有没有档——set_save_path_for 的迁移
 	# 会把 save.json 复制成账号档使 file_exists 恒真，据此跳过云端查询，"迁移来的别的档"就会静默盖掉云端
-	if _game_entered:
-		_net_login_conflict_check = true   # 游戏中途登录：内存里跑着本地档，血缘不同则弹窗让玩家选
-	else:
-		_net_login_pending = true   # 登录门起步：等仲裁结果决定用哪份档、何时进游戏
+	_net_login_pending = true   # 等仲裁结果决定用哪份档、何时进游戏（登录只发生在登录门，中途登录入口已封）
+	_show_sync_mask()           # 【新增】拆门后到仲裁完成前挡空白
 	net.download_save()
 
 
 # 【新增】下载结果统一处理：登录门仲裁 / 启动自动登录仲裁 / 游戏中途登录冲突 / 手动恢复 共用一个入口
 func _on_net_download_result(ok: bool, has_save: bool, save_text: String, updated_at: int):
-	print("[NET] download_result ok=", ok, " has_save=", has_save, " len=", save_text.length(), " conflict_check=", _net_login_conflict_check, " pending=", _net_login_pending)   # 【诊断】
 	var was_manual = _manual_download
 	_manual_download = false
-	# 【改】产品原则：中途登录=云端无条件覆盖本地。云端有档：落盘+弹确认窗，玩家点确定后重载——
-	# 在网络回调里直接重载场景 Web 端必失败（!is_inside_tree），按钮回调重载是已验证的安全路径（同退出登录）
-	if _net_login_conflict_check:
-		_net_login_conflict_check = false
-		if ok and has_save and save_text.is_empty() == false:
-			var f = FileAccess.open(data.save_path, FileAccess.WRITE)
-			if f:
-				f.store_string(save_text)
-				f.close()
-			_cloud_reload_pending = true   # 挂起自动存/上传，防弹窗期间离线档回写盖掉刚恢复的云端档
-			_show_cloud_reload_popup()
-		return
 	# 登录门/自动登录的统一下载仲裁：本地档与云端档可能是不同血缘（换账号、旧档残留），
 	# 必须先对比再决定用哪份档，杜绝"本地较新就静默盖云端"
 	if _net_login_pending:
@@ -1038,11 +1058,13 @@ func _show_cloud_restore_popup(save_text: String, updated_at: int):
 	if parsed is Dictionary:
 		cloud_name = str(parsed.get("player_name", "?"))
 	var lbl = Label.new()
+	# 【修】Godot 的 get_datetime_string_from_unix_time 第二参是 use_space 不是时区，输出 UTC 慢 8 小时——
+	# 手动 +8h 对齐中国时区；两边同加，相对比较不受影响
 	lbl.text = "云端存档「%s」保存于 %s\n本地「%s」保存于 %s\n要保留哪一个？" % [
 		cloud_name,
-		Time.get_datetime_string_from_unix_time(int(updated_at / 1000.0), true),
+		Time.get_datetime_string_from_unix_time(int(updated_at / 1000.0) + 8 * 3600, true),
 		data.player_name,
-		Time.get_datetime_string_from_unix_time(int(data.last_logout_time), true),
+		Time.get_datetime_string_from_unix_time(int(data.last_logout_time) + 8 * 3600, true),
 	]
 	lbl.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	lbl.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
@@ -1068,24 +1090,6 @@ func _show_cloud_restore_popup(save_text: String, updated_at: int):
 	cancel.custom_minimum_size = Vector2(180, 44)
 	cancel.pressed.connect(func(): _safe_close("CloudRestorePopup"))
 	row.add_child(cancel)
-
-# 【新增】云端档已落盘，等玩家点击后重载进云端档（网络回调里直接重载在 Web 端会 !is_inside_tree 失败）
-func _show_cloud_reload_popup():
-	_safe_close("CloudReloadPopup")
-	var popup = _create_base_popup("恢复完成", Vector2(420, 220))
-	popup.name = "CloudReloadPopup"
-	popup.z_index = 30
-	add_child(popup)
-	var vb = popup.get_child(0)
-	var lbl = Label.new()
-	lbl.text = "已从云端恢复存档\n点击确定重新载入游戏"
-	lbl.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
-	vb.add_child(lbl)
-	_add_ok_button(vb, func():
-		_cloud_reload_pending = false
-		_safe_close("CloudReloadPopup")
-		get_tree().reload_current_scene()   # 按钮回调里重载：与退出登录同一安全路径
-	, "确定")
 
 func _on_account_btn_pressed():
 	# 【改】离线模式（无令牌）不再提供中途登录入口——旧链路"离线→中途登录→云端覆盖本地"
@@ -1176,15 +1180,26 @@ func _show_login_popup():
 	row.add_theme_constant_override("separation", 12)
 	vb.add_child(row)
 	var login_btn = Button.new()
+	login_btn.name = "LoginBtn"
 	login_btn.text = "登录"
 	login_btn.custom_minimum_size = Vector2(110, 40)
-	login_btn.pressed.connect(func(): net.login(user_edit.text.strip_edges(), pass_edit.text))
 	row.add_child(login_btn)
 	var reg_btn = Button.new()
+	reg_btn.name = "RegBtn"
 	reg_btn.text = "注册"
 	reg_btn.custom_minimum_size = Vector2(110, 40)
-	reg_btn.pressed.connect(func(): net.register(user_edit.text.strip_edges(), pass_edit.text))
 	row.add_child(reg_btn)
+	# 【新增】防连点：按下即禁用两按钮；失败由 _on_net_login_result 恢复（成功则弹窗整个关掉）
+	login_btn.pressed.connect(func():
+		login_btn.disabled = true
+		reg_btn.disabled = true
+		net.login(user_edit.text.strip_edges(), pass_edit.text)
+	)
+	reg_btn.pressed.connect(func():
+		login_btn.disabled = true
+		reg_btn.disabled = true
+		net.register(user_edit.text.strip_edges(), pass_edit.text)
+	)
 	var off_btn = Button.new()
 	off_btn.text = "离线模式"
 	off_btn.custom_minimum_size = Vector2(110, 40)
