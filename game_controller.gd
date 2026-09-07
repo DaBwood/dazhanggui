@@ -862,11 +862,15 @@ func _on_exit_btn_pressed():
 	row.add_child(cancel)
 	add_child(popup)
 
-# 【新增】确认退出：先存档；非 Web 直接退出程序；Web 尝试 window.close()——
-# 多数浏览器拦截脚本关窗，拦不住就提示手动关闭（反正档已落盘，随时关都安全）
+# 【改】确认退出：先存档。离线模式（无令牌）退出=返回登录门——重载场景后 token 为空必走 _show_login_gate，
+# 玩家在登录页登录（Web 端 window.close 被浏览器拦截基本关不掉，返回登录门才是可靠的"退出到登录页"）；
+# 登录态退出保持原样：存档已自动上传云端，直接关程序/关页面
 func _on_exit_confirmed():
 	data.save_game()
 	_safe_close("ExitConfirmPopup")
+	if net != null and net.token == "":
+		get_tree().reload_current_scene()   # 按钮回调里重载：与退出登录同一已验证安全路径
+		return
 	if OS.has_feature("web"):
 		JavaScriptBridge.eval("window.close();", true)
 		_show_stage_hint("已存档，可安全关闭页面", 5.0)
@@ -1084,10 +1088,24 @@ func _show_cloud_reload_popup():
 	, "确定")
 
 func _on_account_btn_pressed():
+	# 【改】离线模式（无令牌）不再提供中途登录入口——旧链路"离线→中途登录→云端覆盖本地"
+	# 屡修不稳，产品原则改为：想登录只能「退出」返回登录门走登录页（见 _on_exit_confirmed 离线分支）。
+	# 离线模式本身是开发期测试口子，发布前整个移除
 	if net.token == "":
-		_show_login_popup()
-	else:
-		_show_account_panel()
+		_safe_close("OfflineHintPopup")
+		var hint = _create_base_popup("离线模式", Vector2(420, 200))
+		hint.name = "OfflineHintPopup"
+		hint.z_index = 30
+		add_child(hint)
+		var vb = hint.get_child(0)
+		var lbl = Label.new()
+		lbl.text = "离线模式无法登录\n如需使用云存档，请点「退出」返回登录页面后再登录"
+		lbl.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+		lbl.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+		vb.add_child(lbl)
+		_add_ok_button(vb, func(): _safe_close("OfflineHintPopup"), "知道了")
+		return
+	_show_account_panel()
 
 # 【新增】账号面板：当前账号/立即同步/从云端恢复/退出登录
 func _show_account_panel():
