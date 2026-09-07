@@ -1,0 +1,5549 @@
+{
+ "settings": {
+  "max_level": 500,
+  "max_star": 20,
+  "quality_base": {
+   "0": 50,
+   "1": 40,
+   "2": 30,
+   "3": 20,
+   "4": 10
+  },
+  "upgrade_items": [
+   "ying_chong_guang",
+   "zhu_huo_guang",
+   "xing_yao_guang",
+   "yue_hua_guang",
+   "ri_lun_guang"
+  ],
+  "synthesize_frag": 100,
+  "lottery_ticket": "tao_bao_quan",
+  "generic_frag_items": {
+   "2": "frag_zhuoyue",
+   "3": "frag_youxiu",
+   "4": "frag_putong"
+  },
+  "wuyan_heroes": [
+   "ma_xianglan",
+   "li_xiangjun",
+   "dong_xiaowan",
+   "kou_baimen",
+   "bian_yujing"
+  ],
+  "light_counts": {
+   "ying_chong_guang": 20,
+   "zhu_huo_guang": 10,
+   "xing_yao_guang": 5,
+   "yue_hua_guang": 3,
+   "ri_lun_guang": 1
+  }
+ },
+ "collections": {
+  "c000": {
+   "name": "芳翎戏春",
+   "quality": 0,
+   "order": 1,
+   "base": {
+	"desc": "李白资质每级+4，每星+100",
+	"stat": "apt",
+	"per_level": 4,
+	"per_star": 100,
+	"wired": true,
+	"target": "hero",
+	"hero": "li_bai"
+   },
+   "special": {
+	"desc": "李白赚钱每星+10%",
+	"kind": "hero_pct",
+	"hero": "li_bai",
+	"per_star": 10.0
+   }
+  },
+  "c001": {
+   "name": "鲤跃龙门",
+   "quality": 0,
+   "order": 2,
+   "base": {
+	"desc": "李白资质每级+4，每星+100",
+	"stat": "apt",
+	"per_level": 4,
+	"per_star": 100,
+	"wired": true,
+	"target": "hero",
+	"hero": "li_bai"
+   },
+   "special": {
+	"desc": "李白每星+10%",
+	"kind": "hero_pct",
+	"hero": "li_bai",
+	"per_star": 10.0
+   }
+  },
+  "c002": {
+   "name": "流光溢彩",
+   "quality": 0,
+   "order": 3,
+   "base": {
+	"desc": "士类门客赚钱每级+12万，每星+300万",
+	"stat": "income",
+	"per_level": 120000,
+	"per_star": 3000000,
+	"wired": true,
+	"target": "category",
+	"category": "士"
+   },
+   "special": {
+	"desc": "李白资质每星+150",
+	"kind": "hero_apt",
+	"hero": "li_bai",
+	"per_star": 150
+   }
+  },
+  "c003": {
+   "name": "混元瓶",
+   "quality": 0,
+   "order": 4,
+   "base": {
+	"desc": "李白资质每级+4，每星+100",
+	"stat": "apt",
+	"per_level": 4,
+	"per_star": 100,
+	"wired": true,
+	"target": "hero",
+	"hero": "li_bai"
+   },
+   "special": {
+	"desc": "李白每星+10%",
+	"kind": "hero_pct",
+	"hero": "li_bai",
+	"per_star": 10.0
+   }
+  },
+  "c004": {
+   "name": "岁华锦匣",
+   "quality": 0,
+   "order": 5,
+   "base": {
+	"desc": "李白资质每级+4，每星+100",
+	"stat": "apt",
+	"per_level": 4,
+	"per_star": 100,
+	"wired": true,
+	"target": "hero",
+	"hero": "li_bai"
+   },
+   "special": {
+	"desc": "李白每星+10%",
+	"kind": "hero_pct",
+	"hero": "li_bai",
+	"per_star": 10.0
+   }
+  },
+  "c005": {
+   "name": "汴梁庆",
+   "quality": 0,
+   "order": 6,
+   "base": {
+	"desc": "工类门客赚钱每级+12万，每星+300万",
+	"stat": "income",
+	"per_level": 120000,
+	"per_star": 3000000,
+	"wired": true,
+	"target": "category",
+	"category": "工"
+   },
+   "special": {
+	"desc": "五艳凤魁资质每星+150",
+	"kind": "group_apt",
+	"per_star": 150
+   }
+  },
+  "c006": {
+   "name": "王权剑",
+   "quality": 0,
+   "order": 7,
+   "base": {
+	"desc": "涂山红红友好每级+80，每星+2000",
+	"stat": "友好",
+	"per_level": 80,
+	"per_star": 2000,
+	"wired": false
+   },
+   "special": {
+	"desc": "白月初资质每星+150",
+	"kind": "hero_apt",
+	"hero": "bai_yuechu",
+	"per_star": 150
+   }
+  },
+  "c007": {
+   "name": "状元卷",
+   "quality": 0,
+   "order": 8,
+   "base": {
+	"desc": "小柒资质每级+4，每星+100",
+	"stat": "apt",
+	"per_level": 4,
+	"per_star": 100,
+	"wired": true,
+	"target": "hero",
+	"hero": "xiao_qi"
+   },
+   "special": {
+	"desc": "小柒每星+10%",
+	"kind": "hero_pct",
+	"hero": "xiao_qi",
+	"per_star": 10.0
+   }
+  },
+  "c008": {
+   "name": "凤朝璇玉",
+   "quality": 0,
+   "order": 9,
+   "base": {
+	"desc": "五艳凤魁资质每级+4，每星+100",
+	"stat": "apt",
+	"per_level": 4,
+	"per_star": 100,
+	"wired": true,
+	"target": "wuyan"
+   },
+   "special": {
+	"desc": "五艳凤魁每星+10%",
+	"kind": "group_pct",
+	"per_star": 10.0
+   }
+  },
+  "c009": {
+   "name": "青莲剑",
+   "quality": 0,
+   "order": 10,
+   "base": {
+	"desc": "李白资质每级+4，每星+100",
+	"stat": "apt",
+	"per_level": 4,
+	"per_star": 100,
+	"wired": true,
+	"target": "hero",
+	"hero": "li_bai"
+   },
+   "special": {
+	"desc": "李白每星+10%",
+	"kind": "hero_pct",
+	"hero": "li_bai",
+	"per_star": 10.0
+   }
+  },
+  "c010": {
+   "name": "我武惟扬",
+   "quality": 0,
+   "order": 11,
+   "base": {
+	"desc": "花木兰资质每级+4，每星+100",
+	"stat": "apt",
+	"per_level": 4,
+	"per_star": 100,
+	"wired": true,
+	"target": "hero",
+	"hero": "hua_mulan"
+   },
+   "special": {
+	"desc": "花木兰每星+10%",
+	"kind": "hero_pct",
+	"hero": "hua_mulan",
+	"per_star": 10.0
+   }
+  },
+  "c011": {
+   "name": "宝葫芦",
+   "quality": 0,
+   "order": 12,
+   "base": {
+	"desc": "葫芦仙人资质每级+4，每星+100",
+	"stat": "apt",
+	"per_level": 4,
+	"per_star": 100,
+	"wired": true,
+	"target": "hero",
+	"hero": "hu_lu_xianren"
+   },
+   "special": {
+	"desc": "葫芦仙人每星+10%",
+	"kind": "hero_pct",
+	"hero": "hu_lu_xianren",
+	"per_star": 10.0
+   }
+  },
+  "c012": {
+   "name": "杏坛讲学",
+   "quality": 0,
+   "order": 13,
+   "base": {
+	"desc": "五艳凤魁资质每级+4，每星+100",
+	"stat": "apt",
+	"per_level": 4,
+	"per_star": 100,
+	"wired": true,
+	"target": "wuyan"
+   },
+   "special": {
+	"desc": "五艳凤魁每星+10%",
+	"kind": "group_pct",
+	"per_star": 10.0
+   }
+  },
+  "c013": {
+   "name": "沧海泪",
+   "quality": 0,
+   "order": 14,
+   "base": {
+	"desc": "小舞资质每级+4，每星+100",
+	"stat": "apt",
+	"per_level": 4,
+	"per_star": 100,
+	"wired": true,
+	"target": "hero",
+	"hero": "xiao_wu"
+   },
+   "special": {
+	"desc": "小舞每星+10%",
+	"kind": "hero_pct",
+	"hero": "xiao_wu",
+	"per_star": 10.0
+   }
+  },
+  "c014": {
+   "name": "岁月轮转",
+   "quality": 0,
+   "order": 15,
+   "base": {
+	"desc": "侠类门客赚钱每级+12万，每星+300万",
+	"stat": "income",
+	"per_level": 120000,
+	"per_star": 3000000,
+	"wired": true,
+	"target": "category",
+	"category": "侠"
+   },
+   "special": {
+	"desc": "刘昴星资质每星+150",
+	"kind": "hero_apt",
+	"hero": "liu_maoxing",
+	"per_star": 150
+   }
+  },
+  "c015": {
+   "name": "三尖两刃刀",
+   "quality": 0,
+   "order": 16,
+   "base": {
+	"desc": "杨戬资质每级+4，每星+100",
+	"stat": "apt",
+	"per_level": 4,
+	"per_star": 100,
+	"wired": true,
+	"target": "hero",
+	"hero": "yang_jian"
+   },
+   "special": {
+	"desc": "杨戬每星+10%",
+	"kind": "hero_pct",
+	"hero": "yang_jian",
+	"per_star": 10.0
+   }
+  },
+  "c016": {
+   "name": "民商衡运",
+   "quality": 0,
+   "order": 17,
+   "base": {
+	"desc": "自选门客资质每级+4，每星+100",
+	"stat": "apt",
+	"per_level": 4,
+	"per_star": 100,
+	"wired": true,
+	"target": "pick"
+   },
+   "special": {
+	"desc": "自选门客每星+10%",
+	"kind": "pick_pct",
+	"per_star": 10.0
+   }
+  },
+  "c017": {
+   "name": "炽耀千秋",
+   "quality": 0,
+   "order": 18,
+   "base": {
+	"desc": "王昭君资质每级+4，每星+100",
+	"stat": "apt",
+	"per_level": 4,
+	"per_star": 100,
+	"wired": true,
+	"target": "hero",
+	"hero": "wang_zhaojun"
+   },
+   "special": {
+	"desc": "王昭君每星+10%",
+	"kind": "hero_pct",
+	"hero": "wang_zhaojun",
+	"per_star": 10.0
+   }
+  },
+  "c018": {
+   "name": "螺子黛",
+   "quality": 0,
+   "order": 19,
+   "base": {
+	"desc": "王昭君资质每级+4，每星+100",
+	"stat": "apt",
+	"per_level": 4,
+	"per_star": 100,
+	"wired": true,
+	"target": "hero",
+	"hero": "wang_zhaojun"
+   },
+   "special": {
+	"desc": "王昭君每星+10%",
+	"kind": "hero_pct",
+	"hero": "wang_zhaojun",
+	"per_star": 10.0
+   }
+  },
+  "c019": {
+   "name": "万商汇通坊",
+   "quality": 0,
+   "order": 20,
+   "base": {
+	"desc": "小八资质每级+4，每星+100",
+	"stat": "apt",
+	"per_level": 4,
+	"per_star": 100,
+	"wired": true,
+	"target": "hero",
+	"hero": "xiao_ba"
+   },
+   "special": {
+	"desc": "小八每星+10%",
+	"kind": "hero_pct",
+	"hero": "xiao_ba",
+	"per_star": 10.0
+   }
+  },
+  "c020": {
+   "name": "刻花鎏金盒",
+   "quality": 0,
+   "order": 21,
+   "base": {
+	"desc": "自选门客资质每级+4，每星+100",
+	"stat": "apt",
+	"per_level": 4,
+	"per_star": 100,
+	"wired": true,
+	"target": "pick"
+   },
+   "special": {
+	"desc": "自选门客每星+10%",
+	"kind": "pick_pct",
+	"per_star": 10.0
+   }
+  },
+  "c021": {
+   "name": "金诏凤仪",
+   "quality": 0,
+   "order": 22,
+   "base": {
+	"desc": "花木兰资质每级+4，每星+100",
+	"stat": "apt",
+	"per_level": 4,
+	"per_star": 100,
+	"wired": true,
+	"target": "hero",
+	"hero": "hua_mulan"
+   },
+   "special": {
+	"desc": "花木兰每星+10%",
+	"kind": "hero_pct",
+	"hero": "hua_mulan",
+	"per_star": 10.0
+   }
+  },
+  "c022": {
+   "name": "龙耀金冕",
+   "quality": 0,
+   "order": 23,
+   "base": {
+	"desc": "杨戬资质每级+4，每星+100",
+	"stat": "apt",
+	"per_level": 4,
+	"per_star": 100,
+	"wired": true,
+	"target": "hero",
+	"hero": "yang_jian"
+   },
+   "special": {
+	"desc": "杨戬每星+10%",
+	"kind": "hero_pct",
+	"hero": "yang_jian",
+	"per_star": 10.0
+   }
+  },
+  "c023": {
+   "name": "凤栖梧桐",
+   "quality": 0,
+   "order": 24,
+   "base": {
+	"desc": "小舞资质每级+4，每星+100",
+	"stat": "apt",
+	"per_level": 4,
+	"per_star": 100,
+	"wired": true,
+	"target": "hero",
+	"hero": "xiao_wu"
+   },
+   "special": {
+	"desc": "小舞每星+10%",
+	"kind": "hero_pct",
+	"hero": "xiao_wu",
+	"per_star": 10.0
+   }
+  },
+  "c024": {
+   "name": "兽首醉尊",
+   "quality": 0,
+   "order": 25,
+   "base": {
+	"desc": "小八资质每级+4，每星+100",
+	"stat": "apt",
+	"per_level": 4,
+	"per_star": 100,
+	"wired": true,
+	"target": "hero",
+	"hero": "xiao_ba"
+   },
+   "special": {
+	"desc": "小八每星+10%",
+	"kind": "hero_pct",
+	"hero": "xiao_ba",
+	"per_star": 10.0
+   }
+  },
+  "c025": {
+   "name": "共享欢乐",
+   "quality": 0,
+   "order": 26,
+   "base": {
+	"desc": "自选门客资质每级+4，每星+100",
+	"stat": "apt",
+	"per_level": 4,
+	"per_star": 100,
+	"wired": true,
+	"target": "pick"
+   },
+   "special": {
+	"desc": "自选门客每星+10%",
+	"kind": "pick_pct",
+	"per_star": 10.0
+   }
+  },
+  "c026": {
+   "name": "回忆皆财",
+   "quality": 0,
+   "order": 27,
+   "base": {
+	"desc": "自选门客资质每级+4，每星+100",
+	"stat": "apt",
+	"per_level": 4,
+	"per_star": 100,
+	"wired": true,
+	"target": "pick"
+   },
+   "special": {
+	"desc": "自选门客每星+10%",
+	"kind": "pick_pct",
+	"per_star": 10.0
+   }
+  },
+  "c027": {
+   "name": "桃池归影",
+   "quality": 0,
+   "order": 28,
+   "base": {
+	"desc": "王昭君资质每级+4，每星+100",
+	"stat": "apt",
+	"per_level": 4,
+	"per_star": 100,
+	"wired": true,
+	"target": "hero",
+	"hero": "wang_zhaojun"
+   },
+   "special": {
+	"desc": "王昭君每星+10%",
+	"kind": "hero_pct",
+	"hero": "wang_zhaojun",
+	"per_star": 10.0
+   }
+  },
+  "c028": {
+   "name": "琅华千色",
+   "quality": 0,
+   "order": 29,
+   "base": {
+	"desc": "葫芦仙人资质每级+4，每星+100",
+	"stat": "apt",
+	"per_level": 4,
+	"per_star": 100,
+	"wired": true,
+	"target": "hero",
+	"hero": "hu_lu_xianren"
+   },
+   "special": {
+	"desc": "葫芦仙人每星+10%",
+	"kind": "hero_pct",
+	"hero": "hu_lu_xianren",
+	"per_star": 10.0
+   }
+  },
+  "c029": {
+   "name": "青禽衔光",
+   "quality": 0,
+   "order": 30,
+   "base": {
+	"desc": "张起灵资质每级+4，每星+100",
+	"stat": "apt",
+	"per_level": 4,
+	"per_star": 100,
+	"wired": true,
+	"target": "hero",
+	"hero": "zhang_qiling"
+   },
+   "special": {
+	"desc": "张起灵每星+10%",
+	"kind": "hero_pct",
+	"hero": "zhang_qiling",
+	"per_star": 10.0
+   }
+  },
+  "c030": {
+   "name": "吉庆长明",
+   "quality": 0,
+   "order": 31,
+   "base": {
+	"desc": "小柒资质每级+4，每星+100",
+	"stat": "apt",
+	"per_level": 4,
+	"per_star": 100,
+	"wired": true,
+	"target": "hero",
+	"hero": "xiao_qi"
+   },
+   "special": {
+	"desc": "小柒每星+10%",
+	"kind": "hero_pct",
+	"hero": "xiao_qi",
+	"per_star": 10.0
+   }
+  },
+  "c031": {
+   "name": "珐彩翔龙",
+   "quality": 0,
+   "order": 32,
+   "base": {
+	"desc": "五艳凤魁资质每级+4，每星+100",
+	"stat": "apt",
+	"per_level": 4,
+	"per_star": 100,
+	"wired": true,
+	"target": "wuyan"
+   },
+   "special": {
+	"desc": "五艳凤魁每星+10%",
+	"kind": "group_pct",
+	"per_star": 10.0
+   }
+  },
+  "c032": {
+   "name": "货通天下",
+   "quality": 0,
+   "order": 33,
+   "base": {
+	"desc": "自选门客资质每级+4，每星+100",
+	"stat": "apt",
+	"per_level": 4,
+	"per_star": 100,
+	"wired": true,
+	"target": "pick"
+   },
+   "special": {
+	"desc": "自选门客每星+10%",
+	"kind": "pick_pct",
+	"per_star": 10.0
+   }
+  },
+  "c033": {
+   "name": "凤鸟铜灯",
+   "quality": 0,
+   "order": 34,
+   "base": {
+	"desc": "花木兰资质每级+4，每星+100",
+	"stat": "apt",
+	"per_level": 4,
+	"per_star": 100,
+	"wired": true,
+	"target": "hero",
+	"hero": "hua_mulan"
+   },
+   "special": {
+	"desc": "花木兰每星+10%",
+	"kind": "hero_pct",
+	"hero": "hua_mulan",
+	"per_star": 10.0
+   }
+  },
+  "c034": {
+   "name": "聚焰环凤",
+   "quality": 0,
+   "order": 35,
+   "base": {
+	"desc": "兰飞鸿资质每级+4，每星+100",
+	"stat": "apt",
+	"per_level": 4,
+	"per_star": 100,
+	"wired": true,
+	"target": "hero",
+	"hero": "lan_feihong"
+   },
+   "special": {
+	"desc": "兰飞鸿每星+10%",
+	"kind": "hero_pct",
+	"hero": "lan_feihong",
+	"per_star": 10.0
+   }
+  },
+  "c035": {
+   "name": "天曜龙魄",
+   "quality": 0,
+   "order": 36,
+   "base": {
+	"desc": "无双及以上门客资质每级+1，每星+50",
+	"stat": "apt",
+	"per_level": 1,
+	"per_star": 50,
+	"wired": true,
+	"target": "quality_min",
+	"min": 2
+   },
+   "special": {
+	"desc": "每格有效农民魂石赚钱每星+2%"
+   }
+  },
+  "c036": {
+   "name": "宫灯计",
+   "quality": 0,
+   "order": 37,
+   "base": {
+	"desc": "王昭君资质每级+4，每星+100",
+	"stat": "apt",
+	"per_level": 4,
+	"per_star": 100,
+	"wired": true,
+	"target": "hero",
+	"hero": "wang_zhaojun"
+   },
+   "special": {
+	"desc": "王昭君每星+10%",
+	"kind": "hero_pct",
+	"hero": "wang_zhaojun",
+	"per_star": 10.0
+   }
+  },
+  "c037": {
+   "name": "缠枝玉壶",
+   "quality": 0,
+   "order": 38,
+   "base": {
+	"desc": "杨戬资质每级+4，每星+100",
+	"stat": "apt",
+	"per_level": 4,
+	"per_star": 100,
+	"wired": true,
+	"target": "hero",
+	"hero": "yang_jian"
+   },
+   "special": {
+	"desc": "杨戬每星+10%",
+	"kind": "hero_pct",
+	"hero": "yang_jian",
+	"per_star": 10.0
+   }
+  },
+  "c038": {
+   "name": "云裳乐舞",
+   "quality": 0,
+   "order": 39,
+   "base": {
+	"desc": "小柒资质每级+4，每星+100",
+	"stat": "apt",
+	"per_level": 4,
+	"per_star": 100,
+	"wired": true,
+	"target": "hero",
+	"hero": "xiao_qi"
+   },
+   "special": {
+	"desc": "小柒每星+10%",
+	"kind": "hero_pct",
+	"hero": "xiao_qi",
+	"per_star": 10.0
+   }
+  },
+  "c039": {
+   "name": "龙凤冠",
+   "quality": 0,
+   "order": 40,
+   "base": {
+	"desc": "白月初资质每级+4，每星+100",
+	"stat": "apt",
+	"per_level": 4,
+	"per_star": 100,
+	"wired": true,
+	"target": "hero",
+	"hero": "bai_yuechu"
+   },
+   "special": {
+	"desc": "白月初每星+10%",
+	"kind": "hero_pct",
+	"hero": "bai_yuechu",
+	"per_star": 10.0
+   }
+  },
+  "c040": {
+   "name": "花彩盘龙瓶",
+   "quality": 0,
+   "order": 41,
+   "base": {
+	"desc": "刘昴星资质每级+4，每星+100",
+	"stat": "apt",
+	"per_level": 4,
+	"per_star": 100,
+	"wired": true,
+	"target": "hero",
+	"hero": "liu_maoxing"
+   },
+   "special": {
+	"desc": "刘昴星每星+10%",
+	"kind": "hero_pct",
+	"hero": "liu_maoxing",
+	"per_star": 10.0
+   }
+  },
+  "c041": {
+   "name": "榴开百子",
+   "quality": 0,
+   "order": 42,
+   "base": {
+	"desc": "葫芦仙人资质每级+4，每星+100",
+	"stat": "apt",
+	"per_level": 4,
+	"per_star": 100,
+	"wired": true,
+	"target": "hero",
+	"hero": "hu_lu_xianren"
+   },
+   "special": {
+	"desc": "葫芦仙人每星+10%",
+	"kind": "hero_pct",
+	"hero": "hu_lu_xianren",
+	"per_star": 10.0
+   }
+  },
+  "c042": {
+   "name": "莲鹤方壶",
+   "quality": 0,
+   "order": 43,
+   "base": {
+	"desc": "张起灵资质每级+4，每星+100",
+	"stat": "apt",
+	"per_level": 4,
+	"per_star": 100,
+	"wired": true,
+	"target": "hero",
+	"hero": "zhang_qiling"
+   },
+   "special": {
+	"desc": "张起灵每星+10%",
+	"kind": "hero_pct",
+	"hero": "zhang_qiling",
+	"per_star": 10.0
+   }
+  },
+  "c043": {
+   "name": "秦王破阵乐",
+   "quality": 0,
+   "order": 44,
+   "base": {
+	"desc": "无双及以上门客资质每级+1，每星+50",
+	"stat": "apt",
+	"per_level": 1,
+	"per_star": 50,
+	"wired": true,
+	"target": "quality_min",
+	"min": 2
+   },
+   "special": {
+	"desc": "每格有效士人魂石赚钱每星+2%"
+   }
+  },
+  "c044": {
+   "name": "盛世镜",
+   "quality": 0,
+   "order": 45,
+   "base": {
+	"desc": "商类门客赚钱每级+12万，每星+300万",
+	"stat": "income",
+	"per_level": 120000,
+	"per_star": 3000000,
+	"wired": true,
+	"target": "category",
+	"category": "商"
+   },
+   "special": {
+	"desc": "王昭君资质每星+150",
+	"kind": "hero_apt",
+	"hero": "wang_zhaojun",
+	"per_star": 150
+   }
+  },
+  "c045": {
+   "name": "魂幡帛画",
+   "quality": 0,
+   "order": 46,
+   "base": {
+	"desc": "五艳凤魁资质每级+4，每星+100",
+	"stat": "apt",
+	"per_level": 4,
+	"per_star": 100,
+	"wired": true,
+	"target": "wuyan"
+   },
+   "special": {
+	"desc": "五艳凤魁每星+10%",
+	"kind": "group_pct",
+	"per_star": 10.0
+   }
+  },
+  "c046": {
+   "name": "素纱禅衣",
+   "quality": 0,
+   "order": 47,
+   "base": {
+	"desc": "兰飞鸿资质每级+4，每星+100",
+	"stat": "apt",
+	"per_level": 4,
+	"per_star": 100,
+	"wired": true,
+	"target": "hero",
+	"hero": "lan_feihong"
+   },
+   "special": {
+	"desc": "兰飞鸿每星+10%",
+	"kind": "hero_pct",
+	"hero": "lan_feihong",
+	"per_star": 10.0
+   }
+  },
+  "c047": {
+   "name": "干将",
+   "quality": 0,
+   "order": 48,
+   "base": {
+	"desc": "李白资质每级+4，每星+100",
+	"stat": "apt",
+	"per_level": 4,
+	"per_star": 100,
+	"wired": true,
+	"target": "hero",
+	"hero": "li_bai"
+   },
+   "special": {
+	"desc": "李白每星+10%",
+	"kind": "hero_pct",
+	"hero": "li_bai",
+	"per_star": 10.0
+   }
+  },
+  "c048": {
+   "name": "莫邪",
+   "quality": 0,
+   "order": 49,
+   "base": {
+	"desc": "王昭君资质每级+4，每星+100",
+	"stat": "apt",
+	"per_level": 4,
+	"per_star": 100,
+	"wired": true,
+	"target": "hero",
+	"hero": "wang_zhaojun"
+   },
+   "special": {
+	"desc": "王昭君每星+10%",
+	"kind": "hero_pct",
+	"hero": "wang_zhaojun",
+	"per_star": 10.0
+   }
+  },
+  "c049": {
+   "name": "永灵刀",
+   "quality": 0,
+   "order": 50,
+   "base": {
+	"desc": "刘昴星资质每级+4，每星+100",
+	"stat": "apt",
+	"per_level": 4,
+	"per_star": 100,
+	"wired": true,
+	"target": "hero",
+	"hero": "liu_maoxing"
+   },
+   "special": {
+	"desc": "刘昴星每星+10%",
+	"kind": "hero_pct",
+	"hero": "liu_maoxing",
+	"per_star": 10.0
+   }
+  },
+  "c050": {
+   "name": "凤舞丹青",
+   "quality": 0,
+   "order": 51,
+   "base": {
+	"desc": "兰飞鸿资质每级+4，每星+100",
+	"stat": "apt",
+	"per_level": 4,
+	"per_star": 100,
+	"wired": true,
+	"target": "hero",
+	"hero": "lan_feihong"
+   },
+   "special": {
+	"desc": "兰飞鸿每星+10%",
+	"kind": "hero_pct",
+	"hero": "lan_feihong",
+	"per_star": 10.0
+   }
+  },
+  "c051": {
+   "name": "喜结良缘",
+   "quality": 0,
+   "order": 52,
+   "base": {
+	"desc": "葫芦仙人资质每级+4，每星+100",
+	"stat": "apt",
+	"per_level": 4,
+	"per_star": 100,
+	"wired": true,
+	"target": "hero",
+	"hero": "hu_lu_xianren"
+   },
+   "special": {
+	"desc": "葫芦仙人每星+10%",
+	"kind": "hero_pct",
+	"hero": "hu_lu_xianren",
+	"per_star": 10.0
+   }
+  },
+  "c052": {
+   "name": "昊天塔",
+   "quality": 0,
+   "order": 53,
+   "base": {
+	"desc": "昊天上帝资质每级+4，每星+100",
+	"stat": "apt",
+	"per_level": 4,
+	"per_star": 100,
+	"wired": true,
+	"target": "hero",
+	"hero": "haotian_shangdi"
+   },
+   "special": {
+	"desc": "昊天上帝每星+10%",
+	"kind": "hero_pct",
+	"hero": "haotian_shangdi",
+	"per_star": 10.0
+   }
+  },
+  "c053": {
+   "name": "逐梦荣光",
+   "quality": 0,
+   "order": 54,
+   "base": {
+	"desc": "杨戬资质每级+4，每星+100",
+	"stat": "apt",
+	"per_level": 4,
+	"per_star": 100,
+	"wired": true,
+	"target": "hero",
+	"hero": "yang_jian"
+   },
+   "special": {
+	"desc": "杨戬每星+10%",
+	"kind": "hero_pct",
+	"hero": "yang_jian",
+	"per_star": 10.0
+   }
+  },
+  "c054": {
+   "name": "无尽酒壶",
+   "quality": 0,
+   "order": 55,
+   "base": {
+	"desc": "涂山红红才华每级+120，每星+3000",
+	"stat": "才华",
+	"per_level": 120,
+	"per_star": 3000,
+	"wired": false
+   },
+   "special": {
+	"desc": "白月初资质每星+150",
+	"kind": "hero_apt",
+	"hero": "bai_yuechu",
+	"per_star": 150
+   }
+  },
+  "c055": {
+   "name": "虚空之泪",
+   "quality": 0,
+   "order": 56,
+   "base": {
+	"desc": "白月初资质每级+4，每星+100",
+	"stat": "apt",
+	"per_level": 4,
+	"per_star": 100,
+	"wired": true,
+	"target": "hero",
+	"hero": "bai_yuechu"
+   },
+   "special": {
+	"desc": "白月初每星+10%",
+	"kind": "hero_pct",
+	"hero": "bai_yuechu",
+	"per_star": 10.0
+   }
+  },
+  "c056": {
+   "name": "流年如虹",
+   "quality": 0,
+   "order": 57,
+   "base": {
+	"desc": "侠类门客赚钱每级+12万，每星+300万",
+	"stat": "income",
+	"per_level": 120000,
+	"per_star": 3000000,
+	"wired": true,
+	"target": "category",
+	"category": "侠"
+   },
+   "special": {
+	"desc": "兰飞鸿资质每星+150",
+	"kind": "hero_apt",
+	"hero": "lan_feihong",
+	"per_star": 150
+   }
+  },
+  "c057": {
+   "name": "掌斯卡",
+   "quality": 0,
+   "order": 58,
+   "base": {
+	"desc": "农类门客赚钱每级+12万，每星+300万",
+	"stat": "income",
+	"per_level": 120000,
+	"per_star": 3000000,
+	"wired": true,
+	"target": "category",
+	"category": "农"
+   },
+   "special": {
+	"desc": "杨戬资质每星+150",
+	"kind": "hero_apt",
+	"hero": "yang_jian",
+	"per_star": 150
+   }
+  },
+  "c058": {
+   "name": "混沌钟",
+   "quality": 0,
+   "order": 59,
+   "base": {
+	"desc": "东皇太一资质每级+4，每星+100",
+	"stat": "apt",
+	"per_level": 4,
+	"per_star": 100,
+	"wired": true,
+	"target": "hero",
+	"hero": "donghuang_taiyi"
+   },
+   "special": {
+	"desc": "东皇太一每星+10%",
+	"kind": "hero_pct",
+	"hero": "donghuang_taiyi",
+	"per_star": 10.0
+   }
+  },
+  "c059": {
+   "name": "百兵之王",
+   "quality": 0,
+   "order": 60,
+   "base": {
+	"desc": "蚩尤资质每级+4，每星+100",
+	"stat": "apt",
+	"per_level": 4,
+	"per_star": 100,
+	"wired": true,
+	"target": "hero",
+	"hero": "chiyou"
+   },
+   "special": {
+	"desc": "蚩尤每星+10%",
+	"kind": "hero_pct",
+	"hero": "chiyou",
+	"per_star": 10.0
+   }
+  },
+  "c060": {
+   "name": "落日弓",
+   "quality": 0,
+   "order": 61,
+   "base": {
+	"desc": "后羿资质每级+4，每星+100",
+	"stat": "apt",
+	"per_level": 4,
+	"per_star": 100,
+	"wired": true,
+	"target": "hero",
+	"hero": "houyi"
+   },
+   "special": {
+	"desc": "后羿每星+10%",
+	"kind": "hero_pct",
+	"hero": "houyi",
+	"per_star": 10.0
+   }
+  },
+  "c061": {
+   "name": "九州鼎",
+   "quality": 0,
+   "order": 62,
+   "base": {
+	"desc": "大禹资质每级+4，每星+100",
+	"stat": "apt",
+	"per_level": 4,
+	"per_star": 100,
+	"wired": true,
+	"target": "hero",
+	"hero": "dayu"
+   },
+   "special": {
+	"desc": "大禹每星+10%",
+	"kind": "hero_pct",
+	"hero": "dayu",
+	"per_star": 10.0
+   }
+  },
+  "c062": {
+   "name": "玉麟谏君",
+   "quality": 0,
+   "order": 63,
+   "base": {
+	"desc": "无双及以上门客资质每级+1，每星+50",
+	"stat": "apt",
+	"per_level": 1,
+	"per_star": 50,
+	"wired": true,
+	"target": "quality_min",
+	"min": 2
+   },
+   "special": {
+	"desc": "每格有效侠客魂石赚钱每星+2%"
+   }
+  },
+  "c063": {
+   "name": "浮光耀耀",
+   "quality": 0,
+   "order": 64,
+   "base": {
+	"desc": "商类门客赚钱每级+12万，每星+300万",
+	"stat": "income",
+	"per_level": 120000,
+	"per_star": 3000000,
+	"wired": true,
+	"target": "category",
+	"category": "商"
+   },
+   "special": {
+	"desc": "葫芦仙人资质每星+150",
+	"kind": "hero_apt",
+	"hero": "hu_lu_xianren",
+	"per_star": 150
+   }
+  },
+  "c064": {
+   "name": "鬼玺",
+   "quality": 0,
+   "order": 65,
+   "base": {
+	"desc": "张起灵资质每级+4，每星+100",
+	"stat": "apt",
+	"per_level": 4,
+	"per_star": 100,
+	"wired": true,
+	"target": "hero",
+	"hero": "zhang_qiling"
+   },
+   "special": {
+	"desc": "张起灵每星+10%",
+	"kind": "hero_pct",
+	"hero": "zhang_qiling",
+	"per_star": 10.0
+   }
+  },
+  "c065": {
+   "name": "烈焰军旗",
+   "quality": 0,
+   "order": 66,
+   "base": {
+	"desc": "梅长苏资质每级+4，每星+100",
+	"stat": "apt",
+	"per_level": 4,
+	"per_star": 100,
+	"wired": true,
+	"target": "hero",
+	"hero": "mei_changsu"
+   },
+   "special": {
+	"desc": "梅长苏每星+10%",
+	"kind": "hero_pct",
+	"hero": "mei_changsu",
+	"per_star": 10.0
+   }
+  },
+  "c066": {
+   "name": "无相刀",
+   "quality": 0,
+   "order": 67,
+   "base": {
+	"desc": "小鱼儿资质每级+4，每星+100",
+	"stat": "apt",
+	"per_level": 4,
+	"per_star": 100,
+	"wired": true,
+	"target": "hero",
+	"hero": "xiao_yuer"
+   },
+   "special": {
+	"desc": "小鱼儿每星+10%",
+	"kind": "hero_pct",
+	"hero": "xiao_yuer",
+	"per_star": 10.0
+   }
+  },
+  "c067": {
+   "name": "迦楼罗刀",
+   "quality": 0,
+   "order": 68,
+   "base": {
+	"desc": "兰飞鸿资质每级+4，每星+100",
+	"stat": "apt",
+	"per_level": 4,
+	"per_star": 100,
+	"wired": true,
+	"target": "hero",
+	"hero": "lan_feihong"
+   },
+   "special": {
+	"desc": "兰飞鸿每星+10%",
+	"kind": "hero_pct",
+	"hero": "lan_feihong",
+	"per_star": 10.0
+   }
+  },
+  "c068": {
+   "name": "云破天青",
+   "quality": 1,
+   "order": 69,
+   "base": {
+	"desc": "工匠挚友才华每级+4，每星+220",
+	"stat": "才华",
+	"per_level": 4,
+	"per_star": 220,
+	"wired": false
+   },
+   "special": {
+	"desc": "我方商战获得积分每星+5%"
+   }
+  },
+  "c069": {
+   "name": "灵枢素问",
+   "quality": 1,
+   "order": 70,
+   "base": {
+	"desc": "侠类门客赚钱每级+2.6万，每星+150万",
+	"stat": "income",
+	"per_level": 26000,
+	"per_star": 1500000,
+	"wired": true,
+	"target": "category",
+	"category": "侠"
+   },
+   "special": {
+	"desc": "商帮之争门客赚钱每星+2%"
+   }
+  },
+  "c070": {
+   "name": "西湖龙井",
+   "quality": 1,
+   "order": 71,
+   "base": {
+	"desc": "农民挚友才华每级+4，每星+220",
+	"stat": "才华",
+	"per_level": 4,
+	"per_star": 220,
+	"wired": false
+   },
+   "special": {
+	"desc": "赴宴提升人气每星+2%"
+   }
+  },
+  "c071": {
+   "name": "烂柯棋局",
+   "quality": 1,
+   "order": 72,
+   "base": {
+	"desc": "农民挚友才华每级+4，每星+220",
+	"stat": "才华",
+	"per_level": 4,
+	"per_star": 220,
+	"wired": false
+   },
+   "special": {
+	"desc": "农类挚友谈心缘分每星+2%"
+   }
+  },
+  "c072": {
+   "name": "灵宪",
+   "quality": 1,
+   "order": 73,
+   "base": {
+	"desc": "农民门客赚钱每级+2.6万，每星+150万",
+	"stat": "income",
+	"per_level": 26000,
+	"per_star": 1500000,
+	"wired": false
+   },
+   "special": {
+	"desc": "矿场额外攻击每星+10"
+   }
+  },
+  "c073": {
+   "name": "兰亭序",
+   "quality": 1,
+   "order": 74,
+   "base": {
+	"desc": "工类挚友才华每级+4，每星+220",
+	"stat": "才华",
+	"per_level": 4,
+	"per_star": 220,
+	"wired": false
+   },
+   "special": {
+	"desc": "工类挚友谈心缘分每星+2%"
+   }
+  },
+  "c074": {
+   "name": "九章算术",
+   "quality": 1,
+   "order": 75,
+   "base": {
+	"desc": "士类门客赚钱每级+2.6万，每星+150万",
+	"stat": "income",
+	"per_level": 26000,
+	"per_star": 1500000,
+	"wired": true,
+	"target": "category",
+	"category": "士"
+   },
+   "special": {
+	"desc": "矿场打造次数每星+1"
+   }
+  },
+  "c075": {
+   "name": "博山炉",
+   "quality": 1,
+   "order": 76,
+   "base": {
+	"desc": "农类门客赚钱每级+2.6万，每星+65万",
+	"stat": "income",
+	"per_level": 26000,
+	"per_star": 650000,
+	"wired": true,
+	"target": "category",
+	"category": "农"
+   },
+   "special": {
+	"desc": "农类门客赚钱每星+0.5%",
+	"kind": "category_pct",
+	"category": "农",
+	"per_star": 0.5
+   }
+  },
+  "c076": {
+   "name": "史记",
+   "quality": 1,
+   "order": 77,
+   "base": {
+	"desc": "商类门客赚钱每级+2.6万，每星+150万",
+	"stat": "income",
+	"per_level": 26000,
+	"per_star": 1500000,
+	"wired": true,
+	"target": "category",
+	"category": "商"
+   },
+   "special": {
+	"desc": "商帮之争出战次数+1，不可提升"
+   }
+  },
+  "c077": {
+   "name": "司南",
+   "quality": 1,
+   "order": 78,
+   "base": {
+	"desc": "工类门客赚钱每级+2.6万，每星+150万",
+	"stat": "income",
+	"per_level": 26000,
+	"per_star": 1500000,
+	"wired": true,
+	"target": "category",
+	"category": "工"
+   },
+   "special": {
+	"desc": "矿场额外血量每星+100"
+   }
+  },
+  "c078": {
+   "name": "丝之路",
+   "quality": 1,
+   "order": 79,
+   "base": {
+	"desc": "士类挚友才华每级+4，每星+220",
+	"stat": "才华",
+	"per_level": 4,
+	"per_star": 220,
+	"wired": false
+   },
+   "special": {
+	"desc": "宴会结束人气每星+2%"
+   }
+  },
+  "c079": {
+   "name": "高山流水",
+   "quality": 1,
+   "order": 80,
+   "base": {
+	"desc": "士类挚友才华每级+4，每星+220",
+	"stat": "才华",
+	"per_level": 4,
+	"per_star": 220,
+	"wired": false
+   },
+   "special": {
+	"desc": "士类挚友谈心缘分每星+2%"
+   }
+  },
+  "c080": {
+   "name": "黄山胜景图",
+   "quality": 1,
+   "order": 81,
+   "base": {
+	"desc": "李白资质每级+1，每星+25",
+	"stat": "apt",
+	"per_level": 1,
+	"per_star": 25,
+	"wired": true,
+	"target": "hero",
+	"hero": "li_bai"
+   },
+   "special": {
+	"desc": "李白赚钱每星+2.5%",
+	"kind": "hero_pct",
+	"hero": "li_bai",
+	"per_star": 2.5
+   }
+  },
+  "c081": {
+   "name": "清明上河图",
+   "quality": 1,
+   "order": 82,
+   "base": {
+	"desc": "商类挚友才华每级+4，每星+220",
+	"stat": "才华",
+	"per_level": 4,
+	"per_star": 220,
+	"wired": false
+   },
+   "special": {
+	"desc": "商类挚友谈心缘分每星+2%"
+   }
+  },
+  "c082": {
+   "name": "纹银香囊",
+   "quality": 1,
+   "order": 83,
+   "base": {
+	"desc": "士类门客赚钱每级+2.6万，每星+65万",
+	"stat": "income",
+	"per_level": 26000,
+	"per_star": 650000,
+	"wired": true,
+	"target": "category",
+	"category": "士"
+   },
+   "special": {
+	"desc": "士类门客赚钱每星+0.5%",
+	"kind": "category_pct",
+	"category": "士",
+	"per_star": 0.5
+   }
+  },
+  "c083": {
+   "name": "云筝栖羽",
+   "quality": 1,
+   "order": 84,
+   "base": {
+	"desc": "董小宛资质每级+1，每星+25",
+	"stat": "apt",
+	"per_level": 1,
+	"per_star": 25,
+	"wired": true,
+	"target": "hero",
+	"hero": "dong_xiaowan"
+   },
+   "special": {
+	"desc": "董小宛赚钱每星+2.5%",
+	"kind": "hero_pct",
+	"hero": "dong_xiaowan",
+	"per_star": 2.5
+   }
+  },
+  "c084": {
+   "name": "花间锦色",
+   "quality": 1,
+   "order": 85,
+   "base": {
+	"desc": "士类门客赚钱每级+2.6万，每星+65万",
+	"stat": "income",
+	"per_level": 26000,
+	"per_star": 650000,
+	"wired": true,
+	"target": "category",
+	"category": "士"
+   },
+   "special": {
+	"desc": "士类门客赚钱每星+0.5%",
+	"kind": "category_pct",
+	"category": "士",
+	"per_star": 0.5
+   }
+  },
+  "c085": {
+   "name": "釉彩万象",
+   "quality": 1,
+   "order": 86,
+   "base": {
+	"desc": "侠类门客赚钱每级+2.6万，每星+65万",
+	"stat": "income",
+	"per_level": 26000,
+	"per_star": 650000,
+	"wired": true,
+	"target": "category",
+	"category": "侠"
+   },
+   "special": {
+	"desc": "侠类门客赚钱每星+0.5%",
+	"kind": "category_pct",
+	"category": "侠",
+	"per_star": 0.5
+   }
+  },
+  "c086": {
+   "name": "流星白羽",
+   "quality": 1,
+   "order": 87,
+   "base": {
+	"desc": "工类门客赚钱每级+2.6万，每星+65万",
+	"stat": "income",
+	"per_level": 26000,
+	"per_star": 650000,
+	"wired": true,
+	"target": "category",
+	"category": "工"
+   },
+   "special": {
+	"desc": "工类门客赚钱每星+0.5%",
+	"kind": "category_pct",
+	"category": "工",
+	"per_star": 0.5
+   }
+  },
+  "c087": {
+   "name": "征军未老",
+   "quality": 1,
+   "order": 88,
+   "base": {
+	"desc": "士类门客赚钱每级+2.6万，每星+65万",
+	"stat": "income",
+	"per_level": 26000,
+	"per_star": 650000,
+	"wired": true,
+	"target": "category",
+	"category": "士"
+   },
+   "special": {
+	"desc": "士类门客赚钱每星+0.5%",
+	"kind": "category_pct",
+	"category": "士",
+	"per_star": 0.5
+   }
+  },
+  "c088": {
+   "name": "骏马图",
+   "quality": 1,
+   "order": 89,
+   "base": {
+	"desc": "五艳凤魁资质每级+1，每星+25",
+	"stat": "apt",
+	"per_level": 1,
+	"per_star": 25,
+	"wired": true,
+	"target": "wuyan"
+   },
+   "special": {
+	"desc": "五艳凤魁赚钱每星+2.5%",
+	"kind": "group_pct",
+	"per_star": 2.5
+   }
+  },
+  "c089": {
+   "name": "芙蕖",
+   "quality": 1,
+   "order": 90,
+   "base": {
+	"desc": "董小宛资质每级+1，每星+25",
+	"stat": "apt",
+	"per_level": 1,
+	"per_star": 25,
+	"wired": true,
+	"target": "hero",
+	"hero": "dong_xiaowan"
+   },
+   "special": {
+	"desc": "董小宛赚钱每星+2.5%",
+	"kind": "hero_pct",
+	"hero": "dong_xiaowan",
+	"per_star": 2.5
+   }
+  },
+  "c090": {
+   "name": "摧锋折锐",
+   "quality": 1,
+   "order": 91,
+   "base": {
+	"desc": "葫芦仙人资质每级+1，每星+25",
+	"stat": "apt",
+	"per_level": 1,
+	"per_star": 25,
+	"wired": true,
+	"target": "hero",
+	"hero": "hu_lu_xianren"
+   },
+   "special": {
+	"desc": "葫芦仙人赚钱每星+2.5%",
+	"kind": "hero_pct",
+	"hero": "hu_lu_xianren",
+	"per_star": 2.5
+   }
+  },
+  "c091": {
+   "name": "长明袖灯",
+   "quality": 1,
+   "order": 92,
+   "base": {
+	"desc": "侠类门客赚钱每级+2.6万，每星+65万",
+	"stat": "income",
+	"per_level": 26000,
+	"per_star": 650000,
+	"wired": true,
+	"target": "category",
+	"category": "侠"
+   },
+   "special": {
+	"desc": "侠类门客赚钱每星+0.5%",
+	"kind": "category_pct",
+	"category": "侠",
+	"per_star": 0.5
+   }
+  },
+  "c092": {
+   "name": "破军棋阵",
+   "quality": 1,
+   "order": 93,
+   "base": {
+	"desc": "刘昴星资质每级+1，每星+25",
+	"stat": "apt",
+	"per_level": 1,
+	"per_star": 25,
+	"wired": true,
+	"target": "hero",
+	"hero": "liu_maoxing"
+   },
+   "special": {
+	"desc": "刘昴星赚钱每星+2.5%",
+	"kind": "hero_pct",
+	"hero": "liu_maoxing",
+	"per_star": 2.5
+   }
+  },
+  "c093": {
+   "name": "舞龙迎春",
+   "quality": 1,
+   "order": 94,
+   "base": {
+	"desc": "王昭君资质每级+1，每星+25",
+	"stat": "apt",
+	"per_level": 1,
+	"per_star": 25,
+	"wired": true,
+	"target": "hero",
+	"hero": "wang_zhaojun"
+   },
+   "special": {
+	"desc": "王昭君赚钱每星+2.5%",
+	"kind": "hero_pct",
+	"hero": "wang_zhaojun",
+	"per_star": 2.5
+   }
+  },
+  "c094": {
+   "name": "琵琶飞天",
+   "quality": 1,
+   "order": 95,
+   "base": {
+	"desc": "王昭君资质每级+1，每星+25",
+	"stat": "apt",
+	"per_level": 1,
+	"per_star": 25,
+	"wired": true,
+	"target": "hero",
+	"hero": "wang_zhaojun"
+   },
+   "special": {
+	"desc": "王昭君赚钱每星+2.5%",
+	"kind": "hero_pct",
+	"hero": "wang_zhaojun",
+	"per_star": 2.5
+   }
+  },
+  "c095": {
+   "name": "驼峰丝路",
+   "quality": 1,
+   "order": 96,
+   "base": {
+	"desc": "士类门客赚钱每级+2.6万，每星+65万",
+	"stat": "income",
+	"per_level": 26000,
+	"per_star": 650000,
+	"wired": true,
+	"target": "category",
+	"category": "士"
+   },
+   "special": {
+	"desc": "士类门客赚钱每星+0.5%",
+	"kind": "category_pct",
+	"category": "士",
+	"per_star": 0.5
+   }
+  },
+  "c096": {
+   "name": "羽书驰捷",
+   "quality": 1,
+   "order": 97,
+   "base": {
+	"desc": "农类门客赚钱每级+2.6万，每星+65万",
+	"stat": "income",
+	"per_level": 26000,
+	"per_star": 650000,
+	"wired": true,
+	"target": "category",
+	"category": "农"
+   },
+   "special": {
+	"desc": "农类门客赚钱每星+0.5%",
+	"kind": "category_pct",
+	"category": "农",
+	"per_star": 0.5
+   }
+  },
+  "c097": {
+   "name": "湘妃竹",
+   "quality": 1,
+   "order": 98,
+   "base": {
+	"desc": "农类门客赚钱每级+2.6万，每星+65万",
+	"stat": "income",
+	"per_level": 26000,
+	"per_star": 650000,
+	"wired": true,
+	"target": "category",
+	"category": "农"
+   },
+   "special": {
+	"desc": "农类门客赚钱每星+0.5%",
+	"kind": "category_pct",
+	"category": "农",
+	"per_star": 0.5
+   }
+  },
+  "c098": {
+   "name": "盘龙棍",
+   "quality": 1,
+   "order": 99,
+   "base": {
+	"desc": "小八资质每级+1，每星+25",
+	"stat": "apt",
+	"per_level": 1,
+	"per_star": 25,
+	"wired": true,
+	"target": "hero",
+	"hero": "xiao_ba"
+   },
+   "special": {
+	"desc": "小八赚钱每星+2.5%",
+	"kind": "hero_pct",
+	"hero": "xiao_ba",
+	"per_star": 2.5
+   }
+  },
+  "c099": {
+   "name": "九色神鹿",
+   "quality": 1,
+   "order": 100,
+   "base": {
+	"desc": "李白资质每级+1，每星+25",
+	"stat": "apt",
+	"per_level": 1,
+	"per_star": 25,
+	"wired": true,
+	"target": "hero",
+	"hero": "li_bai"
+   },
+   "special": {
+	"desc": "李白赚钱每星+2.5%",
+	"kind": "hero_pct",
+	"hero": "li_bai",
+	"per_star": 2.5
+   }
+  },
+  "c100": {
+   "name": "仙鹿衔芝",
+   "quality": 1,
+   "order": 101,
+   "base": {
+	"desc": "李白资质每级+1，每星+25",
+	"stat": "apt",
+	"per_level": 1,
+	"per_star": 25,
+	"wired": true,
+	"target": "hero",
+	"hero": "li_bai"
+   },
+   "special": {
+	"desc": "李白赚钱每星+2.5%",
+	"kind": "hero_pct",
+	"hero": "li_bai",
+	"per_star": 2.5
+   }
+  },
+  "c101": {
+   "name": "灵根金缕",
+   "quality": 1,
+   "order": 102,
+   "base": {
+	"desc": "花木兰资质每级+1，每星+25",
+	"stat": "apt",
+	"per_level": 1,
+	"per_star": 25,
+	"wired": true,
+	"target": "hero",
+	"hero": "hua_mulan"
+   },
+   "special": {
+	"desc": "花木兰赚钱每星+2.5%",
+	"kind": "hero_pct",
+	"hero": "hua_mulan",
+	"per_star": 2.5
+   }
+  },
+  "c102": {
+   "name": "冰莲凝霜",
+   "quality": 1,
+   "order": 103,
+   "base": {
+	"desc": "葫芦仙人资质每级+1，每星+25",
+	"stat": "apt",
+	"per_level": 1,
+	"per_star": 25,
+	"wired": true,
+	"target": "hero",
+	"hero": "hu_lu_xianren"
+   },
+   "special": {
+	"desc": "葫芦仙人赚钱每星+2.5%",
+	"kind": "hero_pct",
+	"hero": "hu_lu_xianren",
+	"per_star": 2.5
+   }
+  },
+  "c103": {
+   "name": "栖凤鸣弦",
+   "quality": 1,
+   "order": 104,
+   "base": {
+	"desc": "侠类门客赚钱每级+2.6万，每星+65万",
+	"stat": "income",
+	"per_level": 26000,
+	"per_star": 650000,
+	"wired": true,
+	"target": "category",
+	"category": "侠"
+   },
+   "special": {
+	"desc": "侠类门客赚钱每星+0.5%",
+	"kind": "category_pct",
+	"category": "侠",
+	"per_star": 0.5
+   }
+  },
+  "c104": {
+   "name": "金声玉振",
+   "quality": 1,
+   "order": 105,
+   "base": {
+	"desc": "农类门客赚钱每级+2.6万，每星+65万",
+	"stat": "income",
+	"per_level": 26000,
+	"per_star": 650000,
+	"wired": true,
+	"target": "category",
+	"category": "农"
+   },
+   "special": {
+	"desc": "农类门客赚钱每星+0.5%",
+	"kind": "category_pct",
+	"category": "农",
+	"per_star": 0.5
+   }
+  },
+  "c105": {
+   "name": "云霞纳岳",
+   "quality": 1,
+   "order": 106,
+   "base": {
+	"desc": "士类门客赚钱每级+2.6万，每星+65万",
+	"stat": "income",
+	"per_level": 26000,
+	"per_star": 650000,
+	"wired": true,
+	"target": "category",
+	"category": "士"
+   },
+   "special": {
+	"desc": "士类门客赚钱每星+0.5%",
+	"kind": "category_pct",
+	"category": "士",
+	"per_star": 0.5
+   }
+  },
+  "c106": {
+   "name": "金爵桂魂",
+   "quality": 1,
+   "order": 107,
+   "base": {
+	"desc": "商类门客赚钱每级+2.6万，每星+65万",
+	"stat": "income",
+	"per_level": 26000,
+	"per_star": 650000,
+	"wired": true,
+	"target": "category",
+	"category": "商"
+   },
+   "special": {
+	"desc": "商类门客赚钱每星+0.5%",
+	"kind": "category_pct",
+	"category": "商",
+	"per_star": 0.5
+   }
+  },
+  "c107": {
+   "name": "龙纹碎壁",
+   "quality": 1,
+   "order": 108,
+   "base": {
+	"desc": "工类门客赚钱每级+2.6万，每星+65万",
+	"stat": "income",
+	"per_level": 26000,
+	"per_star": 650000,
+	"wired": true,
+	"target": "category",
+	"category": "工"
+   },
+   "special": {
+	"desc": "工类门客赚钱每星+0.5%",
+	"kind": "category_pct",
+	"category": "工",
+	"per_star": 0.5
+   }
+  },
+  "c108": {
+   "name": "瓷器随帆",
+   "quality": 1,
+   "order": 109,
+   "base": {
+	"desc": "农类门客赚钱每级+2.6万，每星+65万",
+	"stat": "income",
+	"per_level": 26000,
+	"per_star": 650000,
+	"wired": true,
+	"target": "category",
+	"category": "农"
+   },
+   "special": {
+	"desc": "农类门客赚钱每星+0.5%",
+	"kind": "category_pct",
+	"category": "农",
+	"per_star": 0.5
+   }
+  },
+  "c109": {
+   "name": "海图引航",
+   "quality": 1,
+   "order": 110,
+   "base": {
+	"desc": "刘昴星资质每级+1，每星+25",
+	"stat": "apt",
+	"per_level": 1,
+	"per_star": 25,
+	"wired": true,
+	"target": "hero",
+	"hero": "liu_maoxing"
+   },
+   "special": {
+	"desc": "刘昴星赚钱每星+2.5%",
+	"kind": "hero_pct",
+	"hero": "liu_maoxing",
+	"per_star": 2.5
+   }
+  },
+  "c110": {
+   "name": "船舵启航",
+   "quality": 1,
+   "order": 111,
+   "base": {
+	"desc": "小舞资质每级+1，每星+25",
+	"stat": "apt",
+	"per_level": 1,
+	"per_star": 25,
+	"wired": true,
+	"target": "hero",
+	"hero": "xiao_wu"
+   },
+   "special": {
+	"desc": "小舞赚钱每星+2.5%",
+	"kind": "hero_pct",
+	"hero": "xiao_wu",
+	"per_star": 2.5
+   }
+  },
+  "c111": {
+   "name": "胡旋惊鸿",
+   "quality": 1,
+   "order": 112,
+   "base": {
+	"desc": "小八资质每级+1，每星+25",
+	"stat": "apt",
+	"per_level": 1,
+	"per_star": 25,
+	"wired": true,
+	"target": "hero",
+	"hero": "xiao_ba"
+   },
+   "special": {
+	"desc": "小八赚钱每星+2.5%",
+	"kind": "hero_pct",
+	"hero": "xiao_ba",
+	"per_star": 2.5
+   }
+  },
+  "c112": {
+   "name": "藻井刺绣",
+   "quality": 1,
+   "order": 113,
+   "base": {
+	"desc": "花木兰资质每级+1，每星+25",
+	"stat": "apt",
+	"per_level": 1,
+	"per_star": 25,
+	"wired": true,
+	"target": "hero",
+	"hero": "hua_mulan"
+   },
+   "special": {
+	"desc": "花木兰赚钱每星+2.5%",
+	"kind": "hero_pct",
+	"hero": "hua_mulan",
+	"per_star": 2.5
+   }
+  },
+  "c113": {
+   "name": "丝路鼓鸣",
+   "quality": 1,
+   "order": 114,
+   "base": {
+	"desc": "小柒资质每级+1，每星+25",
+	"stat": "apt",
+	"per_level": 1,
+	"per_star": 25,
+	"wired": true,
+	"target": "hero",
+	"hero": "xiao_qi"
+   },
+   "special": {
+	"desc": "小柒赚钱每星+2.5%",
+	"kind": "hero_pct",
+	"hero": "xiao_qi",
+	"per_star": 2.5
+   }
+  },
+  "c114": {
+   "name": "丝路凝香",
+   "quality": 1,
+   "order": 115,
+   "base": {
+	"desc": "五艳凤魁资质每级+1，每星+25",
+	"stat": "apt",
+	"per_level": 1,
+	"per_star": 25,
+	"wired": true,
+	"target": "wuyan"
+   },
+   "special": {
+	"desc": "五艳凤魁赚钱每星+2.5%",
+	"kind": "group_pct",
+	"per_star": 2.5
+   }
+  },
+  "c115": {
+   "name": "沙海弧刀",
+   "quality": 1,
+   "order": 116,
+   "base": {
+	"desc": "兰飞鸿资质每级+1，每星+25",
+	"stat": "apt",
+	"per_level": 1,
+	"per_star": 25,
+	"wired": true,
+	"target": "hero",
+	"hero": "lan_feihong"
+   },
+   "special": {
+	"desc": "兰飞鸿赚钱每星+2.5%",
+	"kind": "hero_pct",
+	"hero": "lan_feihong",
+	"per_star": 2.5
+   }
+  },
+  "c116": {
+   "name": "漠上星穹",
+   "quality": 1,
+   "order": 117,
+   "base": {
+	"desc": "王昭君资质每级+1，每星+25",
+	"stat": "apt",
+	"per_level": 1,
+	"per_star": 25,
+	"wired": true,
+	"target": "hero",
+	"hero": "wang_zhaojun"
+   },
+   "special": {
+	"desc": "王昭君赚钱每星+2.5%",
+	"kind": "hero_pct",
+	"hero": "wang_zhaojun",
+	"per_star": 2.5
+   }
+  },
+  "c117": {
+   "name": "鲤映烛辉",
+   "quality": 1,
+   "order": 118,
+   "base": {
+	"desc": "士类门客赚钱每级+2.6万，每星+65万",
+	"stat": "income",
+	"per_level": 26000,
+	"per_star": 650000,
+	"wired": true,
+	"target": "category",
+	"category": "士"
+   },
+   "special": {
+	"desc": "士类门客赚钱每星+0.5%",
+	"kind": "category_pct",
+	"category": "士",
+	"per_star": 0.5
+   }
+  },
+  "c118": {
+   "name": "千枝承光",
+   "quality": 1,
+   "order": 119,
+   "base": {
+	"desc": "侠类门客赚钱每级+2.6万，每星+65万",
+	"stat": "income",
+	"per_level": 26000,
+	"per_star": 650000,
+	"wired": true,
+	"target": "category",
+	"category": "侠"
+   },
+   "special": {
+	"desc": "侠类门客赚钱每星+0.5%",
+	"kind": "category_pct",
+	"category": "侠",
+	"per_star": 0.5
+   }
+  },
+  "c119": {
+   "name": "碧潭凝露",
+   "quality": 1,
+   "order": 120,
+   "base": {
+	"desc": "商类门客赚钱每级+2.6万，每星+65万",
+	"stat": "income",
+	"per_level": 26000,
+	"per_star": 650000,
+	"wired": true,
+	"target": "category",
+	"category": "商"
+   },
+   "special": {
+	"desc": "商类门客赚钱每星+0.5%",
+	"kind": "category_pct",
+	"category": "商",
+	"per_star": 0.5
+   }
+  },
+  "c120": {
+   "name": "长夜雁灯",
+   "quality": 1,
+   "order": 121,
+   "base": {
+	"desc": "工类门客赚钱每级+2.6万，每星+65万",
+	"stat": "income",
+	"per_level": 26000,
+	"per_star": 650000,
+	"wired": true,
+	"target": "category",
+	"category": "工"
+   },
+   "special": {
+	"desc": "工类门客赚钱每星+0.5%",
+	"kind": "category_pct",
+	"category": "工",
+	"per_star": 0.5
+   }
+  },
+  "c121": {
+   "name": "飞花逐扇",
+   "quality": 1,
+   "order": 122,
+   "base": {
+	"desc": "农类门客赚钱每级+2.6万，每星+65万",
+	"stat": "income",
+	"per_level": 26000,
+	"per_star": 650000,
+	"wired": true,
+	"target": "category",
+	"category": "农"
+   },
+   "special": {
+	"desc": "农类门客赚钱每星+0.5%",
+	"kind": "category_pct",
+	"category": "农",
+	"per_star": 0.5
+   }
+  },
+  "c122": {
+   "name": "胡骑来贺",
+   "quality": 1,
+   "order": 123,
+   "base": {
+	"desc": "葫芦仙人资质每级+1，每星+25",
+	"stat": "apt",
+	"per_level": 1,
+	"per_star": 25,
+	"wired": true,
+	"target": "hero",
+	"hero": "hu_lu_xianren"
+   },
+   "special": {
+	"desc": "葫芦仙人赚钱每星+2.5%",
+	"kind": "hero_pct",
+	"hero": "hu_lu_xianren",
+	"per_star": 2.5
+   }
+  },
+  "c123": {
+   "name": "飞毯奇遇",
+   "quality": 1,
+   "order": 124,
+   "base": {
+	"desc": "杨戬资质每级+1，每星+25",
+	"stat": "apt",
+	"per_level": 1,
+	"per_star": 25,
+	"wired": true,
+	"target": "hero",
+	"hero": "yang_jian"
+   },
+   "special": {
+	"desc": "杨戬赚钱每星+2.5%",
+	"kind": "hero_pct",
+	"hero": "yang_jian",
+	"per_star": 2.5
+   }
+  },
+  "c124": {
+   "name": "信印生辉",
+   "quality": 1,
+   "order": 125,
+   "base": {
+	"desc": "商类门客赚钱每级+2.6万，每星+65万",
+	"stat": "income",
+	"per_level": 26000,
+	"per_star": 650000,
+	"wired": true,
+	"target": "category",
+	"category": "商"
+   },
+   "special": {
+	"desc": "商类门客赚钱每星+0.5%",
+	"kind": "category_pct",
+	"category": "商",
+	"per_star": 0.5
+   }
+  },
+  "c125": {
+   "name": "百宝货箱",
+   "quality": 1,
+   "order": 126,
+   "base": {
+	"desc": "工类门客赚钱每级+2.6万，每星+65万",
+	"stat": "income",
+	"per_level": 26000,
+	"per_star": 650000,
+	"wired": true,
+	"target": "category",
+	"category": "工"
+   },
+   "special": {
+	"desc": "工类门客赚钱每星+0.5%",
+	"kind": "category_pct",
+	"category": "工",
+	"per_star": 0.5
+   }
+  },
+  "c126": {
+   "name": "走笔绘商",
+   "quality": 1,
+   "order": 127,
+   "base": {
+	"desc": "农类门客赚钱每级+2.6万，每星+65万",
+	"stat": "income",
+	"per_level": 26000,
+	"per_star": 650000,
+	"wired": true,
+	"target": "category",
+	"category": "农"
+   },
+   "special": {
+	"desc": "农类门客赚钱每星+0.5%",
+	"kind": "category_pct",
+	"category": "农",
+	"per_star": 0.5
+   }
+  },
+  "c127": {
+   "name": "嬉鱼灯会",
+   "quality": 1,
+   "order": 128,
+   "base": {
+	"desc": "花木兰资质每级+1，每星+25",
+	"stat": "apt",
+	"per_level": 1,
+	"per_star": 25,
+	"wired": true,
+	"target": "hero",
+	"hero": "hua_mulan"
+   },
+   "special": {
+	"desc": "花木兰赚钱每星+2.5%",
+	"kind": "hero_pct",
+	"hero": "hua_mulan",
+	"per_star": 2.5
+   }
+  },
+  "c128": {
+   "name": "石雕迎客",
+   "quality": 1,
+   "order": 129,
+   "base": {
+	"desc": "小柒资质每级+1，每星+25",
+	"stat": "apt",
+	"per_level": 1,
+	"per_star": 25,
+	"wired": true,
+	"target": "hero",
+	"hero": "xiao_qi"
+   },
+   "special": {
+	"desc": "小柒赚钱每星+2.5%",
+	"kind": "hero_pct",
+	"hero": "xiao_qi",
+	"per_star": 2.5
+   }
+  },
+  "c129": {
+   "name": "怒海宝船",
+   "quality": 1,
+   "order": 130,
+   "base": {
+	"desc": "小柒资质每级+1，每星+25",
+	"stat": "apt",
+	"per_level": 1,
+	"per_star": 25,
+	"wired": true,
+	"target": "hero",
+	"hero": "xiao_qi"
+   },
+   "special": {
+	"desc": "小柒赚钱每星+2.5%",
+	"kind": "hero_pct",
+	"hero": "xiao_qi",
+	"per_star": 2.5
+   }
+  },
+  "c130": {
+   "name": "晋盘礼",
+   "quality": 1,
+   "order": 131,
+   "base": {
+	"desc": "侠类门客赚钱每级+2.6万，每星+65万",
+	"stat": "income",
+	"per_level": 26000,
+	"per_star": 650000,
+	"wired": true,
+	"target": "category",
+	"category": "侠"
+   },
+   "special": {
+	"desc": "侠类门客赚钱每星+0.5%",
+	"kind": "category_pct",
+	"category": "侠",
+	"per_star": 0.5
+   }
+  },
+  "c131": {
+   "name": "凤衔香",
+   "quality": 1,
+   "order": 132,
+   "base": {
+	"desc": "工类门客赚钱每级+2.6万，每星+65万",
+	"stat": "income",
+	"per_level": 26000,
+	"per_star": 650000,
+	"wired": true,
+	"target": "category",
+	"category": "工"
+   },
+   "special": {
+	"desc": "工类门客赚钱每星+0.5%",
+	"kind": "category_pct",
+	"category": "工",
+	"per_star": 0.5
+   }
+  },
+  "c132": {
+   "name": "彩云龙鼓",
+   "quality": 1,
+   "order": 133,
+   "base": {
+	"desc": "士类门客赚钱每级+2.6万，每星+65万",
+	"stat": "income",
+	"per_level": 26000,
+	"per_star": 650000,
+	"wired": true,
+	"target": "category",
+	"category": "士"
+   },
+   "special": {
+	"desc": "士类门客赚钱每星+0.5%",
+	"kind": "category_pct",
+	"category": "士",
+	"per_star": 0.5
+   }
+  },
+  "c133": {
+   "name": "天香乘鸾",
+   "quality": 1,
+   "order": 134,
+   "base": {
+	"desc": "寇白门资质每级+1，每星+25",
+	"stat": "apt",
+	"per_level": 1,
+	"per_star": 25,
+	"wired": true,
+	"target": "hero",
+	"hero": "kou_baimen"
+   },
+   "special": {
+	"desc": "寇白门赚钱每星+2.5%",
+	"kind": "hero_pct",
+	"hero": "kou_baimen",
+	"per_star": 2.5
+   }
+  },
+  "c134": {
+   "name": "芳阮凝香",
+   "quality": 1,
+   "order": 135,
+   "base": {
+	"desc": "马湘兰资质每级+1，每星+25",
+	"stat": "apt",
+	"per_level": 1,
+	"per_star": 25,
+	"wired": true,
+	"target": "hero",
+	"hero": "ma_xianglan"
+   },
+   "special": {
+	"desc": "马湘兰赚钱每星+2.5%",
+	"kind": "hero_pct",
+	"hero": "ma_xianglan",
+	"per_star": 2.5
+   }
+  },
+  "c135": {
+   "name": "蝶梦九霄",
+   "quality": 1,
+   "order": 136,
+   "base": {
+	"desc": "卞玉京资质每级+1，每星+25",
+	"stat": "apt",
+	"per_level": 1,
+	"per_star": 25,
+	"wired": true,
+	"target": "hero",
+	"hero": "bian_yujing"
+   },
+   "special": {
+	"desc": "卞玉京赚钱每星+2.5%",
+	"kind": "hero_pct",
+	"hero": "bian_yujing",
+	"per_star": 2.5
+   }
+  },
+  "c136": {
+   "name": "兰烬羽扇",
+   "quality": 1,
+   "order": 137,
+   "base": {
+	"desc": "李香君资质每级+1，每星+25",
+	"stat": "apt",
+	"per_level": 1,
+	"per_star": 25,
+	"wired": true,
+	"target": "hero",
+	"hero": "li_xiangjun"
+   },
+   "special": {
+	"desc": "李香君赚钱每星+2.5%",
+	"kind": "hero_pct",
+	"hero": "li_xiangjun",
+	"per_star": 2.5
+   }
+  },
+  "c137": {
+   "name": "笙竹云岫",
+   "quality": 1,
+   "order": 138,
+   "base": {
+	"desc": "商类门客赚钱每级+2.6万，每星+65万",
+	"stat": "income",
+	"per_level": 26000,
+	"per_star": 650000,
+	"wired": true,
+	"target": "category",
+	"category": "商"
+   },
+   "special": {
+	"desc": "商类门客赚钱每星+0.5%",
+	"kind": "category_pct",
+	"category": "商",
+	"per_star": 0.5
+   }
+  },
+  "c138": {
+   "name": "凤鸟悬鼓",
+   "quality": 1,
+   "order": 139,
+   "base": {
+	"desc": "商类门客赚钱每级+2.6万，每星+65万",
+	"stat": "income",
+	"per_level": 26000,
+	"per_star": 650000,
+	"wired": true,
+	"target": "category",
+	"category": "商"
+   },
+   "special": {
+	"desc": "商类门客赚钱每星+0.5%",
+	"kind": "category_pct",
+	"category": "商",
+	"per_star": 0.5
+   }
+  },
+  "c139": {
+   "name": "山河社稷",
+   "quality": 1,
+   "order": 140,
+   "base": {
+	"desc": "工类门客赚钱每级+2.6万，每星+65万",
+	"stat": "income",
+	"per_level": 26000,
+	"per_star": 650000,
+	"wired": true,
+	"target": "category",
+	"category": "工"
+   },
+   "special": {
+	"desc": "工类门客赚钱每星+0.5%",
+	"kind": "category_pct",
+	"category": "工",
+	"per_star": 0.5
+   }
+  },
+  "c140": {
+   "name": "仙鹤龙耳炉",
+   "quality": 1,
+   "order": 141,
+   "base": {
+	"desc": "侠类门客赚钱每级+2.6万，每星+65万",
+	"stat": "income",
+	"per_level": 26000,
+	"per_star": 650000,
+	"wired": true,
+	"target": "category",
+	"category": "侠"
+   },
+   "special": {
+	"desc": "侠类门客赚钱每星+0.5%",
+	"kind": "category_pct",
+	"category": "侠",
+	"per_star": 0.5
+   }
+  },
+  "c141": {
+   "name": "花蝶云肩",
+   "quality": 1,
+   "order": 142,
+   "base": {
+	"desc": "农类门客赚钱每级+2.6万，每星+65万",
+	"stat": "income",
+	"per_level": 26000,
+	"per_star": 650000,
+	"wired": true,
+	"target": "category",
+	"category": "农"
+   },
+   "special": {
+	"desc": "农类门客赚钱每星+0.5%",
+	"kind": "category_pct",
+	"category": "农",
+	"per_star": 0.5
+   }
+  },
+  "c142": {
+   "name": "梅花瞻瓶",
+   "quality": 1,
+   "order": 143,
+   "base": {
+	"desc": "商类门客赚钱每级+2.6万，每星+65万",
+	"stat": "income",
+	"per_level": 26000,
+	"per_star": 650000,
+	"wired": true,
+	"target": "category",
+	"category": "商"
+   },
+   "special": {
+	"desc": "商类门客赚钱每星+0.5%",
+	"kind": "category_pct",
+	"category": "商",
+	"per_star": 0.5
+   }
+  },
+  "c143": {
+   "name": "与天对话",
+   "quality": 1,
+   "order": 144,
+   "base": {
+	"desc": "工类门客赚钱每级+2.6万，每星+65万",
+	"stat": "income",
+	"per_level": 26000,
+	"per_star": 650000,
+	"wired": true,
+	"target": "category",
+	"category": "工"
+   },
+   "special": {
+	"desc": "工类门客赚钱每星+0.5%",
+	"kind": "category_pct",
+	"category": "工",
+	"per_star": 0.5
+   }
+  },
+  "c144": {
+   "name": "徽刻天工",
+   "quality": 1,
+   "order": 145,
+   "base": {
+	"desc": "葫芦仙人资质每级+1，每星+25",
+	"stat": "apt",
+	"per_level": 1,
+	"per_star": 25,
+	"wired": true,
+	"target": "hero",
+	"hero": "hu_lu_xianren"
+   },
+   "special": {
+	"desc": "葫芦仙人赚钱每星+2.5%",
+	"kind": "hero_pct",
+	"hero": "hu_lu_xianren",
+	"per_star": 2.5
+   }
+  },
+  "c145": {
+   "name": "撼龙经",
+   "quality": 1,
+   "order": 146,
+   "base": {
+	"desc": "工类门客赚钱每级+2.6万，每星+65万",
+	"stat": "income",
+	"per_level": 26000,
+	"per_star": 650000,
+	"wired": true,
+	"target": "category",
+	"category": "工"
+   },
+   "special": {
+	"desc": "工类门客赚钱每星+0.5%",
+	"kind": "category_pct",
+	"category": "工",
+	"per_star": 0.5
+   }
+  },
+  "c146": {
+   "name": "和氏璧",
+   "quality": 1,
+   "order": 147,
+   "base": {
+	"desc": "商类门客赚钱每级+2.6万，每星+65万",
+	"stat": "income",
+	"per_level": 26000,
+	"per_star": 650000,
+	"wired": true,
+	"target": "category",
+	"category": "商"
+   },
+   "special": {
+	"desc": "商类门客赚钱每星+0.5%",
+	"kind": "category_pct",
+	"category": "商",
+	"per_star": 0.5
+   }
+  },
+  "c147": {
+   "name": "徽乡古街",
+   "quality": 1,
+   "order": 148,
+   "base": {
+	"desc": "小鱼儿资质每级+1，每星+25",
+	"stat": "apt",
+	"per_level": 1,
+	"per_star": 25,
+	"wired": true,
+	"target": "hero",
+	"hero": "xiao_yuer"
+   },
+   "special": {
+	"desc": "小鱼儿赚钱每星+2.5%",
+	"kind": "hero_pct",
+	"hero": "xiao_yuer",
+	"per_star": 2.5
+   }
+  },
+  "c148": {
+   "name": "徽墨书香",
+   "quality": 1,
+   "order": 149,
+   "base": {
+	"desc": "梅长苏资质每级+1，每星+25",
+	"stat": "apt",
+	"per_level": 1,
+	"per_star": 25,
+	"wired": true,
+	"target": "hero",
+	"hero": "mei_changsu"
+   },
+   "special": {
+	"desc": "梅长苏赚钱每星+2.5%",
+	"kind": "hero_pct",
+	"hero": "mei_changsu",
+	"per_star": 2.5
+   }
+  },
+  "c149": {
+   "name": "彩陶映松",
+   "quality": 1,
+   "order": 150,
+   "base": {
+	"desc": "白月初资质每级+1，每星+25",
+	"stat": "apt",
+	"per_level": 1,
+	"per_star": 25,
+	"wired": true,
+	"target": "hero",
+	"hero": "bai_yuechu"
+   },
+   "special": {
+	"desc": "白月初赚钱每星+2.5%",
+	"kind": "hero_pct",
+	"hero": "bai_yuechu",
+	"per_star": 2.5
+   }
+  },
+  "c150": {
+   "name": "柿柿如意",
+   "quality": 1,
+   "order": 151,
+   "base": {
+	"desc": "侠类门客赚钱每级+2.6万，每星+65万",
+	"stat": "income",
+	"per_level": 26000,
+	"per_star": 650000,
+	"wired": true,
+	"target": "category",
+	"category": "侠"
+   },
+   "special": {
+	"desc": "侠类门客赚钱每星+0.5%",
+	"kind": "category_pct",
+	"category": "侠",
+	"per_star": 0.5
+   }
+  },
+  "c151": {
+   "name": "清风童趣",
+   "quality": 1,
+   "order": 152,
+   "base": {
+	"desc": "士类门客赚钱每级+2.6万，每星+65万",
+	"stat": "income",
+	"per_level": 26000,
+	"per_star": 650000,
+	"wired": true,
+	"target": "category",
+	"category": "士"
+   },
+   "special": {
+	"desc": "士类门客赚钱每星+0.5%",
+	"kind": "category_pct",
+	"category": "士",
+	"per_star": 0.5
+   }
+  },
+  "c152": {
+   "name": "少时画影",
+   "quality": 1,
+   "order": 153,
+   "base": {
+	"desc": "商类门客赚钱每级+2.6万，每星+65万",
+	"stat": "income",
+	"per_level": 26000,
+	"per_star": 650000,
+	"wired": true,
+	"target": "category",
+	"category": "商"
+   },
+   "special": {
+	"desc": "商类门客赚钱每星+0.5%",
+	"kind": "category_pct",
+	"category": "商",
+	"per_star": 0.5
+   }
+  },
+  "c153": {
+   "name": "百子图",
+   "quality": 1,
+   "order": 154,
+   "base": {
+	"desc": "张起灵资质每级+1，每星+25",
+	"stat": "apt",
+	"per_level": 1,
+	"per_star": 25,
+	"wired": true,
+	"target": "hero",
+	"hero": "zhang_qiling"
+   },
+   "special": {
+	"desc": "张起灵赚钱每星+2.5%",
+	"kind": "hero_pct",
+	"hero": "zhang_qiling",
+	"per_star": 2.5
+   }
+  },
+  "c154": {
+   "name": "古盆徽翠",
+   "quality": 1,
+   "order": 155,
+   "base": {
+	"desc": "五艳凤魁资质每级+1，每星+25",
+	"stat": "apt",
+	"per_level": 1,
+	"per_star": 25,
+	"wired": true,
+	"target": "wuyan"
+   },
+   "special": {
+	"desc": "五艳凤魁赚钱每星+2.5%",
+	"kind": "group_pct",
+	"per_star": 2.5
+   }
+  },
+  "c155": {
+   "name": "徽瓦古韵",
+   "quality": 1,
+   "order": 156,
+   "base": {
+	"desc": "王昭君资质每级+1，每星+25",
+	"stat": "apt",
+	"per_level": 1,
+	"per_star": 25,
+	"wired": true,
+	"target": "hero",
+	"hero": "wang_zhaojun"
+   },
+   "special": {
+	"desc": "王昭君赚钱每星+2.5%",
+	"kind": "hero_pct",
+	"hero": "wang_zhaojun",
+	"per_star": 2.5
+   }
+  },
+  "c156": {
+   "name": "翠茗藏峰",
+   "quality": 1,
+   "order": 157,
+   "base": {
+	"desc": "兰飞鸿资质每级+1，每星+25",
+	"stat": "apt",
+	"per_level": 1,
+	"per_star": 25,
+	"wired": true,
+	"target": "hero",
+	"hero": "lan_feihong"
+   },
+   "special": {
+	"desc": "兰飞鸿赚钱每星+2.5%",
+	"kind": "hero_pct",
+	"hero": "lan_feihong",
+	"per_star": 2.5
+   }
+  },
+  "c157": {
+   "name": "观音泪",
+   "quality": 1,
+   "order": 158,
+   "base": {
+	"desc": "侠类门客赚钱每级+2.6万，每星+65万",
+	"stat": "income",
+	"per_level": 26000,
+	"per_star": 650000,
+	"wired": true,
+	"target": "category",
+	"category": "侠"
+   },
+   "special": {
+	"desc": "侠类门客赚钱每星+0.5%",
+	"kind": "category_pct",
+	"category": "侠",
+	"per_star": 0.5
+   }
+  },
+  "c158": {
+   "name": "明月夜",
+   "quality": 1,
+   "order": 159,
+   "base": {
+	"desc": "工类门客赚钱每级+2.6万，每星+65万",
+	"stat": "income",
+	"per_level": 26000,
+	"per_star": 650000,
+	"wired": true,
+	"target": "category",
+	"category": "工"
+   },
+   "special": {
+	"desc": "工类门客赚钱每星+0.5%",
+	"kind": "category_pct",
+	"category": "工",
+	"per_star": 0.5
+   }
+  },
+  "c159": {
+   "name": "瀚海乾坤罩",
+   "quality": 1,
+   "order": 160,
+   "base": {
+	"desc": "农类门客赚钱每级+2.6万，每星+65万",
+	"stat": "income",
+	"per_level": 26000,
+	"per_star": 650000,
+	"wired": true,
+	"target": "category",
+	"category": "农"
+   },
+   "special": {
+	"desc": "农类门客赚钱每星+0.5%",
+	"kind": "category_pct",
+	"category": "农",
+	"per_star": 0.5
+   }
+  },
+  "c160": {
+   "name": "水墨桃源",
+   "quality": 1,
+   "order": 161,
+   "base": {
+	"desc": "杨戬资质每级+1，每星+25",
+	"stat": "apt",
+	"per_level": 1,
+	"per_star": 25,
+	"wired": true,
+	"target": "hero",
+	"hero": "yang_jian"
+   },
+   "special": {
+	"desc": "杨戬赚钱每星+2.5%",
+	"kind": "hero_pct",
+	"hero": "yang_jian",
+	"per_star": 2.5
+   }
+  },
+  "c161": {
+   "name": "山海经",
+   "quality": 1,
+   "order": 162,
+   "base": {
+	"desc": "兰飞鸿资质每级+1，每星+25",
+	"stat": "apt",
+	"per_level": 1,
+	"per_star": 25,
+	"wired": true,
+	"target": "hero",
+	"hero": "lan_feihong"
+   },
+   "special": {
+	"desc": "兰飞鸿赚钱每星+2.5%",
+	"kind": "hero_pct",
+	"hero": "lan_feihong",
+	"per_star": 2.5
+   }
+  },
+  "c162": {
+   "name": "天下和顺",
+   "quality": 1,
+   "order": 163,
+   "base": {
+	"desc": "商类门客赚钱每级+2.6万，每星+65万",
+	"stat": "income",
+	"per_level": 26000,
+	"per_star": 650000,
+	"wired": true,
+	"target": "category",
+	"category": "商"
+   },
+   "special": {
+	"desc": "商类门客赚钱每星+0.5%",
+	"kind": "category_pct",
+	"category": "商",
+	"per_star": 0.5
+   }
+  },
+  "c163": {
+   "name": "花忆奥韵",
+   "quality": 1,
+   "order": 164,
+   "base": {
+	"desc": "士类门客赚钱每级+2.6万，每星+65万",
+	"stat": "income",
+	"per_level": 26000,
+	"per_star": 650000,
+	"wired": true,
+	"target": "category",
+	"category": "士"
+   },
+   "special": {
+	"desc": "士类门客赚钱每星+0.5%",
+	"kind": "category_pct",
+	"category": "士",
+	"per_star": 0.5
+   }
+  },
+  "c164": {
+   "name": "橄榄诗语",
+   "quality": 1,
+   "order": 165,
+   "base": {
+	"desc": "农类门客赚钱每级+2.6万，每星+65万",
+	"stat": "income",
+	"per_level": 26000,
+	"per_star": 650000,
+	"wired": true,
+	"target": "category",
+	"category": "农"
+   },
+   "special": {
+	"desc": "农类门客赚钱每星+0.5%",
+	"kind": "category_pct",
+	"category": "农",
+	"per_star": 0.5
+   }
+  },
+  "c165": {
+   "name": "七宝妙树皮",
+   "quality": 1,
+   "order": 166,
+   "base": {
+	"desc": "农类门客赚钱每级+2.6万，每星+65万",
+	"stat": "income",
+	"per_level": 26000,
+	"per_star": 650000,
+	"wired": true,
+	"target": "category",
+	"category": "农"
+   },
+   "special": {
+	"desc": "农类门客赚钱每星+0.5%",
+	"kind": "category_pct",
+	"category": "农",
+	"per_star": 0.5
+   }
+  },
+  "c166": {
+   "name": "天罡寒玉",
+   "quality": 1,
+   "order": 167,
+   "base": {
+	"desc": "商类门客赚钱每级+2.6万，每星+65万",
+	"stat": "income",
+	"per_level": 26000,
+	"per_star": 650000,
+	"wired": true,
+	"target": "category",
+	"category": "商"
+   },
+   "special": {
+	"desc": "商类门客赚钱每星+0.5%",
+	"kind": "category_pct",
+	"category": "商",
+	"per_star": 0.5
+   }
+  },
+  "c167": {
+   "name": "千年御水滴",
+   "quality": 1,
+   "order": 168,
+   "base": {
+	"desc": "侠类门客赚钱每级+2.6万，每星+65万",
+	"stat": "income",
+	"per_level": 26000,
+	"per_star": 650000,
+	"wired": true,
+	"target": "category",
+	"category": "侠"
+   },
+   "special": {
+	"desc": "侠类门客赚钱每星+0.5%",
+	"kind": "category_pct",
+	"category": "侠",
+	"per_star": 0.5
+   }
+  },
+  "c168": {
+   "name": "四相镜",
+   "quality": 1,
+   "order": 169,
+   "base": {
+	"desc": "工类门客赚钱每级+2.6万，每星+65万",
+	"stat": "income",
+	"per_level": 26000,
+	"per_star": 650000,
+	"wired": true,
+	"target": "category",
+	"category": "工"
+   },
+   "special": {
+	"desc": "工类门客赚钱每星+0.5%",
+	"kind": "category_pct",
+	"category": "工",
+	"per_star": 0.5
+   }
+  },
+  "c169": {
+   "name": "无尽沙漏",
+   "quality": 1,
+   "order": 170,
+   "base": {
+	"desc": "商类门客赚钱每级+2.6万，每星+65万",
+	"stat": "income",
+	"per_level": 26000,
+	"per_star": 650000,
+	"wired": true,
+	"target": "category",
+	"category": "商"
+   },
+   "special": {
+	"desc": "商类门客赚钱每星+0.5%",
+	"kind": "category_pct",
+	"category": "商",
+	"per_star": 0.5
+   }
+  },
+  "c170": {
+   "name": "冰凌雪枪",
+   "quality": 1,
+   "order": 171,
+   "base": {
+	"desc": "士类门客赚钱每级+2.6万，每星+65万",
+	"stat": "income",
+	"per_level": 26000,
+	"per_star": 650000,
+	"wired": true,
+	"target": "category",
+	"category": "士"
+   },
+   "special": {
+	"desc": "士类门客赚钱每星+0.5%",
+	"kind": "category_pct",
+	"category": "士",
+	"per_star": 0.5
+   }
+  },
+  "c171": {
+   "name": "春江水暖",
+   "quality": 1,
+   "order": 172,
+   "base": {
+	"desc": "侠类门客赚钱每级+2.6万，每星+65万",
+	"stat": "income",
+	"per_level": 26000,
+	"per_star": 650000,
+	"wired": true,
+	"target": "category",
+	"category": "侠"
+   },
+   "special": {
+	"desc": "侠类门客赚钱每星+0.5%",
+	"kind": "category_pct",
+	"category": "侠",
+	"per_star": 0.5
+   }
+  },
+  "c172": {
+   "name": "细雨轻尘",
+   "quality": 1,
+   "order": 173,
+   "base": {
+	"desc": "工类门客赚钱每级+2.6万，每星+65万",
+	"stat": "income",
+	"per_level": 26000,
+	"per_star": 650000,
+	"wired": true,
+	"target": "category",
+	"category": "工"
+   },
+   "special": {
+	"desc": "工类门客赚钱每星+0.5%",
+	"kind": "category_pct",
+	"category": "工",
+	"per_star": 0.5
+   }
+  },
+  "c173": {
+   "name": "花醉云裳",
+   "quality": 1,
+   "order": 174,
+   "base": {
+	"desc": "士类门客赚钱每级+2.6万，每星+65万",
+	"stat": "income",
+	"per_level": 26000,
+	"per_star": 650000,
+	"wired": true,
+	"target": "category",
+	"category": "士"
+   },
+   "special": {
+	"desc": "士类门客赚钱每星+0.5%",
+	"kind": "category_pct",
+	"category": "士",
+	"per_star": 0.5
+   }
+  },
+  "c174": {
+   "name": "光阴流年",
+   "quality": 1,
+   "order": 175,
+   "base": {
+	"desc": "农类挚友才华每级+4，每星+220",
+	"stat": "才华",
+	"per_level": 4,
+	"per_star": 220,
+	"wired": false
+   },
+   "special": {
+	"desc": "农类门客赚钱每星+0.5%",
+	"kind": "category_pct",
+	"category": "农",
+	"per_star": 0.5
+   }
+  },
+  "c175": {
+   "name": "醒狮献瑞",
+   "quality": 1,
+   "order": 176,
+   "base": {
+	"desc": "商类挚友友好每级+3，每星+75",
+	"stat": "友好",
+	"per_level": 3,
+	"per_star": 75,
+	"wired": false
+   },
+   "special": {
+	"desc": "商类门客赚钱每星+0.5%",
+	"kind": "category_pct",
+	"category": "商",
+	"per_star": 0.5
+   }
+  },
+  "c176": {
+   "name": "辞旧迎新",
+   "quality": 1,
+   "order": 177,
+   "base": {
+	"desc": "士类挚友友好每级+3，每星+75",
+	"stat": "友好",
+	"per_level": 3,
+	"per_star": 75,
+	"wired": false
+   },
+   "special": {
+	"desc": "士类门客赚钱每星+0.5%",
+	"kind": "category_pct",
+	"category": "士",
+	"per_star": 0.5
+   }
+  },
+  "c177": {
+   "name": "暗香",
+   "quality": 1,
+   "order": 178,
+   "base": {
+	"desc": "寇白门资质每级+1，每星+25",
+	"stat": "apt",
+	"per_level": 1,
+	"per_star": 25,
+	"wired": true,
+	"target": "hero",
+	"hero": "kou_baimen"
+   },
+   "special": {
+	"desc": "寇白门赚钱每星+2.5%",
+	"kind": "hero_pct",
+	"hero": "kou_baimen",
+	"per_star": 2.5
+   }
+  },
+  "c178": {
+   "name": "东篱",
+   "quality": 1,
+   "order": 179,
+   "base": {
+	"desc": "卞玉京资质每级+1，每星+25",
+	"stat": "apt",
+	"per_level": 1,
+	"per_star": 25,
+	"wired": true,
+	"target": "hero",
+	"hero": "bian_yujing"
+   },
+   "special": {
+	"desc": "卞玉京赚钱每星+2.5%",
+	"kind": "hero_pct",
+	"hero": "bian_yujing",
+	"per_star": 2.5
+   }
+  },
+  "c179": {
+   "name": "桃源",
+   "quality": 1,
+   "order": 180,
+   "base": {
+	"desc": "李香君资质每级+1，每星+25",
+	"stat": "apt",
+	"per_level": 1,
+	"per_star": 25,
+	"wired": true,
+	"target": "hero",
+	"hero": "li_xiangjun"
+   },
+   "special": {
+	"desc": "李香君赚钱每星+2.5%",
+	"kind": "hero_pct",
+	"hero": "li_xiangjun",
+	"per_star": 2.5
+   }
+  },
+  "c180": {
+   "name": "幽谷",
+   "quality": 1,
+   "order": 181,
+   "base": {
+	"desc": "马湘兰资质每级+1，每星+25",
+	"stat": "apt",
+	"per_level": 1,
+	"per_star": 25,
+	"wired": true,
+	"target": "hero",
+	"hero": "ma_xianglan"
+   },
+   "special": {
+	"desc": "马湘兰赚钱每星+2.5%",
+	"kind": "hero_pct",
+	"hero": "ma_xianglan",
+	"per_star": 2.5
+   }
+  },
+  "c181": {
+   "name": "刻烛成歌",
+   "quality": 1,
+   "order": 182,
+   "base": {
+	"desc": "侠类挚友友好每级+3，每星+75",
+	"stat": "友好",
+	"per_level": 3,
+	"per_star": 75,
+	"wired": false
+   },
+   "special": {
+	"desc": "侠类门客资质每星+7",
+	"kind": "category_apt",
+	"category": "侠",
+	"per_star": 7
+   }
+  },
+  "c182": {
+   "name": "笙歌曼舞",
+   "quality": 1,
+   "order": 183,
+   "base": {
+	"desc": "农类挚友友好每级+3，每星+75",
+	"stat": "友好",
+	"per_level": 3,
+	"per_star": 75,
+	"wired": false
+   },
+   "special": {
+	"desc": "农类门客资质每星+7",
+	"kind": "category_apt",
+	"category": "农",
+	"per_star": 7
+   }
+  },
+  "c183": {
+   "name": "凝冰旖梦",
+   "quality": 1,
+   "order": 184,
+   "base": {
+	"desc": "工类挚友友好每级+3，每星+75",
+	"stat": "友好",
+	"per_level": 3,
+	"per_star": 75,
+	"wired": false
+   },
+   "special": {
+	"desc": "工类门客资质每星+7",
+	"kind": "category_apt",
+	"category": "工",
+	"per_star": 7
+   }
+  },
+  "c184": {
+   "name": "宫宴秘盏",
+   "quality": 1,
+   "order": 185,
+   "base": {
+	"desc": "农类门客赚钱每级+2.6万，每星+65万",
+	"stat": "income",
+	"per_level": 26000,
+	"per_star": 650000,
+	"wired": true,
+	"target": "category",
+	"category": "农"
+   },
+   "special": {
+	"desc": "农类门客赚钱每星+0.5%",
+	"kind": "category_pct",
+	"category": "农",
+	"per_star": 0.5
+   }
+  },
+  "c185": {
+   "name": "月明生烟",
+   "quality": 2,
+   "order": 186,
+   "base": {
+	"desc": "侠类门客赚钱每级+7000，每星+40万",
+	"stat": "income",
+	"per_level": 7000,
+	"per_star": 400000,
+	"wired": true,
+	"target": "category",
+	"category": "侠"
+   },
+   "special": {
+	"desc": "庄园牧场产量每星+2%"
+   }
+  },
+  "c186": {
+   "name": "呼之欲出",
+   "quality": 2,
+   "order": 187,
+   "base": {
+	"desc": "商类门客赚钱每级+7000，每星+40万",
+	"stat": "income",
+	"per_level": 7000,
+	"per_star": 400000,
+	"wired": true,
+	"target": "category",
+	"category": "商"
+   },
+   "special": {
+	"desc": "庄园农场产量每星+2%"
+   }
+  },
+  "c187": {
+   "name": "招财进宝",
+   "quality": 2,
+   "order": 188,
+   "base": {
+	"desc": "工类门客赚钱每级+7000，每星+40万",
+	"stat": "income",
+	"per_level": 7000,
+	"per_star": 400000,
+	"wired": true,
+	"target": "category",
+	"category": "工"
+   },
+   "special": {
+	"desc": "酒肆银条产出每星+2%"
+   }
+  },
+  "c188": {
+   "name": "太华",
+   "quality": 2,
+   "order": 189,
+   "base": {
+	"desc": "农类挚友友好每级+1，每星+40",
+	"stat": "友好",
+	"per_level": 1,
+	"per_star": 40,
+	"wired": false
+   },
+   "special": {
+	"desc": "榷场初始关引每星+1万"
+   }
+  },
+  "c189": {
+   "name": "三千尺",
+   "quality": 2,
+   "order": 190,
+   "base": {
+	"desc": "商类门客赚钱每级+7000，每星+40万",
+	"stat": "income",
+	"per_level": 7000,
+	"per_star": 400000,
+	"wired": true,
+	"target": "category",
+	"category": "商"
+   },
+   "special": {
+	"desc": "榷场出战挚友才华每星+2%"
+   }
+  },
+  "c190": {
+   "name": "念奴娇",
+   "quality": 2,
+   "order": 191,
+   "base": {
+	"desc": "士类门客赚钱每级+7000，每星+40万",
+	"stat": "income",
+	"per_level": 7000,
+	"per_star": 400000,
+	"wired": true,
+	"target": "category",
+	"category": "士"
+   },
+   "special": {
+	"desc": "谈心精力恢复时长每星-30秒"
+   }
+  },
+  "c191": {
+   "name": "幽恒",
+   "quality": 2,
+   "order": 192,
+   "base": {
+	"desc": "农类挚友友好每级+1，每星+40",
+	"stat": "友好",
+	"per_level": 1,
+	"per_star": 40,
+	"wired": false
+   },
+   "special": {
+	"desc": "游历每日领取体力丹每星+1，"
+   }
+  },
+  "c192": {
+   "name": "落地生财",
+   "quality": 2,
+   "order": 193,
+   "base": {
+	"desc": "农类门客赚钱每级+7000，每星+40万",
+	"stat": "income",
+	"per_level": 7000,
+	"per_star": 400000,
+	"wired": true,
+	"target": "category",
+	"category": "农"
+   },
+   "special": {
+	"desc": "药铺铜板产出每星+2%"
+   }
+  },
+  "c193": {
+   "name": "岱宗",
+   "quality": 2,
+   "order": 194,
+   "base": {
+	"desc": "士类挚友友好每级+1，每星+40",
+	"stat": "友好",
+	"per_level": 1,
+	"per_star": 40,
+	"wired": false
+   },
+   "special": {
+	"desc": "招商可承包项目+1，不可晋升"
+   }
+  },
+  "c194": {
+   "name": "冷月寒泉",
+   "quality": 2,
+   "order": 195,
+   "base": {
+	"desc": "工类门客赚钱每级+7000，每星+40万",
+	"stat": "income",
+	"per_level": 7000,
+	"per_star": 400000,
+	"wired": true,
+	"target": "category",
+	"category": "工"
+   },
+   "special": {
+	"desc": "妙音坊满意度产出每星+2%"
+   }
+  },
+  "c195": {
+   "name": "文房四宝",
+   "quality": 2,
+   "order": 196,
+   "base": {
+	"desc": "士类门客赚钱每级+7000，每星+40万",
+	"stat": "income",
+	"per_level": 7000,
+	"per_star": 400000,
+	"wired": true,
+	"target": "category",
+	"category": "士"
+   },
+   "special": {
+	"desc": "山庄门生科举成功率+30%，不可晋升"
+   }
+  },
+  "c196": {
+   "name": "玉生烟",
+   "quality": 2,
+   "order": 197,
+   "base": {
+	"desc": "商类门客赚钱每级+7000，每星+40万",
+	"stat": "income",
+	"per_level": 7000,
+	"per_star": 400000,
+	"wired": true,
+	"target": "category",
+	"category": "商"
+   },
+   "special": {
+	"desc": "酒坊酒香产出每星+2%"
+   }
+  },
+  "c197": {
+   "name": "玄嵩",
+   "quality": 2,
+   "order": 198,
+   "base": {
+	"desc": "侠类挚友友好每级+1，每星+40",
+	"stat": "友好",
+	"per_level": 1,
+	"per_star": 40,
+	"wired": false
+   },
+   "special": {
+	"desc": "每次游历声望+1，每次晋升+1"
+   }
+  },
+  "c198": {
+   "name": "青云梯",
+   "quality": 2,
+   "order": 199,
+   "base": {
+	"desc": "侠类门客赚钱每级+7000，每星+40万",
+	"stat": "income",
+	"per_level": 7000,
+	"per_star": 400000,
+	"wired": true,
+	"target": "category",
+	"category": "侠"
+   },
+   "special": {
+	"desc": "客栈烹饪获得厨艺每星+2%"
+   }
+  },
+  "c199": {
+   "name": "迎客松",
+   "quality": 2,
+   "order": 200,
+   "base": {
+	"desc": "工类门客赚钱每级+7000，每星+40万",
+	"stat": "income",
+	"per_level": 7000,
+	"per_star": 400000,
+	"wired": true,
+	"target": "category",
+	"category": "工"
+   },
+   "special": {
+	"desc": "榷场出战门客赚钱每星+3%"
+   }
+  },
+  "c200": {
+   "name": "君不见",
+   "quality": 2,
+   "order": 201,
+   "base": {
+	"desc": "农类门客赚钱每级+7000，每星+40万",
+	"stat": "income",
+	"per_level": 7000,
+	"per_star": 400000,
+	"wired": true,
+	"target": "category",
+	"category": "农"
+   },
+   "special": {
+	"desc": "谈心精力上限每星+1"
+   }
+  },
+  "c201": {
+   "name": "财源广进",
+   "quality": 2,
+   "order": 202,
+   "base": {
+	"desc": "士类门客赚钱每级+7000，每星+40万",
+	"stat": "income",
+	"per_level": 7000,
+	"per_star": 400000,
+	"wired": true,
+	"target": "category",
+	"category": "士"
+   },
+   "special": {
+	"desc": "医馆评分产出每星+2%"
+   }
+  },
+  "c202": {
+   "name": "惟妙惟肖",
+   "quality": 2,
+   "order": 203,
+   "base": {
+	"desc": "侠类门客赚钱每级+7000，每星+40万",
+	"stat": "income",
+	"per_level": 7000,
+	"per_star": 400000,
+	"wired": true,
+	"target": "category",
+	"category": "侠"
+   },
+   "special": {
+	"desc": "税所收益每星+2%"
+   }
+  },
+  "c203": {
+   "name": "锦簇画屏",
+   "quality": 2,
+   "order": 204,
+   "base": {
+	"desc": "农类门客赚钱每级+7000，每星+40万",
+	"stat": "income",
+	"per_level": 7000,
+	"per_star": 400000,
+	"wired": true,
+	"target": "category",
+	"category": "农"
+   },
+   "special": {
+	"desc": "招商立项资质产出每星+2%"
+   }
+  },
+  "c204": {
+   "name": "飞衡",
+   "quality": 2,
+   "order": 205,
+   "base": {
+	"desc": "工类挚友友好每级+1，每星+40",
+	"stat": "友好",
+	"per_level": 1,
+	"per_star": 40,
+	"wired": false
+   },
+   "special": {
+	"desc": "钱庄筹算值产出每星+2%"
+   }
+  },
+  "c205": {
+   "name": "生旦净末丑",
+   "quality": 3,
+   "order": 206,
+   "base": {
+	"desc": "工类门客赚钱每级+3000，每星+15万",
+	"stat": "income",
+	"per_level": 3000,
+	"per_star": 150000,
+	"wired": true,
+	"target": "category",
+	"category": "工"
+   },
+   "special": {
+	"desc": "每日身份宝箱元宝每星+1000"
+   }
+  },
+  "c206": {
+   "name": "走马灯",
+   "quality": 3,
+   "order": 207,
+   "base": {
+	"desc": "农类挚友友好每级+1，每星+40",
+	"stat": "友好",
+	"per_level": 1,
+	"per_star": 40,
+	"wired": false
+   },
+   "special": {
+	"desc": "每日身份宝箱元宝每星+1000"
+   }
+  },
+  "c207": {
+   "name": "糖凤凰",
+   "quality": 3,
+   "order": 208,
+   "base": {
+	"desc": "商类门客赚钱每级+3000，每星+15万",
+	"stat": "income",
+	"per_level": 3000,
+	"per_star": 150000,
+	"wired": true,
+	"target": "category",
+	"category": "商"
+   },
+   "special": {
+	"desc": "每日身份宝箱元宝每星+1000"
+   }
+  },
+  "c208": {
+   "name": "年年有余",
+   "quality": 3,
+   "order": 209,
+   "base": {
+	"desc": "士类门客赚钱每级+3000，每星+15万",
+	"stat": "income",
+	"per_level": 3000,
+	"per_star": 150000,
+	"wired": true,
+	"target": "category",
+	"category": "士"
+   },
+   "special": {
+	"desc": "每日身份宝箱元宝每星+1000"
+   }
+  },
+  "c209": {
+   "name": "雨巷",
+   "quality": 3,
+   "order": 210,
+   "base": {
+	"desc": "侠类挚友友好每级+1，每星+40",
+	"stat": "友好",
+	"per_level": 1,
+	"per_star": 40,
+	"wired": false
+   },
+   "special": {
+	"desc": "每日身份宝箱元宝每星+1000"
+   }
+  },
+  "c210": {
+   "name": "击鼓说唱俑",
+   "quality": 3,
+   "order": 211,
+   "base": {
+	"desc": "工类门客赚钱每级+3000，每星+15万",
+	"stat": "income",
+	"per_level": 3000,
+	"per_star": 150000,
+	"wired": true,
+	"target": "category",
+	"category": "工"
+   },
+   "special": {
+	"desc": "每日身份宝箱元宝每星+1000"
+   }
+  },
+  "c211": {
+   "name": "草长莺飞",
+   "quality": 3,
+   "order": 212,
+   "base": {
+	"desc": "商类挚友友好每级+1，每星+40",
+	"stat": "友好",
+	"per_level": 1,
+	"per_star": 40,
+	"wired": false
+   },
+   "special": {
+	"desc": "每日身份宝箱元宝每星+1000"
+   }
+  },
+  "c212": {
+   "name": "百灵鸟",
+   "quality": 3,
+   "order": 213,
+   "base": {
+	"desc": "工类挚友友好每级+1，每星+40",
+	"stat": "友好",
+	"per_level": 1,
+	"per_star": 40,
+	"wired": false
+   },
+   "special": {
+	"desc": "每日身份宝箱元宝每星+1000"
+   }
+  },
+  "c213": {
+   "name": "唢呐鼓瑟",
+   "quality": 3,
+   "order": 214,
+   "base": {
+	"desc": "士类挚友友好每级+1，每星+40",
+	"stat": "友好",
+	"per_level": 1,
+	"per_star": 40,
+	"wired": false
+   },
+   "special": {
+	"desc": "每日身份宝箱元宝每星+1000"
+   }
+  },
+  "c214": {
+   "name": "核舟记",
+   "quality": 3,
+   "order": 215,
+   "base": {
+	"desc": "侠类门客赚钱每级+3000，每星+15万",
+	"stat": "income",
+	"per_level": 3000,
+	"per_star": 150000,
+	"wired": true,
+	"target": "category",
+	"category": "侠"
+   },
+   "special": {
+	"desc": "每日身份宝箱元宝每星+1000"
+   }
+  },
+  "c215": {
+   "name": "牵丝戏",
+   "quality": 3,
+   "order": 216,
+   "base": {
+	"desc": "农类门客赚钱每级+3000，每星+15万",
+	"stat": "income",
+	"per_level": 3000,
+	"per_star": 150000,
+	"wired": true,
+	"target": "category",
+	"category": "农"
+   },
+   "special": {
+	"desc": "每日身份宝箱元宝每星+1000"
+   }
+  },
+  "c216": {
+   "name": "手摇纺车",
+   "quality": 3,
+   "order": 217,
+   "base": {
+	"desc": "侠类门客赚钱每级+3000，每星+15万",
+	"stat": "income",
+	"per_level": 3000,
+	"per_star": 150000,
+	"wired": true,
+	"target": "category",
+	"category": "侠"
+   },
+   "special": {
+	"desc": "每日身份宝箱元宝每星+1000"
+   }
+  },
+  "c217": {
+   "name": "六子联方",
+   "quality": 3,
+   "order": 218,
+   "base": {
+	"desc": "商类门客赚钱每级+3000，每星+15万",
+	"stat": "income",
+	"per_level": 3000,
+	"per_star": 150000,
+	"wired": true,
+	"target": "category",
+	"category": "商"
+   },
+   "special": {
+	"desc": "每日身份宝箱元宝每星+1000"
+   }
+  },
+  "c218": {
+   "name": "翠玉白菜",
+   "quality": 3,
+   "order": 219,
+   "base": {
+	"desc": "农类门客赚钱每级+3000，每星+15万",
+	"stat": "income",
+	"per_level": 3000,
+	"per_star": 150000,
+	"wired": true,
+	"target": "category",
+	"category": "农"
+   },
+   "special": {
+	"desc": "每日身份宝箱元宝每星+1000"
+   }
+  },
+  "c219": {
+   "name": "白釉青花",
+   "quality": 3,
+   "order": 220,
+   "base": {
+	"desc": "士类门客赚钱每级+3000，每星+15万",
+	"stat": "income",
+	"per_level": 3000,
+	"per_star": 150000,
+	"wired": true,
+	"target": "category",
+	"category": "士"
+   },
+   "special": {
+	"desc": "每日身份宝箱元宝每星+1000"
+   }
+  },
+  "c220": {
+   "name": "七里香",
+   "quality": 4,
+   "order": 221,
+   "base": {
+	"desc": "香料铺店员数量每级+1，每星+150",
+	"stat": "店员数量",
+	"per_level": 1,
+	"per_star": 150,
+	"wired": false
+   },
+   "special": {
+	"desc": "全体徒弟赚速每星+1%"
+   }
+  },
+  "c221": {
+   "name": "狗不理",
+   "quality": 4,
+   "order": 222,
+   "base": {
+	"desc": "长乐坊店员数量每级+1，每星+150",
+	"stat": "店员数量",
+	"per_level": 1,
+	"per_star": 150,
+	"wired": false
+   },
+   "special": {
+	"desc": "商类徒弟赚速每星+2%"
+   }
+  },
+  "c222": {
+   "name": "百里加急",
+   "quality": 4,
+   "order": 223,
+   "base": {
+	"desc": "驿站店员数量每级+1，每星+150",
+	"stat": "店员数量",
+	"per_level": 1,
+	"per_star": 150,
+	"wired": false
+   },
+   "special": {
+	"desc": "工类徒弟赚速每星+2%"
+   }
+  },
+  "c223": {
+   "name": "算尽锱铢",
+   "quality": 4,
+   "order": 224,
+   "base": {
+	"desc": "当铺店员数量每级+1，每星+150",
+	"stat": "店员数量",
+	"per_level": 1,
+	"per_star": 150,
+	"wired": false
+   },
+   "special": {
+	"desc": "转职魔法师的徒弟赚速每星+5%"
+   }
+  },
+  "c224": {
+   "name": "葵花点穴",
+   "quality": 4,
+   "order": 225,
+   "base": {
+	"desc": "客栈店员数量每级+1，每星+150",
+	"stat": "店员数量",
+	"per_level": 1,
+	"per_star": 150,
+	"wired": false
+   },
+   "special": {
+	"desc": "徒弟培养活力恢复每星-2秒"
+   }
+  },
+  "c225": {
+   "name": "客似云来",
+   "quality": 4,
+   "order": 226,
+   "base": {
+	"desc": "药铺店员数量每级+1，每星+150",
+	"stat": "店员数量",
+	"per_level": 1,
+	"per_star": 150,
+	"wired": false
+   },
+   "special": {
+	"desc": "士类徒弟赚速每星+2%"
+   }
+  },
+  "c226": {
+   "name": "且听下回",
+   "quality": 4,
+   "order": 227,
+   "base": {
+	"desc": "说书摊店员数量每级+1，每星+150",
+	"stat": "店员数量",
+	"per_level": 1,
+	"per_star": 150,
+	"wired": false
+   },
+   "special": {
+	"desc": "徒弟培养消耗铜钱每星-2%"
+   }
+  },
+  "c227": {
+   "name": "唯有杜康",
+   "quality": 4,
+   "order": 228,
+   "base": {
+	"desc": "酒坊店员数量每级+1，每星+150",
+	"stat": "店员数量",
+	"per_level": 1,
+	"per_star": 150,
+	"wired": false
+   },
+   "special": {
+	"desc": "侠类徒弟赚速每星+2%"
+   }
+  },
+  "c228": {
+   "name": "何以解忧",
+   "quality": 4,
+   "order": 229,
+   "base": {
+	"desc": "酒肆店员数量每级+1，每星+150",
+	"stat": "店员数量",
+	"per_level": 1,
+	"per_star": 150,
+	"wired": false
+   },
+   "special": {
+	"desc": "农类徒弟赚速每星+2%"
+   }
+  },
+  "c229": {
+   "name": "尝百草",
+   "quality": 4,
+   "order": 230,
+   "base": {
+	"desc": "医馆店员数量每级+1，每星+150",
+	"stat": "店员数量",
+	"per_level": 1,
+	"per_star": 150,
+	"wired": false
+   },
+   "special": {
+	"desc": "徒弟活力上限每星+20"
+   }
+  },
+  "c230": {
+   "name": "日行千里",
+   "quality": 4,
+   "order": 231,
+   "base": {
+	"desc": "车马行店员数量每级+1，每星+150",
+	"stat": "店员数量",
+	"per_level": 1,
+	"per_star": 150,
+	"wired": false
+   },
+   "special": {
+	"desc": "侠类徒弟赚速每星+2%"
+   }
+  },
+  "c231": {
+   "name": "春芽泛雪",
+   "quality": 4,
+   "order": 232,
+   "base": {
+	"desc": "茶肆店员数量每级+1，每星+150",
+	"stat": "店员数量",
+	"per_level": 1,
+	"per_star": 150,
+	"wired": false
+   },
+   "special": {
+	"desc": "商类徒弟赚速每星+2%"
+   }
+  },
+  "c232": {
+   "name": "繁花似锦",
+   "quality": 4,
+   "order": 233,
+   "base": {
+	"desc": "成衣铺店员数量每级+1，每星+150",
+	"stat": "店员数量",
+	"per_level": 1,
+	"per_star": 150,
+	"wired": false
+   },
+   "special": {
+	"desc": "工类徒弟赚速每星+2%"
+   }
+  },
+  "c233": {
+   "name": "龟卜占法",
+   "quality": 4,
+   "order": 234,
+   "base": {
+	"desc": "算命摊店员数量每级+1，每星+150",
+	"stat": "店员数量",
+	"per_level": 1,
+	"per_star": 150,
+	"wired": false
+   },
+   "special": {
+	"desc": "农类徒弟赚速每星+2%"
+   }
+  },
+  "c234": {
+   "name": "曲高和寡",
+   "quality": 4,
+   "order": 235,
+   "base": {
+	"desc": "妙音坊店员数量每级+1，每星+150",
+	"stat": "店员数量",
+	"per_level": 1,
+	"per_star": 150,
+	"wired": false
+   },
+   "special": {
+	"desc": "士类徒弟赚速每星+2%"
+   }
+  }
+ },
+ "suits": {
+  "s_礼遇": {
+   "name": "礼遇",
+   "members": [
+	"c105",
+	"c104",
+    "c103"
+   ],
+   "tiers": [
+	1,
+	2,
+	4,
+	6,
+	8,
+	10,
+	12,
+	14,
+	17,
+	20
+   ],
+   "effect": "全部藏宝达到（1/2/4/6/8/10/12/14/17/20）星时，珍兽魂力等级上限+1",
+   "kind": "display",
+   "per_tier": 1
+  },
+  "s_冕瑞": {
+   "name": "冕瑞",
+   "members": [
+	"c022",
+    "c021"
+   ],
+   "tiers": [
+	1,
+	5,
+	10
+   ],
+   "effect": "全部藏宝达到（1/5/10）星时，守护灵提供的赚钱+5%",
+   "kind": "display",
+   "per_tier": 5.0
+  },
+  "s_宸华": {
+   "name": "宸华",
+   "members": [
+	"c184",
+	"c107",
+    "c106"
+   ],
+   "tiers": [
+	1,
+	2,
+	4,
+	6,
+	8,
+	10,
+	12,
+	14,
+	17,
+	20
+   ],
+   "effect": "全部藏宝达到（1/2/4/6/8/10/12/14/17/20）星时，珍兽等级上限+1",
+   "kind": "display",
+   "per_tier": 1
+  },
+  "s_醉栖": {
+   "name": "醉栖",
+   "members": [
+	"c024",
+    "c023"
+   ],
+   "tiers": [
+	1,
+	5,
+	10
+   ],
+   "effect": "全部藏宝达到（1/5/10）星时，无双及以上门客赚钱+5%",
+   "kind": "display",
+   "per_tier": 5.0
+  },
+  "s_共欢": {
+   "name": "共欢",
+   "members": [
+	"c026",
+    "c025"
+   ],
+   "tiers": [
+	1,
+	2,
+	3,
+	4,
+	5,
+	6,
+	7,
+	8,
+	9,
+	10
+   ],
+   "effect": "全部藏宝达到（1/2/3/4/5/6/7/8/9/10）星时，全体虫师技能等级上限+1",
+   "kind": "display",
+   "per_tier": 1
+  },
+  "s_锦忆": {
+   "name": "锦忆",
+   "members": [
+	"c004",
+    "c005"
+   ],
+   "tiers": [
+	1,
+	5,
+	10
+   ],
+   "effect": "全部藏宝达到（1/5/10）星时，每格有效工匠魂石赚钱+2%",
+   "kind": "display",
+   "per_tier": 2.0
+  },
+  "s_瑞光": {
+   "name": "瑞光",
+   "members": [
+	"c029",
+    "c028"
+   ],
+   "tiers": [
+	1,
+	5,
+	10
+   ],
+   "effect": "全部藏宝达到（1/5/10）星时，守护灵提供的赚钱+5%",
+   "kind": "display",
+   "per_tier": 5.0
+  },
+  "s_承运": {
+   "name": "承运",
+   "members": [
+	"c031",
+    "c030"
+   ],
+   "tiers": [
+	1,
+	5,
+	10
+   ],
+   "effect": "全部藏宝达到（1/5/10）星时，无双及以上门客赚钱+5%",
+   "kind": "display",
+   "per_tier": 5.0
+  },
+  "s_重华": {
+   "name": "重华",
+   "members": [
+	"c119",
+	"c118",
+    "c117"
+   ],
+   "tiers": [
+	1,
+	2,
+	4,
+	6,
+	8,
+	10,
+	12,
+	14,
+	17,
+	20
+   ],
+   "effect": "全部藏宝达到（1/2/4/6/8/10/12/14/17/20）星时，珍兽魂力等级上限+1",
+   "kind": "display",
+   "per_tier": 1
+  },
+  "s_阖欢": {
+   "name": "阖欢",
+   "members": [
+	"c084",
+	"c121",
+    "c120"
+   ],
+   "tiers": [
+	1,
+	2,
+	4,
+	6,
+	8,
+	10,
+	12,
+	14,
+	17,
+	20
+   ],
+   "effect": "全部藏宝达到（1/2/4/6/8/10/12/14/17/20）星时，珍兽等级上限+1",
+   "kind": "display",
+   "per_tier": 1
+  },
+  "s_寰商": {
+   "name": "寰商",
+   "members": [
+	"c016",
+    "c032"
+   ],
+   "tiers": [
+	1,
+	5,
+	10
+   ],
+   "effect": "全部藏宝达到（1/5/10）星时，珍兽觉醒上限+1",
+   "kind": "display",
+   "per_tier": 1
+  },
+  "s_市贾": {
+   "name": "市贾",
+   "members": [
+	"c126",
+	"c125",
+    "c124"
+   ],
+   "tiers": [
+	1,
+	2,
+	4,
+	6,
+	8,
+	10,
+	12,
+	14,
+	17,
+	20
+   ],
+   "effect": "全部藏宝达到（1/2/4/6/8/10/12/14/17/20）星时，全体徒弟培养见识+3%，赚速+3%",
+   "kind": "display",
+   "per_tier": 3.0
+  },
+  "s_丹凤": {
+   "name": "丹凤",
+   "members": [
+	"c034",
+    "c033"
+   ],
+   "tiers": [
+	1,
+	5,
+	10
+   ],
+   "effect": "全部藏宝达到（1/5/10）星时，守护灵提供赚钱+5%",
+   "kind": "display",
+   "per_tier": 5.0
+  },
+  "s_锦堂": {
+   "name": "锦堂",
+   "members": [
+	"c132",
+	"c131",
+    "c130"
+   ],
+   "tiers": [
+	1,
+	2,
+	4,
+	6,
+	8,
+	10,
+	12,
+	14,
+	17,
+	20
+   ],
+   "effect": "全部藏宝达到（1/2/4/6/8/10/12/14/17/20）星时，珍兽魂力等级上限+1",
+   "kind": "display",
+   "per_tier": 1
+  },
+  "s_清辉": {
+   "name": "清辉",
+   "members": [
+	"c037",
+    "c036"
+   ],
+   "tiers": [
+	1,
+	5,
+	10
+   ],
+   "effect": "全部藏宝达到（1/5/10）星时，无双及以上门客赚钱+5%",
+   "kind": "display",
+   "per_tier": 5.0
+  },
+  "s_星光": {
+   "name": "星光",
+   "members": [
+	"c136",
+	"c083",
+	"c135",
+	"c134",
+    "c133"
+   ],
+   "tiers": [
+	1,
+	2,
+	4,
+	6,
+	8,
+	10,
+	12,
+	14,
+	17,
+	20
+   ],
+   "effect": "全部藏宝达到（1/2/4/6/8/10/12/14/17/20）星时，五艳门客赚钱+5%",
+   "kind": "wuyan_pct",
+   "per_tier": 5.0
+  },
+  "s_韶华": {
+   "name": "韶华",
+   "members": [
+	"c038",
+    "c000"
+   ],
+   "tiers": [
+	1,
+	5,
+	10
+   ],
+   "effect": "全部藏宝达到（1/5/10）星时，守护灵提供赚钱+5%",
+   "kind": "display",
+   "per_tier": 5.0
+  },
+  "s_坤舆": {
+   "name": "坤舆",
+   "members": [
+	"c095",
+	"c137",
+    "c085"
+   ],
+   "tiers": [
+	1,
+	2,
+	4,
+	6,
+	8,
+	10,
+	12,
+	14,
+	17,
+	20
+   ],
+   "effect": "全部藏宝达到（1/2/4/6/8/10/12/14/17/20）星时，珍兽魂力等级上限+1",
+   "kind": "display",
+   "per_tier": 1
+  },
+  "s_瑶华": {
+   "name": "瑶华",
+   "members": [
+	"c040",
+    "c039"
+   ],
+   "tiers": [
+	1,
+	5,
+	10
+   ],
+   "effect": "全部藏宝达到（1/5/10）星时，无双及以上门客赚钱+5%",
+   "kind": "display",
+   "per_tier": 5.0
+  },
+  "s_国香": {
+   "name": "国香",
+   "members": [
+	"c140",
+	"c139",
+    "c138"
+   ],
+   "tiers": [
+	1,
+	2,
+	4,
+	6,
+	8,
+	10,
+	12,
+	14,
+	17,
+	20
+   ],
+   "effect": "全部藏宝达到（1/2/4/6/8/10/12/14/17/20）星时，珍兽魂力等级上限+1",
+   "kind": "display",
+   "per_tier": 1
+  },
+  "s_玉瑞": {
+   "name": "玉瑞",
+   "members": [
+	"c042",
+    "c041"
+   ],
+   "tiers": [
+	1,
+	5,
+	10
+   ],
+   "effect": "全部藏宝达到（1/5/10）星时，守护灵提供赚钱+5%",
+   "kind": "display",
+   "per_tier": 5.0
+  },
+  "s_琅轩": {
+   "name": "琅轩",
+   "members": [
+	"c143",
+	"c142",
+    "c141"
+   ],
+   "tiers": [
+	1,
+	2,
+	3,
+	4,
+	5,
+	6,
+	7,
+	8,
+	9,
+	10,
+	11,
+	12,
+	13,
+	14,
+	15,
+	16,
+	17,
+	18,
+	19,
+	20
+   ],
+   "effect": "全部藏宝达到（1/2/3/4/5/6/7/8/9/10/11/12/13/14/15/16/17/18/19/20）星时，工匠虫师技能等级上限+1",
+   "kind": "display",
+   "per_tier": 1
+  },
+  "s_离尘": {
+   "name": "离尘",
+   "members": [
+	"c082",
+	"c091",
+    "c075"
+   ],
+   "tiers": [
+	1,
+	2,
+	4,
+	6,
+	8,
+	10,
+	12,
+	14,
+	17,
+	20
+   ],
+   "effect": "全部藏宝达到（1/2/4/6/8/10/12/14/17/20）星时，珍兽等级上限+1",
+   "kind": "display",
+   "per_tier": 1
+  },
+  "s_溯光": {
+   "name": "溯光",
+   "members": [
+	"c014",
+    "c044"
+   ],
+   "tiers": [
+	1,
+	5,
+	10
+   ],
+   "effect": "全部藏宝达到（1/5/10）星时，每格有效商贾魂石赚钱+1%",
+   "kind": "display",
+   "per_tier": 1.0
+  },
+  "s_超然": {
+   "name": "超然",
+   "members": [
+	"c046",
+    "c045"
+   ],
+   "tiers": [
+	1,
+	5,
+	10
+   ],
+   "effect": "全部藏宝达到（1/5/10）星时，无双及以上门客赚钱+5%",
+   "kind": "display",
+   "per_tier": 5.0
+  },
+  "s_碧爻": {
+   "name": "碧爻",
+   "members": [
+	"c097",
+	"c146",
+    "c145"
+   ],
+   "tiers": [
+	1,
+	2,
+	4,
+	6,
+	8,
+	10,
+	12,
+	14,
+	17,
+	20
+   ],
+   "effect": "全部藏宝达到（1/2/4/6/8/10/12/14/17/20）星时，，珍兽等级上限+1",
+   "kind": "display",
+   "per_tier": 1
+  },
+  "s_剑魂": {
+   "name": "剑魂",
+   "members": [
+	"c047",
+    "c048"
+   ],
+   "tiers": [
+	1,
+	5,
+	10
+   ],
+   "effect": "全部藏宝达到（1/5/10）星时，无双及以上门客赚钱+5%",
+   "kind": "display",
+   "per_tier": 5.0
+  },
+  "s_童忆": {
+   "name": "童忆",
+   "members": [
+	"c152",
+	"c151",
+    "c150"
+   ],
+   "tiers": [
+	1,
+	2,
+	4,
+	6,
+	8,
+	10,
+	12,
+	14,
+	17,
+	20
+   ],
+   "effect": "全部藏宝达到（1/2/4/6/8/10/12/14/17/20）星时，全体徒弟培养见识+3%，赚钱+3%",
+   "kind": "display",
+   "per_tier": 3.0
+  },
+  "s_求知": {
+   "name": "求知",
+   "members": [
+	"c012",
+    "c001"
+   ],
+   "tiers": [
+	1,
+	5,
+	10
+   ],
+   "effect": "全部藏宝达到（1/5/10）星时，珍兽觉醒上限+1",
+   "kind": "display",
+   "per_tier": 1
+  },
+  "s_魂器": {
+   "name": "魂器",
+   "members": [
+	"c159",
+	"c158",
+    "c157"
+   ],
+   "tiers": [
+	1,
+	2,
+	4,
+	6,
+	8,
+	10,
+	12,
+	14,
+	17,
+	20
+   ],
+   "effect": "全部藏宝达到（1/2/4/6/8/10/12/14/17/20）星时，珍兽等级上限+1",
+   "kind": "display",
+   "per_tier": 1
+  },
+  "s_风华": {
+   "name": "风华",
+   "members": [
+	"c017",
+    "c053"
+   ],
+   "tiers": [
+	1,
+	5,
+	10
+   ],
+   "effect": "全部藏宝达到（1/5/10）星时，珍兽觉醒上限+1",
+   "kind": "display",
+   "per_tier": 1
+  },
+  "s_续缘": {
+   "name": "续缘",
+   "members": [
+	"c006",
+    "c054"
+   ],
+   "tiers": [
+	1,
+	2,
+	4,
+	6,
+	8,
+	10,
+	12,
+	14,
+	17,
+	20
+   ],
+   "effect": "全部藏宝达到（1/2/4/6/8/10/12/14/17/20）星时，白月初赚钱+10%",
+   "kind": "hero_pct",
+   "per_tier": 10.0,
+   "hero": "bai_yuechu"
+  },
+  "s_奥林": {
+   "name": "奥林",
+   "members": [
+	"c164",
+	"c163",
+    "c162"
+   ],
+   "tiers": [
+	1,
+	2,
+	3,
+	4,
+	5,
+	6,
+	7,
+	8,
+	9,
+	10,
+	11,
+	12,
+	13,
+	14,
+	15,
+	16,
+	17,
+	18,
+	19,
+	20
+   ],
+   "effect": "全部藏宝达到（1/2/3/4/5/6/7/8/9/10/11/12/13/14/15/16/17/18/19/20）星时，士类虫师技能等级上限+1",
+   "kind": "display",
+   "per_tier": 1
+  },
+  "s_水玉": {
+   "name": "水玉",
+   "members": [
+	"c167",
+	"c166",
+    "c165"
+   ],
+   "tiers": [
+	1,
+	2,
+	3,
+	4,
+	5,
+	6,
+	7,
+	8,
+	9,
+	10,
+	11,
+	12,
+	13,
+	14,
+	15,
+	16,
+	17,
+	18,
+	19,
+	20
+   ],
+   "effect": "全部藏宝达到（1/2/3/4/5/6/7/8/9/10/11/12/13/14/15/16/17/18/19/20）星时，侠客虫师技能等级上限+1",
+   "kind": "display",
+   "per_tier": 1
+  },
+  "s_时霜": {
+   "name": "时霜",
+   "members": [
+	"c170",
+	"c169",
+    "c168"
+   ],
+   "tiers": [
+	1,
+	2,
+	3,
+	4,
+	5,
+	6,
+	7,
+	8,
+	9,
+	10,
+	11,
+	12,
+	13,
+	14,
+	15,
+	16,
+	17,
+	18,
+	19,
+	20
+   ],
+   "effect": "全部藏宝达到（1/2/3/4/5/6/7/8/9/10/11/12/13/14/15/16/17/18/19/10）星时，士人虫师技能等级上限+1",
+   "kind": "display",
+   "per_tier": 1
+  },
+  "s_周年": {
+   "name": "周年",
+   "members": [
+	"c057",
+    "c056"
+   ],
+   "tiers": [
+	1,
+	2,
+	3,
+	4,
+	5,
+	6,
+	7,
+	8,
+	9,
+	10
+   ],
+   "effect": "全部藏宝达到（1/2/3/4/5/6/7/8/9/10）星时，全体虫师技能等级上限+1",
+   "kind": "display",
+   "per_tier": 1
+  },
+  "s_春意盎然": {
+   "name": "春意盎然",
+   "members": [
+	"c173",
+	"c172",
+    "c171"
+   ],
+   "tiers": [
+	1,
+	2,
+	3,
+	4,
+	5,
+	6,
+	7,
+	8,
+	9,
+	10,
+	11,
+	12,
+	13,
+	14,
+	15,
+	16,
+	17,
+	18,
+	19,
+	20
+   ],
+   "effect": "全部藏宝达到（1/2/3/4/5/6/7/8/9/10/11/12/13/14/15/16/17/18/19/10）星时，商类虫师技能等级上限+1",
+   "kind": "display",
+   "per_tier": 1
+  },
+  "s_迎春": {
+   "name": "迎春",
+   "members": [
+	"c176",
+	"c175",
+    "c174"
+   ],
+   "tiers": [
+	1,
+	2,
+	4,
+	6,
+	8,
+	10,
+	12,
+	14,
+	17,
+	20
+   ],
+   "effect": "全部藏宝达到（1/2/4/6/8/10/12/14/17/20）星时，珍兽等级上限+1",
+   "kind": "display",
+   "per_tier": 1
+  },
+  "s_花火": {
+   "name": "花火",
+   "members": [
+	"c002",
+    "c063"
+   ],
+   "tiers": [
+	1,
+	5,
+	10
+   ],
+   "effect": "全部藏宝达到（1/5/10）星时，珍兽觉醒上限+1",
+   "kind": "display",
+   "per_tier": 1
+  },
+  "s_凝冰": {
+   "name": "凝冰",
+   "members": [
+	"c183",
+	"c182",
+    "c181"
+   ],
+   "tiers": [
+	1,
+	2,
+	4,
+	6,
+	8,
+	10,
+	12,
+	14,
+	17,
+	20
+   ],
+   "effect": "全部藏宝达到（1/2/4/6/8/10/12/14/17/20）星时，全体挚友谈心缘分+2.5%",
+   "kind": "display",
+   "per_tier": 2.5
+  },
+  "s_五艳": {
+   "name": "五艳",
+   "members": [
+	"c180",
+	"c179",
+	"c089",
+	"c178",
+    "c177"
+   ],
+   "tiers": [
+	1,
+	2,
+	4,
+	6,
+	8,
+	10,
+	12,
+	14,
+	17,
+	20
+   ],
+   "effect": "全部藏宝达到（1/2/4/6/8/10/12/14/17/20）星时，五艳门客赚钱+5%",
+   "kind": "wuyan_pct",
+   "per_tier": 5.0
+  }
+ },
+ "lottery": [
+  {
+   "type": "frag",
+   "collection": "c079",
+   "count": 100,
+   "weight": 2,
+   "label": "高山流水碎片*100"
+  },
+  {
+   "type": "frag",
+   "collection": "c079",
+   "count": 10,
+   "weight": 27,
+   "label": "高山流水碎片*10"
+  },
+  {
+   "type": "item",
+   "item": "ying_chong_guang",
+   "count": 0,
+   "weight": 2172,
+   "label": "萤虫光"
+  },
+  {
+   "type": "frag",
+   "collection": "c071",
+   "count": 100,
+   "weight": 2,
+   "label": "烂柯棋局碎片*100"
+  },
+  {
+   "type": "frag",
+   "collection": "c071",
+   "count": 10,
+   "weight": 27,
+   "label": "烂柯棋局碎片*10"
+  },
+  {
+   "type": "item",
+   "item": "zhu_huo_guang",
+   "count": 0,
+   "weight": 1235,
+   "label": "烛火光"
+  },
+  {
+   "type": "frag",
+   "collection": "c073",
+   "count": 100,
+   "weight": 2,
+   "label": "兰亭序碎片*100"
+  },
+  {
+   "type": "frag",
+   "collection": "c073",
+   "count": 10,
+   "weight": 27,
+   "label": "兰亭序碎片*10"
+  },
+  {
+   "type": "item",
+   "item": "xing_yao_guang",
+   "count": 0,
+   "weight": 412,
+   "label": "星曜光"
+  },
+  {
+   "type": "frag",
+   "collection": "c081",
+   "count": 100,
+   "weight": 2,
+   "label": "清明上河图碎片*100"
+  },
+  {
+   "type": "frag",
+   "collection": "c081",
+   "count": 10,
+   "weight": 27,
+   "label": "清明上河图碎片*10"
+  },
+  {
+   "type": "item",
+   "item": "yue_hua_guang",
+   "count": 0,
+   "weight": 206,
+   "label": "月华光"
+  },
+  {
+   "type": "frag",
+   "collection": "c078",
+   "count": 100,
+   "weight": 2,
+   "label": "丝之路碎片*100"
+  },
+  {
+   "type": "frag",
+   "collection": "c078",
+   "count": 10,
+   "weight": 27,
+   "label": "丝之路碎片*10"
+  },
+  {
+   "type": "item",
+   "item": "ri_lun_guang",
+   "count": 0,
+   "weight": 42,
+   "label": "日轮光"
+  },
+  {
+   "type": "frag",
+   "collection": "c070",
+   "count": 100,
+   "weight": 2,
+   "label": "西湖龙井碎片*100"
+  },
+  {
+   "type": "frag",
+   "collection": "c070",
+   "count": 10,
+   "weight": 27,
+   "label": "西湖龙井碎片*10"
+  },
+  {
+   "type": "frag",
+   "collection": "c068",
+   "count": 100,
+   "weight": 2,
+   "label": "云破天青碎片*100"
+  },
+  {
+   "type": "frag",
+   "collection": "c068",
+   "count": 10,
+   "weight": 27,
+   "label": "云破天青碎片*10"
+  },
+  {
+   "type": "frag",
+   "collection": "c074",
+   "count": 100,
+   "weight": 2,
+   "label": "九章算术碎片*100"
+  },
+  {
+   "type": "frag",
+   "collection": "c074",
+   "count": 10,
+   "weight": 27,
+   "label": "九章算术碎片*10"
+  },
+  {
+   "type": "frag",
+   "collection": "c072",
+   "count": 100,
+   "weight": 2,
+   "label": "灵宪碎片*100"
+  },
+  {
+   "type": "frag",
+   "collection": "c072",
+   "count": 10,
+   "weight": 27,
+   "label": "灵宪碎片*10"
+  },
+  {
+   "type": "frag",
+   "collection": "c077",
+   "count": 100,
+   "weight": 2,
+   "label": "司南碎片*100"
+  },
+  {
+   "type": "frag",
+   "collection": "c077",
+   "count": 10,
+   "weight": 27,
+   "label": "司南碎片*10"
+  },
+  {
+   "type": "frag",
+   "collection": "c076",
+   "count": 100,
+   "weight": 2,
+   "label": "史记碎片*100"
+  },
+  {
+   "type": "frag",
+   "collection": "c076",
+   "count": 10,
+   "weight": 27,
+   "label": "史记碎片*10"
+  },
+  {
+   "type": "frag",
+   "collection": "c069",
+   "count": 100,
+   "weight": 2,
+   "label": "灵枢素问碎片*100"
+  },
+  {
+   "type": "frag",
+   "collection": "c069",
+   "count": 10,
+   "weight": 27,
+   "label": "灵枢素问碎片*10"
+  },
+  {
+   "type": "gfrag",
+   "quality": 2,
+   "count": 100,
+   "weight": 60,
+   "label": "卓越藏品碎片*100"
+  },
+  {
+   "type": "gfrag",
+   "quality": 2,
+   "count": 10,
+   "weight": 980,
+   "label": "卓越藏品碎片*10"
+  },
+  {
+   "type": "gfrag",
+   "quality": 3,
+   "count": 100,
+   "weight": 180,
+   "label": "优秀藏品碎片*100"
+  },
+  {
+   "type": "gfrag",
+   "quality": 3,
+   "count": 10,
+   "weight": 1590,
+   "label": "优秀藏品碎片*10"
+  },
+  {
+   "type": "gfrag",
+   "quality": 4,
+   "count": 100,
+   "weight": 285,
+   "label": "普通藏品碎片*100"
+  },
+  {
+   "type": "gfrag",
+   "quality": 4,
+   "count": 10,
+   "weight": 2490,
+   "label": "普通藏品碎片*10"
+  }
+ ]
+}

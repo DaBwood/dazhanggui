@@ -63,6 +63,7 @@ var costume_view   # 【服装系统】服装视图
 var soul_view   # 【新增】兽魂视图（珍兽魂盘+魂石镶嵌）
 var soulpower_view   # 【新增】魂力培养视图（珍兽魂体+魂骨装配）
 var cuzhi_view   # 【促织园】闯荡子视图
+var collection_view   # 【新增】藏品视图（府邸入口全屏页）
 
 func _ready():
 	
@@ -100,7 +101,7 @@ func _ready():
 	soul_view = SoulView.new(self)   # 【新增】兽魂视图
 	soulpower_view = SoulpowerView.new(self)   # 【新增】魂力培养视图
 	cuzhi_view = CuzhiView.new(self)
-
+	collection_view = CollectionView.new(self)
 
 
 	# 正常退出时存档
@@ -367,7 +368,8 @@ func switch_page(page_id: String):
 		hide_manor_view()
 		hide_war_view() 
 		hide_fishing_view()   # 【第8批新增】关闭垂钓子视图 
-		hide_cuzhi_view()   
+		hide_cuzhi_view()
+		hide_collection_view()
 		update_adventure_page()
 	
 	if page_id == "apprentice": update_apprentice_page()
@@ -1423,6 +1425,10 @@ func _show_hero_box_selector():
 func _on_hero_box_selected(hero_id: String):
 	return bag_page._on_hero_box_selected(hero_id)
 
+# 【新增】套装锦盒选择器 → pages/collection_view.gd
+func show_suit_frag_box_selector(item_id: String):
+	return collection_view.show_suit_frag_box_selector(item_id)
+
 # ==================== 【转发】关卡页 → pages/stage_page.gd ====================
 
 func generate_stage_page():
@@ -1902,10 +1908,19 @@ func show_cuzhi_view():
 func hide_cuzhi_view():
 	return cuzhi_view.hide_cuzhi_view()
 
+# ==================== 【转发】藏品视图 → pages/collection_view.gd ====================
+func show_collection_view():
+	return collection_view.show_collection_view()
+
+func hide_collection_view():
+	return collection_view.hide_collection_view()
+
+# 府邸【藏品】入口
+func on_collection():
+	collection_view.show_collection_view()
 
 # ============================================================
 # 【场景收编】壳层结构 + 壳层布局（2026-08-29）
-# 用法：整段粘贴到 game_controller.gd 末尾（class 内顶层）
 # 原则：control.tscn 只保留根 Control + 挂脚本，全部节点代码创建
 #   _build_scene_shell()    建结构（_ready 第一行调用，只跑一次）
 #   _apply_portrait_layout() 摆位置（_ready 末尾 + 窗口尺寸变化时调用）

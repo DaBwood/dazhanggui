@@ -33,10 +33,64 @@
 		"btn": "打开"
 	  }
 	},
-	"shop_blueprint": {
-	  "name": "商铺图纸",
-	  "desc": "用于解锁新商铺"
-	},
+	"suitbox_礼遇": {"name": "礼遇自选锦盒", "desc": "使用后任选以下藏品碎片×1：云霞纳岳、金声玉振、栖凤鸣弦", "use": {"type": "suit_frag_box", "btn": "使用", "title": "选择碎片"}},
+	"suitbox_冕瑞": {"name": "冕瑞自选锦盒", "desc": "使用后任选以下藏品碎片×1：龙耀金冕、金诏凤仪", "use": {"type": "suit_frag_box", "btn": "使用", "title": "选择碎片"}},
+	"suitbox_宸华": {"name": "宸华自选锦盒", "desc": "使用后任选以下藏品碎片×1：宫宴秘盏、龙纹碎壁、金爵桂魂", "use": {"type": "suit_frag_box", "btn": "使用", "title": "选择碎片"}},
+	"suitbox_醉栖": {"name": "醉栖自选锦盒", "desc": "使用后任选以下藏品碎片×1：兽首醉尊、凤栖梧桐", "use": {"type": "suit_frag_box", "btn": "使用", "title": "选择碎片"}},
+	"suitbox_共欢": {"name": "共欢自选锦盒", "desc": "使用后任选以下藏品碎片×1：回忆皆财、共享欢乐", "use": {"type": "suit_frag_box", "btn": "使用", "title": "选择碎片"}},
+	"suitbox_锦忆": {"name": "锦忆自选锦盒", "desc": "使用后任选以下藏品碎片×1：岁华锦匣、汴梁庆", "use": {"type": "suit_frag_box", "btn": "使用", "title": "选择碎片"}},
+	"suitbox_瑞光": {"name": "瑞光自选锦盒", "desc": "使用后任选以下藏品碎片×1：青禽衔光、琅华千色", "use": {"type": "suit_frag_box", "btn": "使用", "title": "选择碎片"}},
+	"suitbox_承运": {"name": "承运自选锦盒", "desc": "使用后任选以下藏品碎片×1：珐彩翔龙、吉庆长明", "use": {"type": "suit_frag_box", "btn": "使用", "title": "选择碎片"}},
+	"suitbox_重华": {"name": "重华自选锦盒", "desc": "使用后任选以下藏品碎片×1：碧潭凝露、千枝承光、鲤映烛辉", "use": {"type": "suit_frag_box", "btn": "使用", "title": "选择碎片"}},
+	"suitbox_阖欢": {"name": "阖欢自选锦盒", "desc": "使用后任选以下藏品碎片×1：花间锦色、飞花逐扇、长夜雁灯", "use": {"type": "suit_frag_box", "btn": "使用", "title": "选择碎片"}},
+	"suitbox_寰商": {"name": "寰商自选锦盒", "desc": "使用后任选以下藏品碎片×1：民商衡运、货通天下", "use": {"type": "suit_frag_box", "btn": "使用", "title": "选择碎片"}},
+	"suitbox_市贾": {"name": "市贾自选锦盒", "desc": "使用后任选以下藏品碎片×1：走笔绘商、百宝货箱、信印生辉", "use": {"type": "suit_frag_box", "btn": "使用", "title": "选择碎片"}},
+	"suitbox_丹凤": {"name": "丹凤自选锦盒", "desc": "使用后任选以下藏品碎片×1：聚焰环凤、凤鸟铜灯", "use": {"type": "suit_frag_box", "btn": "使用", "title": "选择碎片"}},
+	"suitbox_锦堂": {"name": "锦堂自选锦盒", "desc": "使用后任选以下藏品碎片×1：彩云龙鼓、凤衔香、晋盘礼", "use": {"type": "suit_frag_box", "btn": "使用", "title": "选择碎片"}},
+	"suitbox_清辉": {"name": "清辉自选锦盒", "desc": "使用后任选以下藏品碎片×1：缠枝玉壶、宫灯计", "use": {"type": "suit_frag_box", "btn": "使用", "title": "选择碎片"}},
+	"suitbox_星光": {"name": "星光自选锦盒", "desc": "使用后任选以下藏品碎片×1：兰烬羽扇、云筝栖羽、蝶梦九霄、芳阮凝香、天香乘鸾", "use": {"type": "suit_frag_box", "btn": "使用", "title": "选择碎片"}},
+	"suitbox_韶华": {"name": "韶华自选锦盒", "desc": "使用后任选以下藏品碎片×1：云裳乐舞、芳翎戏春", "use": {"type": "suit_frag_box", "btn": "使用", "title": "选择碎片"}},
+	"suitbox_坤舆": {"name": "坤舆自选锦盒", "desc": "使用后任选以下藏品碎片×1：驼峰丝路、笙竹云岫、釉彩万象", "use": {"type": "suit_frag_box", "btn": "使用", "title": "选择碎片"}},
+	"suitbox_瑶华": {"name": "瑶华自选锦盒", "desc": "使用后任选以下藏品碎片×1：花彩盘龙瓶、龙凤冠", "use": {"type": "suit_frag_box", "btn": "使用", "title": "选择碎片"}},
+	"suitbox_国香": {"name": "国香自选锦盒", "desc": "使用后任选以下藏品碎片×1：仙鹤龙耳炉、山河社稷、凤鸟悬鼓", "use": {"type": "suit_frag_box", "btn": "使用", "title": "选择碎片"}},
+	"suitbox_玉瑞": {"name": "玉瑞自选锦盒", "desc": "使用后任选以下藏品碎片×1：莲鹤方壶、榴开百子", "use": {"type": "suit_frag_box", "btn": "使用", "title": "选择碎片"}},
+	"suitbox_琅轩": {"name": "琅轩自选锦盒", "desc": "使用后任选以下藏品碎片×1：与天对话、梅花瞻瓶、花蝶云肩", "use": {"type": "suit_frag_box", "btn": "使用", "title": "选择碎片"}},
+	"suitbox_离尘": {"name": "离尘自选锦盒", "desc": "使用后任选以下藏品碎片×1：纹银香囊、长明袖灯、博山炉", "use": {"type": "suit_frag_box", "btn": "使用", "title": "选择碎片"}},
+	"suitbox_溯光": {"name": "溯光自选锦盒", "desc": "使用后任选以下藏品碎片×1：岁月轮转、盛世镜", "use": {"type": "suit_frag_box", "btn": "使用", "title": "选择碎片"}},
+	"suitbox_超然": {"name": "超然自选锦盒", "desc": "使用后任选以下藏品碎片×1：素纱禅衣、魂幡帛画", "use": {"type": "suit_frag_box", "btn": "使用", "title": "选择碎片"}},
+	"suitbox_碧爻": {"name": "碧爻自选锦盒", "desc": "使用后任选以下藏品碎片×1：湘妃竹、和氏璧、撼龙经", "use": {"type": "suit_frag_box", "btn": "使用", "title": "选择碎片"}},
+	
+	"suitbox_剑魂": {"name": "剑魂自选锦盒", "desc": "使用后任选以下藏品碎片×1：干将、莫邪", "use": {"type": "suit_frag_box", "btn": "使用", "title": "选择碎片"}},
+	
+	"suitbox_童忆": {"name": "童忆自选锦盒", "desc": "使用后任选以下藏品碎片×1：少时画影、清风童趣、柿柿如意", "use": {"type": "suit_frag_box", "btn": "使用", "title": "选择碎片"}},
+	
+	"suitbox_求知": {"name": "求知自选锦盒", "desc": "使用后任选以下藏品碎片×1：杏坛讲学、鲤跃龙门", "use": {"type": "suit_frag_box", "btn": "使用", "title": "选择碎片"}},
+	
+	"suitbox_魂器": {"name": "魂器自选锦盒", "desc": "使用后任选以下藏品碎片×1：瀚海乾坤罩、明月夜、观音泪", "use": {"type": "suit_frag_box", "btn": "使用", "title": "选择碎片"}},
+	
+	"suitbox_风华": {"name": "风华自选锦盒", "desc": "使用后任选以下藏品碎片×1：炽耀千秋、逐梦荣光", "use": {"type": "suit_frag_box", "btn": "使用", "title": "选择碎片"}},
+	
+	"suitbox_续缘": {"name": "续缘自选锦盒", "desc": "使用后任选以下藏品碎片×1：王权剑、无尽酒壶", "use": {"type": "suit_frag_box", "btn": "使用", "title": "选择碎片"}},
+	
+	"suitbox_奥林": {"name": "奥林自选锦盒", "desc": "使用后任选以下藏品碎片×1：橄榄诗语、花忆奥韵、天下和顺", "use": {"type": "suit_frag_box", "btn": "使用", "title": "选择碎片"}},
+	
+	"suitbox_水玉": {"name": "水玉自选锦盒", "desc": "使用后任选以下藏品碎片×1：千年御水滴、天罡寒玉、七宝妙树皮", "use": {"type": "suit_frag_box", "btn": "使用", "title": "选择碎片"}},
+	
+	"suitbox_时霜": {"name": "时霜自选锦盒", "desc": "使用后任选以下藏品碎片×1：冰凌雪枪、无尽沙漏、四相镜", "use": {"type": "suit_frag_box", "btn": "使用", "title": "选择碎片"}},
+	
+	"suitbox_周年": {"name": "周年自选锦盒", "desc": "使用后任选以下藏品碎片×1：掌斯卡、流年如虹", "use": {"type": "suit_frag_box", "btn": "使用", "title": "选择碎片"}},
+	
+	"suitbox_春意盎然": {"name": "春意盎然自选锦盒", "desc": "使用后任选以下藏品碎片×1：花醉云裳、细雨轻尘、春江水暖", "use": {"type": "suit_frag_box", "btn": "使用", "title": "选择碎片"}},
+	
+	"suitbox_迎春": {"name": "迎春自选锦盒", "desc": "使用后任选以下藏品碎片×1：辞旧迎新、醒狮献瑞、光阴流年", "use": {"type": "suit_frag_box", "btn": "使用", "title": "选择碎片"}},
+	
+	"suitbox_花火": {"name": "花火自选锦盒", "desc": "使用后任选以下藏品碎片×1：流光溢彩、浮光耀耀", "use": {"type": "suit_frag_box", "btn": "使用", "title": "选择碎片"}},
+	
+	"suitbox_凝冰": {"name": "凝冰自选锦盒", "desc": "使用后任选以下藏品碎片×1：凝冰旖梦、笙歌曼舞、刻烛成歌", "use": {"type": "suit_frag_box", "btn": "使用", "title": "选择碎片"}},
+	
+	"suitbox_五艳": {"name": "五艳自选锦盒", "desc": "使用后任选以下藏品碎片×1：幽谷、桃源、芙蕖、东篱、暗香", "use": {"type": "suit_frag_box", "btn": "使用", "title": "选择碎片"}},
+	
+	"shop_blueprint": {"name": "商铺图纸","desc": "用于解锁新商铺"},
 	"hq_blueprint": {
 	  "name": "钱庄图纸",
 	  "desc": "用于升级钱庄建筑"
@@ -300,6 +354,18 @@
 	  "name": "病人手册",
 	  "desc": "记载各类病症诊治之法的手册（后续玩法使用）"
 	},
+	"tao_bao_quan": {
+		"name": "淘宝券",
+		"desc": "用于淘宝抽取藏品（单次1张，十连10张），获取途径：活动"
+	},
+	"ying_chong_guang": {"name": "萤虫光", "desc": "藏品升级道具：1~100级使用"},
+	"zhu_huo_guang": {"name": "烛火光", "desc": "藏品升级道具：101~200级使用"},
+	"xing_yao_guang": {"name": "星曜光", "desc": "藏品升级道具：201~300级使用"},
+	"yue_hua_guang": {"name": "月华光", "desc": "藏品升级道具：301~400级使用"},
+	"ri_lun_guang": {"name": "日轮光", "desc": "藏品升级道具：401~500级使用"},
+	"frag_zhuoyue": {"name": "通用碎片·卓越", "desc": "合成/晋升任意卓越藏品时抵扣碎片"},
+	"frag_youxiu": {"name": "通用碎片·优秀", "desc": "合成/晋升任意优秀藏品时抵扣碎片"},
+	"frag_putong": {"name": "通用碎片·普通", "desc": "合成/晋升任意普通藏品时抵扣碎片"},
 	"cuzhi_cage": {
 	"name": "促织笼",
 	"desc": "用于在促织园捕捉促织的道具",

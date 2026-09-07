@@ -57,6 +57,7 @@ func generate_mansion_list():
 		{"name": "珍兽", "func": "on_beast"},
 		{"name": "徒弟", "func": "on_apprentice"},
 		{"name": "每日任务", "func": "on_daily_task"},
+		{"name": "藏品", "func": "on_collection"},
 	]
 	
 	# 创建上半网格（4列，紧凑按钮）
@@ -100,6 +101,13 @@ func _create_button_grid(modules: Array, columns: int) -> GridContainer:
 		btn_style.corner_radius_bottom_left = 3
 		btn_style.corner_radius_bottom_right = 3
 		btn.add_theme_stylebox_override("normal", btn_style)
+		# 【新增】套装有可激活档位时，藏品入口亮红点
+		if m.func == "on_collection" and data.collection_system.has_activatable_suit():
+			var dot = Label.new()
+			dot.text = "●"
+			dot.add_theme_color_override("font_color", Color(1, 0.2, 0.2))
+			dot.position = Vector2(102, 0)
+			btn.add_child(dot)
 		# 悬停样式
 		var hover_style = btn_style.duplicate()
 		hover_style.bg_color = Color(0.22, 0.20, 0.28)

@@ -1,0 +1,381 @@
+class_name CollectionSystem
+extends RefCounted
+
+# ============================================================
+# 藏品系统：藏宝阁（合成/升级/晋升）+ 套装（手动激活）+ 淘宝（抽奖）
+# 存档字段（经 GameData systems 数组合并/认领）：
+#   collections_owned {藏品id:{"level":n,"star":n}}
+#   collection_frags  {藏品id:碎片数}          （无双/传奇=专属碎片计数）
+#   collection_suits  {套装id:已激活档数}
+#   collection_picks  {藏品id:自选门客hero_id}
+# 加成经 HeroData 三件套接入（资质/固定赚速/百分比）
+# ============================================================
+
+var g   # GameData 中枢（不标类型避免循环引用）
+
+# 存档数据（类级声明+加载类型防御，三管齐下惯例）
+var _owned: Dictionary = {}
+var _frags: Dictionary = {}
+var _suits: Dictionary = {}
+var _picks: Dictionary = {}
+
+const QUALITY_NAMES: Array = ["无双", "传奇", "卓越", "优秀", "普通"]
+
+func _init(p_g):
+	g = p_g
+
+# ---------- 配置 ----------
+func _cfg() -> Dictionary:
+	return g._collection_configs
+
+func _settings() -> Dictionary:
+	return _cfg().get("settings", {})
+
+func get_collection(coll_id: String) -> Dictionary:
+	return _cfg().get("collections", {}).get(coll_id, {})
+
+func get_all_collections() -> Dictionary:
+	return _cfg().get("collections", {})
+
+func get_suits() -> Dictionary:
+	return _cfg().get("suits", {})
+
+func get_lottery_pool() -> Array:
+	return _cfg().get("lottery", [])
+
+# ---------- 存档 ----------
+func get_save_data() -> Dictionary:
+	return {"collections_owned": _owned, "collection_frags": _frags,
+		"collection_suits": _suits, "collection_picks": _picks}
+
+func load_save_data(d) -> void:
+	if d.has("collections_owned") and d.collections_owned is Dictionary: _owned = d.collections_owned
+	if d.has("collection_frags") and d.collection_frags is Dictionary: _frags = d.collection_frags
+	if d.has("collection_suits") and d.collection_suits is Dictionary: _suits = d.collection_suits
+	if d.has("collection_picks") and d.collection_picks is Dictionary: _picks = d.collection_picks
+
+# ---------- 基础查询 ----------
+func is_owned(coll_id: String) -> bool:
+	return _owned.has(coll_id)
+
+func get_level(coll_id: String) -> int:
+	return int(_owned.get(coll_id, {}).get("level", 1))
+
+func get_star(coll_id: String) -> int:
+	return int(_owned.get(coll_id, {}).get("star", 1))
+
+func get_frag_count(coll_id: String) -> int:
+	return int(_frags.get(coll_id, 0))
+
+func get_quality_name(q: int) -> String:
+	return QUALITY_NAMES[q] if q >= 0 and q < QUALITY_NAMES.size() else ""
+
+# ---------- 碎片 ----------
+# 品质0/1用专属碎片计数；品质2/3/4用通用碎片道具
+func add_frags(coll_id: String, n: int) -> void:
+	_frags[coll_id] = get_frag_count(coll_id) + n
+
+func _consume_frag(quality: int, coll_id: String, n: int) -> void:
+	if quality <= 1:
+		_frags[coll_id] = get_frag_count(coll_id) - n
+	else:
+		var item: String = _settings().get("generic_frag_items", {}).get(str(quality), "")
+		if item != "":
+			g.items[item] = int(g.items.get(item, 0)) - n
+
+# 当前碎片来源的拥有量
+func get_frag_have(quality: int, coll_id: String) -> int:
+	if quality <= 1:
+		return get_frag_count(coll_id)
+	var item: String = _settings().get("generic_frag_items", {}).get(str(quality), "")
+	return int(g.items.get(item, 0)) if item != "" else 0
+
+# ---------- 合成（100碎片→1星1级） ----------
+func get_synthesize_info(coll_id: String) -> Dictionary:
+	var q = int(get_collection(coll_id).get("quality", 4))
+	var need = int(_settings().get("synthesize_frag", 100))
+	var have = get_frag_have(q, coll_id)
+	return {"need": need, "have": have, "ok": have >= need}
+
+func synthesize(coll_id: String) -> Dictionary:
+	if is_owned(coll_id):
+		return {"ok": false, "msg": "已获得"}
+	if get_collection(coll_id).is_empty():
+		return {"ok": false, "msg": "配置缺失"}
+	var info = get_synthesize_info(coll_id)
+	if not info.ok:
+		return {"ok": false, "msg": "碎片不足"}
+	_consume_frag(int(get_collection(coll_id).quality), coll_id, info.need)
+	_owned[coll_id] = {"level": 1, "star": 1}
+	return {"ok": true, "msg": "合成成功"}
+
+# ---------- 升级（消耗五种光，每100级换道具重新计算） ----------
+# 消耗=品质基数×(1+段内每10级+1)；例：无双1级→50萤虫光、23级→150萤虫光、100级→50烛火光
+func get_upgrade_item(coll_id: String) -> String:
+	var lv = get_level(coll_id)
+	var seg = int((lv - 1) / 100.0)   # 0~4 段
+	var items: Array = _settings().get("upgrade_items", [])
+	return items[mini(seg, items.size() - 1)] if items.size() > 0 else ""
+
+func get_upgrade_cost(coll_id: String) -> int:
+	var lv = get_level(coll_id)
+	var q = int(get_collection(coll_id).get("quality", 4))
+	var base = int(_settings().get("quality_base", {}).get(str(q), 10))
+	return base * (1 + int((lv - 1) % 100 / 10.0))
+
+func can_upgrade(coll_id: String) -> bool:
+	if not is_owned(coll_id):
+		return false
+	if get_level(coll_id) >= int(_settings().get("max_level", 500)):
+		return false
+	var item = get_upgrade_item(coll_id)
+	return item != "" and int(g.items.get(item, 0)) >= get_upgrade_cost(coll_id)
+
+func upgrade(coll_id: String, batch: bool = false) -> Dictionary:
+	if not is_owned(coll_id):
+		return {"ok": false, "msg": "未获得"}
+	var times = 10 if batch else 1
+	var upgraded = 0
+	while times > 0 and can_upgrade(coll_id):
+		var item = get_upgrade_item(coll_id)
+		g.items[item] = int(g.items.get(item, 0)) - get_upgrade_cost(coll_id)
+		_owned[coll_id].level = get_level(coll_id) + 1
+		upgraded += 1
+		times -= 1
+	if upgraded == 0:
+		return {"ok": false, "msg": "道具不足或已满级"}
+	return {"ok": true, "msg": "升级 %d 级" % upgraded}
+
+# ---------- 晋升（升星，消耗碎片） ----------
+# 无双=固定100；传奇=100×(1+(星-1)/10取整)；卓越=100×(1+(星-1)/3)；优秀=100×(1+(星-1)/2)；普通=100×星
+func get_star_up_cost(coll_id: String) -> int:
+	var q = int(get_collection(coll_id).get("quality", 4))
+	var s = get_star(coll_id)
+	match q:
+		0: return int(_settings().get("synthesize_frag", 100))
+		1: return 100 * (1 + int((s - 1) / 10.0))
+		2: return 100 * (1 + int((s - 1) / 3.0))
+		3: return 100 * (1 + int((s - 1) / 2.0))
+		_: return 100 * s
+
+func can_star_up(coll_id: String) -> bool:
+	if not is_owned(coll_id):
+		return false
+	if get_star(coll_id) >= int(_settings().get("max_star", 20)):
+		return false
+	return get_frag_have(int(get_collection(coll_id).get("quality", 4)), coll_id) >= get_star_up_cost(coll_id)
+
+func star_up(coll_id: String) -> Dictionary:
+	if not can_star_up(coll_id):
+		return {"ok": false, "msg": "碎片不足或已满星"}
+	var q = int(get_collection(coll_id).get("quality", 4))
+	_consume_frag(q, coll_id, get_star_up_cost(coll_id))
+	_owned[coll_id].star = get_star(coll_id) + 1
+	return {"ok": true, "msg": "晋升成功"}
+
+# ---------- 自选门客 ----------
+func set_pick(coll_id: String, hero_id: String) -> void:
+	_picks[coll_id] = hero_id
+
+func get_pick(coll_id: String) -> String:
+	return _picks.get(coll_id, "")
+
+# ---------- 套装（手动逐档激活，免费） ----------
+# 进度=成员最低星数达到的档位数；激活不自动，亮红点提示
+func get_suit_info(suit_id: String) -> Dictionary:
+	var suit: Dictionary = get_suits().get(suit_id, {})
+	var tiers: Array = suit.get("tiers", [])
+	var min_star = 99
+	for m in suit.get("members", []):
+		if is_owned(m):
+			min_star = mini(min_star, get_star(m))
+		else:
+			min_star = 0
+	var reached = 0
+	for t in tiers:
+		if min_star >= int(t):
+			reached += 1
+	var activated = int(_suits.get(suit_id, 0))
+	return {"reached": reached, "activated": activated,
+		"total": tiers.size(), "can_activate": activated < reached, "min_star": min_star}
+
+func has_activatable_suit() -> bool:
+	for sid in get_suits().keys():
+		if get_suit_info(sid).can_activate:
+			return true
+	return false
+
+func activate_suit(suit_id: String) -> Dictionary:
+	var info = get_suit_info(suit_id)
+	if not info.can_activate:
+		return {"ok": false, "msg": "暂无可激活档位"}
+	_suits[suit_id] = int(_suits.get(suit_id, 0)) + 1
+	return {"ok": true, "msg": "激活成功"}
+
+# ---------- 淘宝（权重制 roll，单抽1券/十连10券） ----------
+func get_ticket_item() -> String:
+	return _settings().get("lottery_ticket", "tao_bao_quan")
+
+func get_ticket_count() -> int:
+	return int(g.items.get(get_ticket_item(), 0))
+
+func can_lottery(n: int) -> bool:
+	return get_ticket_count() >= n
+
+func roll(count: int) -> Dictionary:
+	if not can_lottery(count):
+		return {"ok": false, "msg": "淘宝券不足", "results": []}
+	g.items[get_ticket_item()] = get_ticket_count() - count
+	var results = []
+	for i in count:
+		results.append(_roll_one())
+	return {"ok": true, "results": results}
+
+func _roll_one() -> Dictionary:
+	var pool = get_lottery_pool()
+	var total = 0
+	for e in pool:
+		total += int(e.get("weight", 0))
+	var r = randi() % maxi(total, 1)
+	for e in pool:
+		r -= int(e.get("weight", 0))
+		if r < 0:
+			return _apply_lottery(e)
+	return _apply_lottery(pool.back())
+
+# 应用奖池项：frag=专属碎片 / gfrag=通用碎片道具 / item=普通道具（数量取settings.light_counts）
+func _apply_lottery(e: Dictionary) -> Dictionary:
+	match e.get("type", ""):
+		"frag":
+			add_frags(e.get("collection", ""), int(e.get("count", 0)))
+		"gfrag":
+			var item: String = _settings().get("generic_frag_items", {}).get(str(int(e.get("quality", 4))), "")
+			if item != "":
+				g.items[item] = int(g.items.get(item, 0)) + int(e.get("count", 0))
+		"item":
+			var item_id: String = e.get("item", "")
+			var n = int(e.get("count", 0))
+			if n <= 0:
+				n = int(_settings().get("light_counts", {}).get(item_id, 10))
+			g.items[item_id] = int(g.items.get(item_id, 0)) + n
+			e = e.duplicate()
+			e["count"] = n
+	return e
+
+# ============ HeroData 三件套接入 ============
+
+# 当前门客是否五艳（配置 settings.wuyan_heroes）
+func _is_wuyan(hero_id: String) -> bool:
+	return hero_id in _settings().get("wuyan_heroes", [])
+
+# 基础效果目标匹配：hero/wuyan/pick/quality_min/category
+func _target_match(base: Dictionary, hero_id: String) -> bool:
+	if not g.heroes.has(hero_id):
+		return false
+	var hero = g.heroes[hero_id]
+	match base.get("target", ""):
+		"hero": return hero_id == base.get("hero", "")
+		"wuyan": return _is_wuyan(hero_id)
+		"quality_min": return int(hero.get("quality", 0)) >= int(base.get("min", 2))
+		"category": return hero.get("category", "") == base.get("category", "")
+	return false
+
+# 特殊效果目标匹配（hero_pct/hero_apt 用）
+func _special_match(sp: Dictionary, hero_id: String) -> bool:
+	match sp.get("kind", ""):
+		"hero_pct", "hero_apt":
+			return hero_id == sp.get("hero", "")
+		"group_pct", "group_apt":
+			return _is_wuyan(hero_id)
+		"pick_pct":
+			return hero_id == get_pick("")
+		"category_pct":
+			return g.heroes.has(hero_id) and g.heroes[hero_id].get("category", "") == sp.get("category", "")
+		"quality_min_pct":
+			return g.heroes.has(hero_id) and int(g.heroes[hero_id].get("quality", 0)) >= int(sp.get("min", 2))
+		"category_pct", "category_apt":
+			return g.heroes.has(hero_id) and g.heroes[hero_id].get("category", "") == sp.get("category", "")
+	return false
+
+# 资质加成 = Σ(基础效果资质类 每级×级+每星×星) + Σ(特殊效果 hero_apt/group_apt 每星×星)
+func get_aptitude_bonus(hero_id: String) -> int:
+	if not g.heroes.has(hero_id):
+		return 0
+	var total = 0
+	for cid in _owned.keys():
+		var coll = get_collection(cid)
+		if coll.is_empty():
+			continue
+		var lv = get_level(cid)
+		var st = get_star(cid)
+		var base: Dictionary = coll.get("base", {})
+		# 自选门客的基础效果目标匹配需要藏品id，单独处理
+		if base.get("wired", false) and base.get("stat", "") == "apt":
+			if base.get("target", "") == "pick":
+				if hero_id == get_pick(cid):
+					total += int(base.get("per_level", 0)) * lv + int(base.get("per_star", 0)) * st
+			elif _target_match(base, hero_id):
+				total += int(base.get("per_level", 0)) * lv + int(base.get("per_star", 0)) * st
+		var sp: Dictionary = coll.get("special", {})
+		if sp.get("kind", "") in ["hero_apt", "group_apt", "category_apt"]:
+			if _special_match(sp, hero_id):
+				total += int(sp.get("per_star", 0)) * st
+	return total
+
+# 固定赚速 = Σ(基础效果赚钱类 每级×级+每星×星)
+func get_flat_income_bonus(hero_id: String) -> int:
+	if not g.heroes.has(hero_id):
+		return 0
+	var total = 0
+	for cid in _owned.keys():
+		var coll = get_collection(cid)
+		if coll.is_empty():
+			continue
+		var base: Dictionary = coll.get("base", {})
+		if not base.get("wired", false) or base.get("stat", "") != "income":
+			continue
+		var val = int(base.get("per_level", 0)) * get_level(cid) + int(base.get("per_star", 0)) * get_star(cid)
+		if base.get("target", "") == "pick":
+			if hero_id == get_pick(cid):
+				total += val
+		elif _target_match(base, hero_id):
+			total += val
+	return total
+
+# 百分比 = Σ(特殊效果每星×星%) + 套装(五艳门客%/指定门客%)
+func get_percent_bonus(hero_id: String) -> float:
+	if not g.heroes.has(hero_id):
+		return 0.0
+	var bonus = 0.0
+	for cid in _owned.keys():
+		var coll = get_collection(cid)
+		if coll.is_empty():
+			continue
+		var sp: Dictionary = coll.get("special", {})
+		if sp.get("kind", "").ends_with("_pct") or sp.get("kind", "") == "pick_pct":
+			# pick_pct 需要藏品id判断
+			if sp.get("kind", "") == "pick_pct":
+				if hero_id == get_pick(cid):
+					bonus += float(sp.get("per_star", 0)) * get_star(cid) / 100.0
+			elif _special_match(sp, hero_id):
+				bonus += float(sp.get("per_star", 0)) * get_star(cid) / 100.0
+	bonus += _suit_percent(hero_id)
+	return bonus
+
+# 套装百分比（仅已接入的两类：wuyan_pct 五艳门客 / hero_pct 指定门客；其余展示不接入）
+func _suit_percent(hero_id: String) -> float:
+	var pct = 0.0
+	for sid in get_suits().keys():
+		var suit: Dictionary = get_suits()[sid]
+		var act = int(_suits.get(sid, 0))
+		if act <= 0:
+			continue
+		var per = float(suit.get("per_tier", 0))
+		match suit.get("kind", "display"):
+			"wuyan_pct":
+				if _is_wuyan(hero_id):
+					pct += per * act / 100.0
+			"hero_pct":
+				if hero_id == suit.get("hero", ""):
+					pct += per * act / 100.0
+	return pct

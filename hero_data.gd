@@ -45,6 +45,8 @@ static func get_total_aptitude(g, hero_id: String) -> int:
 	total += g.token_system.get_bound_aptitude(hero_id)
 	# 【新增】风姿资质：醉墨挥毫等级×每级资质（无上限）
 	total += g.fengzi_system.get_aptitude(hero_id)
+	# 【新增】藏品基础资质（每级+每星，含特殊效果资质每星）
+	total += g.collection_system.get_aptitude_bonus(hero_id)
 	
 	return total
 
@@ -85,9 +87,10 @@ static func get_extra_income(g, hero_id: String) -> int:
 	extra += g.cuzhi_system.get_hero_worm_flat_bonus(hero_id)
 	# 【新增】天赋固定赚钱（鬼斧神工星级·替换制：只取当前星级配置值，不累加）
 	extra += g.talent_system.get_flat_income(hero_id)
-	
 	# 【新增】苦情契约固定赚速（白月初独有：指定挚友提供赚钱总值 × 契约等级 × 0.1%）
 	extra += g.token_system.get_contract_income(hero_id)
+	# 【新增】藏品固定赚速（基础效果赚钱类 每级+每星）
+	extra += g.collection_system.get_flat_income_bonus(hero_id)
 	
 	return extra
 
@@ -128,6 +131,8 @@ static func get_percent_bonus(g, hero_id: String) -> float:
 	bonus += g.fengzi_system.get_income_pct(hero_id)
 	# 【新增】天赋赚钱百分比（鬼斧神工星级·替换制：只取当前星级配置值，不累加）
 	bonus += g.talent_system.get_income_pct(hero_id)
+	# 【新增】藏品特殊效果百分比（指定/类别/五艳/自选/无双以上门客 + 套装已接入类）
+	bonus += g.collection_system.get_percent_bonus(hero_id)
 	
 	return bonus
 

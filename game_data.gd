@@ -580,6 +580,9 @@ var hero_talents: Dictionary = {}   # 【新增】天赋存档 {hero_id: {"star"
 var _talent_configs: Dictionary = {}   # 【新增】天赋配置（talent.json）
 var hero_contracts: Dictionary = {}   # 【新增】苦情契约存档 {hero_id: {"level": int, "friends": [挚友id,...]}}
 
+# ① var 声明区（talent_system 附近）【新增】
+var collection_system   # 藏品系统
+var _collection_configs: Dictionary = {}
 # ==================== 初始化 ====================
 # 初始化：创建各子系统（纯逻辑模块，持有本中枢引用），再加载全部配置
 func _init():
@@ -607,6 +610,7 @@ func _init():
 	token_system = TokenSystem.new(self)   # 【新增】信物系统
 	fengzi_system = FengziSystem.new(self)   # 【新增】风姿系统
 	talent_system = TalentSystem.new(self)   # 【新增】天赋系统
+	collection_system = CollectionSystem.new(self)
 	
 	_load_all_configs()
 
@@ -641,6 +645,7 @@ func _load_all_configs():
 	_token_configs = _load_json("res://data/tokens.json")   # 【新增】信物配置
 	_fengzi_configs = _load_json("res://data/fengzi.json")   # 【新增】风姿配置
 	_talent_configs = _load_json("res://data/talent.json")   # 【新增】天赋配置
+	_collection_configs = _load_json("res://data/collection.json")   # 函数名以现有配置加载辅助函数为准
 	
 	_load_items_config()   # 【重构新增】道具表
 	_load_travel_config()  # 【重构新增】游历配置

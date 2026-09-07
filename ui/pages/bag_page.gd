@@ -178,6 +178,10 @@ func _show_item_detail_popup(item_id: String):
 					popup.queue_free()
 					c.show_wushuang_box_selector()
 					return)
+			"suit_frag_box":   # 【新增】套装锦盒：自选该套装成员藏品碎片×1
+				use_btn.pressed.connect(func():
+					popup.queue_free()
+					c.show_suit_frag_box_selector(item_id))
 		vbox.add_child(use_btn)
 	
 	c._add_ok_button(vbox, func(): popup.queue_free(), "关闭")
