@@ -20,6 +20,9 @@ var _suits: Dictionary = {}
 var _picks: Dictionary = {}
 
 const QUALITY_NAMES: Array = ["无双", "传奇", "卓越", "优秀", "普通"]
+# 必须映射后写入——直接写中文会造出无人读取的孤儿键（2026-09-08 实测踩坑：发放成功但面板不跳变）
+const FRIEND_STAT_KEYS := {"友好": "friendly", "才华": "talent"}
+
 
 func _init(p_g):
 	g = p_g
@@ -189,10 +192,11 @@ func get_pick(coll_id: String) -> String:
 	return _picks.get(coll_id, "")
 
 # ---------- 挚友友好/才华（二批·写入式 2026-09-08） ----------
-# 仿宅院挚友卷：升级/升星/合成时把差值直接写进挚友存档字段（只加不减，追加即正确，无需记录已发值）；
-# 挚友解锁时补发累计值（friend_system.unlock_friend 挂钩）。读取侧零改动，美名/店铺槽位/月老/谈心缘分/未来新功能全自然生效
-
+# 仿宅院挚友卷：升级/升星/合成时把差值直接写进挚友存档字段；挚友解锁时补发累计值。
+# 存档字段映射：挚友存档键是英文 friendly/talent（friend_system 结构），藏品 stat 是中文显示名，
+# 必须映射后写入——直接写中文会造出无人读取的孤儿键（2026-09-08 实测踩坑：发放成功但面板不跳变）
 # 友好/才华类藏品目标匹配：friend=指定挚友 / friend_category=指定职业挚友（职业读 friends.json 的 category 字段）
+# 目标匹配：friend=指定挚友 / friend_category=指定职业挚友（职业读全量配置，不读解锁时刻的存档快照）
 func _friend_target_match(base: Dictionary, friend_id: String) -> bool:
 	if not g.friends.has(friend_id):
 		return false
@@ -200,13 +204,10 @@ func _friend_target_match(base: Dictionary, friend_id: String) -> bool:
 		"friend":
 			return friend_id == base.get("friend", "")
 		"friend_category":
-			# 【改】职业从全量配置 g._friend_configs 读，不从存档条目读——存档挚友数据是解锁时刻的
-			# 配置快照，category 是后来才加进 friends.json 的，老挚友条目里没有该字段，读存档会永远匹配不上
-			# （2026-09-08 极夜实测踩坑）
 			return str(g._friend_configs.get(friend_id, {}).get("category", "")) == base.get("category", "")
 	return false
 
-# 差值发放：藏品等级/星数变化后，把该藏品本次新增部分发给所有匹配挚友
+# 差值发放：藏品等级/星数变化后，把该藏品本次新增部分发给所有匹配挚友（只加不减，追加即正确）
 func apply_friend_bonus_delta(coll_id: String, old_lv: int, old_star: int) -> void:
 	var coll = get_collection(coll_id)
 	if coll.is_empty():
@@ -214,8 +215,8 @@ func apply_friend_bonus_delta(coll_id: String, old_lv: int, old_star: int) -> vo
 	var base: Dictionary = coll.get("base", {})
 	if not base.get("wired", false):
 		return
-	var stat: String = str(base.get("stat", ""))
-	if stat != "友好" and stat != "才华":
+	var key: String = FRIEND_STAT_KEYS.get(str(base.get("stat", "")), "")
+	if key == "":
 		return
 	var delta = int(base.get("per_level", 0)) * (get_level(coll_id) - old_lv) + int(base.get("per_star", 0)) * (get_star(coll_id) - old_star)
 	if delta <= 0:
@@ -223,7 +224,7 @@ func apply_friend_bonus_delta(coll_id: String, old_lv: int, old_star: int) -> vo
 	for friend_id in g.friends.keys():
 		if _friend_target_match(base, friend_id):
 			var f = g.friends[friend_id]
-			f[stat] = int(f.get(stat, 0)) + delta
+			f[key] = int(f.get(key, 0)) + delta
 
 # 挚友解锁补发：一次性加上当前所有已养成藏品累计应得值（新挚友即时享受）
 func apply_friend_unlock_bonus(friend_id: String) -> void:
@@ -236,11 +237,11 @@ func apply_friend_unlock_bonus(friend_id: String) -> void:
 		var base: Dictionary = coll.get("base", {})
 		if not base.get("wired", false) or not _friend_target_match(base, friend_id):
 			continue
-		var stat: String = str(base.get("stat", ""))
-		if stat != "友好" and stat != "才华":
+		var key: String = FRIEND_STAT_KEYS.get(str(base.get("stat", "")), "")
+		if key == "":
 			continue
 		var f = g.friends[friend_id]
-		f[stat] = int(f.get(stat, 0)) + int(base.get("per_level", 0)) * get_level(cid) + int(base.get("per_star", 0)) * get_star(cid)
+		f[key] = int(f.get(key, 0)) + int(base.get("per_level", 0)) * get_level(cid) + int(base.get("per_star", 0)) * get_star(cid)
 
 # ---------- 套装（手动逐档激活，免费） ----------
 # 进度=成员最低星数达到的档位数；激活不自动，亮红点提示
