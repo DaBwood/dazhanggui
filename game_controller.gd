@@ -1501,8 +1501,8 @@ func _on_hero_box_selected(hero_id: String):
 	return bag_page._on_hero_box_selected(hero_id)
 
 # 【新增】套装锦盒选择器 → pages/collection_view.gd
-func show_suit_frag_box_selector(item_id: String):
-	return collection_view.show_suit_frag_box_selector(item_id)
+func show_suit_frag_box_selector(item_id: String, qty: int = 1):
+	return collection_view.show_suit_frag_box_selector(item_id, qty)
 
 # ==================== 【转发】关卡页 → pages/stage_page.gd ====================
 

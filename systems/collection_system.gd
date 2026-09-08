@@ -200,7 +200,10 @@ func _friend_target_match(base: Dictionary, friend_id: String) -> bool:
 		"friend":
 			return friend_id == base.get("friend", "")
 		"friend_category":
-			return g.friends[friend_id].get("category", "") == base.get("category", "")
+			# 【改】职业从全量配置 g._friend_configs 读，不从存档条目读——存档挚友数据是解锁时刻的
+			# 配置快照，category 是后来才加进 friends.json 的，老挚友条目里没有该字段，读存档会永远匹配不上
+			# （2026-09-08 极夜实测踩坑）
+			return str(g._friend_configs.get(friend_id, {}).get("category", "")) == base.get("category", "")
 	return false
 
 # 差值发放：藏品等级/星数变化后，把该藏品本次新增部分发给所有匹配挚友
