@@ -104,12 +104,20 @@ func generate_beast_page():
 	grid.add_theme_constant_override("v_separation", 12)
 	grid.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	scroll.add_child(grid)
+	
+	# 【新增】珍兽回收入口：页面底部
+	var recycle_btn = Button.new()
+	recycle_btn.text = "回收珍兽"
+	recycle_btn.custom_minimum_size = Vector2(200, 40)
+	recycle_btn.pressed.connect(_show_beast_recycle_panel)
+	vbox.add_child(recycle_btn)
 
 
 func update_beast_page():
 	if not c.has_node("PageContainer/BeastPage/BeastVBox"): return
 	var vbox = c.get_node("PageContainer/BeastPage/BeastVBox")
-	vbox.get_node("BeastRes").text = "珍兽果：%d  |  奇香果：%d" % [int(data.items.get("beast_fruit", 0)), int(data.items.get("aroma_fruit", 0))]   # 【改】读道具轨
+	# 【改】顶部资源补觉醒果
+	vbox.get_node("BeastRes").text = "珍兽果：%d  |  奇香果：%d  |  觉醒果：%d" % [int(data.items.get("beast_fruit", 0)), int(data.items.get("aroma_fruit", 0)), int(data.items.get("awaken_fruit", 0))]
 	
 	var grid = vbox.find_child("BeastGrid", true, false)
 	if grid == null: return
@@ -278,6 +286,11 @@ func open_beast_detail(beast_id: String, instance_index: int):
 	skill_bonus_lbl.name = "BeastSkillBonusLbl"
 	skill_title_row.add_child(skill_bonus_lbl)
 	
+	# 【新增】觉醒次数/下次消耗显示
+	var awaken_lbl = Label.new()
+	awaken_lbl.name = "BeastAwakenLbl"
+	skill_title_row.add_child(awaken_lbl)
+	
 	# 技能网格滚动区（全屏后空间充裕，改弹性填充吃满剩余高度）
 	var skill_scroll = ScrollContainer.new()
 	skill_scroll.name = "BeastSkillScroll"
@@ -294,7 +307,7 @@ func open_beast_detail(beast_id: String, instance_index: int):
 	skill_grid.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	skill_scroll.add_child(skill_grid)
 	
-	# 创建技能按钮
+	# 【改】创建初始技能按钮
 	var skill_count = cfg.get("skill_count", 0)
 	for i in range(skill_count):
 		var btn = Button.new()
@@ -303,6 +316,15 @@ func open_beast_detail(beast_id: String, instance_index: int):
 		btn.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 		btn.pressed.connect(_on_beast_skill_clicked.bind(i))
 		skill_grid.add_child(btn)
+
+	# 【新增】技能列表最后的“+”觉醒按钮
+	var awaken_btn = Button.new()
+	awaken_btn.name = "BeastAwakenBtn"
+	awaken_btn.text = "+"
+	awaken_btn.custom_minimum_size = Vector2(0, 40)
+	awaken_btn.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	awaken_btn.pressed.connect(_on_beast_awaken.bind(beast_id, instance_index))
+	skill_grid.add_child(awaken_btn)
 	
 	# 装备/卸下按钮
 	var equip_btn = Button.new()
@@ -346,24 +368,51 @@ func _update_beast_detail(beast_id: String, instance_index: int):
 	
 	skill_bonus_lbl.text = "技能加成：%.0f%%" % (skill_bonus * 100)
 	
-	# 更新技能网格按钮
+	# 【改】更新技能网格按钮；觉醒新增技能不足时自动补按钮，并保持“+”在最后
+	var bs = data.beast_system
 	var skills = instance.get("skills", [])
 	var skill_grid = vbox.find_child("BeastSkillGrid", true, false)
 	if skill_grid:
-		for i in range(skill_grid.get_child_count()):
-			var btn = skill_grid.get_child(i)
+		var awaken_btn = skill_grid.find_child("BeastAwakenBtn", true, false)
+
+		# 觉醒后技能数量可能超过初始按钮数，先补按钮
+		while skill_grid.get_child_count() - 1 < skills.size():
+			var new_index = skill_grid.get_child_count() - 1
+			var new_btn = Button.new()
+			new_btn.name = "BeastSkillBtn_%d" % new_index
+			new_btn.custom_minimum_size = Vector2(0, 40)
+			new_btn.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+			new_btn.pressed.connect(_on_beast_skill_clicked.bind(new_index))
+			skill_grid.add_child(new_btn)
+			if awaken_btn:
+				skill_grid.move_child(new_btn, max(0, skill_grid.get_child_count() - 2))
+
+		for child in skill_grid.get_children():
+			if not child.name.begins_with("BeastSkillBtn_"):
+				continue
+			var i = int(child.name.trim_prefix("BeastSkillBtn_"))
 			if i < skills.size():
-				btn.visible = true
+				child.visible = true
 				var sk = skills[i]
 				var txt = "+%.0f%%" % (sk.percent * 100)
 				if sk.percent >= 0.249:
 					txt += " [满]"
-					btn.disabled = true
+					child.disabled = true
 				else:
-					btn.disabled = false
-				btn.text = txt
+					child.disabled = false
+				child.text = txt
 			else:
-				btn.visible = false
+				child.visible = false
+
+		# 【新增】更新觉醒次数与“+”按钮状态
+		var awaken_lbl = vbox.find_child("BeastAwakenLbl", true, false)
+		var acount = bs.get_awaken_count(beast_id, instance_index)
+		var alimit = bs.get_awaken_limit(beast_id, instance_index)
+		var acost = bs.get_awaken_cost(beast_id, instance_index)
+		if awaken_lbl:
+			awaken_lbl.text = "觉醒：%d/%d｜下次觉醒果×%d（拥有%d）" % [acount, alimit, acost, int(data.items.get("awaken_fruit", 0))]
+		if awaken_btn:
+			awaken_btn.disabled = acount >= alimit or int(data.items.get("awaken_fruit", 0)) < acost
 	
 	# 装备状态
 	var hid = instance.get("equipped_hero", "")
@@ -378,6 +427,16 @@ func _on_beast_upgrade(beast_id: String, instance_index: int):
 		update_beast_page()
 		c.update_all_ui()
 
+# 【新增】珍兽觉醒：成功只刷新界面，不额外弹成功文字
+func _on_beast_awaken(beast_id: String, instance_index: int):
+	var res: Dictionary = data.beast_system.awaken_beast(beast_id, instance_index)
+	if not res.get("ok", false):
+		c._show_stage_hint(res.get("reason", "觉醒失败"))
+		return
+	_update_beast_detail(beast_id, instance_index)
+	update_beast_page()
+	c.update_bag_list()
+	c.update_all_ui()
 
 func _on_beast_equip_toggle(beast_id: String, instance_index: int):
 	var instance = data.get_beast_instance(beast_id, instance_index)
@@ -438,6 +497,73 @@ func _show_hero_equip_selector(beast_id: String, instance_index: int):
 	vbox.add_child(cancel)
 	
 	c.add_child(panel)
+
+# 【新增】珍兽回收面板：当前仅驺虞可回收
+func _show_beast_recycle_panel():
+	var panel = c._create_base_popup("回收珍兽", Vector2(520, 420))
+	panel.name = "BeastRecyclePanel"
+	var vbox = panel.get_child(0)
+
+	var count = data.beast_system.get_beast_instance_count("zou_yu")
+	if count <= 0:
+		var empty = Label.new()
+		empty.text = "当前没有可回收的驺虞"
+		empty.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+		vbox.add_child(empty)
+	else:
+		var scroll = ScrollContainer.new()
+		scroll.custom_minimum_size = Vector2(480, 280)
+		vbox.add_child(scroll)
+
+		var list = VBoxContainer.new()
+		list.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+		scroll.add_child(list)
+
+		for i in range(count):
+			var inst = data.get_beast_instance("zou_yu", i)
+			if inst == null: continue
+			var info = data.beast_system.get_beast_recycle_info("zou_yu", i)
+
+			var row = HBoxContainer.new()
+			row.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+			row.add_theme_constant_override("separation", 8)
+			list.add_child(row)
+
+			var eq = inst.get("equipped_hero", "")
+			var eq_name = "未装备"
+			if eq != "" and data.heroes.has(eq):
+				eq_name = data.heroes[eq].name
+
+			var lbl = Label.new()
+			lbl.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+			lbl.text = "驺虞 #%d  Lv.%d（%s）→ 觉醒果×15 / 珍兽果×400" % [i + 1, inst.level, eq_name]
+			row.add_child(lbl)
+
+			var btn = Button.new()
+			btn.text = "回收"
+			btn.disabled = not info.get("ok", false)
+			btn.tooltip_text = info.get("reason", "")
+			btn.pressed.connect(_on_recycle_beast.bind("zou_yu", i))
+			row.add_child(btn)
+
+	var cancel = Button.new()
+	cancel.text = "关闭"
+	cancel.pressed.connect(func(): c._safe_close("BeastRecyclePanel"))
+	vbox.add_child(cancel)
+
+	c.add_child(panel)
+
+# 【新增】回收一只驺虞
+func _on_recycle_beast(beast_id: String, instance_index: int):
+	var res: Dictionary = data.beast_system.recycle_beast(beast_id, instance_index)
+	if not res.get("ok", false):
+		c._show_stage_hint(res.get("reason", "回收失败"))
+		return
+	c._safe_close("BeastRecyclePanel")
+	update_beast_page()
+	c.update_bag_list()
+	c.update_hero_panel()
+	c.update_all_ui()
 
 func _on_hero_equipped_beast(hero_id: String, beast_id: String, instance_index: int):
 	data.equip_beast(hero_id, beast_id, instance_index)

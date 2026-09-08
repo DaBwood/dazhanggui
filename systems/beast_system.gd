@@ -9,6 +9,12 @@ extends RefCounted
 # GameData 中枢引用（不标注类型，避免类之间循环引用导致解析失败）
 var g
 
+# ============ 珍兽觉醒（2026-09-08） ============
+# 规则：技能列表最后的“+”消耗觉醒果；初始30个，每次+15；基础上限20次。
+const AWAKEN_BASE_LIMIT := 20
+const AWAKEN_COST_START := 30
+const AWAKEN_COST_STEP := 15
+
 # 由 GameData._init 创建本系统时注入中枢引用
 func _init(p_g):
 	g = p_g
@@ -34,6 +40,9 @@ func load_save_data(s: Dictionary):
 						sk.refresh_count = 0
 				if not inst.has("aura2_lv"): inst["aura2_lv"] = 1   # 【新增】旧档兼容：光环二初始1级
 				if not inst.has("aura3_lv"): inst["aura3_lv"] = 1   # 【新增】旧档兼容：光环三初始1级
+				# 【新增】旧档兼容：觉醒次数/额外觉醒上限
+				if not inst.has("awaken_count"): inst["awaken_count"] = 0
+				if not inst.has("awaken_limit_bonus"): inst["awaken_limit_bonus"] = 0
 	if s.has("beast_fruit"):
 		g.items["beast_fruit"] = int(g.items.get("beast_fruit", 0)) + int(s.beast_fruit)
 	if s.has("aroma_fruit"):
@@ -102,17 +111,30 @@ func get_hero_beast_bonus(hero_id: String) -> Dictionary:
 		"percent": get_beast_skill_bonus(beast_id, idx) + get_beast_aura_bonus(beast_id, idx)
 	}
 
+# 【新增】创建一个新技能槽：沿用现有珍兽技能规则 +1%，可被铜钱/奇香果刷新
+func _new_beast_skill() -> Dictionary:
+	return {"percent": 0.01, "refresh_count": 0, "awakened": false}
+
 func _init_beast_skills(count: int) -> Array:
 	var skills = []
 	for i in range(count):
-		skills.append({"percent": 0.01, "refresh_count": 0})
+		skills.append(_new_beast_skill())
 	return skills
 
 func add_beast(beast_id: String) -> bool:
 	var cfg = get_beast_config(beast_id)
 	if cfg.is_empty(): return false
 	var max_count = cfg.get("max_count", 1)
-	var init_data = {"level": 1, "equipped_hero": "", "skills": _init_beast_skills(cfg.get("skill_count", 0)), "aura2_lv": 1, "aura3_lv": 1}   # 【改】新增光环二/三等级，初始1级
+	# 【改】新增光环二/三、觉醒次数、额外觉醒上限
+	var init_data = {
+		"level": 1,
+		"equipped_hero": "",
+		"skills": _init_beast_skills(cfg.get("skill_count", 0)),
+		"aura2_lv": 1,
+		"aura3_lv": 1,
+		"awaken_count": 0,
+		"awaken_limit_bonus": 0
+	}
 	if max_count == 1:
 		if g.beasts.has(beast_id): return false
 		g.beasts[beast_id] = init_data
@@ -129,6 +151,80 @@ func upgrade_beast(beast_id: String, instance_index: int = 0) -> bool:
 	g.items["beast_fruit"] -= 80   # 【改】
 	instance.level += 1
 	return true
+
+# 【新增】读取已觉醒次数
+func get_awaken_count(beast_id: String, instance_index: int = 0) -> int:
+	var instance = get_beast_instance(beast_id, instance_index)
+	return int(instance.get("awaken_count", 0)) if instance != null else 0
+
+# 【新增】额外觉醒上限：后续活动/藏品/其他系统直接累加这个字段
+func get_awaken_limit_bonus(beast_id: String, instance_index: int = 0) -> int:
+	var instance = get_beast_instance(beast_id, instance_index)
+	return int(instance.get("awaken_limit_bonus", 0)) if instance != null else 0
+
+# 【新增】提供给后续系统的提高上限入口
+func add_awaken_limit_bonus(beast_id: String, instance_index: int, amount: int) -> void:
+	var instance = get_beast_instance(beast_id, instance_index)
+	if instance == null: return
+	instance["awaken_limit_bonus"] = get_awaken_limit_bonus(beast_id, instance_index) + max(0, amount)
+
+# 【新增】总觉醒上限 = 基础20 + 额外上限
+func get_awaken_limit(beast_id: String, instance_index: int = 0) -> int:
+	return AWAKEN_BASE_LIMIT + get_awaken_limit_bonus(beast_id, instance_index)
+
+# 【新增】下次觉醒消耗：第1次30，第2次45，第3次60……
+func get_awaken_cost(beast_id: String, instance_index: int = 0) -> int:
+	return AWAKEN_COST_START + AWAKEN_COST_STEP * get_awaken_count(beast_id, instance_index)
+
+# 【新增】珍兽觉醒：消耗觉醒果，追加一个可刷新的新技能槽
+func awaken_beast(beast_id: String, instance_index: int = 0) -> Dictionary:
+	var instance = get_beast_instance(beast_id, instance_index)
+	if instance == null:
+		return {"ok": false, "reason": "珍兽不存在"}
+	if get_awaken_count(beast_id, instance_index) >= get_awaken_limit(beast_id, instance_index):
+		return {"ok": false, "reason": "觉醒次数已达上限"}
+	var cost = get_awaken_cost(beast_id, instance_index)
+	if int(g.items.get("awaken_fruit", 0)) < cost:
+		return {"ok": false, "reason": "觉醒果不足"}
+	g.items["awaken_fruit"] = int(g.items.get("awaken_fruit", 0)) - cost
+	var skills = instance.get("skills", [])
+	var new_skill = _new_beast_skill()
+	new_skill["awakened"] = true   # 标记来源，后续如需区分觉醒技能可用
+	skills.append(new_skill)
+	instance["skills"] = skills
+	instance["awaken_count"] = get_awaken_count(beast_id, instance_index) + 1
+	return {"ok": true, "reason": ""}
+
+# 【新增】回收信息：目前仅驺虞开放
+func get_beast_recycle_info(beast_id: String, instance_index: int = 0) -> Dictionary:
+	var cfg = get_beast_config(beast_id)
+	var instance = get_beast_instance(beast_id, instance_index)
+	if cfg.is_empty() or instance == null:
+		return {"ok": false, "reason": "珍兽不存在", "awaken_fruit": 0, "beast_fruit": 0}
+	# 当前版本只允许回收驺虞
+	if beast_id != "zou_yu":
+		return {"ok": false, "reason": "该珍兽暂不可回收", "awaken_fruit": 0, "beast_fruit": 0}
+	if instance.get("equipped_hero", "") != "":
+		return {"ok": false, "reason": "请先卸下再回收", "awaken_fruit": 0, "beast_fruit": 0}
+	return {"ok": true, "reason": "", "awaken_fruit": 15, "beast_fruit": 400}
+
+# 【新增】回收一只珍兽实例：发觉醒果/珍兽果，并移除该实例
+func recycle_beast(beast_id: String, instance_index: int = 0) -> Dictionary:
+	var info = get_beast_recycle_info(beast_id, instance_index)
+	if not info.get("ok", false):
+		return info
+	var d = g.beasts.get(beast_id)
+	if d is Array:
+		if instance_index < 0 or instance_index >= d.size():
+			return {"ok": false, "reason": "珍兽不存在", "awaken_fruit": 0, "beast_fruit": 0}
+		d.remove_at(instance_index)
+		if d.is_empty():
+			g.beasts.erase(beast_id)
+	else:
+		g.beasts.erase(beast_id)
+	g.items["awaken_fruit"] = int(g.items.get("awaken_fruit", 0)) + int(info.get("awaken_fruit", 0))
+	g.items["beast_fruit"] = int(g.items.get("beast_fruit", 0)) + int(info.get("beast_fruit", 0))
+	return {"ok": true, "reason": "", "awaken_fruit": int(info.get("awaken_fruit", 0)), "beast_fruit": int(info.get("beast_fruit", 0))}
 
 func refresh_beast_skill(beast_id: String, instance_index: int, skill_index: int, use_aroma: bool = false) -> bool:
 	var instance = get_beast_instance(beast_id, instance_index)
