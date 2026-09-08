@@ -687,6 +687,13 @@ func on_shop_skill_upgrade(skill_index: int, mode: String = "single"):
 		c.update_all_ui()
 		c.update_bag_list()
 
+# 【新增】虫师副业技能升级（促织园体系走 cuzhi_system；single=升1级，bulk=一键升满）
+func on_side_skill_upgrade(skill_idx: int, mode: String = "single"):
+	if data.cuzhi_system.upgrade_side_skill(current_hero_id, skill_idx, mode == "bulk"):
+		update_hero_panel()
+		c.update_all_ui()
+		c.update_bag_list()
+
 func on_promotion_upgrade(mode: String = "single"):
 	var upgraded = data.upgrade_promotion(current_hero_id, mode == "bulk")
 	if upgraded > 0:
@@ -849,10 +856,23 @@ func update_hero_list():
 		
 		if name_lbl:
 			name_lbl.text = "【%s】Lv.%d | %s" % [h.name, h.level, h.category]
+			# 【新增】门客名字按品质着色（传奇橙#e67e22/无双红#e74c3c，普通白）
+			name_lbl.add_theme_color_override("font_color", Color(HeroData.get_quality_color(int(h.get("quality", 0)))))
 		if income_lbl:
 			income_lbl.text = "%s/秒" % c.format_number(income)
 		if status_lbl:
 			status_lbl.text = status
+		
+		# 【新增】卡片边框按品质着色（普通/卓越紫、传奇橙、无双红；locked 卡整体灰显自然压暗）
+		var q_col = Color(HeroData.get_quality_color(int(h.get("quality", 0))))
+		var card_sty = StyleBoxFlat.new()
+		card_sty.bg_color = Color("#232035")
+		card_sty.border_color = q_col
+		card_sty.set_border_width_all(2)
+		card_sty.set_corner_radius_all(6)
+		cell.add_theme_stylebox_override("normal", card_sty)
+		cell.add_theme_stylebox_override("hover", card_sty)
+		cell.add_theme_stylebox_override("pressed", card_sty)
 	
 	_sort_hero_grid(grid)   # 【新增】每次刷新后按实时赚速重排卡片顺序
 
@@ -1052,6 +1072,40 @@ func _fill_shop_tab(list):
 		
 		shop_row.add_child(shop_btn_box)
 		list.add_child(shop_row)
+	
+	# 【新增】虫师副业技能（促织园虫书Lv≥1激活后获得同名技能，纯资质；上限=虫书等级×10，每级资质=消耗资质丹=星级）
+	for s in data.cuzhi_system.get_hero_side_skills(current_hero_id):
+		var side_row = HBoxContainer.new()
+		side_row.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+
+		var side_info = Label.new()
+		side_info.text = "【虫师】%s  Lv.%d/%d  (资质+%d)  需%d资质丹" % [s.name, s.level, s.max_level, s.level * s.star, s.star]
+		side_info.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+		side_info.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
+		side_info.clip_text = true
+		side_info.custom_minimum_size.x = 80
+		side_row.add_child(side_info)
+
+		var side_btn_box = VBoxContainer.new()
+		side_btn_box.custom_minimum_size = Vector2(70, 0)
+		side_btn_box.add_theme_constant_override("separation", 3)
+
+		var side_btn_single = Button.new()
+		side_btn_single.text = "升级"
+		side_btn_single.custom_minimum_size = Vector2(70, 24)
+		side_btn_single.add_theme_font_size_override("font_size", 12)
+		side_btn_single.pressed.connect(on_side_skill_upgrade.bind(s.idx, "single"))
+		side_btn_box.add_child(side_btn_single)
+
+		var side_btn_bulk = Button.new()
+		side_btn_bulk.text = "一键升级"
+		side_btn_bulk.custom_minimum_size = Vector2(70, 24)
+		side_btn_bulk.add_theme_font_size_override("font_size", 12)
+		side_btn_bulk.pressed.connect(on_side_skill_upgrade.bind(s.idx, "bulk"))
+		side_btn_box.add_child(side_btn_bulk)
+
+		side_row.add_child(side_btn_box)
+		list.add_child(side_row)
 
 # 【v4新增】填充占位页（服装/光环待开发，后续做功能时换成对应的 _fill_xxx_tab）
 func _fill_placeholder_tab(list):

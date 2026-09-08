@@ -215,6 +215,77 @@ func upgrade_worm_skill(hero_id: String, skill_idx: int) -> bool:
 	g.items[item_id] = g.items.get(item_id, 0) - cost
 	skill.level = int(skill.level) + 1
 	return true
+
+
+# ========== 虫师副业技能（虫书激活后获得同名技能，纯资质，资质丹升级）==========
+
+# 【查】副业技能列表（仅虫书已激活 Lv>=1 的条目；未激活虫书不显示也不可升级）
+# 返回字典数组：idx=在 skills 中的下标 / name=促织名 / star=星级 / level=副业等级 / max_level=虫书等级×10
+func get_hero_side_skills(hero_id: String) -> Array:
+	_sync_worm_skills(hero_id)   # 先同步，保证新捉促织即时出现
+	var result: Array = []
+	var skills = get_hero_worm_skills(hero_id)
+	for i in range(skills.size()):
+		var skill = skills[i]
+		if int(skill.level) < 1:
+			continue   # 虫书未激活，副业技能不出现
+		var cdata = _crickets_by_id.get(skill.cricket_id)
+		if cdata == null:
+			continue
+		result.append({
+			"idx": i,
+			"cricket_id": skill.cricket_id,
+			"name": cdata.name,
+			"star": int(skill.star),
+			"level": int(skill.get("side_level", 0)),
+			"max_level": int(skill.level) * 10,
+		})
+	return result
+
+# 【查】副业技能资质合计（HeroData 热路径：不同步列表，缺 side_level 按 0 计）
+func get_hero_side_aptitude(hero_id: String) -> int:
+	var master = g.cuzhi_worm_masters.get(hero_id)
+	if master == null:
+		return 0
+	var total = 0
+	for skill in master.skills:
+		if int(skill.level) < 1:
+			continue   # 虫书未激活不计资质
+		total += int(skill.get("side_level", 0)) * int(skill.star)
+	return total
+
+# 【查】能否升级副业技能：虫书已激活 + 未达上限(虫书等级×10) + 资质丹够(星级/级)
+func can_upgrade_side_skill(hero_id: String, skill_idx: int) -> bool:
+	var master = g.cuzhi_worm_masters.get(hero_id)
+	if master == null:
+		return false
+	if skill_idx >= master.skills.size():
+		return false
+	var skill = master.skills[skill_idx]
+	if int(skill.level) < 1:
+		return false   # 虫书未激活不可升
+	if int(skill.get("side_level", 0)) >= int(skill.level) * 10:
+		return false   # 已达上限
+	return int(g.items.get("aptitude_pill", 0)) >= int(skill.star)
+
+# 【升】升级副业技能：batch=false 升 1 级，batch=true 一键升到上限或资质丹用尽
+func upgrade_side_skill(hero_id: String, skill_idx: int, batch: bool = false) -> bool:
+	if not can_upgrade_side_skill(hero_id, skill_idx):
+		return false
+	var master = g.cuzhi_worm_masters[hero_id]
+	var skill = master.skills[skill_idx]
+	var star = int(skill.star)
+	var levels: int = 1
+	if batch:
+		var remaining = int(skill.level) * 10 - int(skill.get("side_level", 0))
+		var affordable = floori(float(g.items.get("aptitude_pill", 0)) / star)
+		levels = min(affordable, remaining)
+	if levels <= 0:
+		return false
+	g.items.aptitude_pill = int(g.items.get("aptitude_pill", 0)) - levels * star
+	skill.side_level = int(skill.get("side_level", 0)) + levels
+	return true
+
 # ========== 虫师系统（门客级别，多技能）==========
 # 【内】同步某门客的技能列表（把新获得的同职业促织加进来）
 func _sync_worm_skills(hero_id: String):
@@ -237,7 +308,8 @@ func _sync_worm_skills(hero_id: String):
 		if cid in existing_ids: continue
 		var q = int(cdata.quality)
 		var star = int(_cfg.get("worm_book", {}).get("qualities", {}).get(str(q), {}).get("star", 1))
-		master.skills.append({"cricket_id": cid, "level": 0, "star": star})
+		# 【改】追加 side_level：副业技能等级（虫书激活后获得，资质丹升级）
+		master.skills.append({"cricket_id": cid, "level": 0, "star": star, "side_level": 0})
 
 func _add_exp(cid: String, amount: int):
 	var caught = g.cuzhi_caught[cid]
@@ -378,7 +450,7 @@ func get_quality_name(q: int) -> String:
 	return _cfg.quality_names.get(str(q), "未知")
 
 func get_quality_color(q: int) -> String:
-	return _cfg.quality_colors.get(str(q), "#ffffff")
+	return _cfg.get("star_colors", {}).get(str(q), "#ffffff")
 
 func get_total_crickets() -> int:
 	return _cfg.crickets.size()

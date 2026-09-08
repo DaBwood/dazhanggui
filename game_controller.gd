@@ -2294,12 +2294,17 @@ func _apply_portrait_layout():
 		shop_scroll.size = Vector2(vs.x, vs.y - 182)   # 182 = 顶栏50 + 钱庄入口72 + 底栏60
 
 	# 门客页 / 背包页的滚动区铺满整页
+	# 【改】门客页滚动区左右留 12px 边距，卡片品质边框不再贴屏边被截断
 	for path in ["PageContainer/HeroPage/HeroScroll", "PageContainer/BagPage/BagScroll"]:
 		if has_node(path):
 			var sc = get_node(path)
 			sc.set_anchors_preset(Control.PRESET_TOP_LEFT)
-			sc.position = Vector2.ZERO
-			sc.size = Vector2(vs.x, vs.y - 110)
+			if path.ends_with("HeroScroll"):
+				sc.position = Vector2(12, 0)
+				sc.size = Vector2(vs.x - 24, vs.y - 110)
+			else:
+				sc.position = Vector2.ZERO
+				sc.size = Vector2(vs.x, vs.y - 110)
 
 	# 场景弹窗：居中并钳进视口（HeroPanel 由 hero_page 自建自管，不在此列）
 	for path in ["RechargePage", "VIPPanel", "HQPanel", "ShopPanel"]:

@@ -859,9 +859,10 @@ func _make_worm_hero_row(hero_id: String, h: Dictionary) -> Button:
 	sys._sync_worm_skills(hero_id)
 	var skills = sys.get_hero_worm_skills(hero_id)
 	var info = Label.new()
-	info.text = "技能：%d 个" % skills.size()
+	info.text = "虫书：%d 本" % skills.size()
 	info.custom_minimum_size = Vector2(140, 0)
-	info.add_theme_color_override("font_color", Color("#66ff66"))
+	# 【改】虫书数量改暖沙金，避免与一星绿冲突
+	info.add_theme_color_override("font_color", Color("#e6c07b"))
 	hbox.add_child(info)
 
 	btn.pressed.connect(func(): _show_hero_worm_skills(hero_id, h))
@@ -875,7 +876,7 @@ func _show_hero_worm_skills(hero_id: String, h: Dictionary):
 	if _worm_skill_popup != null and is_instance_valid(_worm_skill_popup):
 		_worm_skill_popup.queue_free()
 	
-	var popup = c._create_base_popup("%s 虫师技能" % h.name, Vector2(520, 640))
+	var popup = c._create_base_popup("%s 虫书" % h.name, Vector2(520, 640))
 	popup.z_index = 30
 	c.add_child(popup)
 	# 【新增】保存引用，供升级弹窗关闭后刷新
@@ -914,6 +915,7 @@ func _make_worm_skill_row(hero_id: String, idx: int, skill: Dictionary, cdata: D
 	btn.custom_minimum_size = Vector2(460, 70)
 	btn.size = Vector2(460, 70)
 
+	# 【改】行颜色统一走星级色配置（cuzhi.json star_colors；quality 与 star 1:1）
 	var col = Color(sys.get_quality_color(cdata.quality))
 	var sty = StyleBoxFlat.new()
 	sty.bg_color = CARD
@@ -942,7 +944,7 @@ func _make_worm_skill_row(hero_id: String, idx: int, skill: Dictionary, cdata: D
 	var star_lbl = Label.new()
 	star_lbl.text = "★%d" % skill.star
 	star_lbl.custom_minimum_size = Vector2(50, 0)
-	star_lbl.add_theme_color_override("font_color", Color("#ffdd88"))
+	star_lbl.add_theme_color_override("font_color", col)
 	hbox.add_child(star_lbl)
 
 	var lv_lbl = Label.new()
@@ -962,7 +964,8 @@ func _make_worm_skill_row(hero_id: String, idx: int, skill: Dictionary, cdata: D
 	var bonus_lbl = Label.new()
 	bonus_lbl.text = bonus_str
 	bonus_lbl.custom_minimum_size = Vector2(100, 0)
-	bonus_lbl.add_theme_color_override("font_color", Color("#66ff66"))
+	# 【改】效果/未激活文字改暖沙金，避免与一星绿冲突
+	bonus_lbl.add_theme_color_override("font_color", Color("#e6c07b"))
 	hbox.add_child(bonus_lbl)
 
 	btn.pressed.connect(func(): _show_worm_skill_upgrade(hero_id, idx, skill, cdata))
@@ -972,7 +975,7 @@ func _show_worm_skill_upgrade(hero_id: String, idx: int, skill: Dictionary, cdat
 	# 【修复】int(skill.star) 防御 float 问题
 	var is_pct = int(skill.star) >= 5
 	# 【改】弹窗高度从 320 增加到 380，容纳军衔提示行
-	var popup = c._create_base_popup("%s 技能升级" % cdata.name, Vector2(440, 380))
+	var popup = c._create_base_popup("%s 虫书升级" % cdata.name, Vector2(440, 380))
 	popup.z_index = 30
 	c.add_child(popup)
 
@@ -1012,7 +1015,7 @@ func _show_worm_skill_upgrade(hero_id: String, idx: int, skill: Dictionary, cdat
 	var rank_lbl = Label.new()
 	if rank_ok:
 		rank_lbl.text = "促织军衔：%s（满足要求）" % current_rank_info.full_name
-		rank_lbl.add_theme_color_override("font_color", Color("#66ff66"))
+		rank_lbl.add_theme_color_override("font_color", Color("#e6c07b"))
 	else:
 		# 【改】提示显示还需提升多少阶
 		var need_up = required_absolute - current_rank

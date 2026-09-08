@@ -47,6 +47,8 @@ static func get_total_aptitude(g, hero_id: String) -> int:
 	total += g.fengzi_system.get_aptitude(hero_id)
 	# 【新增】藏品基础资质（每级+每星，含特殊效果资质每星）
 	total += g.collection_system.get_aptitude_bonus(hero_id)
+	# 【新增】虫师副业技能资质（虫书Lv≥1解锁，副业等级×星级）
+	total += g.cuzhi_system.get_hero_side_aptitude(hero_id)
 	
 	return total
 
@@ -54,6 +56,11 @@ static func get_total_aptitude(g, hero_id: String) -> int:
 static func get_quality_name(quality: int) -> String:
 	var names = {0: "", 1: "传奇", 2: "无双"}
 	return names.get(quality, "")
+
+# 【新增】门客品质颜色：普通(=卓越)紫/传奇橙/无双红；后续在前面加"优秀"蓝档时同步扩充
+static func get_quality_color(quality: int) -> String:
+	var colors = {0: "#9b59b6", 1: "#e67e22", 2: "#e74c3c"}
+	return colors.get(quality, "#f2f2f2")
 
 # ============ 赚速（唯一入口，外部一律调这里） ============
 
