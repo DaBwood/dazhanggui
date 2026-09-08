@@ -17,7 +17,8 @@ var _detail_status: String = ""  # 详情弹窗操作结果行
 var _body = null   # 内容区引用（整页重建时更新，避免靠节点路径找）
 
 const QUALITY_NAMES: Array = ["无双", "传奇", "卓越", "优秀", "普通"]
-const QUALITY_COLORS: Array = ["#ffd700", "#c77dff", "#4da6ff", "#69c96b", "#b0b0b0"]
+# 【改】统一品质色：无双红 / 传奇橙 / 卓越紫 / 优秀蓝 / 普通白
+const QUALITY_COLORS: Array = ["#e74c3c", "#e67e22", "#9b59b6", "#3498db", "#f2f2f2"]
 
 func _init(p_c):
 	c = p_c
@@ -209,28 +210,130 @@ func _fill_ge(body: VBoxContainer):
 	var owned_ids = ids.filter(func(i): return sys.is_owned(i))
 	owned_ids.sort_custom(func(a, b): return sys.get_star(b) * 1000 + sys.get_level(b) < sys.get_star(a) * 1000 + sys.get_level(a))
 	var unowned_ids = ids.filter(func(i): return not sys.is_owned(i))
-	for cid in owned_ids + unowned_ids:
+	# 【新增】可合成藏品排最前：碎片够100的未获得藏品优先展示
+	var synth_ids = unowned_ids.filter(func(i): return sys.get_synthesize_info(i).ok)
+	var rest_ids = unowned_ids.filter(func(i): return not sys.get_synthesize_info(i).ok)
+	for cid in synth_ids + owned_ids + rest_ids:
 		grid.add_child(_make_coll_card(cid))
+
+# ---------- 藏品玩家可见效果文案 ----------
+# 原则：只显示当前实际效果数值，不展示后台 desc / 公式 / 计算过程
+
+# 【新增】格式化效果数值：去掉 10.0 这类小数尾巴，百分比显示 10 / 2.5
+func _fmt_effect_number(n) -> String:
+	var s = "%.2f" % float(n)
+	s = s.rstrip("0").rstrip(".")
+	return s
+
+# 【改】门客显示名：固定目标优先查全量门客配置，不能查 data.heroes（只含已拥有门客）
+func _hero_label(hero_id: String) -> String:
+	if hero_id == "":
+		return "未选择"
+	# 固定目标先查全量配置表：即使当前未拥有李白，也应显示"李白"
+	if data._hero_configs.has(hero_id):
+		return str(data._hero_configs[hero_id].get("name", hero_id))
+	# 自选门客已选择时，这里作为兜底
+	if data.heroes.has(hero_id):
+		return str(data.heroes[hero_id].get("name", hero_id))
+	return "未知门客"
+
+# 【新增】基础效果作用目标显示名
+func _base_target_label(base: Dictionary, cid: String) -> String:
+	match base.get("target", ""):
+		"hero":
+			return _hero_label(str(base.get("hero", "")))
+		"category":
+			return "%s类门客" % str(base.get("category", ""))
+		"wuyan":
+			return "五艳凤魁"
+		"quality_min":
+			return "无双及以上门客"
+		"pick":
+			var pick_id = data.collection_system.get_pick(cid)
+			return "自选门客（%s）" % _hero_label(pick_id) if pick_id != "" else "自选门客"
+	return "全体"
+
+# 【新增】基础效果玩家文案：按当前等级/星数直接算结果值
+func _collection_base_effect(cid: String) -> String:
+	var sys = data.collection_system
+	var base: Dictionary = sys.get_collection(cid).get("base", {})
+	if not base.get("wired", false):
+		return "基础效果：后续版本开放"
+	var lv = sys.get_level(cid) if sys.is_owned(cid) else 1
+	var st = sys.get_star(cid) if sys.is_owned(cid) else 1
+	var stat = str(base.get("stat", ""))
+	var stat_name = "资质"
+	if stat == "income":
+		stat_name = "赚速"
+	elif stat != "apt":
+		stat_name = stat
+	var val = int(base.get("per_level", 0)) * lv + int(base.get("per_star", 0)) * st
+	var val_txt = c.format_number(val) if stat == "income" else str(val)
+	return "基础效果：%s %s +%s" % [_base_target_label(base, cid), stat_name, val_txt]
+
+# 【新增】特殊效果玩家文案：按当前星数直接算结果值
+func _collection_special_effect(cid: String) -> String:
+	var sys = data.collection_system
+	var sp: Dictionary = sys.get_collection(cid).get("special", {})
+	var kind = str(sp.get("kind", "display"))
+	if kind == "" or kind == "display":
+		return "特殊效果：后续版本开放"
+	var st = sys.get_star(cid) if sys.is_owned(cid) else 1
+	var per_star = float(sp.get("per_star", 0))
+	var is_pct = kind.ends_with("_pct")
+	var target = ""
+	match kind:
+		"hero_pct", "hero_apt":
+			target = _hero_label(str(sp.get("hero", "")))
+		"group_pct", "group_apt":
+			target = "五艳凤魁"
+		"category_pct", "category_apt":
+			target = "%s类门客" % str(sp.get("category", ""))
+		"pick_pct":
+			var pick_id = sys.get_pick(cid)
+			target = "自选门客（%s）" % _hero_label(pick_id) if pick_id != "" else "自选门客"
+		"quality_min_pct":
+			target = "无双及以上门客"
+		_:
+			return "特殊效果：后续版本开放"
+	var stat_name = "赚速" if is_pct else "资质"
+	var value_txt = ""
+	if is_pct:
+		value_txt = "+%s%%" % _fmt_effect_number(per_star * st)
+	else:
+		value_txt = "+%s" % c.format_number(int(per_star * st))
+	return "特殊效果：%s %s %s" % [target, stat_name, value_txt]
 
 # 藏品卡片：已获显示★/Lv与效果摘要；未获显示碎片进度（点击都进详情）
 func _make_coll_card(cid: String) -> Button:
 	var sys = data.collection_system
 	var coll = sys.get_collection(cid)
+	var q = int(coll.get("quality", 4))
 	var btn = Button.new()
 	btn.custom_minimum_size = Vector2(270, 84)
 	btn.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	btn.mouse_filter = Control.MOUSE_FILTER_PASS   # 坑#10：滚动穿透
 	btn.add_theme_font_size_override("font_size", 12)
+	# 【新增】藏品名字按品质着色：无双红/传奇橙/卓越紫/优秀蓝/普通白
+	btn.add_theme_color_override("font_color", Color(QUALITY_COLORS[q]))
 	if sys.is_owned(cid):
-		var sp: Dictionary = coll.get("special", {})
-		var brief = sp.get("desc", "")
+		# 【改】卡片摘要显示当前特殊效果结果值，不再贴后台 desc
+		var brief = _collection_special_effect(cid).trim_prefix("特殊效果：")
 		if brief.length() > 22:
 			brief = brief.substr(0, 22) + "…"
 		btn.text = "%s ★%d Lv.%d\n%s" % [coll.get("name", cid), sys.get_star(cid), sys.get_level(cid), brief]
 	else:
 		var info = sys.get_synthesize_info(cid)
 		btn.text = "%s（未获得）\n碎片 %d/%d" % [coll.get("name", cid), info.have, info.need]
-		btn.add_theme_color_override("font_color", Color(0.6, 0.6, 0.62))
+		# 【新增】可合成红点：碎片足够时提示可合成
+		if info.ok:
+			var dot = Label.new()
+			dot.text = "●"
+			dot.mouse_filter = Control.MOUSE_FILTER_IGNORE   # 装饰节点不拦截点击
+			dot.add_theme_font_size_override("font_size", 16)
+			dot.add_theme_color_override("font_color", Color(1, 0.2, 0.2))
+			dot.position = Vector2(246, 4)
+			btn.add_child(dot)
 	btn.pressed.connect(_show_detail.bind(cid))
 	return btn
 
@@ -254,20 +357,22 @@ func _show_detail(cid: String):
 	head.text = "%s ★%d Lv.%d" % [QUALITY_NAMES[q], sys.get_star(cid), sys.get_level(cid)]
 	head.add_theme_color_override("font_color", Color(QUALITY_COLORS[q]))
 	vbox.add_child(head)
-	# 效果说明
+	# 【改】玩家可见效果：直接显示当前计算结果值，不展示后台 desc / 公式
+	var effect_title = Label.new()
+	effect_title.text = "效果预览" if not sys.is_owned(cid) else "当前效果"
+	effect_title.add_theme_color_override("font_color", Color("#ffd700"))
+	vbox.add_child(effect_title)
+
 	var base_desc = Label.new()
-	base_desc.text = "基础：" + coll.get("base", {}).get("desc", "")
+	base_desc.text = _collection_base_effect(cid)
 	base_desc.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
 	vbox.add_child(base_desc)
+
 	var sp_desc = Label.new()
-	sp_desc.text = "特殊：" + coll.get("special", {}).get("desc", "")
+	sp_desc.text = _collection_special_effect(cid)
 	sp_desc.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
 	vbox.add_child(sp_desc)
-	if not coll.get("base", {}).get("wired", false) and coll.get("special", {}).get("kind", "display") == "display":
-		var tip = Label.new()
-		tip.text = "（该藏品效果将在后续版本接入）"
-		tip.add_theme_color_override("font_color", Color(0.7, 0.7, 0.7))
-		vbox.add_child(tip)
+	
 	if not sys.is_owned(cid):
 		# 合成区
 		var info = sys.get_synthesize_info(cid)
@@ -280,6 +385,7 @@ func _show_detail(cid: String):
 		btn.pressed.connect(func():
 			var r = sys.synthesize(cid)
 			_detail_status = r.msg
+			_refresh_body()   # 【新增】合成后同步刷新藏宝阁列表，避免卡片仍显示未获得
 			_show_detail(cid))
 		vbox.add_child(btn)
 	else:
@@ -297,7 +403,7 @@ func _show_detail(cid: String):
 			pb.text = "选择"
 			pb.pressed.connect(_show_pick_selector.bind(cid))
 			row.add_child(pb)
-		# 升级区
+		# 升级区（勾选“十连”后，点升级一次执行十次）
 		var item = sys.get_upgrade_item(cid)
 		var cost = sys.get_upgrade_cost(cid)
 		var have = int(data.items.get(item, 0))
@@ -310,9 +416,11 @@ func _show_detail(cid: String):
 		var ub = Button.new()
 		ub.text = "升级"
 		ub.disabled = not sys.can_upgrade(cid)
+		# 【改】去掉独立“升级十次”按钮，升级次数由“十连”勾选决定
 		ub.pressed.connect(func():
-			var r = sys.upgrade(cid, false)
+			var r = sys.upgrade(cid, _batch)
 			_detail_status = r.msg
+			_refresh_body()   # 【新增】升级后同步刷新藏宝阁列表等级
 			_show_detail(cid))
 		urow.add_child(ub)
 		var cb = CheckBox.new()
@@ -320,14 +428,6 @@ func _show_detail(cid: String):
 		cb.button_pressed = _batch
 		cb.toggled.connect(func(on): _batch = on)
 		urow.add_child(cb)
-		var ub10 = Button.new()
-		ub10.text = "升级十次"
-		ub10.disabled = not sys.can_upgrade(cid)
-		ub10.pressed.connect(func():
-			var r = sys.upgrade(cid, true)
-			_detail_status = r.msg
-			_show_detail(cid))
-		urow.add_child(ub10)
 		# 晋升区
 		var scost = sys.get_star_up_cost(cid)
 		var shave = sys.get_frag_have(q, cid)
@@ -340,6 +440,7 @@ func _show_detail(cid: String):
 		sb.pressed.connect(func():
 			var r = sys.star_up(cid)
 			_detail_status = r.msg
+			_refresh_body()   # 【新增】晋升后同步刷新藏宝阁列表星级
 			_show_detail(cid))
 		vbox.add_child(sb)
 	c._add_ok_button(vbox, func(): _close_node("CollectionDetailPopup"), "关闭")
@@ -372,6 +473,7 @@ func _show_pick_selector(cid: String):
 			data.collection_system.set_pick(cid, hid)
 			_detail_status = "已选择 " + data.heroes[hid].get("name", hid)
 			_close_node("CollectionPickPopup")
+			_refresh_body()   # 【新增】自选门客后同步刷新藏宝阁卡片
 			_show_detail(cid))
 		list.add_child(b)
 	c._add_ok_button(vbox, func(): _close_node("CollectionPickPopup"), "取消")
@@ -423,6 +525,8 @@ func show_suit_frag_box_selector(item_id: String):
 		row.add_theme_constant_override("separation", 8)
 		var lbl = Label.new()
 		lbl.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+		# 【新增】锦盒成员名按藏品品质着色
+		lbl.add_theme_color_override("font_color", Color(QUALITY_COLORS[int(coll.get("quality", 4))]))
 		lbl.text = "%s（当前碎片 %d）" % [coll.get("name", cid), sys.get_frag_count(cid)]
 		row.add_child(lbl)
 		var btn = Button.new()

@@ -52,7 +52,7 @@ func generate_bag_list():
 	for child in grid.get_children():
 		child.queue_free()
 	
-	# 【改】为每种物品生成简洁按钮，只显示名称
+	# 【改】为每种已拥有物品生成简洁按钮，只显示名称；数量0不进背包
 	for item_id in data.ITEM_CONFIG.keys():
 		var cfg = data.ITEM_CONFIG[item_id]
 		
@@ -63,6 +63,9 @@ func generate_bag_list():
 		var count = data.items.get(item_id, 0)
 		if item_id == "lottery_ticket":
 			count = data.lottery_ticket
+		# 【新增】背包列表只显示已拥有物品，数量为 0 的道具不生成格子
+		if int(count) <= 0:
+			continue
 
 		var btn = Button.new()
 		btn.name = item_id + "_btn"
