@@ -237,6 +237,14 @@ func _hero_label(hero_id: String) -> String:
 		return str(data.heroes[hero_id].get("name", hero_id))
 	return "未知门客"
 
+# 【新增】挚友显示名：固定目标查全量挚友配置（同 _hero_label 惯例，不查 data.friends 已拥有表）
+func _friend_label(friend_id: String) -> String:
+	if friend_id == "":
+		return "未选择"
+	if data._friend_configs.has(friend_id):
+		return str(data._friend_configs[friend_id].get("name", friend_id))
+	return "未知挚友"
+
 # 【新增】基础效果作用目标显示名
 func _base_target_label(base: Dictionary, cid: String) -> String:
 	match base.get("target", ""):
@@ -251,6 +259,10 @@ func _base_target_label(base: Dictionary, cid: String) -> String:
 		"pick":
 			var pick_id = data.collection_system.get_pick(cid)
 			return "自选门客（%s）" % _hero_label(pick_id) if pick_id != "" else "自选门客"
+		"friend":
+			return _friend_label(str(base.get("friend", "")))
+		"friend_category":
+			return "%s类挚友" % str(base.get("category", ""))
 	return "全体"
 
 # 【新增】基础效果玩家文案：按当前等级/星数直接算结果值

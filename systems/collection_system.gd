@@ -107,6 +107,8 @@ func synthesize(coll_id: String) -> Dictionary:
 		return {"ok": false, "msg": "碎片不足"}
 	_consume_frag(int(get_collection(coll_id).quality), coll_id, info.need)
 	_owned[coll_id] = {"level": 1, "star": 1}
+	# 【新增】二批：合成即发1星1级对应的友好/才华加成
+	apply_friend_bonus_delta(coll_id, 0, 0)
 	return {"ok": true, "msg": "合成成功"}
 
 # ---------- 升级（消耗五种光，每100级换道具重新计算） ----------
@@ -134,6 +136,7 @@ func can_upgrade(coll_id: String) -> bool:
 func upgrade(coll_id: String, batch: bool = false) -> Dictionary:
 	if not is_owned(coll_id):
 		return {"ok": false, "msg": "未获得"}
+	var old_lv = get_level(coll_id)   # 【新增】二批：记录升级前等级，用于差值发放
 	var times = 10 if batch else 1
 	var upgraded = 0
 	while times > 0 and can_upgrade(coll_id):
@@ -144,6 +147,8 @@ func upgrade(coll_id: String, batch: bool = false) -> Dictionary:
 		times -= 1
 	if upgraded == 0:
 		return {"ok": false, "msg": "道具不足或已满级"}
+	# 【新增】二批：升级后把新增等级对应的友好/才华差值发给匹配挚友
+	apply_friend_bonus_delta(coll_id, old_lv, get_star(coll_id))
 	return {"ok": true, "msg": "升级 %d 级" % upgraded}
 
 # ---------- 晋升（升星，消耗碎片） ----------
@@ -170,7 +175,10 @@ func star_up(coll_id: String) -> Dictionary:
 		return {"ok": false, "msg": "碎片不足或已满星"}
 	var q = int(get_collection(coll_id).get("quality", 4))
 	_consume_frag(q, coll_id, get_star_up_cost(coll_id))
+	var old_star = get_star(coll_id)   # 【新增】二批：记录升星前星数
 	_owned[coll_id].star = get_star(coll_id) + 1
+	# 【新增】二批：升星后把新增星数对应的友好/才华差值发给匹配挚友
+	apply_friend_bonus_delta(coll_id, get_level(coll_id), old_star)
 	return {"ok": true, "msg": "晋升成功"}
 
 # ---------- 自选门客 ----------
@@ -179,6 +187,57 @@ func set_pick(coll_id: String, hero_id: String) -> void:
 
 func get_pick(coll_id: String) -> String:
 	return _picks.get(coll_id, "")
+
+# ---------- 挚友友好/才华（二批·写入式 2026-09-08） ----------
+# 仿宅院挚友卷：升级/升星/合成时把差值直接写进挚友存档字段（只加不减，追加即正确，无需记录已发值）；
+# 挚友解锁时补发累计值（friend_system.unlock_friend 挂钩）。读取侧零改动，美名/店铺槽位/月老/谈心缘分/未来新功能全自然生效
+
+# 友好/才华类藏品目标匹配：friend=指定挚友 / friend_category=指定职业挚友（职业读 friends.json 的 category 字段）
+func _friend_target_match(base: Dictionary, friend_id: String) -> bool:
+	if not g.friends.has(friend_id):
+		return false
+	match base.get("target", ""):
+		"friend":
+			return friend_id == base.get("friend", "")
+		"friend_category":
+			return g.friends[friend_id].get("category", "") == base.get("category", "")
+	return false
+
+# 差值发放：藏品等级/星数变化后，把该藏品本次新增部分发给所有匹配挚友
+func apply_friend_bonus_delta(coll_id: String, old_lv: int, old_star: int) -> void:
+	var coll = get_collection(coll_id)
+	if coll.is_empty():
+		return
+	var base: Dictionary = coll.get("base", {})
+	if not base.get("wired", false):
+		return
+	var stat: String = str(base.get("stat", ""))
+	if stat != "友好" and stat != "才华":
+		return
+	var delta = int(base.get("per_level", 0)) * (get_level(coll_id) - old_lv) + int(base.get("per_star", 0)) * (get_star(coll_id) - old_star)
+	if delta <= 0:
+		return
+	for friend_id in g.friends.keys():
+		if _friend_target_match(base, friend_id):
+			var f = g.friends[friend_id]
+			f[stat] = int(f.get(stat, 0)) + delta
+
+# 挚友解锁补发：一次性加上当前所有已养成藏品累计应得值（新挚友即时享受）
+func apply_friend_unlock_bonus(friend_id: String) -> void:
+	if not g.friends.has(friend_id):
+		return
+	for cid in _owned.keys():
+		var coll = get_collection(cid)
+		if coll.is_empty():
+			continue
+		var base: Dictionary = coll.get("base", {})
+		if not base.get("wired", false) or not _friend_target_match(base, friend_id):
+			continue
+		var stat: String = str(base.get("stat", ""))
+		if stat != "友好" and stat != "才华":
+			continue
+		var f = g.friends[friend_id]
+		f[stat] = int(f.get(stat, 0)) + int(base.get("per_level", 0)) * get_level(cid) + int(base.get("per_star", 0)) * get_star(cid)
 
 # ---------- 套装（手动逐档激活，免费） ----------
 # 进度=成员最低星数达到的档位数；激活不自动，亮红点提示

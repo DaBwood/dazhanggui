@@ -44,19 +44,19 @@
    "quality": 0,
    "order": 1,
    "base": {
-	"desc": "李白资质每级+4，每星+100",
-	"stat": "apt",
-	"per_level": 4,
-	"per_star": 100,
-	"wired": true,
-	"target": "hero",
-	"hero": "li_bai"
+    "desc": "李白资质每级+4，每星+100",
+    "stat": "apt",
+    "per_level": 4,
+    "per_star": 100,
+    "wired": true,
+    "target": "hero",
+    "hero": "li_bai"
    },
    "special": {
-	"desc": "李白赚钱每星+10%",
-	"kind": "hero_pct",
-	"hero": "li_bai",
-	"per_star": 10.0
+    "desc": "李白赚钱每星+10%",
+    "kind": "hero_pct",
+    "hero": "li_bai",
+    "per_star": 10.0
    }
   },
   "c001": {
@@ -64,19 +64,19 @@
    "quality": 0,
    "order": 2,
    "base": {
-	"desc": "李白资质每级+4，每星+100",
-	"stat": "apt",
-	"per_level": 4,
-	"per_star": 100,
-	"wired": true,
-	"target": "hero",
-	"hero": "li_bai"
+    "desc": "李白资质每级+4，每星+100",
+    "stat": "apt",
+    "per_level": 4,
+    "per_star": 100,
+    "wired": true,
+    "target": "hero",
+    "hero": "li_bai"
    },
    "special": {
-	"desc": "李白每星+10%",
-	"kind": "hero_pct",
-	"hero": "li_bai",
-	"per_star": 10.0
+    "desc": "李白每星+10%",
+    "kind": "hero_pct",
+    "hero": "li_bai",
+    "per_star": 10.0
    }
   },
   "c002": {
@@ -84,19 +84,19 @@
    "quality": 0,
    "order": 3,
    "base": {
-	"desc": "士类门客赚钱每级+12万，每星+300万",
-	"stat": "income",
-	"per_level": 120000,
-	"per_star": 3000000,
-	"wired": true,
-	"target": "category",
-	"category": "士"
+    "desc": "士类门客赚钱每级+12万，每星+300万",
+    "stat": "income",
+    "per_level": 120000,
+    "per_star": 3000000,
+    "wired": true,
+    "target": "category",
+    "category": "士"
    },
    "special": {
-	"desc": "李白资质每星+150",
-	"kind": "hero_apt",
-	"hero": "li_bai",
-	"per_star": 150
+    "desc": "李白资质每星+150",
+    "kind": "hero_apt",
+    "hero": "li_bai",
+    "per_star": 150
    }
   },
   "c003": {
@@ -104,19 +104,19 @@
    "quality": 0,
    "order": 4,
    "base": {
-	"desc": "李白资质每级+4，每星+100",
-	"stat": "apt",
-	"per_level": 4,
-	"per_star": 100,
-	"wired": true,
-	"target": "hero",
-	"hero": "li_bai"
+    "desc": "李白资质每级+4，每星+100",
+    "stat": "apt",
+    "per_level": 4,
+    "per_star": 100,
+    "wired": true,
+    "target": "hero",
+    "hero": "li_bai"
    },
    "special": {
-	"desc": "李白每星+10%",
-	"kind": "hero_pct",
-	"hero": "li_bai",
-	"per_star": 10.0
+    "desc": "李白每星+10%",
+    "kind": "hero_pct",
+    "hero": "li_bai",
+    "per_star": 10.0
    }
   },
   "c004": {
@@ -124,19 +124,19 @@
    "quality": 0,
    "order": 5,
    "base": {
-	"desc": "李白资质每级+4，每星+100",
-	"stat": "apt",
-	"per_level": 4,
-	"per_star": 100,
-	"wired": true,
-	"target": "hero",
-	"hero": "li_bai"
+    "desc": "李白资质每级+4，每星+100",
+    "stat": "apt",
+    "per_level": 4,
+    "per_star": 100,
+    "wired": true,
+    "target": "hero",
+    "hero": "li_bai"
    },
    "special": {
-	"desc": "李白每星+10%",
-	"kind": "hero_pct",
-	"hero": "li_bai",
-	"per_star": 10.0
+    "desc": "李白每星+10%",
+    "kind": "hero_pct",
+    "hero": "li_bai",
+    "per_star": 10.0
    }
   },
   "c005": {
@@ -144,18 +144,18 @@
    "quality": 0,
    "order": 6,
    "base": {
-	"desc": "工类门客赚钱每级+12万，每星+300万",
-	"stat": "income",
-	"per_level": 120000,
-	"per_star": 3000000,
-	"wired": true,
-	"target": "category",
-	"category": "工"
+    "desc": "工类门客赚钱每级+12万，每星+300万",
+    "stat": "income",
+    "per_level": 120000,
+    "per_star": 3000000,
+    "wired": true,
+    "target": "category",
+    "category": "工"
    },
    "special": {
-	"desc": "五艳凤魁资质每星+150",
-	"kind": "group_apt",
-	"per_star": 150
+    "desc": "五艳凤魁资质每星+150",
+    "kind": "group_apt",
+    "per_star": 150
    }
   },
   "c006": {
@@ -163,17 +163,19 @@
    "quality": 0,
    "order": 7,
    "base": {
-	"desc": "涂山红红友好每级+80，每星+2000",
-	"stat": "友好",
-	"per_level": 80,
-	"per_star": 2000,
-	"wired": false
+    "desc": "涂山红红友好每级+80，每星+2000",
+    "stat": "友好",
+    "per_level": 80,
+    "per_star": 2000,
+    "wired": true,
+    "target": "friend",
+    "friend": "tushan_honghong"
    },
    "special": {
-	"desc": "白月初资质每星+150",
-	"kind": "hero_apt",
-	"hero": "bai_yuechu",
-	"per_star": 150
+    "desc": "白月初资质每星+150",
+    "kind": "hero_apt",
+    "hero": "bai_yuechu",
+    "per_star": 150
    }
   },
   "c007": {
@@ -181,19 +183,19 @@
    "quality": 0,
    "order": 8,
    "base": {
-	"desc": "小柒资质每级+4，每星+100",
-	"stat": "apt",
-	"per_level": 4,
-	"per_star": 100,
-	"wired": true,
-	"target": "hero",
-	"hero": "xiao_qi"
+    "desc": "小柒资质每级+4，每星+100",
+    "stat": "apt",
+    "per_level": 4,
+    "per_star": 100,
+    "wired": true,
+    "target": "hero",
+    "hero": "xiao_qi"
    },
    "special": {
-	"desc": "小柒每星+10%",
-	"kind": "hero_pct",
-	"hero": "xiao_qi",
-	"per_star": 10.0
+    "desc": "小柒每星+10%",
+    "kind": "hero_pct",
+    "hero": "xiao_qi",
+    "per_star": 10.0
    }
   },
   "c008": {
@@ -201,17 +203,17 @@
    "quality": 0,
    "order": 9,
    "base": {
-	"desc": "五艳凤魁资质每级+4，每星+100",
-	"stat": "apt",
-	"per_level": 4,
-	"per_star": 100,
-	"wired": true,
-	"target": "wuyan"
+    "desc": "五艳凤魁资质每级+4，每星+100",
+    "stat": "apt",
+    "per_level": 4,
+    "per_star": 100,
+    "wired": true,
+    "target": "wuyan"
    },
    "special": {
-	"desc": "五艳凤魁每星+10%",
-	"kind": "group_pct",
-	"per_star": 10.0
+    "desc": "五艳凤魁每星+10%",
+    "kind": "group_pct",
+    "per_star": 10.0
    }
   },
   "c009": {
@@ -219,19 +221,19 @@
    "quality": 0,
    "order": 10,
    "base": {
-	"desc": "李白资质每级+4，每星+100",
-	"stat": "apt",
-	"per_level": 4,
-	"per_star": 100,
-	"wired": true,
-	"target": "hero",
-	"hero": "li_bai"
+    "desc": "李白资质每级+4，每星+100",
+    "stat": "apt",
+    "per_level": 4,
+    "per_star": 100,
+    "wired": true,
+    "target": "hero",
+    "hero": "li_bai"
    },
    "special": {
-	"desc": "李白每星+10%",
-	"kind": "hero_pct",
-	"hero": "li_bai",
-	"per_star": 10.0
+    "desc": "李白每星+10%",
+    "kind": "hero_pct",
+    "hero": "li_bai",
+    "per_star": 10.0
    }
   },
   "c010": {
@@ -239,19 +241,19 @@
    "quality": 0,
    "order": 11,
    "base": {
-	"desc": "花木兰资质每级+4，每星+100",
-	"stat": "apt",
-	"per_level": 4,
-	"per_star": 100,
-	"wired": true,
-	"target": "hero",
-	"hero": "hua_mulan"
+    "desc": "花木兰资质每级+4，每星+100",
+    "stat": "apt",
+    "per_level": 4,
+    "per_star": 100,
+    "wired": true,
+    "target": "hero",
+    "hero": "hua_mulan"
    },
    "special": {
-	"desc": "花木兰每星+10%",
-	"kind": "hero_pct",
-	"hero": "hua_mulan",
-	"per_star": 10.0
+    "desc": "花木兰每星+10%",
+    "kind": "hero_pct",
+    "hero": "hua_mulan",
+    "per_star": 10.0
    }
   },
   "c011": {
@@ -259,19 +261,19 @@
    "quality": 0,
    "order": 12,
    "base": {
-	"desc": "葫芦仙人资质每级+4，每星+100",
-	"stat": "apt",
-	"per_level": 4,
-	"per_star": 100,
-	"wired": true,
-	"target": "hero",
-	"hero": "hu_lu_xianren"
+    "desc": "葫芦仙人资质每级+4，每星+100",
+    "stat": "apt",
+    "per_level": 4,
+    "per_star": 100,
+    "wired": true,
+    "target": "hero",
+    "hero": "hu_lu_xianren"
    },
    "special": {
-	"desc": "葫芦仙人每星+10%",
-	"kind": "hero_pct",
-	"hero": "hu_lu_xianren",
-	"per_star": 10.0
+    "desc": "葫芦仙人每星+10%",
+    "kind": "hero_pct",
+    "hero": "hu_lu_xianren",
+    "per_star": 10.0
    }
   },
   "c012": {
@@ -279,17 +281,17 @@
    "quality": 0,
    "order": 13,
    "base": {
-	"desc": "五艳凤魁资质每级+4，每星+100",
-	"stat": "apt",
-	"per_level": 4,
-	"per_star": 100,
-	"wired": true,
-	"target": "wuyan"
+    "desc": "五艳凤魁资质每级+4，每星+100",
+    "stat": "apt",
+    "per_level": 4,
+    "per_star": 100,
+    "wired": true,
+    "target": "wuyan"
    },
    "special": {
-	"desc": "五艳凤魁每星+10%",
-	"kind": "group_pct",
-	"per_star": 10.0
+    "desc": "五艳凤魁每星+10%",
+    "kind": "group_pct",
+    "per_star": 10.0
    }
   },
   "c013": {
@@ -297,19 +299,19 @@
    "quality": 0,
    "order": 14,
    "base": {
-	"desc": "小舞资质每级+4，每星+100",
-	"stat": "apt",
-	"per_level": 4,
-	"per_star": 100,
-	"wired": true,
-	"target": "hero",
-	"hero": "xiao_wu"
+    "desc": "小舞资质每级+4，每星+100",
+    "stat": "apt",
+    "per_level": 4,
+    "per_star": 100,
+    "wired": true,
+    "target": "hero",
+    "hero": "xiao_wu"
    },
    "special": {
-	"desc": "小舞每星+10%",
-	"kind": "hero_pct",
-	"hero": "xiao_wu",
-	"per_star": 10.0
+    "desc": "小舞每星+10%",
+    "kind": "hero_pct",
+    "hero": "xiao_wu",
+    "per_star": 10.0
    }
   },
   "c014": {
@@ -317,19 +319,19 @@
    "quality": 0,
    "order": 15,
    "base": {
-	"desc": "侠类门客赚钱每级+12万，每星+300万",
-	"stat": "income",
-	"per_level": 120000,
-	"per_star": 3000000,
-	"wired": true,
-	"target": "category",
-	"category": "侠"
+    "desc": "侠类门客赚钱每级+12万，每星+300万",
+    "stat": "income",
+    "per_level": 120000,
+    "per_star": 3000000,
+    "wired": true,
+    "target": "category",
+    "category": "侠"
    },
    "special": {
-	"desc": "刘昴星资质每星+150",
-	"kind": "hero_apt",
-	"hero": "liu_maoxing",
-	"per_star": 150
+    "desc": "刘昴星资质每星+150",
+    "kind": "hero_apt",
+    "hero": "liu_maoxing",
+    "per_star": 150
    }
   },
   "c015": {
@@ -337,19 +339,19 @@
    "quality": 0,
    "order": 16,
    "base": {
-	"desc": "杨戬资质每级+4，每星+100",
-	"stat": "apt",
-	"per_level": 4,
-	"per_star": 100,
-	"wired": true,
-	"target": "hero",
-	"hero": "yang_jian"
+    "desc": "杨戬资质每级+4，每星+100",
+    "stat": "apt",
+    "per_level": 4,
+    "per_star": 100,
+    "wired": true,
+    "target": "hero",
+    "hero": "yang_jian"
    },
    "special": {
-	"desc": "杨戬每星+10%",
-	"kind": "hero_pct",
-	"hero": "yang_jian",
-	"per_star": 10.0
+    "desc": "杨戬每星+10%",
+    "kind": "hero_pct",
+    "hero": "yang_jian",
+    "per_star": 10.0
    }
   },
   "c016": {
@@ -357,17 +359,17 @@
    "quality": 0,
    "order": 17,
    "base": {
-	"desc": "自选门客资质每级+4，每星+100",
-	"stat": "apt",
-	"per_level": 4,
-	"per_star": 100,
-	"wired": true,
-	"target": "pick"
+    "desc": "自选门客资质每级+4，每星+100",
+    "stat": "apt",
+    "per_level": 4,
+    "per_star": 100,
+    "wired": true,
+    "target": "pick"
    },
    "special": {
-	"desc": "自选门客每星+10%",
-	"kind": "pick_pct",
-	"per_star": 10.0
+    "desc": "自选门客每星+10%",
+    "kind": "pick_pct",
+    "per_star": 10.0
    }
   },
   "c017": {
@@ -375,19 +377,19 @@
    "quality": 0,
    "order": 18,
    "base": {
-	"desc": "王昭君资质每级+4，每星+100",
-	"stat": "apt",
-	"per_level": 4,
-	"per_star": 100,
-	"wired": true,
-	"target": "hero",
-	"hero": "wang_zhaojun"
+    "desc": "王昭君资质每级+4，每星+100",
+    "stat": "apt",
+    "per_level": 4,
+    "per_star": 100,
+    "wired": true,
+    "target": "hero",
+    "hero": "wang_zhaojun"
    },
    "special": {
-	"desc": "王昭君每星+10%",
-	"kind": "hero_pct",
-	"hero": "wang_zhaojun",
-	"per_star": 10.0
+    "desc": "王昭君每星+10%",
+    "kind": "hero_pct",
+    "hero": "wang_zhaojun",
+    "per_star": 10.0
    }
   },
   "c018": {
@@ -395,19 +397,19 @@
    "quality": 0,
    "order": 19,
    "base": {
-	"desc": "王昭君资质每级+4，每星+100",
-	"stat": "apt",
-	"per_level": 4,
-	"per_star": 100,
-	"wired": true,
-	"target": "hero",
-	"hero": "wang_zhaojun"
+    "desc": "王昭君资质每级+4，每星+100",
+    "stat": "apt",
+    "per_level": 4,
+    "per_star": 100,
+    "wired": true,
+    "target": "hero",
+    "hero": "wang_zhaojun"
    },
    "special": {
-	"desc": "王昭君每星+10%",
-	"kind": "hero_pct",
-	"hero": "wang_zhaojun",
-	"per_star": 10.0
+    "desc": "王昭君每星+10%",
+    "kind": "hero_pct",
+    "hero": "wang_zhaojun",
+    "per_star": 10.0
    }
   },
   "c019": {
@@ -415,19 +417,19 @@
    "quality": 0,
    "order": 20,
    "base": {
-	"desc": "小八资质每级+4，每星+100",
-	"stat": "apt",
-	"per_level": 4,
-	"per_star": 100,
-	"wired": true,
-	"target": "hero",
-	"hero": "xiao_ba"
+    "desc": "小八资质每级+4，每星+100",
+    "stat": "apt",
+    "per_level": 4,
+    "per_star": 100,
+    "wired": true,
+    "target": "hero",
+    "hero": "xiao_ba"
    },
    "special": {
-	"desc": "小八每星+10%",
-	"kind": "hero_pct",
-	"hero": "xiao_ba",
-	"per_star": 10.0
+    "desc": "小八每星+10%",
+    "kind": "hero_pct",
+    "hero": "xiao_ba",
+    "per_star": 10.0
    }
   },
   "c020": {
@@ -435,17 +437,17 @@
    "quality": 0,
    "order": 21,
    "base": {
-	"desc": "自选门客资质每级+4，每星+100",
-	"stat": "apt",
-	"per_level": 4,
-	"per_star": 100,
-	"wired": true,
-	"target": "pick"
+    "desc": "自选门客资质每级+4，每星+100",
+    "stat": "apt",
+    "per_level": 4,
+    "per_star": 100,
+    "wired": true,
+    "target": "pick"
    },
    "special": {
-	"desc": "自选门客每星+10%",
-	"kind": "pick_pct",
-	"per_star": 10.0
+    "desc": "自选门客每星+10%",
+    "kind": "pick_pct",
+    "per_star": 10.0
    }
   },
   "c021": {
@@ -453,19 +455,19 @@
    "quality": 0,
    "order": 22,
    "base": {
-	"desc": "花木兰资质每级+4，每星+100",
-	"stat": "apt",
-	"per_level": 4,
-	"per_star": 100,
-	"wired": true,
-	"target": "hero",
-	"hero": "hua_mulan"
+    "desc": "花木兰资质每级+4，每星+100",
+    "stat": "apt",
+    "per_level": 4,
+    "per_star": 100,
+    "wired": true,
+    "target": "hero",
+    "hero": "hua_mulan"
    },
    "special": {
-	"desc": "花木兰每星+10%",
-	"kind": "hero_pct",
-	"hero": "hua_mulan",
-	"per_star": 10.0
+    "desc": "花木兰每星+10%",
+    "kind": "hero_pct",
+    "hero": "hua_mulan",
+    "per_star": 10.0
    }
   },
   "c022": {
@@ -473,19 +475,19 @@
    "quality": 0,
    "order": 23,
    "base": {
-	"desc": "杨戬资质每级+4，每星+100",
-	"stat": "apt",
-	"per_level": 4,
-	"per_star": 100,
-	"wired": true,
-	"target": "hero",
-	"hero": "yang_jian"
+    "desc": "杨戬资质每级+4，每星+100",
+    "stat": "apt",
+    "per_level": 4,
+    "per_star": 100,
+    "wired": true,
+    "target": "hero",
+    "hero": "yang_jian"
    },
    "special": {
-	"desc": "杨戬每星+10%",
-	"kind": "hero_pct",
-	"hero": "yang_jian",
-	"per_star": 10.0
+    "desc": "杨戬每星+10%",
+    "kind": "hero_pct",
+    "hero": "yang_jian",
+    "per_star": 10.0
    }
   },
   "c023": {
@@ -493,19 +495,19 @@
    "quality": 0,
    "order": 24,
    "base": {
-	"desc": "小舞资质每级+4，每星+100",
-	"stat": "apt",
-	"per_level": 4,
-	"per_star": 100,
-	"wired": true,
-	"target": "hero",
-	"hero": "xiao_wu"
+    "desc": "小舞资质每级+4，每星+100",
+    "stat": "apt",
+    "per_level": 4,
+    "per_star": 100,
+    "wired": true,
+    "target": "hero",
+    "hero": "xiao_wu"
    },
    "special": {
-	"desc": "小舞每星+10%",
-	"kind": "hero_pct",
-	"hero": "xiao_wu",
-	"per_star": 10.0
+    "desc": "小舞每星+10%",
+    "kind": "hero_pct",
+    "hero": "xiao_wu",
+    "per_star": 10.0
    }
   },
   "c024": {
@@ -513,19 +515,19 @@
    "quality": 0,
    "order": 25,
    "base": {
-	"desc": "小八资质每级+4，每星+100",
-	"stat": "apt",
-	"per_level": 4,
-	"per_star": 100,
-	"wired": true,
-	"target": "hero",
-	"hero": "xiao_ba"
+    "desc": "小八资质每级+4，每星+100",
+    "stat": "apt",
+    "per_level": 4,
+    "per_star": 100,
+    "wired": true,
+    "target": "hero",
+    "hero": "xiao_ba"
    },
    "special": {
-	"desc": "小八每星+10%",
-	"kind": "hero_pct",
-	"hero": "xiao_ba",
-	"per_star": 10.0
+    "desc": "小八每星+10%",
+    "kind": "hero_pct",
+    "hero": "xiao_ba",
+    "per_star": 10.0
    }
   },
   "c025": {
@@ -533,17 +535,17 @@
    "quality": 0,
    "order": 26,
    "base": {
-	"desc": "自选门客资质每级+4，每星+100",
-	"stat": "apt",
-	"per_level": 4,
-	"per_star": 100,
-	"wired": true,
-	"target": "pick"
+    "desc": "自选门客资质每级+4，每星+100",
+    "stat": "apt",
+    "per_level": 4,
+    "per_star": 100,
+    "wired": true,
+    "target": "pick"
    },
    "special": {
-	"desc": "自选门客每星+10%",
-	"kind": "pick_pct",
-	"per_star": 10.0
+    "desc": "自选门客每星+10%",
+    "kind": "pick_pct",
+    "per_star": 10.0
    }
   },
   "c026": {
@@ -551,17 +553,17 @@
    "quality": 0,
    "order": 27,
    "base": {
-	"desc": "自选门客资质每级+4，每星+100",
-	"stat": "apt",
-	"per_level": 4,
-	"per_star": 100,
-	"wired": true,
-	"target": "pick"
+    "desc": "自选门客资质每级+4，每星+100",
+    "stat": "apt",
+    "per_level": 4,
+    "per_star": 100,
+    "wired": true,
+    "target": "pick"
    },
    "special": {
-	"desc": "自选门客每星+10%",
-	"kind": "pick_pct",
-	"per_star": 10.0
+    "desc": "自选门客每星+10%",
+    "kind": "pick_pct",
+    "per_star": 10.0
    }
   },
   "c027": {
@@ -569,19 +571,19 @@
    "quality": 0,
    "order": 28,
    "base": {
-	"desc": "王昭君资质每级+4，每星+100",
-	"stat": "apt",
-	"per_level": 4,
-	"per_star": 100,
-	"wired": true,
-	"target": "hero",
-	"hero": "wang_zhaojun"
+    "desc": "王昭君资质每级+4，每星+100",
+    "stat": "apt",
+    "per_level": 4,
+    "per_star": 100,
+    "wired": true,
+    "target": "hero",
+    "hero": "wang_zhaojun"
    },
    "special": {
-	"desc": "王昭君每星+10%",
-	"kind": "hero_pct",
-	"hero": "wang_zhaojun",
-	"per_star": 10.0
+    "desc": "王昭君每星+10%",
+    "kind": "hero_pct",
+    "hero": "wang_zhaojun",
+    "per_star": 10.0
    }
   },
   "c028": {
@@ -589,19 +591,19 @@
    "quality": 0,
    "order": 29,
    "base": {
-	"desc": "葫芦仙人资质每级+4，每星+100",
-	"stat": "apt",
-	"per_level": 4,
-	"per_star": 100,
-	"wired": true,
-	"target": "hero",
-	"hero": "hu_lu_xianren"
+    "desc": "葫芦仙人资质每级+4，每星+100",
+    "stat": "apt",
+    "per_level": 4,
+    "per_star": 100,
+    "wired": true,
+    "target": "hero",
+    "hero": "hu_lu_xianren"
    },
    "special": {
-	"desc": "葫芦仙人每星+10%",
-	"kind": "hero_pct",
-	"hero": "hu_lu_xianren",
-	"per_star": 10.0
+    "desc": "葫芦仙人每星+10%",
+    "kind": "hero_pct",
+    "hero": "hu_lu_xianren",
+    "per_star": 10.0
    }
   },
   "c029": {
@@ -609,19 +611,19 @@
    "quality": 0,
    "order": 30,
    "base": {
-	"desc": "张起灵资质每级+4，每星+100",
-	"stat": "apt",
-	"per_level": 4,
-	"per_star": 100,
-	"wired": true,
-	"target": "hero",
-	"hero": "zhang_qiling"
+    "desc": "张起灵资质每级+4，每星+100",
+    "stat": "apt",
+    "per_level": 4,
+    "per_star": 100,
+    "wired": true,
+    "target": "hero",
+    "hero": "zhang_qiling"
    },
    "special": {
-	"desc": "张起灵每星+10%",
-	"kind": "hero_pct",
-	"hero": "zhang_qiling",
-	"per_star": 10.0
+    "desc": "张起灵每星+10%",
+    "kind": "hero_pct",
+    "hero": "zhang_qiling",
+    "per_star": 10.0
    }
   },
   "c030": {
@@ -629,19 +631,19 @@
    "quality": 0,
    "order": 31,
    "base": {
-	"desc": "小柒资质每级+4，每星+100",
-	"stat": "apt",
-	"per_level": 4,
-	"per_star": 100,
-	"wired": true,
-	"target": "hero",
-	"hero": "xiao_qi"
+    "desc": "小柒资质每级+4，每星+100",
+    "stat": "apt",
+    "per_level": 4,
+    "per_star": 100,
+    "wired": true,
+    "target": "hero",
+    "hero": "xiao_qi"
    },
    "special": {
-	"desc": "小柒每星+10%",
-	"kind": "hero_pct",
-	"hero": "xiao_qi",
-	"per_star": 10.0
+    "desc": "小柒每星+10%",
+    "kind": "hero_pct",
+    "hero": "xiao_qi",
+    "per_star": 10.0
    }
   },
   "c031": {
@@ -649,17 +651,17 @@
    "quality": 0,
    "order": 32,
    "base": {
-	"desc": "五艳凤魁资质每级+4，每星+100",
-	"stat": "apt",
-	"per_level": 4,
-	"per_star": 100,
-	"wired": true,
-	"target": "wuyan"
+    "desc": "五艳凤魁资质每级+4，每星+100",
+    "stat": "apt",
+    "per_level": 4,
+    "per_star": 100,
+    "wired": true,
+    "target": "wuyan"
    },
    "special": {
-	"desc": "五艳凤魁每星+10%",
-	"kind": "group_pct",
-	"per_star": 10.0
+    "desc": "五艳凤魁每星+10%",
+    "kind": "group_pct",
+    "per_star": 10.0
    }
   },
   "c032": {
@@ -667,17 +669,17 @@
    "quality": 0,
    "order": 33,
    "base": {
-	"desc": "自选门客资质每级+4，每星+100",
-	"stat": "apt",
-	"per_level": 4,
-	"per_star": 100,
-	"wired": true,
-	"target": "pick"
+    "desc": "自选门客资质每级+4，每星+100",
+    "stat": "apt",
+    "per_level": 4,
+    "per_star": 100,
+    "wired": true,
+    "target": "pick"
    },
    "special": {
-	"desc": "自选门客每星+10%",
-	"kind": "pick_pct",
-	"per_star": 10.0
+    "desc": "自选门客每星+10%",
+    "kind": "pick_pct",
+    "per_star": 10.0
    }
   },
   "c033": {
@@ -685,19 +687,19 @@
    "quality": 0,
    "order": 34,
    "base": {
-	"desc": "花木兰资质每级+4，每星+100",
-	"stat": "apt",
-	"per_level": 4,
-	"per_star": 100,
-	"wired": true,
-	"target": "hero",
-	"hero": "hua_mulan"
+    "desc": "花木兰资质每级+4，每星+100",
+    "stat": "apt",
+    "per_level": 4,
+    "per_star": 100,
+    "wired": true,
+    "target": "hero",
+    "hero": "hua_mulan"
    },
    "special": {
-	"desc": "花木兰每星+10%",
-	"kind": "hero_pct",
-	"hero": "hua_mulan",
-	"per_star": 10.0
+    "desc": "花木兰每星+10%",
+    "kind": "hero_pct",
+    "hero": "hua_mulan",
+    "per_star": 10.0
    }
   },
   "c034": {
@@ -705,19 +707,19 @@
    "quality": 0,
    "order": 35,
    "base": {
-	"desc": "兰飞鸿资质每级+4，每星+100",
-	"stat": "apt",
-	"per_level": 4,
-	"per_star": 100,
-	"wired": true,
-	"target": "hero",
-	"hero": "lan_feihong"
+    "desc": "兰飞鸿资质每级+4，每星+100",
+    "stat": "apt",
+    "per_level": 4,
+    "per_star": 100,
+    "wired": true,
+    "target": "hero",
+    "hero": "lan_feihong"
    },
    "special": {
-	"desc": "兰飞鸿每星+10%",
-	"kind": "hero_pct",
-	"hero": "lan_feihong",
-	"per_star": 10.0
+    "desc": "兰飞鸿每星+10%",
+    "kind": "hero_pct",
+    "hero": "lan_feihong",
+    "per_star": 10.0
    }
   },
   "c035": {
@@ -725,16 +727,16 @@
    "quality": 0,
    "order": 36,
    "base": {
-	"desc": "无双及以上门客资质每级+1，每星+50",
-	"stat": "apt",
-	"per_level": 1,
-	"per_star": 50,
-	"wired": true,
-	"target": "quality_min",
-	"min": 2
+    "desc": "无双及以上门客资质每级+1，每星+50",
+    "stat": "apt",
+    "per_level": 1,
+    "per_star": 50,
+    "wired": true,
+    "target": "quality_min",
+    "min": 2
    },
    "special": {
-	"desc": "每格有效农民魂石赚钱每星+2%"
+    "desc": "每格有效农民魂石赚钱每星+2%"
    }
   },
   "c036": {
@@ -742,19 +744,19 @@
    "quality": 0,
    "order": 37,
    "base": {
-	"desc": "王昭君资质每级+4，每星+100",
-	"stat": "apt",
-	"per_level": 4,
-	"per_star": 100,
-	"wired": true,
-	"target": "hero",
-	"hero": "wang_zhaojun"
+    "desc": "王昭君资质每级+4，每星+100",
+    "stat": "apt",
+    "per_level": 4,
+    "per_star": 100,
+    "wired": true,
+    "target": "hero",
+    "hero": "wang_zhaojun"
    },
    "special": {
-	"desc": "王昭君每星+10%",
-	"kind": "hero_pct",
-	"hero": "wang_zhaojun",
-	"per_star": 10.0
+    "desc": "王昭君每星+10%",
+    "kind": "hero_pct",
+    "hero": "wang_zhaojun",
+    "per_star": 10.0
    }
   },
   "c037": {
@@ -762,19 +764,19 @@
    "quality": 0,
    "order": 38,
    "base": {
-	"desc": "杨戬资质每级+4，每星+100",
-	"stat": "apt",
-	"per_level": 4,
-	"per_star": 100,
-	"wired": true,
-	"target": "hero",
-	"hero": "yang_jian"
+    "desc": "杨戬资质每级+4，每星+100",
+    "stat": "apt",
+    "per_level": 4,
+    "per_star": 100,
+    "wired": true,
+    "target": "hero",
+    "hero": "yang_jian"
    },
    "special": {
-	"desc": "杨戬每星+10%",
-	"kind": "hero_pct",
-	"hero": "yang_jian",
-	"per_star": 10.0
+    "desc": "杨戬每星+10%",
+    "kind": "hero_pct",
+    "hero": "yang_jian",
+    "per_star": 10.0
    }
   },
   "c038": {
@@ -782,19 +784,19 @@
    "quality": 0,
    "order": 39,
    "base": {
-	"desc": "小柒资质每级+4，每星+100",
-	"stat": "apt",
-	"per_level": 4,
-	"per_star": 100,
-	"wired": true,
-	"target": "hero",
-	"hero": "xiao_qi"
+    "desc": "小柒资质每级+4，每星+100",
+    "stat": "apt",
+    "per_level": 4,
+    "per_star": 100,
+    "wired": true,
+    "target": "hero",
+    "hero": "xiao_qi"
    },
    "special": {
-	"desc": "小柒每星+10%",
-	"kind": "hero_pct",
-	"hero": "xiao_qi",
-	"per_star": 10.0
+    "desc": "小柒每星+10%",
+    "kind": "hero_pct",
+    "hero": "xiao_qi",
+    "per_star": 10.0
    }
   },
   "c039": {
@@ -802,19 +804,19 @@
    "quality": 0,
    "order": 40,
    "base": {
-	"desc": "白月初资质每级+4，每星+100",
-	"stat": "apt",
-	"per_level": 4,
-	"per_star": 100,
-	"wired": true,
-	"target": "hero",
-	"hero": "bai_yuechu"
+    "desc": "白月初资质每级+4，每星+100",
+    "stat": "apt",
+    "per_level": 4,
+    "per_star": 100,
+    "wired": true,
+    "target": "hero",
+    "hero": "bai_yuechu"
    },
    "special": {
-	"desc": "白月初每星+10%",
-	"kind": "hero_pct",
-	"hero": "bai_yuechu",
-	"per_star": 10.0
+    "desc": "白月初每星+10%",
+    "kind": "hero_pct",
+    "hero": "bai_yuechu",
+    "per_star": 10.0
    }
   },
   "c040": {
@@ -822,19 +824,19 @@
    "quality": 0,
    "order": 41,
    "base": {
-	"desc": "刘昴星资质每级+4，每星+100",
-	"stat": "apt",
-	"per_level": 4,
-	"per_star": 100,
-	"wired": true,
-	"target": "hero",
-	"hero": "liu_maoxing"
+    "desc": "刘昴星资质每级+4，每星+100",
+    "stat": "apt",
+    "per_level": 4,
+    "per_star": 100,
+    "wired": true,
+    "target": "hero",
+    "hero": "liu_maoxing"
    },
    "special": {
-	"desc": "刘昴星每星+10%",
-	"kind": "hero_pct",
-	"hero": "liu_maoxing",
-	"per_star": 10.0
+    "desc": "刘昴星每星+10%",
+    "kind": "hero_pct",
+    "hero": "liu_maoxing",
+    "per_star": 10.0
    }
   },
   "c041": {
@@ -842,19 +844,19 @@
    "quality": 0,
    "order": 42,
    "base": {
-	"desc": "葫芦仙人资质每级+4，每星+100",
-	"stat": "apt",
-	"per_level": 4,
-	"per_star": 100,
-	"wired": true,
-	"target": "hero",
-	"hero": "hu_lu_xianren"
+    "desc": "葫芦仙人资质每级+4，每星+100",
+    "stat": "apt",
+    "per_level": 4,
+    "per_star": 100,
+    "wired": true,
+    "target": "hero",
+    "hero": "hu_lu_xianren"
    },
    "special": {
-	"desc": "葫芦仙人每星+10%",
-	"kind": "hero_pct",
-	"hero": "hu_lu_xianren",
-	"per_star": 10.0
+    "desc": "葫芦仙人每星+10%",
+    "kind": "hero_pct",
+    "hero": "hu_lu_xianren",
+    "per_star": 10.0
    }
   },
   "c042": {
@@ -862,19 +864,19 @@
    "quality": 0,
    "order": 43,
    "base": {
-	"desc": "张起灵资质每级+4，每星+100",
-	"stat": "apt",
-	"per_level": 4,
-	"per_star": 100,
-	"wired": true,
-	"target": "hero",
-	"hero": "zhang_qiling"
+    "desc": "张起灵资质每级+4，每星+100",
+    "stat": "apt",
+    "per_level": 4,
+    "per_star": 100,
+    "wired": true,
+    "target": "hero",
+    "hero": "zhang_qiling"
    },
    "special": {
-	"desc": "张起灵每星+10%",
-	"kind": "hero_pct",
-	"hero": "zhang_qiling",
-	"per_star": 10.0
+    "desc": "张起灵每星+10%",
+    "kind": "hero_pct",
+    "hero": "zhang_qiling",
+    "per_star": 10.0
    }
   },
   "c043": {
@@ -882,16 +884,16 @@
    "quality": 0,
    "order": 44,
    "base": {
-	"desc": "无双及以上门客资质每级+1，每星+50",
-	"stat": "apt",
-	"per_level": 1,
-	"per_star": 50,
-	"wired": true,
-	"target": "quality_min",
-	"min": 2
+    "desc": "无双及以上门客资质每级+1，每星+50",
+    "stat": "apt",
+    "per_level": 1,
+    "per_star": 50,
+    "wired": true,
+    "target": "quality_min",
+    "min": 2
    },
    "special": {
-	"desc": "每格有效士人魂石赚钱每星+2%"
+    "desc": "每格有效士人魂石赚钱每星+2%"
    }
   },
   "c044": {
@@ -899,19 +901,19 @@
    "quality": 0,
    "order": 45,
    "base": {
-	"desc": "商类门客赚钱每级+12万，每星+300万",
-	"stat": "income",
-	"per_level": 120000,
-	"per_star": 3000000,
-	"wired": true,
-	"target": "category",
-	"category": "商"
+    "desc": "商类门客赚钱每级+12万，每星+300万",
+    "stat": "income",
+    "per_level": 120000,
+    "per_star": 3000000,
+    "wired": true,
+    "target": "category",
+    "category": "商"
    },
    "special": {
-	"desc": "王昭君资质每星+150",
-	"kind": "hero_apt",
-	"hero": "wang_zhaojun",
-	"per_star": 150
+    "desc": "王昭君资质每星+150",
+    "kind": "hero_apt",
+    "hero": "wang_zhaojun",
+    "per_star": 150
    }
   },
   "c045": {
@@ -919,17 +921,17 @@
    "quality": 0,
    "order": 46,
    "base": {
-	"desc": "五艳凤魁资质每级+4，每星+100",
-	"stat": "apt",
-	"per_level": 4,
-	"per_star": 100,
-	"wired": true,
-	"target": "wuyan"
+    "desc": "五艳凤魁资质每级+4，每星+100",
+    "stat": "apt",
+    "per_level": 4,
+    "per_star": 100,
+    "wired": true,
+    "target": "wuyan"
    },
    "special": {
-	"desc": "五艳凤魁每星+10%",
-	"kind": "group_pct",
-	"per_star": 10.0
+    "desc": "五艳凤魁每星+10%",
+    "kind": "group_pct",
+    "per_star": 10.0
    }
   },
   "c046": {
@@ -937,19 +939,19 @@
    "quality": 0,
    "order": 47,
    "base": {
-	"desc": "兰飞鸿资质每级+4，每星+100",
-	"stat": "apt",
-	"per_level": 4,
-	"per_star": 100,
-	"wired": true,
-	"target": "hero",
-	"hero": "lan_feihong"
+    "desc": "兰飞鸿资质每级+4，每星+100",
+    "stat": "apt",
+    "per_level": 4,
+    "per_star": 100,
+    "wired": true,
+    "target": "hero",
+    "hero": "lan_feihong"
    },
    "special": {
-	"desc": "兰飞鸿每星+10%",
-	"kind": "hero_pct",
-	"hero": "lan_feihong",
-	"per_star": 10.0
+    "desc": "兰飞鸿每星+10%",
+    "kind": "hero_pct",
+    "hero": "lan_feihong",
+    "per_star": 10.0
    }
   },
   "c047": {
@@ -957,19 +959,19 @@
    "quality": 0,
    "order": 48,
    "base": {
-	"desc": "李白资质每级+4，每星+100",
-	"stat": "apt",
-	"per_level": 4,
-	"per_star": 100,
-	"wired": true,
-	"target": "hero",
-	"hero": "li_bai"
+    "desc": "李白资质每级+4，每星+100",
+    "stat": "apt",
+    "per_level": 4,
+    "per_star": 100,
+    "wired": true,
+    "target": "hero",
+    "hero": "li_bai"
    },
    "special": {
-	"desc": "李白每星+10%",
-	"kind": "hero_pct",
-	"hero": "li_bai",
-	"per_star": 10.0
+    "desc": "李白每星+10%",
+    "kind": "hero_pct",
+    "hero": "li_bai",
+    "per_star": 10.0
    }
   },
   "c048": {
@@ -977,19 +979,19 @@
    "quality": 0,
    "order": 49,
    "base": {
-	"desc": "王昭君资质每级+4，每星+100",
-	"stat": "apt",
-	"per_level": 4,
-	"per_star": 100,
-	"wired": true,
-	"target": "hero",
-	"hero": "wang_zhaojun"
+    "desc": "王昭君资质每级+4，每星+100",
+    "stat": "apt",
+    "per_level": 4,
+    "per_star": 100,
+    "wired": true,
+    "target": "hero",
+    "hero": "wang_zhaojun"
    },
    "special": {
-	"desc": "王昭君每星+10%",
-	"kind": "hero_pct",
-	"hero": "wang_zhaojun",
-	"per_star": 10.0
+    "desc": "王昭君每星+10%",
+    "kind": "hero_pct",
+    "hero": "wang_zhaojun",
+    "per_star": 10.0
    }
   },
   "c049": {
@@ -997,19 +999,19 @@
    "quality": 0,
    "order": 50,
    "base": {
-	"desc": "刘昴星资质每级+4，每星+100",
-	"stat": "apt",
-	"per_level": 4,
-	"per_star": 100,
-	"wired": true,
-	"target": "hero",
-	"hero": "liu_maoxing"
+    "desc": "刘昴星资质每级+4，每星+100",
+    "stat": "apt",
+    "per_level": 4,
+    "per_star": 100,
+    "wired": true,
+    "target": "hero",
+    "hero": "liu_maoxing"
    },
    "special": {
-	"desc": "刘昴星每星+10%",
-	"kind": "hero_pct",
-	"hero": "liu_maoxing",
-	"per_star": 10.0
+    "desc": "刘昴星每星+10%",
+    "kind": "hero_pct",
+    "hero": "liu_maoxing",
+    "per_star": 10.0
    }
   },
   "c050": {
@@ -1017,19 +1019,19 @@
    "quality": 0,
    "order": 51,
    "base": {
-	"desc": "兰飞鸿资质每级+4，每星+100",
-	"stat": "apt",
-	"per_level": 4,
-	"per_star": 100,
-	"wired": true,
-	"target": "hero",
-	"hero": "lan_feihong"
+    "desc": "兰飞鸿资质每级+4，每星+100",
+    "stat": "apt",
+    "per_level": 4,
+    "per_star": 100,
+    "wired": true,
+    "target": "hero",
+    "hero": "lan_feihong"
    },
    "special": {
-	"desc": "兰飞鸿每星+10%",
-	"kind": "hero_pct",
-	"hero": "lan_feihong",
-	"per_star": 10.0
+    "desc": "兰飞鸿每星+10%",
+    "kind": "hero_pct",
+    "hero": "lan_feihong",
+    "per_star": 10.0
    }
   },
   "c051": {
@@ -1037,19 +1039,19 @@
    "quality": 0,
    "order": 52,
    "base": {
-	"desc": "葫芦仙人资质每级+4，每星+100",
-	"stat": "apt",
-	"per_level": 4,
-	"per_star": 100,
-	"wired": true,
-	"target": "hero",
-	"hero": "hu_lu_xianren"
+    "desc": "葫芦仙人资质每级+4，每星+100",
+    "stat": "apt",
+    "per_level": 4,
+    "per_star": 100,
+    "wired": true,
+    "target": "hero",
+    "hero": "hu_lu_xianren"
    },
    "special": {
-	"desc": "葫芦仙人每星+10%",
-	"kind": "hero_pct",
-	"hero": "hu_lu_xianren",
-	"per_star": 10.0
+    "desc": "葫芦仙人每星+10%",
+    "kind": "hero_pct",
+    "hero": "hu_lu_xianren",
+    "per_star": 10.0
    }
   },
   "c052": {
@@ -1057,19 +1059,19 @@
    "quality": 0,
    "order": 53,
    "base": {
-	"desc": "昊天上帝资质每级+4，每星+100",
-	"stat": "apt",
-	"per_level": 4,
-	"per_star": 100,
-	"wired": true,
-	"target": "hero",
-	"hero": "haotian_shangdi"
+    "desc": "昊天上帝资质每级+4，每星+100",
+    "stat": "apt",
+    "per_level": 4,
+    "per_star": 100,
+    "wired": true,
+    "target": "hero",
+    "hero": "haotian_shangdi"
    },
    "special": {
-	"desc": "昊天上帝每星+10%",
-	"kind": "hero_pct",
-	"hero": "haotian_shangdi",
-	"per_star": 10.0
+    "desc": "昊天上帝每星+10%",
+    "kind": "hero_pct",
+    "hero": "haotian_shangdi",
+    "per_star": 10.0
    }
   },
   "c053": {
@@ -1077,19 +1079,19 @@
    "quality": 0,
    "order": 54,
    "base": {
-	"desc": "杨戬资质每级+4，每星+100",
-	"stat": "apt",
-	"per_level": 4,
-	"per_star": 100,
-	"wired": true,
-	"target": "hero",
-	"hero": "yang_jian"
+    "desc": "杨戬资质每级+4，每星+100",
+    "stat": "apt",
+    "per_level": 4,
+    "per_star": 100,
+    "wired": true,
+    "target": "hero",
+    "hero": "yang_jian"
    },
    "special": {
-	"desc": "杨戬每星+10%",
-	"kind": "hero_pct",
-	"hero": "yang_jian",
-	"per_star": 10.0
+    "desc": "杨戬每星+10%",
+    "kind": "hero_pct",
+    "hero": "yang_jian",
+    "per_star": 10.0
    }
   },
   "c054": {
@@ -1097,17 +1099,19 @@
    "quality": 0,
    "order": 55,
    "base": {
-	"desc": "涂山红红才华每级+120，每星+3000",
-	"stat": "才华",
-	"per_level": 120,
-	"per_star": 3000,
-	"wired": false
+    "desc": "涂山红红才华每级+120，每星+3000",
+    "stat": "才华",
+    "per_level": 120,
+    "per_star": 3000,
+    "wired": true,
+    "target": "friend",
+    "friend": "tushan_honghong"
    },
    "special": {
-	"desc": "白月初资质每星+150",
-	"kind": "hero_apt",
-	"hero": "bai_yuechu",
-	"per_star": 150
+    "desc": "白月初资质每星+150",
+    "kind": "hero_apt",
+    "hero": "bai_yuechu",
+    "per_star": 150
    }
   },
   "c055": {
@@ -1115,19 +1119,19 @@
    "quality": 0,
    "order": 56,
    "base": {
-	"desc": "白月初资质每级+4，每星+100",
-	"stat": "apt",
-	"per_level": 4,
-	"per_star": 100,
-	"wired": true,
-	"target": "hero",
-	"hero": "bai_yuechu"
+    "desc": "白月初资质每级+4，每星+100",
+    "stat": "apt",
+    "per_level": 4,
+    "per_star": 100,
+    "wired": true,
+    "target": "hero",
+    "hero": "bai_yuechu"
    },
    "special": {
-	"desc": "白月初每星+10%",
-	"kind": "hero_pct",
-	"hero": "bai_yuechu",
-	"per_star": 10.0
+    "desc": "白月初每星+10%",
+    "kind": "hero_pct",
+    "hero": "bai_yuechu",
+    "per_star": 10.0
    }
   },
   "c056": {
@@ -1135,19 +1139,19 @@
    "quality": 0,
    "order": 57,
    "base": {
-	"desc": "侠类门客赚钱每级+12万，每星+300万",
-	"stat": "income",
-	"per_level": 120000,
-	"per_star": 3000000,
-	"wired": true,
-	"target": "category",
-	"category": "侠"
+    "desc": "侠类门客赚钱每级+12万，每星+300万",
+    "stat": "income",
+    "per_level": 120000,
+    "per_star": 3000000,
+    "wired": true,
+    "target": "category",
+    "category": "侠"
    },
    "special": {
-	"desc": "兰飞鸿资质每星+150",
-	"kind": "hero_apt",
-	"hero": "lan_feihong",
-	"per_star": 150
+    "desc": "兰飞鸿资质每星+150",
+    "kind": "hero_apt",
+    "hero": "lan_feihong",
+    "per_star": 150
    }
   },
   "c057": {
@@ -1155,19 +1159,19 @@
    "quality": 0,
    "order": 58,
    "base": {
-	"desc": "农类门客赚钱每级+12万，每星+300万",
-	"stat": "income",
-	"per_level": 120000,
-	"per_star": 3000000,
-	"wired": true,
-	"target": "category",
-	"category": "农"
+    "desc": "农类门客赚钱每级+12万，每星+300万",
+    "stat": "income",
+    "per_level": 120000,
+    "per_star": 3000000,
+    "wired": true,
+    "target": "category",
+    "category": "农"
    },
    "special": {
-	"desc": "杨戬资质每星+150",
-	"kind": "hero_apt",
-	"hero": "yang_jian",
-	"per_star": 150
+    "desc": "杨戬资质每星+150",
+    "kind": "hero_apt",
+    "hero": "yang_jian",
+    "per_star": 150
    }
   },
   "c058": {
@@ -1175,19 +1179,19 @@
    "quality": 0,
    "order": 59,
    "base": {
-	"desc": "东皇太一资质每级+4，每星+100",
-	"stat": "apt",
-	"per_level": 4,
-	"per_star": 100,
-	"wired": true,
-	"target": "hero",
-	"hero": "donghuang_taiyi"
+    "desc": "东皇太一资质每级+4，每星+100",
+    "stat": "apt",
+    "per_level": 4,
+    "per_star": 100,
+    "wired": true,
+    "target": "hero",
+    "hero": "donghuang_taiyi"
    },
    "special": {
-	"desc": "东皇太一每星+10%",
-	"kind": "hero_pct",
-	"hero": "donghuang_taiyi",
-	"per_star": 10.0
+    "desc": "东皇太一每星+10%",
+    "kind": "hero_pct",
+    "hero": "donghuang_taiyi",
+    "per_star": 10.0
    }
   },
   "c059": {
@@ -1195,19 +1199,19 @@
    "quality": 0,
    "order": 60,
    "base": {
-	"desc": "蚩尤资质每级+4，每星+100",
-	"stat": "apt",
-	"per_level": 4,
-	"per_star": 100,
-	"wired": true,
-	"target": "hero",
-	"hero": "chiyou"
+    "desc": "蚩尤资质每级+4，每星+100",
+    "stat": "apt",
+    "per_level": 4,
+    "per_star": 100,
+    "wired": true,
+    "target": "hero",
+    "hero": "chiyou"
    },
    "special": {
-	"desc": "蚩尤每星+10%",
-	"kind": "hero_pct",
-	"hero": "chiyou",
-	"per_star": 10.0
+    "desc": "蚩尤每星+10%",
+    "kind": "hero_pct",
+    "hero": "chiyou",
+    "per_star": 10.0
    }
   },
   "c060": {
@@ -1215,19 +1219,19 @@
    "quality": 0,
    "order": 61,
    "base": {
-	"desc": "后羿资质每级+4，每星+100",
-	"stat": "apt",
-	"per_level": 4,
-	"per_star": 100,
-	"wired": true,
-	"target": "hero",
-	"hero": "houyi"
+    "desc": "后羿资质每级+4，每星+100",
+    "stat": "apt",
+    "per_level": 4,
+    "per_star": 100,
+    "wired": true,
+    "target": "hero",
+    "hero": "houyi"
    },
    "special": {
-	"desc": "后羿每星+10%",
-	"kind": "hero_pct",
-	"hero": "houyi",
-	"per_star": 10.0
+    "desc": "后羿每星+10%",
+    "kind": "hero_pct",
+    "hero": "houyi",
+    "per_star": 10.0
    }
   },
   "c061": {
@@ -1235,19 +1239,19 @@
    "quality": 0,
    "order": 62,
    "base": {
-	"desc": "大禹资质每级+4，每星+100",
-	"stat": "apt",
-	"per_level": 4,
-	"per_star": 100,
-	"wired": true,
-	"target": "hero",
-	"hero": "dayu"
+    "desc": "大禹资质每级+4，每星+100",
+    "stat": "apt",
+    "per_level": 4,
+    "per_star": 100,
+    "wired": true,
+    "target": "hero",
+    "hero": "dayu"
    },
    "special": {
-	"desc": "大禹每星+10%",
-	"kind": "hero_pct",
-	"hero": "dayu",
-	"per_star": 10.0
+    "desc": "大禹每星+10%",
+    "kind": "hero_pct",
+    "hero": "dayu",
+    "per_star": 10.0
    }
   },
   "c062": {
@@ -1255,16 +1259,16 @@
    "quality": 0,
    "order": 63,
    "base": {
-	"desc": "无双及以上门客资质每级+1，每星+50",
-	"stat": "apt",
-	"per_level": 1,
-	"per_star": 50,
-	"wired": true,
-	"target": "quality_min",
-	"min": 2
+    "desc": "无双及以上门客资质每级+1，每星+50",
+    "stat": "apt",
+    "per_level": 1,
+    "per_star": 50,
+    "wired": true,
+    "target": "quality_min",
+    "min": 2
    },
    "special": {
-	"desc": "每格有效侠客魂石赚钱每星+2%"
+    "desc": "每格有效侠客魂石赚钱每星+2%"
    }
   },
   "c063": {
@@ -1272,19 +1276,19 @@
    "quality": 0,
    "order": 64,
    "base": {
-	"desc": "商类门客赚钱每级+12万，每星+300万",
-	"stat": "income",
-	"per_level": 120000,
-	"per_star": 3000000,
-	"wired": true,
-	"target": "category",
-	"category": "商"
+    "desc": "商类门客赚钱每级+12万，每星+300万",
+    "stat": "income",
+    "per_level": 120000,
+    "per_star": 3000000,
+    "wired": true,
+    "target": "category",
+    "category": "商"
    },
    "special": {
-	"desc": "葫芦仙人资质每星+150",
-	"kind": "hero_apt",
-	"hero": "hu_lu_xianren",
-	"per_star": 150
+    "desc": "葫芦仙人资质每星+150",
+    "kind": "hero_apt",
+    "hero": "hu_lu_xianren",
+    "per_star": 150
    }
   },
   "c064": {
@@ -1292,19 +1296,19 @@
    "quality": 0,
    "order": 65,
    "base": {
-	"desc": "张起灵资质每级+4，每星+100",
-	"stat": "apt",
-	"per_level": 4,
-	"per_star": 100,
-	"wired": true,
-	"target": "hero",
-	"hero": "zhang_qiling"
+    "desc": "张起灵资质每级+4，每星+100",
+    "stat": "apt",
+    "per_level": 4,
+    "per_star": 100,
+    "wired": true,
+    "target": "hero",
+    "hero": "zhang_qiling"
    },
    "special": {
-	"desc": "张起灵每星+10%",
-	"kind": "hero_pct",
-	"hero": "zhang_qiling",
-	"per_star": 10.0
+    "desc": "张起灵每星+10%",
+    "kind": "hero_pct",
+    "hero": "zhang_qiling",
+    "per_star": 10.0
    }
   },
   "c065": {
@@ -1312,19 +1316,19 @@
    "quality": 0,
    "order": 66,
    "base": {
-	"desc": "梅长苏资质每级+4，每星+100",
-	"stat": "apt",
-	"per_level": 4,
-	"per_star": 100,
-	"wired": true,
-	"target": "hero",
-	"hero": "mei_changsu"
+    "desc": "梅长苏资质每级+4，每星+100",
+    "stat": "apt",
+    "per_level": 4,
+    "per_star": 100,
+    "wired": true,
+    "target": "hero",
+    "hero": "mei_changsu"
    },
    "special": {
-	"desc": "梅长苏每星+10%",
-	"kind": "hero_pct",
-	"hero": "mei_changsu",
-	"per_star": 10.0
+    "desc": "梅长苏每星+10%",
+    "kind": "hero_pct",
+    "hero": "mei_changsu",
+    "per_star": 10.0
    }
   },
   "c066": {
@@ -1332,19 +1336,19 @@
    "quality": 0,
    "order": 67,
    "base": {
-	"desc": "小鱼儿资质每级+4，每星+100",
-	"stat": "apt",
-	"per_level": 4,
-	"per_star": 100,
-	"wired": true,
-	"target": "hero",
-	"hero": "xiao_yuer"
+    "desc": "小鱼儿资质每级+4，每星+100",
+    "stat": "apt",
+    "per_level": 4,
+    "per_star": 100,
+    "wired": true,
+    "target": "hero",
+    "hero": "xiao_yuer"
    },
    "special": {
-	"desc": "小鱼儿每星+10%",
-	"kind": "hero_pct",
-	"hero": "xiao_yuer",
-	"per_star": 10.0
+    "desc": "小鱼儿每星+10%",
+    "kind": "hero_pct",
+    "hero": "xiao_yuer",
+    "per_star": 10.0
    }
   },
   "c067": {
@@ -1352,19 +1356,19 @@
    "quality": 0,
    "order": 68,
    "base": {
-	"desc": "兰飞鸿资质每级+4，每星+100",
-	"stat": "apt",
-	"per_level": 4,
-	"per_star": 100,
-	"wired": true,
-	"target": "hero",
-	"hero": "lan_feihong"
+    "desc": "兰飞鸿资质每级+4，每星+100",
+    "stat": "apt",
+    "per_level": 4,
+    "per_star": 100,
+    "wired": true,
+    "target": "hero",
+    "hero": "lan_feihong"
    },
    "special": {
-	"desc": "兰飞鸿每星+10%",
-	"kind": "hero_pct",
-	"hero": "lan_feihong",
-	"per_star": 10.0
+    "desc": "兰飞鸿每星+10%",
+    "kind": "hero_pct",
+    "hero": "lan_feihong",
+    "per_star": 10.0
    }
   },
   "c068": {
@@ -1372,14 +1376,16 @@
    "quality": 1,
    "order": 69,
    "base": {
-	"desc": "工匠挚友才华每级+4，每星+220",
-	"stat": "才华",
-	"per_level": 4,
-	"per_star": 220,
-	"wired": false
+    "desc": "工匠挚友才华每级+4，每星+220",
+    "stat": "才华",
+    "per_level": 4,
+    "per_star": 220,
+    "wired": true,
+    "target": "friend_category",
+    "category": "工"
    },
    "special": {
-	"desc": "我方商战获得积分每星+5%"
+    "desc": "我方商战获得积分每星+5%"
    }
   },
   "c069": {
@@ -1387,16 +1393,16 @@
    "quality": 1,
    "order": 70,
    "base": {
-	"desc": "侠类门客赚钱每级+2.6万，每星+150万",
-	"stat": "income",
-	"per_level": 26000,
-	"per_star": 1500000,
-	"wired": true,
-	"target": "category",
-	"category": "侠"
+    "desc": "侠类门客赚钱每级+2.6万，每星+150万",
+    "stat": "income",
+    "per_level": 26000,
+    "per_star": 1500000,
+    "wired": true,
+    "target": "category",
+    "category": "侠"
    },
    "special": {
-	"desc": "商帮之争门客赚钱每星+2%"
+    "desc": "商帮之争门客赚钱每星+2%"
    }
   },
   "c070": {
@@ -1404,14 +1410,16 @@
    "quality": 1,
    "order": 71,
    "base": {
-	"desc": "农民挚友才华每级+4，每星+220",
-	"stat": "才华",
-	"per_level": 4,
-	"per_star": 220,
-	"wired": false
+    "desc": "农民挚友才华每级+4，每星+220",
+    "stat": "才华",
+    "per_level": 4,
+    "per_star": 220,
+    "wired": true,
+    "target": "friend_category",
+    "category": "农"
    },
    "special": {
-	"desc": "赴宴提升人气每星+2%"
+    "desc": "赴宴提升人气每星+2%"
    }
   },
   "c071": {
@@ -1419,14 +1427,16 @@
    "quality": 1,
    "order": 72,
    "base": {
-	"desc": "农民挚友才华每级+4，每星+220",
-	"stat": "才华",
-	"per_level": 4,
-	"per_star": 220,
-	"wired": false
+    "desc": "农民挚友才华每级+4，每星+220",
+    "stat": "才华",
+    "per_level": 4,
+    "per_star": 220,
+    "wired": true,
+    "target": "friend_category",
+    "category": "农"
    },
    "special": {
-	"desc": "农类挚友谈心缘分每星+2%"
+    "desc": "农类挚友谈心缘分每星+2%"
    }
   },
   "c072": {
@@ -1434,14 +1444,14 @@
    "quality": 1,
    "order": 73,
    "base": {
-	"desc": "农民门客赚钱每级+2.6万，每星+150万",
-	"stat": "income",
-	"per_level": 26000,
-	"per_star": 1500000,
-	"wired": false
+    "desc": "农民门客赚钱每级+2.6万，每星+150万",
+    "stat": "income",
+    "per_level": 26000,
+    "per_star": 1500000,
+    "wired": false
    },
    "special": {
-	"desc": "矿场额外攻击每星+10"
+    "desc": "矿场额外攻击每星+10"
    }
   },
   "c073": {
@@ -1449,14 +1459,16 @@
    "quality": 1,
    "order": 74,
    "base": {
-	"desc": "工类挚友才华每级+4，每星+220",
-	"stat": "才华",
-	"per_level": 4,
-	"per_star": 220,
-	"wired": false
+    "desc": "工类挚友才华每级+4，每星+220",
+    "stat": "才华",
+    "per_level": 4,
+    "per_star": 220,
+    "wired": true,
+    "target": "friend_category",
+    "category": "工"
    },
    "special": {
-	"desc": "工类挚友谈心缘分每星+2%"
+    "desc": "工类挚友谈心缘分每星+2%"
    }
   },
   "c074": {
@@ -1464,16 +1476,16 @@
    "quality": 1,
    "order": 75,
    "base": {
-	"desc": "士类门客赚钱每级+2.6万，每星+150万",
-	"stat": "income",
-	"per_level": 26000,
-	"per_star": 1500000,
-	"wired": true,
-	"target": "category",
-	"category": "士"
+    "desc": "士类门客赚钱每级+2.6万，每星+150万",
+    "stat": "income",
+    "per_level": 26000,
+    "per_star": 1500000,
+    "wired": true,
+    "target": "category",
+    "category": "士"
    },
    "special": {
-	"desc": "矿场打造次数每星+1"
+    "desc": "矿场打造次数每星+1"
    }
   },
   "c075": {
@@ -1481,19 +1493,19 @@
    "quality": 1,
    "order": 76,
    "base": {
-	"desc": "农类门客赚钱每级+2.6万，每星+65万",
-	"stat": "income",
-	"per_level": 26000,
-	"per_star": 650000,
-	"wired": true,
-	"target": "category",
-	"category": "农"
+    "desc": "农类门客赚钱每级+2.6万，每星+65万",
+    "stat": "income",
+    "per_level": 26000,
+    "per_star": 650000,
+    "wired": true,
+    "target": "category",
+    "category": "农"
    },
    "special": {
-	"desc": "农类门客赚钱每星+0.5%",
-	"kind": "category_pct",
-	"category": "农",
-	"per_star": 0.5
+    "desc": "农类门客赚钱每星+0.5%",
+    "kind": "category_pct",
+    "category": "农",
+    "per_star": 0.5
    }
   },
   "c076": {
@@ -1501,16 +1513,16 @@
    "quality": 1,
    "order": 77,
    "base": {
-	"desc": "商类门客赚钱每级+2.6万，每星+150万",
-	"stat": "income",
-	"per_level": 26000,
-	"per_star": 1500000,
-	"wired": true,
-	"target": "category",
-	"category": "商"
+    "desc": "商类门客赚钱每级+2.6万，每星+150万",
+    "stat": "income",
+    "per_level": 26000,
+    "per_star": 1500000,
+    "wired": true,
+    "target": "category",
+    "category": "商"
    },
    "special": {
-	"desc": "商帮之争出战次数+1，不可提升"
+    "desc": "商帮之争出战次数+1，不可提升"
    }
   },
   "c077": {
@@ -1518,16 +1530,16 @@
    "quality": 1,
    "order": 78,
    "base": {
-	"desc": "工类门客赚钱每级+2.6万，每星+150万",
-	"stat": "income",
-	"per_level": 26000,
-	"per_star": 1500000,
-	"wired": true,
-	"target": "category",
-	"category": "工"
+    "desc": "工类门客赚钱每级+2.6万，每星+150万",
+    "stat": "income",
+    "per_level": 26000,
+    "per_star": 1500000,
+    "wired": true,
+    "target": "category",
+    "category": "工"
    },
    "special": {
-	"desc": "矿场额外血量每星+100"
+    "desc": "矿场额外血量每星+100"
    }
   },
   "c078": {
@@ -1535,14 +1547,16 @@
    "quality": 1,
    "order": 79,
    "base": {
-	"desc": "士类挚友才华每级+4，每星+220",
-	"stat": "才华",
-	"per_level": 4,
-	"per_star": 220,
-	"wired": false
+    "desc": "士类挚友才华每级+4，每星+220",
+    "stat": "才华",
+    "per_level": 4,
+    "per_star": 220,
+    "wired": true,
+    "target": "friend_category",
+    "category": "士"
    },
    "special": {
-	"desc": "宴会结束人气每星+2%"
+    "desc": "宴会结束人气每星+2%"
    }
   },
   "c079": {
@@ -1550,14 +1564,16 @@
    "quality": 1,
    "order": 80,
    "base": {
-	"desc": "士类挚友才华每级+4，每星+220",
-	"stat": "才华",
-	"per_level": 4,
-	"per_star": 220,
-	"wired": false
+    "desc": "士类挚友才华每级+4，每星+220",
+    "stat": "才华",
+    "per_level": 4,
+    "per_star": 220,
+    "wired": true,
+    "target": "friend_category",
+    "category": "士"
    },
    "special": {
-	"desc": "士类挚友谈心缘分每星+2%"
+    "desc": "士类挚友谈心缘分每星+2%"
    }
   },
   "c080": {
@@ -1565,19 +1581,19 @@
    "quality": 1,
    "order": 81,
    "base": {
-	"desc": "李白资质每级+1，每星+25",
-	"stat": "apt",
-	"per_level": 1,
-	"per_star": 25,
-	"wired": true,
-	"target": "hero",
-	"hero": "li_bai"
+    "desc": "李白资质每级+1，每星+25",
+    "stat": "apt",
+    "per_level": 1,
+    "per_star": 25,
+    "wired": true,
+    "target": "hero",
+    "hero": "li_bai"
    },
    "special": {
-	"desc": "李白赚钱每星+2.5%",
-	"kind": "hero_pct",
-	"hero": "li_bai",
-	"per_star": 2.5
+    "desc": "李白赚钱每星+2.5%",
+    "kind": "hero_pct",
+    "hero": "li_bai",
+    "per_star": 2.5
    }
   },
   "c081": {
@@ -1585,14 +1601,16 @@
    "quality": 1,
    "order": 82,
    "base": {
-	"desc": "商类挚友才华每级+4，每星+220",
-	"stat": "才华",
-	"per_level": 4,
-	"per_star": 220,
-	"wired": false
+    "desc": "商类挚友才华每级+4，每星+220",
+    "stat": "才华",
+    "per_level": 4,
+    "per_star": 220,
+    "wired": true,
+    "target": "friend_category",
+    "category": "商"
    },
    "special": {
-	"desc": "商类挚友谈心缘分每星+2%"
+    "desc": "商类挚友谈心缘分每星+2%"
    }
   },
   "c082": {
@@ -1600,19 +1618,19 @@
    "quality": 1,
    "order": 83,
    "base": {
-	"desc": "士类门客赚钱每级+2.6万，每星+65万",
-	"stat": "income",
-	"per_level": 26000,
-	"per_star": 650000,
-	"wired": true,
-	"target": "category",
-	"category": "士"
+    "desc": "士类门客赚钱每级+2.6万，每星+65万",
+    "stat": "income",
+    "per_level": 26000,
+    "per_star": 650000,
+    "wired": true,
+    "target": "category",
+    "category": "士"
    },
    "special": {
-	"desc": "士类门客赚钱每星+0.5%",
-	"kind": "category_pct",
-	"category": "士",
-	"per_star": 0.5
+    "desc": "士类门客赚钱每星+0.5%",
+    "kind": "category_pct",
+    "category": "士",
+    "per_star": 0.5
    }
   },
   "c083": {
@@ -1620,19 +1638,19 @@
    "quality": 1,
    "order": 84,
    "base": {
-	"desc": "董小宛资质每级+1，每星+25",
-	"stat": "apt",
-	"per_level": 1,
-	"per_star": 25,
-	"wired": true,
-	"target": "hero",
-	"hero": "dong_xiaowan"
+    "desc": "董小宛资质每级+1，每星+25",
+    "stat": "apt",
+    "per_level": 1,
+    "per_star": 25,
+    "wired": true,
+    "target": "hero",
+    "hero": "dong_xiaowan"
    },
    "special": {
-	"desc": "董小宛赚钱每星+2.5%",
-	"kind": "hero_pct",
-	"hero": "dong_xiaowan",
-	"per_star": 2.5
+    "desc": "董小宛赚钱每星+2.5%",
+    "kind": "hero_pct",
+    "hero": "dong_xiaowan",
+    "per_star": 2.5
    }
   },
   "c084": {
@@ -1640,19 +1658,19 @@
    "quality": 1,
    "order": 85,
    "base": {
-	"desc": "士类门客赚钱每级+2.6万，每星+65万",
-	"stat": "income",
-	"per_level": 26000,
-	"per_star": 650000,
-	"wired": true,
-	"target": "category",
-	"category": "士"
+    "desc": "士类门客赚钱每级+2.6万，每星+65万",
+    "stat": "income",
+    "per_level": 26000,
+    "per_star": 650000,
+    "wired": true,
+    "target": "category",
+    "category": "士"
    },
    "special": {
-	"desc": "士类门客赚钱每星+0.5%",
-	"kind": "category_pct",
-	"category": "士",
-	"per_star": 0.5
+    "desc": "士类门客赚钱每星+0.5%",
+    "kind": "category_pct",
+    "category": "士",
+    "per_star": 0.5
    }
   },
   "c085": {
@@ -1660,19 +1678,19 @@
    "quality": 1,
    "order": 86,
    "base": {
-	"desc": "侠类门客赚钱每级+2.6万，每星+65万",
-	"stat": "income",
-	"per_level": 26000,
-	"per_star": 650000,
-	"wired": true,
-	"target": "category",
-	"category": "侠"
+    "desc": "侠类门客赚钱每级+2.6万，每星+65万",
+    "stat": "income",
+    "per_level": 26000,
+    "per_star": 650000,
+    "wired": true,
+    "target": "category",
+    "category": "侠"
    },
    "special": {
-	"desc": "侠类门客赚钱每星+0.5%",
-	"kind": "category_pct",
-	"category": "侠",
-	"per_star": 0.5
+    "desc": "侠类门客赚钱每星+0.5%",
+    "kind": "category_pct",
+    "category": "侠",
+    "per_star": 0.5
    }
   },
   "c086": {
@@ -1680,19 +1698,19 @@
    "quality": 1,
    "order": 87,
    "base": {
-	"desc": "工类门客赚钱每级+2.6万，每星+65万",
-	"stat": "income",
-	"per_level": 26000,
-	"per_star": 650000,
-	"wired": true,
-	"target": "category",
-	"category": "工"
+    "desc": "工类门客赚钱每级+2.6万，每星+65万",
+    "stat": "income",
+    "per_level": 26000,
+    "per_star": 650000,
+    "wired": true,
+    "target": "category",
+    "category": "工"
    },
    "special": {
-	"desc": "工类门客赚钱每星+0.5%",
-	"kind": "category_pct",
-	"category": "工",
-	"per_star": 0.5
+    "desc": "工类门客赚钱每星+0.5%",
+    "kind": "category_pct",
+    "category": "工",
+    "per_star": 0.5
    }
   },
   "c087": {
@@ -1700,19 +1718,19 @@
    "quality": 1,
    "order": 88,
    "base": {
-	"desc": "士类门客赚钱每级+2.6万，每星+65万",
-	"stat": "income",
-	"per_level": 26000,
-	"per_star": 650000,
-	"wired": true,
-	"target": "category",
-	"category": "士"
+    "desc": "士类门客赚钱每级+2.6万，每星+65万",
+    "stat": "income",
+    "per_level": 26000,
+    "per_star": 650000,
+    "wired": true,
+    "target": "category",
+    "category": "士"
    },
    "special": {
-	"desc": "士类门客赚钱每星+0.5%",
-	"kind": "category_pct",
-	"category": "士",
-	"per_star": 0.5
+    "desc": "士类门客赚钱每星+0.5%",
+    "kind": "category_pct",
+    "category": "士",
+    "per_star": 0.5
    }
   },
   "c088": {
@@ -1720,17 +1738,17 @@
    "quality": 1,
    "order": 89,
    "base": {
-	"desc": "五艳凤魁资质每级+1，每星+25",
-	"stat": "apt",
-	"per_level": 1,
-	"per_star": 25,
-	"wired": true,
-	"target": "wuyan"
+    "desc": "五艳凤魁资质每级+1，每星+25",
+    "stat": "apt",
+    "per_level": 1,
+    "per_star": 25,
+    "wired": true,
+    "target": "wuyan"
    },
    "special": {
-	"desc": "五艳凤魁赚钱每星+2.5%",
-	"kind": "group_pct",
-	"per_star": 2.5
+    "desc": "五艳凤魁赚钱每星+2.5%",
+    "kind": "group_pct",
+    "per_star": 2.5
    }
   },
   "c089": {
@@ -1738,19 +1756,19 @@
    "quality": 1,
    "order": 90,
    "base": {
-	"desc": "董小宛资质每级+1，每星+25",
-	"stat": "apt",
-	"per_level": 1,
-	"per_star": 25,
-	"wired": true,
-	"target": "hero",
-	"hero": "dong_xiaowan"
+    "desc": "董小宛资质每级+1，每星+25",
+    "stat": "apt",
+    "per_level": 1,
+    "per_star": 25,
+    "wired": true,
+    "target": "hero",
+    "hero": "dong_xiaowan"
    },
    "special": {
-	"desc": "董小宛赚钱每星+2.5%",
-	"kind": "hero_pct",
-	"hero": "dong_xiaowan",
-	"per_star": 2.5
+    "desc": "董小宛赚钱每星+2.5%",
+    "kind": "hero_pct",
+    "hero": "dong_xiaowan",
+    "per_star": 2.5
    }
   },
   "c090": {
@@ -1758,19 +1776,19 @@
    "quality": 1,
    "order": 91,
    "base": {
-	"desc": "葫芦仙人资质每级+1，每星+25",
-	"stat": "apt",
-	"per_level": 1,
-	"per_star": 25,
-	"wired": true,
-	"target": "hero",
-	"hero": "hu_lu_xianren"
+    "desc": "葫芦仙人资质每级+1，每星+25",
+    "stat": "apt",
+    "per_level": 1,
+    "per_star": 25,
+    "wired": true,
+    "target": "hero",
+    "hero": "hu_lu_xianren"
    },
    "special": {
-	"desc": "葫芦仙人赚钱每星+2.5%",
-	"kind": "hero_pct",
-	"hero": "hu_lu_xianren",
-	"per_star": 2.5
+    "desc": "葫芦仙人赚钱每星+2.5%",
+    "kind": "hero_pct",
+    "hero": "hu_lu_xianren",
+    "per_star": 2.5
    }
   },
   "c091": {
@@ -1778,19 +1796,19 @@
    "quality": 1,
    "order": 92,
    "base": {
-	"desc": "侠类门客赚钱每级+2.6万，每星+65万",
-	"stat": "income",
-	"per_level": 26000,
-	"per_star": 650000,
-	"wired": true,
-	"target": "category",
-	"category": "侠"
+    "desc": "侠类门客赚钱每级+2.6万，每星+65万",
+    "stat": "income",
+    "per_level": 26000,
+    "per_star": 650000,
+    "wired": true,
+    "target": "category",
+    "category": "侠"
    },
    "special": {
-	"desc": "侠类门客赚钱每星+0.5%",
-	"kind": "category_pct",
-	"category": "侠",
-	"per_star": 0.5
+    "desc": "侠类门客赚钱每星+0.5%",
+    "kind": "category_pct",
+    "category": "侠",
+    "per_star": 0.5
    }
   },
   "c092": {
@@ -1798,19 +1816,19 @@
    "quality": 1,
    "order": 93,
    "base": {
-	"desc": "刘昴星资质每级+1，每星+25",
-	"stat": "apt",
-	"per_level": 1,
-	"per_star": 25,
-	"wired": true,
-	"target": "hero",
-	"hero": "liu_maoxing"
+    "desc": "刘昴星资质每级+1，每星+25",
+    "stat": "apt",
+    "per_level": 1,
+    "per_star": 25,
+    "wired": true,
+    "target": "hero",
+    "hero": "liu_maoxing"
    },
    "special": {
-	"desc": "刘昴星赚钱每星+2.5%",
-	"kind": "hero_pct",
-	"hero": "liu_maoxing",
-	"per_star": 2.5
+    "desc": "刘昴星赚钱每星+2.5%",
+    "kind": "hero_pct",
+    "hero": "liu_maoxing",
+    "per_star": 2.5
    }
   },
   "c093": {
@@ -1818,19 +1836,19 @@
    "quality": 1,
    "order": 94,
    "base": {
-	"desc": "王昭君资质每级+1，每星+25",
-	"stat": "apt",
-	"per_level": 1,
-	"per_star": 25,
-	"wired": true,
-	"target": "hero",
-	"hero": "wang_zhaojun"
+    "desc": "王昭君资质每级+1，每星+25",
+    "stat": "apt",
+    "per_level": 1,
+    "per_star": 25,
+    "wired": true,
+    "target": "hero",
+    "hero": "wang_zhaojun"
    },
    "special": {
-	"desc": "王昭君赚钱每星+2.5%",
-	"kind": "hero_pct",
-	"hero": "wang_zhaojun",
-	"per_star": 2.5
+    "desc": "王昭君赚钱每星+2.5%",
+    "kind": "hero_pct",
+    "hero": "wang_zhaojun",
+    "per_star": 2.5
    }
   },
   "c094": {
@@ -1838,19 +1856,19 @@
    "quality": 1,
    "order": 95,
    "base": {
-	"desc": "王昭君资质每级+1，每星+25",
-	"stat": "apt",
-	"per_level": 1,
-	"per_star": 25,
-	"wired": true,
-	"target": "hero",
-	"hero": "wang_zhaojun"
+    "desc": "王昭君资质每级+1，每星+25",
+    "stat": "apt",
+    "per_level": 1,
+    "per_star": 25,
+    "wired": true,
+    "target": "hero",
+    "hero": "wang_zhaojun"
    },
    "special": {
-	"desc": "王昭君赚钱每星+2.5%",
-	"kind": "hero_pct",
-	"hero": "wang_zhaojun",
-	"per_star": 2.5
+    "desc": "王昭君赚钱每星+2.5%",
+    "kind": "hero_pct",
+    "hero": "wang_zhaojun",
+    "per_star": 2.5
    }
   },
   "c095": {
@@ -1858,19 +1876,19 @@
    "quality": 1,
    "order": 96,
    "base": {
-	"desc": "士类门客赚钱每级+2.6万，每星+65万",
-	"stat": "income",
-	"per_level": 26000,
-	"per_star": 650000,
-	"wired": true,
-	"target": "category",
-	"category": "士"
+    "desc": "士类门客赚钱每级+2.6万，每星+65万",
+    "stat": "income",
+    "per_level": 26000,
+    "per_star": 650000,
+    "wired": true,
+    "target": "category",
+    "category": "士"
    },
    "special": {
-	"desc": "士类门客赚钱每星+0.5%",
-	"kind": "category_pct",
-	"category": "士",
-	"per_star": 0.5
+    "desc": "士类门客赚钱每星+0.5%",
+    "kind": "category_pct",
+    "category": "士",
+    "per_star": 0.5
    }
   },
   "c096": {
@@ -1878,19 +1896,19 @@
    "quality": 1,
    "order": 97,
    "base": {
-	"desc": "农类门客赚钱每级+2.6万，每星+65万",
-	"stat": "income",
-	"per_level": 26000,
-	"per_star": 650000,
-	"wired": true,
-	"target": "category",
-	"category": "农"
+    "desc": "农类门客赚钱每级+2.6万，每星+65万",
+    "stat": "income",
+    "per_level": 26000,
+    "per_star": 650000,
+    "wired": true,
+    "target": "category",
+    "category": "农"
    },
    "special": {
-	"desc": "农类门客赚钱每星+0.5%",
-	"kind": "category_pct",
-	"category": "农",
-	"per_star": 0.5
+    "desc": "农类门客赚钱每星+0.5%",
+    "kind": "category_pct",
+    "category": "农",
+    "per_star": 0.5
    }
   },
   "c097": {
@@ -1898,19 +1916,19 @@
    "quality": 1,
    "order": 98,
    "base": {
-	"desc": "农类门客赚钱每级+2.6万，每星+65万",
-	"stat": "income",
-	"per_level": 26000,
-	"per_star": 650000,
-	"wired": true,
-	"target": "category",
-	"category": "农"
+    "desc": "农类门客赚钱每级+2.6万，每星+65万",
+    "stat": "income",
+    "per_level": 26000,
+    "per_star": 650000,
+    "wired": true,
+    "target": "category",
+    "category": "农"
    },
    "special": {
-	"desc": "农类门客赚钱每星+0.5%",
-	"kind": "category_pct",
-	"category": "农",
-	"per_star": 0.5
+    "desc": "农类门客赚钱每星+0.5%",
+    "kind": "category_pct",
+    "category": "农",
+    "per_star": 0.5
    }
   },
   "c098": {
@@ -1918,19 +1936,19 @@
    "quality": 1,
    "order": 99,
    "base": {
-	"desc": "小八资质每级+1，每星+25",
-	"stat": "apt",
-	"per_level": 1,
-	"per_star": 25,
-	"wired": true,
-	"target": "hero",
-	"hero": "xiao_ba"
+    "desc": "小八资质每级+1，每星+25",
+    "stat": "apt",
+    "per_level": 1,
+    "per_star": 25,
+    "wired": true,
+    "target": "hero",
+    "hero": "xiao_ba"
    },
    "special": {
-	"desc": "小八赚钱每星+2.5%",
-	"kind": "hero_pct",
-	"hero": "xiao_ba",
-	"per_star": 2.5
+    "desc": "小八赚钱每星+2.5%",
+    "kind": "hero_pct",
+    "hero": "xiao_ba",
+    "per_star": 2.5
    }
   },
   "c099": {
@@ -1938,19 +1956,19 @@
    "quality": 1,
    "order": 100,
    "base": {
-	"desc": "李白资质每级+1，每星+25",
-	"stat": "apt",
-	"per_level": 1,
-	"per_star": 25,
-	"wired": true,
-	"target": "hero",
-	"hero": "li_bai"
+    "desc": "李白资质每级+1，每星+25",
+    "stat": "apt",
+    "per_level": 1,
+    "per_star": 25,
+    "wired": true,
+    "target": "hero",
+    "hero": "li_bai"
    },
    "special": {
-	"desc": "李白赚钱每星+2.5%",
-	"kind": "hero_pct",
-	"hero": "li_bai",
-	"per_star": 2.5
+    "desc": "李白赚钱每星+2.5%",
+    "kind": "hero_pct",
+    "hero": "li_bai",
+    "per_star": 2.5
    }
   },
   "c100": {
@@ -1958,19 +1976,19 @@
    "quality": 1,
    "order": 101,
    "base": {
-	"desc": "李白资质每级+1，每星+25",
-	"stat": "apt",
-	"per_level": 1,
-	"per_star": 25,
-	"wired": true,
-	"target": "hero",
-	"hero": "li_bai"
+    "desc": "李白资质每级+1，每星+25",
+    "stat": "apt",
+    "per_level": 1,
+    "per_star": 25,
+    "wired": true,
+    "target": "hero",
+    "hero": "li_bai"
    },
    "special": {
-	"desc": "李白赚钱每星+2.5%",
-	"kind": "hero_pct",
-	"hero": "li_bai",
-	"per_star": 2.5
+    "desc": "李白赚钱每星+2.5%",
+    "kind": "hero_pct",
+    "hero": "li_bai",
+    "per_star": 2.5
    }
   },
   "c101": {
@@ -1978,19 +1996,19 @@
    "quality": 1,
    "order": 102,
    "base": {
-	"desc": "花木兰资质每级+1，每星+25",
-	"stat": "apt",
-	"per_level": 1,
-	"per_star": 25,
-	"wired": true,
-	"target": "hero",
-	"hero": "hua_mulan"
+    "desc": "花木兰资质每级+1，每星+25",
+    "stat": "apt",
+    "per_level": 1,
+    "per_star": 25,
+    "wired": true,
+    "target": "hero",
+    "hero": "hua_mulan"
    },
    "special": {
-	"desc": "花木兰赚钱每星+2.5%",
-	"kind": "hero_pct",
-	"hero": "hua_mulan",
-	"per_star": 2.5
+    "desc": "花木兰赚钱每星+2.5%",
+    "kind": "hero_pct",
+    "hero": "hua_mulan",
+    "per_star": 2.5
    }
   },
   "c102": {
@@ -1998,19 +2016,19 @@
    "quality": 1,
    "order": 103,
    "base": {
-	"desc": "葫芦仙人资质每级+1，每星+25",
-	"stat": "apt",
-	"per_level": 1,
-	"per_star": 25,
-	"wired": true,
-	"target": "hero",
-	"hero": "hu_lu_xianren"
+    "desc": "葫芦仙人资质每级+1，每星+25",
+    "stat": "apt",
+    "per_level": 1,
+    "per_star": 25,
+    "wired": true,
+    "target": "hero",
+    "hero": "hu_lu_xianren"
    },
    "special": {
-	"desc": "葫芦仙人赚钱每星+2.5%",
-	"kind": "hero_pct",
-	"hero": "hu_lu_xianren",
-	"per_star": 2.5
+    "desc": "葫芦仙人赚钱每星+2.5%",
+    "kind": "hero_pct",
+    "hero": "hu_lu_xianren",
+    "per_star": 2.5
    }
   },
   "c103": {
@@ -2018,19 +2036,19 @@
    "quality": 1,
    "order": 104,
    "base": {
-	"desc": "侠类门客赚钱每级+2.6万，每星+65万",
-	"stat": "income",
-	"per_level": 26000,
-	"per_star": 650000,
-	"wired": true,
-	"target": "category",
-	"category": "侠"
+    "desc": "侠类门客赚钱每级+2.6万，每星+65万",
+    "stat": "income",
+    "per_level": 26000,
+    "per_star": 650000,
+    "wired": true,
+    "target": "category",
+    "category": "侠"
    },
    "special": {
-	"desc": "侠类门客赚钱每星+0.5%",
-	"kind": "category_pct",
-	"category": "侠",
-	"per_star": 0.5
+    "desc": "侠类门客赚钱每星+0.5%",
+    "kind": "category_pct",
+    "category": "侠",
+    "per_star": 0.5
    }
   },
   "c104": {
@@ -2038,19 +2056,19 @@
    "quality": 1,
    "order": 105,
    "base": {
-	"desc": "农类门客赚钱每级+2.6万，每星+65万",
-	"stat": "income",
-	"per_level": 26000,
-	"per_star": 650000,
-	"wired": true,
-	"target": "category",
-	"category": "农"
+    "desc": "农类门客赚钱每级+2.6万，每星+65万",
+    "stat": "income",
+    "per_level": 26000,
+    "per_star": 650000,
+    "wired": true,
+    "target": "category",
+    "category": "农"
    },
    "special": {
-	"desc": "农类门客赚钱每星+0.5%",
-	"kind": "category_pct",
-	"category": "农",
-	"per_star": 0.5
+    "desc": "农类门客赚钱每星+0.5%",
+    "kind": "category_pct",
+    "category": "农",
+    "per_star": 0.5
    }
   },
   "c105": {
@@ -2058,19 +2076,19 @@
    "quality": 1,
    "order": 106,
    "base": {
-	"desc": "士类门客赚钱每级+2.6万，每星+65万",
-	"stat": "income",
-	"per_level": 26000,
-	"per_star": 650000,
-	"wired": true,
-	"target": "category",
-	"category": "士"
+    "desc": "士类门客赚钱每级+2.6万，每星+65万",
+    "stat": "income",
+    "per_level": 26000,
+    "per_star": 650000,
+    "wired": true,
+    "target": "category",
+    "category": "士"
    },
    "special": {
-	"desc": "士类门客赚钱每星+0.5%",
-	"kind": "category_pct",
-	"category": "士",
-	"per_star": 0.5
+    "desc": "士类门客赚钱每星+0.5%",
+    "kind": "category_pct",
+    "category": "士",
+    "per_star": 0.5
    }
   },
   "c106": {
@@ -2078,19 +2096,19 @@
    "quality": 1,
    "order": 107,
    "base": {
-	"desc": "商类门客赚钱每级+2.6万，每星+65万",
-	"stat": "income",
-	"per_level": 26000,
-	"per_star": 650000,
-	"wired": true,
-	"target": "category",
-	"category": "商"
+    "desc": "商类门客赚钱每级+2.6万，每星+65万",
+    "stat": "income",
+    "per_level": 26000,
+    "per_star": 650000,
+    "wired": true,
+    "target": "category",
+    "category": "商"
    },
    "special": {
-	"desc": "商类门客赚钱每星+0.5%",
-	"kind": "category_pct",
-	"category": "商",
-	"per_star": 0.5
+    "desc": "商类门客赚钱每星+0.5%",
+    "kind": "category_pct",
+    "category": "商",
+    "per_star": 0.5
    }
   },
   "c107": {
@@ -2098,19 +2116,19 @@
    "quality": 1,
    "order": 108,
    "base": {
-	"desc": "工类门客赚钱每级+2.6万，每星+65万",
-	"stat": "income",
-	"per_level": 26000,
-	"per_star": 650000,
-	"wired": true,
-	"target": "category",
-	"category": "工"
+    "desc": "工类门客赚钱每级+2.6万，每星+65万",
+    "stat": "income",
+    "per_level": 26000,
+    "per_star": 650000,
+    "wired": true,
+    "target": "category",
+    "category": "工"
    },
    "special": {
-	"desc": "工类门客赚钱每星+0.5%",
-	"kind": "category_pct",
-	"category": "工",
-	"per_star": 0.5
+    "desc": "工类门客赚钱每星+0.5%",
+    "kind": "category_pct",
+    "category": "工",
+    "per_star": 0.5
    }
   },
   "c108": {
@@ -2118,19 +2136,19 @@
    "quality": 1,
    "order": 109,
    "base": {
-	"desc": "农类门客赚钱每级+2.6万，每星+65万",
-	"stat": "income",
-	"per_level": 26000,
-	"per_star": 650000,
-	"wired": true,
-	"target": "category",
-	"category": "农"
+    "desc": "农类门客赚钱每级+2.6万，每星+65万",
+    "stat": "income",
+    "per_level": 26000,
+    "per_star": 650000,
+    "wired": true,
+    "target": "category",
+    "category": "农"
    },
    "special": {
-	"desc": "农类门客赚钱每星+0.5%",
-	"kind": "category_pct",
-	"category": "农",
-	"per_star": 0.5
+    "desc": "农类门客赚钱每星+0.5%",
+    "kind": "category_pct",
+    "category": "农",
+    "per_star": 0.5
    }
   },
   "c109": {
@@ -2138,19 +2156,19 @@
    "quality": 1,
    "order": 110,
    "base": {
-	"desc": "刘昴星资质每级+1，每星+25",
-	"stat": "apt",
-	"per_level": 1,
-	"per_star": 25,
-	"wired": true,
-	"target": "hero",
-	"hero": "liu_maoxing"
+    "desc": "刘昴星资质每级+1，每星+25",
+    "stat": "apt",
+    "per_level": 1,
+    "per_star": 25,
+    "wired": true,
+    "target": "hero",
+    "hero": "liu_maoxing"
    },
    "special": {
-	"desc": "刘昴星赚钱每星+2.5%",
-	"kind": "hero_pct",
-	"hero": "liu_maoxing",
-	"per_star": 2.5
+    "desc": "刘昴星赚钱每星+2.5%",
+    "kind": "hero_pct",
+    "hero": "liu_maoxing",
+    "per_star": 2.5
    }
   },
   "c110": {
@@ -2158,19 +2176,19 @@
    "quality": 1,
    "order": 111,
    "base": {
-	"desc": "小舞资质每级+1，每星+25",
-	"stat": "apt",
-	"per_level": 1,
-	"per_star": 25,
-	"wired": true,
-	"target": "hero",
-	"hero": "xiao_wu"
+    "desc": "小舞资质每级+1，每星+25",
+    "stat": "apt",
+    "per_level": 1,
+    "per_star": 25,
+    "wired": true,
+    "target": "hero",
+    "hero": "xiao_wu"
    },
    "special": {
-	"desc": "小舞赚钱每星+2.5%",
-	"kind": "hero_pct",
-	"hero": "xiao_wu",
-	"per_star": 2.5
+    "desc": "小舞赚钱每星+2.5%",
+    "kind": "hero_pct",
+    "hero": "xiao_wu",
+    "per_star": 2.5
    }
   },
   "c111": {
@@ -2178,19 +2196,19 @@
    "quality": 1,
    "order": 112,
    "base": {
-	"desc": "小八资质每级+1，每星+25",
-	"stat": "apt",
-	"per_level": 1,
-	"per_star": 25,
-	"wired": true,
-	"target": "hero",
-	"hero": "xiao_ba"
+    "desc": "小八资质每级+1，每星+25",
+    "stat": "apt",
+    "per_level": 1,
+    "per_star": 25,
+    "wired": true,
+    "target": "hero",
+    "hero": "xiao_ba"
    },
    "special": {
-	"desc": "小八赚钱每星+2.5%",
-	"kind": "hero_pct",
-	"hero": "xiao_ba",
-	"per_star": 2.5
+    "desc": "小八赚钱每星+2.5%",
+    "kind": "hero_pct",
+    "hero": "xiao_ba",
+    "per_star": 2.5
    }
   },
   "c112": {
@@ -2198,19 +2216,19 @@
    "quality": 1,
    "order": 113,
    "base": {
-	"desc": "花木兰资质每级+1，每星+25",
-	"stat": "apt",
-	"per_level": 1,
-	"per_star": 25,
-	"wired": true,
-	"target": "hero",
-	"hero": "hua_mulan"
+    "desc": "花木兰资质每级+1，每星+25",
+    "stat": "apt",
+    "per_level": 1,
+    "per_star": 25,
+    "wired": true,
+    "target": "hero",
+    "hero": "hua_mulan"
    },
    "special": {
-	"desc": "花木兰赚钱每星+2.5%",
-	"kind": "hero_pct",
-	"hero": "hua_mulan",
-	"per_star": 2.5
+    "desc": "花木兰赚钱每星+2.5%",
+    "kind": "hero_pct",
+    "hero": "hua_mulan",
+    "per_star": 2.5
    }
   },
   "c113": {
@@ -2218,19 +2236,19 @@
    "quality": 1,
    "order": 114,
    "base": {
-	"desc": "小柒资质每级+1，每星+25",
-	"stat": "apt",
-	"per_level": 1,
-	"per_star": 25,
-	"wired": true,
-	"target": "hero",
-	"hero": "xiao_qi"
+    "desc": "小柒资质每级+1，每星+25",
+    "stat": "apt",
+    "per_level": 1,
+    "per_star": 25,
+    "wired": true,
+    "target": "hero",
+    "hero": "xiao_qi"
    },
    "special": {
-	"desc": "小柒赚钱每星+2.5%",
-	"kind": "hero_pct",
-	"hero": "xiao_qi",
-	"per_star": 2.5
+    "desc": "小柒赚钱每星+2.5%",
+    "kind": "hero_pct",
+    "hero": "xiao_qi",
+    "per_star": 2.5
    }
   },
   "c114": {
@@ -2238,17 +2256,17 @@
    "quality": 1,
    "order": 115,
    "base": {
-	"desc": "五艳凤魁资质每级+1，每星+25",
-	"stat": "apt",
-	"per_level": 1,
-	"per_star": 25,
-	"wired": true,
-	"target": "wuyan"
+    "desc": "五艳凤魁资质每级+1，每星+25",
+    "stat": "apt",
+    "per_level": 1,
+    "per_star": 25,
+    "wired": true,
+    "target": "wuyan"
    },
    "special": {
-	"desc": "五艳凤魁赚钱每星+2.5%",
-	"kind": "group_pct",
-	"per_star": 2.5
+    "desc": "五艳凤魁赚钱每星+2.5%",
+    "kind": "group_pct",
+    "per_star": 2.5
    }
   },
   "c115": {
@@ -2256,19 +2274,19 @@
    "quality": 1,
    "order": 116,
    "base": {
-	"desc": "兰飞鸿资质每级+1，每星+25",
-	"stat": "apt",
-	"per_level": 1,
-	"per_star": 25,
-	"wired": true,
-	"target": "hero",
-	"hero": "lan_feihong"
+    "desc": "兰飞鸿资质每级+1，每星+25",
+    "stat": "apt",
+    "per_level": 1,
+    "per_star": 25,
+    "wired": true,
+    "target": "hero",
+    "hero": "lan_feihong"
    },
    "special": {
-	"desc": "兰飞鸿赚钱每星+2.5%",
-	"kind": "hero_pct",
-	"hero": "lan_feihong",
-	"per_star": 2.5
+    "desc": "兰飞鸿赚钱每星+2.5%",
+    "kind": "hero_pct",
+    "hero": "lan_feihong",
+    "per_star": 2.5
    }
   },
   "c116": {
@@ -2276,19 +2294,19 @@
    "quality": 1,
    "order": 117,
    "base": {
-	"desc": "王昭君资质每级+1，每星+25",
-	"stat": "apt",
-	"per_level": 1,
-	"per_star": 25,
-	"wired": true,
-	"target": "hero",
-	"hero": "wang_zhaojun"
+    "desc": "王昭君资质每级+1，每星+25",
+    "stat": "apt",
+    "per_level": 1,
+    "per_star": 25,
+    "wired": true,
+    "target": "hero",
+    "hero": "wang_zhaojun"
    },
    "special": {
-	"desc": "王昭君赚钱每星+2.5%",
-	"kind": "hero_pct",
-	"hero": "wang_zhaojun",
-	"per_star": 2.5
+    "desc": "王昭君赚钱每星+2.5%",
+    "kind": "hero_pct",
+    "hero": "wang_zhaojun",
+    "per_star": 2.5
    }
   },
   "c117": {
@@ -2296,19 +2314,19 @@
    "quality": 1,
    "order": 118,
    "base": {
-	"desc": "士类门客赚钱每级+2.6万，每星+65万",
-	"stat": "income",
-	"per_level": 26000,
-	"per_star": 650000,
-	"wired": true,
-	"target": "category",
-	"category": "士"
+    "desc": "士类门客赚钱每级+2.6万，每星+65万",
+    "stat": "income",
+    "per_level": 26000,
+    "per_star": 650000,
+    "wired": true,
+    "target": "category",
+    "category": "士"
    },
    "special": {
-	"desc": "士类门客赚钱每星+0.5%",
-	"kind": "category_pct",
-	"category": "士",
-	"per_star": 0.5
+    "desc": "士类门客赚钱每星+0.5%",
+    "kind": "category_pct",
+    "category": "士",
+    "per_star": 0.5
    }
   },
   "c118": {
@@ -2316,19 +2334,19 @@
    "quality": 1,
    "order": 119,
    "base": {
-	"desc": "侠类门客赚钱每级+2.6万，每星+65万",
-	"stat": "income",
-	"per_level": 26000,
-	"per_star": 650000,
-	"wired": true,
-	"target": "category",
-	"category": "侠"
+    "desc": "侠类门客赚钱每级+2.6万，每星+65万",
+    "stat": "income",
+    "per_level": 26000,
+    "per_star": 650000,
+    "wired": true,
+    "target": "category",
+    "category": "侠"
    },
    "special": {
-	"desc": "侠类门客赚钱每星+0.5%",
-	"kind": "category_pct",
-	"category": "侠",
-	"per_star": 0.5
+    "desc": "侠类门客赚钱每星+0.5%",
+    "kind": "category_pct",
+    "category": "侠",
+    "per_star": 0.5
    }
   },
   "c119": {
@@ -2336,19 +2354,19 @@
    "quality": 1,
    "order": 120,
    "base": {
-	"desc": "商类门客赚钱每级+2.6万，每星+65万",
-	"stat": "income",
-	"per_level": 26000,
-	"per_star": 650000,
-	"wired": true,
-	"target": "category",
-	"category": "商"
+    "desc": "商类门客赚钱每级+2.6万，每星+65万",
+    "stat": "income",
+    "per_level": 26000,
+    "per_star": 650000,
+    "wired": true,
+    "target": "category",
+    "category": "商"
    },
    "special": {
-	"desc": "商类门客赚钱每星+0.5%",
-	"kind": "category_pct",
-	"category": "商",
-	"per_star": 0.5
+    "desc": "商类门客赚钱每星+0.5%",
+    "kind": "category_pct",
+    "category": "商",
+    "per_star": 0.5
    }
   },
   "c120": {
@@ -2356,19 +2374,19 @@
    "quality": 1,
    "order": 121,
    "base": {
-	"desc": "工类门客赚钱每级+2.6万，每星+65万",
-	"stat": "income",
-	"per_level": 26000,
-	"per_star": 650000,
-	"wired": true,
-	"target": "category",
-	"category": "工"
+    "desc": "工类门客赚钱每级+2.6万，每星+65万",
+    "stat": "income",
+    "per_level": 26000,
+    "per_star": 650000,
+    "wired": true,
+    "target": "category",
+    "category": "工"
    },
    "special": {
-	"desc": "工类门客赚钱每星+0.5%",
-	"kind": "category_pct",
-	"category": "工",
-	"per_star": 0.5
+    "desc": "工类门客赚钱每星+0.5%",
+    "kind": "category_pct",
+    "category": "工",
+    "per_star": 0.5
    }
   },
   "c121": {
@@ -2376,19 +2394,19 @@
    "quality": 1,
    "order": 122,
    "base": {
-	"desc": "农类门客赚钱每级+2.6万，每星+65万",
-	"stat": "income",
-	"per_level": 26000,
-	"per_star": 650000,
-	"wired": true,
-	"target": "category",
-	"category": "农"
+    "desc": "农类门客赚钱每级+2.6万，每星+65万",
+    "stat": "income",
+    "per_level": 26000,
+    "per_star": 650000,
+    "wired": true,
+    "target": "category",
+    "category": "农"
    },
    "special": {
-	"desc": "农类门客赚钱每星+0.5%",
-	"kind": "category_pct",
-	"category": "农",
-	"per_star": 0.5
+    "desc": "农类门客赚钱每星+0.5%",
+    "kind": "category_pct",
+    "category": "农",
+    "per_star": 0.5
    }
   },
   "c122": {
@@ -2396,19 +2414,19 @@
    "quality": 1,
    "order": 123,
    "base": {
-	"desc": "葫芦仙人资质每级+1，每星+25",
-	"stat": "apt",
-	"per_level": 1,
-	"per_star": 25,
-	"wired": true,
-	"target": "hero",
-	"hero": "hu_lu_xianren"
+    "desc": "葫芦仙人资质每级+1，每星+25",
+    "stat": "apt",
+    "per_level": 1,
+    "per_star": 25,
+    "wired": true,
+    "target": "hero",
+    "hero": "hu_lu_xianren"
    },
    "special": {
-	"desc": "葫芦仙人赚钱每星+2.5%",
-	"kind": "hero_pct",
-	"hero": "hu_lu_xianren",
-	"per_star": 2.5
+    "desc": "葫芦仙人赚钱每星+2.5%",
+    "kind": "hero_pct",
+    "hero": "hu_lu_xianren",
+    "per_star": 2.5
    }
   },
   "c123": {
@@ -2416,19 +2434,19 @@
    "quality": 1,
    "order": 124,
    "base": {
-	"desc": "杨戬资质每级+1，每星+25",
-	"stat": "apt",
-	"per_level": 1,
-	"per_star": 25,
-	"wired": true,
-	"target": "hero",
-	"hero": "yang_jian"
+    "desc": "杨戬资质每级+1，每星+25",
+    "stat": "apt",
+    "per_level": 1,
+    "per_star": 25,
+    "wired": true,
+    "target": "hero",
+    "hero": "yang_jian"
    },
    "special": {
-	"desc": "杨戬赚钱每星+2.5%",
-	"kind": "hero_pct",
-	"hero": "yang_jian",
-	"per_star": 2.5
+    "desc": "杨戬赚钱每星+2.5%",
+    "kind": "hero_pct",
+    "hero": "yang_jian",
+    "per_star": 2.5
    }
   },
   "c124": {
@@ -2436,19 +2454,19 @@
    "quality": 1,
    "order": 125,
    "base": {
-	"desc": "商类门客赚钱每级+2.6万，每星+65万",
-	"stat": "income",
-	"per_level": 26000,
-	"per_star": 650000,
-	"wired": true,
-	"target": "category",
-	"category": "商"
+    "desc": "商类门客赚钱每级+2.6万，每星+65万",
+    "stat": "income",
+    "per_level": 26000,
+    "per_star": 650000,
+    "wired": true,
+    "target": "category",
+    "category": "商"
    },
    "special": {
-	"desc": "商类门客赚钱每星+0.5%",
-	"kind": "category_pct",
-	"category": "商",
-	"per_star": 0.5
+    "desc": "商类门客赚钱每星+0.5%",
+    "kind": "category_pct",
+    "category": "商",
+    "per_star": 0.5
    }
   },
   "c125": {
@@ -2456,19 +2474,19 @@
    "quality": 1,
    "order": 126,
    "base": {
-	"desc": "工类门客赚钱每级+2.6万，每星+65万",
-	"stat": "income",
-	"per_level": 26000,
-	"per_star": 650000,
-	"wired": true,
-	"target": "category",
-	"category": "工"
+    "desc": "工类门客赚钱每级+2.6万，每星+65万",
+    "stat": "income",
+    "per_level": 26000,
+    "per_star": 650000,
+    "wired": true,
+    "target": "category",
+    "category": "工"
    },
    "special": {
-	"desc": "工类门客赚钱每星+0.5%",
-	"kind": "category_pct",
-	"category": "工",
-	"per_star": 0.5
+    "desc": "工类门客赚钱每星+0.5%",
+    "kind": "category_pct",
+    "category": "工",
+    "per_star": 0.5
    }
   },
   "c126": {
@@ -2476,19 +2494,19 @@
    "quality": 1,
    "order": 127,
    "base": {
-	"desc": "农类门客赚钱每级+2.6万，每星+65万",
-	"stat": "income",
-	"per_level": 26000,
-	"per_star": 650000,
-	"wired": true,
-	"target": "category",
-	"category": "农"
+    "desc": "农类门客赚钱每级+2.6万，每星+65万",
+    "stat": "income",
+    "per_level": 26000,
+    "per_star": 650000,
+    "wired": true,
+    "target": "category",
+    "category": "农"
    },
    "special": {
-	"desc": "农类门客赚钱每星+0.5%",
-	"kind": "category_pct",
-	"category": "农",
-	"per_star": 0.5
+    "desc": "农类门客赚钱每星+0.5%",
+    "kind": "category_pct",
+    "category": "农",
+    "per_star": 0.5
    }
   },
   "c127": {
@@ -2496,19 +2514,19 @@
    "quality": 1,
    "order": 128,
    "base": {
-	"desc": "花木兰资质每级+1，每星+25",
-	"stat": "apt",
-	"per_level": 1,
-	"per_star": 25,
-	"wired": true,
-	"target": "hero",
-	"hero": "hua_mulan"
+    "desc": "花木兰资质每级+1，每星+25",
+    "stat": "apt",
+    "per_level": 1,
+    "per_star": 25,
+    "wired": true,
+    "target": "hero",
+    "hero": "hua_mulan"
    },
    "special": {
-	"desc": "花木兰赚钱每星+2.5%",
-	"kind": "hero_pct",
-	"hero": "hua_mulan",
-	"per_star": 2.5
+    "desc": "花木兰赚钱每星+2.5%",
+    "kind": "hero_pct",
+    "hero": "hua_mulan",
+    "per_star": 2.5
    }
   },
   "c128": {
@@ -2516,19 +2534,19 @@
    "quality": 1,
    "order": 129,
    "base": {
-	"desc": "小柒资质每级+1，每星+25",
-	"stat": "apt",
-	"per_level": 1,
-	"per_star": 25,
-	"wired": true,
-	"target": "hero",
-	"hero": "xiao_qi"
+    "desc": "小柒资质每级+1，每星+25",
+    "stat": "apt",
+    "per_level": 1,
+    "per_star": 25,
+    "wired": true,
+    "target": "hero",
+    "hero": "xiao_qi"
    },
    "special": {
-	"desc": "小柒赚钱每星+2.5%",
-	"kind": "hero_pct",
-	"hero": "xiao_qi",
-	"per_star": 2.5
+    "desc": "小柒赚钱每星+2.5%",
+    "kind": "hero_pct",
+    "hero": "xiao_qi",
+    "per_star": 2.5
    }
   },
   "c129": {
@@ -2536,19 +2554,19 @@
    "quality": 1,
    "order": 130,
    "base": {
-	"desc": "小柒资质每级+1，每星+25",
-	"stat": "apt",
-	"per_level": 1,
-	"per_star": 25,
-	"wired": true,
-	"target": "hero",
-	"hero": "xiao_qi"
+    "desc": "小柒资质每级+1，每星+25",
+    "stat": "apt",
+    "per_level": 1,
+    "per_star": 25,
+    "wired": true,
+    "target": "hero",
+    "hero": "xiao_qi"
    },
    "special": {
-	"desc": "小柒赚钱每星+2.5%",
-	"kind": "hero_pct",
-	"hero": "xiao_qi",
-	"per_star": 2.5
+    "desc": "小柒赚钱每星+2.5%",
+    "kind": "hero_pct",
+    "hero": "xiao_qi",
+    "per_star": 2.5
    }
   },
   "c130": {
@@ -2556,19 +2574,19 @@
    "quality": 1,
    "order": 131,
    "base": {
-	"desc": "侠类门客赚钱每级+2.6万，每星+65万",
-	"stat": "income",
-	"per_level": 26000,
-	"per_star": 650000,
-	"wired": true,
-	"target": "category",
-	"category": "侠"
+    "desc": "侠类门客赚钱每级+2.6万，每星+65万",
+    "stat": "income",
+    "per_level": 26000,
+    "per_star": 650000,
+    "wired": true,
+    "target": "category",
+    "category": "侠"
    },
    "special": {
-	"desc": "侠类门客赚钱每星+0.5%",
-	"kind": "category_pct",
-	"category": "侠",
-	"per_star": 0.5
+    "desc": "侠类门客赚钱每星+0.5%",
+    "kind": "category_pct",
+    "category": "侠",
+    "per_star": 0.5
    }
   },
   "c131": {
@@ -2576,19 +2594,19 @@
    "quality": 1,
    "order": 132,
    "base": {
-	"desc": "工类门客赚钱每级+2.6万，每星+65万",
-	"stat": "income",
-	"per_level": 26000,
-	"per_star": 650000,
-	"wired": true,
-	"target": "category",
-	"category": "工"
+    "desc": "工类门客赚钱每级+2.6万，每星+65万",
+    "stat": "income",
+    "per_level": 26000,
+    "per_star": 650000,
+    "wired": true,
+    "target": "category",
+    "category": "工"
    },
    "special": {
-	"desc": "工类门客赚钱每星+0.5%",
-	"kind": "category_pct",
-	"category": "工",
-	"per_star": 0.5
+    "desc": "工类门客赚钱每星+0.5%",
+    "kind": "category_pct",
+    "category": "工",
+    "per_star": 0.5
    }
   },
   "c132": {
@@ -2596,19 +2614,19 @@
    "quality": 1,
    "order": 133,
    "base": {
-	"desc": "士类门客赚钱每级+2.6万，每星+65万",
-	"stat": "income",
-	"per_level": 26000,
-	"per_star": 650000,
-	"wired": true,
-	"target": "category",
-	"category": "士"
+    "desc": "士类门客赚钱每级+2.6万，每星+65万",
+    "stat": "income",
+    "per_level": 26000,
+    "per_star": 650000,
+    "wired": true,
+    "target": "category",
+    "category": "士"
    },
    "special": {
-	"desc": "士类门客赚钱每星+0.5%",
-	"kind": "category_pct",
-	"category": "士",
-	"per_star": 0.5
+    "desc": "士类门客赚钱每星+0.5%",
+    "kind": "category_pct",
+    "category": "士",
+    "per_star": 0.5
    }
   },
   "c133": {
@@ -2616,19 +2634,19 @@
    "quality": 1,
    "order": 134,
    "base": {
-	"desc": "寇白门资质每级+1，每星+25",
-	"stat": "apt",
-	"per_level": 1,
-	"per_star": 25,
-	"wired": true,
-	"target": "hero",
-	"hero": "kou_baimen"
+    "desc": "寇白门资质每级+1，每星+25",
+    "stat": "apt",
+    "per_level": 1,
+    "per_star": 25,
+    "wired": true,
+    "target": "hero",
+    "hero": "kou_baimen"
    },
    "special": {
-	"desc": "寇白门赚钱每星+2.5%",
-	"kind": "hero_pct",
-	"hero": "kou_baimen",
-	"per_star": 2.5
+    "desc": "寇白门赚钱每星+2.5%",
+    "kind": "hero_pct",
+    "hero": "kou_baimen",
+    "per_star": 2.5
    }
   },
   "c134": {
@@ -2636,19 +2654,19 @@
    "quality": 1,
    "order": 135,
    "base": {
-	"desc": "马湘兰资质每级+1，每星+25",
-	"stat": "apt",
-	"per_level": 1,
-	"per_star": 25,
-	"wired": true,
-	"target": "hero",
-	"hero": "ma_xianglan"
+    "desc": "马湘兰资质每级+1，每星+25",
+    "stat": "apt",
+    "per_level": 1,
+    "per_star": 25,
+    "wired": true,
+    "target": "hero",
+    "hero": "ma_xianglan"
    },
    "special": {
-	"desc": "马湘兰赚钱每星+2.5%",
-	"kind": "hero_pct",
-	"hero": "ma_xianglan",
-	"per_star": 2.5
+    "desc": "马湘兰赚钱每星+2.5%",
+    "kind": "hero_pct",
+    "hero": "ma_xianglan",
+    "per_star": 2.5
    }
   },
   "c135": {
@@ -2656,19 +2674,19 @@
    "quality": 1,
    "order": 136,
    "base": {
-	"desc": "卞玉京资质每级+1，每星+25",
-	"stat": "apt",
-	"per_level": 1,
-	"per_star": 25,
-	"wired": true,
-	"target": "hero",
-	"hero": "bian_yujing"
+    "desc": "卞玉京资质每级+1，每星+25",
+    "stat": "apt",
+    "per_level": 1,
+    "per_star": 25,
+    "wired": true,
+    "target": "hero",
+    "hero": "bian_yujing"
    },
    "special": {
-	"desc": "卞玉京赚钱每星+2.5%",
-	"kind": "hero_pct",
-	"hero": "bian_yujing",
-	"per_star": 2.5
+    "desc": "卞玉京赚钱每星+2.5%",
+    "kind": "hero_pct",
+    "hero": "bian_yujing",
+    "per_star": 2.5
    }
   },
   "c136": {
@@ -2676,19 +2694,19 @@
    "quality": 1,
    "order": 137,
    "base": {
-	"desc": "李香君资质每级+1，每星+25",
-	"stat": "apt",
-	"per_level": 1,
-	"per_star": 25,
-	"wired": true,
-	"target": "hero",
-	"hero": "li_xiangjun"
+    "desc": "李香君资质每级+1，每星+25",
+    "stat": "apt",
+    "per_level": 1,
+    "per_star": 25,
+    "wired": true,
+    "target": "hero",
+    "hero": "li_xiangjun"
    },
    "special": {
-	"desc": "李香君赚钱每星+2.5%",
-	"kind": "hero_pct",
-	"hero": "li_xiangjun",
-	"per_star": 2.5
+    "desc": "李香君赚钱每星+2.5%",
+    "kind": "hero_pct",
+    "hero": "li_xiangjun",
+    "per_star": 2.5
    }
   },
   "c137": {
@@ -2696,19 +2714,19 @@
    "quality": 1,
    "order": 138,
    "base": {
-	"desc": "商类门客赚钱每级+2.6万，每星+65万",
-	"stat": "income",
-	"per_level": 26000,
-	"per_star": 650000,
-	"wired": true,
-	"target": "category",
-	"category": "商"
+    "desc": "商类门客赚钱每级+2.6万，每星+65万",
+    "stat": "income",
+    "per_level": 26000,
+    "per_star": 650000,
+    "wired": true,
+    "target": "category",
+    "category": "商"
    },
    "special": {
-	"desc": "商类门客赚钱每星+0.5%",
-	"kind": "category_pct",
-	"category": "商",
-	"per_star": 0.5
+    "desc": "商类门客赚钱每星+0.5%",
+    "kind": "category_pct",
+    "category": "商",
+    "per_star": 0.5
    }
   },
   "c138": {
@@ -2716,19 +2734,19 @@
    "quality": 1,
    "order": 139,
    "base": {
-	"desc": "商类门客赚钱每级+2.6万，每星+65万",
-	"stat": "income",
-	"per_level": 26000,
-	"per_star": 650000,
-	"wired": true,
-	"target": "category",
-	"category": "商"
+    "desc": "商类门客赚钱每级+2.6万，每星+65万",
+    "stat": "income",
+    "per_level": 26000,
+    "per_star": 650000,
+    "wired": true,
+    "target": "category",
+    "category": "商"
    },
    "special": {
-	"desc": "商类门客赚钱每星+0.5%",
-	"kind": "category_pct",
-	"category": "商",
-	"per_star": 0.5
+    "desc": "商类门客赚钱每星+0.5%",
+    "kind": "category_pct",
+    "category": "商",
+    "per_star": 0.5
    }
   },
   "c139": {
@@ -2736,19 +2754,19 @@
    "quality": 1,
    "order": 140,
    "base": {
-	"desc": "工类门客赚钱每级+2.6万，每星+65万",
-	"stat": "income",
-	"per_level": 26000,
-	"per_star": 650000,
-	"wired": true,
-	"target": "category",
-	"category": "工"
+    "desc": "工类门客赚钱每级+2.6万，每星+65万",
+    "stat": "income",
+    "per_level": 26000,
+    "per_star": 650000,
+    "wired": true,
+    "target": "category",
+    "category": "工"
    },
    "special": {
-	"desc": "工类门客赚钱每星+0.5%",
-	"kind": "category_pct",
-	"category": "工",
-	"per_star": 0.5
+    "desc": "工类门客赚钱每星+0.5%",
+    "kind": "category_pct",
+    "category": "工",
+    "per_star": 0.5
    }
   },
   "c140": {
@@ -2756,19 +2774,19 @@
    "quality": 1,
    "order": 141,
    "base": {
-	"desc": "侠类门客赚钱每级+2.6万，每星+65万",
-	"stat": "income",
-	"per_level": 26000,
-	"per_star": 650000,
-	"wired": true,
-	"target": "category",
-	"category": "侠"
+    "desc": "侠类门客赚钱每级+2.6万，每星+65万",
+    "stat": "income",
+    "per_level": 26000,
+    "per_star": 650000,
+    "wired": true,
+    "target": "category",
+    "category": "侠"
    },
    "special": {
-	"desc": "侠类门客赚钱每星+0.5%",
-	"kind": "category_pct",
-	"category": "侠",
-	"per_star": 0.5
+    "desc": "侠类门客赚钱每星+0.5%",
+    "kind": "category_pct",
+    "category": "侠",
+    "per_star": 0.5
    }
   },
   "c141": {
@@ -2776,19 +2794,19 @@
    "quality": 1,
    "order": 142,
    "base": {
-	"desc": "农类门客赚钱每级+2.6万，每星+65万",
-	"stat": "income",
-	"per_level": 26000,
-	"per_star": 650000,
-	"wired": true,
-	"target": "category",
-	"category": "农"
+    "desc": "农类门客赚钱每级+2.6万，每星+65万",
+    "stat": "income",
+    "per_level": 26000,
+    "per_star": 650000,
+    "wired": true,
+    "target": "category",
+    "category": "农"
    },
    "special": {
-	"desc": "农类门客赚钱每星+0.5%",
-	"kind": "category_pct",
-	"category": "农",
-	"per_star": 0.5
+    "desc": "农类门客赚钱每星+0.5%",
+    "kind": "category_pct",
+    "category": "农",
+    "per_star": 0.5
    }
   },
   "c142": {
@@ -2796,19 +2814,19 @@
    "quality": 1,
    "order": 143,
    "base": {
-	"desc": "商类门客赚钱每级+2.6万，每星+65万",
-	"stat": "income",
-	"per_level": 26000,
-	"per_star": 650000,
-	"wired": true,
-	"target": "category",
-	"category": "商"
+    "desc": "商类门客赚钱每级+2.6万，每星+65万",
+    "stat": "income",
+    "per_level": 26000,
+    "per_star": 650000,
+    "wired": true,
+    "target": "category",
+    "category": "商"
    },
    "special": {
-	"desc": "商类门客赚钱每星+0.5%",
-	"kind": "category_pct",
-	"category": "商",
-	"per_star": 0.5
+    "desc": "商类门客赚钱每星+0.5%",
+    "kind": "category_pct",
+    "category": "商",
+    "per_star": 0.5
    }
   },
   "c143": {
@@ -2816,19 +2834,19 @@
    "quality": 1,
    "order": 144,
    "base": {
-	"desc": "工类门客赚钱每级+2.6万，每星+65万",
-	"stat": "income",
-	"per_level": 26000,
-	"per_star": 650000,
-	"wired": true,
-	"target": "category",
-	"category": "工"
+    "desc": "工类门客赚钱每级+2.6万，每星+65万",
+    "stat": "income",
+    "per_level": 26000,
+    "per_star": 650000,
+    "wired": true,
+    "target": "category",
+    "category": "工"
    },
    "special": {
-	"desc": "工类门客赚钱每星+0.5%",
-	"kind": "category_pct",
-	"category": "工",
-	"per_star": 0.5
+    "desc": "工类门客赚钱每星+0.5%",
+    "kind": "category_pct",
+    "category": "工",
+    "per_star": 0.5
    }
   },
   "c144": {
@@ -2836,19 +2854,19 @@
    "quality": 1,
    "order": 145,
    "base": {
-	"desc": "葫芦仙人资质每级+1，每星+25",
-	"stat": "apt",
-	"per_level": 1,
-	"per_star": 25,
-	"wired": true,
-	"target": "hero",
-	"hero": "hu_lu_xianren"
+    "desc": "葫芦仙人资质每级+1，每星+25",
+    "stat": "apt",
+    "per_level": 1,
+    "per_star": 25,
+    "wired": true,
+    "target": "hero",
+    "hero": "hu_lu_xianren"
    },
    "special": {
-	"desc": "葫芦仙人赚钱每星+2.5%",
-	"kind": "hero_pct",
-	"hero": "hu_lu_xianren",
-	"per_star": 2.5
+    "desc": "葫芦仙人赚钱每星+2.5%",
+    "kind": "hero_pct",
+    "hero": "hu_lu_xianren",
+    "per_star": 2.5
    }
   },
   "c145": {
@@ -2856,19 +2874,19 @@
    "quality": 1,
    "order": 146,
    "base": {
-	"desc": "工类门客赚钱每级+2.6万，每星+65万",
-	"stat": "income",
-	"per_level": 26000,
-	"per_star": 650000,
-	"wired": true,
-	"target": "category",
-	"category": "工"
+    "desc": "工类门客赚钱每级+2.6万，每星+65万",
+    "stat": "income",
+    "per_level": 26000,
+    "per_star": 650000,
+    "wired": true,
+    "target": "category",
+    "category": "工"
    },
    "special": {
-	"desc": "工类门客赚钱每星+0.5%",
-	"kind": "category_pct",
-	"category": "工",
-	"per_star": 0.5
+    "desc": "工类门客赚钱每星+0.5%",
+    "kind": "category_pct",
+    "category": "工",
+    "per_star": 0.5
    }
   },
   "c146": {
@@ -2876,19 +2894,19 @@
    "quality": 1,
    "order": 147,
    "base": {
-	"desc": "商类门客赚钱每级+2.6万，每星+65万",
-	"stat": "income",
-	"per_level": 26000,
-	"per_star": 650000,
-	"wired": true,
-	"target": "category",
-	"category": "商"
+    "desc": "商类门客赚钱每级+2.6万，每星+65万",
+    "stat": "income",
+    "per_level": 26000,
+    "per_star": 650000,
+    "wired": true,
+    "target": "category",
+    "category": "商"
    },
    "special": {
-	"desc": "商类门客赚钱每星+0.5%",
-	"kind": "category_pct",
-	"category": "商",
-	"per_star": 0.5
+    "desc": "商类门客赚钱每星+0.5%",
+    "kind": "category_pct",
+    "category": "商",
+    "per_star": 0.5
    }
   },
   "c147": {
@@ -2896,19 +2914,19 @@
    "quality": 1,
    "order": 148,
    "base": {
-	"desc": "小鱼儿资质每级+1，每星+25",
-	"stat": "apt",
-	"per_level": 1,
-	"per_star": 25,
-	"wired": true,
-	"target": "hero",
-	"hero": "xiao_yuer"
+    "desc": "小鱼儿资质每级+1，每星+25",
+    "stat": "apt",
+    "per_level": 1,
+    "per_star": 25,
+    "wired": true,
+    "target": "hero",
+    "hero": "xiao_yuer"
    },
    "special": {
-	"desc": "小鱼儿赚钱每星+2.5%",
-	"kind": "hero_pct",
-	"hero": "xiao_yuer",
-	"per_star": 2.5
+    "desc": "小鱼儿赚钱每星+2.5%",
+    "kind": "hero_pct",
+    "hero": "xiao_yuer",
+    "per_star": 2.5
    }
   },
   "c148": {
@@ -2916,19 +2934,19 @@
    "quality": 1,
    "order": 149,
    "base": {
-	"desc": "梅长苏资质每级+1，每星+25",
-	"stat": "apt",
-	"per_level": 1,
-	"per_star": 25,
-	"wired": true,
-	"target": "hero",
-	"hero": "mei_changsu"
+    "desc": "梅长苏资质每级+1，每星+25",
+    "stat": "apt",
+    "per_level": 1,
+    "per_star": 25,
+    "wired": true,
+    "target": "hero",
+    "hero": "mei_changsu"
    },
    "special": {
-	"desc": "梅长苏赚钱每星+2.5%",
-	"kind": "hero_pct",
-	"hero": "mei_changsu",
-	"per_star": 2.5
+    "desc": "梅长苏赚钱每星+2.5%",
+    "kind": "hero_pct",
+    "hero": "mei_changsu",
+    "per_star": 2.5
    }
   },
   "c149": {
@@ -2936,19 +2954,19 @@
    "quality": 1,
    "order": 150,
    "base": {
-	"desc": "白月初资质每级+1，每星+25",
-	"stat": "apt",
-	"per_level": 1,
-	"per_star": 25,
-	"wired": true,
-	"target": "hero",
-	"hero": "bai_yuechu"
+    "desc": "白月初资质每级+1，每星+25",
+    "stat": "apt",
+    "per_level": 1,
+    "per_star": 25,
+    "wired": true,
+    "target": "hero",
+    "hero": "bai_yuechu"
    },
    "special": {
-	"desc": "白月初赚钱每星+2.5%",
-	"kind": "hero_pct",
-	"hero": "bai_yuechu",
-	"per_star": 2.5
+    "desc": "白月初赚钱每星+2.5%",
+    "kind": "hero_pct",
+    "hero": "bai_yuechu",
+    "per_star": 2.5
    }
   },
   "c150": {
@@ -2956,19 +2974,19 @@
    "quality": 1,
    "order": 151,
    "base": {
-	"desc": "侠类门客赚钱每级+2.6万，每星+65万",
-	"stat": "income",
-	"per_level": 26000,
-	"per_star": 650000,
-	"wired": true,
-	"target": "category",
-	"category": "侠"
+    "desc": "侠类门客赚钱每级+2.6万，每星+65万",
+    "stat": "income",
+    "per_level": 26000,
+    "per_star": 650000,
+    "wired": true,
+    "target": "category",
+    "category": "侠"
    },
    "special": {
-	"desc": "侠类门客赚钱每星+0.5%",
-	"kind": "category_pct",
-	"category": "侠",
-	"per_star": 0.5
+    "desc": "侠类门客赚钱每星+0.5%",
+    "kind": "category_pct",
+    "category": "侠",
+    "per_star": 0.5
    }
   },
   "c151": {
@@ -2976,19 +2994,19 @@
    "quality": 1,
    "order": 152,
    "base": {
-	"desc": "士类门客赚钱每级+2.6万，每星+65万",
-	"stat": "income",
-	"per_level": 26000,
-	"per_star": 650000,
-	"wired": true,
-	"target": "category",
-	"category": "士"
+    "desc": "士类门客赚钱每级+2.6万，每星+65万",
+    "stat": "income",
+    "per_level": 26000,
+    "per_star": 650000,
+    "wired": true,
+    "target": "category",
+    "category": "士"
    },
    "special": {
-	"desc": "士类门客赚钱每星+0.5%",
-	"kind": "category_pct",
-	"category": "士",
-	"per_star": 0.5
+    "desc": "士类门客赚钱每星+0.5%",
+    "kind": "category_pct",
+    "category": "士",
+    "per_star": 0.5
    }
   },
   "c152": {
@@ -2996,19 +3014,19 @@
    "quality": 1,
    "order": 153,
    "base": {
-	"desc": "商类门客赚钱每级+2.6万，每星+65万",
-	"stat": "income",
-	"per_level": 26000,
-	"per_star": 650000,
-	"wired": true,
-	"target": "category",
-	"category": "商"
+    "desc": "商类门客赚钱每级+2.6万，每星+65万",
+    "stat": "income",
+    "per_level": 26000,
+    "per_star": 650000,
+    "wired": true,
+    "target": "category",
+    "category": "商"
    },
    "special": {
-	"desc": "商类门客赚钱每星+0.5%",
-	"kind": "category_pct",
-	"category": "商",
-	"per_star": 0.5
+    "desc": "商类门客赚钱每星+0.5%",
+    "kind": "category_pct",
+    "category": "商",
+    "per_star": 0.5
    }
   },
   "c153": {
@@ -3016,19 +3034,19 @@
    "quality": 1,
    "order": 154,
    "base": {
-	"desc": "张起灵资质每级+1，每星+25",
-	"stat": "apt",
-	"per_level": 1,
-	"per_star": 25,
-	"wired": true,
-	"target": "hero",
-	"hero": "zhang_qiling"
+    "desc": "张起灵资质每级+1，每星+25",
+    "stat": "apt",
+    "per_level": 1,
+    "per_star": 25,
+    "wired": true,
+    "target": "hero",
+    "hero": "zhang_qiling"
    },
    "special": {
-	"desc": "张起灵赚钱每星+2.5%",
-	"kind": "hero_pct",
-	"hero": "zhang_qiling",
-	"per_star": 2.5
+    "desc": "张起灵赚钱每星+2.5%",
+    "kind": "hero_pct",
+    "hero": "zhang_qiling",
+    "per_star": 2.5
    }
   },
   "c154": {
@@ -3036,17 +3054,17 @@
    "quality": 1,
    "order": 155,
    "base": {
-	"desc": "五艳凤魁资质每级+1，每星+25",
-	"stat": "apt",
-	"per_level": 1,
-	"per_star": 25,
-	"wired": true,
-	"target": "wuyan"
+    "desc": "五艳凤魁资质每级+1，每星+25",
+    "stat": "apt",
+    "per_level": 1,
+    "per_star": 25,
+    "wired": true,
+    "target": "wuyan"
    },
    "special": {
-	"desc": "五艳凤魁赚钱每星+2.5%",
-	"kind": "group_pct",
-	"per_star": 2.5
+    "desc": "五艳凤魁赚钱每星+2.5%",
+    "kind": "group_pct",
+    "per_star": 2.5
    }
   },
   "c155": {
@@ -3054,19 +3072,19 @@
    "quality": 1,
    "order": 156,
    "base": {
-	"desc": "王昭君资质每级+1，每星+25",
-	"stat": "apt",
-	"per_level": 1,
-	"per_star": 25,
-	"wired": true,
-	"target": "hero",
-	"hero": "wang_zhaojun"
+    "desc": "王昭君资质每级+1，每星+25",
+    "stat": "apt",
+    "per_level": 1,
+    "per_star": 25,
+    "wired": true,
+    "target": "hero",
+    "hero": "wang_zhaojun"
    },
    "special": {
-	"desc": "王昭君赚钱每星+2.5%",
-	"kind": "hero_pct",
-	"hero": "wang_zhaojun",
-	"per_star": 2.5
+    "desc": "王昭君赚钱每星+2.5%",
+    "kind": "hero_pct",
+    "hero": "wang_zhaojun",
+    "per_star": 2.5
    }
   },
   "c156": {
@@ -3074,19 +3092,19 @@
    "quality": 1,
    "order": 157,
    "base": {
-	"desc": "兰飞鸿资质每级+1，每星+25",
-	"stat": "apt",
-	"per_level": 1,
-	"per_star": 25,
-	"wired": true,
-	"target": "hero",
-	"hero": "lan_feihong"
+    "desc": "兰飞鸿资质每级+1，每星+25",
+    "stat": "apt",
+    "per_level": 1,
+    "per_star": 25,
+    "wired": true,
+    "target": "hero",
+    "hero": "lan_feihong"
    },
    "special": {
-	"desc": "兰飞鸿赚钱每星+2.5%",
-	"kind": "hero_pct",
-	"hero": "lan_feihong",
-	"per_star": 2.5
+    "desc": "兰飞鸿赚钱每星+2.5%",
+    "kind": "hero_pct",
+    "hero": "lan_feihong",
+    "per_star": 2.5
    }
   },
   "c157": {
@@ -3094,19 +3112,19 @@
    "quality": 1,
    "order": 158,
    "base": {
-	"desc": "侠类门客赚钱每级+2.6万，每星+65万",
-	"stat": "income",
-	"per_level": 26000,
-	"per_star": 650000,
-	"wired": true,
-	"target": "category",
-	"category": "侠"
+    "desc": "侠类门客赚钱每级+2.6万，每星+65万",
+    "stat": "income",
+    "per_level": 26000,
+    "per_star": 650000,
+    "wired": true,
+    "target": "category",
+    "category": "侠"
    },
    "special": {
-	"desc": "侠类门客赚钱每星+0.5%",
-	"kind": "category_pct",
-	"category": "侠",
-	"per_star": 0.5
+    "desc": "侠类门客赚钱每星+0.5%",
+    "kind": "category_pct",
+    "category": "侠",
+    "per_star": 0.5
    }
   },
   "c158": {
@@ -3114,19 +3132,19 @@
    "quality": 1,
    "order": 159,
    "base": {
-	"desc": "工类门客赚钱每级+2.6万，每星+65万",
-	"stat": "income",
-	"per_level": 26000,
-	"per_star": 650000,
-	"wired": true,
-	"target": "category",
-	"category": "工"
+    "desc": "工类门客赚钱每级+2.6万，每星+65万",
+    "stat": "income",
+    "per_level": 26000,
+    "per_star": 650000,
+    "wired": true,
+    "target": "category",
+    "category": "工"
    },
    "special": {
-	"desc": "工类门客赚钱每星+0.5%",
-	"kind": "category_pct",
-	"category": "工",
-	"per_star": 0.5
+    "desc": "工类门客赚钱每星+0.5%",
+    "kind": "category_pct",
+    "category": "工",
+    "per_star": 0.5
    }
   },
   "c159": {
@@ -3134,19 +3152,19 @@
    "quality": 1,
    "order": 160,
    "base": {
-	"desc": "农类门客赚钱每级+2.6万，每星+65万",
-	"stat": "income",
-	"per_level": 26000,
-	"per_star": 650000,
-	"wired": true,
-	"target": "category",
-	"category": "农"
+    "desc": "农类门客赚钱每级+2.6万，每星+65万",
+    "stat": "income",
+    "per_level": 26000,
+    "per_star": 650000,
+    "wired": true,
+    "target": "category",
+    "category": "农"
    },
    "special": {
-	"desc": "农类门客赚钱每星+0.5%",
-	"kind": "category_pct",
-	"category": "农",
-	"per_star": 0.5
+    "desc": "农类门客赚钱每星+0.5%",
+    "kind": "category_pct",
+    "category": "农",
+    "per_star": 0.5
    }
   },
   "c160": {
@@ -3154,19 +3172,19 @@
    "quality": 1,
    "order": 161,
    "base": {
-	"desc": "杨戬资质每级+1，每星+25",
-	"stat": "apt",
-	"per_level": 1,
-	"per_star": 25,
-	"wired": true,
-	"target": "hero",
-	"hero": "yang_jian"
+    "desc": "杨戬资质每级+1，每星+25",
+    "stat": "apt",
+    "per_level": 1,
+    "per_star": 25,
+    "wired": true,
+    "target": "hero",
+    "hero": "yang_jian"
    },
    "special": {
-	"desc": "杨戬赚钱每星+2.5%",
-	"kind": "hero_pct",
-	"hero": "yang_jian",
-	"per_star": 2.5
+    "desc": "杨戬赚钱每星+2.5%",
+    "kind": "hero_pct",
+    "hero": "yang_jian",
+    "per_star": 2.5
    }
   },
   "c161": {
@@ -3174,19 +3192,19 @@
    "quality": 1,
    "order": 162,
    "base": {
-	"desc": "兰飞鸿资质每级+1，每星+25",
-	"stat": "apt",
-	"per_level": 1,
-	"per_star": 25,
-	"wired": true,
-	"target": "hero",
-	"hero": "lan_feihong"
+    "desc": "兰飞鸿资质每级+1，每星+25",
+    "stat": "apt",
+    "per_level": 1,
+    "per_star": 25,
+    "wired": true,
+    "target": "hero",
+    "hero": "lan_feihong"
    },
    "special": {
-	"desc": "兰飞鸿赚钱每星+2.5%",
-	"kind": "hero_pct",
-	"hero": "lan_feihong",
-	"per_star": 2.5
+    "desc": "兰飞鸿赚钱每星+2.5%",
+    "kind": "hero_pct",
+    "hero": "lan_feihong",
+    "per_star": 2.5
    }
   },
   "c162": {
@@ -3194,19 +3212,19 @@
    "quality": 1,
    "order": 163,
    "base": {
-	"desc": "商类门客赚钱每级+2.6万，每星+65万",
-	"stat": "income",
-	"per_level": 26000,
-	"per_star": 650000,
-	"wired": true,
-	"target": "category",
-	"category": "商"
+    "desc": "商类门客赚钱每级+2.6万，每星+65万",
+    "stat": "income",
+    "per_level": 26000,
+    "per_star": 650000,
+    "wired": true,
+    "target": "category",
+    "category": "商"
    },
    "special": {
-	"desc": "商类门客赚钱每星+0.5%",
-	"kind": "category_pct",
-	"category": "商",
-	"per_star": 0.5
+    "desc": "商类门客赚钱每星+0.5%",
+    "kind": "category_pct",
+    "category": "商",
+    "per_star": 0.5
    }
   },
   "c163": {
@@ -3214,19 +3232,19 @@
    "quality": 1,
    "order": 164,
    "base": {
-	"desc": "士类门客赚钱每级+2.6万，每星+65万",
-	"stat": "income",
-	"per_level": 26000,
-	"per_star": 650000,
-	"wired": true,
-	"target": "category",
-	"category": "士"
+    "desc": "士类门客赚钱每级+2.6万，每星+65万",
+    "stat": "income",
+    "per_level": 26000,
+    "per_star": 650000,
+    "wired": true,
+    "target": "category",
+    "category": "士"
    },
    "special": {
-	"desc": "士类门客赚钱每星+0.5%",
-	"kind": "category_pct",
-	"category": "士",
-	"per_star": 0.5
+    "desc": "士类门客赚钱每星+0.5%",
+    "kind": "category_pct",
+    "category": "士",
+    "per_star": 0.5
    }
   },
   "c164": {
@@ -3234,19 +3252,19 @@
    "quality": 1,
    "order": 165,
    "base": {
-	"desc": "农类门客赚钱每级+2.6万，每星+65万",
-	"stat": "income",
-	"per_level": 26000,
-	"per_star": 650000,
-	"wired": true,
-	"target": "category",
-	"category": "农"
+    "desc": "农类门客赚钱每级+2.6万，每星+65万",
+    "stat": "income",
+    "per_level": 26000,
+    "per_star": 650000,
+    "wired": true,
+    "target": "category",
+    "category": "农"
    },
    "special": {
-	"desc": "农类门客赚钱每星+0.5%",
-	"kind": "category_pct",
-	"category": "农",
-	"per_star": 0.5
+    "desc": "农类门客赚钱每星+0.5%",
+    "kind": "category_pct",
+    "category": "农",
+    "per_star": 0.5
    }
   },
   "c165": {
@@ -3254,19 +3272,19 @@
    "quality": 1,
    "order": 166,
    "base": {
-	"desc": "农类门客赚钱每级+2.6万，每星+65万",
-	"stat": "income",
-	"per_level": 26000,
-	"per_star": 650000,
-	"wired": true,
-	"target": "category",
-	"category": "农"
+    "desc": "农类门客赚钱每级+2.6万，每星+65万",
+    "stat": "income",
+    "per_level": 26000,
+    "per_star": 650000,
+    "wired": true,
+    "target": "category",
+    "category": "农"
    },
    "special": {
-	"desc": "农类门客赚钱每星+0.5%",
-	"kind": "category_pct",
-	"category": "农",
-	"per_star": 0.5
+    "desc": "农类门客赚钱每星+0.5%",
+    "kind": "category_pct",
+    "category": "农",
+    "per_star": 0.5
    }
   },
   "c166": {
@@ -3274,19 +3292,19 @@
    "quality": 1,
    "order": 167,
    "base": {
-	"desc": "商类门客赚钱每级+2.6万，每星+65万",
-	"stat": "income",
-	"per_level": 26000,
-	"per_star": 650000,
-	"wired": true,
-	"target": "category",
-	"category": "商"
+    "desc": "商类门客赚钱每级+2.6万，每星+65万",
+    "stat": "income",
+    "per_level": 26000,
+    "per_star": 650000,
+    "wired": true,
+    "target": "category",
+    "category": "商"
    },
    "special": {
-	"desc": "商类门客赚钱每星+0.5%",
-	"kind": "category_pct",
-	"category": "商",
-	"per_star": 0.5
+    "desc": "商类门客赚钱每星+0.5%",
+    "kind": "category_pct",
+    "category": "商",
+    "per_star": 0.5
    }
   },
   "c167": {
@@ -3294,19 +3312,19 @@
    "quality": 1,
    "order": 168,
    "base": {
-	"desc": "侠类门客赚钱每级+2.6万，每星+65万",
-	"stat": "income",
-	"per_level": 26000,
-	"per_star": 650000,
-	"wired": true,
-	"target": "category",
-	"category": "侠"
+    "desc": "侠类门客赚钱每级+2.6万，每星+65万",
+    "stat": "income",
+    "per_level": 26000,
+    "per_star": 650000,
+    "wired": true,
+    "target": "category",
+    "category": "侠"
    },
    "special": {
-	"desc": "侠类门客赚钱每星+0.5%",
-	"kind": "category_pct",
-	"category": "侠",
-	"per_star": 0.5
+    "desc": "侠类门客赚钱每星+0.5%",
+    "kind": "category_pct",
+    "category": "侠",
+    "per_star": 0.5
    }
   },
   "c168": {
@@ -3314,19 +3332,19 @@
    "quality": 1,
    "order": 169,
    "base": {
-	"desc": "工类门客赚钱每级+2.6万，每星+65万",
-	"stat": "income",
-	"per_level": 26000,
-	"per_star": 650000,
-	"wired": true,
-	"target": "category",
-	"category": "工"
+    "desc": "工类门客赚钱每级+2.6万，每星+65万",
+    "stat": "income",
+    "per_level": 26000,
+    "per_star": 650000,
+    "wired": true,
+    "target": "category",
+    "category": "工"
    },
    "special": {
-	"desc": "工类门客赚钱每星+0.5%",
-	"kind": "category_pct",
-	"category": "工",
-	"per_star": 0.5
+    "desc": "工类门客赚钱每星+0.5%",
+    "kind": "category_pct",
+    "category": "工",
+    "per_star": 0.5
    }
   },
   "c169": {
@@ -3334,19 +3352,19 @@
    "quality": 1,
    "order": 170,
    "base": {
-	"desc": "商类门客赚钱每级+2.6万，每星+65万",
-	"stat": "income",
-	"per_level": 26000,
-	"per_star": 650000,
-	"wired": true,
-	"target": "category",
-	"category": "商"
+    "desc": "商类门客赚钱每级+2.6万，每星+65万",
+    "stat": "income",
+    "per_level": 26000,
+    "per_star": 650000,
+    "wired": true,
+    "target": "category",
+    "category": "商"
    },
    "special": {
-	"desc": "商类门客赚钱每星+0.5%",
-	"kind": "category_pct",
-	"category": "商",
-	"per_star": 0.5
+    "desc": "商类门客赚钱每星+0.5%",
+    "kind": "category_pct",
+    "category": "商",
+    "per_star": 0.5
    }
   },
   "c170": {
@@ -3354,19 +3372,19 @@
    "quality": 1,
    "order": 171,
    "base": {
-	"desc": "士类门客赚钱每级+2.6万，每星+65万",
-	"stat": "income",
-	"per_level": 26000,
-	"per_star": 650000,
-	"wired": true,
-	"target": "category",
-	"category": "士"
+    "desc": "士类门客赚钱每级+2.6万，每星+65万",
+    "stat": "income",
+    "per_level": 26000,
+    "per_star": 650000,
+    "wired": true,
+    "target": "category",
+    "category": "士"
    },
    "special": {
-	"desc": "士类门客赚钱每星+0.5%",
-	"kind": "category_pct",
-	"category": "士",
-	"per_star": 0.5
+    "desc": "士类门客赚钱每星+0.5%",
+    "kind": "category_pct",
+    "category": "士",
+    "per_star": 0.5
    }
   },
   "c171": {
@@ -3374,19 +3392,19 @@
    "quality": 1,
    "order": 172,
    "base": {
-	"desc": "侠类门客赚钱每级+2.6万，每星+65万",
-	"stat": "income",
-	"per_level": 26000,
-	"per_star": 650000,
-	"wired": true,
-	"target": "category",
-	"category": "侠"
+    "desc": "侠类门客赚钱每级+2.6万，每星+65万",
+    "stat": "income",
+    "per_level": 26000,
+    "per_star": 650000,
+    "wired": true,
+    "target": "category",
+    "category": "侠"
    },
    "special": {
-	"desc": "侠类门客赚钱每星+0.5%",
-	"kind": "category_pct",
-	"category": "侠",
-	"per_star": 0.5
+    "desc": "侠类门客赚钱每星+0.5%",
+    "kind": "category_pct",
+    "category": "侠",
+    "per_star": 0.5
    }
   },
   "c172": {
@@ -3394,19 +3412,19 @@
    "quality": 1,
    "order": 173,
    "base": {
-	"desc": "工类门客赚钱每级+2.6万，每星+65万",
-	"stat": "income",
-	"per_level": 26000,
-	"per_star": 650000,
-	"wired": true,
-	"target": "category",
-	"category": "工"
+    "desc": "工类门客赚钱每级+2.6万，每星+65万",
+    "stat": "income",
+    "per_level": 26000,
+    "per_star": 650000,
+    "wired": true,
+    "target": "category",
+    "category": "工"
    },
    "special": {
-	"desc": "工类门客赚钱每星+0.5%",
-	"kind": "category_pct",
-	"category": "工",
-	"per_star": 0.5
+    "desc": "工类门客赚钱每星+0.5%",
+    "kind": "category_pct",
+    "category": "工",
+    "per_star": 0.5
    }
   },
   "c173": {
@@ -3414,19 +3432,19 @@
    "quality": 1,
    "order": 174,
    "base": {
-	"desc": "士类门客赚钱每级+2.6万，每星+65万",
-	"stat": "income",
-	"per_level": 26000,
-	"per_star": 650000,
-	"wired": true,
-	"target": "category",
-	"category": "士"
+    "desc": "士类门客赚钱每级+2.6万，每星+65万",
+    "stat": "income",
+    "per_level": 26000,
+    "per_star": 650000,
+    "wired": true,
+    "target": "category",
+    "category": "士"
    },
    "special": {
-	"desc": "士类门客赚钱每星+0.5%",
-	"kind": "category_pct",
-	"category": "士",
-	"per_star": 0.5
+    "desc": "士类门客赚钱每星+0.5%",
+    "kind": "category_pct",
+    "category": "士",
+    "per_star": 0.5
    }
   },
   "c174": {
@@ -3434,17 +3452,19 @@
    "quality": 1,
    "order": 175,
    "base": {
-	"desc": "农类挚友才华每级+4，每星+220",
-	"stat": "才华",
-	"per_level": 4,
-	"per_star": 220,
-	"wired": false
+    "desc": "农类挚友才华每级+4，每星+220",
+    "stat": "才华",
+    "per_level": 4,
+    "per_star": 220,
+    "wired": true,
+    "target": "friend_category",
+    "category": "农"
    },
    "special": {
-	"desc": "农类门客赚钱每星+0.5%",
-	"kind": "category_pct",
-	"category": "农",
-	"per_star": 0.5
+    "desc": "农类门客赚钱每星+0.5%",
+    "kind": "category_pct",
+    "category": "农",
+    "per_star": 0.5
    }
   },
   "c175": {
@@ -3452,17 +3472,19 @@
    "quality": 1,
    "order": 176,
    "base": {
-	"desc": "商类挚友友好每级+3，每星+75",
-	"stat": "友好",
-	"per_level": 3,
-	"per_star": 75,
-	"wired": false
+    "desc": "商类挚友友好每级+3，每星+75",
+    "stat": "友好",
+    "per_level": 3,
+    "per_star": 75,
+    "wired": true,
+    "target": "friend_category",
+    "category": "商"
    },
    "special": {
-	"desc": "商类门客赚钱每星+0.5%",
-	"kind": "category_pct",
-	"category": "商",
-	"per_star": 0.5
+    "desc": "商类门客赚钱每星+0.5%",
+    "kind": "category_pct",
+    "category": "商",
+    "per_star": 0.5
    }
   },
   "c176": {
@@ -3470,17 +3492,19 @@
    "quality": 1,
    "order": 177,
    "base": {
-	"desc": "士类挚友友好每级+3，每星+75",
-	"stat": "友好",
-	"per_level": 3,
-	"per_star": 75,
-	"wired": false
+    "desc": "士类挚友友好每级+3，每星+75",
+    "stat": "友好",
+    "per_level": 3,
+    "per_star": 75,
+    "wired": true,
+    "target": "friend_category",
+    "category": "士"
    },
    "special": {
-	"desc": "士类门客赚钱每星+0.5%",
-	"kind": "category_pct",
-	"category": "士",
-	"per_star": 0.5
+    "desc": "士类门客赚钱每星+0.5%",
+    "kind": "category_pct",
+    "category": "士",
+    "per_star": 0.5
    }
   },
   "c177": {
@@ -3488,19 +3512,19 @@
    "quality": 1,
    "order": 178,
    "base": {
-	"desc": "寇白门资质每级+1，每星+25",
-	"stat": "apt",
-	"per_level": 1,
-	"per_star": 25,
-	"wired": true,
-	"target": "hero",
-	"hero": "kou_baimen"
+    "desc": "寇白门资质每级+1，每星+25",
+    "stat": "apt",
+    "per_level": 1,
+    "per_star": 25,
+    "wired": true,
+    "target": "hero",
+    "hero": "kou_baimen"
    },
    "special": {
-	"desc": "寇白门赚钱每星+2.5%",
-	"kind": "hero_pct",
-	"hero": "kou_baimen",
-	"per_star": 2.5
+    "desc": "寇白门赚钱每星+2.5%",
+    "kind": "hero_pct",
+    "hero": "kou_baimen",
+    "per_star": 2.5
    }
   },
   "c178": {
@@ -3508,19 +3532,19 @@
    "quality": 1,
    "order": 179,
    "base": {
-	"desc": "卞玉京资质每级+1，每星+25",
-	"stat": "apt",
-	"per_level": 1,
-	"per_star": 25,
-	"wired": true,
-	"target": "hero",
-	"hero": "bian_yujing"
+    "desc": "卞玉京资质每级+1，每星+25",
+    "stat": "apt",
+    "per_level": 1,
+    "per_star": 25,
+    "wired": true,
+    "target": "hero",
+    "hero": "bian_yujing"
    },
    "special": {
-	"desc": "卞玉京赚钱每星+2.5%",
-	"kind": "hero_pct",
-	"hero": "bian_yujing",
-	"per_star": 2.5
+    "desc": "卞玉京赚钱每星+2.5%",
+    "kind": "hero_pct",
+    "hero": "bian_yujing",
+    "per_star": 2.5
    }
   },
   "c179": {
@@ -3528,19 +3552,19 @@
    "quality": 1,
    "order": 180,
    "base": {
-	"desc": "李香君资质每级+1，每星+25",
-	"stat": "apt",
-	"per_level": 1,
-	"per_star": 25,
-	"wired": true,
-	"target": "hero",
-	"hero": "li_xiangjun"
+    "desc": "李香君资质每级+1，每星+25",
+    "stat": "apt",
+    "per_level": 1,
+    "per_star": 25,
+    "wired": true,
+    "target": "hero",
+    "hero": "li_xiangjun"
    },
    "special": {
-	"desc": "李香君赚钱每星+2.5%",
-	"kind": "hero_pct",
-	"hero": "li_xiangjun",
-	"per_star": 2.5
+    "desc": "李香君赚钱每星+2.5%",
+    "kind": "hero_pct",
+    "hero": "li_xiangjun",
+    "per_star": 2.5
    }
   },
   "c180": {
@@ -3548,19 +3572,19 @@
    "quality": 1,
    "order": 181,
    "base": {
-	"desc": "马湘兰资质每级+1，每星+25",
-	"stat": "apt",
-	"per_level": 1,
-	"per_star": 25,
-	"wired": true,
-	"target": "hero",
-	"hero": "ma_xianglan"
+    "desc": "马湘兰资质每级+1，每星+25",
+    "stat": "apt",
+    "per_level": 1,
+    "per_star": 25,
+    "wired": true,
+    "target": "hero",
+    "hero": "ma_xianglan"
    },
    "special": {
-	"desc": "马湘兰赚钱每星+2.5%",
-	"kind": "hero_pct",
-	"hero": "ma_xianglan",
-	"per_star": 2.5
+    "desc": "马湘兰赚钱每星+2.5%",
+    "kind": "hero_pct",
+    "hero": "ma_xianglan",
+    "per_star": 2.5
    }
   },
   "c181": {
@@ -3568,17 +3592,19 @@
    "quality": 1,
    "order": 182,
    "base": {
-	"desc": "侠类挚友友好每级+3，每星+75",
-	"stat": "友好",
-	"per_level": 3,
-	"per_star": 75,
-	"wired": false
+    "desc": "侠类挚友友好每级+3，每星+75",
+    "stat": "友好",
+    "per_level": 3,
+    "per_star": 75,
+    "wired": true,
+    "target": "friend_category",
+    "category": "侠"
    },
    "special": {
-	"desc": "侠类门客资质每星+7",
-	"kind": "category_apt",
-	"category": "侠",
-	"per_star": 7
+    "desc": "侠类门客资质每星+7",
+    "kind": "category_apt",
+    "category": "侠",
+    "per_star": 7
    }
   },
   "c182": {
@@ -3586,17 +3612,19 @@
    "quality": 1,
    "order": 183,
    "base": {
-	"desc": "农类挚友友好每级+3，每星+75",
-	"stat": "友好",
-	"per_level": 3,
-	"per_star": 75,
-	"wired": false
+    "desc": "农类挚友友好每级+3，每星+75",
+    "stat": "友好",
+    "per_level": 3,
+    "per_star": 75,
+    "wired": true,
+    "target": "friend_category",
+    "category": "农"
    },
    "special": {
-	"desc": "农类门客资质每星+7",
-	"kind": "category_apt",
-	"category": "农",
-	"per_star": 7
+    "desc": "农类门客资质每星+7",
+    "kind": "category_apt",
+    "category": "农",
+    "per_star": 7
    }
   },
   "c183": {
@@ -3604,17 +3632,19 @@
    "quality": 1,
    "order": 184,
    "base": {
-	"desc": "工类挚友友好每级+3，每星+75",
-	"stat": "友好",
-	"per_level": 3,
-	"per_star": 75,
-	"wired": false
+    "desc": "工类挚友友好每级+3，每星+75",
+    "stat": "友好",
+    "per_level": 3,
+    "per_star": 75,
+    "wired": true,
+    "target": "friend_category",
+    "category": "工"
    },
    "special": {
-	"desc": "工类门客资质每星+7",
-	"kind": "category_apt",
-	"category": "工",
-	"per_star": 7
+    "desc": "工类门客资质每星+7",
+    "kind": "category_apt",
+    "category": "工",
+    "per_star": 7
    }
   },
   "c184": {
@@ -3622,19 +3652,19 @@
    "quality": 1,
    "order": 185,
    "base": {
-	"desc": "农类门客赚钱每级+2.6万，每星+65万",
-	"stat": "income",
-	"per_level": 26000,
-	"per_star": 650000,
-	"wired": true,
-	"target": "category",
-	"category": "农"
+    "desc": "农类门客赚钱每级+2.6万，每星+65万",
+    "stat": "income",
+    "per_level": 26000,
+    "per_star": 650000,
+    "wired": true,
+    "target": "category",
+    "category": "农"
    },
    "special": {
-	"desc": "农类门客赚钱每星+0.5%",
-	"kind": "category_pct",
-	"category": "农",
-	"per_star": 0.5
+    "desc": "农类门客赚钱每星+0.5%",
+    "kind": "category_pct",
+    "category": "农",
+    "per_star": 0.5
    }
   },
   "c185": {
@@ -3642,16 +3672,16 @@
    "quality": 2,
    "order": 186,
    "base": {
-	"desc": "侠类门客赚钱每级+7000，每星+40万",
-	"stat": "income",
-	"per_level": 7000,
-	"per_star": 400000,
-	"wired": true,
-	"target": "category",
-	"category": "侠"
+    "desc": "侠类门客赚钱每级+7000，每星+40万",
+    "stat": "income",
+    "per_level": 7000,
+    "per_star": 400000,
+    "wired": true,
+    "target": "category",
+    "category": "侠"
    },
    "special": {
-	"desc": "庄园牧场产量每星+2%"
+    "desc": "庄园牧场产量每星+2%"
    }
   },
   "c186": {
@@ -3659,16 +3689,16 @@
    "quality": 2,
    "order": 187,
    "base": {
-	"desc": "商类门客赚钱每级+7000，每星+40万",
-	"stat": "income",
-	"per_level": 7000,
-	"per_star": 400000,
-	"wired": true,
-	"target": "category",
-	"category": "商"
+    "desc": "商类门客赚钱每级+7000，每星+40万",
+    "stat": "income",
+    "per_level": 7000,
+    "per_star": 400000,
+    "wired": true,
+    "target": "category",
+    "category": "商"
    },
    "special": {
-	"desc": "庄园农场产量每星+2%"
+    "desc": "庄园农场产量每星+2%"
    }
   },
   "c187": {
@@ -3676,16 +3706,16 @@
    "quality": 2,
    "order": 188,
    "base": {
-	"desc": "工类门客赚钱每级+7000，每星+40万",
-	"stat": "income",
-	"per_level": 7000,
-	"per_star": 400000,
-	"wired": true,
-	"target": "category",
-	"category": "工"
+    "desc": "工类门客赚钱每级+7000，每星+40万",
+    "stat": "income",
+    "per_level": 7000,
+    "per_star": 400000,
+    "wired": true,
+    "target": "category",
+    "category": "工"
    },
    "special": {
-	"desc": "酒肆银条产出每星+2%"
+    "desc": "酒肆银条产出每星+2%"
    }
   },
   "c188": {
@@ -3693,14 +3723,16 @@
    "quality": 2,
    "order": 189,
    "base": {
-	"desc": "农类挚友友好每级+1，每星+40",
-	"stat": "友好",
-	"per_level": 1,
-	"per_star": 40,
-	"wired": false
+    "desc": "农类挚友友好每级+1，每星+40",
+    "stat": "友好",
+    "per_level": 1,
+    "per_star": 40,
+    "wired": true,
+    "target": "friend_category",
+    "category": "农"
    },
    "special": {
-	"desc": "榷场初始关引每星+1万"
+    "desc": "榷场初始关引每星+1万"
    }
   },
   "c189": {
@@ -3708,16 +3740,16 @@
    "quality": 2,
    "order": 190,
    "base": {
-	"desc": "商类门客赚钱每级+7000，每星+40万",
-	"stat": "income",
-	"per_level": 7000,
-	"per_star": 400000,
-	"wired": true,
-	"target": "category",
-	"category": "商"
+    "desc": "商类门客赚钱每级+7000，每星+40万",
+    "stat": "income",
+    "per_level": 7000,
+    "per_star": 400000,
+    "wired": true,
+    "target": "category",
+    "category": "商"
    },
    "special": {
-	"desc": "榷场出战挚友才华每星+2%"
+    "desc": "榷场出战挚友才华每星+2%"
    }
   },
   "c190": {
@@ -3725,16 +3757,16 @@
    "quality": 2,
    "order": 191,
    "base": {
-	"desc": "士类门客赚钱每级+7000，每星+40万",
-	"stat": "income",
-	"per_level": 7000,
-	"per_star": 400000,
-	"wired": true,
-	"target": "category",
-	"category": "士"
+    "desc": "士类门客赚钱每级+7000，每星+40万",
+    "stat": "income",
+    "per_level": 7000,
+    "per_star": 400000,
+    "wired": true,
+    "target": "category",
+    "category": "士"
    },
    "special": {
-	"desc": "谈心精力恢复时长每星-30秒"
+    "desc": "谈心精力恢复时长每星-30秒"
    }
   },
   "c191": {
@@ -3742,14 +3774,16 @@
    "quality": 2,
    "order": 192,
    "base": {
-	"desc": "农类挚友友好每级+1，每星+40",
-	"stat": "友好",
-	"per_level": 1,
-	"per_star": 40,
-	"wired": false
+    "desc": "农类挚友友好每级+1，每星+40",
+    "stat": "友好",
+    "per_level": 1,
+    "per_star": 40,
+    "wired": true,
+    "target": "friend_category",
+    "category": "农"
    },
    "special": {
-	"desc": "游历每日领取体力丹每星+1，"
+    "desc": "游历每日领取体力丹每星+1，"
    }
   },
   "c192": {
@@ -3757,16 +3791,16 @@
    "quality": 2,
    "order": 193,
    "base": {
-	"desc": "农类门客赚钱每级+7000，每星+40万",
-	"stat": "income",
-	"per_level": 7000,
-	"per_star": 400000,
-	"wired": true,
-	"target": "category",
-	"category": "农"
+    "desc": "农类门客赚钱每级+7000，每星+40万",
+    "stat": "income",
+    "per_level": 7000,
+    "per_star": 400000,
+    "wired": true,
+    "target": "category",
+    "category": "农"
    },
    "special": {
-	"desc": "药铺铜板产出每星+2%"
+    "desc": "药铺铜板产出每星+2%"
    }
   },
   "c193": {
@@ -3774,14 +3808,16 @@
    "quality": 2,
    "order": 194,
    "base": {
-	"desc": "士类挚友友好每级+1，每星+40",
-	"stat": "友好",
-	"per_level": 1,
-	"per_star": 40,
-	"wired": false
+    "desc": "士类挚友友好每级+1，每星+40",
+    "stat": "友好",
+    "per_level": 1,
+    "per_star": 40,
+    "wired": true,
+    "target": "friend_category",
+    "category": "士"
    },
    "special": {
-	"desc": "招商可承包项目+1，不可晋升"
+    "desc": "招商可承包项目+1，不可晋升"
    }
   },
   "c194": {
@@ -3789,16 +3825,16 @@
    "quality": 2,
    "order": 195,
    "base": {
-	"desc": "工类门客赚钱每级+7000，每星+40万",
-	"stat": "income",
-	"per_level": 7000,
-	"per_star": 400000,
-	"wired": true,
-	"target": "category",
-	"category": "工"
+    "desc": "工类门客赚钱每级+7000，每星+40万",
+    "stat": "income",
+    "per_level": 7000,
+    "per_star": 400000,
+    "wired": true,
+    "target": "category",
+    "category": "工"
    },
    "special": {
-	"desc": "妙音坊满意度产出每星+2%"
+    "desc": "妙音坊满意度产出每星+2%"
    }
   },
   "c195": {
@@ -3806,16 +3842,16 @@
    "quality": 2,
    "order": 196,
    "base": {
-	"desc": "士类门客赚钱每级+7000，每星+40万",
-	"stat": "income",
-	"per_level": 7000,
-	"per_star": 400000,
-	"wired": true,
-	"target": "category",
-	"category": "士"
+    "desc": "士类门客赚钱每级+7000，每星+40万",
+    "stat": "income",
+    "per_level": 7000,
+    "per_star": 400000,
+    "wired": true,
+    "target": "category",
+    "category": "士"
    },
    "special": {
-	"desc": "山庄门生科举成功率+30%，不可晋升"
+    "desc": "山庄门生科举成功率+30%，不可晋升"
    }
   },
   "c196": {
@@ -3823,16 +3859,16 @@
    "quality": 2,
    "order": 197,
    "base": {
-	"desc": "商类门客赚钱每级+7000，每星+40万",
-	"stat": "income",
-	"per_level": 7000,
-	"per_star": 400000,
-	"wired": true,
-	"target": "category",
-	"category": "商"
+    "desc": "商类门客赚钱每级+7000，每星+40万",
+    "stat": "income",
+    "per_level": 7000,
+    "per_star": 400000,
+    "wired": true,
+    "target": "category",
+    "category": "商"
    },
    "special": {
-	"desc": "酒坊酒香产出每星+2%"
+    "desc": "酒坊酒香产出每星+2%"
    }
   },
   "c197": {
@@ -3840,14 +3876,16 @@
    "quality": 2,
    "order": 198,
    "base": {
-	"desc": "侠类挚友友好每级+1，每星+40",
-	"stat": "友好",
-	"per_level": 1,
-	"per_star": 40,
-	"wired": false
+    "desc": "侠类挚友友好每级+1，每星+40",
+    "stat": "友好",
+    "per_level": 1,
+    "per_star": 40,
+    "wired": true,
+    "target": "friend_category",
+    "category": "侠"
    },
    "special": {
-	"desc": "每次游历声望+1，每次晋升+1"
+    "desc": "每次游历声望+1，每次晋升+1"
    }
   },
   "c198": {
@@ -3855,16 +3893,16 @@
    "quality": 2,
    "order": 199,
    "base": {
-	"desc": "侠类门客赚钱每级+7000，每星+40万",
-	"stat": "income",
-	"per_level": 7000,
-	"per_star": 400000,
-	"wired": true,
-	"target": "category",
-	"category": "侠"
+    "desc": "侠类门客赚钱每级+7000，每星+40万",
+    "stat": "income",
+    "per_level": 7000,
+    "per_star": 400000,
+    "wired": true,
+    "target": "category",
+    "category": "侠"
    },
    "special": {
-	"desc": "客栈烹饪获得厨艺每星+2%"
+    "desc": "客栈烹饪获得厨艺每星+2%"
    }
   },
   "c199": {
@@ -3872,16 +3910,16 @@
    "quality": 2,
    "order": 200,
    "base": {
-	"desc": "工类门客赚钱每级+7000，每星+40万",
-	"stat": "income",
-	"per_level": 7000,
-	"per_star": 400000,
-	"wired": true,
-	"target": "category",
-	"category": "工"
+    "desc": "工类门客赚钱每级+7000，每星+40万",
+    "stat": "income",
+    "per_level": 7000,
+    "per_star": 400000,
+    "wired": true,
+    "target": "category",
+    "category": "工"
    },
    "special": {
-	"desc": "榷场出战门客赚钱每星+3%"
+    "desc": "榷场出战门客赚钱每星+3%"
    }
   },
   "c200": {
@@ -3889,16 +3927,16 @@
    "quality": 2,
    "order": 201,
    "base": {
-	"desc": "农类门客赚钱每级+7000，每星+40万",
-	"stat": "income",
-	"per_level": 7000,
-	"per_star": 400000,
-	"wired": true,
-	"target": "category",
-	"category": "农"
+    "desc": "农类门客赚钱每级+7000，每星+40万",
+    "stat": "income",
+    "per_level": 7000,
+    "per_star": 400000,
+    "wired": true,
+    "target": "category",
+    "category": "农"
    },
    "special": {
-	"desc": "谈心精力上限每星+1"
+    "desc": "谈心精力上限每星+1"
    }
   },
   "c201": {
@@ -3906,16 +3944,16 @@
    "quality": 2,
    "order": 202,
    "base": {
-	"desc": "士类门客赚钱每级+7000，每星+40万",
-	"stat": "income",
-	"per_level": 7000,
-	"per_star": 400000,
-	"wired": true,
-	"target": "category",
-	"category": "士"
+    "desc": "士类门客赚钱每级+7000，每星+40万",
+    "stat": "income",
+    "per_level": 7000,
+    "per_star": 400000,
+    "wired": true,
+    "target": "category",
+    "category": "士"
    },
    "special": {
-	"desc": "医馆评分产出每星+2%"
+    "desc": "医馆评分产出每星+2%"
    }
   },
   "c202": {
@@ -3923,16 +3961,16 @@
    "quality": 2,
    "order": 203,
    "base": {
-	"desc": "侠类门客赚钱每级+7000，每星+40万",
-	"stat": "income",
-	"per_level": 7000,
-	"per_star": 400000,
-	"wired": true,
-	"target": "category",
-	"category": "侠"
+    "desc": "侠类门客赚钱每级+7000，每星+40万",
+    "stat": "income",
+    "per_level": 7000,
+    "per_star": 400000,
+    "wired": true,
+    "target": "category",
+    "category": "侠"
    },
    "special": {
-	"desc": "税所收益每星+2%"
+    "desc": "税所收益每星+2%"
    }
   },
   "c203": {
@@ -3940,16 +3978,16 @@
    "quality": 2,
    "order": 204,
    "base": {
-	"desc": "农类门客赚钱每级+7000，每星+40万",
-	"stat": "income",
-	"per_level": 7000,
-	"per_star": 400000,
-	"wired": true,
-	"target": "category",
-	"category": "农"
+    "desc": "农类门客赚钱每级+7000，每星+40万",
+    "stat": "income",
+    "per_level": 7000,
+    "per_star": 400000,
+    "wired": true,
+    "target": "category",
+    "category": "农"
    },
    "special": {
-	"desc": "招商立项资质产出每星+2%"
+    "desc": "招商立项资质产出每星+2%"
    }
   },
   "c204": {
@@ -3957,14 +3995,16 @@
    "quality": 2,
    "order": 205,
    "base": {
-	"desc": "工类挚友友好每级+1，每星+40",
-	"stat": "友好",
-	"per_level": 1,
-	"per_star": 40,
-	"wired": false
+    "desc": "工类挚友友好每级+1，每星+40",
+    "stat": "友好",
+    "per_level": 1,
+    "per_star": 40,
+    "wired": true,
+    "target": "friend_category",
+    "category": "工"
    },
    "special": {
-	"desc": "钱庄筹算值产出每星+2%"
+    "desc": "钱庄筹算值产出每星+2%"
    }
   },
   "c205": {
@@ -3972,16 +4012,16 @@
    "quality": 3,
    "order": 206,
    "base": {
-	"desc": "工类门客赚钱每级+3000，每星+15万",
-	"stat": "income",
-	"per_level": 3000,
-	"per_star": 150000,
-	"wired": true,
-	"target": "category",
-	"category": "工"
+    "desc": "工类门客赚钱每级+3000，每星+15万",
+    "stat": "income",
+    "per_level": 3000,
+    "per_star": 150000,
+    "wired": true,
+    "target": "category",
+    "category": "工"
    },
    "special": {
-	"desc": "每日身份宝箱元宝每星+1000"
+    "desc": "每日身份宝箱元宝每星+1000"
    }
   },
   "c206": {
@@ -3989,14 +4029,16 @@
    "quality": 3,
    "order": 207,
    "base": {
-	"desc": "农类挚友友好每级+1，每星+40",
-	"stat": "友好",
-	"per_level": 1,
-	"per_star": 40,
-	"wired": false
+    "desc": "农类挚友友好每级+1，每星+40",
+    "stat": "友好",
+    "per_level": 1,
+    "per_star": 40,
+    "wired": true,
+    "target": "friend_category",
+    "category": "农"
    },
    "special": {
-	"desc": "每日身份宝箱元宝每星+1000"
+    "desc": "每日身份宝箱元宝每星+1000"
    }
   },
   "c207": {
@@ -4004,16 +4046,16 @@
    "quality": 3,
    "order": 208,
    "base": {
-	"desc": "商类门客赚钱每级+3000，每星+15万",
-	"stat": "income",
-	"per_level": 3000,
-	"per_star": 150000,
-	"wired": true,
-	"target": "category",
-	"category": "商"
+    "desc": "商类门客赚钱每级+3000，每星+15万",
+    "stat": "income",
+    "per_level": 3000,
+    "per_star": 150000,
+    "wired": true,
+    "target": "category",
+    "category": "商"
    },
    "special": {
-	"desc": "每日身份宝箱元宝每星+1000"
+    "desc": "每日身份宝箱元宝每星+1000"
    }
   },
   "c208": {
@@ -4021,16 +4063,16 @@
    "quality": 3,
    "order": 209,
    "base": {
-	"desc": "士类门客赚钱每级+3000，每星+15万",
-	"stat": "income",
-	"per_level": 3000,
-	"per_star": 150000,
-	"wired": true,
-	"target": "category",
-	"category": "士"
+    "desc": "士类门客赚钱每级+3000，每星+15万",
+    "stat": "income",
+    "per_level": 3000,
+    "per_star": 150000,
+    "wired": true,
+    "target": "category",
+    "category": "士"
    },
    "special": {
-	"desc": "每日身份宝箱元宝每星+1000"
+    "desc": "每日身份宝箱元宝每星+1000"
    }
   },
   "c209": {
@@ -4038,14 +4080,16 @@
    "quality": 3,
    "order": 210,
    "base": {
-	"desc": "侠类挚友友好每级+1，每星+40",
-	"stat": "友好",
-	"per_level": 1,
-	"per_star": 40,
-	"wired": false
+    "desc": "侠类挚友友好每级+1，每星+40",
+    "stat": "友好",
+    "per_level": 1,
+    "per_star": 40,
+    "wired": true,
+    "target": "friend_category",
+    "category": "侠"
    },
    "special": {
-	"desc": "每日身份宝箱元宝每星+1000"
+    "desc": "每日身份宝箱元宝每星+1000"
    }
   },
   "c210": {
@@ -4053,16 +4097,16 @@
    "quality": 3,
    "order": 211,
    "base": {
-	"desc": "工类门客赚钱每级+3000，每星+15万",
-	"stat": "income",
-	"per_level": 3000,
-	"per_star": 150000,
-	"wired": true,
-	"target": "category",
-	"category": "工"
+    "desc": "工类门客赚钱每级+3000，每星+15万",
+    "stat": "income",
+    "per_level": 3000,
+    "per_star": 150000,
+    "wired": true,
+    "target": "category",
+    "category": "工"
    },
    "special": {
-	"desc": "每日身份宝箱元宝每星+1000"
+    "desc": "每日身份宝箱元宝每星+1000"
    }
   },
   "c211": {
@@ -4070,14 +4114,16 @@
    "quality": 3,
    "order": 212,
    "base": {
-	"desc": "商类挚友友好每级+1，每星+40",
-	"stat": "友好",
-	"per_level": 1,
-	"per_star": 40,
-	"wired": false
+    "desc": "商类挚友友好每级+1，每星+40",
+    "stat": "友好",
+    "per_level": 1,
+    "per_star": 40,
+    "wired": true,
+    "target": "friend_category",
+    "category": "商"
    },
    "special": {
-	"desc": "每日身份宝箱元宝每星+1000"
+    "desc": "每日身份宝箱元宝每星+1000"
    }
   },
   "c212": {
@@ -4085,14 +4131,16 @@
    "quality": 3,
    "order": 213,
    "base": {
-	"desc": "工类挚友友好每级+1，每星+40",
-	"stat": "友好",
-	"per_level": 1,
-	"per_star": 40,
-	"wired": false
+    "desc": "工类挚友友好每级+1，每星+40",
+    "stat": "友好",
+    "per_level": 1,
+    "per_star": 40,
+    "wired": true,
+    "target": "friend_category",
+    "category": "工"
    },
    "special": {
-	"desc": "每日身份宝箱元宝每星+1000"
+    "desc": "每日身份宝箱元宝每星+1000"
    }
   },
   "c213": {
@@ -4100,14 +4148,16 @@
    "quality": 3,
    "order": 214,
    "base": {
-	"desc": "士类挚友友好每级+1，每星+40",
-	"stat": "友好",
-	"per_level": 1,
-	"per_star": 40,
-	"wired": false
+    "desc": "士类挚友友好每级+1，每星+40",
+    "stat": "友好",
+    "per_level": 1,
+    "per_star": 40,
+    "wired": true,
+    "target": "friend_category",
+    "category": "士"
    },
    "special": {
-	"desc": "每日身份宝箱元宝每星+1000"
+    "desc": "每日身份宝箱元宝每星+1000"
    }
   },
   "c214": {
@@ -4115,16 +4165,16 @@
    "quality": 3,
    "order": 215,
    "base": {
-	"desc": "侠类门客赚钱每级+3000，每星+15万",
-	"stat": "income",
-	"per_level": 3000,
-	"per_star": 150000,
-	"wired": true,
-	"target": "category",
-	"category": "侠"
+    "desc": "侠类门客赚钱每级+3000，每星+15万",
+    "stat": "income",
+    "per_level": 3000,
+    "per_star": 150000,
+    "wired": true,
+    "target": "category",
+    "category": "侠"
    },
    "special": {
-	"desc": "每日身份宝箱元宝每星+1000"
+    "desc": "每日身份宝箱元宝每星+1000"
    }
   },
   "c215": {
@@ -4132,16 +4182,16 @@
    "quality": 3,
    "order": 216,
    "base": {
-	"desc": "农类门客赚钱每级+3000，每星+15万",
-	"stat": "income",
-	"per_level": 3000,
-	"per_star": 150000,
-	"wired": true,
-	"target": "category",
-	"category": "农"
+    "desc": "农类门客赚钱每级+3000，每星+15万",
+    "stat": "income",
+    "per_level": 3000,
+    "per_star": 150000,
+    "wired": true,
+    "target": "category",
+    "category": "农"
    },
    "special": {
-	"desc": "每日身份宝箱元宝每星+1000"
+    "desc": "每日身份宝箱元宝每星+1000"
    }
   },
   "c216": {
@@ -4149,16 +4199,16 @@
    "quality": 3,
    "order": 217,
    "base": {
-	"desc": "侠类门客赚钱每级+3000，每星+15万",
-	"stat": "income",
-	"per_level": 3000,
-	"per_star": 150000,
-	"wired": true,
-	"target": "category",
-	"category": "侠"
+    "desc": "侠类门客赚钱每级+3000，每星+15万",
+    "stat": "income",
+    "per_level": 3000,
+    "per_star": 150000,
+    "wired": true,
+    "target": "category",
+    "category": "侠"
    },
    "special": {
-	"desc": "每日身份宝箱元宝每星+1000"
+    "desc": "每日身份宝箱元宝每星+1000"
    }
   },
   "c217": {
@@ -4166,16 +4216,16 @@
    "quality": 3,
    "order": 218,
    "base": {
-	"desc": "商类门客赚钱每级+3000，每星+15万",
-	"stat": "income",
-	"per_level": 3000,
-	"per_star": 150000,
-	"wired": true,
-	"target": "category",
-	"category": "商"
+    "desc": "商类门客赚钱每级+3000，每星+15万",
+    "stat": "income",
+    "per_level": 3000,
+    "per_star": 150000,
+    "wired": true,
+    "target": "category",
+    "category": "商"
    },
    "special": {
-	"desc": "每日身份宝箱元宝每星+1000"
+    "desc": "每日身份宝箱元宝每星+1000"
    }
   },
   "c218": {
@@ -4183,16 +4233,16 @@
    "quality": 3,
    "order": 219,
    "base": {
-	"desc": "农类门客赚钱每级+3000，每星+15万",
-	"stat": "income",
-	"per_level": 3000,
-	"per_star": 150000,
-	"wired": true,
-	"target": "category",
-	"category": "农"
+    "desc": "农类门客赚钱每级+3000，每星+15万",
+    "stat": "income",
+    "per_level": 3000,
+    "per_star": 150000,
+    "wired": true,
+    "target": "category",
+    "category": "农"
    },
    "special": {
-	"desc": "每日身份宝箱元宝每星+1000"
+    "desc": "每日身份宝箱元宝每星+1000"
    }
   },
   "c219": {
@@ -4200,16 +4250,16 @@
    "quality": 3,
    "order": 220,
    "base": {
-	"desc": "士类门客赚钱每级+3000，每星+15万",
-	"stat": "income",
-	"per_level": 3000,
-	"per_star": 150000,
-	"wired": true,
-	"target": "category",
-	"category": "士"
+    "desc": "士类门客赚钱每级+3000，每星+15万",
+    "stat": "income",
+    "per_level": 3000,
+    "per_star": 150000,
+    "wired": true,
+    "target": "category",
+    "category": "士"
    },
    "special": {
-	"desc": "每日身份宝箱元宝每星+1000"
+    "desc": "每日身份宝箱元宝每星+1000"
    }
   },
   "c220": {
@@ -4217,14 +4267,14 @@
    "quality": 4,
    "order": 221,
    "base": {
-	"desc": "香料铺店员数量每级+1，每星+150",
-	"stat": "店员数量",
-	"per_level": 1,
-	"per_star": 150,
-	"wired": false
+    "desc": "香料铺店员数量每级+1，每星+150",
+    "stat": "店员数量",
+    "per_level": 1,
+    "per_star": 150,
+    "wired": false
    },
    "special": {
-	"desc": "全体徒弟赚速每星+1%"
+    "desc": "全体徒弟赚速每星+1%"
    }
   },
   "c221": {
@@ -4232,14 +4282,14 @@
    "quality": 4,
    "order": 222,
    "base": {
-	"desc": "长乐坊店员数量每级+1，每星+150",
-	"stat": "店员数量",
-	"per_level": 1,
-	"per_star": 150,
-	"wired": false
+    "desc": "长乐坊店员数量每级+1，每星+150",
+    "stat": "店员数量",
+    "per_level": 1,
+    "per_star": 150,
+    "wired": false
    },
    "special": {
-	"desc": "商类徒弟赚速每星+2%"
+    "desc": "商类徒弟赚速每星+2%"
    }
   },
   "c222": {
@@ -4247,14 +4297,14 @@
    "quality": 4,
    "order": 223,
    "base": {
-	"desc": "驿站店员数量每级+1，每星+150",
-	"stat": "店员数量",
-	"per_level": 1,
-	"per_star": 150,
-	"wired": false
+    "desc": "驿站店员数量每级+1，每星+150",
+    "stat": "店员数量",
+    "per_level": 1,
+    "per_star": 150,
+    "wired": false
    },
    "special": {
-	"desc": "工类徒弟赚速每星+2%"
+    "desc": "工类徒弟赚速每星+2%"
    }
   },
   "c223": {
@@ -4262,14 +4312,14 @@
    "quality": 4,
    "order": 224,
    "base": {
-	"desc": "当铺店员数量每级+1，每星+150",
-	"stat": "店员数量",
-	"per_level": 1,
-	"per_star": 150,
-	"wired": false
+    "desc": "当铺店员数量每级+1，每星+150",
+    "stat": "店员数量",
+    "per_level": 1,
+    "per_star": 150,
+    "wired": false
    },
    "special": {
-	"desc": "转职魔法师的徒弟赚速每星+5%"
+    "desc": "转职魔法师的徒弟赚速每星+5%"
    }
   },
   "c224": {
@@ -4277,14 +4327,14 @@
    "quality": 4,
    "order": 225,
    "base": {
-	"desc": "客栈店员数量每级+1，每星+150",
-	"stat": "店员数量",
-	"per_level": 1,
-	"per_star": 150,
-	"wired": false
+    "desc": "客栈店员数量每级+1，每星+150",
+    "stat": "店员数量",
+    "per_level": 1,
+    "per_star": 150,
+    "wired": false
    },
    "special": {
-	"desc": "徒弟培养活力恢复每星-2秒"
+    "desc": "徒弟培养活力恢复每星-2秒"
    }
   },
   "c225": {
@@ -4292,14 +4342,14 @@
    "quality": 4,
    "order": 226,
    "base": {
-	"desc": "药铺店员数量每级+1，每星+150",
-	"stat": "店员数量",
-	"per_level": 1,
-	"per_star": 150,
-	"wired": false
+    "desc": "药铺店员数量每级+1，每星+150",
+    "stat": "店员数量",
+    "per_level": 1,
+    "per_star": 150,
+    "wired": false
    },
    "special": {
-	"desc": "士类徒弟赚速每星+2%"
+    "desc": "士类徒弟赚速每星+2%"
    }
   },
   "c226": {
@@ -4307,14 +4357,14 @@
    "quality": 4,
    "order": 227,
    "base": {
-	"desc": "说书摊店员数量每级+1，每星+150",
-	"stat": "店员数量",
-	"per_level": 1,
-	"per_star": 150,
-	"wired": false
+    "desc": "说书摊店员数量每级+1，每星+150",
+    "stat": "店员数量",
+    "per_level": 1,
+    "per_star": 150,
+    "wired": false
    },
    "special": {
-	"desc": "徒弟培养消耗铜钱每星-2%"
+    "desc": "徒弟培养消耗铜钱每星-2%"
    }
   },
   "c227": {
@@ -4322,14 +4372,14 @@
    "quality": 4,
    "order": 228,
    "base": {
-	"desc": "酒坊店员数量每级+1，每星+150",
-	"stat": "店员数量",
-	"per_level": 1,
-	"per_star": 150,
-	"wired": false
+    "desc": "酒坊店员数量每级+1，每星+150",
+    "stat": "店员数量",
+    "per_level": 1,
+    "per_star": 150,
+    "wired": false
    },
    "special": {
-	"desc": "侠类徒弟赚速每星+2%"
+    "desc": "侠类徒弟赚速每星+2%"
    }
   },
   "c228": {
@@ -4337,14 +4387,14 @@
    "quality": 4,
    "order": 229,
    "base": {
-	"desc": "酒肆店员数量每级+1，每星+150",
-	"stat": "店员数量",
-	"per_level": 1,
-	"per_star": 150,
-	"wired": false
+    "desc": "酒肆店员数量每级+1，每星+150",
+    "stat": "店员数量",
+    "per_level": 1,
+    "per_star": 150,
+    "wired": false
    },
    "special": {
-	"desc": "农类徒弟赚速每星+2%"
+    "desc": "农类徒弟赚速每星+2%"
    }
   },
   "c229": {
@@ -4352,14 +4402,14 @@
    "quality": 4,
    "order": 230,
    "base": {
-	"desc": "医馆店员数量每级+1，每星+150",
-	"stat": "店员数量",
-	"per_level": 1,
-	"per_star": 150,
-	"wired": false
+    "desc": "医馆店员数量每级+1，每星+150",
+    "stat": "店员数量",
+    "per_level": 1,
+    "per_star": 150,
+    "wired": false
    },
    "special": {
-	"desc": "徒弟活力上限每星+20"
+    "desc": "徒弟活力上限每星+20"
    }
   },
   "c230": {
@@ -4367,14 +4417,14 @@
    "quality": 4,
    "order": 231,
    "base": {
-	"desc": "车马行店员数量每级+1，每星+150",
-	"stat": "店员数量",
-	"per_level": 1,
-	"per_star": 150,
-	"wired": false
+    "desc": "车马行店员数量每级+1，每星+150",
+    "stat": "店员数量",
+    "per_level": 1,
+    "per_star": 150,
+    "wired": false
    },
    "special": {
-	"desc": "侠类徒弟赚速每星+2%"
+    "desc": "侠类徒弟赚速每星+2%"
    }
   },
   "c231": {
@@ -4382,14 +4432,14 @@
    "quality": 4,
    "order": 232,
    "base": {
-	"desc": "茶肆店员数量每级+1，每星+150",
-	"stat": "店员数量",
-	"per_level": 1,
-	"per_star": 150,
-	"wired": false
+    "desc": "茶肆店员数量每级+1，每星+150",
+    "stat": "店员数量",
+    "per_level": 1,
+    "per_star": 150,
+    "wired": false
    },
    "special": {
-	"desc": "商类徒弟赚速每星+2%"
+    "desc": "商类徒弟赚速每星+2%"
    }
   },
   "c232": {
@@ -4397,14 +4447,14 @@
    "quality": 4,
    "order": 233,
    "base": {
-	"desc": "成衣铺店员数量每级+1，每星+150",
-	"stat": "店员数量",
-	"per_level": 1,
-	"per_star": 150,
-	"wired": false
+    "desc": "成衣铺店员数量每级+1，每星+150",
+    "stat": "店员数量",
+    "per_level": 1,
+    "per_star": 150,
+    "wired": false
    },
    "special": {
-	"desc": "工类徒弟赚速每星+2%"
+    "desc": "工类徒弟赚速每星+2%"
    }
   },
   "c233": {
@@ -4412,14 +4462,14 @@
    "quality": 4,
    "order": 234,
    "base": {
-	"desc": "算命摊店员数量每级+1，每星+150",
-	"stat": "店员数量",
-	"per_level": 1,
-	"per_star": 150,
-	"wired": false
+    "desc": "算命摊店员数量每级+1，每星+150",
+    "stat": "店员数量",
+    "per_level": 1,
+    "per_star": 150,
+    "wired": false
    },
    "special": {
-	"desc": "农类徒弟赚速每星+2%"
+    "desc": "农类徒弟赚速每星+2%"
    }
   },
   "c234": {
@@ -4427,14 +4477,14 @@
    "quality": 4,
    "order": 235,
    "base": {
-	"desc": "妙音坊店员数量每级+1，每星+150",
-	"stat": "店员数量",
-	"per_level": 1,
-	"per_star": 150,
-	"wired": false
+    "desc": "妙音坊店员数量每级+1，每星+150",
+    "stat": "店员数量",
+    "per_level": 1,
+    "per_star": 150,
+    "wired": false
    },
    "special": {
-	"desc": "士类徒弟赚速每星+2%"
+    "desc": "士类徒弟赚速每星+2%"
    }
   }
  },
@@ -4442,21 +4492,21 @@
   "s_礼遇": {
    "name": "礼遇",
    "members": [
-	"c105",
-	"c104",
+    "c105",
+    "c104",
     "c103"
    ],
    "tiers": [
-	1,
-	2,
-	4,
-	6,
-	8,
-	10,
-	12,
-	14,
-	17,
-	20
+    1,
+    2,
+    4,
+    6,
+    8,
+    10,
+    12,
+    14,
+    17,
+    20
    ],
    "effect": "全部藏宝达到（1/2/4/6/8/10/12/14/17/20）星时，珍兽魂力等级上限+1",
    "kind": "display",
@@ -4465,13 +4515,13 @@
   "s_冕瑞": {
    "name": "冕瑞",
    "members": [
-	"c022",
+    "c022",
     "c021"
    ],
    "tiers": [
-	1,
-	5,
-	10
+    1,
+    5,
+    10
    ],
    "effect": "全部藏宝达到（1/5/10）星时，守护灵提供的赚钱+5%",
    "kind": "guardian_pct",
@@ -4480,21 +4530,21 @@
   "s_宸华": {
    "name": "宸华",
    "members": [
-	"c184",
-	"c107",
+    "c184",
+    "c107",
     "c106"
    ],
    "tiers": [
-	1,
-	2,
-	4,
-	6,
-	8,
-	10,
-	12,
-	14,
-	17,
-	20
+    1,
+    2,
+    4,
+    6,
+    8,
+    10,
+    12,
+    14,
+    17,
+    20
    ],
    "effect": "全部藏宝达到（1/2/4/6/8/10/12/14/17/20）星时，珍兽等级上限+1",
    "kind": "beast_level_cap",
@@ -4503,13 +4553,13 @@
   "s_醉栖": {
    "name": "醉栖",
    "members": [
-	"c024",
+    "c024",
     "c023"
    ],
    "tiers": [
-	1,
-	5,
-	10
+    1,
+    5,
+    10
    ],
    "effect": "全部藏宝达到（1/5/10）星时，无双及以上门客赚钱+5%",
    "kind": "quality_min_pct",
@@ -4518,20 +4568,20 @@
   "s_共欢": {
    "name": "共欢",
    "members": [
-	"c026",
+    "c026",
     "c025"
    ],
    "tiers": [
-	1,
-	2,
-	3,
-	4,
-	5,
-	6,
-	7,
-	8,
-	9,
-	10
+    1,
+    2,
+    3,
+    4,
+    5,
+    6,
+    7,
+    8,
+    9,
+    10
    ],
    "effect": "全部藏宝达到（1/2/3/4/5/6/7/8/9/10）星时，全体虫师技能等级上限+1",
    "kind": "display",
@@ -4540,29 +4590,29 @@
   "s_锦忆": {
    "name": "锦忆",
    "members": [
-	"c004",
+    "c004",
     "c005"
    ],
    "tiers": [
-	1,
-	5,
-	10
+    1,
+    5,
+    10
    ],
    "effect": "全部藏宝达到（1/5/10）星时，每格有效工匠魂石赚钱+2%",
    "kind": "soul_cell_pct",
-   "category":"工",
+   "category": "工",
    "per_tier": 2.0
   },
   "s_瑞光": {
    "name": "瑞光",
    "members": [
-	"c029",
+    "c029",
     "c028"
    ],
    "tiers": [
-	1,
-	5,
-	10
+    1,
+    5,
+    10
    ],
    "effect": "全部藏宝达到（1/5/10）星时，守护灵提供的赚钱+5%",
    "kind": "guardian_pct",
@@ -4571,13 +4621,13 @@
   "s_承运": {
    "name": "承运",
    "members": [
-	"c031",
+    "c031",
     "c030"
    ],
    "tiers": [
-	1,
-	5,
-	10
+    1,
+    5,
+    10
    ],
    "effect": "全部藏宝达到（1/5/10）星时，无双及以上门客赚钱+5%",
    "kind": "quality_min_pct",
@@ -4586,21 +4636,21 @@
   "s_重华": {
    "name": "重华",
    "members": [
-	"c119",
-	"c118",
+    "c119",
+    "c118",
     "c117"
    ],
    "tiers": [
-	1,
-	2,
-	4,
-	6,
-	8,
-	10,
-	12,
-	14,
-	17,
-	20
+    1,
+    2,
+    4,
+    6,
+    8,
+    10,
+    12,
+    14,
+    17,
+    20
    ],
    "effect": "全部藏宝达到（1/2/4/6/8/10/12/14/17/20）星时，珍兽魂力等级上限+1",
    "kind": "display",
@@ -4609,21 +4659,21 @@
   "s_阖欢": {
    "name": "阖欢",
    "members": [
-	"c084",
-	"c121",
+    "c084",
+    "c121",
     "c120"
    ],
    "tiers": [
-	1,
-	2,
-	4,
-	6,
-	8,
-	10,
-	12,
-	14,
-	17,
-	20
+    1,
+    2,
+    4,
+    6,
+    8,
+    10,
+    12,
+    14,
+    17,
+    20
    ],
    "effect": "全部藏宝达到（1/2/4/6/8/10/12/14/17/20）星时，珍兽等级上限+1",
    "kind": "beast_level_cap",
@@ -4632,13 +4682,13 @@
   "s_寰商": {
    "name": "寰商",
    "members": [
-	"c016",
+    "c016",
     "c032"
    ],
    "tiers": [
-	1,
-	5,
-	10
+    1,
+    5,
+    10
    ],
    "effect": "全部藏宝达到（1/5/10）星时，珍兽觉醒上限+1",
    "kind": "awaken_limit",
@@ -4647,21 +4697,21 @@
   "s_市贾": {
    "name": "市贾",
    "members": [
-	"c126",
-	"c125",
+    "c126",
+    "c125",
     "c124"
    ],
    "tiers": [
-	1,
-	2,
-	4,
-	6,
-	8,
-	10,
-	12,
-	14,
-	17,
-	20
+    1,
+    2,
+    4,
+    6,
+    8,
+    10,
+    12,
+    14,
+    17,
+    20
    ],
    "effect": "全部藏宝达到（1/2/4/6/8/10/12/14/17/20）星时，全体徒弟培养见识+3%，赚速+3%",
    "kind": "display",
@@ -4670,13 +4720,13 @@
   "s_丹凤": {
    "name": "丹凤",
    "members": [
-	"c034",
+    "c034",
     "c033"
    ],
    "tiers": [
-	1,
-	5,
-	10
+    1,
+    5,
+    10
    ],
    "effect": "全部藏宝达到（1/5/10）星时，守护灵提供赚钱+5%",
    "kind": "guardian_pct",
@@ -4685,21 +4735,21 @@
   "s_锦堂": {
    "name": "锦堂",
    "members": [
-	"c132",
-	"c131",
+    "c132",
+    "c131",
     "c130"
    ],
    "tiers": [
-	1,
-	2,
-	4,
-	6,
-	8,
-	10,
-	12,
-	14,
-	17,
-	20
+    1,
+    2,
+    4,
+    6,
+    8,
+    10,
+    12,
+    14,
+    17,
+    20
    ],
    "effect": "全部藏宝达到（1/2/4/6/8/10/12/14/17/20）星时，珍兽魂力等级上限+1",
    "kind": "display",
@@ -4708,13 +4758,13 @@
   "s_清辉": {
    "name": "清辉",
    "members": [
-	"c037",
+    "c037",
     "c036"
    ],
    "tiers": [
-	1,
-	5,
-	10
+    1,
+    5,
+    10
    ],
    "effect": "全部藏宝达到（1/5/10）星时，无双及以上门客赚钱+5%",
    "kind": "quality_min_pct",
@@ -4723,23 +4773,23 @@
   "s_星光": {
    "name": "星光",
    "members": [
-	"c136",
-	"c083",
-	"c135",
-	"c134",
+    "c136",
+    "c083",
+    "c135",
+    "c134",
     "c133"
    ],
    "tiers": [
-	1,
-	2,
-	4,
-	6,
-	8,
-	10,
-	12,
-	14,
-	17,
-	20
+    1,
+    2,
+    4,
+    6,
+    8,
+    10,
+    12,
+    14,
+    17,
+    20
    ],
    "effect": "全部藏宝达到（1/2/4/6/8/10/12/14/17/20）星时，五艳门客赚钱+5%",
    "kind": "wuyan_pct",
@@ -4748,13 +4798,13 @@
   "s_韶华": {
    "name": "韶华",
    "members": [
-	"c038",
+    "c038",
     "c000"
    ],
    "tiers": [
-	1,
-	5,
-	10
+    1,
+    5,
+    10
    ],
    "effect": "全部藏宝达到（1/5/10）星时，守护灵提供赚钱+5%",
    "kind": "guardian_pct",
@@ -4763,21 +4813,21 @@
   "s_坤舆": {
    "name": "坤舆",
    "members": [
-	"c095",
-	"c137",
+    "c095",
+    "c137",
     "c085"
    ],
    "tiers": [
-	1,
-	2,
-	4,
-	6,
-	8,
-	10,
-	12,
-	14,
-	17,
-	20
+    1,
+    2,
+    4,
+    6,
+    8,
+    10,
+    12,
+    14,
+    17,
+    20
    ],
    "effect": "全部藏宝达到（1/2/4/6/8/10/12/14/17/20）星时，珍兽魂力等级上限+1",
    "kind": "display",
@@ -4786,13 +4836,13 @@
   "s_瑶华": {
    "name": "瑶华",
    "members": [
-	"c040",
+    "c040",
     "c039"
    ],
    "tiers": [
-	1,
-	5,
-	10
+    1,
+    5,
+    10
    ],
    "effect": "全部藏宝达到（1/5/10）星时，无双及以上门客赚钱+5%",
    "kind": "quality_min_pct",
@@ -4801,21 +4851,21 @@
   "s_国香": {
    "name": "国香",
    "members": [
-	"c140",
-	"c139",
+    "c140",
+    "c139",
     "c138"
    ],
    "tiers": [
-	1,
-	2,
-	4,
-	6,
-	8,
-	10,
-	12,
-	14,
-	17,
-	20
+    1,
+    2,
+    4,
+    6,
+    8,
+    10,
+    12,
+    14,
+    17,
+    20
    ],
    "effect": "全部藏宝达到（1/2/4/6/8/10/12/14/17/20）星时，珍兽魂力等级上限+1",
    "kind": "display",
@@ -4824,13 +4874,13 @@
   "s_玉瑞": {
    "name": "玉瑞",
    "members": [
-	"c042",
+    "c042",
     "c041"
    ],
    "tiers": [
-	1,
-	5,
-	10
+    1,
+    5,
+    10
    ],
    "effect": "全部藏宝达到（1/5/10）星时，守护灵提供赚钱+5%",
    "kind": "guardian_pct",
@@ -4839,31 +4889,31 @@
   "s_琅轩": {
    "name": "琅轩",
    "members": [
-	"c143",
-	"c142",
+    "c143",
+    "c142",
     "c141"
    ],
    "tiers": [
-	1,
-	2,
-	3,
-	4,
-	5,
-	6,
-	7,
-	8,
-	9,
-	10,
-	11,
-	12,
-	13,
-	14,
-	15,
-	16,
-	17,
-	18,
-	19,
-	20
+    1,
+    2,
+    3,
+    4,
+    5,
+    6,
+    7,
+    8,
+    9,
+    10,
+    11,
+    12,
+    13,
+    14,
+    15,
+    16,
+    17,
+    18,
+    19,
+    20
    ],
    "effect": "全部藏宝达到（1/2/3/4/5/6/7/8/9/10/11/12/13/14/15/16/17/18/19/20）星时，工匠虫师技能等级上限+1",
    "kind": "display",
@@ -4872,21 +4922,21 @@
   "s_离尘": {
    "name": "离尘",
    "members": [
-	"c082",
-	"c091",
+    "c082",
+    "c091",
     "c075"
    ],
    "tiers": [
-	1,
-	2,
-	4,
-	6,
-	8,
-	10,
-	12,
-	14,
-	17,
-	20
+    1,
+    2,
+    4,
+    6,
+    8,
+    10,
+    12,
+    14,
+    17,
+    20
    ],
    "effect": "全部藏宝达到（1/2/4/6/8/10/12/14/17/20）星时，珍兽等级上限+1",
    "kind": "beast_level_cap",
@@ -4895,29 +4945,29 @@
   "s_溯光": {
    "name": "溯光",
    "members": [
-	"c014",
+    "c014",
     "c044"
    ],
    "tiers": [
-	1,
-	5,
-	10
+    1,
+    5,
+    10
    ],
    "effect": "全部藏宝达到（1/5/10）星时，每格有效商贾魂石赚钱+1%",
    "kind": "soul_cell_pct",
-   "category":"商",
+   "category": "商",
    "per_tier": 1.0
   },
   "s_超然": {
    "name": "超然",
    "members": [
-	"c046",
+    "c046",
     "c045"
    ],
    "tiers": [
-	1,
-	5,
-	10
+    1,
+    5,
+    10
    ],
    "effect": "全部藏宝达到（1/5/10）星时，无双及以上门客赚钱+5%",
    "kind": "quality_min_pct",
@@ -4926,21 +4976,21 @@
   "s_碧爻": {
    "name": "碧爻",
    "members": [
-	"c097",
-	"c146",
+    "c097",
+    "c146",
     "c145"
    ],
    "tiers": [
-	1,
-	2,
-	4,
-	6,
-	8,
-	10,
-	12,
-	14,
-	17,
-	20
+    1,
+    2,
+    4,
+    6,
+    8,
+    10,
+    12,
+    14,
+    17,
+    20
    ],
    "effect": "全部藏宝达到（1/2/4/6/8/10/12/14/17/20）星时，，珍兽等级上限+1",
    "kind": "beast_level_cap",
@@ -4949,13 +4999,13 @@
   "s_剑魂": {
    "name": "剑魂",
    "members": [
-	"c047",
+    "c047",
     "c048"
    ],
    "tiers": [
-	1,
-	5,
-	10
+    1,
+    5,
+    10
    ],
    "effect": "全部藏宝达到（1/5/10）星时，无双及以上门客赚钱+5%",
    "kind": "quality_min_pct",
@@ -4964,21 +5014,21 @@
   "s_童忆": {
    "name": "童忆",
    "members": [
-	"c152",
-	"c151",
+    "c152",
+    "c151",
     "c150"
    ],
    "tiers": [
-	1,
-	2,
-	4,
-	6,
-	8,
-	10,
-	12,
-	14,
-	17,
-	20
+    1,
+    2,
+    4,
+    6,
+    8,
+    10,
+    12,
+    14,
+    17,
+    20
    ],
    "effect": "全部藏宝达到（1/2/4/6/8/10/12/14/17/20）星时，全体徒弟培养见识+3%，赚钱+3%",
    "kind": "display",
@@ -4987,13 +5037,13 @@
   "s_求知": {
    "name": "求知",
    "members": [
-	"c012",
+    "c012",
     "c001"
    ],
    "tiers": [
-	1,
-	5,
-	10
+    1,
+    5,
+    10
    ],
    "effect": "全部藏宝达到（1/5/10）星时，珍兽觉醒上限+1",
    "kind": "awaken_limit",
@@ -5002,21 +5052,21 @@
   "s_魂器": {
    "name": "魂器",
    "members": [
-	"c159",
-	"c158",
+    "c159",
+    "c158",
     "c157"
    ],
    "tiers": [
-	1,
-	2,
-	4,
-	6,
-	8,
-	10,
-	12,
-	14,
-	17,
-	20
+    1,
+    2,
+    4,
+    6,
+    8,
+    10,
+    12,
+    14,
+    17,
+    20
    ],
    "effect": "全部藏宝达到（1/2/4/6/8/10/12/14/17/20）星时，珍兽等级上限+1",
    "kind": "beast_level_cap",
@@ -5025,13 +5075,13 @@
   "s_风华": {
    "name": "风华",
    "members": [
-	"c017",
+    "c017",
     "c053"
    ],
    "tiers": [
-	1,
-	5,
-	10
+    1,
+    5,
+    10
    ],
    "effect": "全部藏宝达到（1/5/10）星时，珍兽觉醒上限+1",
    "kind": "awaken_limit",
@@ -5040,20 +5090,20 @@
   "s_续缘": {
    "name": "续缘",
    "members": [
-	"c006",
+    "c006",
     "c054"
    ],
    "tiers": [
-	1,
-	2,
-	4,
-	6,
-	8,
-	10,
-	12,
-	14,
-	17,
-	20
+    1,
+    2,
+    4,
+    6,
+    8,
+    10,
+    12,
+    14,
+    17,
+    20
    ],
    "effect": "全部藏宝达到（1/2/4/6/8/10/12/14/17/20）星时，白月初赚钱+10%",
    "kind": "hero_pct",
@@ -5063,31 +5113,31 @@
   "s_奥林": {
    "name": "奥林",
    "members": [
-	"c164",
-	"c163",
+    "c164",
+    "c163",
     "c162"
    ],
    "tiers": [
-	1,
-	2,
-	3,
-	4,
-	5,
-	6,
-	7,
-	8,
-	9,
-	10,
-	11,
-	12,
-	13,
-	14,
-	15,
-	16,
-	17,
-	18,
-	19,
-	20
+    1,
+    2,
+    3,
+    4,
+    5,
+    6,
+    7,
+    8,
+    9,
+    10,
+    11,
+    12,
+    13,
+    14,
+    15,
+    16,
+    17,
+    18,
+    19,
+    20
    ],
    "effect": "全部藏宝达到（1/2/3/4/5/6/7/8/9/10/11/12/13/14/15/16/17/18/19/20）星时，士类虫师技能等级上限+1",
    "kind": "display",
@@ -5096,31 +5146,31 @@
   "s_水玉": {
    "name": "水玉",
    "members": [
-	"c167",
-	"c166",
+    "c167",
+    "c166",
     "c165"
    ],
    "tiers": [
-	1,
-	2,
-	3,
-	4,
-	5,
-	6,
-	7,
-	8,
-	9,
-	10,
-	11,
-	12,
-	13,
-	14,
-	15,
-	16,
-	17,
-	18,
-	19,
-	20
+    1,
+    2,
+    3,
+    4,
+    5,
+    6,
+    7,
+    8,
+    9,
+    10,
+    11,
+    12,
+    13,
+    14,
+    15,
+    16,
+    17,
+    18,
+    19,
+    20
    ],
    "effect": "全部藏宝达到（1/2/3/4/5/6/7/8/9/10/11/12/13/14/15/16/17/18/19/20）星时，侠客虫师技能等级上限+1",
    "kind": "display",
@@ -5129,31 +5179,31 @@
   "s_时霜": {
    "name": "时霜",
    "members": [
-	"c170",
-	"c169",
+    "c170",
+    "c169",
     "c168"
    ],
    "tiers": [
-	1,
-	2,
-	3,
-	4,
-	5,
-	6,
-	7,
-	8,
-	9,
-	10,
-	11,
-	12,
-	13,
-	14,
-	15,
-	16,
-	17,
-	18,
-	19,
-	20
+    1,
+    2,
+    3,
+    4,
+    5,
+    6,
+    7,
+    8,
+    9,
+    10,
+    11,
+    12,
+    13,
+    14,
+    15,
+    16,
+    17,
+    18,
+    19,
+    20
    ],
    "effect": "全部藏宝达到（1/2/3/4/5/6/7/8/9/10/11/12/13/14/15/16/17/18/19/10）星时，士人虫师技能等级上限+1",
    "kind": "display",
@@ -5162,20 +5212,20 @@
   "s_周年": {
    "name": "周年",
    "members": [
-	"c057",
+    "c057",
     "c056"
    ],
    "tiers": [
-	1,
-	2,
-	3,
-	4,
-	5,
-	6,
-	7,
-	8,
-	9,
-	10
+    1,
+    2,
+    3,
+    4,
+    5,
+    6,
+    7,
+    8,
+    9,
+    10
    ],
    "effect": "全部藏宝达到（1/2/3/4/5/6/7/8/9/10）星时，全体虫师技能等级上限+1",
    "kind": "display",
@@ -5184,31 +5234,31 @@
   "s_春意盎然": {
    "name": "春意盎然",
    "members": [
-	"c173",
-	"c172",
+    "c173",
+    "c172",
     "c171"
    ],
    "tiers": [
-	1,
-	2,
-	3,
-	4,
-	5,
-	6,
-	7,
-	8,
-	9,
-	10,
-	11,
-	12,
-	13,
-	14,
-	15,
-	16,
-	17,
-	18,
-	19,
-	20
+    1,
+    2,
+    3,
+    4,
+    5,
+    6,
+    7,
+    8,
+    9,
+    10,
+    11,
+    12,
+    13,
+    14,
+    15,
+    16,
+    17,
+    18,
+    19,
+    20
    ],
    "effect": "全部藏宝达到（1/2/3/4/5/6/7/8/9/10/11/12/13/14/15/16/17/18/19/10）星时，商类虫师技能等级上限+1",
    "kind": "display",
@@ -5217,21 +5267,21 @@
   "s_迎春": {
    "name": "迎春",
    "members": [
-	"c176",
-	"c175",
+    "c176",
+    "c175",
     "c174"
    ],
    "tiers": [
-	1,
-	2,
-	4,
-	6,
-	8,
-	10,
-	12,
-	14,
-	17,
-	20
+    1,
+    2,
+    4,
+    6,
+    8,
+    10,
+    12,
+    14,
+    17,
+    20
    ],
    "effect": "全部藏宝达到（1/2/4/6/8/10/12/14/17/20）星时，珍兽等级上限+1",
    "kind": "beast_level_cap",
@@ -5240,13 +5290,13 @@
   "s_花火": {
    "name": "花火",
    "members": [
-	"c002",
+    "c002",
     "c063"
    ],
    "tiers": [
-	1,
-	5,
-	10
+    1,
+    5,
+    10
    ],
    "effect": "全部藏宝达到（1/5/10）星时，珍兽觉醒上限+1",
    "kind": "awaken_limit",
@@ -5255,21 +5305,21 @@
   "s_凝冰": {
    "name": "凝冰",
    "members": [
-	"c183",
-	"c182",
+    "c183",
+    "c182",
     "c181"
    ],
    "tiers": [
-	1,
-	2,
-	4,
-	6,
-	8,
-	10,
-	12,
-	14,
-	17,
-	20
+    1,
+    2,
+    4,
+    6,
+    8,
+    10,
+    12,
+    14,
+    17,
+    20
    ],
    "effect": "全部藏宝达到（1/2/4/6/8/10/12/14/17/20）星时，全体挚友谈心缘分+2.5%",
    "kind": "display",
@@ -5278,23 +5328,23 @@
   "s_五艳": {
    "name": "五艳",
    "members": [
-	"c180",
-	"c179",
-	"c089",
-	"c178",
+    "c180",
+    "c179",
+    "c089",
+    "c178",
     "c177"
    ],
    "tiers": [
-	1,
-	2,
-	4,
-	6,
-	8,
-	10,
-	12,
-	14,
-	17,
-	20
+    1,
+    2,
+    4,
+    6,
+    8,
+    10,
+    12,
+    14,
+    17,
+    20
    ],
    "effect": "全部藏宝达到（1/2/4/6/8/10/12/14/17/20）星时，五艳门客赚钱+5%",
    "kind": "wuyan_pct",
