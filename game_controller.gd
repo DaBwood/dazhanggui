@@ -125,14 +125,9 @@ func _ready():
 	net.auth_expired.connect(_on_net_auth_expired)   # 【新增】令牌被服务端判失效：提示重新登录（防静默失联）
 
 	
-	# 【新增】账号门：有令牌→档随账号→直接进游戏；无令牌→先登录/注册（或离线模式），过完门才初始化游戏
-	if net.token != "":
-		data.set_save_path_for(net.username)
-		_net_login_pending = true   # 【改】统一走下载仲裁：等云端对比完决定用哪份档再进游戏（防本地残留档静默盖云端）
-		_show_sync_mask()           # 【新增】仲裁期间挡空白（workers.dev 国内慢，最长10秒超时才回调）
-		net.download_save()
-	else:
-		_show_login_gate()
+	# 【新增】2026-09-08 丢档事故后写死：无论有无令牌一律先过登录门。
+	# 令牌只作"免密快捷进入"凭证，绝不再静默直通；下载仲裁统一在玩家点了"进入游戏"之后才发生
+	_show_login_gate()
 
 
 
@@ -229,7 +224,41 @@ func _show_login_gate():
 	offline.text = "离线模式（不联机）"
 	offline.pressed.connect(_enter_offline)
 	vb.add_child(offline)
-	_show_login_popup()
+	
+	# 【新增】令牌有效→免密快捷进入行（点"进入游戏"才走对账；对账失败会被 SyncFailPopup 拦在门口）
+	if net != null and net.token != "":
+		var row = HBoxContainer.new()
+		row.alignment = BoxContainer.ALIGNMENT_CENTER
+		row.add_theme_constant_override("separation", 16)
+		vb.add_child(row)
+		var who = Label.new()
+		who.text = "当前账号：" + net.username
+		who.add_theme_color_override("font_color", Color(0.91, 0.78, 0.42))
+		row.add_child(who)
+		var quick = Button.new()
+		quick.text = "进入游戏"
+		quick.custom_minimum_size = Vector2(140, 44)
+		quick.pressed.connect(func():
+			if has_node("LoginGate"):
+				var gate_node = get_node("LoginGate")
+				remove_child(gate_node)
+				gate_node.queue_free()
+			data.set_save_path_for(net.username)
+			_net_login_pending = true
+			_show_sync_mask()
+			net.download_save()
+		)
+		row.add_child(quick)
+		var switch_btn = Button.new()
+		switch_btn.text = "切换账号"
+		switch_btn.custom_minimum_size = Vector2(110, 44)
+		switch_btn.pressed.connect(func():
+			net.clear_auth()
+			get_tree().reload_current_scene()
+		)
+		row.add_child(switch_btn)
+	else:
+		_show_login_popup()
 
 # 【新增】离线模式进游戏：不登录，用默认本地档，不与云端同步（云连不上时的保底入口）
 func _enter_offline():
@@ -982,9 +1011,18 @@ func _on_net_download_result(ok: bool, has_save: bool, save_text: String, update
 	# 必须先对比再决定用哪份档，杜绝"本地较新就静默盖云端"
 	if _net_login_pending:
 		_net_login_pending = false
-		if not ok or not has_save or save_text.is_empty():
-			_enter_game()   # 云端无档/拉取失败：本地（或新档）直接进
+		# 【新增】拉取失败绝不静默进游戏（2026-09-08丢档事故根因）：空档进游戏30秒后自动上传，
+		# 会把云端好档顶掉。网络错误(令牌仍有效)→弹窗选 重试/显式离线进入；401(令牌已清)→回登录门
+		if not ok:
+			if net.token != "":
+				_show_sync_fail_popup()
+			else:
+				_show_login_gate()
 			return
+		if not has_save or save_text.is_empty():
+			_enter_game()   # 云端确认无档：本地（或新档）直接进，安全（玩家已在门后显式点过进入）
+			return
+		
 		var info = _read_local_save_info()
 		if not info.exists:
 			# 本机无档：云端落盘直接用（原 pending 行为）
@@ -1029,6 +1067,43 @@ func _on_net_download_result(ok: bool, has_save: bool, save_text: String, update
 		return
 	# 云端较新（或手动"从云端恢复"）：统一走冲突/恢复弹窗（写明双方名字+时间，恢复写当前账号档）
 	_show_cloud_restore_popup(save_text, updated_at)
+
+# 【新增】对账失败弹窗：停在门口（盖过同步遮罩），绝不静默带空档进游戏。
+# 重试=重新走下载仲裁；离线进入=玩家知悉"本地档将自动上传覆盖云端"风险后的显式选择
+func _show_sync_fail_popup():
+	if has_node("SyncFailPopup"): return
+	var popup = _create_base_popup("云端同步失败", Vector2(480, 280))
+	popup.name = "SyncFailPopup"
+	popup.z_index = 95   # 必须盖过 SyncMask(88) 与 LoginGate(90)
+	add_child(popup)
+	var vb = popup.get_child(0)
+	var lbl = Label.new()
+	lbl.text = "连不上云端存档服务器（网络不通）。\n\n直接进游戏将以本地存档开始，\n之后每次自动存档都会上传并覆盖云端旧档！"
+	lbl.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	lbl.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+	vb.add_child(lbl)
+	var row = HBoxContainer.new()
+	row.alignment = BoxContainer.ALIGNMENT_CENTER
+	row.add_theme_constant_override("separation", 24)
+	vb.add_child(row)
+	var retry = Button.new()
+	retry.text = "重试"
+	retry.custom_minimum_size = Vector2(140, 44)
+	retry.pressed.connect(func():
+		_safe_close("SyncFailPopup")
+		_net_login_pending = true
+		_show_sync_mask()
+		net.download_save()
+	)
+	row.add_child(retry)
+	var enter = Button.new()
+	enter.text = "离线进入（本地优先）"
+	enter.custom_minimum_size = Vector2(200, 44)
+	enter.pressed.connect(func():
+		_safe_close("SyncFailPopup")
+		_enter_game()
+	)
+	row.add_child(enter)
 
 # 【新增】读取本地存档的仲裁信息：存在性/血缘ID/下线时间。登录仲裁必须在 load_game 之前调用
 # （此刻内存里的 last_logout_time 还是旧值/零，不代表本地档的真实时间，所以直接读文件）
