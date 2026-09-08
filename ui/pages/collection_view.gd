@@ -531,8 +531,8 @@ func _show_pick_selector(cid: String):
 	c._add_ok_button(vbox, func(): _close_node("CollectionPickPopup"), "取消")
 	c.add_child(panel)
 
-# 套装锦盒：道具id suitbox_XX ↔ 套装 s_XX，任选成员藏品碎片，支持批量使用
-func show_suit_frag_box_selector(item_id: String):
+# 【改】套装锦盒：道具id suitbox_XX ↔ 套装 s_XX，任选成员藏品碎片；数量由背包详情弹窗带入
+func show_suit_frag_box_selector(item_id: String, p_qty: int = 1):
 	var sys = data.collection_system
 	var suit_id = "s_" + item_id.trim_prefix("suitbox_")
 	var suit = sys.get_suits().get(suit_id, {})
@@ -544,30 +544,12 @@ func show_suit_frag_box_selector(item_id: String):
 		c._show_stage_hint("锦盒不足！")
 		return
 	var box_name = data.ITEM_CONFIG.get(item_id, {}).get("name", item_id)
-	var popup = c._create_base_popup("%s（拥有%d个）" % [box_name, owned], Vector2(480, 520))
+	var popup = c._create_base_popup("%s（使用%d个）" % [box_name, p_qty], Vector2(480, 520))
 	popup.name = "SuitFragBoxSelector"
 	var vbox = popup.get_child(0)
-	# 【新增】批量使用：先选数量（×1 / ×10 / ×全部），再选成员
-	var ctx = {"n": 1}
-	var count_row = HBoxContainer.new()
-	count_row.alignment = BoxContainer.ALIGNMENT_CENTER
-	count_row.add_theme_constant_override("separation", 8)
-	vbox.add_child(count_row)
-	var count_lbl = Label.new()
-	count_lbl.text = "使用数量：%d" % ctx["n"]
-	count_row.add_child(count_lbl)
-	for n_opt in [1, 10, -1]:   # -1=全部
-		var nb = Button.new()
-		nb.text = "全部" if n_opt == -1 else "×%d" % n_opt
-		nb.custom_minimum_size = Vector2(70, 36)
-		nb.set_meta("n", n_opt)
-		nb.pressed.connect(func():
-			var opt = int(nb.get_meta("n"))
-			ctx["n"] = owned if opt == -1 else mini(opt, owned)
-			count_lbl.text = "使用数量：%d" % ctx["n"])
-		count_row.add_child(nb)
+	# 【改】数量由详情弹窗选择器带入，不再重复选择
 	var hint = Label.new()
-	hint.text = "选择成员，按所选数量一次性获得碎片"
+	hint.text = "选择成员，获得该碎片 ×%d" % p_qty
 	hint.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	hint.add_theme_color_override("font_color", Color(0.7, 0.7, 0.75))
 	vbox.add_child(hint)
@@ -577,16 +559,14 @@ func show_suit_frag_box_selector(item_id: String):
 		row.add_theme_constant_override("separation", 8)
 		var lbl = Label.new()
 		lbl.size_flags_horizontal = Control.SIZE_EXPAND_FILL
-		# 【新增】锦盒成员名按藏品品质着色
 		lbl.add_theme_color_override("font_color", Color(QUALITY_COLORS[int(coll.get("quality", 4))]))
 		lbl.text = "%s（当前碎片 %d）" % [coll.get("name", cid), sys.get_frag_count(cid)]
 		row.add_child(lbl)
 		var btn = Button.new()
 		btn.text = "选择"
 		btn.custom_minimum_size = Vector2(80, 40)
-		# 【新增】批量：扣 use_n 个锦盒 + 该成员碎片×use_n（上限为拥有数）
 		btn.pressed.connect(func():
-			var n = mini(int(ctx["n"]), int(data.items.get(item_id, 0)))
+			var n = mini(p_qty, int(data.items.get(item_id, 0)))
 			if n < 1:
 				return
 			data.items[item_id] = int(data.items.get(item_id, 0)) - n
@@ -598,6 +578,28 @@ func show_suit_frag_box_selector(item_id: String):
 		vbox.add_child(row)
 	c._add_ok_button(vbox, func(): popup.queue_free(), "关闭")
 	c.add_child(popup)
+
+# 【新增】套装效果玩家文案：已接入类按"已激活档数×每档值"显示当前实际加成；未接入统一"后续版本开放"
+func _suit_effect_label(sid: String, suit: Dictionary) -> String:
+	var act = int(data.collection_system.get_suit_info(sid).activated)
+	var per = float(suit.get("per_tier", 0))
+	var cur = _fmt_effect_number(per * act)   # 当前已激活的总值
+	match str(suit.get("kind", "display")):
+		"awaken_limit":
+			return "套装效果：珍兽觉醒上限 +%d（已激活%d档）" % [int(per) * act, act]
+		"beast_level_cap":
+			return "套装效果：珍兽等级上限 +%d（已激活%d档）" % [int(per) * act, act]
+		"guardian_pct":
+			return "套装效果：守护灵提供的赚钱 +%s%%（已激活%d档）" % [cur, act]
+		"quality_min_pct":
+			return "套装效果：无双及以上门客赚钱 +%s%%（已激活%d档）" % [cur, act]
+		"soul_cell_pct":
+			return "套装效果：%s类门客每格有效魂石赚钱 +%s%%（已激活%d档）" % [suit.get("category", ""), cur, act]
+		"wuyan_pct":
+			return "套装效果：五艳凤魁门客赚钱 +%s%%（已激活%d档）" % [cur, act]
+		"hero_pct":
+			return "套装效果：%s赚钱 +%s%%（已激活%d档）" % [_hero_label(str(suit.get("hero", ""))), cur, act]
+	return "套装效果：后续版本开放"
 
 # ===== 套装 =====
 func _fill_ta(body: VBoxContainer):
@@ -654,11 +656,10 @@ func _fill_ta(body: VBoxContainer):
 		pl.text = "成员最低★%d，已达 %d 档" % [info.min_star, info.reached]
 		pl.add_theme_color_override("font_color", Color(0.75, 0.75, 0.78))
 		vb.add_child(pl)
+		# 【改】按已激活档数显示当前实际效果值；未接入套装不再贴配置原文
 		var el = Label.new()
-		el.text = "套装效果：" + suit.get("effect", "")
+		el.text = _suit_effect_label(sid, suit)
 		el.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
-		if suit.get("kind", "display") == "display":
-			el.text += "（后续接入）"
 		vb.add_child(el)
 
 # ===== 淘宝 =====

@@ -15,6 +15,8 @@ var _current_beast_id: String = ""
 var _current_beast_index: int = 0
 var _selected_beast_skill_index: int = -1
 
+var _detail_tab: String = "skill"   # 【新增】珍兽详情页签：skill=技能 aura=光环
+
 # 由 game_controller._ready 创建本模块时注入引用
 func _init(p_c):
 	c = p_c
@@ -234,71 +236,122 @@ func open_beast_detail(beast_id: String, instance_index: int):
 	quality_lbl.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	vbox.add_child(quality_lbl)
 	
-	# 资质行（文字 + 兽魂按钮 + 升级按钮）
-	var apt_row = HBoxContainer.new()
-	apt_row.alignment = BoxContainer.ALIGNMENT_CENTER
-	apt_row.add_theme_constant_override("separation", 12)
-	vbox.add_child(apt_row)
+	# 【新增】顶部留白：名字/品质独占干净顶栏，信息区整体下移（高度可调）
+	var head_spacer = Control.new()
+	head_spacer.custom_minimum_size = Vector2(0, 110)
+	vbox.add_child(head_spacer)
+
+	# 【改】信息行：左=等级/资质长框，右=魂力/兽魂/升级竖排三按钮
+	var info_row = HBoxContainer.new()
+	info_row.alignment = BoxContainer.ALIGNMENT_CENTER
+	info_row.add_theme_constant_override("separation", 20)
+	vbox.add_child(info_row)
+	
+	# 【改】装备/卸下按钮：上移进信息行最左，与升级按钮同尺寸
+	var equip_btn = Button.new()
+	equip_btn.name = "BeastEquipBtn"
+	equip_btn.custom_minimum_size = Vector2(110, 44)
+	equip_btn.size_flags_vertical = Control.SIZE_SHRINK_CENTER   # 【新增】不随行高拉伸，保持44高居中
+	equip_btn.pressed.connect(_on_beast_equip_toggle.bind(beast_id, instance_index))
+	info_row.add_child(equip_btn)
+	
+	# 长框：等级+资质（只显示当前值，不显示算式）
+	var left_col = VBoxContainer.new()
+	left_col.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	info_row.add_child(left_col)
+	
+	var top_pad = Control.new()
+	top_pad.size_flags_vertical = Control.SIZE_EXPAND_FILL
+	left_col.add_child(top_pad)
 	
 	var apt_lbl = Label.new()
 	apt_lbl.name = "BeastAptLbl"
-	apt_row.add_child(apt_lbl)
-	
-	# 兽魂按钮（打开该珍兽的魂盘：镶嵌魂石给装备门客加赚速/资质）
-	var soul_btn = Button.new()
-	soul_btn.text = "兽魂"
-	soul_btn.custom_minimum_size = Vector2(80, 32)
-	soul_btn.pressed.connect(c.soul_view.show_soul_view.bind(beast_id, instance_index))
-	apt_row.add_child(soul_btn)
-	
-	# 【新增】魂力按钮（打开该珍兽的魂力培养页：魂体升级/魂骨装配养成）
+	apt_lbl.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	left_col.add_child(apt_lbl)
+
+	# 右侧三按钮（顺序：魂力/兽魂/升级）
+	var btn_col = VBoxContainer.new()
+	btn_col.add_theme_constant_override("separation", 8)
+	info_row.add_child(btn_col)
+
 	var hunli_btn = Button.new()
 	hunli_btn.text = "魂力"
-	hunli_btn.custom_minimum_size = Vector2(80, 32)
+	hunli_btn.custom_minimum_size = Vector2(110, 44)
 	hunli_btn.pressed.connect(c.soulpower_view.show_hunli_view.bind(beast_id, instance_index))
-	apt_row.add_child(hunli_btn)
-	
+	btn_col.add_child(hunli_btn)
+
+	var soul_btn = Button.new()
+	soul_btn.text = "兽魂"
+	soul_btn.custom_minimum_size = Vector2(110, 44)
+	soul_btn.pressed.connect(c.soul_view.show_soul_view.bind(beast_id, instance_index))
+	btn_col.add_child(soul_btn)
+
 	var up_btn = Button.new()
 	up_btn.name = "BeastUpBtn"
-	up_btn.custom_minimum_size = Vector2(120, 32)
+	up_btn.custom_minimum_size = Vector2(110, 44)
 	up_btn.pressed.connect(_on_beast_upgrade.bind(beast_id, instance_index))
-	apt_row.add_child(up_btn)
-	
-	# 光环区：多行容器（每只光环一行：名称+数值+升级按钮），内容在 _update_beast_detail 重填
+	btn_col.add_child(up_btn)
+
+	# 【改】技能/光环页签：技能在左（默认页），当前页签金色高亮
+	var tab_row = HBoxContainer.new()
+	tab_row.alignment = BoxContainer.ALIGNMENT_CENTER
+	tab_row.add_theme_constant_override("separation", 12)
+	vbox.add_child(tab_row)
+
+	var skill_tab = Button.new()
+	skill_tab.name = "BeastSkillTab"
+	skill_tab.text = "技能"
+	skill_tab.custom_minimum_size = Vector2(110, 36)
+	skill_tab.pressed.connect(func():
+		_detail_tab = "skill"
+		_update_beast_detail(_current_beast_id, _current_beast_index))
+	tab_row.add_child(skill_tab)
+
+	var aura_tab = Button.new()
+	aura_tab.name = "BeastAuraTab"
+	aura_tab.text = "光环"
+	aura_tab.custom_minimum_size = Vector2(110, 36)
+	aura_tab.pressed.connect(func():
+		_detail_tab = "aura"
+		_update_beast_detail(_current_beast_id, _current_beast_index))
+	tab_row.add_child(aura_tab)
+
+	# 光环区：多行容器（每只光环一行），内容在 _update_beast_detail 重填
 	var aura_box = VBoxContainer.new()
 	aura_box.name = "BeastAuraBox"
 	aura_box.add_theme_constant_override("separation", 4)
 	vbox.add_child(aura_box)
-	
-	# 技能列表标题行
+
+	# 技能区（标题 + 滚动网格），整体显隐随页签
+	var skill_box = VBoxContainer.new()
+	skill_box.name = "BeastSkillBox"
+	skill_box.size_flags_vertical = Control.SIZE_EXPAND_FILL
+	skill_box.add_theme_constant_override("separation", 6)
+	vbox.add_child(skill_box)
+
 	var skill_title_row = HBoxContainer.new()
 	skill_title_row.alignment = BoxContainer.ALIGNMENT_CENTER
 	skill_title_row.add_theme_constant_override("separation", 16)
-	vbox.add_child(skill_title_row)
-	
+	skill_box.add_child(skill_title_row)
+
 	var skill_title = Label.new()
 	skill_title.text = "技能列表"
 	skill_title.add_theme_font_size_override("font_size", 18)
 	skill_title.add_theme_color_override("font_color", Color("#ffd700"))
 	skill_title_row.add_child(skill_title)
-	
+
 	var skill_bonus_lbl = Label.new()
 	skill_bonus_lbl.name = "BeastSkillBonusLbl"
 	skill_title_row.add_child(skill_bonus_lbl)
-	
-	# 【新增】觉醒次数/下次消耗显示
-	var awaken_lbl = Label.new()
-	awaken_lbl.name = "BeastAwakenLbl"
-	skill_title_row.add_child(awaken_lbl)
-	
-	# 技能网格滚动区（全屏后空间充裕，改弹性填充吃满剩余高度）
+
+	# 技能网格滚动区
 	var skill_scroll = ScrollContainer.new()
 	skill_scroll.name = "BeastSkillScroll"
 	skill_scroll.custom_minimum_size = Vector2(0, 320)
 	skill_scroll.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	skill_scroll.size_flags_vertical = Control.SIZE_EXPAND_FILL
-	vbox.add_child(skill_scroll)
-	
+	skill_box.add_child(skill_scroll)
+
 	var skill_grid = GridContainer.new()
 	skill_grid.name = "BeastSkillGrid"
 	skill_grid.columns = 4
@@ -306,8 +359,8 @@ func open_beast_detail(beast_id: String, instance_index: int):
 	skill_grid.add_theme_constant_override("v_separation", 8)
 	skill_grid.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	skill_scroll.add_child(skill_grid)
-	
-	# 【改】创建初始技能按钮
+
+	# 创建初始技能按钮
 	var skill_count = cfg.get("skill_count", 0)
 	for i in range(skill_count):
 		var btn = Button.new()
@@ -317,26 +370,17 @@ func open_beast_detail(beast_id: String, instance_index: int):
 		btn.pressed.connect(_on_beast_skill_clicked.bind(i))
 		skill_grid.add_child(btn)
 
-	# 【新增】技能列表最后的“+”觉醒按钮
+	# 技能列表最后的“+”觉醒按钮
 	var awaken_btn = Button.new()
 	awaken_btn.name = "BeastAwakenBtn"
 	awaken_btn.text = "+"
 	awaken_btn.custom_minimum_size = Vector2(0, 40)
 	awaken_btn.size_flags_horizontal = Control.SIZE_EXPAND_FILL
-	awaken_btn.pressed.connect(_on_beast_awaken.bind(beast_id, instance_index))
+	awaken_btn.pressed.connect(_show_awaken_confirm.bind(beast_id, instance_index))
 	skill_grid.add_child(awaken_btn)
 	
-	# 装备/卸下按钮
-	var equip_btn = Button.new()
-	equip_btn.name = "BeastEquipBtn"
-	equip_btn.custom_minimum_size = Vector2(200, 40)
-	equip_btn.pressed.connect(_on_beast_equip_toggle.bind(beast_id, instance_index))
-	vbox.add_child(equip_btn)
-	
-	# 【删】原底部"关闭"按钮：全屏页统一走顶部"< 返回"
 	
 	c.add_child(panel)
-	# 【删】原 _current_popup/Overlay 两行：全屏页不透明直盖下层，不进弹窗管理（点外面关弹窗那套就是套娃关不掉的根因）
 	_update_beast_detail(beast_id, instance_index)
 
 
@@ -351,13 +395,13 @@ func _update_beast_detail(beast_id: String, instance_index: int):
 	var apt_lbl = vbox.find_child("BeastAptLbl", true, false)
 	var up_btn = vbox.find_child("BeastUpBtn", true, false)
 	var skill_bonus_lbl = vbox.find_child("BeastSkillBonusLbl", true, false)
-	var equip_btn = vbox.get_node("BeastEquipBtn")
+	var equip_btn = vbox.find_child("BeastEquipBtn", true, false)   # 【改】按钮已移进信息行，递归找
 	
 	var apt = data.get_beast_aptitude(beast_id, instance_index)
 	var skill_bonus = data.get_beast_skill_bonus(beast_id, instance_index)
 	
 	quality_lbl.text = "品质：%s" % cfg.quality
-	apt_lbl.text = "资质：%d（基础%d + 等级%d×8）" % [apt, cfg.aptitude, instance.level - 1]
+	apt_lbl.text = "等级：%d  资质：%d" % [instance.level, apt]   # 【改】等级资质一行；资质只显示当前值（去算式）
 	
 	var max_lv = data.beast_system.get_beast_max_level(beast_id, instance_index)   # 【改】上限含光环三加成（原写死200）
 	up_btn.text = ("升级\n珍兽果%d/80" % int(data.items.get("beast_fruit", 0))) if instance.level < max_lv else "已满级"   # 【改】读道具轨+显示消耗
@@ -404,15 +448,25 @@ func _update_beast_detail(beast_id: String, instance_index: int):
 			else:
 				child.visible = false
 
-		# 【新增】更新觉醒次数与“+”按钮状态
-		var awaken_lbl = vbox.find_child("BeastAwakenLbl", true, false)
+		# 【改】更新“+”按钮状态（次数/消耗不再显示在面上，点+弹确认窗查看）
 		var acount = bs.get_awaken_count(beast_id, instance_index)
 		var alimit = bs.get_awaken_limit(beast_id, instance_index)
 		var acost = bs.get_awaken_cost(beast_id, instance_index)
-		if awaken_lbl:
-			awaken_lbl.text = "觉醒：%d/%d｜下次觉醒果×%d（拥有%d）" % [acount, alimit, acost, int(data.items.get("awaken_fruit", 0))]
 		if awaken_btn:
 			awaken_btn.disabled = acount >= alimit or int(data.items.get("awaken_fruit", 0)) < acost
+	
+	# 【新增】页签显隐 + 高亮同步：当前页金色，未选中灰
+	var aura_box = vbox.get_node("BeastAuraBox")
+	var skill_box = vbox.find_child("BeastSkillBox", true, false)
+	if aura_box and skill_box:
+		aura_box.visible = _detail_tab == "aura"
+		skill_box.visible = _detail_tab == "skill"
+	var skill_tab = vbox.find_child("BeastSkillTab", true, false)
+	var aura_tab = vbox.find_child("BeastAuraTab", true, false)
+	if skill_tab:
+		skill_tab.add_theme_color_override("font_color", Color("#ffd700") if _detail_tab == "skill" else Color(0.55, 0.55, 0.6))
+	if aura_tab:
+		aura_tab.add_theme_color_override("font_color", Color("#ffd700") if _detail_tab == "aura" else Color(0.55, 0.55, 0.6))
 	
 	# 装备状态
 	var hid = instance.get("equipped_hero", "")
@@ -437,6 +491,28 @@ func _on_beast_awaken(beast_id: String, instance_index: int):
 	update_beast_page()
 	c.update_bag_list()
 	c.update_all_ui()
+
+# 【新增】觉醒确认弹窗：+号点击先显示本次消耗与拥有，确认后才执行觉醒
+func _show_awaken_confirm(beast_id: String, instance_index: int):
+	var bs = data.beast_system
+	var acost = bs.get_awaken_cost(beast_id, instance_index)
+	var have = int(data.items.get("awaken_fruit", 0))
+	var popup = c._create_base_popup("珍兽觉醒", Vector2(400, 240))
+	popup.name = "BeastAwakenConfirmPopup"
+	var vbox = popup.get_child(0)
+	var info = Label.new()
+	info.text = "本次觉醒消耗：觉醒果×%d\n当前拥有：觉醒果×%d" % [acost, have]
+	info.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	vbox.add_child(info)
+	var ok = Button.new()
+	ok.text = "确认觉醒"
+	ok.disabled = have < acost
+	ok.pressed.connect(func():
+		c._safe_close("BeastAwakenConfirmPopup")
+		_on_beast_awaken(beast_id, instance_index))
+	vbox.add_child(ok)
+	c._add_ok_button(vbox, func(): c._safe_close("BeastAwakenConfirmPopup"), "取消")
+	c.add_child(popup)
 
 func _on_beast_equip_toggle(beast_id: String, instance_index: int):
 	var instance = data.get_beast_instance(beast_id, instance_index)

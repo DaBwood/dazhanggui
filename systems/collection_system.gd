@@ -397,14 +397,14 @@ func get_suit_limit_bonus(kind: String) -> int:
 	return total
 
 # 守护灵套装：返回守护灵赚钱的放大系数（1+Σ每档×档数/100），乘进阶段注满%
-func get_guardian_suit_factor() -> float:
+func get_guardian_suit_pct() -> float:
 	var pct = 0.0
 	for sid in get_suits().keys():
 		var suit: Dictionary = get_suits()[sid]
 		if suit.get("kind", "") != "guardian_pct":
 			continue
 		pct += float(suit.get("per_tier", 0)) * int(_suits.get(sid, 0))
-	return pct
+	return pct / 100.0
 
 # 魂石套装：指定职业门客 每格激发魂石 +per_tier%/格（乘已激活档数×激发格数，返回小数）
 func get_soul_suit_percent(category: String, inspired: int) -> float:

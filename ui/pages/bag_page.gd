@@ -13,6 +13,8 @@ var data   # GameData 数据中枢引用
 	# ── 本页 UI 状态变量（原 game_controller 成员，第3批收尾迁入）──
 var _pending_ginseng_count: int = 0
 var _pending_ginseng_type: String = ""
+#【新增】固定为1的道具类型：数量锁定单次开启（门客/挚友盒解锁对象唯一；促织架按ID唯一存放）
+const SINGLE_USE_TYPES: Array = ["hero_box", "friend_box", "wushuang_cuzhi_box"]
 
 # 由 game_controller._ready 创建本模块时注入引用
 func _init(p_c):
@@ -100,108 +102,115 @@ func generate_bag_list():
 		btn.pressed.connect(_show_item_detail_popup.bind(item_id))
 		grid.add_child(btn)
 
-# 【新增】物品详情弹窗：显示名称、数量、描述，可用道具附带使用按钮
+# 【改】物品详情弹窗：名称/数量/描述 + 数量选择器（滑条+输入框，默认0）+ 使用按钮
+# 0 点使用提示选数量；>0 按 use.type 分派：直接消耗类按N结算，需二次选择的带N进选择器
 func _show_item_detail_popup(item_id: String):
 	var cfg = data.ITEM_CONFIG.get(item_id, {})
 	var count = data.items.get(item_id, 0)
 	if item_id == "lottery_ticket":
 		count = data.lottery_ticket
-	
-	var popup = c._create_base_popup(cfg.get("name", "物品详情"), Vector2(360, 260))
+
+	var popup = c._create_base_popup(cfg.get("name", "物品详情"), Vector2(400, 380))
 	popup.name = "ItemDetailPopup"
 	var vbox = popup.get_child(0)
-	
+
 	# 数量
 	var count_lbl = Label.new()
 	count_lbl.text = "数量：x%d" % count
 	count_lbl.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	vbox.add_child(count_lbl)
-	
+
 	# 描述
 	var desc_lbl = Label.new()
 	desc_lbl.text = cfg.get("desc", "")
 	desc_lbl.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
 	desc_lbl.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	vbox.add_child(desc_lbl)
-	
-	# 可使用道具：在弹窗内附加使用按钮
+
 	var use_cfg = cfg.get("use", {})
-	if not use_cfg.is_empty() and count > 0:
-		var use_btn = Button.new()
-		use_btn.text = use_cfg.get("btn", "使用")
-		use_btn.custom_minimum_size = Vector2(100, 36)
-		var title = use_cfg.get("title", "使用" + cfg.get("name", ""))
-		match use_cfg.get("type", ""):
-			"quantity", "stage_box":
-				use_btn.pressed.connect(func():
-					popup.queue_free()
-					c._show_quantity_selector(item_id, title, _on_item_use_confirmed)
-				)
-			"ginseng":
-				use_btn.pressed.connect(func():
-					popup.queue_free()
-					c._show_quantity_selector(item_id, title, _on_ginseng_confirmed)
-				)
-			"hero_box":
-				use_btn.pressed.connect(func():
-					popup.queue_free()
-					_show_hero_box_selector()
-				)
-			"friend_box":
-				use_btn.pressed.connect(func():
-					popup.queue_free()
-					if has_method("_show_friend_box_selector"):
-						_show_friend_box_selector()
-					else:
-						c._show_stage_hint("挚友盒子功能开发中")
-				)
-			"item_box":
-				use_btn.pressed.connect(func():
-					popup.queue_free()
-					if has_method("_show_item_box_selector"):
-						_show_item_box_selector()
-					else:
-						c._show_stage_hint("物品盒子功能开发中")
-				)
-			"manhuang_box":
-				use_btn.pressed.connect(func():
-					popup.queue_free()
-					_show_manhuang_box_selector()   # 【新增】蛮荒礼盒：自选一种道具×100
-				)
-			"soul_stone_box":   # 【新增】魂石宝箱：直接开出随机优秀魂石
-					use_btn.pressed.connect(func(): _on_soul_box_open(item_id, "normal"))
-			"soul_wushuang_box":   # 【新增】无双魂石箱：开出四格同色无双魂石
-					use_btn.pressed.connect(func(): _on_soul_box_open(item_id, "wushuang"))
-			"hun_gu_box":   # 【新增】魂骨盒子：自选部位+品级魂骨入仓库
-				use_btn.pressed.connect(func():
-					popup.queue_free()
-					_show_hungu_box_selector())
-			"wushuang_cuzhi_box":
-				use_btn.pressed.connect(func():
-					popup.queue_free()
-					c.show_wushuang_box_selector()
-					return)
-			"suit_frag_box":   # 【新增】套装锦盒：自选该套装成员藏品碎片×1
-				use_btn.pressed.connect(func():
-					popup.queue_free()
-					c.show_suit_frag_box_selector(item_id))
-		vbox.add_child(use_btn)
-	
+	if use_cfg.is_empty() or count <= 0:
+		c._add_ok_button(vbox, func(): popup.queue_free(), "关闭")
+		c.add_child(popup)
+		return
+
+	var qty_spin: SpinBox = null
+	if SINGLE_USE_TYPES.has(use_cfg.get("type", "")):
+		# 【新增】固定为1类型：锁定数量，不显示选择器
+		var fix_lbl = Label.new()
+		fix_lbl.text = "使用数量：1"
+		fix_lbl.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+		vbox.add_child(fix_lbl)
+	else:
+		# 数量选择器：滑条+输入框双向同步，默认0（复用全局辅助）
+		var pair = c._create_slider_spin_pair(vbox, count, 0)
+		qty_spin = pair.spin
+
+	var use_btn = Button.new()
+	use_btn.text = use_cfg.get("btn", "使用")
+	use_btn.custom_minimum_size = Vector2(120, 40)
+	use_btn.pressed.connect(func():
+		_on_detail_use(item_id, 1 if qty_spin == null else int(qty_spin.value), popup))
+	vbox.add_child(use_btn)
+
 	c._add_ok_button(vbox, func(): popup.queue_free(), "关闭")
 	c.add_child(popup)
 
+# 【新增】详情弹窗统一使用入口：0提示选数量；按类型分派（直接消耗按N / 二次选择带N / 固定1直开）
+func _on_detail_use(item_id: String, qty: int, popup: Control):
+	var use_cfg = data.ITEM_CONFIG.get(item_id, {}).get("use", {})
+	var count = int(data.items.get(item_id, 0))
+	if qty <= 0:
+		c._show_stage_hint("请先选择使用数量")
+		return
+	if qty > count:
+		qty = count
+	match use_cfg.get("type", ""):
+		"quantity":
+			popup.queue_free()
+			_use_items(item_id, qty)
+		"ginseng":
+			popup.queue_free()
+			_pending_ginseng_count = qty
+			_pending_ginseng_type = item_id
+			_show_ginseng_selector()
+		"soul_stone_box":
+			popup.queue_free()
+			_open_soul_boxes(item_id, "normal", qty)
+		"soul_wushuang_box":
+			popup.queue_free()
+			_open_soul_boxes(item_id, "wushuang", qty)
+		"hero_box":
+			popup.queue_free()
+			_show_hero_box_selector()
+		"friend_box":
+			popup.queue_free()
+			if has_method("_show_friend_box_selector"):
+				_show_friend_box_selector()
+			else:
+				c._show_stage_hint("挚友盒子功能开发中")
+		"item_box":
+			popup.queue_free()
+			_show_item_box_selector(qty)
+		"manhuang_box":
+			popup.queue_free()
+			_show_manhuang_box_selector(qty)
+		"hun_gu_box":
+			popup.queue_free()
+			_show_hungu_box_selector(qty)
+		"wushuang_cuzhi_box":
+			popup.queue_free()
+			c.show_wushuang_box_selector()
+		"suit_frag_box":
+			popup.queue_free()
+			c.show_suit_frag_box_selector(item_id, qty)
 
-func _on_item_use_confirmed(spin: SpinBox):
-	var count = int(spin.value)
-	var item_id = c._quantity_item_id
-	c._quantity_item_id = ""
-	if item_id == "": return
+# 【新增】按数量使用道具（结算体抽出，详情弹窗与小时卡入口共用）
+func _use_items(item_id: String, count: int):
 	var result = data.use_item(item_id, count)
-	c._close_quantity_selector()
 	if result.get("ok", false):
 		update_bag_list()
 		c.update_all_ui()
-		# 【改动】带 gains 明细的道具（关卡宝箱）弹窗展示明细，其余维持飘字提示
+		# 带 gains 明细的道具（关卡宝箱）弹窗展示明细，其余维持飘字提示
 		if result.has("gains"):
 			_show_item_gains_popup("打开关卡宝箱", result.gains)
 		else:
@@ -209,22 +218,17 @@ func _on_item_use_confirmed(spin: SpinBox):
 	else:
 		c._show_stage_hint(result.get("msg", "使用失败"))
 
-func update_bag_list():
-	generate_bag_list()
-
-func _on_ginseng_confirmed(spin: SpinBox):
+func _on_item_use_confirmed(spin: SpinBox):
 	var count = int(spin.value)
 	var item_id = c._quantity_item_id
 	c._quantity_item_id = ""
-	if item_id == "": return
-	if data.items.get(item_id, 0) < count:
-		c._close_quantity_selector()
-		return
-	_pending_ginseng_count = count
-	_pending_ginseng_type = item_id
 	c._close_quantity_selector()
-	_show_ginseng_selector()
+	if item_id == "":
+		return
+	_use_items(item_id, count)   # 【改】结算体已抽出，与详情弹窗共用
 
+func update_bag_list():
+	generate_bag_list()
 
 
 func _show_ginseng_selector():
@@ -384,19 +388,39 @@ func _show_friend_box_selector():
 	
 	c.add_child(panel)
 
-# 【新增】开启魂石宝箱：扣1个箱子→soul_system.open_box→提示获得的魂石（品质/各格颜色词条）
-func _on_soul_box_open(item_id: String, kind: String):
-	if int(data.items.get(item_id, 0)) < 1:
+# 【改】魂石宝箱N连开：一次扣N个，N个结果汇总进一个弹窗
+func _open_soul_boxes(item_id: String, kind: String, n: int):
+	if int(data.items.get(item_id, 0)) < n:
 		c._show_stage_hint("没有可开启的" + data.ITEM_CONFIG.get(item_id, {}).get("name", "宝箱"))
 		return
-	data.items[item_id] = int(data.items.get(item_id, 0)) - 1
-	var res: Dictionary = data.soul_system.open_box(kind)
-	var st: Dictionary = res.get("stone", {})
-	var parts = []
-	for cell in st.get("cells", []):
-		parts.append("%s+%d" % [cell.get("color", "?"), int(cell.get("apt", 0))])
-	c._show_stage_hint("获得【%s】魂石（%d格）：%s" % [st.get("quality", "?"), st.get("cells", []).size(), "  ".join(parts)])
-	update_bag_list()   # 若你本地按钮化后刷新函数名不同，换成本地同一个刷新调用
+	data.items[item_id] = int(data.items.get(item_id, 0)) - n
+	var lines: Array = []
+	for i in range(n):
+		var res: Dictionary = data.soul_system.open_box(kind)
+		var st: Dictionary = res.get("stone", {})
+		var parts: Array = []
+		for cell in st.get("cells", []):
+			parts.append("%s+%d" % [cell.get("color", "?"), int(cell.get("apt", 0))])
+		lines.append("【%s】魂石（%d格）：%s" % [st.get("quality", "?"), st.get("cells", []).size(), "  ".join(parts)])
+	# 结果汇总弹窗
+	var popup = c._create_base_popup("开启结果（%d个）" % n, Vector2(460, 420))
+	popup.name = "SoulBoxResultPopup"
+	var svbox = popup.get_child(0)
+	var scroll = ScrollContainer.new()
+	scroll.custom_minimum_size = Vector2(0, 320)
+	scroll.size_flags_vertical = Control.SIZE_EXPAND_FILL
+	svbox.add_child(scroll)
+	var list = VBoxContainer.new()
+	list.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	scroll.add_child(list)
+	for line in lines:
+		var lbl = Label.new()
+		lbl.text = line
+		lbl.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+		list.add_child(lbl)
+	c._add_ok_button(svbox, func(): popup.queue_free(), "关闭")
+	c.add_child(popup)
+	update_bag_list()
 	c.update_all_ui()
 
 # 【新增】挚友盒子选择回调
@@ -414,79 +438,55 @@ func _on_friend_box_selected(friend_id: String):
 	c.update_all_ui()
 	update_bag_list()
 
-# 【新增】物品盒子选择弹窗（支持批量）：顶部选使用数量，下面选道具，点击即结算
-func _show_item_box_selector():
+# 【改】物品盒子选择弹窗：数量由详情弹窗带入，这里只选道具
+func _show_item_box_selector(p_qty: int):
 	if c.has_node("ItemBoxSelector"): return
-	
+
 	var have = data.items.get("item_box", 0)
 	if have <= 0: return
-	
-	var panel = c._create_base_popup("物品盒子（拥有%d个）" % have, Vector2(460, 520), Vector2(346, 100))
+
+	var panel = c._create_base_popup("物品盒子（使用%d个）" % p_qty, Vector2(460, 520), Vector2(346, 100))
 	panel.name = "ItemBoxSelector"
 	var vbox = panel.get_child(0)
-	
-	# 数量选择行
-	var qty_row = HBoxContainer.new()
-	qty_row.add_theme_constant_override("separation", 8)
-	vbox.add_child(qty_row)
+
 	var qty_lbl = Label.new()
-	qty_lbl.text = "使用数量："
-	qty_row.add_child(qty_lbl)
-	var qty_spin = SpinBox.new()
-	qty_spin.name = "ItemBoxQtySpin"
-	qty_spin.min_value = 1
-	qty_spin.max_value = have
-	qty_spin.value = 1
-	qty_spin.custom_minimum_size = Vector2(120, 32)
-	qty_row.add_child(qty_spin)
-	
-	# 【新增】快捷加量按钮：手机 Web 虚拟键盘输入无效（引擎已知bug），绕开键盘用按钮步进
-	# 点击给 SpinBox 加值；Range 赋值自动钳到 max_value，不会加过头
-	for step in [100, 1000]:
-		var add_btn = Button.new()
-		add_btn.text = "+%d" % step
-		add_btn.custom_minimum_size = Vector2(64, 32)
-		add_btn.pressed.connect(func(): qty_spin.value += step)
-		qty_row.add_child(add_btn)
-	
+	qty_lbl.text = "选择道具，获得 ×%d" % p_qty
+	qty_lbl.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	vbox.add_child(qty_lbl)
+
 	var scroll = ScrollContainer.new()
 	scroll.custom_minimum_size = Vector2(440, 360)
 	vbox.add_child(scroll)
-	
+
 	var list = VBoxContainer.new()
 	scroll.add_child(list)
-	
+
 	# 排除盒子类道具，防止递归
 	var exclude_ids = ["hero_box", "friend_box", "item_box"]
 	for item_id in data.ITEM_CONFIG.keys():
 		if item_id in exclude_ids: continue
-		
+
 		var cfg = data.ITEM_CONFIG[item_id]
 		var btn = Button.new()
 		btn.text = cfg.name
-		# 【新增】手机端：按钮默认 STOP 拦截触摸滚动，改 PASS 让滑动穿透到 ScrollContainer
 		btn.mouse_filter = Control.MOUSE_FILTER_PASS
-		# 点击时读取当前 SpinBox 的值作为使用数量
-		btn.pressed.connect(_on_item_box_selected.bind(item_id, qty_spin))
+		btn.pressed.connect(_on_item_box_selected.bind(item_id, p_qty))
 		list.add_child(btn)
-	
+
 	var cancel = Button.new()
 	cancel.text = "取消"
 	cancel.pressed.connect(func(): c._safe_close("ItemBoxSelector"))
 	vbox.add_child(cancel)
-	
+
 	c.add_child(panel)
 
-# 【新增】物品盒子选择回调（批量）：扣除N个盒子，获得N个选定道具
-func _on_item_box_selected(item_id: String, qty_spin: SpinBox):
-	var count = int(qty_spin.value)
+# 【改】物品盒子选择回调（批量）：N由详情弹窗带入，扣N盒得N个选定道具
+func _on_item_box_selected(item_id: String, count: int):
 	if data.items.get("item_box", 0) < count:
 		c._safe_close("ItemBoxSelector")
 		return
-	
 	data.items.item_box -= count
 	data.items[item_id] = data.items.get(item_id, 0) + count
-	
 	var cfg = data.ITEM_CONFIG.get(item_id, {})
 	c._safe_close("ItemBoxSelector")
 	c._show_stage_hint("使用%d个物品盒子，获得【%s】×%d" % [count, cfg.get("name", item_id), count])
@@ -535,52 +535,49 @@ func _show_item_gains_popup(title: String, gains: Dictionary):
 	c._add_ok_button(vb, func(): popup.queue_free(), "确定")
 	c.add_child(popup)
 
-# 【新增】蛮荒礼盒选择器：列出4种蛮荒兑换道具（显示现有数量+对应珍兽），点"选择"扣1礼盒得该道具×100
-func _show_manhuang_box_selector():
-	var popup = c._create_base_popup("蛮荒礼盒", Vector2(420, 420))
+# 【改】蛮荒礼盒选择器：带数量（选1种道具 ×100×N）
+func _show_manhuang_box_selector(p_qty: int):
+	var popup = c._create_base_popup("蛮荒礼盒（使用%d个）" % p_qty, Vector2(420, 420))
 	var vbox = popup.get_child(0)
 	var hint = Label.new()
-	hint.text = "选择一种道具，获得 ×100"
+	hint.text = "选择一种道具，获得 ×%d" % (100 * p_qty)
 	hint.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	vbox.add_child(hint)
-	# 礼盒可兑的5种道具（道具id, 对应珍兽名）
-	var options = [["jiu_yuan_shui", "相柳"],["yu_ling_zhi", "乘黄"], ["hu_po_yao_shi", "陆吾"], ["long_hun_jing_yuan", "应龙"], ["fu_sang_zhi", "金乌"]]
-	for opt in options:
-		var iid: String = opt[0]
-		var row = HBoxContainer.new()
-		row.add_theme_constant_override("separation", 8)
+	var options: Dictionary = data._manhuang_configs.get("box_options", {})
+	for iid in options.keys():
+		var line = HBoxContainer.new()
 		var lbl = Label.new()
 		lbl.size_flags_horizontal = Control.SIZE_EXPAND_FILL
-		lbl.text = "%s（%s）拥有：%d" % [data.ITEM_CONFIG.get(iid, {}).get("name", iid), opt[1], int(data.items.get(iid, 0))]
-		row.add_child(lbl)
+		lbl.text = "%s×%d" % [data.ITEM_CONFIG.get(iid, {}).get("name", iid), 100 * p_qty]
+		line.add_child(lbl)
 		var btn = Button.new()
 		btn.text = "选择"
 		btn.custom_minimum_size = Vector2(80, 40)
-		btn.pressed.connect(_on_manhuang_box_pick.bind(popup, iid))
-		row.add_child(btn)
-		vbox.add_child(row)
+		btn.pressed.connect(_on_manhuang_box_pick.bind(popup, iid, p_qty))
+		line.add_child(btn)
+		vbox.add_child(line)
 	c._add_ok_button(vbox, func(): popup.queue_free(), "关闭")
 	c.add_child(popup)
 
-# 【新增】蛮荒礼盒确认：扣1个礼盒、发100个所选道具，刷新背包
-func _on_manhuang_box_pick(popup, item_id: String):
-	if int(data.items.get("manhuang_box", 0)) < 1:
+# 【改】蛮荒礼盒确认：扣N个礼盒、发100×N个所选道具
+func _on_manhuang_box_pick(popup, item_id: String, qty: int):
+	if int(data.items.get("manhuang_box", 0)) < qty:
 		c._show_stage_hint("蛮荒礼盒不足！")
 		return
-	data.items["manhuang_box"] -= 1
-	data.items[item_id] = int(data.items.get(item_id, 0)) + 100
+	data.items["manhuang_box"] -= qty
+	data.items[item_id] = int(data.items.get(item_id, 0)) + 100 * qty
 	popup.queue_free()
-	c._show_stage_hint("获得【%s】×100" % data.ITEM_CONFIG.get(item_id, {}).get("name", item_id))
+	c._show_stage_hint("获得【%s】×%d" % [data.ITEM_CONFIG.get(item_id, {}).get("name", item_id), 100 * qty])
 	c.update_bag_list()
 
 
-# 【新增】魂骨盒子选择器：5品级×6部位网格（每行一品级，按钮=部位），点击扣1盒子得对应魂骨
-func _show_hungu_box_selector():
-	var popup = c._create_base_popup("魂骨盒子（拥有%d个）" % int(data.items.get("hun_gu_box", 0)), Vector2(560, 520))
+# 【改】魂骨盒子选择器：带数量（同部位同品级 ×N）
+func _show_hungu_box_selector(p_qty: int):
+	var popup = c._create_base_popup("魂骨盒子（使用%d个）" % p_qty, Vector2(560, 520))
 	popup.name = "HunGuBoxSelector"
 	var vbox = popup.get_child(0)
 	var hint = Label.new()
-	hint.text = "选择 部位+品级，获得对应魂骨"
+	hint.text = "选择 部位+品级，获得对应魂骨 ×%d" % p_qty
 	hint.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	vbox.add_child(hint)
 	var sp = data.soulpower_system
@@ -596,21 +593,22 @@ func _show_hungu_box_selector():
 		row.add_child(qlbl)
 		for slot in sp.get_slots():
 			var btn = Button.new()
-			btn.text = sp.get_slot_name(slot).replace("骨", "")   # 按钮只显示部位名（头/左臂/躯干…）
+			btn.text = sp.get_slot_name(slot).replace("骨", "")
 			btn.custom_minimum_size = Vector2(74, 40)
-			btn.pressed.connect(_on_hungu_box_pick.bind(popup, slot, q))
+			btn.pressed.connect(_on_hungu_box_pick.bind(popup, slot, q, p_qty))
 			row.add_child(btn)
 		vbox.add_child(row)
 	c._add_ok_button(vbox, func(): popup.queue_free(), "关闭")
 	c.add_child(popup)
 
-# 【新增】魂骨盒子确认：扣1个盒子，生成对应部位+品级魂骨入魂骨仓库（魂力培养页可见）
-func _on_hungu_box_pick(popup, slot: String, quality: String):
-	if int(data.items.get("hun_gu_box", 0)) < 1:
+# 【改】魂骨盒子确认：扣N个盒子，生成N个同部位同品级魂骨
+func _on_hungu_box_pick(popup, slot: String, quality: String, qty: int):
+	if int(data.items.get("hun_gu_box", 0)) < qty:
 		c._show_stage_hint("魂骨盒子不足！")
 		return
-	data.items["hun_gu_box"] -= 1
-	data.soulpower_system.gen_bone(slot, quality)
+	data.items["hun_gu_box"] -= qty
+	for i in range(qty):
+		data.soulpower_system.gen_bone(slot, quality)
 	popup.queue_free()
-	c._show_stage_hint("获得【%s·%s】（珍兽详情 → 魂力培养 装配）" % [quality, data.soulpower_system.get_slot_name(slot)])
+	c._show_stage_hint("获得【%s·%s】×%d（珍兽详情 → 魂力培养 装配）" % [quality, data.soulpower_system.get_slot_name(slot), qty])
 	c.update_bag_list()
