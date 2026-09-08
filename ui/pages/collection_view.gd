@@ -334,7 +334,10 @@ func _make_coll_card(cid: String) -> Button:
 			dot.add_theme_color_override("font_color", Color(1, 0.2, 0.2))
 			dot.position = Vector2(246, 4)
 			btn.add_child(dot)
-	btn.pressed.connect(_show_detail.bind(cid))
+	# 【新增】打开新详情时清空上一次操作提示，避免跨藏品串文案
+	btn.pressed.connect(func():
+		_detail_status = ""
+		_show_detail(cid))
 	return btn
 
 # 藏品详情弹窗：合成/升级/晋升/自选门客
@@ -346,103 +349,153 @@ func _show_detail(cid: String):
 	panel.name = "CollectionDetailPopup"
 	panel.z_index = 40
 	var vbox = panel.get_child(0)
-	# 状态行
+	# 【改】藏品详情内容整体居中
+	vbox.alignment = BoxContainer.ALIGNMENT_CENTER
+
+	# 【改】只显示失败提示；成功不额外加一行，避免弹窗高度跳动
 	if _detail_status != "":
 		var st = Label.new()
 		st.text = _detail_status
-		st.add_theme_color_override("font_color", Color("#ffd700"))
+		st.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+		st.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+		st.add_theme_color_override("font_color", Color("#ff6666"))
 		vbox.add_child(st)
+
 	var q = int(coll.get("quality", 4))
 	var head = Label.new()
 	head.text = "%s ★%d Lv.%d" % [QUALITY_NAMES[q], sys.get_star(cid), sys.get_level(cid)]
+	head.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	head.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	head.add_theme_color_override("font_color", Color(QUALITY_COLORS[q]))
 	vbox.add_child(head)
+
 	# 【改】玩家可见效果：直接显示当前计算结果值，不展示后台 desc / 公式
 	var effect_title = Label.new()
 	effect_title.text = "效果预览" if not sys.is_owned(cid) else "当前效果"
+	effect_title.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	effect_title.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	effect_title.add_theme_color_override("font_color", Color("#ffd700"))
 	vbox.add_child(effect_title)
 
 	var base_desc = Label.new()
 	base_desc.text = _collection_base_effect(cid)
+	base_desc.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	base_desc.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	base_desc.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
 	vbox.add_child(base_desc)
 
 	var sp_desc = Label.new()
 	sp_desc.text = _collection_special_effect(cid)
+	sp_desc.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	sp_desc.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	sp_desc.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
 	vbox.add_child(sp_desc)
-	
+
 	if not sys.is_owned(cid):
 		# 合成区
 		var info = sys.get_synthesize_info(cid)
 		var line = Label.new()
 		line.text = "碎片 %d/%d" % [info.have, info.need]
+		line.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+		line.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 		vbox.add_child(line)
+
 		var btn = Button.new()
 		btn.text = "合成"
 		btn.disabled = not info.ok
+		# 【改】成功不显示“已合成/Lv.X”文字，失败才显示原因
 		btn.pressed.connect(func():
 			var r = sys.synthesize(cid)
-			_detail_status = r.msg
-			_refresh_body()   # 【新增】合成后同步刷新藏宝阁列表，避免卡片仍显示未获得
+			if r.ok:
+				_detail_status = ""
+				_refresh_body()
+			else:
+				_detail_status = r.msg
 			_show_detail(cid))
 		vbox.add_child(btn)
 	else:
 		# 自选门客区
 		if coll.get("base", {}).get("target", "") == "pick" or coll.get("special", {}).get("kind", "") == "pick_pct":
 			var pick = sys.get_pick(cid)
-			var pname = data.heroes[pick].get("name", pick) if pick != "" and data.heroes.has(pick) else "未选择"
+			var pname = _hero_label(pick)
 			var row = HBoxContainer.new()
+			row.alignment = BoxContainer.ALIGNMENT_CENTER
+			row.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 			vbox.add_child(row)
+
 			var pl = Label.new()
 			pl.text = "自选门客：%s" % pname
+			pl.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 			pl.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 			row.add_child(pl)
+
 			var pb = Button.new()
 			pb.text = "选择"
+			# 【新增】确保按钮自身接收点击
+			pb.mouse_filter = Control.MOUSE_FILTER_STOP
 			pb.pressed.connect(_show_pick_selector.bind(cid))
 			row.add_child(pb)
-		# 升级区（勾选“十连”后，点升级一次执行十次）
+
+		# 升级区
 		var item = sys.get_upgrade_item(cid)
 		var cost = sys.get_upgrade_cost(cid)
 		var have = int(data.items.get(item, 0))
 		var iname = data.ITEM_CONFIG.get(item, {}).get("name", item)
 		var ul = Label.new()
 		ul.text = "升级：%s×%d（拥有 %d）" % [iname, cost, have]
+		ul.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+		ul.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 		vbox.add_child(ul)
+
 		var urow = HBoxContainer.new()
+		urow.alignment = BoxContainer.ALIGNMENT_CENTER
+		urow.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 		vbox.add_child(urow)
+
 		var ub = Button.new()
 		ub.text = "升级"
 		ub.disabled = not sys.can_upgrade(cid)
-		# 【改】去掉独立“升级十次”按钮，升级次数由“十连”勾选决定
+		# 【改】去掉独立“升级十次”按钮；十连勾选决定一次升十次
+		# 【改】成功不显示“升级成功 Lv.X”，等级数字变化本身就是反馈
 		ub.pressed.connect(func():
 			var r = sys.upgrade(cid, _batch)
-			_detail_status = r.msg
-			_refresh_body()   # 【新增】升级后同步刷新藏宝阁列表等级
+			if r.ok:
+				_detail_status = ""
+				_refresh_body()
+			else:
+				_detail_status = r.msg
 			_show_detail(cid))
 		urow.add_child(ub)
+
 		var cb = CheckBox.new()
 		cb.text = "十连"
 		cb.button_pressed = _batch
 		cb.toggled.connect(func(on): _batch = on)
 		urow.add_child(cb)
+
 		# 晋升区
 		var scost = sys.get_star_up_cost(cid)
 		var shave = sys.get_frag_have(q, cid)
 		var sl = Label.new()
 		sl.text = "晋升：碎片×%d（拥有 %d）" % [scost, shave]
+		sl.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+		sl.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 		vbox.add_child(sl)
+
 		var sb = Button.new()
 		sb.text = "晋升"
 		sb.disabled = not sys.can_star_up(cid)
+		# 【改】成功不显示“晋升成功 ★X”，星级变化本身就是反馈
 		sb.pressed.connect(func():
 			var r = sys.star_up(cid)
-			_detail_status = r.msg
-			_refresh_body()   # 【新增】晋升后同步刷新藏宝阁列表星级
+			if r.ok:
+				_detail_status = ""
+				_refresh_body()
+			else:
+				_detail_status = r.msg
 			_show_detail(cid))
 		vbox.add_child(sb)
+
 	c._add_ok_button(vbox, func(): _close_node("CollectionDetailPopup"), "关闭")
 	c.add_child(panel)
 
@@ -464,16 +517,15 @@ func _show_pick_selector(cid: String):
 	var ids = data.heroes.keys()
 	ids.sort_custom(func(a, b): return data.get_hero_income(b) < data.get_hero_income(a))
 	for hid in ids:
-		if not data.is_hero_owned(hid):
-			continue
 		var b = Button.new()
-		b.text = "%s（%s · 赚速%s）" % [data.heroes[hid].get("name", hid), data.heroes[hid].get("category", ""), data.format_number(data.get_hero_income(hid))]
-		b.mouse_filter = Control.MOUSE_FILTER_PASS
+		b.text = "%s（%s · 赚速%s）" % [data.heroes[hid].get("name", hid), data.heroes[hid].get("category", ""), c.format_number(data.get_hero_income(hid))]
+		b.mouse_filter = Control.MOUSE_FILTER_STOP
 		b.pressed.connect(func():
 			data.collection_system.set_pick(cid, hid)
-			_detail_status = "已选择 " + data.heroes[hid].get("name", hid)
+			# 【改】选择成功不弹文字；详情里的“自选门客：XXX”会直接变化
+			_detail_status = ""
 			_close_node("CollectionPickPopup")
-			_refresh_body()   # 【新增】自选门客后同步刷新藏宝阁卡片
+			_refresh_body()   # 【新增】同步刷新藏宝阁列表
 			_show_detail(cid))
 		list.add_child(b)
 	c._add_ok_button(vbox, func(): _close_node("CollectionPickPopup"), "取消")

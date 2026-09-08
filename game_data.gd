@@ -803,7 +803,8 @@ func save_game():
 	var systems = [hero_system, friend_system, apprentice_system, beast_system, shop_system,
 		stage_system, item_system, travel_system, charity_system, lottery_system, mall_system,
 		manor_system,courtyard_system,war_system,goal_system,fishing_system,soul_system,
-		soulpower_system,cuzhi_system,guardian_system,token_system,fengzi_system,talent_system,]
+		soulpower_system,cuzhi_system,guardian_system,token_system,fengzi_system,talent_system,
+		collection_system,]
 	for sys in systems:
 		save_data.merge(sys.get_save_data(), true)
 	var file = FileAccess.open(save_path, FileAccess.WRITE)
@@ -853,7 +854,8 @@ func load_game():
 	var systems = [hero_system, friend_system, apprentice_system, beast_system, shop_system,
 		stage_system, item_system, travel_system, charity_system, lottery_system, mall_system,
 		manor_system,courtyard_system,war_system,goal_system,fishing_system,soul_system,
-		soulpower_system,cuzhi_system,guardian_system,token_system,fengzi_system,talent_system,]
+		soulpower_system,cuzhi_system,guardian_system,token_system,fengzi_system,talent_system,
+		collection_system,]
 	for sys in systems:
 		sys.load_save_data(data)
 
