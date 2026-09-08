@@ -168,9 +168,9 @@ func add_awaken_limit_bonus(beast_id: String, instance_index: int, amount: int) 
 	if instance == null: return
 	instance["awaken_limit_bonus"] = get_awaken_limit_bonus(beast_id, instance_index) + max(0, amount)
 
-# 【新增】总觉醒上限 = 基础20 + 额外上限
+# 【改】觉醒上限=基础+实例加成+藏品套装档（全局读取，套装激活立即生效）
 func get_awaken_limit(beast_id: String, instance_index: int = 0) -> int:
-	return AWAKEN_BASE_LIMIT + get_awaken_limit_bonus(beast_id, instance_index)
+	return AWAKEN_BASE_LIMIT + get_awaken_limit_bonus(beast_id, instance_index) + g.collection_system.get_suit_limit_bonus("awaken_limit")
 
 # 【新增】下次觉醒消耗：第1次30，第2次45，第3次60……
 func get_awaken_cost(beast_id: String, instance_index: int = 0) -> int:
@@ -362,7 +362,8 @@ func get_beast_max_level(_beast_id: String, _instance_index: int = 0) -> int:
 		var instances = d if d is Array else [d]   # 兼容多实例存储结构（特殊兽实际都是单实例）
 		for inst in instances:
 			extra += int(inst.get("aura3_lv", 1))
-	return 200 + extra
+	# 【改】珍兽等级上限=200+光环三总和+藏品套装档（全局读取）
+	return 200 + extra + g.collection_system.get_suit_limit_bonus("beast_level_cap")
 
 # 【新增】系列是否集齐（同品质珍兽全部拥有）→ 光环二升级解锁条件
 func is_series_complete(beast_id: String) -> bool:

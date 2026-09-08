@@ -362,7 +362,7 @@ func get_percent_bonus(hero_id: String) -> float:
 	bonus += _suit_percent(hero_id)
 	return bonus
 
-# 套装百分比（仅已接入的两类：wuyan_pct 五艳门客 / hero_pct 指定门客；其余展示不接入）
+# 套装百分比,已接入：wuyan_pct / hero_pct / quality_min_pct；其余展示不接入"。
 func _suit_percent(hero_id: String) -> float:
 	var pct = 0.0
 	for sid in get_suits().keys():
@@ -378,4 +378,40 @@ func _suit_percent(hero_id: String) -> float:
 			"hero_pct":
 				if hero_id == suit.get("hero", ""):
 					pct += per * act / 100.0
+			# 【新增】无双及以上门客赚钱+per_tier%/档（min 默认2=无双；-1优秀/0卓越/1传奇不吃）
+			"quality_min_pct":
+				if int(g.heroes[hero_id].get("quality", 0)) >= int(suit.get("min", 2)):
+					pct += per * act / 100.0
+	return pct
+
+# ---------- 套装效果·一批接入（2026-09-08） ----------
+
+# 通用：指定 kind 套装 已激活档数×每档值 之和（上限类用，返回整数）
+func get_suit_limit_bonus(kind: String) -> int:
+	var total = 0
+	for sid in get_suits().keys():
+		var suit: Dictionary = get_suits()[sid]
+		if suit.get("kind", "") != kind:
+			continue
+		total += int(suit.get("per_tier", 0)) * int(_suits.get(sid, 0))
+	return total
+
+# 守护灵套装：返回守护灵赚钱的放大系数（1+Σ每档×档数/100），乘进阶段注满%
+func get_guardian_suit_factor() -> float:
+	var pct = 0.0
+	for sid in get_suits().keys():
+		var suit: Dictionary = get_suits()[sid]
+		if suit.get("kind", "") != "guardian_pct":
+			continue
+		pct += float(suit.get("per_tier", 0)) * int(_suits.get(sid, 0))
+	return pct
+
+# 魂石套装：指定职业门客 每格激发魂石 +per_tier%/格（乘已激活档数×激发格数，返回小数）
+func get_soul_suit_percent(category: String, inspired: int) -> float:
+	var pct = 0.0
+	for sid in get_suits().keys():
+		var suit: Dictionary = get_suits()[sid]
+		if suit.get("kind", "") != "soul_cell_pct" or suit.get("category", "") != category:
+			continue
+		pct += float(suit.get("per_tier", 0)) * int(_suits.get(sid, 0)) / 100.0 * float(inspired)
 	return pct

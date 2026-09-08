@@ -4474,7 +4474,7 @@
 	10
    ],
    "effect": "全部藏宝达到（1/5/10）星时，守护灵提供的赚钱+5%",
-   "kind": "display",
+   "kind": "guardian_pct",
    "per_tier": 5.0
   },
   "s_宸华": {
@@ -4497,7 +4497,7 @@
 	20
    ],
    "effect": "全部藏宝达到（1/2/4/6/8/10/12/14/17/20）星时，珍兽等级上限+1",
-   "kind": "display",
+   "kind": "beast_level_cap",
    "per_tier": 1
   },
   "s_醉栖": {
@@ -4512,7 +4512,7 @@
 	10
    ],
    "effect": "全部藏宝达到（1/5/10）星时，无双及以上门客赚钱+5%",
-   "kind": "display",
+   "kind": "quality_min_pct",
    "per_tier": 5.0
   },
   "s_共欢": {
@@ -4549,7 +4549,8 @@
 	10
    ],
    "effect": "全部藏宝达到（1/5/10）星时，每格有效工匠魂石赚钱+2%",
-   "kind": "display",
+   "kind": "soul_cell_pct",
+   "category":"工",
    "per_tier": 2.0
   },
   "s_瑞光": {
@@ -4564,7 +4565,7 @@
 	10
    ],
    "effect": "全部藏宝达到（1/5/10）星时，守护灵提供的赚钱+5%",
-   "kind": "display",
+   "kind": "guardian_pct",
    "per_tier": 5.0
   },
   "s_承运": {
@@ -4579,7 +4580,7 @@
 	10
    ],
    "effect": "全部藏宝达到（1/5/10）星时，无双及以上门客赚钱+5%",
-   "kind": "display",
+   "kind": "quality_min_pct",
    "per_tier": 5.0
   },
   "s_重华": {
@@ -4625,7 +4626,7 @@
 	20
    ],
    "effect": "全部藏宝达到（1/2/4/6/8/10/12/14/17/20）星时，珍兽等级上限+1",
-   "kind": "display",
+   "kind": "beast_level_cap",
    "per_tier": 1
   },
   "s_寰商": {
@@ -4640,7 +4641,7 @@
 	10
    ],
    "effect": "全部藏宝达到（1/5/10）星时，珍兽觉醒上限+1",
-   "kind": "display",
+   "kind": "awaken_limit",
    "per_tier": 1
   },
   "s_市贾": {
@@ -4678,7 +4679,7 @@
 	10
    ],
    "effect": "全部藏宝达到（1/5/10）星时，守护灵提供赚钱+5%",
-   "kind": "display",
+   "kind": "guardian_pct",
    "per_tier": 5.0
   },
   "s_锦堂": {
@@ -4716,7 +4717,7 @@
 	10
    ],
    "effect": "全部藏宝达到（1/5/10）星时，无双及以上门客赚钱+5%",
-   "kind": "display",
+   "kind": "quality_min_pct",
    "per_tier": 5.0
   },
   "s_星光": {
@@ -4756,7 +4757,7 @@
 	10
    ],
    "effect": "全部藏宝达到（1/5/10）星时，守护灵提供赚钱+5%",
-   "kind": "display",
+   "kind": "guardian_pct",
    "per_tier": 5.0
   },
   "s_坤舆": {
@@ -4794,7 +4795,7 @@
 	10
    ],
    "effect": "全部藏宝达到（1/5/10）星时，无双及以上门客赚钱+5%",
-   "kind": "display",
+   "kind": "quality_min_pct",
    "per_tier": 5.0
   },
   "s_国香": {
@@ -4832,7 +4833,7 @@
 	10
    ],
    "effect": "全部藏宝达到（1/5/10）星时，守护灵提供赚钱+5%",
-   "kind": "display",
+   "kind": "guardian_pct",
    "per_tier": 5.0
   },
   "s_琅轩": {
@@ -4888,7 +4889,7 @@
 	20
    ],
    "effect": "全部藏宝达到（1/2/4/6/8/10/12/14/17/20）星时，珍兽等级上限+1",
-   "kind": "display",
+   "kind": "beast_level_cap",
    "per_tier": 1
   },
   "s_溯光": {
@@ -4903,7 +4904,8 @@
 	10
    ],
    "effect": "全部藏宝达到（1/5/10）星时，每格有效商贾魂石赚钱+1%",
-   "kind": "display",
+   "kind": "soul_cell_pct",
+   "category":"商",
    "per_tier": 1.0
   },
   "s_超然": {
@@ -4918,7 +4920,7 @@
 	10
    ],
    "effect": "全部藏宝达到（1/5/10）星时，无双及以上门客赚钱+5%",
-   "kind": "display",
+   "kind": "quality_min_pct",
    "per_tier": 5.0
   },
   "s_碧爻": {
@@ -4941,7 +4943,7 @@
 	20
    ],
    "effect": "全部藏宝达到（1/2/4/6/8/10/12/14/17/20）星时，，珍兽等级上限+1",
-   "kind": "display",
+   "kind": "beast_level_cap",
    "per_tier": 1
   },
   "s_剑魂": {
@@ -4956,7 +4958,7 @@
 	10
    ],
    "effect": "全部藏宝达到（1/5/10）星时，无双及以上门客赚钱+5%",
-   "kind": "display",
+   "kind": "quality_min_pct",
    "per_tier": 5.0
   },
   "s_童忆": {
@@ -4994,7 +4996,7 @@
 	10
    ],
    "effect": "全部藏宝达到（1/5/10）星时，珍兽觉醒上限+1",
-   "kind": "display",
+   "kind": "awaken_limit",
    "per_tier": 1
   },
   "s_魂器": {
@@ -5017,7 +5019,7 @@
 	20
    ],
    "effect": "全部藏宝达到（1/2/4/6/8/10/12/14/17/20）星时，珍兽等级上限+1",
-   "kind": "display",
+   "kind": "beast_level_cap",
    "per_tier": 1
   },
   "s_风华": {
@@ -5032,7 +5034,7 @@
 	10
    ],
    "effect": "全部藏宝达到（1/5/10）星时，珍兽觉醒上限+1",
-   "kind": "display",
+   "kind": "awaken_limit",
    "per_tier": 1
   },
   "s_续缘": {
@@ -5232,7 +5234,7 @@
 	20
    ],
    "effect": "全部藏宝达到（1/2/4/6/8/10/12/14/17/20）星时，珍兽等级上限+1",
-   "kind": "display",
+   "kind": "beast_level_cap",
    "per_tier": 1
   },
   "s_花火": {
@@ -5247,7 +5249,7 @@
 	10
    ],
    "effect": "全部藏宝达到（1/5/10）星时，珍兽觉醒上限+1",
-   "kind": "display",
+   "kind": "awaken_limit",
    "per_tier": 1
   },
   "s_凝冰": {

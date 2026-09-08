@@ -167,7 +167,7 @@ func get_total_income_pct(hero_id: String) -> float:
 	for i in range(PHASES.size()):
 		if is_phase_full(hero_id, i):
 			total += PHASES[i].income_pct
-	return total
+	return total + g.collection_system.get_guardian_suit_pct()  # 【新增】藏品套装"守护灵提供的赚钱+%"
 
 # ============ 技能 ============
 

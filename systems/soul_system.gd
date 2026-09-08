@@ -277,7 +277,9 @@ func get_hero_soul_percent(hero_id: String) -> float:
 	var h = g.heroes[hero_id]
 	var bid: String = h.get("equipped_beast", "")
 	if bid == "": return 0.0
-	return get_board_bonus(bid, int(h.get("equipped_beast_index", 0))).percent
+	var board: Dictionary = get_board_bonus(bid, int(h.get("equipped_beast_index", 0)))
+	# 【新增】藏品套装"每格有效魂石+赚%"：per_tier%×已激活档数×激发格数
+	return board.percent + g.collection_system.get_soul_suit_percent(h.get("category", ""), int(board.inspired))
 
 func get_hero_soul_aptitude(hero_id: String) -> int:
 	if not g.heroes.has(hero_id): return 0
