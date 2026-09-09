@@ -395,6 +395,7 @@ var _vip_rewards: Dictionary = {}
 
 var _shop_configs: Dictionary = {}
 
+var _manhuang_configs: Dictionary = {}   # 【新增】蛮荒礼盒配置（data/manhuang.json：自选道具列表）
 #=========道具初始数量===========
 # 【重构】由 _load_items_config() 按 items.json 的 initial 段填充；未列出的道具自动补0
 var items: Dictionary = {}
@@ -413,7 +414,7 @@ var money: int = 0
 var yuanbao: int = 0
 
 var energy: int = 100
-
+var energy_time: float = 0.0   # 【新增】四批：精力恢复结算时间戳（friend_system 懒结算用）
 var vip_level: int = 0
 
 var vip_exp: int = 0
@@ -646,6 +647,7 @@ func _load_all_configs():
 	_fengzi_configs = _load_json("res://data/fengzi.json")   # 【新增】风姿配置
 	_talent_configs = _load_json("res://data/talent.json")   # 【新增】天赋配置
 	_collection_configs = _load_json("res://data/collection.json")   # 函数名以现有配置加载辅助函数为准
+	_manhuang_configs = _load_json("res://data/manhuang.json")   # 【新增】蛮荒礼盒可选道具
 	
 	_load_items_config()   # 【重构新增】道具表
 	_load_travel_config()  # 【重构新增】游历配置

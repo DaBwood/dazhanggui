@@ -483,7 +483,13 @@ func get_soul_suit_percent(category: String, inspired: int) -> float:
 		if suit.get("kind", "") != "soul_cell_pct" or suit.get("category", "") != category:
 			continue
 		pct += float(suit.get("per_tier", 0)) * int(_suits.get(sid, 0)) / 100.0 * float(inspired)
+	# 【新增】四批：单品魂石藏品（c035农/c043士/c062侠）每星+2%/格，与套装同一出口（soul_system 零改动）
+	for cid in _owned.keys():
+		var sp_item: Dictionary = get_collection(cid).get("special", {})
+		if sp_item.get("kind", "") == "soul_cell_pct" and str(sp_item.get("category", "")) == category:
+			pct += float(sp_item.get("per_star", 0)) * get_star(cid) / 100.0 * float(inspired)
 	return pct
+
 
 # ---------- 套装效果·三批接入（2026-09-09） ----------
 
@@ -544,3 +550,64 @@ func apply_shop_staff_delta(coll_id: String, old_lv: int, old_star: int) -> void
 	if delta <= 0:
 		return
 	g.shops[shop_id].staff = int(g.shops[shop_id].get("staff", 0)) + delta
+
+# ---------- 特殊效果·四批接入（2026-09-09） ----------
+
+# 已拥有藏品 special 汇总小工具：kind（+可选category）匹配，per_star×星 求和
+func _owned_special_sum(filter_kind: String, key: String = "", key_val: String = "") -> float:
+	var total = 0.0
+	for cid in _owned.keys():
+		var sp: Dictionary = get_collection(cid).get("special", {})
+		if sp.get("kind", "") != filter_kind:
+			continue
+		if key != "" and str(sp.get(key, "")) != key_val:
+			continue
+		total += float(sp.get("per_star", 0)) * get_star(cid)
+	return total
+
+# 魂石单品（c035农/c043士/c062侠）：每星+2%/格有效魂石（乘进 get_soul_suit_percent 同一出口）
+func get_soul_cell_item_percent(category: String, inspired: int) -> float:
+	return _owned_special_sum("soul_cell_pct", "category", category) / 100.0 * float(inspired)
+
+# 挚友职业缘分单品（c071农/c073工/c079士/c081商）：谈心缘分 额外+%/星
+func get_friend_bond_category_pct(category: String) -> float:
+	return _owned_special_sum("chat_bond_category_pct", "category", category) / 100.0
+
+# 徒弟赚速单品（c220~c234 special）：全体+职业+魔法师三类合并（乘进三批套装%同一处）
+func get_apprentice_income_item_pct(career: String, is_magician: bool) -> float:
+	var total = _owned_special_sum("apprentice_income_pct")   # 全体（无category）
+	total += _owned_special_sum("apprentice_income_pct", "category", career)
+	if is_magician:
+		total += _owned_special_sum("apprentice_income_pct_magician")
+	return total / 100.0
+
+# 活力恢复间隔（c224：每星-2秒，下限10秒防除零/失控）
+func get_vigor_regen_seconds() -> int:
+	return maxi(10, 60 - int(_owned_special_sum("vigor_regen_down")))
+
+# 活力自动恢复上限（c229：每星+20，基础500）
+func get_vigor_max() -> int:
+	return g.APPRENTICE_VIGOR_MAX + int(_owned_special_sum("vigor_max_up"))
+
+# 培养铜钱消耗折扣（c226：每星-2%）
+func get_train_cost_discount_pct() -> float:
+	return _owned_special_sum("train_cost_down") / 100.0
+
+# 庄园产量单品（c185=牧场animals/c186=农场crops：每星+2%）
+func get_manor_output_pct(kind: String) -> float:
+	return _owned_special_sum("manor_output_pct", "category", kind) / 100.0
+
+# 游历声望单品（c197：每次游历+1/星）
+func get_travel_reputation_bonus() -> int:
+	return int(_owned_special_sum("travel_reputation"))
+
+# 商战积分单品（c068：每星+5%）
+func get_war_points_pct() -> float:
+	return _owned_special_sum("war_points_pct") / 100.0
+
+# 精力（挚友）：上限（c200 每星+1，基础100）与恢复秒数（c190 每星-30秒，基础3600=每小时1点，下限300）
+func get_energy_cap() -> int:
+	return 100 + int(_owned_special_sum("energy_max_up"))
+
+func get_energy_regen_seconds() -> int:
+	return maxi(300, 3600 - int(_owned_special_sum("energy_regen_down")))

@@ -266,7 +266,7 @@ func update_friend_page():
 	# 【新增】进入挚友页时同步谈心按钮精力数（原只在谈心后更新，首次进页面只显示"谈心"两字）
 	var chat_btn = c.get_node_or_null("PageContainer/FriendPage/ListView/ChatOpBox/ChatBtn")
 	if chat_btn:
-		chat_btn.text = "谈心（%d/100）" % data.energy
+		chat_btn.text = "谈心（%d/%d）" % [data.energy, data.collection_system.get_energy_cap()]
 
 func _create_friend_card(cname: String, friendly: int, talent: int, locked: bool) -> Button:
 	var cell = Button.new()
@@ -900,7 +900,7 @@ func on_chat_with_friend():
 		update_friend_page()
 		var chat_btn = page.find_child("ChatBtn", true, false)
 		if chat_btn:
-			chat_btn.text = "谈心（%d/100）" % data.energy
+			chat_btn.text = "谈心（%d/%d）" % [data.energy, data.collection_system.get_energy_cap()]
 	else:
 		var chat_btn = page.find_child("ChatBtn", true, false)
 		if chat_btn:
@@ -964,7 +964,7 @@ func _on_use_energy_pill(spin: SpinBox = null):
 	# 【修复】谈心按钮在列表页 ListView 下，原路径从 FriendDetail 找永远为 null、文本不更新
 	var chat_btn = c.get_node("PageContainer/FriendPage/ListView").find_child("ChatBtn", true, false)
 	if chat_btn != null:
-		chat_btn.text = "谈心（%d/100）" % data.energy
+		chat_btn.text = "谈心（%d/%d）" % [data.energy, data.collection_system.get_energy_cap()]
 	c.update_bag_list()
 	on_chat_with_friend()
 

@@ -297,6 +297,36 @@ func _collection_special_effect(cid: String) -> String:
 	var sys = data.collection_system
 	var sp: Dictionary = sys.get_collection(cid).get("special", {})
 	var kind = str(sp.get("kind", "display"))
+		# 【新增】四批：新接入特殊效果文案（按当前星数显示总值，flat 值不做%处理）
+	var st0 = sys.get_star(cid) if sys.is_owned(cid) else 1
+	var per0 = float(sp.get("per_star", 0))
+	match kind:
+		"soul_cell_pct":
+			return "特殊效果：%s类门客每格有效魂石赚钱 +%s%%（当前★%d）" % [sp.get("category", ""), _fmt_effect_number(per0 * st0), st0]
+		"chat_bond_category_pct":
+			return "特殊效果：%s类挚友谈心缘分 +%s%%（当前★%d）" % [sp.get("category", ""), _fmt_effect_number(per0 * st0), st0]
+		"apprentice_income_pct":
+			var who: String = "全体徒弟" if not sp.has("category") else "%s类徒弟" % sp.get("category", "")
+			return "特殊效果：%s赚速 +%s%%（当前★%d）" % [who, _fmt_effect_number(per0 * st0), st0]
+		"apprentice_income_pct_magician":
+			return "特殊效果：魔法师徒弟赚速 +%s%%（当前★%d）" % [_fmt_effect_number(per0 * st0), st0]
+		"vigor_regen_down":
+			return "特殊效果：徒弟活力恢复 -%d秒/点（当前★%d）" % [int(per0 * st0), st0]
+		"vigor_max_up":
+			return "特殊效果：徒弟活力上限 +%d（当前★%d）" % [int(per0 * st0), st0]
+		"train_cost_down":
+			return "特殊效果：徒弟培养铜钱消耗 -%s%%（当前★%d）" % [_fmt_effect_number(per0 * st0), st0]
+		"manor_output_pct":
+			var mk: String = "牧场" if sp.get("category", "") == "animals" else "农场"
+			return "特殊效果：%s产量 +%s%%（当前★%d）" % [mk, _fmt_effect_number(per0 * st0), st0]
+		"travel_reputation":
+			return "特殊效果：每次游历声望 +%d（当前★%d）" % [int(per0 * st0), st0]
+		"war_points_pct":
+			return "特殊效果：商战获得积分 +%s%%（当前★%d）" % [_fmt_effect_number(per0 * st0), st0]
+		"energy_max_up":
+			return "特殊效果：谈心精力上限 +%d（当前★%d）" % [int(per0 * st0), st0]
+		"energy_regen_down":
+			return "特殊效果：精力恢复 -%d秒/点（当前★%d）" % [int(per0 * st0), st0]
 	if kind == "" or kind == "display":
 		return "特殊效果：后续版本开放"
 	var st = sys.get_star(cid) if sys.is_owned(cid) else 1

@@ -63,7 +63,9 @@ func do_travel() -> Dictionary:
 	if g.stamina < 1:
 		return {"ok": false, "msg": "体力不足"}
 	g.stamina -= 1
-	g.reputation += g.TRAVEL_REPUTATION
+	# 【改】四批：声望=基础+藏品（c197 每次游历+1/星）
+	var rep = g.TRAVEL_REPUTATION + g.collection_system.get_travel_reputation_bonus()
+	g.reputation += rep
 	g.goal_system.add_stat("travel_count")   # 【第6批新增】挚友目标：累计游历计数
 	var roll = randf()
 	if roll < g.TRAVEL_LOCATION_CHANCE:
@@ -108,7 +110,7 @@ func do_travel_all() -> Dictionary:
 	var summary = {
 		"ok": true,
 		"times": done,                                        # 实际游历次数
-		"reputation": g.TRAVEL_REPUTATION * done,             # 声望总收益
+		"reputation": (g.TRAVEL_REPUTATION + g.collection_system.get_travel_reputation_bonus()) * done,   # 【改】四批：含 c197 加成
 		"type_count": type_count,                             # 地点/物品/事件各多少次
 		"stamina_after": g.stamina,                           # 结束后剩余体力（含杜康回复）
 		"yuanbao_gain": g.yuanbao - yuanbao_before,           # 财神到元宝总收益
@@ -151,6 +153,7 @@ func do_travel_all() -> Dictionary:
 # 游历到地点：随机一个地点，从该地点「已拥有挚友 + 未拥有的表2挚友」中随机相遇
 # 已拥有挚友友好+1；未拥有表2挚友好感+1，达标即获得
 func _do_travel_location() -> Dictionary:
+	var rep = g.TRAVEL_REPUTATION + g.collection_system.get_travel_reputation_bonus()
 	var loc_ids = g.TRAVEL_LOCATIONS.keys()
 	var loc_id = loc_ids[randi() % loc_ids.size()]
 	var loc = g.TRAVEL_LOCATIONS[loc_id]
@@ -162,24 +165,25 @@ func _do_travel_location() -> Dictionary:
 		elif g.TRAVEL_AFFECTION.has(fid):
 			candidates.append(fid)
 	if candidates.is_empty():
-		return {"ok": true, "type": "location", "msg": "游历到【%s】，没有遇到熟人，声望+%d" % [loc.name, g.TRAVEL_REPUTATION]}
+		return {"ok": true, "type": "location", "msg": "游历到【%s】，没有遇到熟人，声望+%d" % [loc.name, rep]}
 	var fid = candidates[randi() % candidates.size()]
 	var cfg = g.get_friend_config(fid)
 	if g.friends.has(fid):
 		# 已拥有：友好+1
 		g.friends[fid].friendly += 1
-		return {"ok": true, "type": "location", "msg": "游历到【%s】，偶遇挚友【%s】，友好+1，声望+%d" % [loc.name, cfg.get("name", fid), g.TRAVEL_REPUTATION]}
+		return {"ok": true, "type": "location", "msg": "游历到【%s】，偶遇挚友【%s】，友好+1，声望+%d" % [loc.name, cfg.get("name", fid), rep]}
 	# 未拥有的表2挚友：好感+1，达标则获得
 	g.friend_affection[fid] = g.friend_affection.get(fid, 0) + 1
 	var need = g.TRAVEL_AFFECTION[fid]
 	if g.friend_affection[fid] >= need:
 		g.unlock_friend(fid)
 		g.friend_affection.erase(fid)
-		return {"ok": true, "type": "location", "msg": "游历到【%s】，与【%s】好感已满，喜获挚友！声望+%d" % [loc.name, cfg.get("name", fid), g.TRAVEL_REPUTATION], "unlock_friend": fid}
-	return {"ok": true, "type": "location", "msg": "游历到【%s】，与【%s】相遇，好感+1（%d/%d），声望+%d" % [loc.name, cfg.get("name", fid), g.friend_affection[fid], need, g.TRAVEL_REPUTATION]}
+		return {"ok": true, "type": "location", "msg": "游历到【%s】，与【%s】好感已满，喜获挚友！声望+%d" % [loc.name, cfg.get("name", fid), rep], "unlock_friend": fid}
+	return {"ok": true, "type": "location", "msg": "游历到【%s】，与【%s】相遇，好感+1（%d/%d），声望+%d" % [loc.name, cfg.get("name", fid), g.friend_affection[fid], need, rep]}
 
 # 游历获得物品：物品池20项等概率，抽中给 entry.count 个
 func _do_travel_item() -> Dictionary:
+	var rep = g.TRAVEL_REPUTATION + g.collection_system.get_travel_reputation_bonus()
 	var entry = g.TRAVEL_ITEM_POOL[randi() % g.TRAVEL_ITEM_POOL.size()]
 	var item_id = entry.item
 	var count = entry.count
@@ -187,29 +191,30 @@ func _do_travel_item() -> Dictionary:
 	# 【改】珍兽果/奇香果不再是独立货币，全部进背包
 	g.items[item_id] = int(g.items.get(item_id, 0)) + count
 	var item_name = g.ITEM_CONFIG.get(item_id, {}).get("name", item_id)
-	return {"ok": true, "type": "item", "msg": "游历途中获得【%s】×%d，声望+%d" % [item_name, count, g.TRAVEL_REPUTATION]}
+	return {"ok": true, "type": "item", "msg": "游历途中获得【%s】×%d，声望+%d" % [item_name, count, rep]}
 
 # 游历遭遇事件：5个事件等概率
 # 财神到=元宝+1000；月老/观音=祝福层数+1（可累计）；杜康=体力+1~3（可超上限）；今日新菜=赚速最高门客额外赚速+2000
 func _do_travel_event() -> Dictionary:
+	var rep = g.TRAVEL_REPUTATION + g.collection_system.get_travel_reputation_bonus()
 	var events = ["cai_shen", "yue_lao", "guan_yin", "du_kang", "new_dish"]
 	var event_id = events[randi() % events.size()]
 	match event_id:
 		"cai_shen":
 			g.yuanbao += g.EV_CAI_SHEN_YUANBAO   # 【重构】数值走变量（travel.json可调）
-			return {"ok": true, "type": "event", "msg": "遭遇【财神到】！元宝+%d，声望+%d" % [g.EV_CAI_SHEN_YUANBAO, g.TRAVEL_REPUTATION]}
+			return {"ok": true, "type": "event", "msg": "遭遇【财神到】！元宝+%d，声望+%d" % [g.EV_CAI_SHEN_YUANBAO, rep]}
 		"yue_lao":
 			g.yuelao_count += 1
-			return {"ok": true, "type": "event", "msg": "遭遇【月老】！获得1层祝福：下次谈心（能领养徒弟时）将与友好最高的挚友谈心（当前累计%d层），声望+%d" % [g.yuelao_count, g.TRAVEL_REPUTATION]}
+			return {"ok": true, "type": "event", "msg": "遭遇【月老】！获得1层祝福：下次谈心（能领养徒弟时）将与友好最高的挚友谈心（当前累计%d层），声望+%d" % [g.yuelao_count, rep]}
 		"guan_yin":
 			g.guanyin_count += 1
-			return {"ok": true, "type": "event", "msg": "遭遇【观音】！获得1层祝福：下次谈心（能领养徒弟时）必为双胞胎（当前累计%d层），声望+%d" % [g.guanyin_count, g.TRAVEL_REPUTATION]}
+			return {"ok": true, "type": "event", "msg": "遭遇【观音】！获得1层祝福：下次谈心（能领养徒弟时）必为双胞胎（当前累计%d层），声望+%d" % [g.guanyin_count, rep]}
 		"du_kang":
 			# 杜康赠酒：体力+MIN~MAX，不受自动恢复上限限制
 			_settle_stamina()
 			var gain = randi_range(g.EV_DU_KANG_MIN, g.EV_DU_KANG_MAX)   # 【重构】数值走变量
 			g.stamina += gain
-			return {"ok": true, "type": "event", "msg": "遭遇【杜康】！共饮美酒，体力+%d（当前%d点），声望+%d" % [gain, g.stamina, g.TRAVEL_REPUTATION]}
+			return {"ok": true, "type": "event", "msg": "遭遇【杜康】！共饮美酒，体力+%d（当前%d点），声望+%d" % [gain, g.stamina, rep]}
 		"new_dish":
 			# 今日新菜：当前总赚速最高的已拥有门客基础赚速+N
 			var best_id = ""
@@ -220,8 +225,8 @@ func _do_travel_event() -> Dictionary:
 					best_income = income
 					best_id = hid
 			if best_id == "":
-				return {"ok": true, "type": "event", "msg": "遭遇【今日新菜】，但还没有门客可以享用，声望+%d" % g.TRAVEL_REPUTATION}
+				return {"ok": true, "type": "event", "msg": "遭遇【今日新菜】，但还没有门客可以享用，声望+%d" % rep}
 			g.heroes[best_id].extra_income += g.EV_NEW_DISH_INCOME   # 【重构】数值走变量
-			return {"ok": true, "type": "event", "msg": "遭遇【今日新菜】！【%s】大快朵颐，额外赚速+%d，声望+%d" % [g.heroes[best_id].name, g.EV_NEW_DISH_INCOME, g.TRAVEL_REPUTATION]}
+			return {"ok": true, "type": "event", "msg": "遭遇【今日新菜】！【%s】大快朵颐，额外赚速+%d，声望+%d" % [g.heroes[best_id].name, g.EV_NEW_DISH_INCOME, rep]}
 	# 安全兜底：match 五个分支均已return，此行理论上不可达
 	return {"ok": false, "msg": "未知事件"}

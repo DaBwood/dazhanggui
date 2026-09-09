@@ -182,7 +182,7 @@ func battle(squad_index: int) -> Dictionary:
 	var npc = power * randf_range(float(st.get("npc_power_min", 0.8)), float(st.get("npc_power_max", 1.3)))
 	var win = power >= npc
 	var reward_pct = 1.0 if win else float(st.get("lose_reward_pct", 0.3))
-	var points = power * float(st.get("points_rate_win", 0.01)) * reward_pct
+	var points = power * float(st.get("points_rate_win", 0.01)) * reward_pct * (1.0 + g.collection_system.get_war_points_pct())   # 【改】四批：积分吃 c068（+5%/星）
 	var yin = power * float(st.get("yin_rate_win", 0.005)) * reward_pct
 	g.war_points += points
 	g.war_tax_yin += yin

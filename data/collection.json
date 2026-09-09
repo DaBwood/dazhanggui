@@ -736,7 +736,10 @@
 				"min": 2
 			},
 			"special": {
-				"desc": "每格有效农民魂石赚钱每星+2%"
+				"desc": "每格有效农民魂石赚钱每星+2%",
+				"kind": "soul_cell_pct",
+				"per_star": 2,
+				"category": "农"
 			}
 		},
 		"c036": {
@@ -893,7 +896,10 @@
 				"min": 2
 			},
 			"special": {
-				"desc": "每格有效士人魂石赚钱每星+2%"
+				"desc": "每格有效士人魂石赚钱每星+2%",
+				"kind": "soul_cell_pct",
+				"per_star": 2,
+				"category": "士"
 			}
 		},
 		"c044": {
@@ -1268,7 +1274,10 @@
 				"min": 2
 			},
 			"special": {
-				"desc": "每格有效侠客魂石赚钱每星+2%"
+				"desc": "每格有效侠客魂石赚钱每星+2%",
+				"kind": "soul_cell_pct",
+				"per_star": 2,
+				"category": "侠"
 			}
 		},
 		"c063": {
@@ -1385,7 +1394,9 @@
 				"category": "工"
 			},
 			"special": {
-				"desc": "我方商战获得积分每星+5%"
+				"desc": "我方商战获得积分每星+5%",
+				"kind": "war_points_pct",
+				"per_star": 5
 			}
 		},
 		"c069": {
@@ -1436,7 +1447,10 @@
 				"category": "农"
 			},
 			"special": {
-				"desc": "农类挚友谈心缘分每星+2%"
+				"desc": "农类挚友谈心缘分每星+2%",
+				"kind": "chat_bond_category_pct",
+				"per_star": 2,
+				"category": "农"
 			}
 		},
 		"c072": {
@@ -1470,7 +1484,10 @@
 				"category": "工"
 			},
 			"special": {
-				"desc": "工类挚友谈心缘分每星+2%"
+				"desc": "工类挚友谈心缘分每星+2%",
+				"kind": "chat_bond_category_pct",
+				"per_star": 2,
+				"category": "工"
 			}
 		},
 		"c074": {
@@ -1575,7 +1592,10 @@
 				"category": "士"
 			},
 			"special": {
-				"desc": "士类挚友谈心缘分每星+2%"
+				"desc": "士类挚友谈心缘分每星+2%",
+				"kind": "chat_bond_category_pct",
+				"per_star": 2,
+				"category": "士"
 			}
 		},
 		"c080": {
@@ -1612,7 +1632,10 @@
 				"category": "商"
 			},
 			"special": {
-				"desc": "商类挚友谈心缘分每星+2%"
+				"desc": "商类挚友谈心缘分每星+2%",
+				"kind": "chat_bond_category_pct",
+				"per_star": 2,
+				"category": "商"
 			}
 		},
 		"c082": {
@@ -3683,7 +3706,10 @@
 				"category": "侠"
 			},
 			"special": {
-				"desc": "庄园牧场产量每星+2%"
+				"desc": "庄园牧场产量每星+2%",
+				"kind": "manor_output_pct",
+				"per_star": 2,
+				"category": "animals"
 			}
 		},
 		"c186": {
@@ -3700,7 +3726,10 @@
 				"category": "商"
 			},
 			"special": {
-				"desc": "庄园农场产量每星+2%"
+				"desc": "庄园农场产量每星+2%",
+				"kind": "manor_output_pct",
+				"per_star": 2,
+				"category": "crops"
 			}
 		},
 		"c187": {
@@ -3768,7 +3797,9 @@
 				"category": "士"
 			},
 			"special": {
-				"desc": "谈心精力恢复时长每星-30秒"
+				"desc": "谈心精力恢复时长每星-30秒",
+				"kind": "energy_regen_down",
+				"per_star": 30
 			}
 		},
 		"c191": {
@@ -3887,7 +3918,9 @@
 				"category": "侠"
 			},
 			"special": {
-				"desc": "每次游历声望+1，每次晋升+1"
+				"desc": "每次游历声望+1，每次晋升+1",
+				"kind": "travel_reputation",
+				"per_star": 1
 			}
 		},
 		"c198": {
@@ -4276,7 +4309,9 @@
 				"wired": false
 			},
 			"special": {
-				"desc": "全体徒弟赚速每星+1%"
+				"desc": "全体徒弟赚速每星+1%",
+				"kind": "apprentice_income_pct",
+				"per_star": 1
 			}
 		},
 		"c221": {
@@ -4291,7 +4326,10 @@
 				"wired": false
 			},
 			"special": {
-				"desc": "商类徒弟赚速每星+2%"
+				"desc": "商类徒弟赚速每星+2%",
+				"kind": "apprentice_income_pct",
+				"per_star": 2,
+				"category": "商"
 			}
 		},
 		"c222": {
@@ -4306,7 +4344,10 @@
 				"wired": false
 			},
 			"special": {
-				"desc": "工类徒弟赚速每星+2%"
+				"desc": "工类徒弟赚速每星+2%",
+				"kind": "apprentice_income_pct",
+				"per_star": 2,
+				"category": "工"
 			}
 		},
 		"c223": {
@@ -4321,7 +4362,9 @@
 				"wired": false
 			},
 			"special": {
-				"desc": "转职魔法师的徒弟赚速每星+5%"
+				"desc": "转职魔法师的徒弟赚速每星+5%",
+				"kind": "apprentice_income_pct_magician",
+				"per_star": 5
 			}
 		},
 		"c224": {
@@ -4336,7 +4379,9 @@
 				"wired": false
 			},
 			"special": {
-				"desc": "徒弟培养活力恢复每星-2秒"
+				"desc": "徒弟培养活力恢复每星-2秒",
+				"kind": "vigor_regen_down",
+				"per_star": 2
 			}
 		},
 		"c225": {
@@ -4351,7 +4396,10 @@
 				"wired": false
 			},
 			"special": {
-				"desc": "士类徒弟赚速每星+2%"
+				"desc": "士类徒弟赚速每星+2%",
+				"kind": "apprentice_income_pct",
+				"per_star": 2,
+				"category": "士"
 			}
 		},
 		"c226": {
@@ -4366,7 +4414,9 @@
 				"wired": false
 			},
 			"special": {
-				"desc": "徒弟培养消耗铜钱每星-2%"
+				"desc": "徒弟培养消耗铜钱每星-2%",
+				"kind": "train_cost_down",
+				"per_star": 2
 			}
 		},
 		"c227": {
@@ -4381,7 +4431,10 @@
 				"wired": false
 			},
 			"special": {
-				"desc": "侠类徒弟赚速每星+2%"
+				"desc": "侠类徒弟赚速每星+2%",
+				"kind": "apprentice_income_pct",
+				"per_star": 2,
+				"category": "侠"
 			}
 		},
 		"c228": {
@@ -4396,7 +4449,10 @@
 				"wired": false
 			},
 			"special": {
-				"desc": "农类徒弟赚速每星+2%"
+				"desc": "农类徒弟赚速每星+2%",
+				"kind": "apprentice_income_pct",
+				"per_star": 2,
+				"category": "农"
 			}
 		},
 		"c229": {
@@ -4411,7 +4467,9 @@
 				"wired": false
 			},
 			"special": {
-				"desc": "徒弟活力上限每星+20"
+				"desc": "徒弟活力上限每星+20",
+				"kind": "vigor_max_up",
+				"per_star": 20
 			}
 		},
 		"c230": {
@@ -4426,7 +4484,10 @@
 				"wired": false
 			},
 			"special": {
-				"desc": "侠类徒弟赚速每星+2%"
+				"desc": "侠类徒弟赚速每星+2%",
+				"kind": "apprentice_income_pct",
+				"per_star": 2,
+				"category": "侠"
 			}
 		},
 		"c231": {
@@ -4441,7 +4502,10 @@
 				"wired": false
 			},
 			"special": {
-				"desc": "商类徒弟赚速每星+2%"
+				"desc": "商类徒弟赚速每星+2%",
+				"kind": "apprentice_income_pct",
+				"per_star": 2,
+				"category": "商"
 			}
 		},
 		"c232": {
@@ -4456,7 +4520,10 @@
 				"wired": false
 			},
 			"special": {
-				"desc": "工类徒弟赚速每星+2%"
+				"desc": "工类徒弟赚速每星+2%",
+				"kind": "apprentice_income_pct",
+				"per_star": 2,
+				"category": "工"
 			}
 		},
 		"c233": {
@@ -4471,7 +4538,10 @@
 				"wired": false
 			},
 			"special": {
-				"desc": "农类徒弟赚速每星+2%"
+				"desc": "农类徒弟赚速每星+2%",
+				"kind": "apprentice_income_pct",
+				"per_star": 2,
+				"category": "农"
 			}
 		},
 		"c234": {
@@ -4486,7 +4556,10 @@
 				"wired": false
 			},
 			"special": {
-				"desc": "士类徒弟赚速每星+2%"
+				"desc": "士类徒弟赚速每星+2%",
+				"kind": "apprentice_income_pct",
+				"per_star": 2,
+				"category": "士"
 			}
 		}
 	},

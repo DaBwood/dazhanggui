@@ -85,13 +85,13 @@ func _settle_slot_vigor(slot: int):
 		g.apprentice_vigor_time[slot] = now
 		return
 	# 活力已满（或超出上限）：不再恢复，但绝不能截断超出部分
-	if g.apprentice_vigor[slot] >= g.APPRENTICE_VIGOR_MAX:
+	if g.apprentice_vigor[slot] >= g.collection_system.get_vigor_max():   # 【改】四批：自动恢复上限吃 c229（+20/星）；吃药走 use_vitality_pill 不受此限
 		g.apprentice_vigor_time[slot] = now
 		return
 	@warning_ignore("narrowing_conversion")
-	var regen = int((now - last) / 60)
+	var regen = int((now - last) / g.collection_system.get_vigor_regen_seconds())   # 【改】四批：恢复间隔吃 c224（-2秒/星，下限10秒）
 	if regen > 0:
-		g.apprentice_vigor[slot] = min(g.APPRENTICE_VIGOR_MAX, g.apprentice_vigor[slot] + regen)
+		g.apprentice_vigor[slot] = min(g.collection_system.get_vigor_max(), g.apprentice_vigor[slot] + regen)   # 【改】四批：同上
 		@warning_ignore("narrowing_conversion")
 		g.apprentice_vigor_time[slot] = last + regen * 60
 
@@ -149,8 +149,9 @@ func _get_single_apprentice_income(a: Dictionary) -> int:
 		income = int(income * (1.0 + a.magic_bonus))
 	elif a.state == "married":
 		income += a.get("spouse_income", 0)
-	# 【新增】三批：藏品套装 徒弟赚速 +N%（市贾/童忆，乘最终值含魔法师/联姻状态）
-	income = int(income * (1.0 + g.collection_system.get_apprentice_suit_pct()))
+	# 【改】三批+四批：套装%（市贾/童忆）与单品%（c220~c234：全体/职业/魔法师徒弟赚速）合并乘算
+	var mult = 1.0 + g.collection_system.get_apprentice_suit_pct() + g.collection_system.get_apprentice_income_item_pct(a.get("career", ""), a.state == "magician")
+	income = int(income * mult)
 	return income
 
 # 槽位总赚速：同槽每个徒弟单独计算后求和（双胞胎即两倍）
@@ -178,10 +179,12 @@ func train_apprentice(slot: int) -> Dictionary:
 	var list = entry if entry is Array else [entry]
 	if list.is_empty(): return {"ok": false, "reason": "空位"}
 	if list[0].state != "training": return {"ok": false, "reason": "培养已完成"}
-	if g.money < g.APPRENTICE_TRAIN_COST: return {"ok": false, "reason": "铜钱不足"}
+	# 【改】四批：培养铜钱消耗吃 c226（-2%/星）
+	var train_cost = int(g.APPRENTICE_TRAIN_COST * (1.0 - g.collection_system.get_train_cost_discount_pct()))
+	if g.money < train_cost: return {"ok": false, "reason": "铜钱不足"}
 	_settle_slot_vigor(slot)
 	if g.apprentice_vigor[slot] < 1: return {"ok": false, "reason": "活力不足"}
-	g.money -= g.APPRENTICE_TRAIN_COST
+	g.money -= train_cost
 	g.apprentice_vigor[slot] -= 1
 	# 双胞胎占同一槽位，一起培养
 	for a in list:

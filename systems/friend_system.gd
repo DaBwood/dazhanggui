@@ -19,12 +19,14 @@ func get_save_data() -> Dictionary:
 	return {
 		"friends": g.friends,   # 挚友数据
 		"energy": g.energy,   # 精力（谈心消耗）
+		"energy_time": g.energy_time,   # 【新增】四批：精力恢复结算时间戳
 	}
 
 # 从扁平存档表认领本系统字段（含旧存档兼容逻辑；老存档缺字段则保持初始值）
 func load_save_data(s: Dictionary):
 	if s.has("friends"): g.friends = s.friends
 	if s.has("energy"): g.energy = s.energy
+	if s.has("energy_time"): g.energy_time = float(s.energy_time)   # 【新增】四批：精力恢复时间戳（老存档无此字段=立即开始计时的兼容）
 	# 清理存档中已不存在的挚友（防止配置删了存档还残留）
 	for friend_id in g.friends.keys():
 		if not g._friend_configs.has(friend_id):
@@ -64,6 +66,22 @@ func _prepare_chat_adoption(default_friend_id: String) -> Dictionary:
 		bless.force_twin = true
 		bless.guanyin = true
 	return bless
+
+# 【新增】四批：精力懒结算——基础每小时恢复1点（c190改速度）；满值不溢出、超出不截断；新存档字段 energy_time，老存档默认当前时刻
+func _settle_energy() -> void:
+	var now = Time.get_unix_time_from_system()
+	if g.energy_time <= 0.0:
+		g.energy_time = now
+		return
+	var cap = g.collection_system.get_energy_cap()
+	if g.energy >= cap:
+		g.energy_time = now
+		return
+	var secs = g.collection_system.get_energy_regen_seconds()
+	var regen = int((now - g.energy_time) / secs)
+	if regen > 0:
+		g.energy = min(cap, g.energy + regen)
+		g.energy_time += regen * secs
 
 func unlock_friend(friend_id: String) -> bool:
 	if g.friends.has(friend_id): return false
@@ -174,6 +192,8 @@ func get_friend_percent_bonus(friend_id: String) -> float:
 # 谈心：随机一位已拥有挚友，缘分+才华，有空位则领养徒弟
 # 【修改】月老层数>0且有徒弟空位：本次谈心对象改为友好最高的挚友；观音层数>0且有徒弟空位：本次领养必为双胞胎
 func chat_with_friend(once: bool = true) -> Dictionary:
+	_settle_energy()   # 【新增】四批：谈心/赠礼前结算精力恢复
+	
 	if g.energy <= 0: return {"ok": false, "reason": "精力不足"}
 	
 	var results = []
@@ -185,10 +205,12 @@ func chat_with_friend(once: bool = true) -> Dictionary:
 		var bless = _prepare_chat_adoption(fid)
 		fid = bless.target
 		var f = g.friends[fid]
-		f.bond += int(round(f.talent * (1.0 + g.collection_system.get_chat_bond_pct())))   # 【改】三批：谈心缘分+藏品套装%（凝冰）
+		
+		var bond_gain = int(round(f.talent * (1.0 + g.collection_system.get_chat_bond_pct() + g.collection_system.get_friend_bond_category_pct(f.category))))   # 【改】三批+四批：凝冰套装%+职业单品%（c071/073/079/081）
+		f.bond += bond_gain
 		# 有空位则与本次谈心的挚友领养一位徒弟（观音生效时必双胞胎）
 		var n = g.adopt_apprentice(fid, bless.force_twin)
-		results.append({"friend_id": fid, "name": f.name, "gain": f.talent, "adopted": n > 0, "twin": n == 2, "yuelao": bless.yuelao, "guanyin": bless.guanyin})
+		results.append({"friend_id": fid, "name": f.name, "gain": bond_gain, "adopted": n > 0, "twin": n == 2, "yuelao": bless.yuelao, "guanyin": bless.guanyin})
 	else:
 		while g.energy > 0:
 			g.energy -= 1
@@ -198,10 +220,12 @@ func chat_with_friend(once: bool = true) -> Dictionary:
 			var bless = _prepare_chat_adoption(fid)
 			fid = bless.target
 			var f = g.friends[fid]
-			f.bond += int(round(f.talent * (1.0 + g.collection_system.get_chat_bond_pct())))   # 【改】三批：谈心缘分+藏品套装%（凝冰）
+			
+			var bond_gain = int(round(f.talent * (1.0 + g.collection_system.get_chat_bond_pct() + g.collection_system.get_friend_bond_category_pct(f.category))))   # 【改】三批+四批：凝冰套装%+职业单品%（c071/073/079/081）
+			f.bond += bond_gain
 			# 一键谈心：有几个空位，前几位挚友就各领养一位
 			var n = g.adopt_apprentice(fid, bless.force_twin)
-			results.append({"friend_id": fid, "name": f.name, "gain": f.talent, "adopted": n > 0, "twin": n == 2, "yuelao": bless.yuelao, "guanyin": bless.guanyin})
+			results.append({"friend_id": fid, "name": f.name, "gain": bond_gain, "adopted": n > 0, "twin": n == 2, "yuelao": bless.yuelao, "guanyin": bless.guanyin})
 	
 	return {"ok": true, "results": results}
 
@@ -209,9 +233,12 @@ func chat_with_friend(once: bool = true) -> Dictionary:
 # 不消耗精力，消耗由调用方（元宝/玫瑰香水）负责
 # 【修改】指定谈心不触发月老（对象已由玩家指定），观音祝福正常生效（必双胞胎）
 func chat_with_specific_friend(friend_id: String) -> Dictionary:
+	_settle_energy()   # 【新增】四批：谈心/赠礼前结算精力恢复
 	if not g.friends.has(friend_id): return {"ok": false, "reason": "未拥有该挚友"}
 	var f = g.friends[friend_id]
-	f.bond += int(round(f.talent * (1.0 + g.collection_system.get_chat_bond_pct())))   # 【改】三批：谈心缘分+藏品套装%（凝冰）
+	
+	var bond_gain = int(round(f.talent * (1.0 + g.collection_system.get_chat_bond_pct() + g.collection_system.get_friend_bond_category_pct(f.category))))   # 【改】三批+四批：凝冰套装%+职业单品%（c071/073/079/081）
+	f.bond += bond_gain
 	# 【新增】观音祝福：有徒弟空位才生效并消耗一层
 	var force_twin = false
 	var guanyin_used = false
@@ -220,7 +247,7 @@ func chat_with_specific_friend(friend_id: String) -> Dictionary:
 		force_twin = true
 		guanyin_used = true
 	var n = g.adopt_apprentice(friend_id, force_twin)
-	return {"ok": true, "name": f.name, "gain": f.talent, "adopted": n > 0, "twin": n == 2, "guanyin": guanyin_used}
+	return {"ok": true, "name": f.name, "gain": bond_gain, "adopted": n > 0, "twin": n == 2, "guanyin": guanyin_used}
 
 # 升级固定技能
 func upgrade_friend_fixed(friend_id: String) -> bool:
@@ -244,6 +271,7 @@ func upgrade_friend_percent(friend_id: String) -> bool:
 
 # 赠送
 func gift_friend(friend_id: String, item_id: String) -> bool:
+	_settle_energy()   # 【新增】四批：谈心/赠礼前结算精力恢复
 	if not g.friends.has(friend_id): return false
 	if not g.items.has(item_id) or g.items[item_id] <= 0: return false
 	var f = g.friends[friend_id]

@@ -113,7 +113,8 @@ func get_plot_rate(species_id: String, plot_index: int) -> float:
 	var plot = get_plot(species_id, plot_index)
 	var base = float(st.get("base_rate", 60)) + (int(plot.level) - 1) * float(st.get("rate_per_level", 1))
 	var land_pct = int(plot.land) * float(st.get("land_pct_per_level", 0.25))
-	var other_pct = 0.0   # 其他加成（预留）
+	# 【改】四批：藏品产量%（c185牧场/c186农场）启用预留口——品种无 kind 字段，按所属表判定 animals/crops
+	var other_pct = g.collection_system.get_manor_output_pct("animals" if get_species_list("animals").any(func(c): return c.get("id", "") == species_id) else "crops")
 	return base * (1.0 + land_pct) * (1.0 + other_pct)
 
 # 品种总产量/分钟 = 已解锁几块地的产量之和
