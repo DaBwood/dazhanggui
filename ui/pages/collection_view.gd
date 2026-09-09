@@ -269,6 +269,15 @@ func _base_target_label(base: Dictionary, cid: String) -> String:
 func _collection_base_effect(cid: String) -> String:
 	var sys = data.collection_system
 	var base: Dictionary = sys.get_collection(cid).get("base", {})
+	
+	# 【新增】三批：店员数量类（c220-c234）显示绑定店铺与当前店员加成
+	if str(base.get("stat", "")) == "店员数量":
+		var lv_s = sys.get_level(cid) if sys.is_owned(cid) else 1
+		var st_s = sys.get_star(cid) if sys.is_owned(cid) else 1
+		var staff_val = int(base.get("per_level", 0)) * lv_s + int(base.get("per_star", 0)) * st_s
+		var shop_name_s: String = str(data._shop_configs.get(sys.get_shop_staff_shop(cid), {}).get("name", "店铺"))
+		return "基础效果：%s店员 +%s" % [shop_name_s, c.format_number(staff_val)]
+	
 	if not base.get("wired", false):
 		return "基础效果：后续版本开放"
 	var lv = sys.get_level(cid) if sys.is_owned(cid) else 1
@@ -611,6 +620,17 @@ func _suit_effect_label(sid: String, suit: Dictionary) -> String:
 			return "套装效果：五艳凤魁门客赚钱 +%s%%（已激活%d档）" % [cur, act]
 		"hero_pct":
 			return "套装效果：%s赚钱 +%s%%（已激活%d档）" % [_hero_label(str(suit.get("hero", ""))), cur, act]
+		"hunli_cap":
+			return "套装效果：珍兽魂体等级上限 +%d（已激活%d档）" % [int(per) * act, act]
+		"worm_cap":
+			var wcat: String = str(suit.get("category", ""))
+			if wcat == "":
+				return "套装效果：全体门客副业虫师技能等级上限 +%d（已激活%d档）" % [int(per) * act, act]
+			return "套装效果：%s类门客副业虫师技能等级上限 +%d（已激活%d档）" % [wcat, int(per) * act, act]
+		"apprentice_pct":
+			return "套装效果：徒弟培养阅历与赚速 +%s%%（已激活%d档）" % [cur, act]
+		"chat_bond_pct":
+			return "套装效果：谈心获得的缘分 +%s%%（已激活%d档）" % [cur, act]
 	return "套装效果：后续版本开放"
 
 # ===== 套装 =====

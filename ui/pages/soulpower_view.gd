@@ -104,7 +104,8 @@ func _fill_body(body):
 	var sp = data.soulpower_system
 	var body_data = sp._get_body(_beast_id, _beast_index)
 	var lv = int(body_data.get("level", 1))
-	var max_lv = int(sp._settings().get("body_max_level", 200))
+	# 【改】三批：显示上限含藏品套装加成（与 upgrade_body 校验一致）
+	var max_lv = int(sp._settings().get("body_max_level", 200)) + data.collection_system.get_suit_limit_bonus("hunli_cap")
 	var lv_cost = int(sp._settings().get("body_level_cost", 60))
 	var apt_per_lv = int(sp._settings().get("body_apt_per_level", 6))
 	var bonus = sp.get_body_bonus(_beast_id, _beast_index)

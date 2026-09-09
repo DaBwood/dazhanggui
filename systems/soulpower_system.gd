@@ -97,7 +97,8 @@ func upgrade_body(beast_id: String, instance_index: int, times: int = 1) -> Dict
 	var body = _get_body(beast_id, instance_index)
 	if body.is_empty():
 		return {"ok": false, "reason": "珍兽不存在"}
-	var max_lv = int(_settings().get("body_max_level", 200))
+	# 【改】三批：魂体等级上限+藏品套装档数（hunli_cap：礼遇/重华/锦堂/坤舆/国香）
+	var max_lv = int(_settings().get("body_max_level", 200)) + g.collection_system.get_suit_limit_bonus("hunli_cap")
 	var item: String = _settings().get("body_cost_item", "long_zhi_cao")
 	var cost = int(_settings().get("body_level_cost", 60))
 	var lv = int(body.get("level", 1))

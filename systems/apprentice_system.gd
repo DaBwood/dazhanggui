@@ -149,6 +149,8 @@ func _get_single_apprentice_income(a: Dictionary) -> int:
 		income = int(income * (1.0 + a.magic_bonus))
 	elif a.state == "married":
 		income += a.get("spouse_income", 0)
+	# 【新增】三批：藏品套装 徒弟赚速 +N%（市贾/童忆，乘最终值含魔法师/联姻状态）
+	income = int(income * (1.0 + g.collection_system.get_apprentice_suit_pct()))
 	return income
 
 # 槽位总赚速：同槽每个徒弟单独计算后求和（双胞胎即两倍）
@@ -184,7 +186,8 @@ func train_apprentice(slot: int) -> Dictionary:
 	# 双胞胎占同一槽位，一起培养
 	for a in list:
 		a.progress = min(g.APPRENTICE_MAX_PROGRESS, a.progress + g.APPRENTICE_PROGRESS_PER_TRAIN)
-	g.items.experience += g.APPRENTICE_TRAIN_EXP
+	# 【改】三批：培养阅历吃藏品套装加成（市贾/童忆 +3%/档）
+	g.items.experience += int(g.APPRENTICE_TRAIN_EXP * (1.0 + g.collection_system.get_apprentice_suit_pct()))
 	var adult = list[0].progress >= g.APPRENTICE_MAX_PROGRESS
 	if adult:
 		for a in list:

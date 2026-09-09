@@ -198,6 +198,8 @@ func can_upgrade_worm_skill(hero_id: String, skill_idx: int) -> bool:
 	var current_rank = get_cricket_rank_index(cricket_level)  # 促织当前绝对阶别
 	var required_offset = get_worm_skill_required_rank(int(skill.level))  # 技能需要的相对提升阶数
 	var required_absolute = init_rank + required_offset  # 技能需要的绝对阶别
+
+	
 	if current_rank < required_absolute:
 		return false
 	
@@ -216,6 +218,12 @@ func upgrade_worm_skill(hero_id: String, skill_idx: int) -> bool:
 	skill.level = int(skill.level) + 1
 	return true
 
+
+# 【新增】三批：副业虫师技能等级上限 = 虫书等级×10 + 藏品套装档数（worm_cap：共欢/周年=全体，5职业套按门客职业）
+# 单一入口，can_upgrade / upgrade / UI列表 三处共用，避免散改
+func get_side_max_level(hero_id: String, skill: Dictionary) -> int:
+	var hero_cat: String = str(g._hero_configs.get(hero_id, {}).get("category", ""))
+	return int(skill.level) * 10 + g.collection_system.get_worm_cap_bonus(hero_cat)
 
 # ========== 虫师副业技能（虫书激活后获得同名技能，纯资质，资质丹升级）==========
 
@@ -238,7 +246,7 @@ func get_hero_side_skills(hero_id: String) -> Array:
 			"name": cdata.name,
 			"star": int(skill.star),
 			"level": int(skill.get("side_level", 0)),
-			"max_level": int(skill.level) * 10,
+			"max_level": get_side_max_level(hero_id, skill),   # 【改】三批：上限含藏品套装档数，hero_page【副业】页显示经此自动同步
 		})
 	return result
 
@@ -264,7 +272,8 @@ func can_upgrade_side_skill(hero_id: String, skill_idx: int) -> bool:
 	var skill = master.skills[skill_idx]
 	if int(skill.level) < 1:
 		return false   # 虫书未激活不可升
-	if int(skill.get("side_level", 0)) >= int(skill.level) * 10:
+	# 【改】三批：上限=虫书等级×10+藏品套装档数（单一入口 get_side_max_level）
+	if int(skill.get("side_level", 0)) >= get_side_max_level(hero_id, skill):
 		return false   # 已达上限
 	return int(g.items.get("aptitude_pill", 0)) >= int(skill.star)
 
@@ -277,7 +286,8 @@ func upgrade_side_skill(hero_id: String, skill_idx: int, batch: bool = false) ->
 	var star = int(skill.star)
 	var levels: int = 1
 	if batch:
-		var remaining = int(skill.level) * 10 - int(skill.get("side_level", 0))
+		# 【改】三批：同上，剩余可升数用单一入口
+		var remaining = get_side_max_level(hero_id, skill) - int(skill.get("side_level", 0))
 		var affordable = floori(float(g.items.get("aptitude_pill", 0)) / star)
 		levels = min(affordable, remaining)
 	if levels <= 0:

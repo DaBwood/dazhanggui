@@ -112,6 +112,8 @@ func synthesize(coll_id: String) -> Dictionary:
 	_owned[coll_id] = {"level": 1, "star": 1}
 	# 【新增】二批：合成即发1星1级对应的友好/才华加成
 	apply_friend_bonus_delta(coll_id, 0, 0)
+	# 【新增】三批：合成即发绑定店铺的初始店员（1级1星）
+	apply_shop_staff_delta(coll_id, 0, 0)
 	return {"ok": true, "msg": "合成成功"}
 
 # ---------- 升级（消耗五种光，每100级换道具重新计算） ----------
@@ -152,6 +154,8 @@ func upgrade(coll_id: String, batch: bool = false) -> Dictionary:
 		return {"ok": false, "msg": "道具不足或已满级"}
 	# 【新增】二批：升级后把新增等级对应的友好/才华差值发给匹配挚友
 	apply_friend_bonus_delta(coll_id, old_lv, get_star(coll_id))
+	# 【新增】三批：升级差值店员写入绑定店铺
+	apply_shop_staff_delta(coll_id, old_lv, get_star(coll_id))
 	return {"ok": true, "msg": "升级 %d 级" % upgraded}
 
 # ---------- 晋升（升星，消耗碎片） ----------
@@ -182,6 +186,8 @@ func star_up(coll_id: String) -> Dictionary:
 	_owned[coll_id].star = get_star(coll_id) + 1
 	# 【新增】二批：升星后把新增星数对应的友好/才华差值发给匹配挚友
 	apply_friend_bonus_delta(coll_id, get_level(coll_id), old_star)
+	# 【新增】三批：升星差值店员写入绑定店铺
+	apply_shop_staff_delta(coll_id, get_level(coll_id), old_star)
 	return {"ok": true, "msg": "晋升成功"}
 
 # ---------- 自选门客 ----------
@@ -478,3 +484,63 @@ func get_soul_suit_percent(category: String, inspired: int) -> float:
 			continue
 		pct += float(suit.get("per_tier", 0)) * int(_suits.get(sid, 0)) / 100.0 * float(inspired)
 	return pct
+
+# ---------- 套装效果·三批接入（2026-09-09） ----------
+
+# 虫师技能等级上限套装：全体（无category）+职业两类，返回放宽的军衔阶数（每档=required降1阶=同军衔多升1级）
+func get_worm_cap_bonus(category: String) -> int:
+	var total = 0
+	for sid in get_suits().keys():
+		var suit: Dictionary = get_suits()[sid]
+		if suit.get("kind", "") != "worm_cap":
+			continue
+		var suit_cat: String = str(suit.get("category", ""))
+		# 无category=全体虫师；有category=仅该职业门客（职业读全量配置，不吃存档快照）
+		if suit_cat != "" and suit_cat != category:
+			continue
+		total += int(suit.get("per_tier", 0)) * int(_suits.get(sid, 0))
+	return total
+
+# 徒弟套装（市贾/童忆）：培养阅历+徒弟赚速 共用放大系数（per_tier 为百分点，返回小数）
+func get_apprentice_suit_pct() -> float:
+	var pct = 0.0
+	for sid in get_suits().keys():
+		var suit: Dictionary = get_suits()[sid]
+		if suit.get("kind", "") != "apprentice_pct":
+			continue
+		pct += float(suit.get("per_tier", 0)) * int(_suits.get(sid, 0))
+	return pct / 100.0
+
+# 谈心缘分套装（凝冰）：返回小数放大系数（per_tier 为百分点）
+func get_chat_bond_pct() -> float:
+	var pct = 0.0
+	for sid in get_suits().keys():
+		var suit: Dictionary = get_suits()[sid]
+		if suit.get("kind", "") != "chat_bond_pct":
+			continue
+		pct += float(suit.get("per_tier", 0)) * int(_suits.get(sid, 0))
+	return pct / 100.0
+
+# ---------- 店员数量15件（c220-c234，写入式，2026-09-09） ----------
+# 映射表：藏品id → 店铺id（data/shops.json 的键，15店已逐一核对）
+const SHOP_STAFF_COLLECTIONS := {
+	"c220": "xiangliao_pu", "c221": "changle_fang", "c222": "yi_zhan", "c223": "dang_pu",
+	"c224": "ke_zhan", "c225": "yao_pu", "c226": "shuoshu_tan", "c227": "jiu_fang",
+	"c228": "jiu_si", "c229": "yi_guan", "c230": "chema_hang", "c231": "cha_si",
+	"c232": "chengyi_pu", "c233": "suanming_tan", "c234": "miaoyin_fang",
+}
+
+# 查询：藏品绑定的店铺id（无绑定返回空串，视图显示用）
+func get_shop_staff_shop(coll_id: String) -> String:
+	return SHOP_STAFF_COLLECTIONS.get(coll_id, "")
+
+# 店员数量差值发放：与 apply_friend_bonus_delta 同套路（只加不减），挂钩 upgrade/star_up/synthesize 三处
+func apply_shop_staff_delta(coll_id: String, old_lv: int, old_star: int) -> void:
+	var shop_id: String = SHOP_STAFF_COLLECTIONS.get(coll_id, "")
+	if shop_id == "" or not g.shops.has(shop_id):
+		return
+	var base: Dictionary = get_collection(coll_id).get("base", {})
+	var delta = int(base.get("per_level", 0)) * (get_level(coll_id) - old_lv) + int(base.get("per_star", 0)) * (get_star(coll_id) - old_star)
+	if delta <= 0:
+		return
+	g.shops[shop_id].staff = int(g.shops[shop_id].get("staff", 0)) + delta

@@ -185,7 +185,7 @@ func chat_with_friend(once: bool = true) -> Dictionary:
 		var bless = _prepare_chat_adoption(fid)
 		fid = bless.target
 		var f = g.friends[fid]
-		f.bond += f.talent
+		f.bond += int(round(f.talent * (1.0 + g.collection_system.get_chat_bond_pct())))   # 【改】三批：谈心缘分+藏品套装%（凝冰）
 		# 有空位则与本次谈心的挚友领养一位徒弟（观音生效时必双胞胎）
 		var n = g.adopt_apprentice(fid, bless.force_twin)
 		results.append({"friend_id": fid, "name": f.name, "gain": f.talent, "adopted": n > 0, "twin": n == 2, "yuelao": bless.yuelao, "guanyin": bless.guanyin})
@@ -198,7 +198,7 @@ func chat_with_friend(once: bool = true) -> Dictionary:
 			var bless = _prepare_chat_adoption(fid)
 			fid = bless.target
 			var f = g.friends[fid]
-			f.bond += f.talent
+			f.bond += int(round(f.talent * (1.0 + g.collection_system.get_chat_bond_pct())))   # 【改】三批：谈心缘分+藏品套装%（凝冰）
 			# 一键谈心：有几个空位，前几位挚友就各领养一位
 			var n = g.adopt_apprentice(fid, bless.force_twin)
 			results.append({"friend_id": fid, "name": f.name, "gain": f.talent, "adopted": n > 0, "twin": n == 2, "yuelao": bless.yuelao, "guanyin": bless.guanyin})
@@ -211,7 +211,7 @@ func chat_with_friend(once: bool = true) -> Dictionary:
 func chat_with_specific_friend(friend_id: String) -> Dictionary:
 	if not g.friends.has(friend_id): return {"ok": false, "reason": "未拥有该挚友"}
 	var f = g.friends[friend_id]
-	f.bond += f.talent
+	f.bond += int(round(f.talent * (1.0 + g.collection_system.get_chat_bond_pct())))   # 【改】三批：谈心缘分+藏品套装%（凝冰）
 	# 【新增】观音祝福：有徒弟空位才生效并消耗一层
 	var force_twin = false
 	var guanyin_used = false
