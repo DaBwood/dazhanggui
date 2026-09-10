@@ -118,7 +118,7 @@ export default {
 				const now = Date.now()
 				// 记录结构（客户端约定，服务端只存）：等级/财富/经验/成员/议事厅/人机结算日
 				const record = {
-					"name": name, "owner": username, "created": int(now),
+					"name": name, "owner": username, "created": now,   // 【修】误写 GDScript 的 int()，JS 无此函数导致 500
 					"level": 1, "exp": 0, "wealth": 0,
 					"members": [{ "user": username, "name": username, "role": "owner" }],
 					"council": {}, "bot_settle": "",
