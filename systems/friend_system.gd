@@ -282,9 +282,6 @@ func gift_friend(friend_id: String, item_id: String) -> bool:
 		"rouge":
 			g.items.rouge -= 1
 			f.talent += 1
-		"energy_pill":
-			g.items.energy_pill -= 1
-			g.energy = min(100, g.energy + 3)
 		"tong_zan":
 			# 铜簪：友好度+2
 			f.friendly += 2

@@ -10,9 +10,16 @@
 	"squad_size": 6,
 	"npc_power_min": 0.8,
 	"npc_power_max": 1.3,
-	"points_rate_win": 0.01,
-	"yin_rate_win": 0.005,
-	"lose_reward_pct": 0.3
+	"lose_reward_pct": 0.3,
+	"power_bases": [
+	  [0, 100],
+	  [10000, 1000],
+	  [100000, 2000],
+	  [1000000, 3000],
+	  [10000000, 4000],
+	  [100000000, 5000],
+	  [10000000000, 6000]
+	]
   },
   "exchange": [
 	{
