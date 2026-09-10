@@ -587,6 +587,8 @@ var _collection_configs: Dictionary = {}
 
 var guild_system   # 【新增】商会系统（逻辑在 systems/guild_system.gd）
 var _guild_configs: Dictionary = {}   # 【新增】商会配置（guild.json，由 _load_all_configs 加载）
+
+var mail_system   # 【新增】邮件系统（逻辑在 systems/mail_system.gd，纯本地存档）
 # ==================== 初始化 ====================
 # 初始化：创建各子系统（纯逻辑模块，持有本中枢引用），再加载全部配置
 func _init():
@@ -616,6 +618,7 @@ func _init():
 	talent_system = TalentSystem.new(self)   # 【新增】天赋系统
 	collection_system = CollectionSystem.new(self)
 	guild_system = GuildSystem.new(self)   # 【新增】商会系统
+	mail_system = MailSystem.new(self)
 	
 	_load_all_configs()
 
@@ -811,7 +814,7 @@ func save_game():
 		stage_system, item_system, travel_system, charity_system, lottery_system, mall_system,
 		manor_system,courtyard_system,war_system,goal_system,fishing_system,soul_system,
 		soulpower_system,cuzhi_system,guardian_system,token_system,fengzi_system,talent_system,
-		collection_system,guild_system,]
+		collection_system,guild_system,mail_system,]
 	for sys in systems:
 		save_data.merge(sys.get_save_data(), true)
 	var file = FileAccess.open(save_path, FileAccess.WRITE)

@@ -94,6 +94,7 @@ func get_record() -> Dictionary:
 func ensure_fresh() -> Dictionary:
 	if cache.is_empty(): return {}
 	_bot_catchup(cache)
+	_trade_daily_reset(cache)   # 【新增】商贸：跨天清空中途路线（用户拍板：今天开第二天没走完也刷新）
 	return cache
 
 # ============ 日期工具 ============
@@ -301,3 +302,192 @@ func buy(row_id: String) -> Dictionary:
 	_record_buy(row_id, entry)
 	g.save_game()
 	return {"ok": true, "entry": entry}
+
+
+# ============================================================
+# 商贸（2026-09-10 商会第二批，用户拍板规则）
+# 流程：会长/副会长耗财富开启 → 成员委任门客（可多条路线、可多个门客，门客不锁定）
+#       → 全队委任赚速总和≥要求即锁定（不可撤回、不再复查）→ 倒计时结束
+#       → 任何人打开商会时惰性结算：参与成员各收一封邮件（固定贡献按占比分+随机池人人平等抽）
+# 每天刷新：今天开启的路线第二天未完成也清空（set_record/ensure_fresh 时按日期判）
+# 商会经验全入共享记录（exp_done 标记防重）；个人贡献在发自己邮件时入自己存档
+# 数据全在共享 record["trades"]（旧存档无该字段，读时全走默认值零迁移）：
+#   trades = {"date": "2026-09-10", "active": {trade_id: {
+#     "opened_by", "opened_ts", "assigns": {user: {"heroes": {hero_id: 赚速快照}, "total": 总和}},
+#     "locked", "lock_ts", "end_ts", "plan": {user: 贡献份额}, "exp_done"}}}
+# ============================================================
+
+# 取单条路线配置
+func get_trade_conf(trade_id: String) -> Dictionary:
+	for e in get_trade_list():
+		if str(e.get("id", "")) == trade_id:
+			return e
+	return {}
+
+func _trades_of(record: Dictionary) -> Dictionary:
+	var t: Dictionary = record.get("trades", {})
+	if not (t is Dictionary):
+		t = {}
+	if not t.has("active") or not (t["active"] is Dictionary):
+		t["active"] = {}
+	return t
+
+# 每日刷新：日期变了清空全部进行中（不补发、不结算，用户拍板）
+func _trade_daily_reset(record: Dictionary) -> void:
+	var t = _trades_of(record)
+	if str(t.get("date", "")) != _today():
+		record["trades"] = {"date": _today(), "active": {}}
+
+# 路线状态：closed=未开启 assigning=委任中 running=已锁定倒计时 done=到期待结算
+func get_trade_status(trade_id: String) -> String:
+	if cache.is_empty(): return "closed"
+	var active: Dictionary = _trades_of(cache).get("active", {})
+	if not active.has(trade_id): return "closed"
+	var t: Dictionary = active[trade_id]
+	if not bool(t.get("locked", false)): return "assigning"
+	if int(t.get("end_ts", 0)) > Time.get_unix_time_from_system(): return "running"
+	return "done"
+
+# 是否商会成员（members 含会长本人；人机有 bot 标记）
+func _is_member(record: Dictionary, user: String) -> bool:
+	for m in record.get("members", []):
+		if bool(m.get("bot", false)):
+			continue
+		if str(m.get("user", "")) == user:
+			return true
+	return false
+
+# ---------- 开启路线（会长/副会长，耗财富） ----------
+func open_trade(trade_id: String) -> Dictionary:
+	var conf = get_trade_conf(trade_id)
+	if conf.is_empty(): return {"ok": false, "reason": "路线不存在"}
+	var record = ensure_fresh()
+	if record.is_empty(): return {"ok": false, "reason": "商会数据未加载"}
+	if not is_officer(record): return {"ok": false, "reason": "只有会长/副会长可以开启"}
+	if int(record.get("level", 1)) < int(conf.get("level", 1)):
+		return {"ok": false, "reason": "商会%d级解锁该路线" % int(conf.level)}
+	var trades = _trades_of(record)
+	if trades["active"].has(trade_id):
+		return {"ok": false, "reason": "该路线已在进行中"}
+	var cost = float(conf.get("cost", 0))
+	if float(record.get("wealth", 0)) < cost:
+		return {"ok": false, "reason": "商会财富不足（需要%d）" % int(cost)}
+	record["wealth"] = float(record.get("wealth", 0)) - cost
+	trades["active"][trade_id] = {
+		"opened_by": my_user,
+		"opened_ts": Time.get_unix_time_from_system(),
+		"assigns": {},
+		"locked": false, "lock_ts": 0, "end_ts": 0,
+		"plan": {}, "exp_done": false,
+	}
+	return {"ok": true, "conf": conf}
+
+# ---------- 委任门客（整体替换我的委任；提交时算赚速快照，达标即锁） ----------
+func assign_trade(trade_id: String, hero_ids: Array) -> Dictionary:
+	var record = ensure_fresh()
+	if record.is_empty(): return {"ok": false, "reason": "商会数据未加载"}
+	if my_user == "": return {"ok": false, "reason": "请先登录账号"}
+	if not _is_member(record, my_user): return {"ok": false, "reason": "不是商会成员"}
+	var trades = _trades_of(record)
+	if not trades["active"].has(trade_id): return {"ok": false, "reason": "该路线未开启"}
+	var t: Dictionary = trades["active"][trade_id]
+	if bool(t.get("locked", false)): return {"ok": false, "reason": "路线已锁定，无法委任"}
+	var heroes := {}
+	var total := 0.0
+	for hid in hero_ids:
+		var s := str(hid)
+		if heroes.has(s): continue   # 去重
+		if not g.heroes.has(s): return {"ok": false, "reason": "未拥有门客，请刷新后重试"}
+		var inc := float(HeroData.get_income(g, s))   # 赚速快照（提交时刻）
+		heroes[s] = inc
+		total += inc
+	t["assigns"][my_user] = {"heroes": heroes, "total": total}
+	_try_lock(record, trade_id)
+	return {"ok": true, "total": total, "locked": bool(t.get("locked", false))}
+
+# 撤回我的委任（仅锁定前）
+func withdraw_trade(trade_id: String) -> Dictionary:
+	var record = ensure_fresh()
+	if record.is_empty(): return {"ok": false, "reason": "商会数据未加载"}
+	var trades = _trades_of(record)
+	if not trades["active"].has(trade_id): return {"ok": false, "reason": "该路线未开启"}
+	var t: Dictionary = trades["active"][trade_id]
+	if bool(t.get("locked", false)): return {"ok": false, "reason": "路线已锁定，不可撤回"}
+	t["assigns"].erase(my_user)
+	return {"ok": true}
+
+# 达标判定与锁定：全队委任赚速总和≥require → 锁死+算分配方案
+func _try_lock(record: Dictionary, trade_id: String) -> void:
+	var trades = _trades_of(record)
+	if not trades["active"].has(trade_id): return
+	var t: Dictionary = trades["active"][trade_id]
+	if bool(t.get("locked", false)): return
+	var conf = get_trade_conf(trade_id)
+	var total := 0.0
+	for u in t["assigns"].keys():
+		total += float(t["assigns"][u].get("total", 0))
+	if total < float(conf.get("require", 0)):
+		return
+	t["locked"] = true
+	t["lock_ts"] = Time.get_unix_time_from_system()
+	t["end_ts"] = int(t["lock_ts"]) + int(float(conf.get("hours", 0)) * 3600)
+	# 分配方案：贡献按委任赚速占比分，除不尽余数给占比最大者
+	var plan := {}
+	var contrib := int(conf.get("contrib", 0))
+	var given := 0
+	var best_u := ""
+	var best_t := -1.0
+	for u in t["assigns"].keys():
+		var share := int(contrib * float(t["assigns"][u].get("total", 0)) / total)
+		plan[u] = share
+		given += share
+		if float(t["assigns"][u].get("total", 0)) > best_t:
+			best_t = float(t["assigns"][u].get("total", 0))
+			best_u = str(u)
+	if best_u != "" and given < contrib:
+		plan[best_u] = int(plan[best_u]) + (contrib - given)
+	t["plan"] = plan
+
+# ---------- 惰性结算：到期路线发邮件（在 guild_view 拉取后调用，随后 guild_save 回写共享记录） ----------
+# 只结算"我自己"那份（邮件本地）；商会经验全入共享记录一次（exp_done）
+# 幂等：邮件 id = guild_trade_路线id_日期，本地已存在则跳过（防重领奖）
+func settle_due_trades() -> Dictionary:
+	var record = cache
+	if record.is_empty(): return {"ok": false, "reason": "无缓存"}
+	var trades = _trades_of(record)
+	var now := Time.get_unix_time_from_system()
+	var settled: Array = []
+	for trade_id in trades["active"].keys():
+		var t: Dictionary = trades["active"][trade_id]
+		if not bool(t.get("locked", false)): continue
+		if int(t.get("end_ts", 0)) > now: continue
+		var conf = get_trade_conf(trade_id)
+		# 商会经验：全入（共享标记防重，任一成员打开都会补）
+		if not bool(t.get("exp_done", false)):
+			_apply_exp(record, float(conf.get("exp", 0)))
+			t["exp_done"] = true
+		# 我的邮件：固定贡献按方案 + 随机池人人平等抽（次数=耗时÷0.5h）
+		if my_user != "" and t["assigns"].has(my_user):
+			var date_str := str(trades.get("date", ""))
+			var mail_id := "guild_trade_%s_%s" % [trade_id, date_str]
+			if not g.mail_system.has_mail(mail_id):
+				var draws := {}
+				var pool: Array = g._guild_configs.get("trade_random_pool", [])
+				var draw_hours := float(get_settings().get("trade_draw_hours", 0.5))
+				var n := 0
+				if draw_hours > 0:
+					n = int(float(conf.get("hours", 0)) / draw_hours)
+				for i in n:
+					if pool.is_empty(): break
+					var it := str(pool[randi() % pool.size()])
+					draws[it] = draws.get(it, 0) + 1
+				var my_share := int(t.get("plan", {}).get(my_user, 0))
+				if my_share > 0:
+					guild_contribution += my_share
+				g.mail_system.add_mail(
+					mail_id,
+					"商贸完成·%s" % str(conf.get("name", trade_id)),
+					"路线【%s】贸易完成，个人贡献 +%d（已入账），随机货品见附件。" % [str(conf.get("name", trade_id)), my_share],
+					draws)
+				settled.append(trade_id)
+	return {"ok": true, "settled": settled}

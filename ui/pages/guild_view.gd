@@ -73,10 +73,10 @@ func _build_shell():
 	tab_box.alignment = BoxContainer.ALIGNMENT_CENTER
 	tab_box.add_theme_constant_override("separation", 8)
 	vb.add_child(tab_box)
-	for t in [["overview", "总览"], ["council", "议事厅"], ["build", "建设"], ["shop", "商店"], ["manage", "管理"]]:
+	for t in [["overview", "总览"], ["council", "议事厅"], ["build", "建设"], ["trade", "商贸"], ["shop", "商店"], ["manage", "管理"]]:   # 【改】加商贸页签
 		var b = Button.new()
 		b.text = t[1]
-		b.custom_minimum_size = Vector2(104, 40)
+		b.custom_minimum_size = Vector2(88, 40)   # 【改】6页签收窄防溢出（600宽）
 		b.pressed.connect(_on_tab.bind(t[0]))
 		tab_box.add_child(b)
 	var scroll = ScrollContainer.new()
@@ -114,7 +114,8 @@ func _refresh():
 			_set_hint("商会加载失败：" + str(d.get("msg", "网络错误")) + "\n点左上角返回后重新进入商会重试")
 			return
 		data.guild_system.set_record(d.get("record", {}), c.net.username)
-		# 人机补结算可能有改动，顺手回写（幂等，重复写无害）
+		# 【新增】商贸到期惰性结算（发邮件/入经验，幂等），随后与人机补结算一起回写（后存覆盖先存）
+		data.guild_system.settle_due_trades()
 		c.net.guild_save(data.guild_system.guild_id, data.guild_system.cache, func(_c2, _d2): pass)
 		_update_header(data.guild_system.cache)
 		_render())
@@ -139,6 +140,7 @@ func _render():
 	match _tab:
 		"council": _render_council()
 		"build": _render_build()
+		"trade": _render_trade()   # 【新增】商贸
 		"shop": _render_shop()
 		"manage": _render_manage()
 		_: _render_overview()
@@ -520,3 +522,218 @@ func _save_and_render():
 			c._show_stage_hint("同步失败：" + str(d2.get("msg", "网络错误")) + "（下次进入商会会自动补齐）")
 		_update_header(data.guild_system.cache)
 		_render())
+
+
+# ============ 商贸（2026-09-10 商会第二批） ============
+# 规则（用户拍板）：会长/副会长耗财富开启（可全开）→ 成员委任门客（可多条路线、可多个门客）
+# → 全队委任赚速总和≥要求即锁定（不可撤回）→ 倒计时结束发邮件（贡献按占比分，随机池人人平等抽）
+# 每天刷新：今天开启第二天没走完也清空；锁定后不可再加人；开启者无额外奖励；人机不参与
+func _render_trade():
+	var list = _list()
+	var gs = data.guild_system
+	var record = gs.cache
+	var now := Time.get_unix_time_from_system()
+	var tip = Label.new()
+	tip.text = "商贸：会长/副会长耗财富开启 → 成员委任门客 → 全队赚速达标锁定 → 倒计时结束奖励发邮件（邮件在府邸【邮件】领取）"
+	tip.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+	tip.add_theme_font_size_override("font_size", 13)
+	tip.add_theme_color_override("font_color", Color("#aaaaaa"))
+	list.add_child(tip)
+	for conf in gs.get_trade_list():
+		@warning_ignore("narrowing_conversion")
+		list.add_child(_make_trade_card(conf, record, now))
+
+func _make_trade_card(conf: Dictionary, record: Dictionary, now: int) -> PanelContainer:
+	var gs = data.guild_system
+	var tid := str(conf.get("id", ""))
+	var status: String = gs.get_trade_status(tid)   # 【修】动态类型变量返回值显式标注，:=推断不出
+	var active: Dictionary = gs._trades_of(record).get("active", {}).get(tid, {})
+	var card = PanelContainer.new()
+	var style = StyleBoxFlat.new()
+	style.bg_color = Color("#2a2640")
+	style.corner_radius_top_left = 6
+	style.corner_radius_top_right = 6
+	style.corner_radius_bottom_left = 6
+	style.corner_radius_bottom_right = 6
+	card.add_theme_stylebox_override("panel", style)
+	var vb = VBoxContainer.new()
+	vb.add_theme_constant_override("separation", 4)
+	card.add_child(vb)
+	# 标题行：名称 + 状态
+	var head = HBoxContainer.new()
+	head.add_theme_constant_override("separation", 8)
+	vb.add_child(head)
+	var name_lbl = Label.new()
+	name_lbl.text = str(conf.get("name", tid))
+	name_lbl.add_theme_font_size_override("font_size", 17)
+	name_lbl.add_theme_color_override("font_color", Color("#ffd700"))
+	head.add_child(name_lbl)
+	var st_lbl = Label.new()
+	match status:
+		"assigning": st_lbl.text = "委任中"
+		"running": st_lbl.text = "已锁定"
+		"done": st_lbl.text = "已完成"
+		_: st_lbl.text = "未开启"
+	st_lbl.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	st_lbl.horizontal_alignment = HORIZONTAL_ALIGNMENT_RIGHT
+	match status:
+		"assigning": st_lbl.add_theme_color_override("font_color", Color("#66ccff"))
+		"running": st_lbl.add_theme_color_override("font_color", Color("#66ff66"))
+		"done": st_lbl.add_theme_color_override("font_color", Color("#aaaaaa"))
+	head.add_child(st_lbl)
+	# 信息行
+	var info = Label.new()   # 【修】Godot4 的 Label 没有 bbcode_enabled（那是 RichTextLabel 的），不用颜色标签
+	var total := 0.0
+	var mine := 0.0
+	var my_heroes := ""
+	if status != "closed":
+		for u in active.get("assigns", {}).keys():
+			total += float(active["assigns"][u].get("total", 0))
+		var my_entry: Dictionary = active.get("assigns", {}).get(c.net.username, {})
+		mine = float(my_entry.get("total", 0))
+		var parts := []
+		for hid in my_entry.get("heroes", {}).keys():
+			parts.append(str(data.heroes.get(hid, {}).get("name", hid)))
+		my_heroes = "、".join(parts)
+	var req := float(conf.get("require", 0))
+	info.text = "耗时%s小时 ｜ 要求赚速 %s ｜ 当前 %s ｜ 固定贡献 %d + 经验 %d" % [
+		str(conf.get("hours", 0)), c.format_number(req), c.format_number(total),
+		int(conf.get("contrib", 0)), int(conf.get("exp", 0))]
+	info.add_theme_font_size_override("font_size", 13)
+	vb.add_child(info)
+	# 我的委任情况
+	if status == "assigning" and my_heroes != "":
+		var my_lbl = Label.new()
+		my_lbl.text = "我的委任：%s（赚速 %s）" % [my_heroes, c.format_number(mine)]
+		my_lbl.add_theme_font_size_override("font_size", 13)
+		my_lbl.add_theme_color_override("font_color", Color("#66ccff"))
+		vb.add_child(my_lbl)
+	# 进行中：剩余时间 / 完成提示
+	if status == "running":
+		var remain := int(active.get("end_ts", 0)) - now
+		if remain < 0: remain = 0
+		var t_lbl = Label.new()
+		@warning_ignore("integer_division")
+		t_lbl.text = "剩余 %d小时%02d分（锁定后不可撤回，倒计时结束自动发邮件）" % [remain / 3600, (remain % 3600) / 60]
+		t_lbl.add_theme_font_size_override("font_size", 13)
+		t_lbl.add_theme_color_override("font_color", Color("#66ff66"))
+		vb.add_child(t_lbl)
+	elif status == "done":
+		var d_lbl = Label.new()
+		d_lbl.text = "贸易完成，奖励已发邮件（府邸【邮件】领取）"
+		d_lbl.add_theme_font_size_override("font_size", 13)
+		d_lbl.add_theme_color_override("font_color", Color("#aaaaaa"))
+		vb.add_child(d_lbl)
+	# 按钮行
+	var btns = HBoxContainer.new()
+	btns.add_theme_constant_override("separation", 8)
+	vb.add_child(btns)
+	var lv := int(record.get("level", 1))
+	var lv_need := int(conf.get("level", 1))
+	if status == "closed":
+		if lv < lv_need:
+			var lock_lbl = Label.new()
+			lock_lbl.text = "商会%d级解锁" % lv_need
+			lock_lbl.add_theme_color_override("font_color", Color("#888888"))
+			btns.add_child(lock_lbl)
+		elif gs.is_officer(record):
+			var open_btn = Button.new()
+			open_btn.text = "开启（财富 %s）" % c.format_number(float(conf.get("cost", 0)))
+			open_btn.pressed.connect(_on_trade_open.bind(tid))
+			btns.add_child(open_btn)
+		else:
+			var wait_lbl = Label.new()
+			wait_lbl.text = "待会长/副会长开启"
+			wait_lbl.add_theme_color_override("font_color", Color("#888888"))
+			btns.add_child(wait_lbl)
+	elif status == "assigning":
+		var assign_btn = Button.new()
+		assign_btn.text = "委任门客"
+		assign_btn.pressed.connect(_on_trade_assign.bind(tid))
+		btns.add_child(assign_btn)
+		if mine > 0:
+			var wd_btn = Button.new()
+			wd_btn.text = "撤回委任"
+			wd_btn.pressed.connect(_on_trade_withdraw.bind(tid))
+			btns.add_child(wd_btn)
+	return card
+
+# ---------- 商贸操作 ----------
+func _on_trade_open(trade_id: String):
+	var r = data.guild_system.open_trade(trade_id)
+	if not r.get("ok", false):
+		c._show_stage_hint(str(r.get("reason", "开启失败")))
+		return
+	c._show_stage_hint("已开启：%s" % str(r.conf.get("name", trade_id)))
+	_save_and_render()
+
+func _on_trade_withdraw(trade_id: String):
+	var r = data.guild_system.withdraw_trade(trade_id)
+	if not r.get("ok", false):
+		c._show_stage_hint(str(r.get("reason", "撤回失败")))
+		return
+	c._show_stage_hint("已撤回委任")
+	_save_and_render()
+
+# 委任弹窗：多选门客（CheckBox+meta 读回，避开闭包捕获坑），确认时整体替换我的委任
+func _on_trade_assign(trade_id: String):
+	var gs = data.guild_system
+	var conf = gs.get_trade_conf(trade_id)
+	var popup = c._create_base_popup("委任门客·%s" % str(conf.get("name", trade_id)), Vector2(540, 560))
+	popup.name = "GuildTradeAssign"
+	var vb: VBoxContainer = popup.get_child(0)
+	var tip = Label.new()
+	tip.text = "勾选门客后点确认；全队赚速达标即锁定，锁定后不可撤回。"
+	tip.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+	tip.add_theme_font_size_override("font_size", 13)
+	tip.add_theme_color_override("font_color", Color("#aaaaaa"))
+	vb.add_child(tip)
+	# 当前已委任（回显勾选）
+	var cur_heroes: Dictionary = gs._trades_of(gs.cache).get("active", {}).get(trade_id, {}).get("assigns", {}).get(c.net.username, {}).get("heroes", {})
+	# 列表（按赚速降序）
+	var scroll = ScrollContainer.new()
+	scroll.size_flags_vertical = Control.SIZE_EXPAND_FILL
+	vb.add_child(scroll)
+	var lst = VBoxContainer.new()
+	lst.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	lst.add_theme_constant_override("separation", 2)
+	scroll.add_child(lst)
+	var hero_ids: Array = data.heroes.keys()   # 【修】动态类型变量返回值显式标注，:=推断不出
+	hero_ids.sort_custom(func(a, b): return HeroData.get_income(data, str(a)) > HeroData.get_income(data, str(b)))
+	for hid in hero_ids:
+		var s := str(hid)
+		var cb = CheckBox.new()
+		cb.text = "%s ｜ 赚速 %s" % [str(data.heroes.get(s, {}).get("name", s)), c.format_number(float(HeroData.get_income(data, s)))]
+		cb.button_pressed = cur_heroes.has(s)
+		cb.set_meta("hid", s)
+		lst.add_child(cb)
+	# 确认/取消
+	var btns = HBoxContainer.new()
+	btns.alignment = BoxContainer.ALIGNMENT_CENTER
+	btns.add_theme_constant_override("separation", 12)
+	vb.add_child(btns)
+	var ok_btn = Button.new()
+	ok_btn.text = "确认委任"
+	ok_btn.custom_minimum_size = Vector2(120, 40)
+	ok_btn.pressed.connect(func():
+		var picked: Array = []
+		for child in lst.get_children():
+			if child is CheckBox and child.button_pressed:
+				picked.append(str(child.get_meta("hid")))
+		var r = gs.assign_trade(trade_id, picked)
+		if not r.get("ok", false):
+			c._show_stage_hint(str(r.get("reason", "委任失败")))
+			return
+		popup.queue_free()
+		if r.get("locked", false):
+			c._show_stage_hint("全队赚速达标，路线已锁定！")
+		else:
+			c._show_stage_hint("已委任 %d 名门客（全队赚速还差 %s 达标）" % [picked.size(), c.format_number(float(conf.get("require", 0)) - float(r.get("total", 0)))])
+		_save_and_render())
+	btns.add_child(ok_btn)
+	var cancel_btn = Button.new()
+	cancel_btn.text = "取消"
+	cancel_btn.custom_minimum_size = Vector2(120, 40)
+	cancel_btn.pressed.connect(func(): popup.queue_free())
+	btns.add_child(cancel_btn)
+	c.add_child(popup)

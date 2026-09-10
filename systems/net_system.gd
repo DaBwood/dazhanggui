@@ -142,8 +142,8 @@ func download_save():
 
 # ============ 商会（guilds 表，后存覆盖先存，服务端不做数值校验） ============
 # cb(code, dict)——与 _request 回调签名一致
-func guild_create(name: String, cb: Callable):
-	_request("/guild/create", {"name": name}, cb)
+func guild_create(p_name: String, cb: Callable):
+	_request("/guild/create", {"name": p_name}, cb)
 
 func guild_get(guild_id: String, cb: Callable):
 	_request("/guild/get", {"guild_id": guild_id}, cb)

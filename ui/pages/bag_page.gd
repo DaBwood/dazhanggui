@@ -16,6 +16,19 @@ var _pending_ginseng_type: String = ""
 #【新增】固定为1的道具类型：数量锁定单次开启（门客/挚友盒解锁对象唯一；促织架按ID唯一存放）
 const SINGLE_USE_TYPES: Array = ["hero_box", "friend_box", "wushuang_cuzhi_box"]
 
+# 【新增】背包底部栏当前页（2026-09-10 商会第二批）：item=物品 compose=合成
+var _bag_tab: String = "item"
+
+# 【新增】合成配方：小资质丹20合1资质丹；残破缀玉20合1指定缀玉（用户拍板）
+const COMPOSE_RECIPES: Array = [
+	{"output": "aptitude_pill", "material": "small_aptitude_pill", "ratio": 20},
+	{"output": "panzhu_zhuiyu", "material": "canpo_zhuiyu", "ratio": 20},
+	{"output": "zhimeng_zhuiyu", "material": "canpo_zhuiyu", "ratio": 20},
+	{"output": "yingge_zhuiyu", "material": "canpo_zhuiyu", "ratio": 20},
+	{"output": "luohua_zhuiyu", "material": "canpo_zhuiyu", "ratio": 20},
+	{"output": "liuyun_zhuiyu", "material": "canpo_zhuiyu", "ratio": 20},
+]
+
 # 由 game_controller._ready 创建本模块时注入引用
 func _init(p_c):
 	c = p_c
@@ -26,17 +39,49 @@ func _init(p_c):
 func generate_bag_list():
 	if not c.has_node("PageContainer/BagPage"): return
 	var bag_page = c.get_node("PageContainer/BagPage")
-	
-	# 【改】BagScroll 填满 BagPage，BagGrid 必须放在 BagScroll 内部
+
+	# 【新增】底部栏：物品/合成切换
+	# 【修】BagPage 是 0 尺寸空壳（全工程布局由 _apply_portrait_layout 显式摆位，见 game_controller 2373行）
+	# 不能依赖锚点，本页自管：滚动区与底部栏都用显式 position/size，每次生成重算（窗口缩放后下次生成自愈）
+	var vs: Vector2 = c.get_viewport_rect().size
+	var content_h: float = vs.y - 110 - 48   # 110=顶栏50+底栏60（与布局函数同公式），48=本栏高度
+	var bar: HBoxContainer
+	if bag_page.has_node("BagBottomBar"):
+		bar = bag_page.get_node("BagBottomBar")
+	else:
+		bar = HBoxContainer.new()
+		bar.name = "BagBottomBar"
+		bar.add_theme_constant_override("separation", 8)
+		bag_page.add_child(bar)
+	bar.set_anchors_preset(Control.PRESET_TOP_LEFT)
+	bar.position = Vector2(0, content_h)
+	bar.size = Vector2(vs.x, 48)
+	# 每次重建按钮（当前页高亮状态可能变化）
+	for child in bar.get_children():
+		child.queue_free()
+	for tab in [["item", "物品"], ["compose", "合成"]]:
+		var tb = Button.new()
+		tb.text = tab[1]
+		tb.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+		tb.mouse_filter = Control.MOUSE_FILTER_PASS   # 滚动穿透，同格子按钮
+		var is_active: bool = _bag_tab == tab[0]
+		tb.add_theme_color_override("font_color", Color(1.0, 0.85, 0.3) if is_active else Color(0.65, 0.65, 0.65))
+		tb.pressed.connect(_on_bag_tab.bind(tab[0]))
+		bar.add_child(tb)
+
+	# 【改】BagScroll 显式铺满内容区（底部给切换栏留48px）；BagGrid 必须放在 BagScroll 内部
+	# 【修】同上：空壳页不能依赖锚点，显式 position/size
 	var scroll: ScrollContainer
 	if bag_page.has_node("BagScroll"):
 		scroll = bag_page.get_node("BagScroll")
 	else:
 		scroll = ScrollContainer.new()
 		scroll.name = "BagScroll"
-		scroll.set_anchors_preset(Control.PRESET_FULL_RECT)
 		bag_page.add_child(scroll)
-	
+	scroll.set_anchors_preset(Control.PRESET_TOP_LEFT)
+	scroll.position = Vector2.ZERO
+	scroll.size = Vector2(vs.x, content_h)
+
 	# 自动创建 GridContainer（如果没有），作为 ScrollContainer 的子节点
 	var grid: GridContainer
 	if scroll.has_node("BagGrid"):
@@ -49,11 +94,25 @@ func generate_bag_list():
 		grid.add_theme_constant_override("h_separation", 8)
 		grid.add_theme_constant_override("v_separation", 8)
 		scroll.add_child(grid)
-	
+
+	_fill_bag_grid(grid)
+
+# 【新增】底部栏切换
+func _on_bag_tab(tab: String):
+	if _bag_tab == tab:
+		return
+	_bag_tab = tab
+	generate_bag_list()
+
+# 背包格子内容：按当前页签填充
+func _fill_bag_grid(grid: GridContainer):
 	# 清空旧格子
 	for child in grid.get_children():
 		child.queue_free()
-	
+	if _bag_tab == "compose":
+		_fill_compose_grid(grid)
+		return
+
 	# 【改】为每种已拥有物品生成简洁按钮，只显示名称；数量0不进背包
 	for item_id in data.ITEM_CONFIG.keys():
 		var cfg = data.ITEM_CONFIG[item_id]
@@ -69,35 +128,8 @@ func generate_bag_list():
 		if int(count) <= 0:
 			continue
 
-		var btn = Button.new()
+		var btn = _make_bag_cell("%s\nx%d" % [cfg.name, count])   # 【改】统一样式抽出，物品/合成页签共用
 		btn.name = item_id + "_btn"
-		btn.text = "%s\nx%d" % [cfg.name, count]   # 名称第一行，数量第二行
-		btn.custom_minimum_size = Vector2(0, 50)    # 不限制宽度，高度44容纳两行
-		btn.size_flags_horizontal = Control.SIZE_EXPAND_FILL
-		# 【修】手机端：按钮默认 STOP 会拦截触摸滚动，改 PASS 让滑动事件穿透到 ScrollContainer
-		btn.mouse_filter = Control.MOUSE_FILTER_PASS
-		# 文字样式
-		btn.add_theme_font_size_override("font_size", 14)
-		btn.add_theme_color_override("font_color", Color(0.9, 0.85, 0.75))
-		btn.add_theme_color_override("font_pressed_color", Color(1.0, 0.95, 0.8))
-		btn.add_theme_color_override("font_hover_color", Color(1.0, 1.0, 1.0))
-		# 按钮样式：深色底+淡边框
-		var btn_style = StyleBoxFlat.new()
-		btn_style.bg_color = Color(0.15, 0.14, 0.18)
-		btn_style.border_color = Color(0.35, 0.32, 0.40)
-		btn_style.border_width_bottom = 2
-		btn_style.corner_radius_top_left = 3
-		btn_style.corner_radius_top_right = 3
-		btn_style.corner_radius_bottom_left = 3
-		btn_style.corner_radius_bottom_right = 3
-		btn.add_theme_stylebox_override("normal", btn_style)
-		var hover_style = btn_style.duplicate()
-		hover_style.bg_color = Color(0.22, 0.20, 0.28)
-		hover_style.border_color = Color(0.50, 0.45, 0.60)
-		btn.add_theme_stylebox_override("hover", hover_style)
-		var press_style = btn_style.duplicate()
-		press_style.bg_color = Color(0.10, 0.09, 0.13)
-		btn.add_theme_stylebox_override("pressed", press_style)
 		# 点击打开详情弹窗
 		btn.pressed.connect(_show_item_detail_popup.bind(item_id))
 		grid.add_child(btn)
@@ -203,6 +235,9 @@ func _on_detail_use(item_id: String, qty: int, popup: Control):
 		"suit_frag_box":
 			popup.queue_free()
 			c.show_suit_frag_box_selector(item_id, qty)
+		"treasure_box":   # 【新增】珍宝箱：五种商品×500随机
+			popup.queue_free()
+			_open_treasure_boxes(qty)
 
 # 【新增】按数量使用道具（结算体抽出，详情弹窗与小时卡入口共用）
 func _use_items(item_id: String, count: int):
@@ -612,3 +647,117 @@ func _on_hungu_box_pick(popup, slot: String, quality: String, qty: int):
 	popup.queue_free()
 	c._show_stage_hint("获得【%s·%s】×%d（珍兽详情 → 魂力培养 装配）" % [quality, data.soulpower_system.get_slot_name(slot), qty])
 	c.update_bag_list()
+
+
+# ============================================================
+# 背包底部栏·合成页签 + 珍宝箱（2026-09-10 商会第二批，用户拍板）
+# 合成：小资质丹×20→资质丹×1；残破缀玉×20→指定缀玉×1（六种配方见 COMPOSE_RECIPES）
+# 珍宝箱：五种商品（火器/瓷器/琼浆/茶叶/宣纸）随机其一×500
+# ============================================================
+
+# 背包格子统一样式（物品/合成页签共用）
+func _make_bag_cell(text_str: String) -> Button:
+	var btn = Button.new()
+	btn.text = text_str   # 名称第一行，数量第二行
+	btn.custom_minimum_size = Vector2(0, 50)    # 不限制宽度，高度50容纳两行
+	btn.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	# 【修】手机端：按钮默认 STOP 会拦截触摸滚动，改 PASS 让滑动事件穿透到 ScrollContainer
+	btn.mouse_filter = Control.MOUSE_FILTER_PASS
+	btn.add_theme_font_size_override("font_size", 14)
+	btn.add_theme_color_override("font_color", Color(0.9, 0.85, 0.75))
+	btn.add_theme_color_override("font_pressed_color", Color(1.0, 0.95, 0.8))
+	btn.add_theme_color_override("font_hover_color", Color(1.0, 1.0, 1.0))
+	var btn_style = StyleBoxFlat.new()
+	btn_style.bg_color = Color(0.15, 0.14, 0.18)
+	btn_style.border_color = Color(0.35, 0.32, 0.40)
+	btn_style.border_width_bottom = 2
+	btn_style.corner_radius_top_left = 3
+	btn_style.corner_radius_top_right = 3
+	btn_style.corner_radius_bottom_left = 3
+	btn_style.corner_radius_bottom_right = 3
+	btn.add_theme_stylebox_override("normal", btn_style)
+	var hover_style = btn_style.duplicate()
+	hover_style.bg_color = Color(0.22, 0.20, 0.28)
+	hover_style.border_color = Color(0.50, 0.45, 0.60)
+	btn.add_theme_stylebox_override("hover", hover_style)
+	var press_style = btn_style.duplicate()
+	press_style.bg_color = Color(0.10, 0.09, 0.13)
+	btn.add_theme_stylebox_override("pressed", press_style)
+	return btn
+
+# 合成页签：六个配方格子（产出名+现有数量+材料进度），点击进合成弹窗
+func _fill_compose_grid(grid: GridContainer):
+	for recipe in COMPOSE_RECIPES:
+		var out_id := str(recipe.get("output", ""))
+		var mat_id := str(recipe.get("material", ""))
+		var ratio := int(recipe.get("ratio", 20))
+		var out_cfg: Dictionary = data.ITEM_CONFIG.get(out_id, {})
+		var mat_cfg: Dictionary = data.ITEM_CONFIG.get(mat_id, {})
+		var mat_have := int(data.items.get(mat_id, 0))
+		var btn = _make_bag_cell("%s\nx%d（%s %d/%d）" % [
+			out_cfg.get("name", out_id), int(data.items.get(out_id, 0)),
+			mat_cfg.get("name", mat_id), mat_have, ratio])
+		btn.pressed.connect(_show_compose_popup.bind(recipe))
+		grid.add_child(btn)
+
+# 合成弹窗：滑条选数量（最大=材料数÷配比），确认即消耗材料产出
+func _show_compose_popup(recipe: Dictionary):
+	var out_id := str(recipe.get("output", ""))
+	var mat_id := str(recipe.get("material", ""))
+	var ratio := int(recipe.get("ratio", 20))
+	var out_cfg: Dictionary = data.ITEM_CONFIG.get(out_id, {})
+	var mat_cfg: Dictionary = data.ITEM_CONFIG.get(mat_id, {})
+	var mat_have := int(data.items.get(mat_id, 0))
+	@warning_ignore("integer_division")   # 合成上限取整是有意行为
+	var max_n := int(mat_have / ratio)
+	var popup = c._create_base_popup("合成·%s" % out_cfg.get("name", out_id), Vector2(400, 340))
+	popup.name = "ComposePopup"
+	var vbox: VBoxContainer = popup.get_child(0)
+	var info = Label.new()
+	info.text = "%s ×%d  →  %s ×1" % [mat_cfg.get("name", mat_id), ratio, out_cfg.get("name", out_id)]
+	info.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	vbox.add_child(info)
+	if max_n <= 0:
+		var lack = Label.new()
+		lack.text = "材料不足（现有 %d 个）" % mat_have
+		lack.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+		vbox.add_child(lack)
+		c._add_ok_button(vbox, func(): popup.queue_free(), "关闭")
+		c.add_child(popup)
+		return
+	var pair: Dictionary = c._create_slider_spin_pair(vbox, max_n, 0)
+	var ok_btn = Button.new()
+	ok_btn.text = "合成"
+	ok_btn.custom_minimum_size = Vector2(120, 40)
+	ok_btn.pressed.connect(func():
+		var n := int(pair.spin.value)
+		if n <= 0:
+			c._show_stage_hint("请先选择合成数量")
+			return
+		data.items[mat_id] = int(data.items.get(mat_id, 0)) - n * ratio
+		data.items[out_id] = int(data.items.get(out_id, 0)) + n
+		data.save_game()
+		popup.queue_free()
+		update_bag_list()
+		c.update_all_ui()
+		_show_item_gains_popup("合成结果", {out_id: n}))
+	vbox.add_child(ok_btn)
+	c._add_ok_button(vbox, func(): popup.queue_free(), "关闭")
+	c.add_child(popup)
+
+# 珍宝箱：N连开，五种商品随机其一×500入背包（商品使用=随机一名对应职业门客基础赚速+500）
+func _open_treasure_boxes(count: int):
+	if int(data.items.get("treasure_box", 0)) < count:
+		c._show_stage_hint("珍宝箱数量不足")
+		return
+	data.items["treasure_box"] = int(data.items.get("treasure_box", 0)) - count
+	var goods := ["huo_qi", "ci_qi", "qiong_jiang", "cha_ye", "xuan_zhi"]
+	var gains := {}
+	for i in count:
+		var it: String = goods[randi() % goods.size()]   # 【修】数组索引返回Variant，:=推断不出
+		data.items[it] = int(data.items.get(it, 0)) + 500
+		gains[it] = gains.get(it, 0) + 500
+	data.save_game()
+	update_bag_list()
+	c.update_all_ui()
+	_show_item_gains_popup("打开珍宝箱", gains)

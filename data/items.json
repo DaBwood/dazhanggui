@@ -188,7 +188,7 @@
 	},
 	"small_aptitude_pill": {"name": "小资质丹", "desc": "20个可在背包合成1个资质丹"},
 	"guild_hammer": {"name": "商会锤", "desc": "商会道具建设消耗"},
-	"treasure_box": {"name": "珍宝箱", "desc": "打开后随机获得火器/瓷器/琼浆/茶叶/宣纸×500"},
+	"treasure_box": {"name": "珍宝箱", "desc": "打开后随机获得火器/瓷器/琼浆/茶叶/宣纸×500", "use": {"type": "treasure_box", "btn": "打开"}},
 	"canpo_zhuiyu": {"name": "残破缀玉", "desc": "20个可自选合成1枚缀玉（攀竹/织梦/莺歌/落花/流云）"},
 	"experience": {
 	  "name": "阅历",

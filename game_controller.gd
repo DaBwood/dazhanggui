@@ -64,6 +64,7 @@ var soul_view   # 【新增】兽魂视图（珍兽魂盘+魂石镶嵌）
 var soulpower_view   # 【新增】魂力培养视图（珍兽魂体+魂骨装配）
 var cuzhi_view   # 【促织园】闯荡子视图
 var collection_view   # 【新增】藏品视图（府邸入口全屏页）
+var mail_view   # 【新增】邮件视图（府邸入口全屏页）
 
 func _ready():
 	
@@ -102,7 +103,7 @@ func _ready():
 	soulpower_view = SoulpowerView.new(self)   # 【新增】魂力培养视图
 	cuzhi_view = CuzhiView.new(self)
 	collection_view = CollectionView.new(self)
-
+	mail_view = MailView.new(self)   # 【新增】邮件视图
 
 	# 正常退出时存档
 	tree_exiting.connect(on_exit)
@@ -200,7 +201,8 @@ func _enter_game():
 	print("信号连接完成")  # ← 加这行
 	
 	_apply_portrait_layout()
-
+	
+	data.mail_system.add_mail("test2", "测试", "合成材料", {"small_aptitude_pill": 40, "canpo_zhuiyu": 60, "treasure_box": 3})
 
 # 【新增】登录门：全屏遮罩挡住游戏，必须先登录/注册（或离线模式）才能进游戏
 func _show_login_gate():
@@ -399,7 +401,9 @@ func switch_page(page_id: String):
 		hide_fishing_view()   # 【第8批新增】关闭垂钓子视图 
 		hide_cuzhi_view()
 		hide_collection_view()
+		hide_mail_view()
 		update_adventure_page()
+		
 	
 	if page_id == "apprentice": update_apprentice_page()
 	
@@ -1993,6 +1997,16 @@ func hide_collection_view():
 # 府邸【藏品】入口
 func on_collection():
 	collection_view.show_collection_view()
+
+# ==================== 【转发】邮件视图 → pages/mail_view.gd ====================
+func show_mail_view():
+	return mail_view.show_mail_view()
+
+func hide_mail_view():
+	return mail_view.hide_mail_view()
+
+func on_mail():
+	mail_view.show_mail_view()
 
 # ============================================================
 # 【场景收编】壳层结构 + 壳层布局（2026-08-29）

@@ -5,6 +5,7 @@
 	"member_base": 22,
 	"member_per_level": 2,
 	"vice_leaders": 2,
+	"trade_draw_hours": 7.5,
 	"level_exp": [40000, 80000, 160000, 320000, 560000, 800000, 1200000, 1600000],
 	"bot_daily_wealth": 600,
 	"bot_daily_exp": 600,

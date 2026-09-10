@@ -58,6 +58,7 @@ func generate_mansion_list():
 		{"name": "徒弟", "func": "on_apprentice"},
 		{"name": "每日任务", "func": "on_daily_task"},
 		{"name": "藏品", "func": "on_collection"},
+		{"name": "邮件", "func": "on_mail"},
 	]
 	
 	# 创建上半网格（4列，紧凑按钮）
@@ -108,6 +109,15 @@ func _create_button_grid(modules: Array, columns: int) -> GridContainer:
 			dot.add_theme_color_override("font_color", Color(1, 0.2, 0.2))
 			dot.position = Vector2(102, 0)
 			btn.add_child(dot)
+		
+			# 【新增】有未领邮件时，邮件入口亮红点
+		if m.func == "on_mail" and data.mail_system.get_unclaimed_count() > 0:
+			var dot2 = Label.new()
+			dot2.text = "●"
+			dot2.add_theme_color_override("font_color", Color(1, 0.2, 0.2))
+			dot2.position = Vector2(102, 0)
+			btn.add_child(dot2)
+		
 		# 悬停样式
 		var hover_style = btn_style.duplicate()
 		hover_style.bg_color = Color(0.22, 0.20, 0.28)
