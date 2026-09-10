@@ -87,7 +87,7 @@ func get_shop_auto_income(shop_id: String) -> int:
 	var subtotal = base + staff
 	
 	# 总百分比（【新增】叠加宅院商铺卷二：店铺总赚速 +25%×卷二等级）
-	var bonus = 1.0 + get_global_bonus_percent() + hero_bonus + friend_shop_bonus + g.get_courtyard_shop_percent_bonus(shop_id)
+	var bonus = 1.0 + get_global_bonus_percent() + hero_bonus + friend_shop_bonus + g.get_courtyard_shop_percent_bonus(shop_id) + g.guild_system.get_career_bonus(str(s.get("category", "")))
 	#返回最终赚速
 	return int(subtotal * bonus)
 

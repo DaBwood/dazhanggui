@@ -29,7 +29,7 @@
 	{"row": "d_small_apt", "item": "small_aptitude_pill", "cost": 60, "limit": 40, "level": 3, "period": "day"},
 	{"row": "d_aroma", "item": "aroma_fruit", "cost": 250, "limit": 20, "level": 4, "period": "day"},
 	{"row": "d_beast_fruit", "item": "beast_fruit", "cost": 60, "limit": 20, "level": 4, "period": "day"},
-	{"row": "d_product", "item": "product_card", "cost": 80, "limit": 5, "level": 4, "period": "day"},
+	{"row": "d_product", "item": "chanwu_card", "cost": 80, "limit": 5, "level": 4, "period": "day"},
 	{"row": "d_zhuiyu", "item": "canpo_zhuiyu", "cost": 1000, "limit": 5, "level": 5, "period": "day"}
   ],
   "shop_monthly": [

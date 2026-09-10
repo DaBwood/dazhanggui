@@ -9,6 +9,7 @@ extends RefCounted
 
 var c      # game_controller 根脚本引用
 var data   # GameData 数据中枢引用
+var guild_view # 【新增】商会视图
 
 # 由 game_controller._ready 创建本模块时注入引用
 func _init(p_c):
@@ -376,6 +377,9 @@ func generate_adventure_page():
 	#促织入口
 	c.build_cuzhi_view(page,vbox)
 	
+	# 【新增】商会入口（覆盖层挂在闯荡页上，GuildView 自管理开闭，controller 零改动）
+	guild_view = GuildView.new(c)
+	guild_view.build_entry(page, vbox)
 
 func update_adventure_page():
 	# 页面静态，无需动态更新

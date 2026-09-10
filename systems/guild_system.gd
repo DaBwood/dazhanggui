@@ -90,7 +90,7 @@ func set_record(record: Dictionary, username: String) -> void:
 func get_record() -> Dictionary:
 	return cache
 
-# 确保人机建设已补结算到今日（幂等）；返回是否需要回写
+# 确保人机建设已补结算到今日（幂等）
 func ensure_fresh() -> Dictionary:
 	if cache.is_empty(): return {}
 	_bot_catchup(cache)
@@ -135,11 +135,13 @@ func get_bot_count(record: Dictionary) -> int:
 	return n
 
 # 人机议事厅职业：种子定死，全员看到一致
-func get_bot_career(seed: int) -> String:
-	return get_careers()[abs(seed) % 5]
+# 【修】参数名 p_seed：原名 seed 与 Godot 全局函数 seed() 重名（编辑器警告 SHADOWED_GLOBAL_IDENTIFIER）
+func get_bot_career(p_seed: int) -> String:
+	return get_careers()[abs(p_seed) % 5]
 
-# 人机议事厅店铺技能加成：30% 起，每商会日 +2%，封 200%（人机不真生效，只作展示与真人加成来源）
-func get_bot_skill_pct(seed: int, record: Dictionary) -> float:
+# 人机议事厅店铺技能加成：30% 起，每商会日 +2%，封 200%（只作真人加成来源，人机自身不需要真生效）
+# 【修】参数 _seed 下划线前缀：本函数只随商会天数成长，不用种子（消除 UNUSED_PARAMETER 警告）
+func get_bot_skill_pct(_seed: int, record: Dictionary) -> float:
 	var days = maxf(0.0, (Time.get_unix_time_from_system() - int(record.get("created", 0))) / 86400.0)
 	return minf(float(get_settings().get("bot_skill_base", 0.3)) + days * float(get_settings().get("bot_skill_per_day", 0.02)), float(get_settings().get("bot_skill_cap", 2.0)))
 
@@ -186,9 +188,14 @@ func is_officer(record: Dictionary) -> bool:
 	return false
 
 # ============ 议事厅 ============
-# 门客店铺技能总加成（1.0=100%）——【对接点】下轮核对 hero_system 的店铺技能汇总接口后补准确实现
-func get_hero_shop_pct(_hero_id: String) -> float:
-	return 0.0
+# 门客店铺技能总加成（1.0=100%）：直接汇总门客 shop_skills（与 hero_data.get_shop_bonus 同一算法，
+# 但议事厅不要求门客已派遣店铺——照抄其加总逻辑，去掉 assigned_shop 限制）
+func get_hero_shop_pct(hero_id: String) -> float:
+	var hero = g.heroes.get(hero_id, {})
+	var total = 0.0
+	for skill in hero.get("shop_skills", []):
+		total += float(skill.get("base_percent", 0)) + (int(skill.get("level", 1)) - 1) * float(skill.get("percent_per_level", 0))
+	return total
 
 # 委任门客进议事厅（快照职业+加成%，写进共享记录全员可见；空串=撤回）
 func set_council_hero(hero_id: String) -> Dictionary:

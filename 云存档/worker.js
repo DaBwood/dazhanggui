@@ -1,8 +1,9 @@
 // ============================================================
 // 大掌柜·云存档 Worker（Cloudflare Workers + D1）
 // 接口：POST /register | POST /login | POST /upload | GET /download
+//       POST /guild/create | POST /guild/get | POST /guild/save   【新增】商会
 // 原则：纯存储转发，不做任何数值校验（朋友间自娱自乐，开挂随意）
-// 部署见「部署步骤.md」
+// 部署见「部署步骤.md」（商会需先执行 schema.sql 建 guilds 表）
 // ============================================================
 
 const CORS = {
@@ -12,6 +13,7 @@ const CORS = {
 }
 const SESSION_DAYS = 30          // 登录令牌有效期（天）
 const MAX_SAVE_SIZE = 8 * 1024 * 1024   // 存档上限 8MB，防手滑
+const MAX_GUILD_SIZE = 1024 * 1024      // 【新增】商会记录上限 1MB（含人机名单，绰绰有余）
 
 function json(data, status = 200) {
 	return new Response(JSON.stringify(data), { status, headers: { "Content-Type": "application/json", ...CORS } })
@@ -98,6 +100,53 @@ export default {
 				const row = await env.DB.prepare("SELECT save_json, updated_at FROM saves WHERE username = ?").bind(username).first()
 				if (!row) return json({ ok: true, has_save: false })
 				return json({ ok: true, has_save: true, save: row.save_json, updated_at: row.updated_at })
+			}
+			// ============================================================
+			// 【新增】商会：guilds 表整包存取（record 为 JSON 字符串，服务端不解析不校验）
+			// 设计：后存覆盖先存（同存档哲学）；成员身份由客户端自行维护，服务端只认登录态
+			// ============================================================
+			// ---------- 创建商会 ----------
+			if (path === "/guild/create" && request.method === "POST") {
+				const username = await auth(request, env)
+				if (!username) return json({ ok: false, msg: "未登录或会话已过期" }, 401)
+				const body = await request.json()
+				const name = String(body.name || "").trim()
+				if (name.length < 2 || name.length > 16) return json({ ok: false, msg: "商会名需2~16个字符" }, 400)
+				const dup = await env.DB.prepare("SELECT id FROM guilds WHERE name = ?").bind(name).first()
+				if (dup) return json({ ok: false, msg: "商会名已存在" }, 409)
+				const id = randomToken().slice(0, 16)   // 16位邀请码
+				const now = Date.now()
+				// 记录结构（客户端约定，服务端只存）：等级/财富/经验/成员/议事厅/人机结算日
+				const record = {
+					"name": name, "owner": username, "created": int(now),
+					"level": 1, "exp": 0, "wealth": 0,
+					"members": [{ "user": username, "name": username, "role": "owner" }],
+					"council": {}, "bot_settle": "",
+				}
+				await env.DB.prepare("INSERT INTO guilds (id, name, owner, record, updated_at) VALUES (?, ?, ?, ?, ?)")
+					.bind(id, name, username, JSON.stringify(record), now).run()
+				return json({ ok: true, guild_id: id, record: record })
+			}
+			// ---------- 查询商会 ----------
+			if (path === "/guild/get" && request.method === "POST") {
+				const username = await auth(request, env)
+				if (!username) return json({ ok: false, msg: "未登录或会话已过期" }, 401)
+				const body = await request.json()
+				const row = await env.DB.prepare("SELECT record FROM guilds WHERE id = ?").bind(String(body.guild_id || "")).first()
+				if (!row) return json({ ok: false, msg: "商会不存在" }, 404)
+				return json({ ok: true, record: JSON.parse(row.record) })
+			}
+			// ---------- 回写商会（整包覆盖） ----------
+			if (path === "/guild/save" && request.method === "POST") {
+				const username = await auth(request, env)
+				if (!username) return json({ ok: false, msg: "未登录或会话已过期" }, 401)
+				const body = await request.json()
+				const recStr = JSON.stringify(body.record || {})
+				if (recStr.length > MAX_GUILD_SIZE) return json({ ok: false, msg: "商会记录超过1MB上限" }, 400)
+				const r = await env.DB.prepare("UPDATE guilds SET record = ?, updated_at = ? WHERE id = ?")
+					.bind(recStr, Date.now(), String(body.guild_id || "")).run()
+				if (r.meta.changes === 0) return json({ ok: false, msg: "商会不存在" }, 404)
+				return json({ ok: true })
 			}
 			return json({ ok: false, msg: "未知接口" }, 404)
 		} catch (e) {
