@@ -584,6 +584,9 @@ var hero_contracts: Dictionary = {}   # 【新增】苦情契约存档 {hero_id:
 # ① var 声明区（talent_system 附近）【新增】
 var collection_system   # 藏品系统
 var _collection_configs: Dictionary = {}
+
+var guild_system   # 【新增】商会系统（逻辑在 systems/guild_system.gd）
+var _guild_configs: Dictionary = {}   # 【新增】商会配置（guild.json，由 _load_all_configs 加载）
 # ==================== 初始化 ====================
 # 初始化：创建各子系统（纯逻辑模块，持有本中枢引用），再加载全部配置
 func _init():
@@ -612,6 +615,7 @@ func _init():
 	fengzi_system = FengziSystem.new(self)   # 【新增】风姿系统
 	talent_system = TalentSystem.new(self)   # 【新增】天赋系统
 	collection_system = CollectionSystem.new(self)
+	guild_system = GuildSystem.new(self)   # 【新增】商会系统
 	
 	_load_all_configs()
 
@@ -648,6 +652,7 @@ func _load_all_configs():
 	_talent_configs = _load_json("res://data/talent.json")   # 【新增】天赋配置
 	_collection_configs = _load_json("res://data/collection.json")   # 函数名以现有配置加载辅助函数为准
 	_manhuang_configs = _load_json("res://data/manhuang.json")   # 【新增】蛮荒礼盒可选道具
+	_guild_configs = _load_json("res://data/guild.json")   # 【新增】商会配置
 	
 	_load_items_config()   # 【重构新增】道具表
 	_load_travel_config()  # 【重构新增】游历配置
@@ -806,7 +811,7 @@ func save_game():
 		stage_system, item_system, travel_system, charity_system, lottery_system, mall_system,
 		manor_system,courtyard_system,war_system,goal_system,fishing_system,soul_system,
 		soulpower_system,cuzhi_system,guardian_system,token_system,fengzi_system,talent_system,
-		collection_system,]
+		collection_system,guild_system,]
 	for sys in systems:
 		save_data.merge(sys.get_save_data(), true)
 	var file = FileAccess.open(save_path, FileAccess.WRITE)
@@ -857,7 +862,7 @@ func load_game():
 		stage_system, item_system, travel_system, charity_system, lottery_system, mall_system,
 		manor_system,courtyard_system,war_system,goal_system,fishing_system,soul_system,
 		soulpower_system,cuzhi_system,guardian_system,token_system,fengzi_system,talent_system,
-		collection_system,]
+		collection_system,guild_system,]
 	for sys in systems:
 		sys.load_save_data(data)
 

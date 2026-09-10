@@ -1,0 +1,9 @@
+name = "dazhanggui-save"
+main = "worker.js"
+compatibility_date = "2024-06-01"
+
+# D1 数据库绑定：database_id 用 wrangler d1 create 后输出的值替换
+[[d1_databases]]
+binding = "DB"
+database_name = "dazhanggui"
+database_id = "0b78b445-9057-4ffa-926e-b927370ea4d4"

@@ -1,0 +1,53 @@
+{
+  "settings": {
+	"create_cost": 500,
+	"max_level": 9,
+	"member_base": 22,
+	"member_per_level": 2,
+	"vice_leaders": 2,
+	"level_exp": [40000, 80000, 160000, 320000, 560000, 800000, 1200000, 1600000],
+	"bot_daily_wealth": 600,
+	"bot_daily_exp": 600,
+	"bot_skill_base": 0.3,
+	"bot_skill_per_day": 0.02,
+	"bot_skill_cap": 2.0
+  },
+  "builds": {
+	"primary": {"name": "初级建设", "daily": 4, "yuanbao": 0, "wealth": 100, "contribution": 100, "exp": 100},
+	"middle":  {"name": "中级建设", "daily": 1, "yuanbao": 50, "wealth": 200, "contribution": 200, "exp": 200},
+	"high":    {"name": "高级建设", "daily": 1, "yuanbao": 100, "wealth": 800, "contribution": 800, "exp": 800},
+	"item":    {"name": "道具建设", "daily": 1, "item": "guild_hammer", "item_count": 1, "wealth": 10000, "contribution": 3200, "exp": 1000}
+  },
+  "shop_daily": [
+	{"row": "d_hour_card", "item": "hour_card", "cost": 400, "limit": 1, "level": 1, "period": "day"},
+	{"row": "d_exp_box", "item": "exp_box", "cost": 1250, "limit": 1, "level": 1, "period": "day"},
+	{"row": "d_fengyasong1", "item": "fengyasong", "cost": 600, "limit": 3, "level": 1, "period": "day"},
+	{"row": "d_blueprint", "item": "shop_blueprint", "cost": 160, "limit": 2, "level": 2, "period": "day"},
+	{"row": "d_energy", "item": "energy_pill", "cost": 200, "limit": 2, "level": 2, "period": "day"},
+	{"row": "d_fengyasong3", "item": "fengyasong", "cost": 600, "limit": 3, "level": 3, "period": "day"},
+	{"row": "d_vitality", "item": "vitality_pill", "cost": 800, "limit": 20, "level": 3, "period": "day"},
+	{"row": "d_small_apt", "item": "small_aptitude_pill", "cost": 60, "limit": 40, "level": 3, "period": "day"},
+	{"row": "d_aroma", "item": "aroma_fruit", "cost": 250, "limit": 20, "level": 4, "period": "day"},
+	{"row": "d_beast_fruit", "item": "beast_fruit", "cost": 60, "limit": 20, "level": 4, "period": "day"},
+	{"row": "d_product", "item": "product_card", "cost": 80, "limit": 5, "level": 4, "period": "day"},
+	{"row": "d_zhuiyu", "item": "canpo_zhuiyu", "cost": 1000, "limit": 5, "level": 5, "period": "day"}
+  ],
+  "shop_monthly": [
+	{"row": "m_zouyu", "beast": "zou_yu", "cost": 50000, "limit": 1, "level": 2, "period": "month"},
+	{"row": "m_hero_token", "item": "hero_token", "cost": 20000, "limit": 1, "level": 2, "period": "month"},
+	{"row": "m_kaishan", "item": "kaishan_ling", "cost": 6000, "limit": 10, "level": 2, "period": "month"},
+	{"row": "m_zongjiang", "item": "zongjiang_ling", "cost": 6000, "limit": 10, "level": 2, "period": "month"}
+  ],
+  "trades": [
+	{"id": "dunhuang", "name": "敦煌", "hours": 7.5, "require": 88000000, "level": 1, "cost": 2000, "contrib": 1100, "exp": 580},
+	{"id": "tulufan", "name": "吐鲁番", "hours": 7.5, "require": 260000000, "level": 2, "cost": 4000, "contrib": 2750, "exp": 580},
+	{"id": "kashi", "name": "喀什", "hours": 7.5, "require": 790000000, "level": 3, "cost": 8000, "contrib": 6350, "exp": 780},
+	{"id": "samaerhan", "name": "撒马尔罕", "hours": 9, "require": 1800000000, "level": 4, "cost": 16000, "contrib": 11000, "exp": 950},
+	{"id": "deheilan", "name": "德黑兰", "hours": 9, "require": 3100000000, "level": 5, "cost": 32000, "contrib": 17600, "exp": 1010},
+	{"id": "bageda", "name": "巴格达", "hours": 9, "require": 5300000000, "level": 6, "cost": 64000, "contrib": 22000, "exp": 1080},
+	{"id": "kailuo", "name": "开罗", "hours": 10.5, "require": 8800000000, "level": 7, "cost": 128000, "contrib": 26400, "exp": 1140},
+	{"id": "luoma", "name": "罗马", "hours": 10.5, "require": 12100000000, "level": 8, "cost": 256000, "contrib": 31600, "exp": 1200},
+	{"id": "weinisi", "name": "威尼斯", "hours": 10.5, "require": 16400000000, "level": 9, "cost": 512000, "contrib": 40000, "exp": 0}
+  ],
+  "trade_random_pool": ["random_book", "treasure_box", "hour_card", "small_aptitude_pill", "beast_fruit", "vitality_pill", "energy_pill", "stamina_pill"]
+}
