@@ -35,11 +35,9 @@ var _manual_download := false   # 【新增】标记本次下载是手动触发�
 var _game_entered := false   # 【新增】是否已进入游戏（过登录门才初始化，只进一次）
 var _net_login_pending := false   # 【新增】登录流程中：正等云端存档查询结果来决定用哪份档
 var _last_total_income: int = -1   # 【新增】全局赚速飘字：上次总赚速快照（-1=未初始化，首次只记录不弹）
-var _income_float_tween: Tween   # 【新增】当前全局飘字动画（重弹前先杀旧动画，防连点叠字）
-var _float_shown_delta: int = 0   # 【新增】当前飘字正在显示的累计增量（连续操作时 +10→+20→+30 累加；飘尽归零）
+var _income_float_state := {"tween": null, "display": 0.0, "target": 0}   # 【新增】赚速飘字状态：动画引用/滚动显示值/累计目标增量（连点累加，飘尽归零）
 var _hero_income_snapshot: Dictionary = {}   # 【新增】门客赚钱飘字：每个已拥有门客的赚钱快照 {hero_id: income}（首次建档不弹）
-var _hero_float_shown_delta: int = 0   # 【新增】门客赚钱飘字正在显示的累计增量（连点累加，飘尽归零）
-var _hero_float_tween: Tween   # 【新增】当前门客赚钱飘字动画（重弹前先杀旧动画）
+var _hero_float_state := {"tween": null, "display": 0.0, "target": 0}   # 【新增】门客赚钱飘字状态（同赚速飘字结构）
 # ========== 徒弟页面 ==========
 
 var _bars_visible = true  # 【新增】顶栏/底栏显隐状态位：二级页（挚友详情）全屏时=false，_apply_portrait_layout 重排时尊重它
@@ -603,6 +601,9 @@ func update_money_label():
 # 所有养成系统操作后都汇流 update_all_ui（含每秒 on_auto_earn），diff≠0 即弹、更新快照；
 # 批量/十连天然合并为一次总增量；未来新系统零成本自动继承。
 func _check_income_float():
+	# 【修】门客赚钱检查必须无条件先跑：它负担快照建档，若挂在全局 diff≠0 分支后，
+	# 启动阶段全局无变化时快照永不建档，导致"每局第一次提升不弹、第二次起才弹"（2026-09-11 用户复现）
+	_check_hero_income_float()
 	var cur: int = data.get_total_auto_income()
 	if _last_total_income < 0:
 		_last_total_income = cur   # 首次/刚进游戏：只建快照不弹，避免开场飘字
@@ -612,46 +613,79 @@ func _check_income_float():
 	if delta == 0:
 		return
 	_show_income_float(cur, delta)
-	_check_hero_income_float()   # 【新增】门客赚钱飘字：与全局同一节拍逐门客对比
 
-# 【新增】屏幕上部飘字渐隐（z50 飘字惯例）：总数橙金 / +增量绿（负向红），数字复用 format_number；
-# 位置 y=102：顶栏下方的固定空档，不挡门客面板信息行(50~74)与按钮行(100起)；
-# 单节点复用+杀旧动画——快速连点不叠字，改为同一条飘字内【累加增量】（见下）
+# 【新增】通用徽标飘字：半透明圆角背景板（不与底层页面文字糊在一起）+ 增量数字滚动上涨
+# （1.2s 内从当前显示值滚到最新累计目标，涨完固定，再随板子渐隐 0.8s）+ 连点累加。
+# cfg = {"tween": 动画引用, "display": 当前滚动显示值, "target": 累计目标增量}（Dictionary 传引用，天然共享状态）
+# make_text = Callable(显示值:int, 正负号:String, 增量色:String) -> String 文案（外部值如总数用闭包捕获）
+func _show_float_badge(cfg: Dictionary, node_name: String, y: int, delta: int, make_text: Callable):
+	var panel: PanelContainer = get_node_or_null(node_name)
+	if panel == null:
+		panel = PanelContainer.new()
+		panel.name = node_name
+		panel.z_index = 50   # 飘字层级惯例
+		# 背景板：深紫底 85% 不透明度 + 圆角，挡得住页面文字又不死板
+		var style := StyleBoxFlat.new()
+		style.bg_color = Color("#1e1b2e", 0.85)
+		style.set_corner_radius_all(10)
+		style.content_margin_left = 16
+		style.content_margin_right = 16
+		style.content_margin_top = 5
+		style.content_margin_bottom = 5
+		panel.add_theme_stylebox_override("panel", style)
+		var rtl := RichTextLabel.new()
+		rtl.name = "Text"
+		rtl.bbcode_enabled = true   # 双色：主体橙金 / 增量绿(红)
+		rtl.scroll_active = false
+		rtl.add_theme_font_size_override("normal_font_size", 20)
+		rtl.add_theme_color_override("default_color", Color("#e6a23c"))
+		rtl.add_theme_color_override("font_outline_color", Color(0, 0, 0))
+		rtl.add_theme_constant_override("outline_size", 3)
+		rtl.custom_minimum_size = Vector2(320, 28)   # 固定徽标内宽，文字居中不随字数跳动
+		panel.add_child(rtl)
+		add_child(panel)   # 【修】重写时遗漏：panel 必须挂进场景树，否则徽标永远不显示（不报错只隐身）
+	panel.size = Vector2(352, 38)   # 320+两侧边距；显式定尺寸防首帧 0 尺寸（新节点坑）
+	panel.position = Vector2(124, y)   # 屏宽 600 徽标 352 居中（写死 124，避开整数除法警告）
+	# 累加制：飘还亮着时叠到目标上（+10→+20→+30）；飘尽归零重新累计
+	if panel.modulate.a <= 0.05:
+		cfg["display"] = 0.0
+		cfg["target"] = 0
+	cfg["target"] = int(cfg["target"]) + delta
+	var sign_txt := "+" if int(cfg["target"]) > 0 else "-"
+	var delta_col := "#2ecc71" if int(cfg["target"]) > 0 else "#e74c3c"
+	panel.modulate.a = 1.0   # 重弹满亮（连点时板子一直亮着只换数字）
+	var tw: Tween = cfg["tween"]
+	if tw != null and tw.is_valid():
+		tw.kill()
+	tw = create_tween()
+	cfg["tween"] = tw
+	var label: RichTextLabel = panel.get_node("Text")
+	var start_val: float = cfg["display"]
+	var target_val: int = int(cfg["target"])
+	# 数字滚动上涨：1.2s 线性滚到目标（连点杀旧动画会从当前显示值无缝续涨），滚完即固定
+	tw.tween_method(func(v: float):
+		cfg["display"] = v
+		label.text = make_text.call(int(round(v)), sign_txt, delta_col)
+	, start_val, float(target_val), 1.2)
+	tw.tween_property(panel, "modulate:a", 0.0, 0.8)   # 数字固定后板子渐隐
+
+# 【新增】赚速飘字（y=114，门客赚钱飘字下方一层）：总数橙金 / +增量绿（负红），数字复用 format_number
 func _show_income_float(total: int, delta: int):
-	var label: RichTextLabel = get_node_or_null("IncomeFloat")
-	if label == null:
-		label = RichTextLabel.new()
-		label.name = "IncomeFloat"
-		label.z_index = 50   # 飘字层级惯例
-		label.bbcode_enabled = true   # 双色：Label 单色做不到，换 RichTextLabel
-		label.scroll_active = false
-		label.add_theme_font_size_override("normal_font_size", 20)
-		label.size = Vector2(560, 26)
-		add_child(label)
-	# 【新增】累加制：飘字还亮着（alpha>0.05）时，新增量叠到正在显示的增量上（+10→+20→+30）；
-	# 飘已散尽则清零重新累计。正负混点按代数和累加，颜色随最新累计值符号。
-	if label.modulate.a <= 0.05:
-		_float_shown_delta = 0
-	_float_shown_delta += delta
-	# 【修】变量名 sign 撞 Godot 内置全局函数 sign()（SHADOWED_GLOBAL_IDENTIFIER 警告），改名 sign_txt
-	var sign_txt := "+" if _float_shown_delta > 0 else "-"
-	var delta_col := "#2ecc71" if _float_shown_delta > 0 else "#e74c3c"
-	label.text = "[center][color=#e6a23c]赚速 %s/秒[/color]  [color=%s](%s%s)[/color][/center]" % [format_number(total), delta_col, sign_txt, format_number(abs(_float_shown_delta))]
-	label.add_theme_color_override("default_color", Color("#e6a23c"))
-	label.add_theme_color_override("font_outline_color", Color(0, 0, 0))
-	label.add_theme_constant_override("outline_size", 4)
-	label.position = Vector2(20, 102)
-	label.modulate.a = 1.0   # 重弹满亮（连点时飘字一直亮着只换数字）
-	if _income_float_tween != null and _income_float_tween.is_valid():
-		_income_float_tween.kill()
-	_income_float_tween = create_tween()
-	_income_float_tween.tween_interval(0.8)   # 停留片刻再渐隐
-	_income_float_tween.tween_property(label, "modulate:a", 0.0, 0.8)
+	_show_float_badge(_income_float_state, "IncomeFloat", 114, delta,
+		func(v: int, sign_txt: String, delta_col: String):
+			return "[center][color=#e6a23c]赚速 %s/秒[/color]  [color=%s](%s%s)[/color][/center]" % [format_number(total), delta_col, sign_txt, format_number(abs(v))])
+
+# 【新增】门客赚钱飘字：全局固定位置 y=72（赚速飘字 y=114 上方一层，同时触发不错层）；
+# 显示门客总赚钱增量（全部已拥有门客合并，不显示单个门客名）
+func _show_hero_power_float(delta: int):
+	_show_float_badge(_hero_float_state, "HeroPowerFloat", 72, delta,
+		func(v: int, sign_txt: String, delta_col: String):
+			return "[center][color=#e6a23c]门客赚钱[/color] [color=%s]%s%s[/color][/center]" % [delta_col, sign_txt, format_number(abs(v))])
 
 # 【新增】门客赚钱飘字（游戏内口径=门客赚钱，即单门客赚速 HeroData.get_income），
 # 赚速=全局挂机货币速度（get_total_auto_income）。本函数逐门客 diff：任何页面（门客面板/挚友技能/
 # 珍兽培养/促织园/背包/藏品…）提升任一已拥有门客赚钱，1 秒内必弹，无需逐页接线；
-# 多门客同帧变化时增量合并显示"多名门客"
+# 多门客同帧变化时增量合并为"门客总赚钱"显示
 func _check_hero_income_float():
 	var changed := {}   # hero_id -> 赚钱差值（本帧有变化的门客）
 	for hero_id in data.heroes.keys():
@@ -668,39 +702,6 @@ func _check_hero_income_float():
 	for d in changed.values():
 		total_delta += int(d)
 	_show_hero_power_float(total_delta)
-
-# 【新增】门客赚钱飘字：全局固定位置 y=76（全局赚速飘字 y=102 上方一层，同时触发不错层）；
-# 显示门客总赚钱增量（全部已拥有门客合并，不显示单个门客名）；
-# 款式同全局飘字（橙金主体/绿增红减/黑描边/停留0.8s渐隐0.8s/单节点复用杀旧动画/连点累加）
-func _show_hero_power_float(delta: int):
-	var label: RichTextLabel = get_node_or_null("HeroPowerFloat")
-	if label == null:
-		label = RichTextLabel.new()
-		label.name = "HeroPowerFloat"
-		label.z_index = 50   # 飘字层级惯例
-		label.bbcode_enabled = true
-		label.scroll_active = false
-		label.add_theme_font_size_override("normal_font_size", 20)
-		label.size = Vector2(560, 26)
-		add_child(label)
-	# 累加制：飘还亮着时叠到正在显示的增量上；飘尽归零重新累计
-	if label.modulate.a <= 0.05:
-		_hero_float_shown_delta = 0
-	_hero_float_shown_delta += delta
-	# 【修】变量名不撞内置 sign()
-	var sign_txt := "+" if _hero_float_shown_delta > 0 else "-"
-	var delta_col := "#2ecc71" if _hero_float_shown_delta > 0 else "#e74c3c"
-	label.text = "[center][color=#e6a23c]门客赚钱[/color] [color=%s]%s%s[/color][/center]" % [delta_col, sign_txt, format_number(abs(_hero_float_shown_delta))]
-	label.add_theme_color_override("default_color", Color("#e6a23c"))
-	label.add_theme_color_override("font_outline_color", Color(0, 0, 0))
-	label.add_theme_constant_override("outline_size", 4)
-	label.position = Vector2(20, 76)   # 全局赚速飘字(102)上方一层
-	label.modulate.a = 1.0
-	if _hero_float_tween != null and _hero_float_tween.is_valid():
-		_hero_float_tween.kill()
-	_hero_float_tween = create_tween()
-	_hero_float_tween.tween_interval(0.8)
-	_hero_float_tween.tween_property(label, "modulate:a", 0.0, 0.8)
 
 func on_friend_page():
 	switch_page("friend")
