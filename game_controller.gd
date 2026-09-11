@@ -34,6 +34,12 @@ var _web_login_cb = null   # 【新增】Web 登录表单 JS 回调引用
 var _manual_download := false   # 【新增】标记本次下载是手动触发（恢复按钮），用于给提示
 var _game_entered := false   # 【新增】是否已进入游戏（过登录门才初始化，只进一次）
 var _net_login_pending := false   # 【新增】登录流程中：正等云端存档查询结果来决定用哪份档
+var _last_total_income: int = -1   # 【新增】全局赚速飘字：上次总赚速快照（-1=未初始化，首次只记录不弹）
+var _income_float_tween: Tween   # 【新增】当前全局飘字动画（重弹前先杀旧动画，防连点叠字）
+var _float_shown_delta: int = 0   # 【新增】当前飘字正在显示的累计增量（连续操作时 +10→+20→+30 累加；飘尽归零）
+var _hero_income_snapshot: Dictionary = {}   # 【新增】门客赚钱飘字：每个已拥有门客的赚钱快照 {hero_id: income}（首次建档不弹）
+var _hero_float_shown_delta: int = 0   # 【新增】门客赚钱飘字正在显示的累计增量（连点累加，飘尽归零）
+var _hero_float_tween: Tween   # 【新增】当前门客赚钱飘字动画（重弹前先杀旧动画）
 # ========== 徒弟页面 ==========
 
 var _bars_visible = true  # 【新增】顶栏/底栏显隐状态位：二级页（挚友详情）全屏时=false，_apply_portrait_layout 重排时尊重它
@@ -579,6 +585,7 @@ func update_all_ui():
 		update_hq_panel()
 	if has_node("ShopPanel") and $ShopPanel.visible and current_shop_id != "":
 		update_shop_panel()
+	_check_income_float()   # 【新增】全局赚速飘字：任何操作后汇流到此，diff≠0 即弹
 
 func update_money_label():
 	var text = "🥈 %s  |  🥇：%s  |  VIP%d  |  赚速：%s/秒" % [
@@ -591,6 +598,109 @@ func update_money_label():
 		$TopBar/Label.text = text
 	elif has_node("Label"):
 		$Label.text = text
+
+# 【新增】全局赚速提升飘字（三十五节）：中央对比方案——中枢快照 + update_all_ui 汇流。
+# 所有养成系统操作后都汇流 update_all_ui（含每秒 on_auto_earn），diff≠0 即弹、更新快照；
+# 批量/十连天然合并为一次总增量；未来新系统零成本自动继承。
+func _check_income_float():
+	var cur: int = data.get_total_auto_income()
+	if _last_total_income < 0:
+		_last_total_income = cur   # 首次/刚进游戏：只建快照不弹，避免开场飘字
+		return
+	var delta: int = cur - _last_total_income
+	_last_total_income = cur
+	if delta == 0:
+		return
+	_show_income_float(cur, delta)
+	_check_hero_income_float()   # 【新增】门客赚钱飘字：与全局同一节拍逐门客对比
+
+# 【新增】屏幕上部飘字渐隐（z50 飘字惯例）：总数橙金 / +增量绿（负向红），数字复用 format_number；
+# 位置 y=102：顶栏下方的固定空档，不挡门客面板信息行(50~74)与按钮行(100起)；
+# 单节点复用+杀旧动画——快速连点不叠字，改为同一条飘字内【累加增量】（见下）
+func _show_income_float(total: int, delta: int):
+	var label: RichTextLabel = get_node_or_null("IncomeFloat")
+	if label == null:
+		label = RichTextLabel.new()
+		label.name = "IncomeFloat"
+		label.z_index = 50   # 飘字层级惯例
+		label.bbcode_enabled = true   # 双色：Label 单色做不到，换 RichTextLabel
+		label.scroll_active = false
+		label.add_theme_font_size_override("normal_font_size", 20)
+		label.size = Vector2(560, 26)
+		add_child(label)
+	# 【新增】累加制：飘字还亮着（alpha>0.05）时，新增量叠到正在显示的增量上（+10→+20→+30）；
+	# 飘已散尽则清零重新累计。正负混点按代数和累加，颜色随最新累计值符号。
+	if label.modulate.a <= 0.05:
+		_float_shown_delta = 0
+	_float_shown_delta += delta
+	# 【修】变量名 sign 撞 Godot 内置全局函数 sign()（SHADOWED_GLOBAL_IDENTIFIER 警告），改名 sign_txt
+	var sign_txt := "+" if _float_shown_delta > 0 else "-"
+	var delta_col := "#2ecc71" if _float_shown_delta > 0 else "#e74c3c"
+	label.text = "[center][color=#e6a23c]赚速 %s/秒[/color]  [color=%s](%s%s)[/color][/center]" % [format_number(total), delta_col, sign_txt, format_number(abs(_float_shown_delta))]
+	label.add_theme_color_override("default_color", Color("#e6a23c"))
+	label.add_theme_color_override("font_outline_color", Color(0, 0, 0))
+	label.add_theme_constant_override("outline_size", 4)
+	label.position = Vector2(20, 102)
+	label.modulate.a = 1.0   # 重弹满亮（连点时飘字一直亮着只换数字）
+	if _income_float_tween != null and _income_float_tween.is_valid():
+		_income_float_tween.kill()
+	_income_float_tween = create_tween()
+	_income_float_tween.tween_interval(0.8)   # 停留片刻再渐隐
+	_income_float_tween.tween_property(label, "modulate:a", 0.0, 0.8)
+
+# 【新增】门客赚钱飘字（游戏内口径=门客赚钱，即单门客赚速 HeroData.get_income），
+# 赚速=全局挂机货币速度（get_total_auto_income）。本函数逐门客 diff：任何页面（门客面板/挚友技能/
+# 珍兽培养/促织园/背包/藏品…）提升任一已拥有门客赚钱，1 秒内必弹，无需逐页接线；
+# 多门客同帧变化时增量合并显示"多名门客"
+func _check_hero_income_float():
+	var changed := {}   # hero_id -> 赚钱差值（本帧有变化的门客）
+	for hero_id in data.heroes.keys():
+		var cur: int = data.get_hero_income(hero_id)
+		if _hero_income_snapshot.has(hero_id):
+			var d: int = cur - int(_hero_income_snapshot[hero_id])
+			if d != 0:
+				changed[hero_id] = d
+		_hero_income_snapshot[hero_id] = cur   # 无论有无变化都刷新快照
+	if changed.is_empty():
+		return
+	# 【改】不显示单个门客：所有变化门客的增量合并为"门客总赚钱"增量（用户 09-11 拍板）
+	var total_delta := 0
+	for d in changed.values():
+		total_delta += int(d)
+	_show_hero_power_float(total_delta)
+
+# 【新增】门客赚钱飘字：全局固定位置 y=76（全局赚速飘字 y=102 上方一层，同时触发不错层）；
+# 显示门客总赚钱增量（全部已拥有门客合并，不显示单个门客名）；
+# 款式同全局飘字（橙金主体/绿增红减/黑描边/停留0.8s渐隐0.8s/单节点复用杀旧动画/连点累加）
+func _show_hero_power_float(delta: int):
+	var label: RichTextLabel = get_node_or_null("HeroPowerFloat")
+	if label == null:
+		label = RichTextLabel.new()
+		label.name = "HeroPowerFloat"
+		label.z_index = 50   # 飘字层级惯例
+		label.bbcode_enabled = true
+		label.scroll_active = false
+		label.add_theme_font_size_override("normal_font_size", 20)
+		label.size = Vector2(560, 26)
+		add_child(label)
+	# 累加制：飘还亮着时叠到正在显示的增量上；飘尽归零重新累计
+	if label.modulate.a <= 0.05:
+		_hero_float_shown_delta = 0
+	_hero_float_shown_delta += delta
+	# 【修】变量名不撞内置 sign()
+	var sign_txt := "+" if _hero_float_shown_delta > 0 else "-"
+	var delta_col := "#2ecc71" if _hero_float_shown_delta > 0 else "#e74c3c"
+	label.text = "[center][color=#e6a23c]门客赚钱[/color] [color=%s]%s%s[/color][/center]" % [delta_col, sign_txt, format_number(abs(_hero_float_shown_delta))]
+	label.add_theme_color_override("default_color", Color("#e6a23c"))
+	label.add_theme_color_override("font_outline_color", Color(0, 0, 0))
+	label.add_theme_constant_override("outline_size", 4)
+	label.position = Vector2(20, 76)   # 全局赚速飘字(102)上方一层
+	label.modulate.a = 1.0
+	if _hero_float_tween != null and _hero_float_tween.is_valid():
+		_hero_float_tween.kill()
+	_hero_float_tween = create_tween()
+	_hero_float_tween.tween_interval(0.8)
+	_hero_float_tween.tween_property(label, "modulate:a", 0.0, 0.8)
 
 func on_friend_page():
 	switch_page("friend")
