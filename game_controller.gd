@@ -34,10 +34,6 @@ var _web_login_cb = null   # 【新增】Web 登录表单 JS 回调引用
 var _manual_download := false   # 【新增】标记本次下载是手动触发（恢复按钮），用于给提示
 var _game_entered := false   # 【新增】是否已进入游戏（过登录门才初始化，只进一次）
 var _net_login_pending := false   # 【新增】登录流程中：正等云端存档查询结果来决定用哪份档
-var _last_total_income: int = -1   # 【新增】全局赚速飘字：上次总赚速快照（-1=未初始化，首次只记录不弹）
-var _income_float_state := {"tween": null, "display": 0.0, "target": 0}   # 【新增】赚速飘字状态：动画引用/滚动显示值/累计目标增量（连点累加，飘尽归零）
-var _hero_income_snapshot: Dictionary = {}   # 【新增】门客赚钱飘字：每个已拥有门客的赚钱快照 {hero_id: income}（首次建档不弹）
-var _hero_float_state := {"tween": null, "display": 0.0, "target": 0}   # 【新增】门客赚钱飘字状态（同赚速飘字结构）
 # ========== 徒弟页面 ==========
 
 var _bars_visible = true  # 【新增】顶栏/底栏显隐状态位：二级页（挚友详情）全屏时=false，_apply_portrait_layout 重排时尊重它
@@ -327,7 +323,6 @@ func connect_signals():
 	_signals_connected = true
 	
 	# 钱庄入口
-	if has_node("PageContainer/ShopPage/HQEntryBtn"): $PageContainer/ShopPage/HQEntryBtn.pressed.connect(open_hq_panel)
 	
 	# 钱庄面板内
 	if has_node("HQPanel/VBoxContainer/HBoxContainer/HQClickBtn"): $HQPanel/VBoxContainer/HBoxContainer/HQClickBtn.pressed.connect(on_hq_click)
@@ -583,7 +578,6 @@ func update_all_ui():
 		update_hq_panel()
 	if has_node("ShopPanel") and $ShopPanel.visible and current_shop_id != "":
 		update_shop_panel()
-	_check_income_float()   # 【新增】全局赚速飘字：任何操作后汇流到此，diff≠0 即弹
 
 func update_money_label():
 	var text = "🥈 %s  |  🥇：%s  |  VIP%d  |  赚速：%s/秒" % [
@@ -596,112 +590,6 @@ func update_money_label():
 		$TopBar/Label.text = text
 	elif has_node("Label"):
 		$Label.text = text
-
-# 【新增】全局赚速提升飘字（三十五节）：中央对比方案——中枢快照 + update_all_ui 汇流。
-# 所有养成系统操作后都汇流 update_all_ui（含每秒 on_auto_earn），diff≠0 即弹、更新快照；
-# 批量/十连天然合并为一次总增量；未来新系统零成本自动继承。
-func _check_income_float():
-	# 【修】门客赚钱检查必须无条件先跑：它负担快照建档，若挂在全局 diff≠0 分支后，
-	# 启动阶段全局无变化时快照永不建档，导致"每局第一次提升不弹、第二次起才弹"（2026-09-11 用户复现）
-	_check_hero_income_float()
-	var cur: int = data.get_total_auto_income()
-	if _last_total_income < 0:
-		_last_total_income = cur   # 首次/刚进游戏：只建快照不弹，避免开场飘字
-		return
-	var delta: int = cur - _last_total_income
-	_last_total_income = cur
-	if delta == 0:
-		return
-	_show_income_float(cur, delta)
-
-# 【新增】通用徽标飘字：半透明圆角背景板（不与底层页面文字糊在一起）+ 增量数字滚动上涨
-# （1.2s 内从当前显示值滚到最新累计目标，涨完固定，再随板子渐隐 0.8s）+ 连点累加。
-# cfg = {"tween": 动画引用, "display": 当前滚动显示值, "target": 累计目标增量}（Dictionary 传引用，天然共享状态）
-# make_text = Callable(显示值:int, 正负号:String, 增量色:String) -> String 文案（外部值如总数用闭包捕获）
-func _show_float_badge(cfg: Dictionary, node_name: String, y: int, delta: int, make_text: Callable):
-	var panel: PanelContainer = get_node_or_null(node_name)
-	if panel == null:
-		panel = PanelContainer.new()
-		panel.name = node_name
-		panel.z_index = 50   # 飘字层级惯例
-		# 背景板：深紫底 85% 不透明度 + 圆角，挡得住页面文字又不死板
-		var style := StyleBoxFlat.new()
-		style.bg_color = Color("#1e1b2e", 0.85)
-		style.set_corner_radius_all(10)
-		style.content_margin_left = 16
-		style.content_margin_right = 16
-		style.content_margin_top = 5
-		style.content_margin_bottom = 5
-		panel.add_theme_stylebox_override("panel", style)
-		var rtl := RichTextLabel.new()
-		rtl.name = "Text"
-		rtl.bbcode_enabled = true   # 双色：主体橙金 / 增量绿(红)
-		rtl.scroll_active = false
-		rtl.add_theme_font_size_override("normal_font_size", 20)
-		rtl.add_theme_color_override("default_color", Color("#e6a23c"))
-		rtl.add_theme_color_override("font_outline_color", Color(0, 0, 0))
-		rtl.add_theme_constant_override("outline_size", 3)
-		rtl.custom_minimum_size = Vector2(320, 28)   # 固定徽标内宽，文字居中不随字数跳动
-		panel.add_child(rtl)
-		add_child(panel)   # 【修】重写时遗漏：panel 必须挂进场景树，否则徽标永远不显示（不报错只隐身）
-	panel.size = Vector2(352, 38)   # 320+两侧边距；显式定尺寸防首帧 0 尺寸（新节点坑）
-	panel.position = Vector2(124, y)   # 屏宽 600 徽标 352 居中（写死 124，避开整数除法警告）
-	# 累加制：飘还亮着时叠到目标上（+10→+20→+30）；飘尽归零重新累计
-	if panel.modulate.a <= 0.05:
-		cfg["display"] = 0.0
-		cfg["target"] = 0
-	cfg["target"] = int(cfg["target"]) + delta
-	var sign_txt := "+" if int(cfg["target"]) > 0 else "-"
-	var delta_col := "#2ecc71" if int(cfg["target"]) > 0 else "#e74c3c"
-	panel.modulate.a = 1.0   # 重弹满亮（连点时板子一直亮着只换数字）
-	var tw: Tween = cfg["tween"]
-	if tw != null and tw.is_valid():
-		tw.kill()
-	tw = create_tween()
-	cfg["tween"] = tw
-	var label: RichTextLabel = panel.get_node("Text")
-	var start_val: float = cfg["display"]
-	var target_val: int = int(cfg["target"])
-	# 数字滚动上涨：1.2s 线性滚到目标（连点杀旧动画会从当前显示值无缝续涨），滚完即固定
-	tw.tween_method(func(v: float):
-		cfg["display"] = v
-		label.text = make_text.call(int(round(v)), sign_txt, delta_col)
-	, start_val, float(target_val), 1.2)
-	tw.tween_property(panel, "modulate:a", 0.0, 0.8)   # 数字固定后板子渐隐
-
-# 【新增】赚速飘字（y=114，门客赚钱飘字下方一层）：总数橙金 / +增量绿（负红），数字复用 format_number
-func _show_income_float(total: int, delta: int):
-	_show_float_badge(_income_float_state, "IncomeFloat", 114, delta,
-		func(v: int, sign_txt: String, delta_col: String):
-			return "[center][color=#e6a23c]赚速 %s/秒[/color]  [color=%s](%s%s)[/color][/center]" % [format_number(total), delta_col, sign_txt, format_number(abs(v))])
-
-# 【新增】门客赚钱飘字：全局固定位置 y=72（赚速飘字 y=114 上方一层，同时触发不错层）；
-# 显示门客总赚钱增量（全部已拥有门客合并，不显示单个门客名）
-func _show_hero_power_float(delta: int):
-	_show_float_badge(_hero_float_state, "HeroPowerFloat", 72, delta,
-		func(v: int, sign_txt: String, delta_col: String):
-			return "[center][color=#e6a23c]门客赚钱[/color] [color=%s]%s%s[/color][/center]" % [delta_col, sign_txt, format_number(abs(v))])
-
-# 【新增】门客赚钱飘字（游戏内口径=门客赚钱，即单门客赚速 HeroData.get_income），
-# 赚速=全局挂机货币速度（get_total_auto_income）。本函数逐门客 diff：任何页面（门客面板/挚友技能/
-# 珍兽培养/促织园/背包/藏品…）提升任一已拥有门客赚钱，1 秒内必弹，无需逐页接线；
-# 多门客同帧变化时增量合并为"门客总赚钱"显示
-func _check_hero_income_float():
-	var changed := {}   # hero_id -> 赚钱差值（本帧有变化的门客）
-	for hero_id in data.heroes.keys():
-		var cur: int = data.get_hero_income(hero_id)
-		if _hero_income_snapshot.has(hero_id):
-			var d: int = cur - int(_hero_income_snapshot[hero_id])
-			if d != 0:
-				changed[hero_id] = d
-		_hero_income_snapshot[hero_id] = cur   # 无论有无变化都刷新快照
-	if changed.is_empty():
-		return
-	# 【改】不显示单个门客：所有变化门客的增量合并为"门客总赚钱"增量（用户 09-11 拍板）
-	var total_delta := 0
-	for d in changed.values():
-		total_delta += int(d)
-	_show_hero_power_float(total_delta)
 
 func on_friend_page():
 	switch_page("friend")
@@ -2164,26 +2052,21 @@ func _build_scene_shell():
 	pc.name = "PageContainer"
 	add_child(pc)
 
-	# 商铺页：钱庄入口（顶部通栏）+ 店铺列表（下方滚动）
+	# 商铺页（三十六节批次1：列表→长地图）：纵 ScrollContainer + 超高 Control 内容节点，
+	# 建筑=坐标显式摆放的 Panel（代码布局老套路，命盘同法）；钱庄(总部)从顶部横幅迁入地图 C 位
 	# （generate_shop_list 要求 ShopScroll/ShopList 必须存在，不能省）
 	var shop_pg = Control.new()
 	shop_pg.name = "ShopPage"
 	pc.add_child(shop_pg)
-	var hq_btn = Button.new()
-	hq_btn.name = "HQEntryBtn"
-	hq_btn.text = "钱庄"   # 占位，update 时代码会改写完整文字
-	hq_btn.set_anchors_preset(Control.PRESET_TOP_WIDE)
-	hq_btn.offset_bottom = 64   # 锚点预设后必须补高度偏移，否则高度为0看不见
-	shop_pg.add_child(hq_btn)
 	var shop_scroll = ScrollContainer.new()
-	shop_scroll.horizontal_scroll_mode = ScrollContainer.SCROLL_MODE_DISABLED  # 【新增】禁横向滚动，内容超宽只裁切不再出横滚条
+	shop_scroll.horizontal_scroll_mode = ScrollContainer.SCROLL_MODE_AUTO   # 【改】横版地图：横向可滚（触屏拖动浏览）
+	shop_scroll.vertical_scroll_mode = ScrollContainer.SCROLL_MODE_DISABLED   # 【新增】纵向锁死，建筑单行排布
 	shop_scroll.name = "ShopScroll"
 	shop_scroll.set_anchors_preset(Control.PRESET_FULL_RECT)
-	shop_scroll.offset_top = 72   # 给钱庄入口让位
+	shop_scroll.offset_top = 8   # 【改】72→8：钱庄横幅已迁入地图，只留小边距
 	shop_pg.add_child(shop_scroll)
-	var shop_list = GridContainer.new()
+	var shop_list = Control.new()   # 【改】GridContainer→Control：地图内容节点，子建筑按坐标显式摆放
 	shop_list.name = "ShopList"
-	shop_list.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	shop_scroll.add_child(shop_list)
 
 	# 门客页：滚动容器（网格由 hero_page 代码填充）
@@ -2482,16 +2365,12 @@ func _apply_portrait_layout():
 	
 	
 	# 商铺页内部：钱庄入口顶部通栏(高64) + 店铺列表铺满剩余
-	if has_node("PageContainer/ShopPage/HQEntryBtn"):
-		var hq_btn = $PageContainer/ShopPage/HQEntryBtn
-		hq_btn.set_anchors_preset(Control.PRESET_TOP_LEFT)
-		hq_btn.position = Vector2.ZERO
-		hq_btn.size = Vector2(vs.x, 64)
 	if has_node("PageContainer/ShopPage/ShopScroll"):
 		var shop_scroll = $PageContainer/ShopPage/ShopScroll
 		shop_scroll.set_anchors_preset(Control.PRESET_TOP_LEFT)
-		shop_scroll.position = Vector2(0, 72)
-		shop_scroll.size = Vector2(vs.x, vs.y - 182)   # 182 = 顶栏50 + 钱庄入口72 + 底栏60
+		shop_scroll.position = Vector2(0, 8)   # 【改】72→8：钱庄横幅已迁入地图
+		shop_scroll.size = Vector2(vs.x, vs.y - 118)   # 【改】118 = 顶栏50 + 留白8 + 底栏60（原182=50+72+60）
+		generate_shop_list()   # 【新增】窗口尺寸变化时重建地图：地图尺寸随可视高度自适应（2026-09-11 拍板），只生成一次会在改窗口后错位
 
 	# 门客页 / 背包页的滚动区铺满整页
 	# 【改】门客页滚动区左右留 12px 边距，卡片品质边框不再贴屏边被截断

@@ -17,26 +17,176 @@ func _init(p_c):
 
 # ============ 以下为原 game_controller.gd 搬迁函数（逻辑未改，仅根节点访问加了 c. 前缀） ============
 
+# ============ 三十六节批次1：商铺页地图化（横版三排街景） ============
+# 地图底图=三排建筑街景（每排 7 栋 = 21 店铺，画中建筑与店铺块一一对应）；
+# 布局 3 行 × 7 列网格（代码布局，禁锚点——本工程布局铁律），Z 字形阅读顺序（按解锁等级）；
+# 钱庄(总部)按拍板固定"最左最中间"=第 2 行第 1 列；浏览=横向拖动（触屏原生支持），拖动条按拍板隐身
+# 美术占位规范（零配置丢图即用）：
+#   地图底图：res://assets/shops/map_bg.png（三排建筑街景长图，高宽比≈1:3 最佳），
+#     代码会按图片真实比例反推内容高度保证零裁切；缺失兜底色块
+#   单栋建筑图：res://assets/shops/<shop_id>.png（如 ke_zhan.png），缺失时半透明色块底
+const BUILDING_IMG_DIR := "res://assets/shops/"
+const MAP_BG_IMG := "res://assets/shops/map_bg.png"
+# 特色玩法七店（钱庄=总部 hq 在地图"最左最中间"；其余 6 店挂 24×24 玩法入口占位钮，批次2+ 逐个接通）
+const PLAY_SHOPS := ["hq", "ke_zhan", "yi_guan", "yao_pu", "jiu_fang", "jiu_si", "miaoyin_fang"]
+const MAP_ROWS := 3   # 街景三排建筑
+const MAP_COLS := 7   # 每排 7 栋 = 21 店铺
+const MAP_PAD := 16
+const MAP_GAP := 16   # 建筑间距
+const MAP_BLD_SIZE := Vector2(276, 150)   # 单栋建筑占位块（≈画中单栋建筑大小）
+
 func generate_shop_list():
 	if not c.has_node("PageContainer/ShopPage/ShopScroll/ShopList"): return
-	
-	var list = c.get_node("PageContainer/ShopPage/ShopScroll/ShopList")
-	
-	for child in list.get_children():
+	var scroll: ScrollContainer = c.get_node("PageContainer/ShopPage/ShopScroll")
+	# 拖动条隐身（用户拍板不要拖动条）：主题清空 HScrollBar 全部样式+图标，跨版本免 API 依赖
+	#（get_h_scrollbar 在 4.7.1 报 Nonexistent function，不纠缠节点 API）
+	var th := Theme.new()
+	var empty := StyleBoxEmpty.new()
+	for st in ["scroll", "scroll_focus", "grabber", "grabber_highlight", "grabber_pressed",
+			"increment", "increment_highlight", "decrement", "decrement_highlight"]:
+		th.set_stylebox(st, "HScrollBar", empty)
+	var img := Image.create(1, 1, false, Image.FORMAT_RGBA8)
+	img.set_pixel(0, 0, Color(0, 0, 0, 0))
+	var transparent: Texture2D = ImageTexture.create_from_image(img)
+	th.set_icon("increment_icon", "HScrollBar", transparent)
+	th.set_icon("decrement_icon", "HScrollBar", transparent)
+	scroll.theme = th
+	var content: Control = scroll.get_node("ShopList")
+	for child in content.get_children():
 		child.queue_free()
-	
-	list.columns = 2
-	list.add_theme_constant_override("h_separation", 8)
-	list.add_theme_constant_override("v_separation", 8)
-	
-	for shop_id in data.SHOP_ORDER:
-		var btn = Button.new()
-		btn.name = shop_id + "_entry"
-		btn.custom_minimum_size = Vector2(0, 64)  # 【改】60→64，容纳两行文字
-		btn.clip_text = true                      # 【新增】防长文本把按钮最小宽度撑出视口（横滚条根因）
-		btn.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+
+	# 【修】内容高度直接取滚动容器实际分配的视口高度（地面真值）：
+	# 竖向只容纳整幅图、零裁切——之前用 get_viewport_rect 推算与实际滚动区有出入，导致只显示图高约 1/3（2026-09-11 用户复现）
+	var map_h := int(scroll.size.y)
+	if map_h < 100:
+		map_h = int(c.get_viewport_rect().size.y) - 118   # 回退：布局未就绪时用视口推算（顶栏50+留白8+底栏60）
+	if map_h < 320:
+		map_h = 320   # 保底，防启动瞬间视口异常
+
+	# 按解锁等级（平手按 SHOP_ORDER 原序）排序，得阅读顺序
+	var infos := []
+	for i in range(data.SHOP_ORDER.size()):
+		var sid: String = data.SHOP_ORDER[i]
+		infos.append({"id": sid, "ch": data.get_shop_unlock_chapter(sid), "ord": i})
+	infos.sort_custom(func(a, b): return a.ch < b.ch or (a.ch == b.ch and a.ord < b.ord))
+
+	# 尺寸推导：有底图按图比例定宽（高已定死=可视高，零变形）；无底图用固定 7 列宽
+	var bg_tex: Texture2D = null
+	var map_w := 32 + MAP_COLS * (int(MAP_BLD_SIZE.x) + MAP_GAP) - MAP_GAP
+	if ResourceLoader.exists(MAP_BG_IMG):
+		bg_tex = load(MAP_BG_IMG) as Texture2D   # as 转型+空值守卫：JPEG 伪装 .png 时 load 返回 null（2026-09-11 用户踩坑）
+		if bg_tex != null:
+			var isz := bg_tex.get_size()
+			if isz.y > 0:
+				map_w = floori(map_h * isz.x / isz.y)
+	# 建筑块尺寸：按内容尺寸塞进 7×3 网格（有图时随图缩放，保证一一对应画中建筑）
+	var gap := MAP_GAP
+	var bld_w := floori((map_w - MAP_PAD * 2 - (MAP_COLS - 1) * gap) / float(MAP_COLS))
+	var row_h := floori((map_h - MAP_PAD * 2) / float(MAP_ROWS))
+	var bld_h := mini(int(MAP_BLD_SIZE.y), row_h - 20)   # 【修】mini 返回 int：min() 返回 Variant 会被 := 推断成 Variant（项目把该警告当错误，2026-09-11 报错点）
+	var bld_size := Vector2(bld_w, bld_h)
+	var hq_row := floori(MAP_ROWS * 0.5)   # 钱庄行：中间排；floori 返回 int（n/2 会被 := 推断成 float 报整数除法警告，且槽位匹配会失配）
+
+	# 地图底图：铺满内容节点（高=可视高、宽=按比例，零裁切零变形），缺图兜底色块
+	if bg_tex != null:
+		var bg := TextureRect.new()
+		bg.name = "MapBg"
+		bg.texture = bg_tex
+		bg.stretch_mode = TextureRect.STRETCH_SCALE
+		bg.position = Vector2.ZERO
+		bg.size = Vector2(map_w, map_h)
+		content.add_child(bg)
+	else:
+		var bg := ColorRect.new()
+		bg.name = "MapBg"
+		bg.color = Color("#2e2a26")
+		bg.position = Vector2.ZERO
+		bg.size = Vector2(map_w, map_h)
+		content.add_child(bg)
+		var tip := Label.new()
+		tip.text = "地图底图缺失：把三排建筑街景长图存为 res://assets/shops/map_bg.png 即自动生效"
+		tip.position = Vector2(MAP_PAD, 8)
+		tip.add_theme_color_override("font_color", Color("#8a8178"))
+		content.add_child(tip)
+
+	# Z 字形槽位序列：偶数行左→右，奇数行右→左（阅读顺序按解锁等级）
+	var slots := []
+	for r in range(MAP_ROWS):
+		for k in range(MAP_COLS):
+			var col := k
+			if r % 2 == 1:
+				col = MAP_COLS - 1 - k
+			slots.append({"row": r, "col": col})
+	# 钱庄 C 位："最左最中间"=第 2 行第 1 列（视觉位）
+	var hq_idx := -1
+	for i in range(slots.size()):
+		if slots[i]["row"] == hq_row and slots[i]["col"] == 0:
+			hq_idx = i
+			break
+	# 行内垂直居中偏移
+	var y_off := floori((row_h - bld_h) * 0.5)
+	# 钱庄 C 位建筑（总部，点击开总部面板）
+	_add_building(content, "hq", Vector2(MAP_PAD, MAP_PAD + hq_row * row_h + y_off), bld_size)
+	# 其余店铺按阅读顺序落位（跳过钱庄槽）
+	var idx := 0
+	for i in range(infos.size()):
+		if idx == hq_idx:
+			idx += 1
+		var s: Dictionary = slots[idx]
+		var sid: String = str(infos[i]["id"])
+		var pos := Vector2(MAP_PAD + s["col"] * (bld_w + gap), MAP_PAD + s["row"] * row_h + y_off)
+		_add_building(content, sid, pos, bld_size)
+		idx += 1
+
+	# 内容节点显式尺寸：宽高喂足 ScrollContainer 才有横滚（布局铁律：显式 position/size）
+	content.custom_minimum_size = Vector2(map_w, map_h)
+	content.size = Vector2(map_w, map_h)
+
+# 【新增】单栋建筑：半透明底（图/色块，压在街景图上保证文字可读）+ 全幅 Button（点击进店铺/解锁）+ 玩法入口小钮（24×24，特色店才有）
+func _add_building(content: Control, shop_id: String, pos: Vector2, bld_size: Vector2):
+	var bld := Panel.new()
+	bld.name = "bld_" + shop_id
+	bld.position = pos
+	bld.size = bld_size   # 随地图缩放（窗口矮时建筑块同步缩小，保持与画中建筑一一对应）
+	bld.set_meta("shop_id", shop_id)   # 刷新文字按 meta 取，不解析节点名（新规：引用先验证）
+	# 底图：丢图即用，缺图半透明深底（压街景图上文字可读）
+	var img_path: String = BUILDING_IMG_DIR + shop_id + ".png"
+	if ResourceLoader.exists(img_path):
+		var st := StyleBoxTexture.new()
+		st.texture = load(img_path)
+		bld.add_theme_stylebox_override("panel", st)
+	else:
+		var sf := StyleBoxFlat.new()
+		sf.bg_color = Color(0.16, 0.13, 0.11, 0.78)
+		sf.set_corner_radius_all(8)
+		sf.border_color = Color("#6b5b4a")
+		sf.set_border_width_all(2)
+		bld.add_theme_stylebox_override("panel", sf)
+	content.add_child(bld)
+	# 全幅点击区（flat 无自身底色，文字直接压在建筑底上）
+	var btn := Button.new()
+	btn.name = "BuildingBtn"
+	btn.flat = true
+	btn.position = Vector2.ZERO
+	btn.size = bld_size
+	btn.clip_text = true
+	if shop_id == "hq":
+		btn.pressed.connect(c.open_hq_panel)
+	else:
 		btn.pressed.connect(on_shop_entry_pressed.bind(shop_id))
-		list.add_child(btn)
+	bld.add_child(btn)
+	# 特色玩法入口占位钮：批次2+ 逐个接通玩法页，现在点击提示开发中
+	if PLAY_SHOPS.has(shop_id):
+		var play := Button.new()
+		play.name = "PlayBtn"
+		play.text = "▶"
+		play.position = Vector2(bld_size.x - 30, 6)
+		play.size = Vector2(24, 24)
+		var play_shop_name: String = "钱庄"
+		if shop_id != "hq":
+			play_shop_name = str(data.get_shop_config(shop_id).get("name", ""))
+		play.pressed.connect(func(): c._show_stage_hint("【%s】特色玩法开发中，敬请期待" % play_shop_name))
+		bld.add_child(play)
 
 func on_shop_entry_pressed(shop_id: String):
 	if data.shops.has(shop_id):
@@ -203,17 +353,22 @@ func _on_batch_hire_toggled(_pressed: bool):
 		update_shop_panel()
 
 func update_entry_buttons():
-	if c.has_node("PageContainer/ShopPage/HQEntryBtn"):
-		var income = data.get_hq_auto_income()
-		c.get_node("PageContainer/ShopPage/HQEntryBtn").text = "【钱庄】Lv.%d  |  挂机 %d/秒  |  点击 +%d" % [data.hq.level, income, data.hq.click_income]
-	
 	if not c.has_node("PageContainer/ShopPage/ShopScroll/ShopList"): return
-	for btn in c.get_node("PageContainer/ShopPage/ShopScroll/ShopList").get_children():
-		var shop_id = btn.name.replace("_entry", "")
+	var content = c.get_node("PageContainer/ShopPage/ShopScroll/ShopList")
+	for bld in content.get_children():
+		if not (bld is Panel) or not bld.has_meta("shop_id"): continue
+		var shop_id: String = bld.get_meta("shop_id")
+		var btn: Button = bld.get_node("BuildingBtn")
+		if shop_id == "hq":
+			# 钱庄(总部) C 位建筑：原横幅信息原样搬入
+			var hq_income = data.get_hq_auto_income()
+			btn.text = "【钱庄】Lv.%d\n挂机 %d/秒  |  点击 +%d" % [data.hq.level, hq_income, data.hq.click_income]
+			btn.modulate = Color.WHITE
+			btn.disabled = false
+			continue
 		var cfg = data.get_shop_config(shop_id)
 		if cfg.is_empty(): continue
-		
-		# 【改】文字拆两行，单行太长会撑宽网格列（600视口2列装不下）
+		# 文字两行，单行太长会撑出视口
 		if data.shops.has(shop_id):
 			var s = data.shops[shop_id]
 			var income = data.get_shop_auto_income(shop_id)
