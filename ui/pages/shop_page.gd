@@ -34,6 +34,15 @@ const MAP_COLS := 7   # 每排 7 栋 = 21 店铺
 const MAP_PAD := 16
 const MAP_GAP := 16   # 建筑间距
 const MAP_BLD_SIZE := Vector2(276, 150)   # 单栋建筑占位块（≈画中单栋建筑大小）
+# 【新增】画中建筑对位表（比例坐标 0~1，店块中心）：有 entry 的店精确压在画中建筑上，
+# 未配置的店退回 7×3 网格。用户圈图报店名，AI 逐步填表迭代（2026-09-11 约定）
+const SHOP_POS := {
+	"hq": Vector2(0.123, 0.381),   # 钱庄（红圈）
+	"ke_zhan": Vector2(0.114, 0.547),   # 客栈（蓝圈）
+	"yi_guan": Vector2(0.097, 0.680),   # 医馆（粉圈）
+	"xiangliao_pu": Vector2(0.276, 0.048),   # 香料铺（绿圈）
+	"shuoshu_tan": Vector2(0.230, 0.225),   # 说书摊（黑圈）
+}
 
 func generate_shop_list():
 	if not c.has_node("PageContainer/ShopPage/ShopScroll/ShopList"): return
@@ -83,7 +92,7 @@ func generate_shop_list():
 	var gap := MAP_GAP
 	var bld_w := floori((map_w - MAP_PAD * 2 - (MAP_COLS - 1) * gap) / float(MAP_COLS))
 	var row_h := floori((map_h - MAP_PAD * 2) / float(MAP_ROWS))
-	var bld_h := mini(int(MAP_BLD_SIZE.y), row_h - 20)   # 【修】mini 返回 int：min() 返回 Variant 会被 := 推断成 Variant（项目把该警告当错误，2026-09-11 报错点）
+	var bld_h := mini(100, row_h - 20)   # 【改】100：纯名字牌无需高块（原 150 钱庄显大）；mini 返回 int：min() 返回 Variant 会被 := 推断成 Variant（项目把该警告当错误）
 	var bld_size := Vector2(bld_w, bld_h)
 	var hq_row := floori(MAP_ROWS * 0.5)   # 钱庄行：中间排；floori 返回 int（n/2 会被 := 推断成 float 报整数除法警告，且槽位匹配会失配）
 
@@ -92,6 +101,7 @@ func generate_shop_list():
 		var bg := TextureRect.new()
 		bg.name = "MapBg"
 		bg.texture = bg_tex
+		bg.expand = true   # 【修】Godot4 默认 false=最小尺寸锁死为贴图原始大小，set size 被顶回 2576×1696 只显示左上角 56%（调试牌实锤）
 		bg.stretch_mode = TextureRect.STRETCH_SCALE
 		bg.position = Vector2.ZERO
 		bg.size = Vector2(map_w, map_h)
@@ -125,8 +135,11 @@ func generate_shop_list():
 			break
 	# 行内垂直居中偏移
 	var y_off := floori((row_h - bld_h) * 0.5)
-	# 钱庄 C 位建筑（总部，点击开总部面板）
-	_add_building(content, "hq", Vector2(MAP_PAD, MAP_PAD + hq_row * row_h + y_off), bld_size)
+	# 钱庄建筑（总部，点击开总部面板）——有对位表 entry 时精确压画中钱庄楼，否则退回"最左最中间"C 位
+	if SHOP_POS.has("hq"):
+		_add_building(content, "hq", Vector2(SHOP_POS["hq"].x * map_w - bld_w * 0.5, SHOP_POS["hq"].y * map_h - bld_h * 0.5), bld_size)
+	else:
+		_add_building(content, "hq", Vector2(MAP_PAD, MAP_PAD + hq_row * row_h + y_off), bld_size)
 	# 其余店铺按阅读顺序落位（跳过钱庄槽）
 	var idx := 0
 	for i in range(infos.size()):
@@ -134,7 +147,12 @@ func generate_shop_list():
 			idx += 1
 		var s: Dictionary = slots[idx]
 		var sid: String = str(infos[i]["id"])
-		var pos := Vector2(MAP_PAD + s["col"] * (bld_w + gap), MAP_PAD + s["row"] * row_h + y_off)
+		var pos: Vector2
+		if SHOP_POS.has(sid):
+			# 对位表优先：店块中心精确压画中建筑（比例坐标 × 地图尺寸 - 半块）
+			pos = Vector2(SHOP_POS[sid].x * map_w - bld_w * 0.5, SHOP_POS[sid].y * map_h - bld_h * 0.5)
+		else:
+			pos = Vector2(MAP_PAD + s["col"] * (bld_w + gap), MAP_PAD + s["row"] * row_h + y_off)
 		_add_building(content, sid, pos, bld_size)
 		idx += 1
 
@@ -360,9 +378,7 @@ func update_entry_buttons():
 		var shop_id: String = bld.get_meta("shop_id")
 		var btn: Button = bld.get_node("BuildingBtn")
 		if shop_id == "hq":
-			# 钱庄(总部) C 位建筑：原横幅信息原样搬入
-			var hq_income = data.get_hq_auto_income()
-			btn.text = "【钱庄】Lv.%d\n挂机 %d/秒  |  点击 +%d" % [data.hq.level, hq_income, data.hq.click_income]
+			btn.text = "【钱庄】"   # 【改】纯名字牌（用户 09-12 拍板不显示信息）
 			btn.modulate = Color.WHITE
 			btn.disabled = false
 			continue
@@ -370,17 +386,16 @@ func update_entry_buttons():
 		if cfg.is_empty(): continue
 		# 文字两行，单行太长会撑出视口
 		if data.shops.has(shop_id):
-			var s = data.shops[shop_id]
-			var income = data.get_shop_auto_income(shop_id)
-			btn.text = "【%s】Lv.%d\n赚速 %s/秒  |  店员 %d人" % [s.name, s.level, c.format_number(income), s.staff]
+			# 【改】纯名字牌（用户 09-12 拍板）：详细收益信息在店铺面板里看，地图只导航
+			btn.text = "【%s】" % data.shops[shop_id].get("name", cfg.get("name", "?"))
 			btn.modulate = Color.WHITE
 			btn.disabled = false
 		elif data.can_unlock_shop(shop_id):
-			btn.text = "【%s】\n点击解锁（第%d章）" % [cfg.name, data.get_shop_unlock_chapter(shop_id)]
+			btn.text = "【%s】" % cfg.name
 			btn.modulate = Color("#e0c070")
 			btn.disabled = false
 		else:
-			btn.text = "【%s】\n未解锁（第%d章）" % [cfg.name, data.get_shop_unlock_chapter(shop_id)]
+			btn.text = "【%s】" % cfg.name
 			btn.modulate = Color(0.4, 0.4, 0.4, 0.6)
 			btn.disabled = true
 
