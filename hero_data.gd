@@ -49,6 +49,8 @@ static func get_total_aptitude(g, hero_id: String) -> int:
 	total += g.collection_system.get_aptitude_bonus(hero_id)
 	# 【新增】虫师副业技能资质（虫书Lv≥1解锁，副业等级×星级）
 	total += g.cuzhi_system.get_hero_side_aptitude(hero_id)
+	# 【新增】副业资质技能：市井百业/百工百业/物宝天华/庖丁解牛/XX之道 每级各+1资质（side_skill_system 统一管）
+	total += g.side_skill_system.get_hero_aptitude_bonus(hero_id)
 	
 	return total
 
@@ -98,6 +100,8 @@ static func get_extra_income(g, hero_id: String) -> int:
 	extra += g.token_system.get_contract_income(hero_id)
 	# 【新增】藏品固定赚速（基础效果赚钱类 每级+每星）
 	extra += g.collection_system.get_flat_income_bonus(hero_id)
+	# 【新增】客栈菜谱固定赚钱：同职业门客 Σ每道菜 500×升级所需烹饪次数（累加制）
+	extra += g.inn_system.get_career_income_bonus(hero.get("category", ""))
 	
 	return extra
 

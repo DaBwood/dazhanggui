@@ -1,0 +1,11 @@
+{
+  "skills": {
+    "shijing": {"name": "市井百业", "currency": "baiye", "cost": 300, "max": 300},
+    "baigong": {"name": "百工百业", "currency": "hangshi", "cost": 100, "max": 200},
+    "wubao": {"name": "物宝天华", "currency": "yinyuan", "curve": "paoding", "max": 200},
+    "paoding": {"name": "庖丁解牛", "currency": "cuisine", "curve": "paoding", "max": 300},
+    "zhidao": {"name": "之道", "currency": "career_book", "cost": 100, "max": 200}
+  },
+  "career_books": {"士": "shi_way", "农": "nong_way", "工": "gong_way", "商": "shang_way", "侠": "xia_way"},
+  "paoding_curve": {"base": 100}
+}

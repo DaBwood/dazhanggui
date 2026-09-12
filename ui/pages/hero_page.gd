@@ -716,6 +716,13 @@ func on_side_skill_upgrade(skill_idx: int, mode: String = "single"):
 		c.update_all_ui()
 		c.update_bag_list()
 
+# 【新增】副业资质技能升级（side_skill_system；single=升1级，bulk=一键升满）
+func on_side_sys_upgrade(key: String, mode: String = "single"):
+	if data.side_skill_system.upgrade(current_hero_id, key, mode) > 0:
+		update_hero_panel()
+		c.update_all_ui()
+		c.update_bag_list()
+
 func on_promotion_upgrade(mode: String = "single"):
 	var upgraded = data.upgrade_promotion(current_hero_id, mode == "bulk")
 	if upgraded > 0:
@@ -1141,6 +1148,40 @@ func _fill_shop_tab(list):
 
 		shop_row.add_child(shop_btn_box)
 		list.add_child(shop_row)
+	
+		# 【新增】副业资质技能（side_skill_system：市井百业/百工百业/物宝天华/庖丁解牛/XX之道，每级资质+1）
+	for r in data.side_skill_system.get_hero_skill_rows(current_hero_id):
+		var ss_row = HBoxContainer.new()
+		ss_row.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+		var ss_info = Label.new()
+		if int(r["cost"]) < 0:
+			ss_info.text = "【副业】%s  Lv.%d/%d  (资质+%d)  已满级" % [r["name"], r["level"], r["max"], r["level"]]
+		else:
+			ss_info.text = "【副业】%s  Lv.%d/%d  (资质+%d)  需%d%s" % [r["name"], r["level"], r["max"], r["level"], r["cost"], r["currency"]]
+		ss_info.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+		ss_info.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
+		ss_info.clip_text = true
+		ss_info.custom_minimum_size.x = 240
+		ss_row.add_child(ss_info)
+		var ss_btn_box = VBoxContainer.new()
+		ss_btn_box.custom_minimum_size = Vector2(70, 0)
+		ss_btn_box.add_theme_constant_override("separation", 3)
+		var ss_btn_single = Button.new()
+		ss_btn_single.text = "升级"
+		ss_btn_single.custom_minimum_size = Vector2(70, 24)
+		ss_btn_single.add_theme_font_size_override("font_size", 12)
+		ss_btn_single.disabled = int(r["cost"]) < 0
+		ss_btn_single.pressed.connect(on_side_sys_upgrade.bind(str(r["key"]), "single"))
+		ss_btn_box.add_child(ss_btn_single)
+		var ss_btn_bulk = Button.new()
+		ss_btn_bulk.text = "一键升级"
+		ss_btn_bulk.custom_minimum_size = Vector2(70, 24)
+		ss_btn_bulk.add_theme_font_size_override("font_size", 12)
+		ss_btn_bulk.disabled = int(r["cost"]) < 0
+		ss_btn_bulk.pressed.connect(on_side_sys_upgrade.bind(str(r["key"]), "bulk"))
+		ss_btn_box.add_child(ss_btn_bulk)
+		ss_row.add_child(ss_btn_box)
+		list.add_child(ss_row)
 	
 	# 【新增】虫师副业技能（促织园虫书Lv≥1激活后获得同名技能，纯资质；上限=虫书等级×10，每级资质=消耗资质丹=星级）
 	for s in data.cuzhi_system.get_hero_side_skills(current_hero_id):

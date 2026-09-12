@@ -340,28 +340,131 @@
 	},
 	"xia_way": {
 	  "name": "侠义之道",
-	  "desc": "后续玩法更新后使用"
+	  "desc": "提升%s类门客的XX之道技能"
 	},
 	"nong_way": {
 	  "name": "农业之道",
-	  "desc": "后续玩法更新后使用"
+	  "desc": "提升%s类门客的XX之道技能"
 	},
 	"shi_way": {
 	  "name": "仕途之道",
-	  "desc": "后续玩法更新后使用"
+	  "desc": "提升%s类门客的XX之道技能"
 	},
 	"gong_way": {
 	  "name": "工业之道",
-	  "desc": "后续玩法更新后使用"
+	  "desc": "提升%s类门客的XX之道技能"
 	},
 	"shang_way": {
 	  "name": "经商之道",
-	  "desc": "后续玩法更新后使用"
+	  "desc": "提升%s类门客的XX之道技能"
 	},
 	"patient_manual": {
 	  "name": "病人手册",
 	  "desc": "记载各类病症诊治之法的手册（后续玩法使用）"
 	},
+	"shicai_jidan": {
+  "name": "鸡蛋食材包",
+  "desc": "客栈烹饪食材，获取途径待活动接入"
+},
+"shicai_fenmian": {
+  "name": "粉面食材包",
+  "desc": "客栈烹饪食材，获取途径待活动接入"
+},
+"shicai_shengfen": {
+  "name": "生粉食材包",
+  "desc": "客栈烹饪食材，获取途径待活动接入"
+},
+"shicai_yinliao": {
+  "name": "饮料食材包",
+  "desc": "客栈烹饪食材，获取途径待活动接入"
+},
+"shicai_zhurou": {
+  "name": "猪肉食材包",
+  "desc": "客栈烹饪食材，获取途径待活动接入"
+},
+"shicai_yulei": {
+  "name": "鱼类食材包",
+  "desc": "客栈烹饪食材，获取途径待活动接入"
+},
+"shicai_tanglei": {
+  "name": "汤类食材包",
+  "desc": "客栈烹饪食材，获取途径待活动接入"
+},
+"shicai_daxia": {
+  "name": "大虾食材包",
+  "desc": "客栈烹饪食材，获取途径待活动接入"
+},
+"shicai_jirou": {
+  "name": "鸡肉食材包",
+  "desc": "客栈烹饪食材，获取途径待活动接入"
+},
+"shicai_pangxie": {
+  "name": "螃蟹食材包",
+  "desc": "客栈烹饪食材，获取途径待活动接入"
+},
+"can_tie": {
+  "name": "门客残帖",
+  "desc": "10张合成1张门客帖"
+},
+"kaishan_yin": {
+  "name": "开山印碎片",
+  "desc": "20个合成1个开山令"
+},
+"zongjiang_yin": {
+  "name": "宗匠印碎片",
+  "desc": "20个合成1个宗匠令"
+},"shicai_jidan": {
+  "name": "鸡蛋食材包",
+  "desc": "客栈烹饪食材，获取途径待活动接入"
+},
+"shicai_fenmian": {
+  "name": "粉面食材包",
+  "desc": "客栈烹饪食材，获取途径待活动接入"
+},
+"shicai_shengfen": {
+  "name": "生粉食材包",
+  "desc": "客栈烹饪食材，获取途径待活动接入"
+},
+"shicai_yinliao": {
+  "name": "饮料食材包",
+  "desc": "客栈烹饪食材，获取途径待活动接入"
+},
+"shicai_zhurou": {
+  "name": "猪肉食材包",
+  "desc": "客栈烹饪食材，获取途径待活动接入"
+},
+"shicai_yulei": {
+  "name": "鱼类食材包",
+  "desc": "客栈烹饪食材，获取途径待活动接入"
+},
+"shicai_tanglei": {
+  "name": "汤类食材包",
+  "desc": "客栈烹饪食材，获取途径待活动接入"
+},
+"shicai_daxia": {
+  "name": "大虾食材包",
+  "desc": "客栈烹饪食材，获取途径待活动接入"
+},
+"shicai_jirou": {
+  "name": "鸡肉食材包",
+  "desc": "客栈烹饪食材，获取途径待活动接入"
+},
+"shicai_pangxie": {
+  "name": "螃蟹食材包",
+  "desc": "客栈烹饪食材，获取途径待活动接入"
+},
+"can_tie": {
+  "name": "门客残帖",
+  "desc": "10张合成1张门客帖"
+},
+"kaishan_yin": {
+  "name": "开山印碎片",
+  "desc": "20个合成1个开山令"
+},
+"zongjiang_yin": {
+  "name": "宗匠印碎片",
+  "desc": "20个合成1个宗匠令"
+},
 	"tao_bao_quan": {
 		"name": "淘宝券",
 		"desc": "用于淘宝抽取藏品（单次1张，十连10张），获取途径：活动"

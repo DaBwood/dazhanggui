@@ -1,0 +1,36 @@
+{
+  "settings": {
+	"dish_level_income_base": 500
+  },
+  "careers": ["士", "农", "工", "商", "侠"],
+  "weekday_bonus": {"1": "士", "2": "农", "3": "工", "4": "商", "5": "侠"},
+  "packs": [
+	{"id": "shicai_jidan", "item": "shicai_jidan", "name": "鸡蛋食材包", "seconds": 300, "cuisine": 30, "jiao": 3600,
+	 "dishes": {"士": "蚵仔煎", "农": "荷包蛋", "工": "韭黄炒蛋", "商": "拔丝鸡蛋", "侠": "蛋挞"}},
+	{"id": "shicai_fenmian", "item": "shicai_fenmian", "name": "粉面食材包", "seconds": 300, "cuisine": 35, "jiao": 4200,
+	 "dishes": {"士": "担仔面", "农": "炒粉丝", "工": "蚂蚁上树", "商": "福山大面", "侠": "云吞面"}},
+	{"id": "shicai_shengfen", "item": "shicai_shengfen", "name": "生粉食材包", "seconds": 480, "cuisine": 80, "jiao": 9600,
+	 "dishes": {"士": "红豆饼", "农": "豆酥茄饼", "工": "麻饼", "商": "菜芜烧饼", "侠": "杏仁饼"}},
+	{"id": "shicai_yinliao", "item": "shicai_yinliao", "name": "饮料食材包", "seconds": 480, "cuisine": 90, "jiao": 11520,
+	 "dishes": {"士": "珍珠奶茶", "农": "冰糖湘莲", "工": "沙棘汁", "商": "诗礼银杏", "侠": "凉茶"}},
+	{"id": "shicai_zhurou", "item": "shicai_zhurou", "name": "猪肉食材包", "seconds": 600, "cuisine": 160, "jiao": 18000,
+	 "dishes": {"士": "卤肉饭", "农": "香干回锅肉", "工": "鱼香肉丝", "商": "双烤肉", "侠": "糖醋里脊"}},
+	{"id": "shicai_yulei", "item": "shicai_yulei", "name": "鱼类食材包", "seconds": 600, "cuisine": 185, "jiao": 21000,
+	 "dishes": {"士": "五谷鱼", "农": "剁椒鱼头", "工": "诸葛烤鱼", "商": "怀抱鲤", "侠": "蒜子焖酣鱼"}},
+	{"id": "shicai_tanglei", "item": "shicai_tanglei", "name": "汤类食材包", "seconds": 780, "cuisine": 290, "jiao": 35100,
+	 "dishes": {"士": "七宝羹", "农": "银耳莲子汤", "工": "一品豆腐汤", "商": "清汤燕菜", "侠": "老火靓汤"}},
+	{"id": "shicai_daxia", "item": "shicai_daxia", "name": "大虾食材包", "seconds": 780, "cuisine": 340, "jiao": 42900,
+	 "dishes": {"士": "虾猴", "农": "干锅干煎虾", "工": "麻辣虾尾", "商": "翡翠虾环", "侠": "上汤焗龙虾"}},
+	{"id": "shicai_jirou", "item": "shicai_jirou", "name": "鸡肉食材包", "seconds": 900, "cuisine": 585, "jiao": 67500,
+	 "dishes": {"士": "盐酥鸡", "农": "百鸟朝凤", "工": "口水鸡", "商": "德州扒鸡", "侠": "白切鸡"}},
+	{"id": "shicai_pangxie", "item": "shicai_pangxie", "name": "螃蟹食材包", "seconds": 900, "cuisine": 680, "jiao": 81000,
+	 "dishes": {"士": "清蒸万里蟹", "农": "口味蟹", "工": "香辣蟹", "商": "芙蓉花蟹", "侠": "桥底炒辣蟹"}}
+  ],
+  "exchange": [
+	{"item": "shop_blueprint", "cost": 2250},
+	{"item": "fengyasong", "cost": 9000},
+	{"item": "can_tie", "cost": 20000, "compose": {"need": 10, "to": "hero_token"}},
+	{"item": "kaishan_yin", "cost": 15000, "compose": {"need": 20, "to": "kaishan_ling"}},
+	{"item": "zongjiang_yin", "cost": 15000, "compose": {"need": 20, "to": "zongjiang_ling"}}
+  ]
+}
