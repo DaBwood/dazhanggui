@@ -170,4 +170,5 @@ static func get_shop_bonus(hero: Dictionary) -> float:
 	var total = 0.0
 	for skill in hero.shop_skills:
 		total += skill.base_percent + (skill.level - 1) * skill.percent_per_level
+		# 钱庄「财源广进」是独立店铺技能，在此自然计入（委任加成=两技能相加，用户 2026-09-12 拍板）
 	return total

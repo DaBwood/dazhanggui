@@ -589,6 +589,10 @@ var guild_system   # 【新增】商会系统（逻辑在 systems/guild_system.g
 var _guild_configs: Dictionary = {}   # 【新增】商会配置（guild.json，由 _load_all_configs 加载）
 
 var mail_system   # 【新增】邮件系统（逻辑在 systems/mail_system.gd，纯本地存档）
+
+var bank_system   # 【新增】钱庄玩法系统（逻辑在 systems/bank_system.gd，状态内部持有随 get_save_data 落盘）
+@warning_ignore("unused_private_class_variable")
+var _bank_configs: Dictionary = {}   # 【新增】钱庄配置（bank.json，由 _load_all_configs 加载）
 # ==================== 初始化 ====================
 # 初始化：创建各子系统（纯逻辑模块，持有本中枢引用），再加载全部配置
 func _init():
@@ -619,6 +623,7 @@ func _init():
 	collection_system = CollectionSystem.new(self)
 	guild_system = GuildSystem.new(self)   # 【新增】商会系统
 	mail_system = MailSystem.new(self)
+	bank_system = BankSystem.new(self)   # 【新增】钱庄玩法系统
 	
 	_load_all_configs()
 
@@ -656,6 +661,7 @@ func _load_all_configs():
 	_collection_configs = _load_json("res://data/collection.json")   # 函数名以现有配置加载辅助函数为准
 	_manhuang_configs = _load_json("res://data/manhuang.json")   # 【新增】蛮荒礼盒可选道具
 	_guild_configs = _load_json("res://data/guild.json")   # 【新增】商会配置
+	
 	
 	_load_items_config()   # 【重构新增】道具表
 	_load_travel_config()  # 【重构新增】游历配置
@@ -814,7 +820,7 @@ func save_game():
 		stage_system, item_system, travel_system, charity_system, lottery_system, mall_system,
 		manor_system,courtyard_system,war_system,goal_system,fishing_system,soul_system,
 		soulpower_system,cuzhi_system,guardian_system,token_system,fengzi_system,talent_system,
-		collection_system,guild_system,mail_system,]
+		collection_system,guild_system,mail_system,bank_system,]
 	for sys in systems:
 		save_data.merge(sys.get_save_data(), true)
 	var file = FileAccess.open(save_path, FileAccess.WRITE)

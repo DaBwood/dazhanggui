@@ -151,7 +151,11 @@ func _get_single_apprentice_income(a: Dictionary) -> int:
 		income += a.get("spouse_income", 0)
 	# 【改】三批+四批：套装%（市贾/童忆）与单品%（c220~c234：全体/职业/魔法师徒弟赚速）合并乘算
 	var mult = 1.0 + g.collection_system.get_apprentice_suit_pct() + g.collection_system.get_apprentice_income_item_pct(a.get("career", ""), a.state == "magician")
+	# 【新增】钱庄信誉值：徒弟赚速 +2%/级（并入乘区）
+	mult += g.bank_system.get_apprentice_pct_bonus()
 	income = int(income * mult)
+	# 【新增】钱庄信誉值：徒弟赚速固定 +500/级（乘区后追加，不吃其它百分比）
+	income += g.bank_system.get_apprentice_flat_bonus()
 	return income
 
 # 槽位总赚速：同槽每个徒弟单独计算后求和（双胞胎即两倍）

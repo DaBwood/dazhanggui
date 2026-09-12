@@ -196,6 +196,7 @@ func get_hero_shop_pct(hero_id: String) -> float:
 	var total = 0.0
 	for skill in hero.get("shop_skills", []):
 		total += float(skill.get("base_percent", 0)) + (int(skill.get("level", 1)) - 1) * float(skill.get("percent_per_level", 0))
+		# 钱庄「财源广进」是独立店铺技能，在此自然计入（议事厅=门客委任+财源广进 两技能相加）
 	return total
 
 # 委任门客进议事厅（快照职业+加成%，写进共享记录全员可见；空串=撤回）

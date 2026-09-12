@@ -1,0 +1,23 @@
+{
+  "settings": {
+    "counter_initial": 5,
+    "counter_per_levels": 2,
+    "counter_max": 30,
+    "counter_unlock_cost": 5000,
+    "tick_seconds": 1200,
+    "tick_baiye": 1,
+    "tick_chousuan": 40,
+    "tick_xinyu": 40,
+    "cap_seconds": 86400,
+    "baiye_per_pill": 300,
+    "chousuan_cost_base": 6,
+    "chousuan_cost_mult": 1.008,
+    "xinyu_max_level": 100,
+    "xinyu_cost_base": 100,
+    "xinyu_cost_mult": 1.5,
+    "xinyu_apprentice_flat": 500,
+    "xinyu_apprentice_pct": 0.02,
+    "xinyu_beast_level_per_lv": 2,
+    "xinyu_awaken_per_10lv": 1
+  }
+}

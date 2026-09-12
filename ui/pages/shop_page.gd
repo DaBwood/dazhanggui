@@ -261,7 +261,11 @@ func _add_building(content: Control, shop_id: String, pos: Vector2, bld_size: Ve
 		var play_shop_name: String = "钱庄"
 		if shop_id != "hq":
 			play_shop_name = str(data.get_shop_config(shop_id).get("name", ""))
-		play.pressed.connect(func(): c._show_stage_hint("【%s】特色玩法开发中，敬请期待" % play_shop_name))
+		if shop_id == "hq":
+			# 【新增】钱庄玩法入口（批次2：柜台委任/百业经验/筹算值/信誉值）
+			play.pressed.connect(c.show_bank_view)
+		else:
+			play.pressed.connect(func(): c._show_stage_hint("【%s】特色玩法开发中，敬请期待" % play_shop_name))
 		bld.add_child(play)
 
 func on_shop_entry_pressed(shop_id: String):

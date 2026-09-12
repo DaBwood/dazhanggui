@@ -21,6 +21,7 @@ var _guardian_batch: bool = false   # 【新增】守护灵注灵十连勾选状
 var _promo_batch: bool = false   # 【新增】赋诗十连勾选状态（面板生命周期内保持）
 var _token_batch: bool = false   # 【新增】信物十连勾选状态（面板生命周期内保持）
 var _fengzi_batch: bool = false   # 【新增】风姿十连勾选状态（面板生命周期内保持）
+var _apt_use_baiye: bool = false   # 【钱庄】资质技能升级用百业经验（true）还是资质丹（false），勾选记忆
 
 
 # 由 game_controller._ready 创建本模块时注入引用
@@ -653,27 +654,41 @@ func _on_hero_unequip_beast():
 	update_hero_panel()
 	c.update_all_ui()
 
+# 【改】升级资质技能（钱庄：勾选「百业经验」时从该门客个人池抵扣，每级=300×每级丹数；否则吃资质丹）
 func on_aptitude_skill_upgrade(skill_index: int, mode: String = "single"):
 	if current_hero_id == "" or not data.heroes.has(current_hero_id): return
 	var hero = data.heroes[current_hero_id]
 	var skill = hero.aptitude_skills[skill_index]
-	
+
 	# 已满级
 	if skill.level >= skill.max_level:
 		return
-	
-	var cost_per_level = int(skill.get("aptitude_per_level", 1))  # 【新增】每级固定消耗=每级加的资质数
+
+	var cost_per_level = int(skill.get("aptitude_per_level", 1))  # 每级固定消耗=每级加的资质数
+	var remaining = skill.max_level - skill.level
+	var levels_to_upgrade: int = 1 if mode == "single" else 0
+
+	# 【钱庄】百业经验抵扣路径：池够升多少升多少（single=1级，bulk=封顶剩余等级）
+	if _apt_use_baiye:
+		var baiye_per_level: int = cost_per_level * data.bank_system.get_baiye_per_pill()   # 显式标注（data 无类型，方法返回 Variant，:= 推断不出）
+		if mode != "single":
+			levels_to_upgrade = mini(floori(data.bank_system.get_baiye(current_hero_id) / float(baiye_per_level)), remaining)
+		if levels_to_upgrade > 0 and data.bank_system.spend_baiye_for_pills(current_hero_id, levels_to_upgrade * cost_per_level):
+			skill.level += levels_to_upgrade
+			update_hero_panel()
+			c.update_all_ui()
+			c.update_bag_list()
+		return
+
 	var pill_count = data.items.get("aptitude_pill", 0)
 	if pill_count < cost_per_level:
 		return
-	
-	var levels_to_upgrade: int
+
 	if mode == "single":
 		levels_to_upgrade = 1
 	else:  # bulk 一键升满
-		var remaining = skill.max_level - skill.level
 		levels_to_upgrade = min(pill_count / cost_per_level, remaining)  # 【改】按每级N丹折算可升级数
-	
+
 	if levels_to_upgrade > 0:
 		data.items.aptitude_pill -= levels_to_upgrade * cost_per_level  # 【改】扣 级数×每级N丹（原扣级数×1）
 		skill.level += levels_to_upgrade
@@ -685,6 +700,13 @@ func on_shop_skill_upgrade(skill_index: int, mode: String = "single"):
 	if data.upgrade_hero_shop_skill(current_hero_id, skill_index, mode):
 		update_hero_panel()
 		c.update_all_ui()
+		c.update_bag_list()
+
+# 【新增】钱庄财源广进升级（独立技能，走筹算值；single=升1级，bulk=筹算值够升多少升多少）
+func on_shop_skill_chousuan_upgrade(mode: String = "single"):
+	if data.bank_system.upgrade_caiyuan_skill(current_hero_id, mode):
+		update_hero_panel()
+		c.update_all_ui()   # 店铺技能加成↑ → 派遣赚速/全局赚速飘字
 		c.update_bag_list()
 
 # 【新增】虫师副业技能升级（促织园体系走 cuzhi_system；single=升1级，bulk=一键升满）
@@ -952,23 +974,46 @@ func _on_skill_tab_clicked(tab_id: String):
 	update_hero_panel()
 
 # 【v4新增】填充「技能」页：资质技能行（原 update_hero_panel 资质段迁出，逻辑不变）
+# 【钱庄】行首加本门客百业经验个人池展示；每行加「百业经验」抵扣勾选框（勾选记忆）
 func _fill_skill_tab(list):
 	var h = data.heroes[current_hero_id]
+	# 百业经验个人池（钱庄柜台产出，资质技能可勾选抵扣 300×每级丹数）
+	var pool_lbl = Label.new()
+	pool_lbl.text = "百业经验（本门客）：%d　——勾选「百业经验」后，升级改为从个人池抵扣（每级=300×每级丹数）" % data.bank_system.get_baiye(current_hero_id)
+	pool_lbl.add_theme_font_size_override("font_size", 12)
+	pool_lbl.add_theme_color_override("font_color", Color("#e6c07b"))
+	pool_lbl.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+	list.add_child(pool_lbl)
 	for i in range(h.aptitude_skills.size()):
 		var skill = h.aptitude_skills[i]
 		var apt_cost = int(skill.get("aptitude_per_level", 1))  # 【改】固定消耗=每级资质增量，替换原 1.05^(lv-1) 曲线
-		
+
 		var apt_row = HBoxContainer.new()
 		apt_row.size_flags_horizontal = Control.SIZE_EXPAND_FILL
-		
+
 		var apt_info = Label.new()
-		apt_info.text = "【资质】%s  Lv.%d/%d  需%d资质丹" % [skill.name, skill.level, skill.max_level, apt_cost]
+		# 【钱庄】勾选百业经验时信息行显示抵扣价（300×每级丹数）
+		if _apt_use_baiye:
+			apt_info.text = "【资质】%s  Lv.%d/%d  需%d百业经验" % [skill.name, skill.level, skill.max_level, apt_cost * data.bank_system.get_baiye_per_pill()]
+		else:
+			apt_info.text = "【资质】%s  Lv.%d/%d  需%d资质丹" % [skill.name, skill.level, skill.max_level, apt_cost]
 		apt_info.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 		apt_info.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
 		apt_info.clip_text = true
-		apt_info.custom_minimum_size.x = 380
+		apt_info.custom_minimum_size.x = 300
 		apt_row.add_child(apt_info)
-		
+
+		# 【钱庄】百业经验抵扣勾选框（勾选记忆=促织装备先例；先赋值后连信号，防重建重入）
+		var apt_chk = CheckBox.new()
+		apt_chk.text = "百业经验"
+		apt_chk.add_theme_font_size_override("font_size", 12)
+		apt_chk.button_pressed = _apt_use_baiye
+		apt_chk.toggled.connect(func(pressed):
+			_apt_use_baiye = pressed
+			update_hero_panel()   # 重建刷新：信息行切换显示对应货币消耗
+		)
+		apt_row.add_child(apt_chk)
+
 		var apt_btn_box = VBoxContainer.new()
 		apt_btn_box.custom_minimum_size = Vector2(70, 0)
 		apt_btn_box.add_theme_constant_override("separation", 3)
@@ -1036,40 +1081,64 @@ func _fill_skill_tab(list):
 # 【v4新增】填充「副业」页：店铺技能行（原 update_hero_panel 店铺段迁出，逻辑不变）
 func _fill_shop_tab(list):
 	var h = data.heroes[current_hero_id]
+	data.bank_system.ensure_caiyuan_skill(current_hero_id)   # 【钱庄】懒创建财源广进技能（独立技能，结构镜像第一个店铺技能）
 	for i in range(h.shop_skills.size()):
 		var skill = h.shop_skills[i]
+		# 【钱庄】财源广进=筹算值独立技能，与门客委任分开两行（用户 2026-09-12 拍板：两个技能，不要合一）
+		var is_caiyuan := str(skill.get("name", "")) == "财源广进"
 		var current_percent = skill.base_percent + (skill.level - 1) * skill.percent_per_level
 		var shop_cost = max(1, int(ceil(pow(1.05, skill.level - 1))))
-		
+		var ch_cost: int = data.bank_system.get_chousuan_cost(skill.level)   # 显式标注（Dictionary 下标 Variant）
+
 		var shop_row = HBoxContainer.new()
 		shop_row.size_flags_horizontal = Control.SIZE_EXPAND_FILL
-		
+
 		var shop_info = Label.new()
-		shop_info.text = "【店铺】%s  Lv.%d/%d  (+%.0f%%)  需%d算盘" % [skill.name, skill.level, skill.max_level, current_percent * 100, shop_cost]
+		if is_caiyuan:
+			# 财源广进行：只显示筹算值消耗（6×1.008^(Lv-1)），不挂算盘按钮
+			shop_info.text = "【财源广进】Lv.%d/%d  (+%.0f%%)  需%d筹算值" % [skill.level, skill.max_level, current_percent * 100, ch_cost]
+		else:
+			shop_info.text = "【店铺】%s  Lv.%d/%d  (+%.0f%%)  需%d算盘" % [skill.name, skill.level, skill.max_level, current_percent * 100, shop_cost]
 		shop_info.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 		shop_info.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
 		shop_info.clip_text = true
-		shop_info.custom_minimum_size.x = 80
+		shop_info.custom_minimum_size.x = 240
 		shop_row.add_child(shop_info)
-		
+
 		var shop_btn_box = VBoxContainer.new()
 		shop_btn_box.custom_minimum_size = Vector2(70, 0)
 		shop_btn_box.add_theme_constant_override("separation", 3)
-		
-		var shop_btn_single = Button.new()
-		shop_btn_single.text = "升级"
-		shop_btn_single.custom_minimum_size = Vector2(70, 24)
-		shop_btn_single.add_theme_font_size_override("font_size", 12)
-		shop_btn_single.pressed.connect(on_shop_skill_upgrade.bind(i, "single"))
-		shop_btn_box.add_child(shop_btn_single)
-		
-		var shop_btn_bulk = Button.new()
-		shop_btn_bulk.text = "一键升级"
-		shop_btn_bulk.custom_minimum_size = Vector2(70, 24)
-		shop_btn_bulk.add_theme_font_size_override("font_size", 12)
-		shop_btn_bulk.pressed.connect(on_shop_skill_upgrade.bind(i, "bulk"))
-		shop_btn_box.add_child(shop_btn_bulk)
-		
+
+		if is_caiyuan:
+			# 【钱庄】财源广进只挂筹算轨按钮
+			var ch_btn_single = Button.new()
+			ch_btn_single.text = "升级"
+			ch_btn_single.custom_minimum_size = Vector2(70, 24)
+			ch_btn_single.add_theme_font_size_override("font_size", 12)
+			ch_btn_single.pressed.connect(on_shop_skill_chousuan_upgrade.bind("single"))
+			shop_btn_box.add_child(ch_btn_single)
+
+			var ch_btn_bulk = Button.new()
+			ch_btn_bulk.text = "一键升级"
+			ch_btn_bulk.custom_minimum_size = Vector2(70, 24)
+			ch_btn_bulk.add_theme_font_size_override("font_size", 12)
+			ch_btn_bulk.pressed.connect(on_shop_skill_chousuan_upgrade.bind("bulk"))
+			shop_btn_box.add_child(ch_btn_bulk)
+		else:
+			var shop_btn_single = Button.new()
+			shop_btn_single.text = "升级"
+			shop_btn_single.custom_minimum_size = Vector2(70, 24)
+			shop_btn_single.add_theme_font_size_override("font_size", 12)
+			shop_btn_single.pressed.connect(on_shop_skill_upgrade.bind(i, "single"))
+			shop_btn_box.add_child(shop_btn_single)
+
+			var shop_btn_bulk = Button.new()
+			shop_btn_bulk.text = "一键升级"
+			shop_btn_bulk.custom_minimum_size = Vector2(70, 24)
+			shop_btn_bulk.add_theme_font_size_override("font_size", 12)
+			shop_btn_bulk.pressed.connect(on_shop_skill_upgrade.bind(i, "bulk"))
+			shop_btn_box.add_child(shop_btn_bulk)
+
 		shop_row.add_child(shop_btn_box)
 		list.add_child(shop_row)
 	
