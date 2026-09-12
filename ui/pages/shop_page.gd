@@ -37,11 +37,39 @@ const MAP_BLD_SIZE := Vector2(276, 150)   # 单栋建筑占位块（≈画中单
 # 【新增】画中建筑对位表（比例坐标 0~1，店块中心）：有 entry 的店精确压在画中建筑上，
 # 未配置的店退回 7×3 网格。用户圈图报店名，AI 逐步填表迭代（2026-09-11 约定）
 const SHOP_POS := {
-	"hq": Vector2(0.123, 0.381),   # 钱庄（红圈）
-	"ke_zhan": Vector2(0.114, 0.547),   # 客栈（蓝圈）
-	"yi_guan": Vector2(0.097, 0.680),   # 医馆（粉圈）
-	"xiangliao_pu": Vector2(0.276, 0.048),   # 香料铺（绿圈）
-	"shuoshu_tan": Vector2(0.230, 0.225),   # 说书摊（黑圈）
+	"hq": Vector2(0.123, 0.381),   # 钱庄（红圈·09-11）
+	"ke_zhan": Vector2(0.114, 0.547),   # 客栈（蓝圈·09-11）
+	"yi_guan": Vector2(0.097, 0.680),   # 医馆（粉圈·09-11）
+	"xiangliao_pu": Vector2(0.257, 0.069),   # 香料铺（09-12 二调：左下挪）
+	"shuoshu_tan": Vector2(0.230, 0.225),   # 说书摊（黑圈·09-11）
+	"dang_pu": Vector2(0.365, 0.177),   # 当铺（蓝圈·09-12 重测：上一批截图拖动过坐标作废）
+	"yi_zhan": Vector2(0.464, 0.391),   # 驿站（黑框·09-12 五调）
+	"jiu_si": Vector2(0.347, 0.383),   # 酒肆（黑框·09-12 七调：往上提）
+	"yao_pu": Vector2(0.241, 0.693),   # 药铺（黑圈·09-12 重测）
+	"miaoyin_fang": Vector2(0.358, 0.517),   # 妙音坊（绿圈·09-12 重测）
+	"biao_ju": Vector2(0.944, 0.191),   # 镖局（黄圈·09-12 最右端截图折算：fx=0.584+视口内比例×0.416）
+	"yao_chang": Vector2(0.952, 0.406),   # 窑厂/药厂（黑圈·09-12 最右端）
+	"zao_tang": Vector2(0.949, 0.720),   # 澡堂（红圈·09-12 最右端）
+	"cha_si": Vector2(0.838, 0.565),   # 茶肆（绿圈·09-12 最右端）
+	"xi_lou": Vector2(0.735, 0.713),   # 戏楼（蓝圈·09-12 最右端）
+	"chengyi_pu": Vector2(0.472, 0.183),   # 成衣铺（黑圈·09-12 中间截图：用戏楼反推视口 0.353~0.769 折算）
+	"chema_hang": Vector2(0.610, 0.185),   # 车马行（绿圈·09-12 中间）
+	"changle_fang": Vector2(0.700, 0.426),   # 长乐坊（红圈·09-12 四调：再右半步压准圈内楼阁）
+	"jiu_fang": Vector2(0.586, 0.704),   # 酒坊（蓝圈·09-12 中间）
+	"chuan_wu": Vector2(0.439, 0.887),   # 船坞（粉圈·09-12 中间）
+	"suanming_tan": Vector2(0.559, 0.564),   # 算命摊（绿框·09-12 二调：右挪）
+}
+# 【新增】店块形状覆盖表（默认横牌 187×100）：竖长画建筑用竖牌贴合楼形（用户 09-12 拍板）
+const SHOP_SIZE := {
+	"hq": Vector2(95, 150),   # 钱庄楼：竖楼（09-12 二调：原 115×185 偏大挤占客栈）
+	"yi_guan": Vector2(95, 150),   # 医馆：竖楼（二调同上）
+	"yao_pu": Vector2(100, 150),   # 药铺：竖楼（二调顺手收小）
+	"shuoshu_tan": Vector2(95, 145),   # 说书摊：竖棚（二调顺手收小）
+	"ke_zhan": Vector2(150, 80),   # 客栈：画中小楼，牌子稍小
+	"dang_pu": Vector2(100, 150),   # 当铺：竖牌（09-12 三调：横牌与成衣铺/车马行重叠）
+	"chengyi_pu": Vector2(100, 150),   # 成衣铺：竖牌（同上）
+	"chuan_wu": Vector2(100, 150),   # 船坞：竖牌（用户指定）
+	"jiu_si": Vector2(95, 120),   # 酒肆：竖牌降高 95×120（09-12 六调）
 }
 
 func generate_shop_list():
@@ -135,11 +163,13 @@ func generate_shop_list():
 			break
 	# 行内垂直居中偏移
 	var y_off := floori((row_h - bld_h) * 0.5)
-	# 钱庄建筑（总部，点击开总部面板）——有对位表 entry 时精确压画中钱庄楼，否则退回"最左最中间"C 位
+	# 钱庄建筑（总部，点击开总部面板）——有对位表 entry 时精确压画中钱庄楼，否则退回"最左最中间"C 位；
+	# 店块尺寸：形状覆盖表优先（竖牌/小牌按实际尺寸居中），默认横牌
+	var hq_size: Vector2 = SHOP_SIZE.get("hq", bld_size)
 	if SHOP_POS.has("hq"):
-		_add_building(content, "hq", Vector2(SHOP_POS["hq"].x * map_w - bld_w * 0.5, SHOP_POS["hq"].y * map_h - bld_h * 0.5), bld_size)
+		_add_building(content, "hq", Vector2(SHOP_POS["hq"].x * map_w - hq_size.x * 0.5, SHOP_POS["hq"].y * map_h - hq_size.y * 0.5), hq_size)
 	else:
-		_add_building(content, "hq", Vector2(MAP_PAD, MAP_PAD + hq_row * row_h + y_off), bld_size)
+		_add_building(content, "hq", Vector2(MAP_PAD, MAP_PAD + hq_row * row_h + y_off), hq_size)
 	# 其余店铺按阅读顺序落位（跳过钱庄槽）
 	var idx := 0
 	for i in range(infos.size()):
@@ -147,18 +177,28 @@ func generate_shop_list():
 			idx += 1
 		var s: Dictionary = slots[idx]
 		var sid: String = str(infos[i]["id"])
+		var sz: Vector2 = SHOP_SIZE.get(sid, bld_size)   # 形状覆盖表优先
 		var pos: Vector2
 		if SHOP_POS.has(sid):
-			# 对位表优先：店块中心精确压画中建筑（比例坐标 × 地图尺寸 - 半块）
-			pos = Vector2(SHOP_POS[sid].x * map_w - bld_w * 0.5, SHOP_POS[sid].y * map_h - bld_h * 0.5)
+			# 对位表优先：店块中心精确压画中建筑（比例坐标 × 地图尺寸 - 实际半块）
+			pos = Vector2(SHOP_POS[sid].x * map_w - sz.x * 0.5, SHOP_POS[sid].y * map_h - sz.y * 0.5)
 		else:
 			pos = Vector2(MAP_PAD + s["col"] * (bld_w + gap), MAP_PAD + s["row"] * row_h + y_off)
-		_add_building(content, sid, pos, bld_size)
+		_add_building(content, sid, pos, sz)
 		idx += 1
 
 	# 内容节点显式尺寸：宽高喂足 ScrollContainer 才有横滚（布局铁律：显式 position/size）
 	content.custom_minimum_size = Vector2(map_w, map_h)
 	content.size = Vector2(map_w, map_h)
+
+
+# 【新增】店名文字板文案：板宽按字数估算、店块内居中（Label 尺寸当帧不可知，显式定）
+func _set_plate_text(bld: Panel, txt: String):
+	var plate: Label = bld.get_node("NamePlate")
+	plate.text = txt
+	var w := float(txt.length()) * 15.0 + 24.0
+	plate.size = Vector2(w, 30)
+	plate.position = Vector2((bld.size.x - w) * 0.5, (bld.size.y - 30) * 0.5)
 
 # 【新增】单栋建筑：半透明底（图/色块，压在街景图上保证文字可读）+ 全幅 Button（点击进店铺/解锁）+ 玩法入口小钮（24×24，特色店才有）
 func _add_building(content: Control, shop_id: String, pos: Vector2, bld_size: Vector2):
@@ -167,27 +207,45 @@ func _add_building(content: Control, shop_id: String, pos: Vector2, bld_size: Ve
 	bld.position = pos
 	bld.size = bld_size   # 随地图缩放（窗口矮时建筑块同步缩小，保持与画中建筑一一对应）
 	bld.set_meta("shop_id", shop_id)   # 刷新文字按 meta 取，不解析节点名（新规：引用先验证）
-	# 底图：丢图即用，缺图半透明深底（压街景图上文字可读）
+	# 底图：丢图即用；默认透明底——只显示名字（用户 09-12 拍板：黑框压画不好看），
+	# 文字可读性靠 Button 侧黑描边（见下）
 	var img_path: String = BUILDING_IMG_DIR + shop_id + ".png"
 	if ResourceLoader.exists(img_path):
 		var st := StyleBoxTexture.new()
 		st.texture = load(img_path)
 		bld.add_theme_stylebox_override("panel", st)
 	else:
-		var sf := StyleBoxFlat.new()
-		sf.bg_color = Color(0.16, 0.13, 0.11, 0.78)
-		sf.set_corner_radius_all(8)
-		sf.border_color = Color("#6b5b4a")
-		sf.set_border_width_all(2)
-		bld.add_theme_stylebox_override("panel", sf)
+		bld.add_theme_stylebox_override("panel", StyleBoxEmpty.new())
 	content.add_child(bld)
-	# 全幅点击区（flat 无自身底色，文字直接压在建筑底上）
+	# 全幅透明点击区（flat 无底色无字，专职点按）
 	var btn := Button.new()
 	btn.name = "BuildingBtn"
 	btn.flat = true
 	btn.position = Vector2.ZERO
 	btn.size = bld_size
-	btn.clip_text = true
+	# 【新增】NamePlate 文字板：字底一块小圆角半透明底板（不是整片黑框），居中托名字
+	var plate := Label.new()
+	plate.name = "NamePlate"
+	plate.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	plate.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
+	plate.add_theme_font_size_override("font_size", 15)
+	plate.add_theme_color_override("font_outline_color", Color(0, 0, 0))
+	plate.add_theme_constant_override("outline_size", 3)
+	var ps := StyleBoxFlat.new()
+	ps.bg_color = Color(0.09, 0.07, 0.05, 0.72)   # 深褐半透明：压花画可读又不遮建筑
+	ps.set_corner_radius_all(6)
+	ps.content_margin_left = 10
+	ps.content_margin_right = 10
+	ps.content_margin_top = 3
+	ps.content_margin_bottom = 3
+	plate.add_theme_stylebox_override("normal", ps)
+	bld.add_child(plate)
+	# 生成即写名字（不再依赖 update_entry_buttons 兜底）
+	if shop_id == "hq":
+		_set_plate_text(bld, "【钱庄】")
+	else:
+		var cfg0: Dictionary = data.get_shop_config(shop_id)
+		_set_plate_text(bld, "【%s】" % cfg0.get("name", shop_id))
 	if shop_id == "hq":
 		btn.pressed.connect(c.open_hq_panel)
 	else:
@@ -378,7 +436,7 @@ func update_entry_buttons():
 		var shop_id: String = bld.get_meta("shop_id")
 		var btn: Button = bld.get_node("BuildingBtn")
 		if shop_id == "hq":
-			btn.text = "【钱庄】"   # 【改】纯名字牌（用户 09-12 拍板不显示信息）
+			_set_plate_text(bld, "【钱庄】")   # 【改】纯名字牌（用户 09-12 拍板不显示信息）
 			btn.modulate = Color.WHITE
 			btn.disabled = false
 			continue
@@ -387,17 +445,17 @@ func update_entry_buttons():
 		# 文字两行，单行太长会撑出视口
 		if data.shops.has(shop_id):
 			# 【改】纯名字牌（用户 09-12 拍板）：详细收益信息在店铺面板里看，地图只导航
-			btn.text = "【%s】" % data.shops[shop_id].get("name", cfg.get("name", "?"))
+			_set_plate_text(bld, "【%s】" % data.shops[shop_id].get("name", cfg.get("name", "?")))
 			btn.modulate = Color.WHITE
 			btn.disabled = false
 		elif data.can_unlock_shop(shop_id):
-			btn.text = "【%s】" % cfg.name
-			btn.modulate = Color("#e0c070")
+			_set_plate_text(bld, "【%s】" % cfg.name)
+			btn.modulate = Color("#e0c070")   # 可解锁：金色
 			btn.disabled = false
 		else:
-			btn.text = "【%s】" % cfg.name
-			btn.modulate = Color(0.4, 0.4, 0.4, 0.6)
-			btn.disabled = true
+			_set_plate_text(bld, "【%s】🔒" % cfg.name)   # 【改】加锁标+亮灰（2026-09-12）
+			btn.modulate = Color(0.85, 0.85, 0.85, 0.95)
+			btn.disabled = false   # 【改】锁定也可点：点击弹"通关第X章解锁"提示（on_shop_entry_pressed else 分支），disabled 会让玩家点不动、条件无处可查
 
 func update_hq_panel():
 	if c.has_node("HQPanel/VBoxContainer/HQName"):
