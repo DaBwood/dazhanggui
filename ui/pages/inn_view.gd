@@ -373,7 +373,8 @@ func _show_pack_popup(hero_id: String):
 		cs.bg_color = Color("#252138")
 		cs.set_corner_radius_all(6)
 		card.add_theme_stylebox_override("panel", cs)
-		card.custom_minimum_size = Vector2(0, 56)
+		# 最小宽钉死为弹窗内宽：ScrollContainer 宽度继承不可靠（多层 min-size 钳制），列宽由列内最大子控件最小宽决定
+		card.custom_minimum_size = Vector2(maxf(200.0, popup.size.x - 56.0), 56)
 		var cv := VBoxContainer.new()
 		cv.add_theme_constant_override("separation", 2)
 		cv.mouse_filter = Control.MOUSE_FILTER_IGNORE   # 点击穿透到卡片
