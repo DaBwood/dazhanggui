@@ -2,9 +2,9 @@
 # 客栈玩法系统（商铺地图化批次3：营业 / 菜谱 / 庖丁解牛 / 兑换商店）
 # 纯逻辑模块：状态内部持有，经 get_save_data/load_save_data 落盘（game_data 只接线）
 # 规则（档案三十六节② + 2026-09-12 用户拍板）：
-#   营业：1 个灶位；选门客（职业决定菜品）+ 食材包 + 数量，每次消耗 1 个食材包
-#         时长两两分组 300/480/600/780/900 秒；懒结算离线照走，完成自动发奖（无需手动领取）
-#         产出 厨艺值 + 交子（交子≈厨艺×120）；轮班加成=当日职业收益×2（周一士~周五侠，周末全职业）
+#   营业：1 个灶位；【开始营业】→ 选门客（职业决定菜品）→ 选食材包+数量 →【烹饪】，每次消耗 1 个食材包
+#         时长两两分组 300/480/600/780/900 秒；懒结算离线照走，完成收益进「收益罐」（厨艺值+交子+烹饪次数），点领取入账
+#         轮班加成=当日职业收益×2（周一士~周五侠，周末全职业）
 #   菜谱：每道菜（食材包×职业，共50道）独立等级，用烹饪次数升级
 #         L→L+1 需 ceil(L/10) 次（1~10级每级1次，每10级+1次需求）
 #         每级给同职业门客固定赚钱 500×本次升级所需烹饪次数（累加制）
@@ -22,8 +22,9 @@ func _init(p_g):
 
 # ============ 存档（本系统持有的字段） ============
 var cooking: Dictionary = {}     # 灶位 {pack_id, career, hero_id, count, start_time}（count=剩余次数）
-var cuisine: int = 0             # 厨艺值（side_skill_system「庖丁解牛」升级货币，全局池）
-var jiaozi: int = 0              # 交子（兑换商店货币）
+var cuisine: int = 0             # 厨艺值（已领取；side_skill_system「庖丁解牛」升级货币，全局池）
+var jiaozi: int = 0              # 交子（已领取；兑换商店货币）
+var pending: Dictionary = {"cuisine": 0, "jiao": 0, "cooks": {}}   # 收益罐：待领取（厨艺/交子/烹饪次数{"pack_id|职业": n}）
 var dish_cooks: Dictionary = {}  # 每道菜累计烹饪次数 {"pack_id|职业": n}
 
 func get_save_data() -> Dictionary:
@@ -31,6 +32,7 @@ func get_save_data() -> Dictionary:
 		"inn_cooking": cooking,
 		"inn_cuisine": cuisine,
 		"inn_jiaozi": jiaozi,
+		"inn_pending": pending,
 		"inn_dish_cooks": dish_cooks,
 	}
 
@@ -39,6 +41,7 @@ func load_save_data(s: Dictionary):
 	if s.has("inn_cooking") and s.inn_cooking is Dictionary: cooking = s.inn_cooking
 	if s.has("inn_cuisine"): cuisine = int(s.inn_cuisine)
 	if s.has("inn_jiaozi"): jiaozi = int(s.inn_jiaozi)
+	if s.has("inn_pending") and s.inn_pending is Dictionary: pending = s.inn_pending
 	if s.has("inn_dish_cooks") and s.inn_dish_cooks is Dictionary: dish_cooks = s.inn_dish_cooks
 
 # ============ 配置读取（inn.json，代码默认值兜底） ============
@@ -99,8 +102,8 @@ func start_cooking(pack_id: String, hero_id: String, count: int) -> bool:
 		"count": count, "start_time": int(Time.get_unix_time_from_system())}
 	return true
 
-# 懒结算：把按包时长已完成的次数切出，自动发奖并推进计时；返回本次结算次数
-# 加成按结算时刻的当日轮班判定（跨天完成的份额吃结算日加成）
+# 懒结算：把按包时长已完成的次数切出，收益存入收益罐（待领取），推进计时；返回本次结算次数
+# 轮班×2 按结算时刻的当日判定（跨天完成的份额吃结算日加成）
 func _settle() -> int:
 	if cooking.is_empty(): return 0
 	var pack := get_pack(str(cooking.get("pack_id", "")))
@@ -114,15 +117,36 @@ func _settle() -> int:
 	if done <= 0: return 0
 	var career := str(cooking.get("career", ""))
 	var mult := 2 if is_bonus_career(career) else 1
-	cuisine += done * int(pack.get("cuisine", 0)) * mult
-	jiaozi += done * int(pack.get("jiao", 0)) * mult
+	pending["cuisine"] = int(pending.get("cuisine", 0)) + done * int(pack.get("cuisine", 0)) * mult
+	pending["jiao"] = int(pending.get("jiao", 0)) + done * int(pack.get("jiao", 0)) * mult
 	var key := str(cooking.get("pack_id", "")) + "|" + career
-	dish_cooks[key] = int(dish_cooks.get(key, 0)) + done
+	var cooks: Dictionary = pending.get("cooks", {})
+	cooks[key] = int(cooks.get(key, 0)) + done
+	pending["cooks"] = cooks
 	cooking["start_time"] = start + done * secs
 	cooking["count"] = int(cooking.get("count", 0)) - done
 	if int(cooking["count"]) <= 0:
 		cooking = {}
 	return done
+
+# ============ 收益罐（营业收益待领取；领取才入账+累计菜谱） ============
+func get_pending() -> Dictionary:
+	return pending
+
+func has_pending() -> bool:
+	return int(pending.get("cuisine", 0)) > 0 or int(pending.get("jiao", 0)) > 0
+
+# 领取收益罐：厨艺值/交子入账 + 烹饪次数累计进菜谱，返回入账明细 {"cuisine","jiao","cook_times"}
+func claim() -> Dictionary:
+	var out := {"cuisine": int(pending.get("cuisine", 0)), "jiao": int(pending.get("jiao", 0)), "cook_times": 0}
+	var cooks: Dictionary = pending.get("cooks", {})
+	for key in cooks.keys():
+		dish_cooks[key] = int(dish_cooks.get(key, 0)) + int(cooks[key])
+		out["cook_times"] += int(cooks[key])
+	cuisine += int(pending.get("cuisine", 0))
+	jiaozi += int(pending.get("jiao", 0))
+	pending = {"cuisine": 0, "jiao": 0, "cooks": {}}
+	return out
 
 # 营业状态（查询即结算）：空闲 {"active":false}；营业中含菜名/进度/剩余
 func get_status() -> Dictionary:

@@ -1,7 +1,10 @@
 # ============================================================
 # 客栈玩法全屏页（商铺地图 客栈「▶」入口，层级：InnPage z35，同钱庄/藏品页惯例）
-# 结构：顶栏（返回/标题）→ 资源栏（厨艺值/交子）→ 四页签【营业/菜谱/庖丁解牛/兑换商店】→ 内容体
-# 重建刷新模式（同钱庄页）：切页签/操作后整页重建；1秒 Timer 只刷营业倒计时与资源数（不重建保滚动）
+# 结构：顶栏（返回/标题）→ 资源栏（厨艺值/交子）→ 三页签【营业/菜谱/兑换商店】→ 内容体
+# 重建刷新模式：切页签/操作后整页重建；1秒 Timer 只刷营业状态与收益罐文本（不重建保滚动）
+# 营业流程（用户 2026-09-12 二调拍板）：【开始营业】→ 门客选择弹窗（五职业页签，默认今日加成职业）
+#   → 选门客 → 食材包选择弹窗（选包+数量）→【烹饪】开做；完成收益进「收益罐」，点【领取】入账
+# 菜谱页签内再分五职业二级页签（每页签 10 道菜）
 # ============================================================
 class_name InnView
 extends RefCounted
@@ -9,9 +12,11 @@ extends RefCounted
 var c      # game_controller 根脚本引用
 var data: GameData   # 数据中枢（显式标注 GameData：让中枢字段被静态引用，消 UNUSED 提示，同 bank_view 先例）
 
-var _tab: String = "cook"      # 当前页签 cook/recipe/paoding/exchange
-var _pack_cards: Array = []    # 营业页食材卡引用 [{pack, info, btn}]
-var _status_lbl: Label = null  # 营业状态行（秒刷只改文本）
+var _tab: String = "cook"        # 当前页签 cook/recipe/exchange
+var _recipe_career: String = ""  # 菜谱二级页签当前职业
+var _status_lbl: Label = null    # 营业状态行（秒刷只改文本）
+var _jar_lbl: Label = null       # 收益罐文本（秒刷只改文本）
+var _jar_btn: Button = null      # 领取按钮（秒刷改禁用态）
 
 func _init(p_c):
 	c = p_c
@@ -26,7 +31,8 @@ func _close_node(node_name: String):
 # ---------- 页面开关 ----------
 func show_inn_view():
 	_close_node("InnPage")
-	_close_node("InnCookPopup")
+	_close_node("InnHeroPopup")
+	_close_node("InnPackPopup")
 	var page := Panel.new()
 	page.name = "InnPage"
 	page.z_index = 35
@@ -100,9 +106,11 @@ func show_inn_view():
 
 func hide_inn_view():
 	_close_node("InnPage")
-	_close_node("InnCookPopup")
-	_pack_cards.clear()
+	_close_node("InnHeroPopup")
+	_close_node("InnPackPopup")
 	_status_lbl = null
+	_jar_lbl = null
+	_jar_btn = null
 
 func _on_tab(tab: String):
 	_tab = tab
@@ -111,12 +119,13 @@ func _on_tab(tab: String):
 # ---------- 秒刷 ----------
 func _on_tick():
 	var sys = data.inn_system
-	var st: Dictionary = sys.get_status()   # 查询即懒结算，完成自动发奖
-	if int(st.get("settled", 0)) > 0:
-		c.update_all_ui()   # 菜谱成长→门客赚速变化→触发全局赚速飘字
-	_refresh_res()
+	var st: Dictionary = sys.get_status()   # 查询即懒结算，收益进罐（不入账）
 	if _status_lbl:
 		_status_lbl.text = _status_text(st)
+	if _jar_lbl:
+		_jar_lbl.text = _jar_text()
+	if _jar_btn:
+		_jar_btn.disabled = not sys.has_pending()
 
 func _refresh_res():
 	var page = c.get_node_or_null("InnPage")
@@ -147,23 +156,46 @@ func _fill_cook(body: VBoxContainer):
 	_status_lbl.add_theme_color_override("font_color", Color("#e6c07b"))
 	_status_lbl.text = _status_text(st)
 	body.add_child(_status_lbl)
-	var scroll := ScrollContainer.new()
-	scroll.size_flags_vertical = Control.SIZE_EXPAND_FILL
-	body.add_child(scroll)
-	var grid := GridContainer.new()
-	grid.columns = 2
-	grid.size_flags_horizontal = Control.SIZE_EXPAND_FILL
-	grid.add_theme_constant_override("h_separation", 6)
-	grid.add_theme_constant_override("v_separation", 6)
-	scroll.add_child(grid)
-	_pack_cards.clear()
-	for pack in sys.get_packs():
-		_add_pack_card(grid, pack)
+	# 收益罐（待领取收益）
+	var jar_card := PanelContainer.new()
+	var js := StyleBoxFlat.new()
+	js.bg_color = Color("#2a2640")
+	js.set_corner_radius_all(8)
+	jar_card.add_theme_stylebox_override("panel", js)
+	body.add_child(jar_card)
+	var jar_row := HBoxContainer.new()
+	jar_row.add_theme_constant_override("separation", 6)
+	jar_card.add_child(jar_row)
+	_jar_lbl = Label.new()
+	_jar_lbl.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	_jar_lbl.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
+	_jar_lbl.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+	_jar_lbl.add_theme_font_size_override("font_size", 13)
+	_jar_lbl.add_theme_color_override("font_color", Color("#e6c07b"))
+	_jar_lbl.text = _jar_text()
+	jar_row.add_child(_jar_lbl)
+	_jar_btn = Button.new()
+	_jar_btn.text = "领取"
+	_jar_btn.custom_minimum_size = Vector2(70, 30)
+	_jar_btn.disabled = not sys.has_pending()
+	_jar_btn.pressed.connect(_on_claim)
+	jar_row.add_child(_jar_btn)
+	# 开始营业按钮（营业中禁用）
+	var start_row := HBoxContainer.new()
+	start_row.alignment = BoxContainer.ALIGNMENT_CENTER
+	body.add_child(start_row)
+	var start_btn := Button.new()
+	start_btn.text = "开始营业"
+	start_btn.custom_minimum_size = Vector2(150, 36)
+	start_btn.add_theme_font_size_override("font_size", 14)
+	start_btn.disabled = bool(st.get("active", false))
+	start_btn.pressed.connect(_on_start_cook)
+	start_row.add_child(start_btn)
 
 func _status_text(st: Dictionary) -> String:
 	if not bool(st.get("active", false)):
 		var careers: Array = data.inn_system.get_today_bonus_careers()
-		return "灶位空闲　今日轮班加成：%s（该职业做菜收益×2）　点下方食材包开始营业" % "、".join(careers)
+		return "灶位空闲　今日轮班加成：%s（该职业做菜收益×2）" % "、".join(careers)
 	var bonus_txt := "（轮班×2）" if bool(st.get("bonus", false)) else ""
 	var hero_name := str(st.get("hero_id", ""))
 	if data.heroes.has(hero_name):
@@ -173,212 +205,316 @@ func _status_text(st: Dictionary) -> String:
 		hero_name, bonus_txt,
 		int(st.get("into", 0)), int(st.get("secs", 0)), _fmt_secs(int(st.get("remain_total", 0)))]
 
-func _add_pack_card(grid: GridContainer, pack: Dictionary):
-	var card := PanelContainer.new()
-	var rs := StyleBoxFlat.new()
-	rs.bg_color = Color("#252138")
-	rs.set_corner_radius_all(8)
-	card.add_theme_stylebox_override("panel", rs)
-	card.size_flags_horizontal = Control.SIZE_EXPAND_FILL
-	grid.add_child(card)
-	var vb := VBoxContainer.new()
-	vb.add_theme_constant_override("separation", 3)
-	card.add_child(vb)
-	var title := Label.new()
-	title.text = str(pack.get("name", ""))
-	title.add_theme_font_size_override("font_size", 14)
-	title.add_theme_color_override("font_color", Color("#ffd700"))
-	vb.add_child(title)
-	var info := Label.new()
-	info.add_theme_font_size_override("font_size", 12)
-	info.add_theme_color_override("font_color", Color("#c8c3e0"))
-	info.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
-	vb.add_child(info)
-	var btn := Button.new()
-	btn.text = "营业"
-	btn.custom_minimum_size = Vector2(0, 28)
-	vb.add_child(btn)
-	var entry := {"pack": pack, "info": info, "btn": btn}
-	_pack_cards.append(entry)
-	btn.pressed.connect(_show_cook_popup.bind(str(pack.get("id", ""))))
-	_refresh_pack_card(entry)
+func _jar_text() -> String:
+	var p: Dictionary = data.inn_system.get_pending()
+	var cu := int(p.get("cuisine", 0))
+	var jiao := int(p.get("jiao", 0))
+	var times := 0
+	var cooks: Dictionary = p.get("cooks", {})
+	for k in cooks.keys():
+		times += int(cooks[k])
+	if cu <= 0 and jiao <= 0:
+		return "收益罐：空空如也（营业完成后收益存入这里）"
+	return "收益罐：厨艺+%d ｜ 交子+%d（%d 次烹饪）" % [cu, jiao, times]
 
-func _refresh_pack_card(entry: Dictionary):
-	var pack: Dictionary = entry["pack"]
-	var own := int(data.items.get(str(pack.get("item", "")), 0))
-	entry["info"].text = "拥有 %d ｜ 每次 %s ｜ 单次 厨艺+%d 交子+%d" % [
-		own, _fmt_secs(int(pack.get("seconds", 300))), int(pack.get("cuisine", 0)), int(pack.get("jiao", 0))]
-	entry["btn"].disabled = data.inn_system.is_cooking() or own <= 0
+func _on_claim():
+	var got: Dictionary = data.inn_system.claim()
+	if int(got.get("cuisine", 0)) > 0 or int(got.get("jiao", 0)) > 0:
+		c.update_all_ui()   # 入账→赚速/资质变化→全局飘字
+		show_inn_view()
 
-# ---------- 营业弹窗（选门客+数量） ----------
-func _show_cook_popup(pack_id: String):
-	_close_node("InnCookPopup")
+func _on_start_cook():
+	if data.inn_system.is_cooking(): return
+	_show_hero_popup()
+
+# ---------- 门客选择弹窗（五职业页签，默认今日加成职业） ----------
+func _show_hero_popup():
+	_close_node("InnHeroPopup")
 	var sys = data.inn_system
-	var pack: Dictionary = sys.get_pack(pack_id)   # sys 未标类型→显式标注，避免 := 推断 Variant 报错
-	if pack.is_empty(): return
-	var own := int(data.items.get(str(pack.get("item", "")), 0))
-	if own <= 0: return
-	# 状态容器：闭包捕获坑——lambda 改外层局部变量无效，跨回调状态一律 Dictionary（同锦盒批量套路）
-	var ctx := {"n": 1, "hero": "", "career": "", "filter": "", "pack_id": pack_id}
-	var bonus: Array = sys.get_today_bonus_careers()
-	if bonus.size() == 1:
-		ctx["filter"] = str(bonus[0])   # 默认筛当日加成职业
 	var popup := PanelContainer.new()
-	popup.name = "InnCookPopup"
+	popup.name = "InnHeroPopup"
 	popup.z_index = 40
 	var ps := StyleBoxFlat.new()
 	ps.bg_color = Color("#2a2640")
 	ps.set_corner_radius_all(10)
 	popup.add_theme_stylebox_override("panel", ps)
 	var vs: Vector2 = c.get_viewport_rect().size
-	popup.size = Vector2(mini(560, int(vs.x) - 40), mini(640, int(vs.y) - 80))
+	popup.size = Vector2(maxi(300, int(vs.x) - 24), maxi(420, int(vs.y) - 140))
 	var vb := VBoxContainer.new()
 	vb.add_theme_constant_override("separation", 6)
 	popup.add_child(vb)
+	var title_row := HBoxContainer.new()
+	vb.add_child(title_row)
 	var title := Label.new()
-	title.text = "营业 · %s" % str(pack.get("name", ""))
+	title.text = "选择掌勺门客"
+	title.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	title.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	title.add_theme_font_size_override("font_size", 17)
 	title.add_theme_color_override("font_color", Color("#ffd700"))
-	vb.add_child(title)
+	title_row.add_child(title)
+	var close_btn := Button.new()
+	close_btn.text = "✕"
+	close_btn.custom_minimum_size = Vector2(36, 30)
+	close_btn.pressed.connect(func(): _close_node("InnHeroPopup"))
+	title_row.add_child(close_btn)
 	var sub := Label.new()
 	sub.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
 	sub.add_theme_font_size_override("font_size", 12)
-	sub.text = "选择掌勺门客（门客职业决定菜品）与数量；每次消耗1个食材包（拥有 %d），单次 %s" % [own, _fmt_secs(int(pack.get("seconds", 300)))]
+	sub.text = "门客职业决定菜品；今日轮班加成职业做菜收益×2"
 	vb.add_child(sub)
-	# 职业筛选行（点击重刷门客列表；默认选中当日加成职业）
-	var filter_row := HBoxContainer.new()
-	filter_row.alignment = BoxContainer.ALIGNMENT_CENTER
-	filter_row.add_theme_constant_override("separation", 4)
-	vb.add_child(filter_row)
-	var hero_grid := GridContainer.new()
-	for f in ["全部"] + sys.get_careers():
-		var fb := Button.new()
-		fb.text = str(f)
-		fb.custom_minimum_size = Vector2(58, 26)
-		fb.add_theme_font_size_override("font_size", 11)
-		fb.set_meta("career", str(f))
-		fb.pressed.connect(func():
-			ctx["filter"] = fb.get_meta("career")
-			_refresh_cook_heroes(ctx, ctx["hero_grid"]))
-		if str(ctx["filter"]) == str(f) or (str(ctx["filter"]) == "" and str(f) == "全部"):
-			fb.add_theme_color_override("font_color", Color("#ffd700"))
-		filter_row.add_child(fb)
-	# 门客滚动网格（2列，按实时赚速降序）
-	var hero_scroll := ScrollContainer.new()
-	hero_scroll.size_flags_vertical = Control.SIZE_EXPAND_FILL
-	hero_scroll.custom_minimum_size = Vector2(0, 220)
-	vb.add_child(hero_scroll)
-	hero_grid.columns = 2
-	hero_grid.size_flags_horizontal = Control.SIZE_EXPAND_FILL
-	hero_grid.add_theme_constant_override("h_separation", 6)
-	hero_grid.add_theme_constant_override("v_separation", 4)
-	hero_scroll.add_child(hero_grid)
+	# 状态容器（职业页签切换、门客网格重刷共用）
+	var bonus: Array = sys.get_today_bonus_careers()
+	var ctx := {"career": str(bonus[0]) if bonus.size() >= 1 else "士"}
+	var grid := GridContainer.new()
+	var tab_row := HBoxContainer.new()
+	tab_row.alignment = BoxContainer.ALIGNMENT_CENTER
+	tab_row.add_theme_constant_override("separation", 4)
+	vb.add_child(tab_row)
+	for career in sys.get_careers():
+		var cb := Button.new()
+		cb.text = str(career)
+		cb.custom_minimum_size = Vector2(64, 26)
+		cb.add_theme_font_size_override("font_size", 12)
+		cb.set_meta("career", str(career))
+		cb.pressed.connect(func():
+			ctx["career"] = str(cb.get_meta("career"))
+			_refresh_hero_popup_grid(ctx, grid))
+		if str(ctx["career"]) == str(career):
+			cb.add_theme_color_override("font_color", Color("#ffd700"))
+		tab_row.add_child(cb)
+	# 门客网格（2列，按实时赚速降序）
+	var scroll := ScrollContainer.new()
+	scroll.size_flags_vertical = Control.SIZE_EXPAND_FILL
+	scroll.custom_minimum_size = Vector2(0, 380)
+	vb.add_child(scroll)
+	grid.columns = 2
+	grid.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	grid.add_theme_constant_override("h_separation", 6)
+	grid.add_theme_constant_override("v_separation", 4)
+	scroll.add_child(grid)
+	ctx["grid"] = grid
+	c.add_child(popup)
+	popup.position = Vector2(floori((vs.x - popup.size.x) * 0.5), floori((vs.y - popup.size.y) * 0.5))
+	_refresh_hero_popup_grid(ctx, grid)
+
+func _refresh_hero_popup_grid(ctx: Dictionary, grid: GridContainer):
+	for ch in grid.get_children():
+		grid.remove_child(ch)
+		ch.queue_free()
+	var career := str(ctx["career"])
+	var ids: Array = data.heroes.keys()
+	ids.sort_custom(func(a, b): return HeroData.get_income(data, str(a)) > HeroData.get_income(data, str(b)))
+	for hid in ids:
+		var h: Dictionary = data.heroes[hid]
+		if career != "" and str(h.get("category", "")) != career: continue
+		var hb := Button.new()
+		hb.text = "%s Lv.%d" % [str(h.get("name", hid)), int(h.get("level", 1))]
+		hb.add_theme_font_size_override("font_size", 12)
+		hb.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+		hb.pressed.connect(_on_pick_hero.bind(str(hid)))   # bind 复制值，避开 for 循环闭包同引用坑
+		grid.add_child(hb)
+
+func _on_pick_hero(hero_id: String):
+	_close_node("InnHeroPopup")
+	_show_pack_popup(hero_id)
+
+# ---------- 食材包选择弹窗（选包+数量 → 烹饪） ----------
+func _show_pack_popup(hero_id: String):
+	_close_node("InnPackPopup")
+	var sys = data.inn_system
+	if not data.heroes.has(hero_id): return
+	var h: Dictionary = data.heroes[hero_id]
+	var career := str(h.get("category", ""))
+	var bonus: bool = sys.is_bonus_career(career)
+	var ctx := {"pack": "", "n": 1, "hero": hero_id, "career": career, "bonus": bonus, "cards": []}
+	var popup := PanelContainer.new()
+	popup.name = "InnPackPopup"
+	popup.z_index = 40
+	var ps := StyleBoxFlat.new()
+	ps.bg_color = Color("#2a2640")
+	ps.set_corner_radius_all(10)
+	popup.add_theme_stylebox_override("panel", ps)
+	var vs: Vector2 = c.get_viewport_rect().size
+	popup.size = Vector2(maxi(300, int(vs.x) - 24), maxi(440, int(vs.y) - 140))
+	var vb := VBoxContainer.new()
+	vb.add_theme_constant_override("separation", 6)
+	popup.add_child(vb)
+	var title_row := HBoxContainer.new()
+	vb.add_child(title_row)
+	var title := Label.new()
+	title.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	title.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	title.add_theme_font_size_override("font_size", 20)
+	title.add_theme_color_override("font_color", Color("#ffd700"))
+	title.text = "选择食材包"
+	title_row.add_child(title)
+	var close_btn := Button.new()
+	close_btn.text = "✕"
+	close_btn.custom_minimum_size = Vector2(36, 30)
+	close_btn.pressed.connect(func(): _close_node("InnPackPopup"))
+	title_row.add_child(close_btn)
+	# 食材包卡片网格（2列；点卡片选中高亮）
+	var scroll := ScrollContainer.new()
+	scroll.size_flags_vertical = Control.SIZE_EXPAND_FILL
+	scroll.custom_minimum_size = Vector2(0, 330)
+	vb.add_child(scroll)
+	var grid := GridContainer.new()
+	grid.columns = 1
+	grid.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	grid.add_theme_constant_override("h_separation", 6)
+	grid.add_theme_constant_override("v_separation", 6)
+	scroll.add_child(grid)
+	# ScrollContainer 不把宽度分给子控件：构建时直接按弹窗宽度定网格最小宽（顺带反向撑住弹窗不缩水）
+	grid.custom_minimum_size.x = maxf(popup.size.x - 40.0, 200.0)
+	for pack in sys.get_packs():
+		# 卡片本体=PanelContainer：Button 不是容器，子控件不会自动排布（曾致文字叠在一起）
+		var card := PanelContainer.new()
+		var cs := StyleBoxFlat.new()
+		cs.bg_color = Color("#252138")
+		cs.set_corner_radius_all(6)
+		card.add_theme_stylebox_override("panel", cs)
+		card.custom_minimum_size = Vector2(0, 56)
+		var cv := VBoxContainer.new()
+		cv.add_theme_constant_override("separation", 2)
+		cv.mouse_filter = Control.MOUSE_FILTER_IGNORE   # 点击穿透到卡片
+		card.add_child(cv)
+		var name_lbl := Label.new()
+		name_lbl.text = str(pack.get("name", ""))
+		name_lbl.add_theme_font_size_override("font_size", 14)
+		name_lbl.add_theme_color_override("font_color", Color("#ffd700"))
+		name_lbl.mouse_filter = Control.MOUSE_FILTER_IGNORE
+		cv.add_child(name_lbl)
+		var info := Label.new()
+		info.add_theme_font_size_override("font_size", 12)
+		info.add_theme_color_override("font_color", Color("#c8c3e0"))
+		info.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+		info.text = "拥有 %d ｜ 每次 %s ｜ 单次 厨艺+%d 交子+%d" % [
+			int(data.items.get(str(pack.get("item", "")), 0)),
+			_fmt_secs(int(pack.get("seconds", 300))),
+			int(pack.get("cuisine", 0)), int(pack.get("jiao", 0))]
+		info.mouse_filter = Control.MOUSE_FILTER_IGNORE
+		cv.add_child(info)
+		var pick_id := str(pack.get("id", ""))
+		card.gui_input.connect(_on_pack_card_input.bind(ctx, pick_id))   # bind 复制值，避开 for 循环闭包同引用坑
+		grid.add_child(card)
+		ctx["cards"].append({"id": pick_id, "btn": card})
 	# 数量行（Web 键盘坑：纯按钮步进，不用输入框）
 	var qty_row := HBoxContainer.new()
 	qty_row.alignment = BoxContainer.ALIGNMENT_CENTER
 	qty_row.add_theme_constant_override("separation", 4)
 	vb.add_child(qty_row)
-	var qty_lbl := Label.new()
-	qty_lbl.add_theme_font_size_override("font_size", 13)
+	var qty_lbl := Label.new()   # 只显示 食材包名 ×N（拖动/输入改数量）
+	qty_lbl.add_theme_font_size_override("font_size", 14)
+	qty_lbl.add_theme_color_override("font_color", Color("#e6c07b"))
+	qty_lbl.custom_minimum_size = Vector2(140, 0)
 	qty_row.add_child(qty_lbl)
-	for step in [1, 10, 100]:
-		var pb := Button.new()
-		pb.text = "+%d" % step
-		pb.custom_minimum_size = Vector2(54, 26)
-		pb.add_theme_font_size_override("font_size", 11)
-		pb.set_meta("step", step)
-		pb.pressed.connect(func():
-			ctx["n"] = mini(own, int(ctx["n"]) + int(pb.get_meta("step")))
-			_refresh_cook_popup(ctx))
-		qty_row.add_child(pb)
-	var max_btn := Button.new()
-	max_btn.text = "最大"
-	max_btn.custom_minimum_size = Vector2(54, 26)
-	max_btn.add_theme_font_size_override("font_size", 11)
-	max_btn.pressed.connect(func():
-		ctx["n"] = own
-		_refresh_cook_popup(ctx))
-	qty_row.add_child(max_btn)
-	# 开始按钮行（居中）
-	var start_row := HBoxContainer.new()
-	start_row.alignment = BoxContainer.ALIGNMENT_CENTER
-	vb.add_child(start_row)
-	var start_btn := Button.new()
-	start_btn.text = "开始营业"
-	start_btn.custom_minimum_size = Vector2(140, 34)
-	start_btn.pressed.connect(func(): _on_cook_start(ctx))
-	start_row.add_child(start_btn)
-	# 控件引用存容器（跨刷新用）
+	# 物品同款：拖动条 + 数量输入（Web 端 SpinBox 输入不弹键盘的问题后续再处理）
+	var slider := HSlider.new()
+	slider.min_value = 1
+	slider.max_value = 1
+	slider.step = 1
+	slider.custom_minimum_size = Vector2(100, 0)
+	slider.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	slider.value_changed.connect(func(v):
+		ctx["n"] = int(v)
+		ctx["spin"].set_value_no_signal(v)
+		_refresh_pack_popup(ctx))
+	qty_row.add_child(slider)
+	var spin := SpinBox.new()
+	spin.min_value = 1
+	spin.max_value = 1
+	spin.step = 1
+	spin.custom_minimum_size = Vector2(76, 0)
+	spin.value_changed.connect(func(v):
+		ctx["n"] = int(v)
+		ctx["slider"].set_value_no_signal(v)
+		_refresh_pack_popup(ctx))
+	qty_row.add_child(spin)
+	ctx["slider"] = slider
+	ctx["spin"] = spin
+	# 烹饪按钮行
+	var cook_row := HBoxContainer.new()
+	cook_row.alignment = BoxContainer.ALIGNMENT_CENTER
+	vb.add_child(cook_row)
+	var cook_btn := Button.new()
+	cook_btn.text = "烹饪"
+	cook_btn.custom_minimum_size = Vector2(140, 34)
+	cook_btn.add_theme_font_size_override("font_size", 14)
+	cook_btn.pressed.connect(func(): _on_cook(ctx))
+	cook_row.add_child(cook_btn)
 	ctx["qty_lbl"] = qty_lbl
-	ctx["start_btn"] = start_btn
-	ctx["hero_grid"] = hero_grid
+	ctx["cook_btn"] = cook_btn
 	c.add_child(popup)
 	popup.position = Vector2(floori((vs.x - popup.size.x) * 0.5), floori((vs.y - popup.size.y) * 0.5))
-	_refresh_cook_heroes(ctx, hero_grid)
-	_refresh_cook_popup(ctx)
+	_refresh_pack_popup(ctx)
 
-func _refresh_cook_heroes(ctx: Dictionary, grid: GridContainer):
-	for ch in grid.get_children():
-		grid.remove_child(ch)
-		ch.queue_free()
-	var flt := str(ctx["filter"])
-	var ids: Array = data.heroes.keys()
-	ids.sort_custom(func(a, b): return HeroData.get_income(data, str(a)) > HeroData.get_income(data, str(b)))
-	for hid in ids:
-		var h: Dictionary = data.heroes[hid]
-		var career := str(h.get("category", ""))
-		if flt != "" and flt != "全部" and career != flt: continue
-		var hb := Button.new()
-		var mark := "✓ " if str(ctx["hero"]) == str(hid) else ""
-		hb.text = "%s%s Lv.%d" % [mark, str(h.get("name", hid)), int(h.get("level", 1))]
-		hb.add_theme_font_size_override("font_size", 12)
-		hb.size_flags_horizontal = Control.SIZE_EXPAND_FILL
-		if str(ctx["hero"]) == str(hid):
-			hb.add_theme_color_override("font_color", Color("#ffd700"))
-		hb.pressed.connect(_on_pick_hero.bind(ctx, str(hid), career))   # bind 复制值，避开 for 循环闭包同引用坑
-		grid.add_child(hb)
+func _on_pack_card_input(ev: InputEvent, ctx: Dictionary, pack_id: String):
+	if ev is InputEventMouseButton and ev.pressed and ev.button_index == MOUSE_BUTTON_LEFT:
+		_on_pack_pick(ctx, pack_id)
 
-func _on_pick_hero(ctx: Dictionary, hid: String, career: String):
-	ctx["hero"] = hid
-	ctx["career"] = career
-	_refresh_cook_heroes(ctx, ctx["hero_grid"])
-	_refresh_cook_popup(ctx)
+func _on_pack_pick(ctx: Dictionary, pack_id: String):
+	ctx["pack"] = pack_id
+	ctx["n"] = 1
+	for card in ctx["cards"]:
+		card["btn"].modulate = Color("#ffe9a8") if str(card["id"]) == pack_id else Color(1, 1, 1)
+	_refresh_pack_popup(ctx)
 
-func _refresh_cook_popup(ctx: Dictionary):
+func _refresh_pack_popup(ctx: Dictionary):
 	var qty_lbl: Label = ctx["qty_lbl"]
-	var start_btn: Button = ctx["start_btn"]
+	var cook_btn: Button = ctx["cook_btn"]
 	var sys = data.inn_system
-	var pack: Dictionary = sys.get_pack(str(ctx["pack_id"]))   # 显式标注 Dictionary，避免 := 推断 Variant 报错
+	var slider: HSlider = ctx["slider"]
+	var spin: SpinBox = ctx["spin"]
+	var pack: Dictionary = sys.get_pack(str(ctx["pack"]))
+	if pack.is_empty():
+		qty_lbl.text = "先选一个食材包"
+		cook_btn.disabled = true
+		return
 	var own := int(data.items.get(str(pack.get("item", "")), 0))
+	slider.max_value = maxi(1, own)
+	spin.max_value = maxi(1, own)
 	ctx["n"] = clampi(int(ctx["n"]), 1, maxi(1, own))
-	var career := str(ctx["career"])
-	var mult := 2 if (career != "" and sys.is_bonus_career(career)) else 1
-	var dish := "（先选门客）"
-	if career != "":
-		dish = sys.get_dish_name(pack, career)
-	var bonus_txt := "（轮班×2）" if mult == 2 else ""
-	qty_lbl.text = "×%d（共 %s）　菜品：%s%s　预计 厨艺+%d 交子+%d" % [
-		int(ctx["n"]), _fmt_secs(int(ctx["n"]) * int(pack.get("seconds", 300))), dish, bonus_txt,
-		int(ctx["n"]) * int(pack.get("cuisine", 0)) * mult,
-		int(ctx["n"]) * int(pack.get("jiao", 0)) * mult]
-	start_btn.disabled = career == ""
+	slider.set_value_no_signal(int(ctx["n"]))
+	spin.set_value_no_signal(int(ctx["n"]))
+	qty_lbl.text = "%s ×%d" % [str(pack.get("name", "")), int(ctx["n"])]
+	cook_btn.disabled = own <= 0
 
-func _on_cook_start(ctx: Dictionary):
-	if data.inn_system.start_cooking(str(ctx["pack_id"]), str(ctx["hero"]), int(ctx["n"])):
-		_close_node("InnCookPopup")
-		c.update_all_ui()
+func _on_cook(ctx: Dictionary):
+	if data.inn_system.start_cooking(str(ctx["pack"]), str(ctx["hero"]), int(ctx["n"])):
+		_close_node("InnPackPopup")
+		c.update_all_ui()   # 消耗食材包→背包刷新
 		show_inn_view()
 
-# ==================== 页签二：菜谱 ====================
+# ==================== 页签二：菜谱（五职业二级页签） ====================
 func _fill_recipe(body: VBoxContainer):
 	var sys = data.inn_system
+	var careers: Array = sys.get_careers()
+	if _recipe_career == "" or not (str(_recipe_career) in careers):
+		_recipe_career = str(careers[0])
 	var head := Label.new()
 	head.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
 	head.add_theme_font_size_override("font_size", 13)
 	head.add_theme_color_override("font_color", Color("#e6c07b"))
-	head.text = "菜谱共 50 道：做菜即累计该菜烹饪次数，自动升级（1~10级每级1次，每10级+1次需求）；每级给同职业门客 赚钱+500×所需次数"
+	head.text = "做菜累计该菜烹饪次数自动升级（1~10级每级1次，每10级+1次需求）；每级给同职业门客 赚钱+500×所需次数"
 	body.add_child(head)
+	# 五职业二级页签
+	var tab_row := HBoxContainer.new()
+	tab_row.alignment = BoxContainer.ALIGNMENT_CENTER
+	tab_row.add_theme_constant_override("separation", 4)
+	body.add_child(tab_row)
+	for career in careers:
+		var cb := Button.new()
+		cb.text = str(career)
+		cb.custom_minimum_size = Vector2(64, 28)
+		cb.add_theme_font_size_override("font_size", 12)
+		cb.set_meta("career", str(career))
+		cb.pressed.connect(func():
+			_recipe_career = str(cb.get_meta("career"))
+			show_inn_view())
+		if str(_recipe_career) == str(career):
+			cb.add_theme_color_override("font_color", Color("#ffd700"))
+		tab_row.add_child(cb)
+	# 当前职业 10 道菜
 	var scroll := ScrollContainer.new()
 	scroll.size_flags_vertical = Control.SIZE_EXPAND_FILL
 	body.add_child(scroll)
@@ -387,13 +523,7 @@ func _fill_recipe(body: VBoxContainer):
 	list.add_theme_constant_override("separation", 4)
 	scroll.add_child(list)
 	for pack in sys.get_packs():
-		var sec := Label.new()
-		sec.text = str(pack.get("name", ""))
-		sec.add_theme_font_size_override("font_size", 14)
-		sec.add_theme_color_override("font_color", Color("#ffd700"))
-		list.add_child(sec)
-		for career in sys.get_careers():
-			list.add_child(_make_recipe_row(str(pack.get("id", "")), str(career), pack))
+		list.add_child(_make_recipe_row(str(pack.get("id", "")), str(_recipe_career), pack))
 
 func _make_recipe_row(pack_id: String, career: String, pack: Dictionary) -> PanelContainer:
 	var sys = data.inn_system
