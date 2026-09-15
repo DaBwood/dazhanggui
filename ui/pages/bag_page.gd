@@ -27,6 +27,10 @@ const COMPOSE_RECIPES: Array = [
 	{"output": "yingge_zhuiyu", "material": "canpo_zhuiyu", "ratio": 20},
 	{"output": "luohua_zhuiyu", "material": "canpo_zhuiyu", "ratio": 20},
 	{"output": "liuyun_zhuiyu", "material": "canpo_zhuiyu", "ratio": 20},
+	# 【新增】2026-09-15 客栈兑换商店合成入口移除，三条配方迁移至此（配比原样保留）
+	{"output": "hero_token", "material": "can_tie", "ratio": 10},
+	{"output": "kaishan_ling", "material": "kaishan_yin", "ratio": 20},
+	{"output": "zongjiang_ling", "material": "zongjiang_yin", "ratio": 20},
 ]
 
 # 由 game_controller._ready 创建本模块时注入引用
@@ -689,14 +693,9 @@ func _make_bag_cell(text_str: String) -> Button:
 func _fill_compose_grid(grid: GridContainer):
 	for recipe in COMPOSE_RECIPES:
 		var out_id := str(recipe.get("output", ""))
-		var mat_id := str(recipe.get("material", ""))
-		var ratio := int(recipe.get("ratio", 20))
 		var out_cfg: Dictionary = data.ITEM_CONFIG.get(out_id, {})
-		var mat_cfg: Dictionary = data.ITEM_CONFIG.get(mat_id, {})
-		var mat_have := int(data.items.get(mat_id, 0))
-		var btn = _make_bag_cell("%s\nx%d（%s %d/%d）" % [
-			out_cfg.get("name", out_id), int(data.items.get(out_id, 0)),
-			mat_cfg.get("name", mat_id), mat_have, ratio])
+		# 【改】格子只显示名称+持有数（同物品页样式，直上直下自然排布）；配比与材料余量只在弹窗里展示
+		var btn = _make_bag_cell("%s\nx%d" % [out_cfg.get("name", out_id), int(data.items.get(out_id, 0))])
 		btn.pressed.connect(_show_compose_popup.bind(recipe))
 		grid.add_child(btn)
 

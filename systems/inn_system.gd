@@ -235,18 +235,5 @@ func buy_exchange(index: int) -> bool:
 		g.items[item] = int(g.items.get(item, 0)) + 1
 	return true
 
-# 合成：碎片类 need 个合 1 个目标道具（残帖10合1门客帖 / 印碎片20合1令）
-func compose_exchange(index: int) -> bool:
-	var list := get_exchange_list()
-	if index < 0 or index >= list.size(): return false
-	var e: Dictionary = list[index]
-	var comp: Dictionary = e.get("compose", {})
-	if comp.is_empty(): return false
-	var from := str(e.get("item", ""))
-	var to := str(comp.get("to", ""))
-	var need := int(comp.get("need", 1))
-	if int(g.items.get(from, 0)) < need: return false
-	g.items[from] = int(g.items.get(from, 0)) - need
-	if to != "":
-		g.items[to] = int(g.items.get(to, 0)) + 1
-	return true
+# 【已删除】合成统一走背包合成页（用户 09-15 拍板），兑换商店不再提供合成；
+# inn.json 的 compose 配置保留但已无入口调用，背包 compose 如需补这几条残帖/印碎片配方再迁移

@@ -267,6 +267,9 @@ func _add_building(content: Control, shop_id: String, pos: Vector2, bld_size: Ve
 		elif shop_id == "ke_zhan":
 			# 【新增】客栈玩法入口（批次3：营业/菜谱/庖丁解牛/兑换商店）
 			play.pressed.connect(c.show_inn_view)
+		elif shop_id == "yi_guan":
+			# 【新增】医馆玩法入口（病人队列/科室升级/病症图鉴）
+			play.pressed.connect(c.show_clinic_view)
 		else:
 			play.pressed.connect(func(): c._show_stage_hint("【%s】特色玩法开发中，敬请期待" % play_shop_name))
 		bld.add_child(play)

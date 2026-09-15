@@ -67,6 +67,7 @@ var collection_view   # 【新增】藏品视图（府邸入口全屏页）
 var bank_view   # 【新增】钱庄玩法视图（商铺地图钱庄「▶」入口全屏页）
 var mail_view   # 【新增】邮件视图（府邸入口全屏页）
 var inn_view   # 【新增】客栈玩法视图（商铺地图客栈「▶」入口全屏页）
+var clinic_view   # 【新增】医馆玩法视图（商铺地图医馆「▶」入口全屏页）
 
 func _ready():
 	
@@ -108,6 +109,7 @@ func _ready():
 	bank_view = BankView.new(self)   # 【新增】钱庄玩法视图
 	mail_view = MailView.new(self)   # 【新增】邮件视图
 	inn_view = InnView.new(self)   # 【新增】客栈玩法视图
+	clinic_view = ClinicView.new(self)   # 【新增】医馆玩法视图
 	
 	# 正常退出时存档
 	tree_exiting.connect(on_exit)
@@ -407,6 +409,7 @@ func switch_page(page_id: String):
 		hide_bank_view()   # 【新增】钱庄玩法页
 		hide_mail_view()
 		hide_inn_view()   # 【新增】客栈玩法页
+		hide_clinic_view()   # 【新增】医馆玩法页
 		update_adventure_page()
 		
 	
@@ -2014,6 +2017,13 @@ func show_inn_view():
 func hide_inn_view():
 	return inn_view.hide_inn_view()
 
+
+# ==================== 【转发】医馆玩法视图 → pages/clinic_view.gd ====================
+func show_clinic_view():
+	return clinic_view.show_clinic_view()
+
+func hide_clinic_view():
+	return clinic_view.hide_clinic_view()
 
 # 府邸【藏品】入口
 func on_collection():

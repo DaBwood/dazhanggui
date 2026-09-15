@@ -557,7 +557,8 @@ func _fill_exchange(body: VBoxContainer):
 	head.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	head.add_theme_font_size_override("font_size", 13)
 	head.add_theme_color_override("font_color", Color("#e6c07b"))
-	head.text = "交子 %d（客栈做菜产出）　无限购；碎片类可合成" % sys.get_jiaozi()
+	# 【改】合成统一走背包合成页，此处只保留购买；机制说明不上 UI
+	head.text = "交子 %d　无限购" % sys.get_jiaozi()
 	body.add_child(head)
 	var scroll := ScrollContainer.new()
 	scroll.size_flags_vertical = Control.SIZE_EXPAND_FILL
@@ -601,23 +602,10 @@ func _make_exchange_row(index: int, e: Dictionary) -> PanelContainer:
 	buy_btn.disabled = sys.get_jiaozi() < int(e.get("cost", 0))
 	buy_btn.pressed.connect(_on_exchange_buy.bind(index))
 	row.add_child(buy_btn)
-	var comp: Dictionary = e.get("compose", {})
-	if not comp.is_empty():
-		var comp_btn := Button.new()
-		comp_btn.text = "%d 合 1 %s" % [int(comp.get("need", 1)), _item_display_name(str(comp.get("to", "")))]
-		comp_btn.custom_minimum_size = Vector2(120, 28)
-		comp_btn.add_theme_font_size_override("font_size", 11)
-		comp_btn.disabled = int(data.items.get(item_id, 0)) < int(comp.get("need", 1))
-		comp_btn.pressed.connect(_on_exchange_compose.bind(index))
-		row.add_child(comp_btn)
+	# 【删】合成入口统一在背包合成页，兑换商店不再重复提供（用户 09-15 拍板）
 	return card
 
 func _on_exchange_buy(index: int):
 	if data.inn_system.buy_exchange(index):
-		c.update_all_ui()
-		show_inn_view()
-
-func _on_exchange_compose(index: int):
-	if data.inn_system.compose_exchange(index):
 		c.update_all_ui()
 		show_inn_view()

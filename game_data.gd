@@ -599,6 +599,9 @@ var _inn_configs: Dictionary = {}   # 【新增】客栈配置（inn.json，由 
 var side_skill_system   # 【新增】副业技能系统（逻辑在 systems/side_skill_system.gd）
 @warning_ignore("unused_private_class_variable")
 var _side_skill_configs: Dictionary = {}   # 【新增】副业技能配置（side_skill.json）
+var clinic_system   # 【新增】医馆玩法系统（逻辑在 systems/clinic_system.gd，状态内部持有随 get_save_data 落盘）
+@warning_ignore("unused_private_class_variable")
+var _clinic_configs: Dictionary = {}   # 【新增】医馆配置（clinic.json，由 _load_all_configs 加载）
 
 # ==================== 初始化 ====================
 # 初始化：创建各子系统（纯逻辑模块，持有本中枢引用），再加载全部配置
@@ -633,6 +636,7 @@ func _init():
 	bank_system = BankSystem.new(self)   # 【新增】钱庄玩法系统
 	inn_system = InnSystem.new(self)   # 【新增】客栈玩法系统
 	side_skill_system = SideSkillSystem.new(self)   # 【新增】副业技能系统
+	clinic_system = ClinicSystem.new(self)   # 【新增】医馆玩法系统
 	
 	_load_all_configs()
 
@@ -672,6 +676,7 @@ func _load_all_configs():
 	_guild_configs = _load_json("res://data/guild.json")   # 【新增】商会配置
 	_inn_configs = _load_json("res://data/inn.json")   # 【新增】客栈配置
 	_side_skill_configs = _load_json("res://data/side_skill.json")   # 【新增】副业技能配置
+	_clinic_configs = _load_json("res://data/clinic.json")   # 【新增】医馆配置
 	
 	_load_items_config()   # 【重构新增】道具表
 	_load_travel_config()  # 【重构新增】游历配置
@@ -830,7 +835,7 @@ func save_game():
 		stage_system, item_system, travel_system, charity_system, lottery_system, mall_system,
 		manor_system,courtyard_system,war_system,goal_system,fishing_system,soul_system,
 		soulpower_system,cuzhi_system,guardian_system,token_system,fengzi_system,talent_system,
-		collection_system,guild_system,mail_system,bank_system,inn_system,side_skill_system,]
+		collection_system,guild_system,mail_system,bank_system,inn_system,side_skill_system,clinic_system,]
 	for sys in systems:
 		save_data.merge(sys.get_save_data(), true)
 	var file = FileAccess.open(save_path, FileAccess.WRITE)
@@ -881,7 +886,7 @@ func load_game():
 		stage_system, item_system, travel_system, charity_system, lottery_system, mall_system,
 		manor_system,courtyard_system,war_system,goal_system,fishing_system,soul_system,
 		soulpower_system,cuzhi_system,guardian_system,token_system,fengzi_system,talent_system,
-		collection_system,guild_system,mail_system,bank_system,inn_system,side_skill_system,]
+		collection_system,guild_system,mail_system,bank_system,inn_system,side_skill_system,clinic_system,]
 	for sys in systems:
 		sys.load_save_data(data)
 

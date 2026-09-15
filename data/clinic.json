@@ -1,0 +1,1038 @@
+{
+	"settings": {
+		"patient_interval": 1200,
+		"patient_cap": 60,
+		"manual_item": "patient_manual",
+		"manual_give": 3,
+		"blueprint_item": "ke_shi_tu_zhi",
+		"blueprint_drop_pct": 0.25,
+		"illness_init_pct": 0.3,
+		"illness_pct_per_level": 0.05,
+		"illness_cost_base": 100,
+		"yishu_per_level": 10,
+		"unlock_levels": [
+			1,
+			3,
+			5,
+			7,
+			10,
+			13,
+			16,
+			20
+		]
+	},
+	"departments": {
+		"yao_fang": {
+			"name": "药房",
+			"score0": 2,
+			"score_per": 2,
+			"yishu0": 98,
+			"yishu_per": 10,
+			"cost_base": 3,
+			"cost_fixed": 600,
+			"category": "士",
+			"illnesses": {
+				"liubixue": {
+					"name": "流鼻血",
+					"unlock_level": 1,
+					"extra": []
+				},
+				"zhongshu": {
+					"name": "中暑",
+					"unlock_level": 3,
+					"extra": [
+						"gua_sha"
+					]
+				},
+				"tanchizheng": {
+					"name": "贪吃症",
+					"unlock_level": 5,
+					"extra": [
+						"huo_guan"
+					]
+				},
+				"yaoshang": {
+					"name": "咬伤",
+					"unlock_level": 7,
+					"extra": [
+						"ai_jiu",
+						"bu_qi"
+					]
+				},
+				"fengzheshang": {
+					"name": "蜂蛰伤",
+					"unlock_level": 10,
+					"extra": [
+						"ai_jiu",
+						"lian_dan"
+					]
+				},
+				"tangshang": {
+					"name": "烫伤",
+					"unlock_level": 13,
+					"extra": [
+						"zhen_jiu",
+						"ai_jiu",
+						"lian_dan"
+					]
+				},
+				"fare": {
+					"name": "发热",
+					"unlock_level": 16,
+					"extra": [
+						"tui_na",
+						"gua_sha",
+						"huo_guan",
+						"yao_yu"
+					]
+				},
+				"poshangfeng": {
+					"name": "破伤风",
+					"unlock_level": 20,
+					"extra": [
+						"ai_jiu",
+						"huo_guan",
+						"zhen_jiu",
+						"yao_yu"
+					]
+				}
+			},
+			"unlock_cost": 0
+		},
+		"tui_na": {
+			"name": "推拿",
+			"score0": 10,
+			"score_per": 2,
+			"yishu0": 98,
+			"yishu_per": 10,
+			"cost_base": 4,
+			"cost_fixed": 630,
+			"category": "农",
+			"illnesses": {
+				"tuojiu": {
+					"name": "脱臼",
+					"unlock_level": 1,
+					"extra": []
+				},
+				"guzhe": {
+					"name": "骨折",
+					"unlock_level": 3,
+					"extra": [
+						"yao_fang"
+					]
+				},
+				"laozhen": {
+					"name": "落枕",
+					"unlock_level": 5,
+					"extra": [
+						"yao_fang"
+					]
+				},
+				"yaoteng": {
+					"name": "腰疼",
+					"unlock_level": 7,
+					"extra": [
+						"ai_jiu",
+						"yao_fang"
+					]
+				},
+				"jingzhui": {
+					"name": "颈椎病",
+					"unlock_level": 10,
+					"extra": [
+						"zhen_jiu",
+						"yao_fang"
+					]
+				},
+				"jiandongzheng": {
+					"name": "渐冻症",
+					"unlock_level": 13,
+					"extra": [
+						"han_zheng",
+						"bu_qi",
+						"yao_fang"
+					]
+				},
+				"jiroulashang": {
+					"name": "肌肉拉伤",
+					"unlock_level": 16,
+					"extra": [
+						"han_zheng",
+						"gua_sha",
+						"zhen_jiu",
+						"lian_dan"
+					]
+				},
+				"jianzhouyan": {
+					"name": "肩周炎",
+					"unlock_level": 20,
+					"extra": [
+						"ai_jiu",
+						"zhen_jiu",
+						"tui_na",
+						"lian_dan"
+					]
+				}
+			},
+			"unlock_cost": 15
+		},
+		"huo_guan": {
+			"name": "火罐",
+			"score0": 3,
+			"score_per": 3,
+			"yishu0": 98,
+			"yishu_per": 10,
+			"cost_base": 3,
+			"cost_fixed": 660,
+			"category": "工",
+			"illnesses": {
+				"kougansezao": {
+					"name": "口干舌燥",
+					"unlock_level": 1,
+					"extra": []
+				},
+				"fenci": {
+					"name": "粉刺",
+					"unlock_level": 3,
+					"extra": [
+						"yao_fang"
+					]
+				},
+				"fuzhang": {
+					"name": "腹胀",
+					"unlock_level": 5,
+					"extra": [
+						"gua_sha"
+					]
+				},
+				"yanshi": {
+					"name": "厌食",
+					"unlock_level": 7,
+					"extra": [
+						"zhen_jiu",
+						"ai_jiu"
+					]
+				},
+				"tuofa": {
+					"name": "脱发",
+					"unlock_level": 10,
+					"extra": [
+						"gua_sha",
+						"zhen_jiu"
+					]
+				},
+				"yemangzheng": {
+					"name": "夜盲症",
+					"unlock_level": 13,
+					"extra": [
+						"han_zheng",
+						"bu_qi",
+						"lian_dan"
+					]
+				},
+				"kaxie": {
+					"name": "咳血",
+					"unlock_level": 16,
+					"extra": [
+						"yao_yu",
+						"tui_na",
+						"bu_qi",
+						"lian_dan"
+					]
+				},
+				"xinji": {
+					"name": "心悸",
+					"unlock_level": 20,
+					"extra": [
+						"gua_sha",
+						"ai_jiu",
+						"bu_qi",
+						"yao_fang"
+					]
+				}
+			},
+			"unlock_cost": 15
+		},
+		"zhen_jiu": {
+			"name": "针灸",
+			"score0": 3,
+			"score_per": 3,
+			"yishu0": 98,
+			"yishu_per": 10,
+			"cost_base": 3,
+			"cost_fixed": 690,
+			"category": "商",
+			"illnesses": {
+				"dage": {
+					"name": "打嗝",
+					"unlock_level": 1,
+					"extra": []
+				},
+				"outu": {
+					"name": "呕吐",
+					"unlock_level": 3,
+					"extra": [
+						"yao_fang"
+					]
+				},
+				"mumang": {
+					"name": "目盲",
+					"unlock_level": 5,
+					"extra": [
+						"lian_dan"
+					]
+				},
+				"shimian": {
+					"name": "失眠",
+					"unlock_level": 7,
+					"extra": [
+						"huo_guan",
+						"bu_qi"
+					]
+				},
+				"duohanzheng": {
+					"name": "多汗症",
+					"unlock_level": 10,
+					"extra": [
+						"han_zheng",
+						"huo_guan"
+					]
+				},
+				"niaopin": {
+					"name": "尿频",
+					"unlock_level": 13,
+					"extra": [
+						"gua_sha",
+						"yao_yu",
+						"yao_fang"
+					]
+				},
+				"xuanyun": {
+					"name": "眩晕",
+					"unlock_level": 16,
+					"extra": [
+						"gua_sha",
+						"ai_jiu",
+						"yao_yu",
+						"yao_fang"
+					]
+				},
+				"miantan": {
+					"name": "面瘫",
+					"unlock_level": 20,
+					"extra": [
+						"huo_guan",
+						"ai_jiu",
+						"bu_qi",
+						"yao_fang"
+					]
+				}
+			},
+			"unlock_cost": 20
+		},
+		"gua_sha": {
+			"name": "刮痧",
+			"score0": 5,
+			"score_per": 3,
+			"yishu0": 98,
+			"yishu_per": 10,
+			"cost_base": 3,
+			"cost_fixed": 720,
+			"category": "侠",
+			"illnesses": {
+				"bianmi": {
+					"name": "便秘",
+					"unlock_level": 1,
+					"extra": []
+				},
+				"weitong": {
+					"name": "胃痛",
+					"unlock_level": 3,
+					"extra": [
+						"yao_fang"
+					]
+				},
+				"yateng": {
+					"name": "牙疼",
+					"unlock_level": 5,
+					"extra": [
+						"tui_na"
+					]
+				},
+				"weixiachui": {
+					"name": "胃下垂",
+					"unlock_level": 7,
+					"extra": [
+						"zhen_jiu",
+						"yao_fang"
+					]
+				},
+				"shiyuzheng": {
+					"name": "失语症",
+					"unlock_level": 10,
+					"extra": [
+						"ai_jiu",
+						"bu_qi"
+					]
+				},
+				"chidai": {
+					"name": "痴呆",
+					"unlock_level": 13,
+					"extra": [
+						"huo_guan",
+						"han_zheng",
+						"lian_dan"
+					]
+				},
+				"piantan": {
+					"name": "偏瘫",
+					"unlock_level": 16,
+					"extra": [
+						"huo_guan",
+						"han_zheng",
+						"yao_yu",
+						"lian_dan"
+					]
+				},
+				"liji": {
+					"name": "痢疾",
+					"unlock_level": 20,
+					"extra": [
+						"ai_jiu",
+						"huo_guan",
+						"yao_yu",
+						"lian_dan"
+					]
+				}
+			},
+			"unlock_cost": 20
+		},
+		"ai_jiu": {
+			"name": "艾灸",
+			"score0": 3,
+			"score_per": 4,
+			"yishu0": 98,
+			"yishu_per": 10,
+			"cost_base": 3,
+			"cost_fixed": 750,
+			"category": "士",
+			"illnesses": {
+				"erming": {
+					"name": "耳鸣",
+					"unlock_level": 1,
+					"extra": []
+				},
+				"tongfeng": {
+					"name": "痛风",
+					"unlock_level": 3,
+					"extra": [
+						"tui_na"
+					]
+				},
+				"mamu": {
+					"name": "麻木",
+					"unlock_level": 5,
+					"extra": [
+						"tui_na"
+					]
+				},
+				"yexingzheng": {
+					"name": "夜行症",
+					"unlock_level": 7,
+					"extra": [
+						"han_zheng",
+						"yao_fang"
+					]
+				},
+				"keba": {
+					"name": "磕巴",
+					"unlock_level": 10,
+					"extra": [
+						"gua_sha",
+						"bu_qi"
+					]
+				},
+				"kongshuizheng": {
+					"name": "恐水症",
+					"unlock_level": 13,
+					"extra": [
+						"zhen_jiu",
+						"huo_guan",
+						"han_zheng"
+					]
+				},
+				"zhongfeng": {
+					"name": "中风",
+					"unlock_level": 16,
+					"extra": [
+						"tui_na",
+						"huo_guan",
+						"zhen_jiu",
+						"yao_fang"
+					]
+				},
+				"naosunshang": {
+					"name": "脑损伤",
+					"unlock_level": 20,
+					"extra": [
+						"han_zheng",
+						"tui_na",
+						"bu_qi",
+						"yao_fang"
+					]
+				}
+			},
+			"unlock_cost": 25
+		},
+		"lian_dan": {
+			"name": "炼丹",
+			"score0": 3,
+			"score_per": 3,
+			"yishu0": 98,
+			"yishu_per": 10,
+			"cost_base": 3,
+			"cost_fixed": 780,
+			"category": "农",
+			"illnesses": {
+				"touteng": {
+					"name": "头疼",
+					"unlock_level": 1,
+					"extra": []
+				},
+				"xiaokezheng": {
+					"name": "消渴症",
+					"unlock_level": 3,
+					"extra": [
+						"ai_jiu"
+					]
+				},
+				"nueji": {
+					"name": "疟疾",
+					"unlock_level": 5,
+					"extra": [
+						"yao_yu"
+					]
+				},
+				"guzhisongchi": {
+					"name": "骨质疏松",
+					"unlock_level": 7,
+					"extra": [
+						"tui_na",
+						"zhen_jiu"
+					]
+				},
+				"gansunshang": {
+					"name": "肝损伤",
+					"unlock_level": 10,
+					"extra": [
+						"gua_sha",
+						"yao_yu"
+					]
+				},
+				"zhongdu": {
+					"name": "中毒",
+					"unlock_level": 13,
+					"extra": [
+						"zhen_jiu",
+						"huo_guan",
+						"yao_yu"
+					]
+				},
+				"huoluan": {
+					"name": "霍乱",
+					"unlock_level": 16,
+					"extra": [
+						"ai_jiu",
+						"huo_guan",
+						"zhen_jiu",
+						"tui_na"
+					]
+				},
+				"hongyanbing": {
+					"name": "红眼病",
+					"unlock_level": 20,
+					"extra": [
+						"ai_jiu",
+						"huo_guan",
+						"bu_qi",
+						"han_zheng"
+					]
+				}
+			},
+			"unlock_cost": 25
+		},
+		"yao_yu": {
+			"name": "药浴",
+			"score0": 4,
+			"score_per": 4,
+			"yishu0": 98,
+			"yishu_per": 10,
+			"cost_base": 3,
+			"cost_fixed": 810,
+			"category": "工",
+			"illnesses": {
+				"dongchuang": {
+					"name": "冻疮",
+					"unlock_level": 1,
+					"extra": []
+				},
+				"zhichuang": {
+					"name": "痔疮",
+					"unlock_level": 3,
+					"extra": [
+						"zhen_jiu"
+					]
+				},
+				"jiaoqi": {
+					"name": "脚气",
+					"unlock_level": 5,
+					"extra": [
+						"ai_jiu"
+					]
+				},
+				"shuidou": {
+					"name": "水痘",
+					"unlock_level": 7,
+					"extra": [
+						"tui_na",
+						"han_zheng"
+					]
+				},
+				"feilao": {
+					"name": "肺痨",
+					"unlock_level": 10,
+					"extra": [
+						"huo_guan",
+						"zhen_jiu"
+					]
+				},
+				"yangkang": {
+					"name": "阳亢",
+					"unlock_level": 13,
+					"extra": [
+						"tui_na",
+						"han_zheng",
+						"bu_qi"
+					]
+				},
+				"zhongshangfeng": {
+					"name": "重伤风",
+					"unlock_level": 16,
+					"extra": [
+						"ai_jiu",
+						"huo_guan",
+						"zhen_jiu",
+						"lian_dan"
+					]
+				},
+				"dianxian": {
+					"name": "癫痫",
+					"unlock_level": 20,
+					"extra": [
+						"ai_jiu",
+						"huo_guan",
+						"bu_qi",
+						"lian_dan"
+					]
+				}
+			},
+			"unlock_cost": 30
+		},
+		"bu_qi": {
+			"name": "布气",
+			"score0": 4,
+			"score_per": 4,
+			"yishu0": 98,
+			"yishu_per": 10,
+			"cost_base": 4,
+			"cost_fixed": 860,
+			"category": "商",
+			"illnesses": {
+				"hualao": {
+					"name": "话痨",
+					"unlock_level": 1,
+					"extra": []
+				},
+				"jianwang": {
+					"name": "健忘",
+					"unlock_level": 3,
+					"extra": [
+						"tui_na"
+					]
+				},
+				"yizheng": {
+					"name": "癔症",
+					"unlock_level": 5,
+					"extra": [
+						"han_zheng"
+					]
+				},
+				"jiaolvzheng": {
+					"name": "焦虑症",
+					"unlock_level": 7,
+					"extra": [
+						"han_zheng",
+						"tui_na"
+					]
+				},
+				"wangxiangzheng": {
+					"name": "妄想症",
+					"unlock_level": 10,
+					"extra": [
+						"yao_yu",
+						"gua_sha"
+					]
+				},
+				"zibi": {
+					"name": "自闭",
+					"unlock_level": 13,
+					"extra": [
+						"gua_sha",
+						"tui_na",
+						"huo_guan"
+					]
+				},
+				"shiyi": {
+					"name": "失忆",
+					"unlock_level": 16,
+					"extra": [
+						"ai_jiu",
+						"gua_sha",
+						"huo_guan",
+						"yao_yu"
+					]
+				},
+				"kuangzheng": {
+					"name": "狂症",
+					"unlock_level": 20,
+					"extra": [
+						"ai_jiu",
+						"huo_guan",
+						"han_zheng",
+						"yao_yu"
+					]
+				}
+			},
+			"unlock_cost": 30
+		},
+		"han_zheng": {
+			"name": "汗蒸",
+			"score0": 10,
+			"score_per": 4,
+			"yishu0": 98,
+			"yishu_per": 10,
+			"cost_base": 5,
+			"cost_fixed": 900,
+			"category": "侠",
+			"illnesses": {
+				"shangfeng": {
+					"name": "伤风",
+					"unlock_level": 1,
+					"extra": []
+				},
+				"kesou": {
+					"name": "咳嗽",
+					"unlock_level": 3,
+					"extra": [
+						"yao_fang"
+					]
+				},
+				"shuizhong": {
+					"name": "水肿",
+					"unlock_level": 5,
+					"extra": [
+						"yao_yu"
+					]
+				},
+				"yiniaobing": {
+					"name": "遗尿病",
+					"unlock_level": 7,
+					"extra": [
+						"bu_qi",
+						"lian_dan"
+					]
+				},
+				"shuimianzheng": {
+					"name": "嗜睡症",
+					"unlock_level": 10,
+					"extra": [
+						"tui_na",
+						"zhen_jiu"
+					]
+				},
+				"guanjietong": {
+					"name": "关节痛",
+					"unlock_level": 13,
+					"extra": [
+						"tui_na",
+						"ai_jiu",
+						"yao_fang"
+					]
+				},
+				"guzhizengsheng": {
+					"name": "骨质增生",
+					"unlock_level": 16,
+					"extra": [
+						"gua_sha",
+						"tui_na",
+						"zhen_jiu",
+						"lian_dan"
+					]
+				},
+				"xiaochuan": {
+					"name": "哮喘",
+					"unlock_level": 20,
+					"extra": [
+						"ai_jiu",
+						"huo_guan",
+						"bu_qi",
+						"lian_dan"
+					]
+				}
+			},
+			"unlock_cost": 40
+		}
+	},
+	"patients": [
+		{
+			"id": "p00",
+			"name": "乞丐",
+			"bonus": 0,
+			"need_yishu": 0
+		},
+		{
+			"id": "p01",
+			"name": "农民",
+			"bonus": 0,
+			"need_yishu": 0
+		},
+		{
+			"id": "p02",
+			"name": "老妪",
+			"bonus": 0,
+			"need_yishu": 0
+		},
+		{
+			"id": "p03",
+			"name": "老汉",
+			"bonus": 0,
+			"need_yishu": 0
+		},
+		{
+			"id": "p04",
+			"name": "顽童",
+			"bonus": 0.1,
+			"need_yishu": 2000
+		},
+		{
+			"id": "p05",
+			"name": "静庵",
+			"bonus": 0.1,
+			"need_yishu": 4000
+		},
+		{
+			"id": "p06",
+			"name": "厨娘",
+			"bonus": 0.1,
+			"need_yishu": 6000
+		},
+		{
+			"id": "p07",
+			"name": "胖妞",
+			"bonus": 0.1,
+			"need_yishu": 8000
+		},
+		{
+			"id": "p08",
+			"name": "算命先生",
+			"bonus": 0.1,
+			"need_yishu": 10000
+		},
+		{
+			"id": "p09",
+			"name": "采药女",
+			"bonus": 0.2,
+			"need_yishu": 20000
+		},
+		{
+			"id": "p10",
+			"name": "裁缝",
+			"bonus": 0.2,
+			"need_yishu": 30000
+		},
+		{
+			"id": "p11",
+			"name": "猎人",
+			"bonus": 0.2,
+			"need_yishu": 40000
+		},
+		{
+			"id": "p12",
+			"name": "铁匠",
+			"bonus": 0.2,
+			"need_yishu": 50000
+		},
+		{
+			"id": "p13",
+			"name": "丫鬟",
+			"bonus": 0.2,
+			"need_yishu": 65000
+		},
+		{
+			"id": "p14",
+			"name": "书生",
+			"bonus": 0.3,
+			"need_yishu": 80000
+		},
+		{
+			"id": "p15",
+			"name": "和尚",
+			"bonus": 0.3,
+			"need_yishu": 100000
+		},
+		{
+			"id": "p16",
+			"name": "屠夫",
+			"bonus": 0.3,
+			"need_yishu": 120000
+		},
+		{
+			"id": "p17",
+			"name": "舞女",
+			"bonus": 0.3,
+			"need_yishu": 140000
+		},
+		{
+			"id": "p18",
+			"name": "商人",
+			"bonus": 0.3,
+			"need_yishu": 160000
+		},
+		{
+			"id": "p19",
+			"name": "侠客",
+			"bonus": 0.4,
+			"need_yishu": 200000
+		},
+		{
+			"id": "p20",
+			"name": "歌姬",
+			"bonus": 0.4,
+			"need_yishu": 250000
+		},
+		{
+			"id": "p21",
+			"name": "捕快",
+			"bonus": 0.4,
+			"need_yishu": 300000
+		},
+		{
+			"id": "p22",
+			"name": "侠女",
+			"bonus": 0.4,
+			"need_yishu": 350000
+		},
+		{
+			"id": "p23",
+			"name": "千金",
+			"bonus": 0.4,
+			"need_yishu": 400000
+		},
+		{
+			"id": "p24",
+			"name": "钱老爷",
+			"bonus": 0.5,
+			"need_yishu": 500000
+		},
+		{
+			"id": "p25",
+			"name": "县令",
+			"bonus": 0.5,
+			"need_yishu": 600000
+		},
+		{
+			"id": "p26",
+			"name": "员外",
+			"bonus": 0.5,
+			"need_yishu": 700000
+		},
+		{
+			"id": "p27",
+			"name": "道长",
+			"bonus": 0.5,
+			"need_yishu": 800000
+		},
+		{
+			"id": "p28",
+			"name": "主持",
+			"bonus": 0.5,
+			"need_yishu": 900000
+		},
+		{
+			"id": "p29",
+			"name": "师太",
+			"bonus": 0.6,
+			"need_yishu": 1100000
+		},
+		{
+			"id": "p30",
+			"name": "巡抚",
+			"bonus": 0.6,
+			"need_yishu": 1400000
+		},
+		{
+			"id": "p31",
+			"name": "郡主",
+			"bonus": 0.6,
+			"need_yishu": 1700000
+		},
+		{
+			"id": "p32",
+			"name": "将军",
+			"bonus": 0.6,
+			"need_yishu": 2000000
+		},
+		{
+			"id": "p33",
+			"name": "丞相",
+			"bonus": 0.6,
+			"need_yishu": 2300000
+		},
+		{
+			"id": "p34",
+			"name": "公主",
+			"bonus": 0.7,
+			"need_yishu": 2800000
+		},
+		{
+			"id": "p35",
+			"name": "太子",
+			"bonus": 0.7,
+			"need_yishu": 3600000
+		},
+		{
+			"id": "p36",
+			"name": "王妃",
+			"bonus": 0.7,
+			"need_yishu": 4400000
+		},
+		{
+			"id": "p37",
+			"name": "王爷",
+			"bonus": 0.7,
+			"need_yishu": 5200000
+		},
+		{
+			"id": "p38",
+			"name": "皇后",
+			"bonus": 0.7,
+			"need_yishu": 6000000
+		},
+		{
+			"id": "p39",
+			"name": "皇帝",
+			"bonus": 0.8,
+			"need_yishu": 8000000
+		}
+	]
+}
