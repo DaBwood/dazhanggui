@@ -168,6 +168,10 @@ func unassign_hero(idx: int) -> Dictionary:
 func get_baiye(hero_id: String) -> int:
 	return int(baiye.get(hero_id, 0))
 
+# 【新增】2026-09-16 百业札记入账入口：道具使用/活动发放统一走这里（个人池直加，无上限）
+func add_baiye(hero_id: String, n: int):
+	baiye[hero_id] = get_baiye(hero_id) + n
+
 func get_baiye_total() -> int:
 	var total := 0
 	for k in baiye.keys():

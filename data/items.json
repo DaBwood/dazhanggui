@@ -368,11 +368,16 @@
 	},
 	"baiye_zhaji": {
 	  "name": "百业札记",
-	  "desc": "记载市井百业见闻的札记"
+	  "desc": "使用后选择一名门客，百业经验+10（可在背包批量使用）",
+	  "use": {
+		"type": "baiye_zhaji",
+		"btn": "使用",
+		"per": 10
+	  }
 	},
 	"wushuang_gugu": {
 	  "name": "无双兽骨",
-	  "desc": "珍稀的无双兽骨"
+	  "desc": "每40个可在背包【合成】页合成一只珍兽驺虞"
 	},
 	"ke_shi_tu_zhi": {
 	  "name": "科室图纸",

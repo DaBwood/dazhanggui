@@ -13,6 +13,8 @@ var data   # GameData 数据中枢引用
 	# ── 本页 UI 状态变量（原 game_controller 成员，第3批收尾迁入）──
 var _pending_ginseng_count: int = 0
 var _pending_ginseng_type: String = ""
+# 【新增】2026-09-16 百业札记待使用数量（选中门客后结算）
+var _pending_baiye_count: int = 0
 #【新增】固定为1的道具类型：数量锁定单次开启（门客/挚友盒解锁对象唯一；促织架按ID唯一存放）
 const SINGLE_USE_TYPES: Array = ["hero_box", "friend_box", "wushuang_cuzhi_box"]
 
@@ -31,6 +33,8 @@ const COMPOSE_RECIPES: Array = [
 	{"output": "hero_token", "material": "can_tie", "ratio": 10},
 	{"output": "kaishan_ling", "material": "kaishan_yin", "ratio": 20},
 	{"output": "zongjiang_ling", "material": "zongjiang_yin", "ratio": 20},
+	# 【新增】2026-09-16 无双兽骨×40→珍兽驺虞（产出是珍兽不是道具：格子/弹窗走 output_type 分支）
+	{"output": "zou_yu", "material": "wushuang_gugu", "ratio": 40, "output_type": "beast"},
 ]
 
 # 由 game_controller._ready 创建本模块时注入引用
@@ -209,6 +213,11 @@ func _on_detail_use(item_id: String, qty: int, popup: Control):
 			_pending_ginseng_count = qty
 			_pending_ginseng_type = item_id
 			_show_ginseng_selector()
+		"baiye_zhaji":
+			# 【新增】2026-09-16 百业札记：选数量→门客选择器（按赚速降序）→该门客百业经验+10/本
+			popup.queue_free()
+			_pending_baiye_count = qty
+			_show_baiye_selector()
 		"soul_stone_box":
 			popup.queue_free()
 			_open_soul_boxes(item_id, "normal", qty)
@@ -347,6 +356,76 @@ func _close_ginseng_selector():
 		bag_page.get_node("GinsengSelector").queue_free()
 	_pending_ginseng_count = 0
 	_pending_ginseng_type = ""
+
+# 【新增】2026-09-16 百业札记门客选择器：结构同人参选择器（按实时赚速降序，按钮带赚速与当前百业经验）
+func _show_baiye_selector():
+	var bag_page = c.get_node("PageContainer/BagPage")
+	if bag_page.has_node("BaiyeSelector"): return
+
+	var panel = PanelContainer.new()
+	panel.name = "BaiyeSelector"
+	panel.custom_minimum_size = Vector2(500, 400)
+	var vs = c.get_viewport_rect().size
+	panel.position = Vector2((vs.x - 500) / 2, (vs.y - 400) / 2)
+	var vbox = VBoxContainer.new()
+	vbox.alignment = BoxContainer.ALIGNMENT_CENTER
+	panel.add_child(vbox)
+
+	var sel_style = StyleBoxFlat.new()
+	sel_style.bg_color = Color("#1e1b2e")   # 弹窗统一底色（同 GinsengSelector）
+	sel_style.set_corner_radius_all(12)
+	panel.add_theme_stylebox_override("panel", sel_style)
+
+	var title = Label.new()
+	title.text = "选择门客使用百业札记（+%d百业经验/本）" % int(data.ITEM_CONFIG.get("baiye_zhaji", {}).get("use", {}).get("per", 10))
+	title.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	vbox.add_child(title)
+
+	var scroll = ScrollContainer.new()
+	scroll.custom_minimum_size = Vector2(480, 280)
+	vbox.add_child(scroll)
+
+	var list = VBoxContainer.new()
+	scroll.add_child(list)
+
+	# 门客按实时赚速降序排列（同人参选择器）
+	var hero_ids = data.heroes.keys()
+	hero_ids.sort_custom(func(a, b): return data.get_hero_income(a) > data.get_hero_income(b))
+	for hero_id in hero_ids:
+		var h = data.heroes[hero_id]
+		var btn = Button.new()
+		btn.text = "【%s】%s Lv.%d | %s/秒 | 百业经验 %s" % [h.name, h.category, h.level,
+			c.format_number(data.get_hero_income(hero_id)), c.format_number(data.bank_system.get_baiye(hero_id))]
+		btn.pressed.connect(_on_baiye_target_selected.bind(hero_id))
+		list.add_child(btn)
+
+	var cancel_btn = Button.new()
+	cancel_btn.text = "取消"
+	cancel_btn.pressed.connect(_close_baiye_selector)
+	vbox.add_child(cancel_btn)
+
+	bag_page.add_child(panel)
+
+func _on_baiye_target_selected(hero_id: String):
+	var count = _pending_baiye_count
+	if count <= 0 or int(data.items.get("baiye_zhaji", 0)) < count:
+		_close_baiye_selector()
+		return
+	# 每本 +per 百业经验（per 进道具 use 配置，不硬编码）；入钱庄百业个人池
+	var per: int = int(data.ITEM_CONFIG.get("baiye_zhaji", {}).get("use", {}).get("per", 10))
+	data.items["baiye_zhaji"] = int(data.items.get("baiye_zhaji", 0)) - count
+	data.bank_system.add_baiye(hero_id, per * count)
+	c._show_stage_hint("【%s】百业经验 +%d" % [data.heroes[hero_id].name, per * count])
+	_pending_baiye_count = 0
+	_close_baiye_selector()
+	update_bag_list()
+	c.update_all_ui()
+
+func _close_baiye_selector():
+	var bag_page = c.get_node("PageContainer/BagPage")
+	if bag_page.has_node("BaiyeSelector"):
+		bag_page.get_node("BaiyeSelector").queue_free()
+	_pending_baiye_count = 0
 
 func _show_hero_box_selector():
 	if c.has_node("HeroBoxSelector"): return
@@ -689,10 +768,18 @@ func _make_bag_cell(text_str: String) -> Button:
 	btn.add_theme_stylebox_override("pressed", press_style)
 	return btn
 
-# 合成页签：六个配方格子（产出名+现有数量+材料进度），点击进合成弹窗
+# 合成页签：配方格子（产出名+现有数量，点击进合成弹窗）；珍兽产出显示拥有只数
 func _fill_compose_grid(grid: GridContainer):
 	for recipe in COMPOSE_RECIPES:
 		var out_id := str(recipe.get("output", ""))
+		var have: int
+		if str(recipe.get("output_type", "")) == "beast":
+			# 【新增】2026-09-16 兽骨→驺虞：产出是珍兽，持有数读珍兽实例数（道具表里没有它）
+			have = data.get_beast_instance_count(out_id)
+			var btn = _make_bag_cell("%s\nx%d" % [data.get_beast_config(out_id).get("name", out_id), have])
+			btn.pressed.connect(_show_compose_popup.bind(recipe))
+			grid.add_child(btn)
+			continue
 		var out_cfg: Dictionary = data.ITEM_CONFIG.get(out_id, {})
 		# 【改】格子只显示名称+持有数（同物品页样式，直上直下自然排布）；配比与材料余量只在弹窗里展示
 		var btn = _make_bag_cell("%s\nx%d" % [out_cfg.get("name", out_id), int(data.items.get(out_id, 0))])
@@ -704,16 +791,20 @@ func _show_compose_popup(recipe: Dictionary):
 	var out_id := str(recipe.get("output", ""))
 	var mat_id := str(recipe.get("material", ""))
 	var ratio := int(recipe.get("ratio", 20))
+	var is_beast := str(recipe.get("output_type", "")) == "beast"   # 【新增】2026-09-16 兽骨→驺虞分支
 	var out_cfg: Dictionary = data.ITEM_CONFIG.get(out_id, {})
+	var out_name: String = out_cfg.get("name", out_id)
+	if is_beast:
+		out_name = str(data.get_beast_config(out_id).get("name", out_id))   # 产出是珍兽，名字读珍兽配置
 	var mat_cfg: Dictionary = data.ITEM_CONFIG.get(mat_id, {})
 	var mat_have := int(data.items.get(mat_id, 0))
 	@warning_ignore("integer_division")   # 合成上限取整是有意行为
 	var max_n := int(mat_have / ratio)
-	var popup = c._create_base_popup("合成·%s" % out_cfg.get("name", out_id), Vector2(400, 340))
+	var popup = c._create_base_popup("合成·%s" % out_name, Vector2(400, 340))
 	popup.name = "ComposePopup"
 	var vbox: VBoxContainer = popup.get_child(0)
 	var info = Label.new()
-	info.text = "%s ×%d  →  %s ×1" % [mat_cfg.get("name", mat_id), ratio, out_cfg.get("name", out_id)]
+	info.text = "%s ×%d  →  %s ×1" % [mat_cfg.get("name", mat_id), ratio, out_name]
 	info.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	vbox.add_child(info)
 	if max_n <= 0:
@@ -734,6 +825,16 @@ func _show_compose_popup(recipe: Dictionary):
 			c._show_stage_hint("请先选择合成数量")
 			return
 		data.items[mat_id] = int(data.items.get(mat_id, 0)) - n * ratio
+		if is_beast:
+			# 【新增】2026-09-16 珍兽产出：入珍兽栏（驺虞 max_count 999 可重复，add_beast 恒成功）
+			for i in range(n):
+				data.add_beast(out_id)
+			data.save_game()
+			popup.queue_free()
+			update_bag_list()
+			c.update_all_ui()
+			c._show_stage_hint("合成获得珍兽【%s】×%d" % [out_name, n])
+			return
 		data.items[out_id] = int(data.items.get(out_id, 0)) + n
 		data.save_game()
 		popup.queue_free()
