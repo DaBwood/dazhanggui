@@ -143,9 +143,10 @@ func _on_tick():
 func _refresh_res():
 	var page = c.get_node_or_null("InnPage")
 	if page == null: return
+	# 【改】顶栏资源条移除：厨艺值已门客独立（门客页显示），交子在兑换商店页显示
 	var bar = page.get_child(0).get_node_or_null("InnResBar")
 	if bar:
-		bar.text = "厨艺值Σ %d ｜ 交子 %d" % [data.inn_system.get_cuisine_total(), data.inn_system.get_jiaozi()]
+		bar.queue_free()
 
 func _fmt_secs(sec: int) -> String:
 	if sec >= 3600:
@@ -522,52 +523,104 @@ func _fill_recipe(body: VBoxContainer):
 		if str(_recipe_career) == str(career):
 			cb.add_theme_color_override("font_color", Color("#ffd700"))
 		tab_row.add_child(cb)
-	# 当前职业 10 道菜
+	# 当前职业 10 道菜（卡片网格 2 列；可升级的红点提示，点击开升级弹窗）
 	var scroll := ScrollContainer.new()
 	scroll.size_flags_vertical = Control.SIZE_EXPAND_FILL
 	body.add_child(scroll)
-	var list := VBoxContainer.new()
-	list.size_flags_horizontal = Control.SIZE_EXPAND_FILL
-	list.add_theme_constant_override("separation", 4)
-	scroll.add_child(list)
+	var grid := GridContainer.new()
+	grid.columns = 2
+	grid.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	grid.add_theme_constant_override("h_separation", 6)
+	grid.add_theme_constant_override("v_separation", 6)
+	scroll.add_child(grid)
 	for pack in sys.get_packs():
-		list.add_child(_make_recipe_row(str(pack.get("id", "")), str(_recipe_career), pack))
+		grid.add_child(_make_recipe_card(str(pack.get("id", "")), str(_recipe_career), pack))
 
-func _make_recipe_row(pack_id: String, career: String, pack: Dictionary) -> PanelContainer:
+# 【改】菜谱卡片（Panel 非容器，子控件走锚点）：可升级红点右上角提示，点击开升级弹窗
+func _make_recipe_card(pack_id: String, career: String, pack: Dictionary) -> Panel:
 	var sys = data.inn_system
-	var card := PanelContainer.new()
+	var card := Panel.new()
 	var rs := StyleBoxFlat.new()
 	rs.bg_color = Color("#252138")
 	rs.set_corner_radius_all(6)
 	card.add_theme_stylebox_override("panel", rs)
+	card.custom_minimum_size = Vector2(220, 88)
 	card.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	var vb := VBoxContainer.new()
+	vb.set_anchors_preset(Control.PRESET_FULL_RECT)
+	vb.offset_left = 8
+	vb.offset_top = 6
+	vb.offset_right = -8
+	vb.offset_bottom = -6
 	vb.add_theme_constant_override("separation", 2)
+	vb.mouse_filter = Control.MOUSE_FILTER_IGNORE   # 点击穿透到卡片（Label 默认 STOP 会吃掉点击）
 	card.add_child(vb)
 	var prog: Dictionary = sys.get_dish_progress(pack_id, career)
+	var can_up: bool = int(prog.get("done", 0)) >= int(prog.get("need", 1))
 	var line1 := Label.new()
+	line1.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	line1.add_theme_font_size_override("font_size", 13)
-	line1.text = "【%s】%s　Lv.%d（%d/%d 次升级）" % [
-		career, sys.get_dish_name(pack, career), int(prog.get("level", 1)), int(prog.get("done", 0)), int(prog.get("need", 1))]
+	line1.text = "【%s】%s　Lv.%d" % [career, sys.get_dish_name(pack, career), int(prog.get("level", 1))]
 	vb.add_child(line1)
 	var line2 := Label.new()
+	line2.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	line2.add_theme_font_size_override("font_size", 12)
 	line2.add_theme_color_override("font_color", Color("#c8c3e0"))
 	line2.text = "%s类门客 赚钱 +%s" % [career, c.format_number(sys.get_dish_income(pack_id, career))]
 	vb.add_child(line2)
-	
-	# 【新增】2026-09-16 菜谱手动升级按钮：次数够才亮
-	var btn_row := HBoxContainer.new()
-	btn_row.alignment = BoxContainer.ALIGNMENT_CENTER
-	vb.add_child(btn_row)
+	var line3 := Label.new()
+	line3.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	line3.add_theme_font_size_override("font_size", 12)
+	line3.add_theme_color_override("font_color", Color("#9a93c0"))
+	line3.text = "升级进度 %d/%d 次" % [int(prog.get("done", 0)), int(prog.get("need", 1))]
+	vb.add_child(line3)
+	if can_up:
+		var dot := Label.new()
+		dot.text = "●"
+		dot.add_theme_font_size_override("font_size", 16)
+		dot.add_theme_color_override("font_color", Color("#e74c3c"))
+		dot.mouse_filter = Control.MOUSE_FILTER_IGNORE   # 穿透点击到卡片
+		dot.set_anchors_preset(Control.PRESET_TOP_RIGHT)
+		dot.offset_left = -22
+		dot.offset_top = 2
+		dot.offset_right = -6
+		card.add_child(dot)
+	card.gui_input.connect(func(ev):
+		if ev is InputEventMouseButton and ev.pressed and ev.button_index == MOUSE_BUTTON_LEFT:
+			_show_dish_popup(pack_id, career, pack))
+	return card
+
+# 【新增】菜谱升级弹窗：卡片点击打开，展示详情+手动升级（次数不够按钮置灰）
+func _show_dish_popup(pack_id: String, career: String, pack: Dictionary):
+	var sys = data.inn_system
+	if c.has_node("DishPopup"): return   # 防连点堆叠
+	var panel = c._create_base_popup("菜谱升级", Vector2(360, 250), Vector2(396, 180))
+	panel.name = "DishPopup"
+	panel.z_index = 40   # 【修】盖过 InnPage(z35)，同 inn_view 既有弹窗（40）惯例
+	var vbox = panel.get_child(0)
+	var prog: Dictionary = sys.get_dish_progress(pack_id, career)
+	var name_lbl := Label.new()
+	name_lbl.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	name_lbl.text = "【%s】%s　Lv.%d" % [career, sys.get_dish_name(pack, career), int(prog.get("level", 1))]
+	vbox.add_child(name_lbl)
+	var info := Label.new()
+	info.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	info.add_theme_font_size_override("font_size", 12)
+	info.add_theme_color_override("font_color", Color("#c8c3e0"))
+	info.text = "%s类门客 赚钱 +%s\n升级进度 %d/%d 次" % [career, c.format_number(sys.get_dish_income(pack_id, career)), int(prog.get("done", 0)), int(prog.get("need", 1))]
+	vbox.add_child(info)
 	var up_btn := Button.new()
 	up_btn.text = "升级"
-	up_btn.custom_minimum_size = Vector2(58, 24)
-	up_btn.add_theme_font_size_override("font_size", 11)
 	up_btn.disabled = int(prog.get("done", 0)) < int(prog.get("need", 1))
-	up_btn.pressed.connect(_on_dish_upgrade.bind(pack_id, career))
-	btn_row.add_child(up_btn)
-	return card
+	up_btn.pressed.connect(func():
+		_on_dish_upgrade(pack_id, career)
+		c._safe_close("DishPopup"))
+	vbox.add_child(up_btn)
+	var cancel := Button.new()
+	cancel.text = "关闭"
+	cancel.pressed.connect(func(): c._safe_close("DishPopup"))
+	vbox.add_child(cancel)
+	c.add_child(panel)
 
 # ==================== 页签三：兑换商店 ====================
 func _fill_exchange(body: VBoxContainer):

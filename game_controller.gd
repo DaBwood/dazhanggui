@@ -638,6 +638,7 @@ func _show_float_badge(cfg: Dictionary, node_name: String, y: int, delta: int, m
 		panel = PanelContainer.new()
 		panel.name = node_name
 		panel.z_index = 50   # 飘字层级惯例
+		panel.mouse_filter = Control.MOUSE_FILTER_IGNORE   # 【修】飘尽是 alpha=0 不是 free，残留全屏吃点击（牧场/农场顶部点不到的元凶）
 		# 背景板：深紫底 85% 不透明度 + 圆角，挡得住页面文字又不死板
 		var style := StyleBoxFlat.new()
 		style.bg_color = Color("#1e1b2e", 0.85)
@@ -651,6 +652,7 @@ func _show_float_badge(cfg: Dictionary, node_name: String, y: int, delta: int, m
 		rtl.name = "Text"
 		rtl.bbcode_enabled = true   # 双色：主体橙金 / 增量绿(红)
 		rtl.scroll_active = false
+		rtl.mouse_filter = Control.MOUSE_FILTER_IGNORE   # 穿透到下层页面（板子已 IGNORE，双保险）
 		rtl.add_theme_font_size_override("normal_font_size", 20)
 		rtl.add_theme_color_override("default_color", Color("#e6a23c"))
 		rtl.add_theme_color_override("font_outline_color", Color(0, 0, 0))
@@ -906,7 +908,7 @@ func flash_red(node_path: String):
 		btn.remove_meta("flashing")
 	)
 
-func _create_base_popup(title_text: String, popup_size: Vector2, pos: Vector2 = Vector2.ZERO) -> PanelContainer:
+func _create_base_popup(title_text: String, popup_size: Vector2, _pos: Vector2 = Vector2.ZERO) -> PanelContainer:   # _pos 已废弃：一律居中（保留参数兼容46处旧调用）
 	var panel = PanelContainer.new()
 	# 【改】竖屏适配：弹窗尺寸钳制不超视口（四周留边）；写死的位置也钳制在屏幕内不出界
 	# 【改】竖屏适配：弹窗尺寸钳制不超视口（四周留边）
@@ -919,13 +921,7 @@ func _create_base_popup(title_text: String, popup_size: Vector2, pos: Vector2 = 
 	panel.z_index = 30
 	# 【新增】内容把面板撑大时按真实尺寸二次居中（custom_minimum_size 只是下限，不是实际尺寸）
 	panel.ready.connect(_recenter_popup.bind(panel))
-	if pos != Vector2.ZERO:
-		panel.position.x = clampf(pos.x, 8.0, maxf(8.0, vs.x - popup_size.x - 8))
-		panel.position.y = clampf(pos.y, 8.0, maxf(8.0, vs.y - popup_size.y - 8))
-	else:
-		# 未指定位置：自动居中
-		panel.position = (vs - popup_size) / 2
-	panel.z_index = 30
+	# 【修】pos 参数已废弃（见上方注释），此处不再套用旧坐标——避免弹窗先在右上闪现两帧再被拉回中央
 	
 	var style = StyleBoxFlat.new()
 	# 【改】底色提亮一档（原 #1e1b2e 与全屏门客面板同色，弹窗会融进背景）

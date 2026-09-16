@@ -1,6 +1,6 @@
 # ============================================================
 # 钱庄玩法全屏页（商铺地图 钱庄「▶」入口，层级：BankPage z35，同藏品/兽魂页惯例）
-# 结构：顶栏（返回/标题）→ 资源栏（筹算/信誉/百业Σ + 一键全领）→ 信誉等级卡 → 柜台卡片网格
+# 结构：顶栏（返回/标题）→ 信誉等级卡 → 柜台卡片网格 → 资源栏（信誉值 + 一键全领）
 # 柜台/委任选择器均为卡片式（2列网格，同珍兽/挚友页惯例；用户 2026-09-12 拍板）
 # 重建刷新模式（同藏品页）：操作后整页重建；1秒 Timer 只刷新计时/待领文本（不重建，保滚动位置）
 # ============================================================
@@ -81,20 +81,6 @@ func hide_bank_view():
 func _fill_body(vb: VBoxContainer):
 	var sys = data.bank_system
 	sys._ensure_counters()
-	# 资源栏：三资源存量 + 一键全领
-	var res := HBoxContainer.new()
-	res.alignment = BoxContainer.ALIGNMENT_CENTER
-	res.add_theme_constant_override("separation", 12)
-	vb.add_child(res)
-	var res_lbl := Label.new()
-	res_lbl.text = "筹算值Σ %d ｜ 信誉值 %d ｜ 百业经验Σ %d" % [sys.get_chousuan_total(), sys.get_xinyu(), sys.get_baiye_total()]
-	res_lbl.add_theme_color_override("font_color", Color("#e6c07b"))
-	res_lbl.add_theme_font_size_override("font_size", 14)
-	res.add_child(res_lbl)
-	var collect_all_btn := Button.new()
-	collect_all_btn.text = "一键全领"
-	collect_all_btn.pressed.connect(_on_collect_all)
-	res.add_child(collect_all_btn)
 	# 信誉等级卡
 	var card := PanelContainer.new()
 	var cs := StyleBoxFlat.new()
@@ -133,14 +119,7 @@ func _fill_body(vb: VBoxContainer):
 		up_btn.disabled = sys.get_xinyu() < sys.get_xinyu_cost()
 		up_btn.pressed.connect(_on_xinyu_upgrade)
 	up_row.add_child(up_btn)
-	# 柜台区标题 + 卡片网格（2列，同珍兽/挚友页惯例）
-	var head := Label.new()
-	# 解锁花费直接读中枢配置（同 shop_page 读 _shop_configs 先例；显式引用让分析器看到 _bank_configs）
-	var bank_st: Dictionary = data._bank_configs.get("settings", {})
-	head.text = "柜台（已解锁 %d/%d）　每20分钟产 1百业+40筹算+40信誉，单柜封顶24小时；前5个免费，之后受钱庄店铺等级限制、每个%d元宝解锁" % [sys.get_counter_count(), sys.get_counter_total(), int(bank_st.get("counter_unlock_cost", 5000))]
-	head.add_theme_font_size_override("font_size", 13)
-	head.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART   # 必须换行：否则整段文字的最小宽度会把网格顶出屏幕
-	vb.add_child(head)
+	# 柜台区：卡片网格（3列，用户拍板）；长说明文案已删（2026-09-16 用户要求）
 	var scroll := ScrollContainer.new()
 	scroll.size_flags_vertical = Control.SIZE_EXPAND_FILL
 	vb.add_child(scroll)
@@ -154,6 +133,23 @@ func _fill_body(vb: VBoxContainer):
 	for i in range(sys.get_counter_count()):
 		_add_counter_card(grid, i)
 	_add_unlock_card(grid)
+	# 资源栏（挪到柜台后，2026-09-16 用户要求）：信誉值 + 一键全领
+	var res := HBoxContainer.new()
+	res.alignment = BoxContainer.ALIGNMENT_CENTER
+	res.add_theme_constant_override("separation", 12)
+	vb.add_child(res)
+	var res_lbl := Label.new()
+	# 筹算值/百业经验已门客独立池（门客页显示），这里只留全局的信誉值
+	res_lbl.text = "信誉值 %d" % sys.get_xinyu()
+	res_lbl.add_theme_color_override("font_color", Color("#e6c07b"))
+	res_lbl.add_theme_font_size_override("font_size", 14)
+	res.add_child(res_lbl)
+	var collect_all_btn := Button.new()
+	collect_all_btn.text = "一键全领"
+	collect_all_btn.pressed.connect(_on_collect_all)
+	collect_all_btn.disabled = true   # 无待领产出时置灰（_refresh_rows 里按总量刷新）
+	_collect_all_btn = collect_all_btn
+	res.add_child(collect_all_btn)
 
 # ---------- 柜台卡片 ----------
 func _add_counter_card(grid: GridContainer, idx: int):
@@ -268,8 +264,11 @@ func _counter_info_text(idx: int, _hid: String) -> String:   # _hid 未用（名
 	return "%s\n待领 %d百业 %d筹算 %d信誉" % [t, int(p["baiye"]), int(p["chousuan"]), int(p["xinyu"])]
 
 # 秒刷：只更新计时/待领文本与领取按钮态（不整页重建，保住滚动位置）
+var _collect_all_btn: Button = null   # 【改】一键全领按钮引用（跨函数置灰）
+
 func _refresh_rows():
 	if not c.has_node("BankPage"): return
+	var total_pending := 0
 	for ref in _row_refs:
 		if not is_instance_valid(ref["info"]): continue
 		var hid: String = ref["hid"]
@@ -277,7 +276,11 @@ func _refresh_rows():
 		var idx := int(ref["idx"])
 		ref["info"].text = _counter_info_text(idx, hid)
 		var p: Dictionary = data.bank_system.get_pending(idx)
-		ref["btn"].disabled = int(p["baiye"]) + int(p["chousuan"]) + int(p["xinyu"]) <= 0
+		var pending_n := int(p["baiye"]) + int(p["chousuan"]) + int(p["xinyu"])
+		ref["btn"].disabled = pending_n <= 0
+		total_pending += pending_n
+	if is_instance_valid(_collect_all_btn):
+		_collect_all_btn.disabled = total_pending <= 0
 
 # ---------- 操作 ----------
 func _on_collect(idx: int):
