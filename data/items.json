@@ -362,6 +362,10 @@
 	  "name": "病人手册",
 	  "desc": "医馆玩法立即获得三名病人"
 	},
+	"drugshop_sign": {
+	  "name": "药铺招牌",
+	  "desc": "药铺玩法立即获得三名病人"
+	},
 	"baiye_zhaji": {
 	  "name": "百业札记",
 	  "desc": "记载市井百业见闻的札记"
@@ -909,6 +913,7 @@
 	"random_book": 0,
 	"stage_box": 0,
 	"patient_manual": 0,
+	"drugshop_sign": 0,
 	"cricket_cage": 0,
 	"stamina_pill": 0,
 	"tong_zan": 0,

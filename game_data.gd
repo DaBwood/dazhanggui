@@ -839,8 +839,9 @@ func save_game():
 	var systems = [hero_system, friend_system, apprentice_system, beast_system, shop_system,
 		stage_system, item_system, travel_system, charity_system, lottery_system, mall_system,
 		manor_system,courtyard_system,war_system,goal_system,fishing_system,soul_system,
-		soulpower_system,cuzhi_system,guardian_system,token_system,fengzi_system,talent_system,
+		soulpower_system,cuzhi_system,guardian_system,token_system,fengzi_system,drugshop_system,talent_system,
 		collection_system,guild_system,mail_system,bank_system,inn_system,side_skill_system,clinic_system,]
+	# 【修】save 数组漏登记 drugshop_system 导致药铺状态不落盘（每次打开全新）——2026-09-16 修复
 	for sys in systems:
 		save_data.merge(sys.get_save_data(), true)
 	var file = FileAccess.open(save_path, FileAccess.WRITE)

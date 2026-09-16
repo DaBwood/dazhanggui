@@ -9,7 +9,9 @@
     "craft_cost_base": 2500,
     "craft_cost_per_tier": 10,
     "recipe_cost_base": 500,
-    "recipe_cost_pow": 2
+    "recipe_cost_pow": 2,
+    "sign_item": "drugshop_sign",
+    "sign_give": 3
   },
   "recipes": [
     {"id": "r01", "name": "甘草汤", "difficulty": "极易", "difficulty_pct": 0, "formula": "甘草×3", "exp": 20, "base_price": 34},

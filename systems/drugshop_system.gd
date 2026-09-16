@@ -1,10 +1,10 @@
 # ============================================================
 # 药铺玩法系统（商铺地图 药铺「▶」入口全屏页；2026-09-16 按药铺设计方案 v1.3 定稿）
 # 双队列模型（2026-09-16 用户拍板，同医馆队列化范式）：
-#   体力池：40分钟/点自然恢复，上限30，离线照涨；体力恢复与收益结算完全解耦（只恢复体力，不计算收益）
-#   计算队列：点【营业】立即结算1个（不入队）/【一键接待】勾选后体力自动挪入队列；
-#             由 game_controller 每秒节拍 + 页面定时器以【时间盒】批处理，不影响性能；
-#             队列进存档，离线暂停不假结算，上线接着排队
+#   病人池（开发口径"体力"）：40分钟/个自然恢复，上限30，离线照涨；恢复与收益结算完全解耦（只恢复病人，不计算收益）
+#   计算队列：点【营业】立即结算1个（不入队）/ 勾选【一键接待】后点【营业】把当前病人全部转入队列
+#             （勾选本身不消耗病人，【改】2026-09-16 用户拍板）；队列由 game_controller 每秒节拍 +
+#             页面定时器以【时间盒】批处理，不影响性能；队列进存档，离线暂停不假结算，上线接着排队
 # 接待结算（每个病人）：均匀随机已解锁药方 → 售价=round(基础售价×1.04^(lv-1)) 进收益罐；
 #   药铺经验/次 + 熟练度+100/次 进收益罐；领取时统一入账（铜板→货币/经验→勋章累计【只增不减】/熟练度→药方池）
 # 三货币线：铜板升工艺（7项，固定值层伙计赚速）｜熟练度升药方（29张，15级满）｜累计经验升勋章（15级手动）
@@ -19,9 +19,9 @@ extends RefCounted
 var g
 
 # ---------- 存档字段（内部持有） ----------
-var stamina: int = 0                 # 体力池（待接待病人数）：自然恢复，上限 settings.stamina_cap
-var stamina_ts: int = 0              # 上次体力结算时间戳（离线补发基准）
-var auto_settle: bool = false        # 一键接待开关：开启后体力自动挪入计算队列
+var stamina: int = 0                 # 病人池（开发口径"体力"，待接待病人数）：自然恢复，上限 settings.stamina_cap
+var stamina_ts: int = 0              # 上次病人恢复结算时间戳（离线补发基准）
+var auto_settle: bool = false        # 一键接待模式开关：勾选后营业=全部转入队列（勾选本身不消耗，点营业才消耗）
 var settle_queue: int = 0            # 计算队列：已入队待结算（进存档，离线暂停，上线续算）
 var coins: int = 0                   # 铜板（药铺独立货币，收益罐领取入账，仅用于工艺升级）
 var exp_total: int = 0               # 累计药铺经验（只增不减：勋章升级进度 + 药方解锁条件）
@@ -138,28 +138,30 @@ func get_next_stamina_seconds() -> int:
 	return int(int(_st().get("stamina_interval", 2400)) - (Time.get_unix_time_from_system() - stamina_ts))
 
 # ============ 一键接待开关 ============
+# 【改】2026-09-16 用户拍板：勾选只切换营业按钮模式，不消耗病人；点【营业】才把病人转入队列
 func get_auto_settle() -> bool:
 	return auto_settle
 
-# 勾选一键接待：开启瞬间把当前体力全部挪入计算队列（此后后台节拍自动搬运新恢复的体力）
+# 勾选一键接待：仅记录模式开关（营业=单个接待 / 营业=全部转入队列），本身不消耗病人
 func set_auto_settle(on: bool) -> Dictionary:
 	auto_settle = on
-	if on:
-		_sync_stamina()
-		if stamina > 0:
-			settle_queue += stamina
-			stamina = 0
-			stamina_ts = int(Time.get_unix_time_from_system())   # 清零后重起自然恢复计时
 	return {"ok": true}
 
+# 一键接待模式：当前全部病人转入计算队列（后台批处理结算，体力恢复照常互不阻塞）
+func settle_all() -> Dictionary:
+	_sync_stamina()
+	if stamina <= 0:
+		return {"ok": false, "msg": "病人不足，稍后再来"}
+	var n: int = stamina
+	settle_queue += n
+	stamina = 0
+	stamina_ts = int(Time.get_unix_time_from_system())   # 清零后重起自然恢复计时
+	return {"ok": true, "n": n}
+
 # ============ 后台节拍（game_controller 每秒 + 页面定时器共用入口） ============
-# 时间盒批处理：auto_settle 开启时先把体力挪入队列，再按预算结算，帧压力恒定
+# 时间盒批处理：只推进队列结算，不自动搬运病人（搬运唯一入口=营业按钮，【改】2026-09-16）
 func background_tick(budget_ms: int = 2) -> Dictionary:
 	_sync_stamina()
-	if auto_settle and stamina > 0:
-		settle_queue += stamina
-		stamina = 0
-		stamina_ts = int(Time.get_unix_time_from_system())
 	return process_queue(budget_ms)
 
 func get_settle_queue() -> int:
@@ -192,11 +194,11 @@ func _settle_one():
 	patients_total += 1
 	settle_queue -= 1
 
-# 营业：消耗1体力立即结算1个病人（手动接待不入队，即时出结果）
+# 营业：消耗1点立即结算1个病人（手动接待不入队，即时出结果）
 func serve_one() -> Dictionary:
 	_sync_stamina()
 	if stamina <= 0:
-		return {"ok": false, "msg": "体力不足，稍后再来"}
+		return {"ok": false, "msg": "病人不足，稍后再来"}   # 【改】体力→病人（开发口径体力，玩家口径病人）
 	if get_unlocked_recipes().is_empty():
 		return {"ok": false, "msg": "暂无已解锁药方"}
 	stamina -= 1
@@ -206,6 +208,10 @@ func serve_one() -> Dictionary:
 	var r: Dictionary = {"ok": true,
 		"coins": int(pot.get("coins", 0)), "exp": int(pot.get("exp", 0))}
 	return r
+
+# 【新增】2026-09-16 药铺招牌：道具恢复病人，不受自然上限限制（同医馆病人手册/精力丹口径）
+func add_stamina(n: int):
+	stamina += n
 
 # ============ 收益罐（无上限，手动领取统一入账） ============
 func get_pot() -> Dictionary:

@@ -1,8 +1,15 @@
 # ============================================================
 # 药铺玩法全屏页（商铺地图 药铺「▶」入口，层级：DrugshopPage z35，弹窗 z40，同医馆/客栈惯例）
-# 2026-09-16 按药铺设计方案 v1.3 定稿：
-#   主页 = 勋章卡 + 收益罐(红点) + 体力行(营业/一键接待勾选/队列状态) + 三入口(打理/本草秘籍/成就)
-#   营业 = 立即结算1个；一键接待勾选 = 体力自动挪入计算队列，后台批处理（结算不阻塞体力恢复）
+# 2026-09-16 按药铺设计方案 v1.3 定稿；当日 6 项修复批次：
+#   ①存档：game_data save 数组补登记 drugshop_system（此前状态不落盘，每次打开全新）
+#   ②勋章%接入 shop_system 百分比层（此前漏接，升级勋章无加成无飘字）
+#   ③一键接待新交互（用户拍板）：勾选框只切换营业按钮模式，不消耗病人；
+#     勾选后点【营业】=当前病人全部转入计算队列，后台批处理结算
+#   ④领取按钮失效修复：收益罐内容由后台队列结算产生，按钮 disabled 须在定时器节拍里刷新
+#   ⑤新增道具【药铺招牌】：病人计数后「＋」按钮→数量选择器（滑动条+输入框，同医馆病人手册），
+#     每个招牌 +3 病人，不受自然上限限制
+#   ⑥玩家口径统一为"病人"（"体力"是开发口径，UI 一律不显示）
+#   主页 = 勋章卡 + 收益罐(红点) + 病人行(＋招牌/营业/一键接待勾选) + 三入口(打理/本草秘籍/成就)
 #   打理 = 7工艺卡片（点卡片弹详情升级；顶部"全部升级"一次各升1级）
 #   本草秘籍 = 29药方卡片网格（锁定卡显示解锁条件；点卡片弹详情：配方/收益/升级+一键升级/解锁）
 #   成就 = 3条线 × 进度 + 4档领取
@@ -18,11 +25,13 @@ var data: GameData   # 数据中枢（显式标注 GameData：让中枢字段被
 
 var _tab: String = "main"        # 当前视图 main/craft/recipe/ach
 var _timer: Timer = null         # 后台节拍定时器（0.5s）
-var _stamina_lbl: Label = null   # 体力文本
-var _cd_lbl: Label = null        # 体力恢复倒计时文本
+var _stamina_lbl: Label = null   # 病人计数文本
+var _cd_lbl: Label = null        # 病人恢复倒计时文本
 var _queue_lbl: Label = null     # 计算队列状态文本
 var _jar_lbl: Label = null       # 收益罐文本
 var _jar_dot: Label = null       # 收益罐红点
+var _collect_btn: Button = null  # 【新增】领取按钮引用（节拍里刷新 disabled，修复"入队结算后不可点"）
+var _serve_btn: Button = null    # 【新增】营业按钮引用（节拍里刷新 disabled，病人恢复后即时可点）
 var _popup_rid: String = ""      # 当前打开的药方弹窗 id（升级后重建用）
 
 func _init(p_c):
@@ -64,10 +73,10 @@ func hide_drugshop_view():
 	_close_node("DrugshopPopup")
 
 func _on_tick():
-	# 推进计算队列（时间盒 2ms；体力恢复与结算解耦，互不阻塞）
+	# 推进计算队列（时间盒 2ms；病人恢复与结算解耦，互不阻塞）
 	_sys().background_tick(2)
 	if _stamina_lbl:
-		_stamina_lbl.text = "体力：%d / %d" % [_sys().get_stamina(), _sys().get_stamina_cap()]
+		_stamina_lbl.text = "病人：%d / %d" % [_sys().get_stamina(), _sys().get_stamina_cap()]
 	if _cd_lbl:
 		_cd_lbl.text = _cd_text()
 	if _queue_lbl:
@@ -76,12 +85,19 @@ func _on_tick():
 		_jar_lbl.text = _jar_text()
 	if _jar_dot:
 		_jar_dot.visible = _sys().has_pot()
+	# 【修】2026-09-16 收益罐内容由后台队列结算产生，按钮 disabled 必须在节拍里跟着刷新
+	# （此前只在建页时设一次：一键接待结算出收益后按钮仍 disabled+红点，须重进才能领）
+	if _collect_btn:
+		_collect_btn.disabled = not _sys().has_pot()
+	# 病人自然恢复后营业按钮即时可用（同上的失效类问题，一并修）
+	if _serve_btn:
+		_serve_btn.disabled = _sys().get_stamina() <= 0
 
 func _cd_text() -> String:
 	var sec := _sys().get_next_stamina_seconds()
 	if sec <= 0:
-		return "体力已满" if _sys().get_stamina() >= _sys().get_stamina_cap() else "体力即将恢复"
-	return "下点体力：%d分%02d秒" % [int(sec / 60.0), sec % 60]
+		return "病人已满" if _sys().get_stamina() >= _sys().get_stamina_cap() else "病人即将恢复"
+	return "下位病人：%d分%02d秒" % [int(sec / 60.0), sec % 60]
 
 func _queue_text() -> String:
 	var n := _sys().get_settle_queue()
@@ -164,7 +180,7 @@ func _refresh():
 		_close_node("DrugshopPopup")
 		_show_recipe_popup(_popup_rid)
 
-# ---------- 主页：勋章卡 + 收益罐 + 体力行 + 三入口 ----------
+# ---------- 主页：勋章卡 + 收益罐 + 病人行 + 三入口 ----------
 func _fill_main(body: VBoxContainer):
 	# 勋章卡
 	_fill_medal_card(body)
@@ -182,40 +198,46 @@ func _fill_main(body: VBoxContainer):
 	_jar_dot.add_theme_color_override("font_color", Color("#e74c3c"))
 	_jar_dot.visible = _sys().has_pot()
 	jar_row.add_child(_jar_dot)
-	var collect_btn := Button.new()
-	collect_btn.text = "领取"
-	collect_btn.custom_minimum_size = Vector2(90, 36)
-	collect_btn.disabled = not _sys().has_pot()
-	collect_btn.pressed.connect(_on_collect)
-	jar_row.add_child(collect_btn)
-	# 体力行：计数 + 营业按钮
+	_collect_btn = Button.new()   # 【改】登记引用，节拍里刷新 disabled
+	_collect_btn.text = "领取"
+	_collect_btn.custom_minimum_size = Vector2(90, 36)
+	_collect_btn.disabled = not _sys().has_pot()
+	_collect_btn.pressed.connect(_on_collect)
+	jar_row.add_child(_collect_btn)
+	# 病人行：计数 + 招牌加号（药铺招牌，仅限此处）+ 营业按钮
 	var count_row := HBoxContainer.new()
 	count_row.add_theme_constant_override("separation", 6)
 	body.add_child(count_row)
 	_stamina_lbl = Label.new()
-	_stamina_lbl.text = "体力：%d / %d" % [_sys().get_stamina(), _sys().get_stamina_cap()]
+	_stamina_lbl.text = "病人：%d / %d" % [_sys().get_stamina(), _sys().get_stamina_cap()]
 	_stamina_lbl.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	count_row.add_child(_stamina_lbl)
-	var serve_btn := Button.new()
-	serve_btn.text = "营业"
-	serve_btn.custom_minimum_size = Vector2(110, 38)
-	serve_btn.disabled = _sys().get_stamina() <= 0
-	serve_btn.pressed.connect(_on_serve)
-	count_row.add_child(serve_btn)
+	# 【新增】药铺招牌加号：弹出数量选择器批量恢复病人（不受自然上限限制，背包不开放，同医馆病人手册）
+	var sign_btn := Button.new()
+	sign_btn.text = "＋"
+	sign_btn.custom_minimum_size = Vector2(40, 32)
+	sign_btn.tooltip_text = "使用【药铺招牌】+3 病人"
+	sign_btn.pressed.connect(_on_use_sign)
+	count_row.add_child(sign_btn)
+	_serve_btn = Button.new()   # 【改】登记引用，节拍里刷新 disabled
+	_serve_btn.text = "营业"
+	_serve_btn.custom_minimum_size = Vector2(110, 38)
+	_serve_btn.disabled = _sys().get_stamina() <= 0
+	_serve_btn.pressed.connect(_on_serve)
+	count_row.add_child(_serve_btn)
 	_cd_lbl = Label.new()
 	_cd_lbl.text = _cd_text()
 	_cd_lbl.add_theme_color_override("font_color", Color("#9a93b8"))
 	body.add_child(_cd_lbl)
-	# 一键接待勾选（开启后体力自动入队后台结算；体力恢复照常，互不阻塞）
+	# 一键接待勾选（【改】2026-09-16：勾选只切换营业模式，不消耗病人；勾选后点营业=全部转入队列）
+	# 勾选框放营业下面；队列状态跟随显示
 	var auto_row := HBoxContainer.new()
 	auto_row.add_theme_constant_override("separation", 6)
 	body.add_child(auto_row)
 	var auto_check := CheckBox.new()
 	auto_check.text = "一键接待"
 	auto_check.button_pressed = _sys().get_auto_settle()
-	auto_check.toggled.connect(func(on: bool):
-		_sys().set_auto_settle(on)
-		_refresh())
+	auto_check.toggled.connect(_on_auto_toggled)   # 【改】命名方法直连（原 lambda 多语句改绑）
 	auto_row.add_child(auto_check)
 	_queue_lbl = Label.new()
 	_queue_lbl.text = _queue_text()
@@ -285,10 +307,66 @@ func _on_medal_upgrade():
 	c.update_all_ui()   # 勋章%入账→全体商铺赚速变化→全局飘字
 	_refresh()
 
-# 一键接待勾选切换：开启=当前体力挪入计算队列，此后后台自动搬运新恢复的体力
+# 一键接待勾选切换：【改】2026-09-16 只记录模式开关，不消耗病人（消耗唯一入口=营业按钮）
 func _on_auto_toggled(on: bool):
 	_sys().set_auto_settle(on)
 	_refresh()
+
+# 【新增】药铺招牌：数量选择器（滑动条+输入框联动，项目惯例，同医馆病人手册/客栈食材包）
+# 每个招牌 +sign_give 病人，道具恢复不受自然上限限制（2026-09-15 体力类资源规则）
+func _on_use_sign():
+	var sign_item: String = data._drugshop_configs.get("settings", {}).get("sign_item", "drugshop_sign")
+	var owned: int = int(data.items.get(sign_item, 0))
+	if owned <= 0:
+		c._show_stage_hint("没有【药铺招牌】")
+		return
+	_close_node("DrugshopPopup")
+	var give: int = int(data._drugshop_configs.get("settings", {}).get("sign_give", 3))
+	var popup: PanelContainer = c._create_base_popup("使用药铺招牌", Vector2(400, 240))
+	popup.name = "DrugshopPopup"
+	popup.z_index = 40   # 盖过 DrugshopPage(z35)，同 clinic/inn 弹窗惯例
+	c.add_child(popup)   # 弹窗工厂只创建不挂载，必须调用方 add_child（同 clinic/inn 惯例）
+	var vb: VBoxContainer = popup.get_child(0)
+	var info := Label.new()
+	info.text = "拥有 %d 个，每个 +%d 病人" % [owned, give]
+	vb.add_child(info)
+	var hbox := HBoxContainer.new()
+	hbox.add_theme_constant_override("separation", 8)
+	vb.add_child(hbox)
+	var slider := HSlider.new()
+	slider.min_value = 1
+	slider.max_value = owned
+	slider.value = 1
+	slider.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	slider.custom_minimum_size = Vector2(140, 24)
+	hbox.add_child(slider)
+	var spin := SpinBox.new()
+	spin.min_value = 1
+	spin.max_value = owned
+	spin.value = 1
+	hbox.add_child(spin)
+	slider.value_changed.connect(spin.set_value)
+	spin.value_changed.connect(slider.set_value)
+	var btn_row := HBoxContainer.new()
+	btn_row.add_theme_constant_override("separation", 8)
+	btn_row.alignment = BoxContainer.ALIGNMENT_CENTER
+	vb.add_child(btn_row)
+	var ok_btn := Button.new()
+	ok_btn.text = "确定"
+	ok_btn.custom_minimum_size = Vector2(90, 34)
+	ok_btn.pressed.connect(func():
+		var n: int = int(spin.value)
+		data.items[sign_item] = int(data.items.get(sign_item, 0)) - n
+		_sys().add_stamina(n * give)
+		_close_node("DrugshopPopup")
+		c._show_stage_hint("病人 +%d" % (n * give))
+		_refresh())
+	btn_row.add_child(ok_btn)
+	var cancel_btn := Button.new()
+	cancel_btn.text = "取消"
+	cancel_btn.custom_minimum_size = Vector2(90, 34)
+	cancel_btn.pressed.connect(func(): _close_node("DrugshopPopup"))
+	btn_row.add_child(cancel_btn)
 
 func _on_collect():
 	var r := _sys().collect_pot()
@@ -296,7 +374,17 @@ func _on_collect():
 		c.format_number(int(r["coins"])), c.format_number(int(r["exp"]))])
 	_refresh()
 
+# 营业：未勾选一键接待=立即结算1个病人；勾选=当前全部病人转入计算队列（后台批处理）
+# 【改】2026-09-16 原勾选即消耗改为点营业才消耗（勾选只切换模式）
 func _on_serve():
+	if _sys().get_auto_settle():
+		var ra := _sys().settle_all()
+		if not ra.get("ok", false):
+			c._show_stage_hint(str(ra.get("msg", "")))
+			return
+		c._show_stage_hint("%d 位病人已转入接待队列，结算中…" % int(ra.get("n", 0)))
+		_refresh()
+		return
 	var r := _sys().serve_one()
 	if not r.get("ok", false):
 		c._show_stage_hint(str(r.get("msg", "")))
