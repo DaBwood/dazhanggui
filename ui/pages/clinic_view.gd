@@ -363,6 +363,15 @@ func _on_unlock_patient(pid: String):
 		return
 	_refresh()
 
+# 【新增】2026-09-16 病症一键升级：全部升完后刷新页面+全局飘字（类目赚速变化）
+func _on_upgrade_all_illness():
+	var n: int = _sys().upgrade_all_illnesses()
+	if n <= 0:
+		c._show_stage_hint("暂无可升级病症")
+		return
+	_refresh()
+	c.update_all_ui()
+
 # ---------- 子页：科室（卡片网格，先新增再升级） ----------
 func _fill_dept(body: VBoxContainer):
 	var grid := GridContainer.new()
@@ -468,6 +477,13 @@ func _fill_illness(body: VBoxContainer):
 	head.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
 	head.add_theme_color_override("font_color", Color("#e6c07b"))
 	body.add_child(head)
+	# 【新增】2026-09-16 病症一键升级：全部可升级病症一键升到评分不足
+	var all_btn := Button.new()
+	all_btn.text = "一键升级"
+	all_btn.custom_minimum_size = Vector2(104, 30)
+	all_btn.disabled = not _sys().has_upgradeable_illness()
+	all_btn.pressed.connect(_on_upgrade_all_illness)
+	body.add_child(all_btn)
 	var grid := GridContainer.new()
 	grid.columns = 3
 	grid.add_theme_constant_override("h_separation", 6)

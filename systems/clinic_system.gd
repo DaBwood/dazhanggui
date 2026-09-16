@@ -67,7 +67,8 @@ func get_save_data() -> Dictionary:
 		"illness_scores": illness_scores,
 		"yishu": yishu, "jar_yishu": jar_yishu,
 		"patients": patients, "patient_time": patient_time,
-		"treat_queue": treat_queue, "patient_unlocked": patient_unlocked}}   # 接诊队列持久化；病人解锁表（手动解锁制）
+		"treat_queue": treat_queue,   # 接诊队列持久化：离线不做假结算，读档后接着治
+		"patient_unlocked": patient_unlocked}}   # 【新增】2026-09-16 病人解锁表（手动解锁制）
 
 # 从扁平存档表认领本系统字段（旧档缺字段保持初始值；时间戳缺失从当前起算）
 func load_save_data(s: Dictionary):
@@ -155,11 +156,7 @@ func get_unlocked_patients() -> Array:
 			pool.append(p)
 	return pool
 
-# 全量病人表（UI 解锁进度展示用）
-func get_patient_unlock_info() -> Array:
-	return _cfg().get("patients", [])
-
-# 【新增】2026-09-16 病人手动解锁（无消耗）+ 三入口红点口径 + 地图红点口径
+# 【新增】2026-09-16 病人手动解锁（无消耗）+ 红点口径 + 一键升级
 func is_patient_unlocked(pid: String) -> bool:
 	return patient_unlocked.has(pid)
 
@@ -181,7 +178,7 @@ func has_unlockable_patient() -> bool:
 			return true
 	return false
 
-# 病人满（地图「▶」唯一红点口径，同药铺：>=上限，含手册拉超）
+# 病人满（地图「▶」唯一红点口径：>=上限，含手册拉超）
 func is_patients_full() -> bool:
 	return get_patient_count() >= get_patient_cap()
 
@@ -198,6 +195,22 @@ func has_upgradeable_illness() -> bool:
 		if can_upgrade_illness(str(iid)).get("ok", false):
 			return true
 	return false
+
+# 【新增】2026-09-16 病症一键升级：所有已解锁病症逐个循环升到评分不足，返回升级总次数
+func upgrade_all_illnesses() -> int:
+	var n := 0
+	for iid in get_unlocked_illnesses():
+		var sid := str(iid)
+		while can_upgrade_illness(sid).get("ok", false):
+			var r: Dictionary = upgrade_illness(sid)
+			if not r.get("ok", false):
+				break   # 双保险：升级失败立即跳出，防意外死循环
+			n += 1
+	return n
+
+# 全量病人表（UI 解锁进度展示用）
+func get_patient_unlock_info() -> Array:
+	return _cfg().get("patients", [])
 
 # ============ 接诊队列：转入（接诊/一键接诊只做搬运，纯改数字永不卡） ============
 func get_treat_queue() -> int:
