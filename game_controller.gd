@@ -68,6 +68,7 @@ var bank_view   # 【新增】钱庄玩法视图（商铺地图钱庄「▶」�
 var mail_view   # 【新增】邮件视图（府邸入口全屏页）
 var inn_view   # 【新增】客栈玩法视图（商铺地图客栈「▶」入口全屏页）
 var clinic_view   # 【新增】医馆玩法视图（商铺地图医馆「▶」入口全屏页）
+var drugshop_view   # 【新增】药铺玩法视图（商铺地图药铺「▶」入口全屏页）
 
 func _ready():
 	
@@ -110,6 +111,7 @@ func _ready():
 	mail_view = MailView.new(self)   # 【新增】邮件视图
 	inn_view = InnView.new(self)   # 【新增】客栈玩法视图
 	clinic_view = ClinicView.new(self)   # 【新增】医馆玩法视图
+	drugshop_view = DrugshopView.new(self)   # 【新增】药铺玩法视图
 	
 	# 正常退出时存档
 	tree_exiting.connect(on_exit)
@@ -410,6 +412,7 @@ func switch_page(page_id: String):
 		hide_mail_view()
 		hide_inn_view()   # 【新增】客栈玩法页
 		hide_clinic_view()   # 【新增】医馆玩法页
+		hide_drugshop_view()   # 【新增】药铺玩法页
 		update_adventure_page()
 		
 	
@@ -496,6 +499,9 @@ func on_auto_earn():
 	# 【促织培育】每秒检查罐倒计时
 	if data.cuzhi_jars.size() > 0:
 		data.cuzhi_system.tick_jars()
+	# 【新增】药铺计算队列后台节拍：每秒推一次（时间盒2ms）；页面关闭也持续结算，
+	# 队列进存档、离线暂停，上线后由本节拍续算（体力恢复与收益结算解耦）
+	data.drugshop_system.background_tick(2)
 	
 	if _autosave_sec >= AUTOSAVE_INTERVAL:
 		_autosave_sec = 0
@@ -2024,6 +2030,13 @@ func show_clinic_view():
 
 func hide_clinic_view():
 	return clinic_view.hide_clinic_view()
+
+# ==================== 【转发】药铺玩法视图 → pages/drugshop_view.gd ====================
+func show_drugshop_view():
+	return drugshop_view.show_drugshop_view()
+
+func hide_drugshop_view():
+	return drugshop_view.hide_drugshop_view()
 
 # 府邸【藏品】入口
 func on_collection():

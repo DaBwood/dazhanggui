@@ -122,7 +122,8 @@ func sync_skills(hero_id: String):
 	var star = get_star(hero_id)
 	if star <= 0 or not g.heroes.has(hero_id): return
 	var h = g.heroes[hero_id]
-	var max_lv = int(g._talent_configs.get("settings", {}).get("skill_max_level", 200))
+	# 【新增】药铺勋章精进上限：追加时按 基础上限+勋章加成 写入（升级判定/UI 显示读 sk.max_level 自动生效）
+	var max_lv = int(g._talent_configs.get("settings", {}).get("skill_max_level", 200)) + g.drugshop_system.get_refine_cap_bonus()
 	for s in range(1, star + 1):
 		var scfg = get_star_cfg(s)
 		var sname: String = scfg.get("skill_name", "")
@@ -139,6 +140,22 @@ func sync_skills(hero_id: String):
 				"max_level": max_lv,
 				"aptitude_per_level": int(scfg.get("skill_aptitude_per_level", 1))
 			})
+
+# 【新增】药铺勋章升级时调用：把天赋解锁技能的等级上限按差值整体提高（写入式，只加不减）
+# 按技能名匹配（其他系统追加的同名词条不受影响——命中即天赋解锁技能）
+func apply_skill_cap_delta(delta: int):
+	if delta <= 0:
+		return
+	# 收集天赋解锁技能名集合（1~7星配置）
+	var names := {}
+	for s in range(1, get_max_star() + 1):
+		var sname: String = get_star_cfg(s).get("skill_name", "")
+		if sname != "":
+			names[sname] = true
+	for hero_id in g.heroes.keys():
+		for sk in g.heroes[hero_id].aptitude_skills:
+			if names.has(sk.name):
+				sk.max_level = int(sk.max_level) + delta
 
 # ============ 星级文本（门客面板标题用） ============
 # 0星返回空串；>0 返回 ★×N（例：三星="★★★"）

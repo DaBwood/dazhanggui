@@ -67,7 +67,8 @@ func get_shop_auto_income(shop_id: String) -> int:
 	#基础赚速
 	var base = int(s.auto_base * pow(s.income_mult, s.level - 1))
 	# 店员赚速（【新增】叠加宅院商铺卷一：每个店员赚速 +0.1×卷一等级）
-	var staff_income = float(s.staff_income) + g.get_courtyard_shop_staff_income_bonus(shop_id)
+	# 【新增】叠加药铺工艺：伙计赚速固定值加成（洗药/晒药全体 +0.1×等级，职业工艺对应类目 +0.5×等级）
+	var staff_income = float(s.staff_income) + g.get_courtyard_shop_staff_income_bonus(shop_id) + g.drugshop_system.get_craft_staff_bonus(str(s.get("category", "")))
 	var staff = s.staff * staff_income
 	
 	# 门客派遣加成

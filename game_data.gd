@@ -602,6 +602,9 @@ var _side_skill_configs: Dictionary = {}   # 【新增】副业技能配置（si
 var clinic_system   # 【新增】医馆玩法系统（逻辑在 systems/clinic_system.gd，状态内部持有随 get_save_data 落盘）
 @warning_ignore("unused_private_class_variable")
 var _clinic_configs: Dictionary = {}   # 【新增】医馆配置（clinic.json，由 _load_all_configs 加载）
+var drugshop_system   # 【新增】药铺玩法系统（逻辑在 systems/drugshop_system.gd，状态内部持有随 get_save_data 落盘）
+@warning_ignore("unused_private_class_variable")
+var _drugshop_configs: Dictionary = {}   # 【新增】药铺配置（drugshop.json，由 _load_all_configs 加载）
 
 # ==================== 初始化 ====================
 # 初始化：创建各子系统（纯逻辑模块，持有本中枢引用），再加载全部配置
@@ -637,6 +640,7 @@ func _init():
 	inn_system = InnSystem.new(self)   # 【新增】客栈玩法系统
 	side_skill_system = SideSkillSystem.new(self)   # 【新增】副业技能系统
 	clinic_system = ClinicSystem.new(self)   # 【新增】医馆玩法系统
+	drugshop_system = DrugshopSystem.new(self)   # 【新增】药铺玩法系统
 	
 	_load_all_configs()
 
@@ -677,6 +681,7 @@ func _load_all_configs():
 	_inn_configs = _load_json("res://data/inn.json")   # 【新增】客栈配置
 	_side_skill_configs = _load_json("res://data/side_skill.json")   # 【新增】副业技能配置
 	_clinic_configs = _load_json("res://data/clinic.json")   # 【新增】医馆配置
+	_drugshop_configs = _load_json("res://data/drugshop.json")   # 【新增】药铺配置
 	
 	_load_items_config()   # 【重构新增】道具表
 	_load_travel_config()  # 【重构新增】游历配置
@@ -885,8 +890,10 @@ func load_game():
 	var systems = [hero_system, friend_system, apprentice_system, beast_system, shop_system,
 		stage_system, item_system, travel_system, charity_system, lottery_system, mall_system,
 		manor_system,courtyard_system,war_system,goal_system,fishing_system,soul_system,
-		soulpower_system,cuzhi_system,guardian_system,token_system,fengzi_system,talent_system,
+		soulpower_system,cuzhi_system,guardian_system,token_system,fengzi_system,drugshop_system,talent_system,
 		collection_system,guild_system,mail_system,bank_system,inn_system,side_skill_system,clinic_system,]
+	# 【注】load 数组内 drugshop_system 排在 talent_system 之前：talent 读档 sync_skills
+	# 要读药铺勋章精进上限，须先让药铺状态完成认领（save 数组顺序无要求，一并同序）
 	for sys in systems:
 		sys.load_save_data(data)
 
