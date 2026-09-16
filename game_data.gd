@@ -170,6 +170,7 @@ const SPECIAL_PACKS = [
 	{"name": "门客盒子",   "desc": "打开后可从所有门客中选择一个获得",     "cost": 1, "items": {"hero_box": 1}},
 	{"name": "挚友盒子",   "desc": "打开后可从所有挚友中选择一个获得",     "cost": 1, "items": {"friend_box": 1}},
 	{"name": "物品盒子",   "desc": "打开后可选择任意道具获得（支持批量）",  "cost": 1, "items": {"item_box": 10000}},
+	{"name": "服装盒子",   "desc": "打开后从所有服装中选择一件获得（测试服装/光环用）",  "cost": 1, "items": {"cos_box": 1}},
 	{"name": "蛮荒礼盒",   "desc": "打开后自选一种蛮荒兑换道具×100",   "cost": 1, "items": {"manhuang_box": 1}},   # 【改】九渊之水礼包改蛮荒礼盒（九渊之水本身保留给相柳兑换）
 	{"name": "无双促织盒子", "desc": "打开后自选一只无双及以上促织",     "cost": 648, "items": {"wushuang_cuzhi_box": 1}},
 ]

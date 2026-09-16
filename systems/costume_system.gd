@@ -131,19 +131,44 @@ func upgrade_hero_cos_extra(hero_id: String, cos_id: String) -> Dictionary:
 	st["extra"] = int(st.get("extra", 0)) + bonus
 	return {"ok": true, "msg": "【%s】额外等级+%d" % [_get_hero_cos_cfg(hero_id, cos_id).get("name", cos_id), bonus]}
 
-# ============ 服装技能升级（资质丹，仅升基础等级，上限200） ============
+# 【服装盒子】加库存（不自动解锁；解锁走 unlock_hero_cos 消耗1库存）。与 exchange 落库逻辑一致
+func gain_hero_cos_stock(hero_id: String, cos_id: String, n: int = 1) -> Dictionary:
+	if not g.heroes.has(hero_id): return {"ok": false, "msg": "门客不存在"}
+	var cos_cfg = _get_hero_cos_cfg(hero_id, cos_id)
+	if cos_cfg.is_empty(): return {"ok": false, "msg": "服装不存在"}
+	# 与 exchange_hero_costume 落库一致：状态存在 g.heroes[hero_id]["costumes"][cos_id]
+	if not g.heroes[hero_id].has("costumes"):
+		g.heroes[hero_id]["costumes"] = {}
+	var cos_dict = g.heroes[hero_id]["costumes"]
+	if not cos_dict.has(cos_id):
+		cos_dict[cos_id] = {}
+	var st = cos_dict[cos_id]
+	st["stock"] = int(st.get("stock", 0)) + n
+	return {"ok": true, "stock": st["stock"]}
+
+# 【服装盒子】全服服装清单（含所属门客，供盒子选择弹窗用）
+func get_all_cos_entries() -> Array:
+	var out: Array = []
+	for hero_id in _cfgs().get("hero_costumes", {}):
+		var hero_name: String = g.heroes.get(hero_id, {}).get("name", hero_id)
+		for cfg in _cfgs()["hero_costumes"][hero_id]:
+			out.append({"hero_id": hero_id, "hero_name": hero_name,
+				"cos_id": cfg.get("id", ""), "name": cfg.get("name", ""), "quality": cfg.get("quality", "")})
+	return out
+
+# ============ 服装技能升级（资质丹，升基础等级，上限=200+额外等级【第35节·模型B】） ============
 #  【改】升下一级所需资质丹：固定消耗=该品质每级资质增量（素装2/华服2/锦衣3），不再随等级增长
 func get_cos_skill_cost(quality: String = "素装") -> int:
 	return int(_settings().get("apt_per_level", {}).get(quality, 2))
 
-# 升级服装技能；mode: single=1级 / bulk=升级10次（资源/上限不够升剩余）
-# 【第35节·模型B】资质丹等级上限 = 200 + 额外等级（重复兑换提升上限，base/extra 存档结构不变零迁移）
+# 升级服装技能（base 部分）；mode: single=1级 / bulk=升级10次（资源/上限不够升剩余）
+# 【第35节·改】base 上限固定200（模型B作废：extra 分离到服装页纯展示，不再扩展上限）
 # use_baiye=true 时从百业经验个人池抵扣（每级=300×每级丹数）
 # 返回 {ok, levels, msg}
 func upgrade_cos_skill(hero_id: String, cos_id: String, mode: String = "single", use_baiye: bool = false) -> Dictionary:
 	var st = get_hero_cos_state(hero_id, cos_id)
 	if not st.has("base"): return {"ok": false, "msg": "服装未解锁"}
-	var max_lv = int(_settings().get("skill_max_level", 200)) + int(st.get("extra", 0))
+	var max_lv = int(_settings().get("skill_max_level", 200))
 	var base = int(st.get("base", 1))
 	if base >= max_lv: return {"ok": false, "msg": "已满级"}
 	# 品质决定固定消耗（素装2/华服2/锦衣3），每级相同，提出循环只算一次

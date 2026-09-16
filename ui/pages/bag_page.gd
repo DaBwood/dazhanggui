@@ -16,7 +16,7 @@ var _pending_ginseng_type: String = ""
 # 【新增】2026-09-16 百业札记待使用数量（选中门客后结算）
 var _pending_baiye_count: int = 0
 #【新增】固定为1的道具类型：数量锁定单次开启（门客/挚友盒解锁对象唯一；促织架按ID唯一存放）
-const SINGLE_USE_TYPES: Array = ["hero_box", "friend_box", "wushuang_cuzhi_box"]
+const SINGLE_USE_TYPES: Array = ["hero_box", "friend_box", "wushuang_cuzhi_box", "cos_box"]
 
 # 【新增】背包底部栏当前页（2026-09-10 商会第二批）：item=物品 compose=合成
 var _bag_tab: String = "item"
@@ -236,6 +236,10 @@ func _on_detail_use(item_id: String, qty: int, popup: Control):
 		"item_box":
 			popup.queue_free()
 			_show_item_box_selector(qty)
+		"cos_box":
+			# 【新增】服装盒子：先关详情弹窗再开选择器（与 hero_box 等先例一致）
+			popup.queue_free()
+			_show_cos_box_selector()
 		"manhuang_box":
 			popup.queue_free()
 			_show_manhuang_box_selector(qty)
@@ -572,6 +576,11 @@ func _show_item_box_selector(p_qty: int):
 	qty_lbl.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	vbox.add_child(qty_lbl)
 
+	# 【新增】按名字搜索（道具多，防眼花缭乱）
+	var search = LineEdit.new()
+	search.placeholder_text = "输入道具名字搜索…"
+	vbox.add_child(search)
+
 	var scroll = ScrollContainer.new()
 	scroll.custom_minimum_size = Vector2(440, 360)
 	vbox.add_child(scroll)
@@ -579,8 +588,9 @@ func _show_item_box_selector(p_qty: int):
 	var list = VBoxContainer.new()
 	scroll.add_child(list)
 
-	# 排除盒子类道具，防止递归
-	var exclude_ids = ["hero_box", "friend_box", "item_box"]
+	# 只排除物品盒子自身（防止递归）；服装/门客等盒子只能开出对应类别，无递归风险
+	var exclude_ids = ["item_box"]
+	var entries: Array = []
 	for item_id in data.ITEM_CONFIG.keys():
 		if item_id in exclude_ids: continue
 
@@ -590,6 +600,8 @@ func _show_item_box_selector(p_qty: int):
 		btn.mouse_filter = Control.MOUSE_FILTER_PASS
 		btn.pressed.connect(_on_item_box_selected.bind(item_id, p_qty))
 		list.add_child(btn)
+		entries.append({"btn": btn, "text": btn.text})
+	search.text_changed.connect(func(t): _filter_named_buttons(entries, t))
 
 	var cancel = Button.new()
 	cancel.text = "取消"
@@ -608,6 +620,58 @@ func _on_item_box_selected(item_id: String, count: int):
 	var cfg = data.ITEM_CONFIG.get(item_id, {})
 	c._safe_close("ItemBoxSelector")
 	c._show_stage_hint("使用%d个物品盒子，获得【%s】×%d" % [count, cfg.get("name", item_id), count])
+	c.update_all_ui()
+	update_bag_list()
+
+# 【新增】搜索过滤：按名字筛选弹窗按钮（物品盒子/服装盒子通用）
+func _filter_named_buttons(entries: Array, text: String) -> void:
+	var q := text.strip_edges().to_lower()
+	for e in entries:
+		e["btn"].visible = (q == "" or String(e["text"]).to_lower().contains(q))
+
+# 【新增】服装盒子选择弹窗：从所有服装中选一件（加库存不自动解锁，到所属门客服装页解锁）
+func _show_cos_box_selector():
+	if c.has_node("CosBoxSelector"): return
+	if data.items.get("cos_box", 0) < 1: return
+	var panel = c._create_base_popup("服装盒子（选1件）", Vector2(460, 520), Vector2(346, 100))
+	panel.name = "CosBoxSelector"
+	var vbox = panel.get_child(0)
+	# 【新增】按名字搜索（支持搜服装名或门客名）
+	var search = LineEdit.new()
+	search.placeholder_text = "输入服装或门客名字搜索…"
+	vbox.add_child(search)
+	var scroll = ScrollContainer.new()
+	scroll.custom_minimum_size = Vector2(440, 400)
+	vbox.add_child(scroll)
+	var list = VBoxContainer.new()
+	scroll.add_child(list)
+	var entries: Array = []
+	for e in data.costume_system.get_all_cos_entries():
+		var btn = Button.new()
+		btn.text = "【%s】%s（%s）" % [e["quality"], e["name"], e["hero_name"]]
+		btn.mouse_filter = Control.MOUSE_FILTER_PASS
+		btn.pressed.connect(_on_cos_box_selected.bind(e))
+		list.add_child(btn)
+		entries.append({"btn": btn, "text": btn.text})
+	search.text_changed.connect(func(t): _filter_named_buttons(entries, t))
+	var cancel = Button.new()
+	cancel.text = "取消"
+	cancel.pressed.connect(func(): c._safe_close("CosBoxSelector"))
+	vbox.add_child(cancel)
+	c.add_child(panel)
+
+# 【新增】服装盒子回调：扣1盒，给该服装所属门客加1库存
+func _on_cos_box_selected(e: Dictionary):
+	if data.items.get("cos_box", 0) < 1:
+		c._safe_close("CosBoxSelector")
+		return
+	data.items.cos_box = int(data.items.get("cos_box", 0)) - 1
+	var res = data.costume_system.gain_hero_cos_stock(e["hero_id"], e["cos_id"], 1)
+	c._safe_close("CosBoxSelector")
+	if res.get("ok", false):
+		c._show_stage_hint("【%s】%s 库存+1（共%d，请到%s服装页解锁）" % [e["quality"], e["name"], res["stock"], e["hero_name"]])
+	else:
+		c._show_stage_hint(res.get("msg", "获取失败"))
 	c.update_all_ui()
 	update_bag_list()
 

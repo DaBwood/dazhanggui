@@ -77,8 +77,11 @@ func _fill_hero_costume_list(list: VBoxContainer, hero_id: String):
 		var stock = int(st.get("stock", 0))
 		
 		if is_unlocked:
-			# 已解锁：显示服装技能总等级（基础+额外）
-			lbl.text = "【%s】%s Lv.%d" % [quality, cfg.get("name", cos_id), data.costume_system.get_cos_skill_level(hero_id, cos_id)]
+			# 【改】已解锁：只显示 extra——几级、提供多少资质、下次升级加几级（无上限）
+			var extra = int(st.get("extra", 0))
+			var per = int(data.costume_system._settings().get("apt_per_level", {}).get(quality, 2))
+			var dup_bonus = int(data.costume_system._settings().get("dup_bonus", 15))
+			lbl.text = "【%s】%s｜解锁%d级，提供资质+%d，升级服装+%d级" % [quality, cfg.get("name", cos_id), extra, extra * per, dup_bonus]
 			lbl.add_theme_color_override("font_color", _quality_color(quality))
 			row.add_child(lbl)
 			# 已解锁且有库存：显示"升级"按钮（消耗1库存，加额外等级）

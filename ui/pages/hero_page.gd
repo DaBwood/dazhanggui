@@ -1103,10 +1103,11 @@ func _render_skill_detail(list: VBoxContainer, item: Dictionary) -> void:
 	info.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
 	row.add_child(info)
 	var is_max: bool = bool(item["is_max"])
-	# 已满级：右侧什么都不显示（按钮/勾选框全藏），只盖红章（见底部）
-	if not is_max:
+	# 已满级、或纯展示条目（no_action）：右侧什么都不显示，只盖红章（见底部）
+	if not is_max and not item.get("no_action", false):
 		var right := VBoxContainer.new()
 		right.add_theme_constant_override("separation", 4)
+		right.size_flags_vertical = Control.SIZE_SHRINK_CENTER   # 【改】右侧整体垂直居中（道具文本+按钮不再偏上）
 		row.add_child(right)
 		# 勾选框：吃资质丹的技能=资质丹/百业经验互斥对（格式：货币名(消耗/库存)）
 		# 单一货币技能不做勾选框，直接纯文本，避免灰框看起来像没选中
@@ -1297,7 +1298,8 @@ func _fill_placeholder_tab(list):
 	lbl.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	list.add_child(lbl)
 
-# 【第35节·模型B】填充「服装」页：资质丹等级上限=200+额外等级，总等级=base+extra，资质=总等级×每级资质
+# 【第35节·改】填充「服装」页签：base 部分（解锁服装附带的门客技能，固定200级，资质丹/百业经验升级）
+# extra 部分（重复兑换提升）在服装按钮弹窗里展示
 func _fill_costume_tab(list):
 	var cs = data.costume_system
 	var items: Array = []
@@ -1306,17 +1308,14 @@ func _fill_costume_tab(list):
 		if not cs.is_hero_cos_unlocked(current_hero_id, cos_id): continue
 		var st = cs.get_hero_cos_state(current_hero_id, cos_id)
 		var base = int(st.get("base", 1))
-		var extra = int(st.get("extra", 0))
-		var max_lv = int(cs._settings().get("skill_max_level", 200)) + extra   # 【模型B】上限随额外等级扩展
+		var max_lv = int(cs._settings().get("skill_max_level", 200))
 		var per = int(cs._settings().get("apt_per_level", {}).get(cfg.get("quality", "素装"), 2))
-		var total = base + extra
 		var is_max: bool = base >= max_lv
-		var info: String = "【%s】%s  Lv.%d/%d\n资质+%d" % [cfg.get("quality", ""), cfg.get("name", cos_id), base, max_lv, total * per]
+		var info: String = "【%s】%s  Lv.%d/%d\n资质+%d" % [cfg.get("quality", ""), cfg.get("name", cos_id), base, max_lv, base * per]
 		if is_max:
 			info += "（已满级）"
 		else:
-			info += "（下级+%d）" % [(total + 1) * per]
-		info += "\n额外等级+%d（重复兑换服装提升上限）" % extra
+			info += "（下级+%d）" % [(base + 1) * per]
 		items.append({"name": cfg.get("name", cos_id), "stars": per, "is_max": is_max, "info": info,
 			"pill": per, "on_single": _on_cos_skill_upgrade.bind(cos_id, "single"), "on_bulk": _on_cos_skill_upgrade.bind(cos_id, "bulk")})
 	if items.is_empty():
