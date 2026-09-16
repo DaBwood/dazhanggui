@@ -528,46 +528,295 @@ func _show_play_popup():
 	c.add_child(panel)
 
 func _refresh_skill_popup():
-	# 【修复】与挂载点一致：弹窗在控制器根节点下，原路径找不到导致升级后弹窗不刷新
+	# 【重构】内容区按页签状态整体重建（旧版三块写死区块 + 400 按钮显隐切换）
 	var popup = c.get_node_or_null("SkillPopup")
 	if not popup: return
 	var fid = current_friend_id
 	if fid == "" or not data.friends.has(fid): return
+
+	# 页签选中高亮（禁用当前项）
+	for t in ["shop", "hero"]:
+		var btn = popup.find_child("SkillTab_%s" % t, true, false)
+		if btn:
+			btn.disabled = (t == _skill_tab)
+
+	var body = popup.find_child("SkillBody", true, false)
+	if not body: return
+	for child in body.get_children():
+		child.queue_free()
+	if _skill_tab == "shop":
+		_build_shop_tab(body, fid)
+	else:
+		_build_hero_tab(body, fid)
+
+# 商铺页签：挚友名 + 五职业加成总览（Σ已解锁店铺技能） + 店铺技能网格
+func _build_shop_tab(body: VBoxContainer, fid: String):
 	var f = data.friends[fid]
 
-	var fixed_effect = popup.find_child("FixedEffect", true, false)
-	if fixed_effect:
-		var bonus = f.fixed_skill_level * (100 + 10 * (f.fixed_skill_level - 1))
-		fixed_effect.text = "缘分门客赚钱+%s" % c.format_number(bonus)
-	var fixed_btn = popup.find_child("FixedUpgradeBtn", true, false)
-	if fixed_btn:
-		var cost = (f.fixed_skill_level + 1) * 100
-		fixed_btn.text = "升级（%d/%s）" % [cost, c.format_number(f.bond)]
+	var name_lbl = Label.new()
+	name_lbl.text = f.name
+	name_lbl.add_theme_font_size_override("font_size", 18)
+	name_lbl.add_theme_color_override("font_color", Color("#ffd700"))
+	name_lbl.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	body.add_child(name_lbl)
 
-	var percent_effect = popup.find_child("PercentEffect", true, false)
-	if percent_effect:
-		percent_effect.text = "缘分门客赚钱+%d%%" % (f.percent_skill_level * 5)
-	var percent_btn = popup.find_child("PercentUpgradeBtn", true, false)
-	if percent_btn:
-		var cost = (f.percent_skill_level + 1) * 100
-		percent_btn.text = "升级（%d/%s）" % [cost, c.format_number(f.bond)]
-
+	# 五职业加成总览：Σ所有已解锁槽位中该职业技能的 bonus
+	var totals := {"士": 0.0, "农": 0.0, "工": 0.0, "商": 0.0, "侠": 0.0}
 	var max_slots = min(400, int(f.friendly / 500))
+	for i in range(min(max_slots, f.shop_skills.size())):
+		totals[f.shop_skills[i].category] += f.shop_skills[i].bonus
+	var overview = HBoxContainer.new()
+	overview.alignment = BoxContainer.ALIGNMENT_CENTER
+	overview.add_theme_constant_override("separation", 14)
+	body.add_child(overview)
+	for cat in ["士", "农", "工", "商", "侠"]:
+		var item = HBoxContainer.new()
+		item.add_theme_constant_override("separation", 4)
+		var dot = ColorRect.new()
+		dot.custom_minimum_size = Vector2(14, 14)
+		dot.color = _get_category_color(cat)
+		item.add_child(dot)
+		var lbl = Label.new()
+		lbl.text = "%s +%.0f%%" % [cat, totals[cat] * 100]
+		item.add_child(lbl)
+		overview.add_child(item)
+
+	var shop_title = Label.new()
+	shop_title.text = "【店铺技能】"
+	shop_title.add_theme_font_size_override("font_size", 18)
+	shop_title.add_theme_color_override("font_color", Color("#ffd700"))
+	shop_title.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	body.add_child(shop_title)
+
+	var shop_scroll = ScrollContainer.new()
+	shop_scroll.custom_minimum_size = Vector2(0, 320)
+	shop_scroll.size_flags_vertical = Control.SIZE_EXPAND_FILL
+	body.add_child(shop_scroll)
+	var shop_grid = GridContainer.new()
+	shop_grid.columns = 5
+	shop_grid.add_theme_constant_override("h_separation", 8)
+	shop_grid.add_theme_constant_override("v_separation", 6)
+	shop_grid.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	shop_scroll.add_child(shop_grid)
 	for i in range(400):
-		var btn = popup.find_child("PopupShopSkill_%d" % i, true, false)
-		if not btn: continue
+		var btn = Button.new()
+		btn.custom_minimum_size = Vector2(0, 32)
+		btn.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+		# 【修】手机端：按钮默认 STOP 拦截触摸滚动，改 PASS 让滑动穿透到 ScrollContainer
+		btn.mouse_filter = Control.MOUSE_FILTER_PASS
 		if i < max_slots and i < f.shop_skills.size():
-			btn.visible = true
 			var skill = f.shop_skills[i]
-			var btxt = "+%.0f%%" % (skill.bonus * 100)
-			if skill.bonus >= 0.299:
-				btxt += "[满]"
-				btn.disabled = true
-			else:
-				btn.disabled = false
-			btn.text = "%s %s" % [skill.category, btxt]
+			btn.text = "%s +%.0f%%" % [skill.category, skill.bonus * 100]
+			btn.disabled = skill.bonus >= 0.299
+			btn.pressed.connect(_on_shop_skill_clicked.bind(i))
 		else:
 			btn.visible = false
+		shop_grid.add_child(btn)
+
+# 门客页签：缘分门客横排 + 内容区 + 底部四子页签
+func _build_hero_tab(body: VBoxContainer, fid: String):
+	var f = data.friends[fid]
+
+	# 缘分门客横排：头像 + 名字 + 该挚友给它的赚钱加成（固定 + 门客基础赚速×%）
+	var bound: Array = f.get("bound_heroes", [])
+	var hero_row = HBoxContainer.new()
+	hero_row.alignment = BoxContainer.ALIGNMENT_CENTER
+	hero_row.add_theme_constant_override("separation", 10)
+	body.add_child(hero_row)
+	if bound.is_empty():
+		var none_lbl = Label.new()
+		none_lbl.text = "暂无缘分门客"
+		hero_row.add_child(none_lbl)
+	for hid in bound:
+		if not data._hero_configs.has(hid): continue
+		var hd = HeroData.new(hid)
+		var pct = data.friend_system.get_friend_percent_bonus(fid)
+		var contribution = data.friend_system.get_friend_fixed_bonus(fid) + int(hd.get_base_income() * pct)
+		var item = VBoxContainer.new()
+		item.add_theme_constant_override("separation", 2)
+		var portrait = TextureRect.new()
+		portrait.custom_minimum_size = Vector2(44, 44)
+		portrait.expand_mode = TextureRect.EXPAND_IGNORE_SIZE
+		portrait.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_COVERED
+		var path = "res://assets/portraits/heroes/%s.png" % hid
+		if ResourceLoader.exists(path):
+			portrait.texture = load(path)
+		item.add_child(portrait)
+		var hlbl = Label.new()
+		hlbl.text = data._hero_configs[hid].name
+		hlbl.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+		item.add_child(hlbl)
+		var vlbl = Label.new()
+		vlbl.text = "赚钱+%s" % c.format_number(contribution)
+		vlbl.add_theme_font_size_override("font_size", 12)
+		vlbl.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+		item.add_child(vlbl)
+		hero_row.add_child(item)
+
+	# 内容区（随子页签切换）
+	var content = VBoxContainer.new()
+	content.name = "HeroSubContent"
+	content.size_flags_vertical = Control.SIZE_EXPAND_FILL
+	content.add_theme_constant_override("separation", 6)
+	body.add_child(content)
+	match _hero_sub_tab:
+		"menke":
+			_build_menke_skills(content, fid)
+		"caiyi":
+			_build_caiyi_skills(content, fid)
+		_:
+			# 芳华技能（妙音坊）/ 无双技能：后续版本开放
+			var hint = Label.new()
+			hint.text = "后续版本开放"
+			hint.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+			content.add_child(hint)
+
+	# 底部四子页签（选中项禁用=高亮）
+	var sub_row = HBoxContainer.new()
+	sub_row.alignment = BoxContainer.ALIGNMENT_CENTER
+	sub_row.add_theme_constant_override("separation", 8)
+	body.add_child(sub_row)
+	for t in [["menke", "门客技能"], ["caiyi", "才艺技能"], ["fanghua", "芳华技能"], ["wushuang", "无双技能"]]:
+		var btn = Button.new()
+		btn.name = "HeroSubTab_%s" % t[0]
+		btn.text = t[1]
+		btn.custom_minimum_size = Vector2(105, 34)
+		btn.disabled = (t[0] == _hero_sub_tab)
+		btn.pressed.connect(_on_hero_sub_tab_changed.bind(t[0]))
+		sub_row.add_child(btn)
+
+# 通用技能行（图三版式）：左圆形图标 | 中（名字等级/当前效果/下级效果） | 右（拥有/消耗 + 升级按钮 + 十连勾选）
+func _build_skill_row(parent: Control, icon_char: String, icon_color: Color, title: String,
+		effect_now: String, effect_next: String, have_text: String, cost_text: String,
+		btn_name: String, check_name: String, upgrade_callable: Callable, can_upgrade: bool) -> Button:
+	var row = HBoxContainer.new()
+	row.add_theme_constant_override("separation", 8)
+	parent.add_child(row)
+
+	var icon = Panel.new()
+	icon.custom_minimum_size = Vector2(44, 44)
+	var istyle = StyleBoxFlat.new()
+	istyle.bg_color = icon_color
+	istyle.set_corner_radius_all(22)
+	icon.add_theme_stylebox_override("panel", istyle)
+	var ichar = Label.new()
+	ichar.text = icon_char
+	ichar.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	ichar.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
+	ichar.set_anchors_preset(Control.PRESET_FULL_RECT)
+	icon.add_child(ichar)
+	row.add_child(icon)
+
+	var mid = VBoxContainer.new()
+	mid.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	mid.add_theme_constant_override("separation", 2)
+	row.add_child(mid)
+	var t = Label.new()
+	t.text = title
+	t.add_theme_color_override("font_color", Color("#ffd700"))
+	mid.add_child(t)
+	var e1 = Label.new()
+	e1.text = effect_now
+	mid.add_child(e1)
+	var e2 = Label.new()
+	e2.text = effect_next
+	e2.add_theme_font_size_override("font_size", 12)
+	mid.add_child(e2)
+
+	var right = VBoxContainer.new()
+	right.add_theme_constant_override("separation", 2)
+	row.add_child(right)
+	var cost_lbl = Label.new()
+	cost_lbl.text = "%s / %s" % [have_text, cost_text]
+	right.add_child(cost_lbl)
+	var up_row = HBoxContainer.new()
+	up_row.alignment = BoxContainer.ALIGNMENT_END
+	up_row.add_theme_constant_override("separation", 4)
+	right.add_child(up_row)
+	var btn = Button.new()
+	btn.name = btn_name
+	btn.text = "升级"
+	btn.custom_minimum_size = Vector2(90, 34)
+	btn.disabled = not can_upgrade
+	btn.pressed.connect(upgrade_callable)
+	up_row.add_child(btn)
+	var check = CheckBox.new()
+	check.name = check_name
+	check.text = "十连"
+	up_row.add_child(check)
+	return btn
+
+# 门客技能子页签：天生丽质 + 花开富贵（消耗缘分，升级逻辑不变）
+func _build_menke_skills(content: VBoxContainer, fid: String):
+	var f = data.friends[fid]
+	# 天生丽质
+	var lv = f.fixed_skill_level
+	var bonus = lv * (100 + 10 * (lv - 1))
+	var next_bonus = (lv + 1) * (100 + 10 * lv)
+	_build_skill_row(content, "丽", Color("#e060a0"), "天生丽质%d级" % lv,
+		"缘分门客赚钱+%s" % c.format_number(bonus),
+		"（下级+%s）" % c.format_number(next_bonus),
+		c.format_number(f.bond), str((lv + 1) * 100),
+		"FixedUpgradeBtn", "FixedBatchCheck",
+		_on_skill_upgrade_in_popup.bind(true), f.bond >= (lv + 1) * 100)
+	# 花开富贵
+	var plv = f.percent_skill_level
+	_build_skill_row(content, "贵", Color("#d04040"), "花开富贵%d级" % plv,
+		"缘分门客赚钱+%d%%" % (plv * 5),
+		"（下级+%d%%）" % ((plv + 1) * 5),
+		c.format_number(f.bond), str((plv + 1) * 100),
+		"PercentUpgradeBtn", "PercentBatchCheck",
+		_on_skill_upgrade_in_popup.bind(false), f.bond >= (plv + 1) * 100)
+
+# 才艺技能子页签：多才多艺（固定赚钱） + 超群绝伦（资质），消耗酒肆才艺经验
+func _build_caiyi_skills(content: VBoxContainer, fid: String):
+	var fs = data.friend_system
+	var pool = data.tavern_system.get_caiyi(fid)
+	# 多才多艺：每级缘分门客固定赚钱 +5000，单次消耗 100+5×当前等级 才艺经验
+	var lv = fs.get_caiyi_skill_level(fid, "duocai")
+	var gain = int(fs.CAIYI_SKILLS["duocai"]["value_per_level"])
+	var cost = fs.get_caiyi_skill_cost(fid, "duocai")
+	_build_skill_row(content, "艺", Color("#40a0e0"), "多才多艺%d级" % lv,
+		"缘分门客赚钱+%s" % c.format_number(lv * gain),
+		"（下级+%s）" % c.format_number((lv + 1) * gain),
+		c.format_number(pool), c.format_number(cost),
+		"DuoUpgradeBtn", "DuoBatchCheck",
+		_on_caiyi_skill_upgrade.bind("duocai"), pool >= cost)
+	# 超群绝伦：每级缘分门客资质 +1，单次消耗 5000+15×当前等级 才艺经验
+	var alv = fs.get_caiyi_skill_level(fid, "chaoqun")
+	var again = int(fs.CAIYI_SKILLS["chaoqun"]["value_per_level"])
+	var acost = fs.get_caiyi_skill_cost(fid, "chaoqun")
+	_build_skill_row(content, "绝", Color("#e0a030"), "超群绝伦%d级" % alv,
+		"缘分门客资质+%d" % (alv * again),
+		"（下级+%d）" % ((alv + 1) * again),
+		c.format_number(pool), c.format_number(acost),
+		"ChaoUpgradeBtn", "ChaoBatchCheck",
+		_on_caiyi_skill_upgrade.bind("chaoqun"), pool >= acost)
+
+# 【新增】才艺技能升级：十连勾选=最多连升10级，才艺经验不足则升剩余级数
+func _on_caiyi_skill_upgrade(skill_key: String):
+	var fid = current_friend_id
+	if fid == "" or not data.friends.has(fid): return
+	var check_name = "DuoBatchCheck" if skill_key == "duocai" else "ChaoBatchCheck"
+	var btn_name = "DuoUpgradeBtn" if skill_key == "duocai" else "ChaoUpgradeBtn"
+	var popup = c.get_node_or_null("SkillPopup")
+	var batch = false
+	if popup:
+		var check = popup.find_child(check_name, true, false)
+		if check != null:
+			batch = check.button_pressed
+
+	var upgraded = data.friend_system.upgrade_caiyi_skill(fid, skill_key, batch)
+	if upgraded > 0:
+		_refresh_skill_popup()
+		_update_friend_page_detail()
+		c.update_all_ui()
+	else:
+		c._show_stage_hint("才艺经验不足！")
+		if popup:
+			var btn = popup.find_child(btn_name, true, false)
+			if btn:
+				c.flash_red(btn.get_path())
 
 func _on_skill_upgrade_in_popup(is_fixed: bool):
 	var fid = current_friend_id  
@@ -812,6 +1061,7 @@ func _on_refresh_selected_skill():
 
 	if data.refresh_friend_shop_skill(current_friend_id, _selected_shop_skill_index, use_wish):
 		_update_friend_page_detail()
+		_refresh_skill_popup()
 		c.update_all_ui()
 		var f = data.friends[current_friend_id]
 		var skill = f.shop_skills[_selected_shop_skill_index]
