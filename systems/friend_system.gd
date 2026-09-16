@@ -178,11 +178,60 @@ func get_friend_hero_bonus(friend_id: String) -> int:
 	var percent = 1.0 + f.percent_skill_level * 0.05
 	return int(fixed_total * percent)
 
+# ========== 才艺技能（酒肆才艺经验的消费端） ==========
+# 多才多艺：每级缘分门客固定赚钱 +5000；单次消耗 = 100 + 5×当前等级 才艺经验（Lv.0→1 耗 100）
+# 超群绝伦：每级缘分门客资质 +1；      单次消耗 = 5000 + 15×当前等级 才艺经验（Lv.0→1 耗 5000）
+# 两技能等级均无上限、逐挚友独立；存档键 caiyi_skills（旧档缺省按 0 级处理，零迁移）
+const CAIYI_SKILLS := {
+	"duocai": {"name": "多才多艺", "effect": "income", "value_per_level": 5000, "cost_base": 100, "cost_per_level": 5},
+	"chaoqun": {"name": "超群绝伦", "effect": "aptitude", "value_per_level": 1, "cost_base": 5000, "cost_per_level": 15},
+}
+
+func get_caiyi_skill_level(friend_id: String, skill_key: String) -> int:
+	if not g.friends.has(friend_id): return 0
+	var f = g.friends[friend_id]
+	return int(f.get("caiyi_skills", {}).get(skill_key, 0))
+
+# level < 0 时取当前等级；返回从该级升到下一级的单次消耗
+func get_caiyi_skill_cost(friend_id: String, skill_key: String, level: int = -1) -> int:
+	if not CAIYI_SKILLS.has(skill_key): return 0
+	if level < 0: level = get_caiyi_skill_level(friend_id, skill_key)
+	var cfg = CAIYI_SKILLS[skill_key]
+	return int(cfg["cost_base"]) + int(cfg["cost_per_level"]) * level
+
+# 升级：batch=true 时最多连升 10 级，才艺经验不足则升剩余级数；返回实际升级级数
+func upgrade_caiyi_skill(friend_id: String, skill_key: String, batch: bool) -> int:
+	if not g.friends.has(friend_id) or not CAIYI_SKILLS.has(skill_key): return 0
+	var pool = g.tavern_system.get_caiyi(friend_id)
+	var lv = get_caiyi_skill_level(friend_id, skill_key)
+	var target = 10 if batch else 1
+	var upgraded = 0
+	for i in range(target):
+		var cost = get_caiyi_skill_cost(friend_id, skill_key, lv + upgraded)
+		if pool < cost: break
+		pool -= cost
+		upgraded += 1
+	if upgraded <= 0: return 0
+	var f = g.friends[friend_id]
+	var skills = f.get("caiyi_skills", {})
+	skills[skill_key] = lv + upgraded
+	f["caiyi_skills"] = skills
+	# 扣除酒肆才艺经验池实际消耗
+	g.tavern_system.spend_caiyi(friend_id, g.tavern_system.get_caiyi(friend_id) - pool)
+	return upgraded
+
+# 超群绝伦效果：缘分门客资质加成（由 HeroData.get_total_aptitude 按 bound_heroes 接入）
+func get_friend_aptitude_bonus(friend_id: String) -> int:
+	return get_caiyi_skill_level(friend_id, "chaoqun") * int(CAIYI_SKILLS["chaoqun"]["value_per_level"])
+
 # 挚友的固定加成（天生丽质 → 额外赚速）
 func get_friend_fixed_bonus(friend_id: String) -> int:
 	if not g.friends.has(friend_id): return 0
 	var f = g.friends[friend_id]
-	return f.fixed_skill_level * (100 + 10 * (f.fixed_skill_level - 1))
+	var total = f.fixed_skill_level * (100 + 10 * (f.fixed_skill_level - 1))
+	# 【新增】多才多艺（挚友才艺技能）：每级缘分门客固定赚钱 +5000
+	total += get_caiyi_skill_level(friend_id, "duocai") * int(CAIYI_SKILLS["duocai"]["value_per_level"])
+	return total
 
 # 挚友的百分比加成（花开富贵 → 百分比）
 func get_friend_percent_bonus(friend_id: String) -> float:

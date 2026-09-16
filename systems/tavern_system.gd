@@ -460,6 +460,12 @@ func apply_friend_unlock_bonus(fid: String):
 func get_caiyi(fid: String) -> int:
 	return int(caiyi.get(fid, 0))
 
+# 【新增】消耗才艺经验（挚友才艺技能升级用）；余额不足返回 false 不扣
+func spend_caiyi(fid: String, amount: int) -> bool:
+	if get_caiyi(fid) < amount: return false
+	caiyi[fid] = get_caiyi(fid) - amount
+	return true
+
 func get_caiyi_total() -> int:
 	var total := 0
 	for k in caiyi.keys():

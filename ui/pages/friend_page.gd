@@ -18,6 +18,9 @@ var data   # GameData 数据中枢引用
 
 var _selected_shop_skill_index: int = -1
 var current_friend_id: String = ""
+# 【新增】技能弹窗页签状态：_skill_tab=商铺/门客；_hero_sub_tab=门客页签下四级子页签
+var _skill_tab: String = "shop"
+var _hero_sub_tab: String = "menke"
 
 func _init(p_c):
 	c = p_c
@@ -379,7 +382,9 @@ func _load_friend_portrait(friend_id: String):
 	else:
 		bg.texture = null
 
-# ============ 技能弹窗（天生丽质 + 花开富贵 + 店铺技能） ============
+# ============ 技能弹窗（重构：商铺 / 门客 两页签） ============
+# 商铺页签：挚友名 + 五职业加成总览 + 店铺技能网格（点格子进详情刷新）
+# 门客页签：缘分门客横排 + 内容区 + 底部四子页签（门客技能/才艺技能/芳华/无双）
 func _show_skill_popup():
 	# 【修复】弹窗实际挂在控制器根节点（末尾 c.add_child），守卫必须查 c 根，
 	#  否则每点一次"仪容技能"就叠一个新弹窗（同时删掉不再使用的 parent 变量）
@@ -387,112 +392,43 @@ func _show_skill_popup():
 
 	var fid = current_friend_id
 	if fid == "" or not data.friends.has(fid): return
-	var f = data.friends[fid]
+	_skill_tab = "shop"   # 【新增】每次打开默认落在商铺页签
+	_hero_sub_tab = "menke"
 
 	var panel = c._create_base_popup("技能", Vector2(520, 600), Vector2(316, 24))
 	panel.name = "SkillPopup"
 	var vbox = panel.get_child(0)
 
-	# 天生丽质
-	var fixed_box = VBoxContainer.new()
-	fixed_box.name = "FixedBox"
-	fixed_box.add_theme_constant_override("separation", 4)
-	vbox.add_child(fixed_box)
-
-	var fixed_title = Label.new()
-	fixed_title.text = "【天生丽质】"
-	fixed_title.add_theme_font_size_override("font_size", 18)
-	fixed_title.add_theme_color_override("font_color", Color("#ffd700"))
-	fixed_box.add_child(fixed_title)
-
-	var fixed_effect = Label.new()
-	fixed_effect.name = "FixedEffect"
-	var fbonus = f.fixed_skill_level * (100 + 10 * (f.fixed_skill_level - 1))
-	fixed_effect.text = "缘分门客赚钱+%s" % c.format_number(fbonus)
-	fixed_box.add_child(fixed_effect)
-
-	var fixed_upgrade = HBoxContainer.new()
-	fixed_upgrade.name = "FixedUpgradeBox"
-	fixed_upgrade.add_theme_constant_override("separation", 8)
-	fixed_box.add_child(fixed_upgrade)
-
-	var fixed_btn = Button.new()
-	fixed_btn.name = "FixedUpgradeBtn"
-	var fcost = (f.fixed_skill_level + 1) * 100
-	fixed_btn.text = "升级（%d/%s）" % [fcost, c.format_number(f.bond)]
-	fixed_btn.pressed.connect(_on_skill_upgrade_in_popup.bind(true))
-	fixed_upgrade.add_child(fixed_btn)
-
-	var fixed_check = CheckBox.new()
-	fixed_check.name = "FixedBatchCheck"
-	fixed_check.text = "十连"
-	fixed_upgrade.add_child(fixed_check)
-
-	# 花开富贵
-	var percent_box = VBoxContainer.new()
-	percent_box.name = "PercentBox"
-	percent_box.add_theme_constant_override("separation", 4)
-	vbox.add_child(percent_box)
-
-	var percent_title = Label.new()
-	percent_title.text = "【花开富贵】"
-	percent_title.add_theme_font_size_override("font_size", 18)
-	percent_title.add_theme_color_override("font_color", Color("#ffd700"))
-	percent_box.add_child(percent_title)
-
-	var percent_effect = Label.new()
-	percent_effect.name = "PercentEffect"
-	percent_effect.text = "缘分门客赚钱+%d%%" % (f.percent_skill_level * 5)
-	percent_box.add_child(percent_effect)
-
-	var percent_upgrade = HBoxContainer.new()
-	percent_upgrade.name = "PercentUpgradeBox"
-	percent_upgrade.add_theme_constant_override("separation", 8)
-	percent_box.add_child(percent_upgrade)
-
-	var percent_btn = Button.new()
-	percent_btn.name = "PercentUpgradeBtn"
-	var pcost = (f.percent_skill_level + 1) * 100
-	percent_btn.text = "升级（%d/%s）" % [pcost, c.format_number(f.bond)]
-	percent_btn.pressed.connect(_on_skill_upgrade_in_popup.bind(false))
-	percent_upgrade.add_child(percent_btn)
-
-	var percent_check = CheckBox.new()
-	percent_check.name = "PercentBatchCheck"
-	percent_check.text = "十连"
-	percent_upgrade.add_child(percent_check)
-
-	# 店铺技能
-	var shop_title = Label.new()
-	shop_title.text = "【店铺技能】"
-	shop_title.add_theme_font_size_override("font_size", 18)
-	shop_title.add_theme_color_override("font_color", Color("#ffd700"))
-	shop_title.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
-	vbox.add_child(shop_title)
-
-	var shop_scroll = ScrollContainer.new()
-	shop_scroll.custom_minimum_size = Vector2(0, 200)
-	vbox.add_child(shop_scroll)
-
-	var shop_grid = GridContainer.new()
-	shop_grid.columns = 5
-	shop_grid.add_theme_constant_override("h_separation", 8)
-	shop_grid.add_theme_constant_override("v_separation", 6)
-	shop_grid.size_flags_horizontal = Control.SIZE_EXPAND_FILL
-	shop_scroll.add_child(shop_grid)
-
-	for i in range(400):
+	# 页签行：商铺 / 门客（选中项禁用=高亮）
+	var tab_box = HBoxContainer.new()
+	tab_box.alignment = BoxContainer.ALIGNMENT_CENTER
+	tab_box.add_theme_constant_override("separation", 16)
+	vbox.add_child(tab_box)
+	for t in [["shop", "商铺"], ["hero", "门客"]]:
 		var btn = Button.new()
-		btn.name = "PopupShopSkill_%d" % i
-		btn.custom_minimum_size = Vector2(0, 32)
-		btn.size_flags_horizontal = Control.SIZE_EXPAND_FILL
-		# 【修】手机端：按钮默认 STOP 拦截触摸滚动，改 PASS 让滑动事件穿透到 ScrollContainer
-		btn.mouse_filter = Control.MOUSE_FILTER_PASS
-		btn.pressed.connect(_on_shop_skill_clicked.bind(i))
-		shop_grid.add_child(btn)
-	
+		btn.name = "SkillTab_%s" % t[0]
+		btn.text = t[1]
+		btn.custom_minimum_size = Vector2(150, 36)
+		btn.pressed.connect(_on_skill_tab_changed.bind(t[0]))
+		tab_box.add_child(btn)
+
+	# 内容容器：切页签/升级后整体重建
+	var body = VBoxContainer.new()
+	body.name = "SkillBody"
+	body.size_flags_vertical = Control.SIZE_EXPAND_FILL
+	body.add_theme_constant_override("separation", 6)
+	vbox.add_child(body)
+
 	c._add_ok_button(vbox, func(): c._safe_close("SkillPopup"), "关闭")
 	c.add_child(panel)
+	_refresh_skill_popup()
+
+func _on_skill_tab_changed(tab: String):
+	_skill_tab = tab
+	_refresh_skill_popup()
+
+func _on_hero_sub_tab_changed(tab: String):
+	_hero_sub_tab = tab
 	_refresh_skill_popup()
 
 # ============ 游玩弹窗（游山玩水/吟诗作对）============
@@ -629,9 +565,9 @@ func _build_hero_tab(body: VBoxContainer, fid: String):
 		hero_row.add_child(none_lbl)
 	for hid in bound:
 		if not data._hero_configs.has(hid): continue
-		var hd = HeroData.new(hid)
 		var pct = data.friend_system.get_friend_percent_bonus(fid)
-		var contribution = data.friend_system.get_friend_fixed_bonus(fid) + int(hd.get_base_income() * pct)
+		# HeroData 是纯静态工具类（get_base_income(g, hero_id)），不可 new
+		var contribution = data.friend_system.get_friend_fixed_bonus(fid) + int(HeroData.get_base_income(data, hid) * pct)
 		var item = VBoxContainer.new()
 		item.add_theme_constant_override("separation", 2)
 		var portrait = TextureRect.new()

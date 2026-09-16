@@ -51,6 +51,10 @@ static func get_total_aptitude(g, hero_id: String) -> int:
 	total += g.cuzhi_system.get_hero_side_aptitude(hero_id)
 	# 【新增】副业资质技能：市井百业/百工百业/物宝天华/庖丁解牛/XX之道 每级各+1资质（side_skill_system 统一管）
 	total += g.side_skill_system.get_hero_aptitude_bonus(hero_id)
+	# 【新增】超群绝伦（挚友才艺技能）：每位绑定挚友每级为该门客资质 +1
+	for fid in g.friends:
+		if g.friends[fid].get("bound_heroes", []).has(hero_id):
+			total += g.friend_system.get_friend_aptitude_bonus(fid)
 	
 	return total
 
