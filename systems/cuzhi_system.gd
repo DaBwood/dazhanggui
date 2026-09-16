@@ -277,21 +277,33 @@ func can_upgrade_side_skill(hero_id: String, skill_idx: int) -> bool:
 		return false   # 已达上限
 	return int(g.items.get("aptitude_pill", 0)) >= int(skill.star)
 
-# 【升】升级副业技能：batch=false 升 1 级，batch=true 一键升到上限或资质丹用尽
-func upgrade_side_skill(hero_id: String, skill_idx: int, batch: bool = false) -> bool:
+# 【升】升级副业技能：batch=false 升 1 级，batch=true 升级10次（资源/上限不够升剩余）
+# 【第35节】use_baiye=true 从百业经验个人池抵扣（每级=300×星级）
+func upgrade_side_skill(hero_id: String, skill_idx: int, batch: bool = false, use_baiye: bool = false) -> bool:
 	if not can_upgrade_side_skill(hero_id, skill_idx):
 		return false
 	var master = g.cuzhi_worm_masters[hero_id]
 	var skill = master.skills[skill_idx]
 	var star = int(skill.star)
+	var remaining = get_side_max_level(hero_id, skill) - int(skill.get("side_level", 0))
 	var levels: int = 1
 	if batch:
-		# 【改】三批：同上，剩余可升数用单一入口
-		var remaining = get_side_max_level(hero_id, skill) - int(skill.get("side_level", 0))
+		# 资质丹可升数，封顶10级
 		var affordable = floori(float(g.items.get("aptitude_pill", 0)) / star)
-		levels = min(affordable, remaining)
+		levels = min(mini(affordable, remaining), 10)
+	if use_baiye:
+		# 百业经验抵扣：池够升多少升多少（batch 封顶10级）
+		var per_level: int = star * g.bank_system.get_baiye_per_pill()
+		var pool: int = g.bank_system.get_baiye(hero_id)
+		levels = 1 if not batch else min(mini(floori(pool / float(per_level)), remaining), 10)
+		if levels <= 0:
+			return false
+		if not g.bank_system.spend_baiye_for_pills(hero_id, levels * star):
+			return false
+		skill.side_level = int(skill.get("side_level", 0)) + levels
+		return true
 	if levels <= 0:
-		return false
+		return false   # 单级时资质丹不足兜底
 	g.items.aptitude_pill = int(g.items.get("aptitude_pill", 0)) - levels * star
 	skill.side_level = int(skill.get("side_level", 0)) + levels
 	return true

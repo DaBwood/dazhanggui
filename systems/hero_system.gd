@@ -128,8 +128,8 @@ func upgrade_hero_shop_skill(hero_id: String, skill_index: int, mode: String = "
 		skill.level += 1
 		return true
 	else:
-		# 一键升满：能升多少升多少
-		var remaining = skill.max_level - skill.level
+		# 【第35节】升级10次：最多10级，算盘不够升剩余
+		var remaining = mini(skill.max_level - skill.level, 10)
 		var upgraded = 0
 		while upgraded < remaining:
 			var cost = max(1, int(ceil(pow(1.05, skill.level + upgraded - 1))))

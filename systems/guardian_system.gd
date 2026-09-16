@@ -181,7 +181,8 @@ func get_total_aptitude(hero_id: String) -> int:
 	return total
 
 # 【新增】升级守护灵技能（消耗资质丹，规则与门客资质技能完全一致）
-func upgrade_skill(hero_id: String, skill_idx: int, batch: bool = false) -> int:
+# 【第35节】batch=升级10次（资源/上限不够升剩余）；use_baiye=true 从百业经验个人池抵扣（每级=300×每级丹数）
+func upgrade_skill(hero_id: String, skill_idx: int, batch: bool = false, use_baiye: bool = false) -> int:
 	var gs = get_guardian(hero_id)
 	if gs.is_empty(): return 0
 	if skill_idx < 0 or skill_idx >= gs.skills.size(): return 0
@@ -190,12 +191,21 @@ func upgrade_skill(hero_id: String, skill_idx: int, batch: bool = false) -> int:
 	var skill = gs.skills[skill_idx]
 	if int(skill.level) >= int(skill.max_level): return 0
 	var cost_per = int(skill.aptitude_per_level)
-	var pill = g.items.get("aptitude_pill", 0)
-	if pill < cost_per: return 0
-	var levels = 1
+	var remaining = int(skill.max_level) - int(skill.level)
+	var levels: int = 1
 	if batch:
-		var remaining = int(skill.max_level) - int(skill.level)
-		levels = min(pill / cost_per, remaining)
+		# 资质丹可升数，封顶10级
+		levels = min(mini(int(g.items.get("aptitude_pill", 0)) / cost_per, remaining), 10)
+	if use_baiye:
+		# 百业经验抵扣：池够升多少升多少（batch 封顶10级）
+		var per_level: int = cost_per * g.bank_system.get_baiye_per_pill()
+		var pool: int = g.bank_system.get_baiye(hero_id)
+		levels = 1 if not batch else min(mini(floori(pool / float(per_level)), remaining), 10)
+		if levels <= 0: return 0
+		if not g.bank_system.spend_baiye_for_pills(hero_id, levels * cost_per): return 0
+		skill.level = int(skill.level) + levels
+		return levels
+	if int(g.items.get("aptitude_pill", 0)) < cost_per: return 0
 	if levels > 0:
 		g.items.aptitude_pill = int(g.items.aptitude_pill) - levels * cost_per
 		skill.level = int(skill.level) + levels

@@ -136,23 +136,33 @@ func upgrade_hero_cos_extra(hero_id: String, cos_id: String) -> Dictionary:
 func get_cos_skill_cost(quality: String = "素装") -> int:
 	return int(_settings().get("apt_per_level", {}).get(quality, 2))
 
-# 升级服装技能；mode: single=1级 / bulk=一键升到200或资质丹耗尽
+# 升级服装技能；mode: single=1级 / bulk=升级10次（资源/上限不够升剩余）
+# 【第35节·模型B】资质丹等级上限 = 200 + 额外等级（重复兑换提升上限，base/extra 存档结构不变零迁移）
+# use_baiye=true 时从百业经验个人池抵扣（每级=300×每级丹数）
 # 返回 {ok, levels, msg}
-func upgrade_cos_skill(hero_id: String, cos_id: String, mode: String = "single") -> Dictionary:
+func upgrade_cos_skill(hero_id: String, cos_id: String, mode: String = "single", use_baiye: bool = false) -> Dictionary:
 	var st = get_hero_cos_state(hero_id, cos_id)
 	if not st.has("base"): return {"ok": false, "msg": "服装未解锁"}
-	var max_lv = int(_settings().get("skill_max_level", 200))
+	var max_lv = int(_settings().get("skill_max_level", 200)) + int(st.get("extra", 0))
 	var base = int(st.get("base", 1))
 	if base >= max_lv: return {"ok": false, "msg": "已满级"}
-	var pills = int(g.items.get("aptitude_pill", 0))
-	if pills <= 0: return {"ok": false, "msg": "资质丹不足"}
-	# 【新增】品质决定固定消耗（素装2/华服2/锦衣3），每级相同，提出循环只算一次
-	# 【修】原循环内 get_cos_skill_cost(base) 把等级(int)当品质(String)传参，
-	#        字典查不到永远返回兜底值2——锦衣每级应吃3丹被吃成2丹
+	# 品质决定固定消耗（素装2/华服2/锦衣3），每级相同，提出循环只算一次
 	var quality = _get_hero_cos_cfg(hero_id, cos_id).get("quality", "素装")
 	var cost = get_cos_skill_cost(quality)
+	var limit: int = 1 if mode == "single" else 10   # 【第35节】bulk=升级10次
 	var levels = 0
-	while base < max_lv:
+	if use_baiye:
+		# 百业经验抵扣：池够升多少升多少（bulk 封顶10级）
+		var per_level: int = cost * g.bank_system.get_baiye_per_pill()
+		var affordable: int = floori(g.bank_system.get_baiye(hero_id) / float(per_level))
+		levels = min(mini(affordable, max_lv - base), limit)
+		if levels <= 0: return {"ok": false, "msg": "百业经验不足"}
+		if not g.bank_system.spend_baiye_for_pills(hero_id, levels * cost):
+			return {"ok": false, "msg": "百业经验不足"}
+		st["base"] = base + levels
+		return {"ok": true, "levels": levels}
+	var pills = int(g.items.get("aptitude_pill", 0))
+	while base < max_lv and levels < limit:
 		if pills < cost: break
 		pills -= cost
 		base += 1
@@ -176,7 +186,7 @@ func get_halo_cap(hero_id: String, cos_id: String) -> int:
 func get_halo_cost(target_level: int) -> int:
 	return int(_settings().get("halo_cost_base", 10)) + int(_settings().get("halo_cost_step", 5)) * int((target_level - 1) / 10.0)
 
-# 升级光环；mode: single=1级 / bulk=一键升到上限或玉璜耗尽
+# 升级光环；mode: single=1级 / bulk=升级10次（玉璜不够升剩余）
 # 返回 {ok, levels, msg}
 func upgrade_halo(hero_id: String, cos_id: String, mode: String = "single") -> Dictionary:
 	var st = get_hero_cos_state(hero_id, cos_id)
@@ -189,7 +199,8 @@ func upgrade_halo(hero_id: String, cos_id: String, mode: String = "single") -> D
 	var stones = int(g.items.get("yu_huang", 0))
 	if stones <= 0: return {"ok": false, "msg": "玉璜不足"}
 	var levels = 0
-	while lv < cap:
+	var limit: int = 1 if mode == "single" else 10   # 【第35节】bulk=升级10次
+	while lv < cap and levels < limit:
 		var cost = get_halo_cost(lv + 1)
 		if stones < cost: break
 		stones -= cost

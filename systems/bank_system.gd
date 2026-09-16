@@ -232,7 +232,7 @@ func get_chousuan_cost(cur_level: int) -> int:
 	var st: Dictionary = _st()
 	return maxi(1, int(ceil(float(st.get("chousuan_cost_base", 6)) * pow(float(st.get("chousuan_cost_mult", 1.008)), maxi(0, cur_level - 1)))))
 
-# 财源广进升级：结构/上限与原店铺技能一致，仅货币=筹算值；mode="single" 升1级，"bulk" 一键升满
+# 财源广进升级：结构/上限与原店铺技能一致，仅货币=筹算值；mode="single" 升1级，"bulk" 升级10次（【第35节】资源不够升剩余）
 func upgrade_caiyuan_skill(hero_id: String, mode: String = "single") -> bool:
 	var skill := get_caiyuan_skill(hero_id)
 	if skill.is_empty(): return false
@@ -246,8 +246,9 @@ func upgrade_caiyuan_skill(hero_id: String, mode: String = "single") -> bool:
 		skill["level"] = lv + 1
 		return true
 	else:
+		# 【第35节】升级10次：最多10级，筹算值不够升剩余
 		var upgraded := 0
-		while lv + upgraded < max_lv:
+		while lv + upgraded < max_lv and upgraded < 10:
 			var cost := get_chousuan_cost(lv + upgraded)
 			if chousuan < cost: break
 			chousuan -= cost

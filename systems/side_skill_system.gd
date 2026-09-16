@@ -114,12 +114,12 @@ func get_hero_skill_rows(hero_id: String) -> Array:
 			"currency": str(cost_info.get("currency", ""))})
 	return rows
 
-# ============ 升级（mode="single" 升1级 / "bulk" 一键升满） ============
+# ============ 升级（mode="single" 升1级 / "bulk" 升级10次：资源/上限不够升剩余） ============
 func upgrade(hero_id: String, key: String, mode: String = "single") -> int:
 	if not g.heroes.has(hero_id): return 0
 	var max_lv := get_max_level(key)
 	var up := 0
-	var limit := 1 if mode == "single" else (max_lv - get_hero_level(hero_id, key))
+	var limit := 1 if mode == "single" else mini(max_lv - get_hero_level(hero_id, key), 10)   # 【第35节】bulk 封顶10级
 	while up < limit and get_hero_level(hero_id, key) + up < max_lv:
 		if not _spend_one(hero_id, key, get_hero_level(hero_id, key) + up): break
 		up += 1
