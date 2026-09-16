@@ -498,7 +498,7 @@ func _build_shop_tab(body: VBoxContainer, fid: String):
 
 	# 五职业加成总览：Σ所有已解锁槽位中该职业技能的 bonus
 	var totals := {"士": 0.0, "农": 0.0, "工": 0.0, "商": 0.0, "侠": 0.0}
-	var max_slots = min(400, int(f.friendly / 500))
+	var max_slots = data.friend_system.get_shop_skill_slots(f.friendly)
 	for i in range(min(max_slots, f.shop_skills.size())):
 		totals[f.shop_skills[i].category] += f.shop_skills[i].bonus
 	var overview = HBoxContainer.new()
@@ -565,9 +565,13 @@ func _build_hero_tab(body: VBoxContainer, fid: String):
 		hero_row.add_child(none_lbl)
 	for hid in bound:
 		if not data._hero_configs.has(hid): continue
-		var pct = data.friend_system.get_friend_percent_bonus(fid)
-		# HeroData 是纯静态工具类（get_base_income(g, hero_id)），不可 new
-		var contribution = data.friend_system.get_friend_fixed_bonus(fid) + int(HeroData.get_base_income(data, hid) * pct)
+		# 未拥有门客没有赚钱加成，显示"未解锁"灰字
+		var owned = data.heroes.has(hid)
+		var contribution := 0
+		if owned:
+			var pct = data.friend_system.get_friend_percent_bonus(fid)
+			# HeroData 是纯静态工具类（get_base_income(g, hero_id)），不可 new
+			contribution = data.friend_system.get_friend_fixed_bonus(fid) + int(HeroData.get_base_income(data, hid) * pct)
 		var item = VBoxContainer.new()
 		item.add_theme_constant_override("separation", 2)
 		var portrait = TextureRect.new()
@@ -583,9 +587,13 @@ func _build_hero_tab(body: VBoxContainer, fid: String):
 		hlbl.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 		item.add_child(hlbl)
 		var vlbl = Label.new()
-		vlbl.text = "赚钱+%s" % c.format_number(contribution)
 		vlbl.add_theme_font_size_override("font_size", 12)
 		vlbl.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+		if owned:
+			vlbl.text = "赚钱+%s" % c.format_number(contribution)
+		else:
+			vlbl.text = "未解锁"
+			vlbl.add_theme_color_override("font_color", Color("#888888"))
 		item.add_child(vlbl)
 		hero_row.add_child(item)
 

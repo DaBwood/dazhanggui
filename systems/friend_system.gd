@@ -115,12 +115,19 @@ func _init_friend_shop_skills(friend_id: String):
 		})
 	f.shop_skills = skills
 
+# 店铺技能槽位数（分段线性：前期快、后期慢；锚点：2万友好=100个、5万=150个、20万=250个封顶）
+# 0~2万：每200友好+1（共100）；2万~5万：每600友好+1（共+50）；5万~20万：每1500友好+1（共+100）
+func get_shop_skill_slots(friendly) -> int:
+	if friendly <= 20000: return int(friendly / 200)
+	if friendly <= 50000: return 100 + int((friendly - 20000) / 600)
+	return min(250, 150 + int((friendly - 50000) / 1500))
+
 func get_friend_shop_skills(friend_id: String) -> Array:
 	if not g.friends.has(friend_id): return []
 	var f = g.friends[friend_id]
 	if not f.has("shop_skills"):
 		_init_friend_shop_skills(friend_id)
-	var max_slots = min(400, int(f.friendly / 500))
+	var max_slots = get_shop_skill_slots(f.friendly)
 	var skills = f.shop_skills
 	var result = []
 	for i in range(min(max_slots, skills.size())):
@@ -134,7 +141,7 @@ func refresh_friend_shop_skill(friend_id: String, skill_index: int, use_wish_sto
 	var skills = f.shop_skills
 	if skill_index < 0 or skill_index >= skills.size(): return false
 	
-	var max_slots = min(400, int(f.friendly / 500))
+	var max_slots = get_shop_skill_slots(f.friendly)
 	if skill_index >= max_slots: return false
 	
 	var skill = skills[skill_index]

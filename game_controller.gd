@@ -912,7 +912,19 @@ func flash_red(node_path: String):
 	)
 
 func _create_base_popup(title_text: String, popup_size: Vector2, _pos: Vector2 = Vector2.ZERO) -> PanelContainer:   # _pos 已废弃：一律居中（保留参数兼容46处旧调用）
+	# 【新增】全屏遮罩：压暗背景并挡住弹窗期间切换页面/误触后台（z=25 低于弹窗 30、高于页面）；
+	#  引用挂在 panel 的 meta 上，由 _safe_close 连带摘除，113 处调用零改动
+	var mask = ColorRect.new()
+	mask.set_anchors_preset(Control.PRESET_FULL_RECT)
+	mask.color = Color(0, 0, 0, 0.55)
+	mask.z_index = 25
+	mask.mouse_filter = Control.MOUSE_FILTER_STOP
+	add_child(mask)
+
 	var panel = PanelContainer.new()
+	panel.set_meta("popup_mask", mask)
+	# 【新增】遮罩跟随弹窗生命周期：任何关闭路径（含直接 queue_free 绕过 _safe_close）都能摘掉遮罩
+	panel.tree_exiting.connect(_on_popup_tree_exiting.bind(mask))
 	# 【改】竖屏适配：弹窗尺寸钳制不超视口（四周留边）；写死的位置也钳制在屏幕内不出界
 	# 【改】竖屏适配：弹窗尺寸钳制不超视口（四周留边）
 	var vs = get_viewport_rect().size
@@ -993,7 +1005,18 @@ func _create_slider_spin_pair(parent: Node, max_val: int, min_val: int = 1) -> D
 
 func _safe_close(node_name: String):
 	if has_node(node_name):
-		get_node(node_name).queue_free()
+		var node = get_node(node_name)
+		# 【新增】连带摘除弹窗遮罩（_create_base_popup 创建时挂在 meta 上）
+		if node.has_meta("popup_mask"):
+			var mask = node.get_meta("popup_mask")
+			if is_instance_valid(mask):
+				mask.queue_free()
+		node.queue_free()
+
+# 【新增】弹窗销毁时连带销毁遮罩（tree_exiting 信号，覆盖所有关闭路径）
+func _on_popup_tree_exiting(mask):
+	if is_instance_valid(mask):
+		mask.queue_free()
 
 func on_exit():
 	# 正常退出：记录下线时间，然后存档
