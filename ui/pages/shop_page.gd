@@ -270,6 +270,16 @@ func _add_building(content: Control, shop_id: String, pos: Vector2, bld_size: Ve
 		elif shop_id == "yi_guan":
 			# 【新增】医馆玩法入口（病人队列/科室升级/病症图鉴）
 			play.pressed.connect(c.show_clinic_view)
+			# 【新增】2026-09-16 病人满红点（地图侧唯一红点条件；医馆内部红点在 clinic_view 内，互不穿透）
+			var cydot := Label.new()
+			cydot.name = "PlayDot"
+			cydot.text = "●"
+			cydot.add_theme_color_override("font_color", Color("#e74c3c"))
+			cydot.add_theme_font_size_override("font_size", 14)
+			cydot.position = Vector2(14, -7)
+			cydot.mouse_filter = Control.MOUSE_FILTER_IGNORE
+			cydot.visible = data.clinic_system.is_patients_full()
+			play.add_child(cydot)
 		elif shop_id == "yao_pu":
 			# 【新增】药铺玩法入口（体力接待/收益罐/工艺/药方/勋章/成就）
 			play.pressed.connect(c.show_drugshop_view)
@@ -461,6 +471,9 @@ func update_entry_buttons():
 		# 【新增】2026-09-16 药铺「▶」病人满红点随 UI 刷新（自然恢复满/用药超出后，任意 update_all_ui 汇流时点亮）
 		if shop_id == "yao_pu" and bld.has_node("PlayBtn/PlayDot"):
 			bld.get_node("PlayBtn/PlayDot").visible = data.drugshop_system.is_patients_full()
+		# 【新增】2026-09-16 医馆「▶」病人满红点随 UI 刷新
+		if shop_id == "yi_guan" and bld.has_node("PlayBtn/PlayDot"):
+			bld.get_node("PlayBtn/PlayDot").visible = data.clinic_system.is_patients_full()
 		if shop_id == "hq":
 			_set_plate_text(bld, "【钱庄】")   # 【改】纯名字牌（用户 09-12 拍板不显示信息）
 			btn.modulate = Color.WHITE

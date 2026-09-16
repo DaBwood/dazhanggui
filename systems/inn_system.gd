@@ -25,7 +25,9 @@ var cooking: Dictionary = {}     # 灶位 {pack_id, career, hero_id, count, star
 var cuisine: int = 0             # 厨艺值（已领取；side_skill_system「庖丁解牛」升级货币，全局池）
 var jiaozi: int = 0              # 交子（已领取；兑换商店货币）
 var pending: Dictionary = {"cuisine": 0, "jiao": 0, "cooks": {}}   # 收益罐：待领取（厨艺/交子/烹饪次数{"pack_id|职业": n}）
-var dish_cooks: Dictionary = {}  # 每道菜累计烹饪次数 {"pack_id|职业": n}
+var dish_cooks: Dictionary = {}  # 每道菜【当前等级段内】已攒烹饪次数 {"pack_id|职业": n}（升级时扣掉消耗）
+# 【新增】2026-09-16 菜谱改手动升级：显式等级表（原为由累计次数自动推导），{"pack_id|职业": lv}
+var dish_levels: Dictionary = {}
 
 func get_save_data() -> Dictionary:
 	return {
@@ -34,6 +36,7 @@ func get_save_data() -> Dictionary:
 		"inn_jiaozi": jiaozi,
 		"inn_pending": pending,
 		"inn_dish_cooks": dish_cooks,
+		"inn_dish_levels": dish_levels,
 	}
 
 # 从扁平存档表认领本系统字段（老档缺字段保持初始值，类型防御防一处崩整轮）
@@ -43,6 +46,25 @@ func load_save_data(s: Dictionary):
 	if s.has("inn_jiaozi"): jiaozi = int(s.inn_jiaozi)
 	if s.has("inn_pending") and s.inn_pending is Dictionary: pending = s.inn_pending
 	if s.has("inn_dish_cooks") and s.inn_dish_cooks is Dictionary: dish_cooks = s.inn_dish_cooks
+	# 【新增】2026-09-16 显式等级认领；旧档无此字段时按"累计次数推导"旧公式一次性反推等级并换算剩余次数（赚速不跌）
+	if s.has("inn_dish_levels") and s.inn_dish_levels is Dictionary:
+		dish_levels = s.inn_dish_levels
+	else:
+		_migrate_dish_levels()
+
+# 【新增】旧档迁移：等级改手动前的存量档，dish_cooks 是"历史累计次数"——按旧推导公式反推等级，
+# 并把已消耗次数从累计中扣除（dish_cooks 转为"当前段内剩余次数"口径，与新规则自洽，幂等）
+func _migrate_dish_levels():
+	for key in dish_cooks.keys():
+		var n: int = int(dish_cooks.get(key, 0))
+		var lv := 1
+		var need := 1
+		while n >= need:
+			n -= need
+			lv += 1
+			need = get_dish_need(lv)
+		dish_cooks[key] = n
+		dish_levels[key] = lv
 
 # ============ 配置读取（inn.json，代码默认值兜底） ============
 func _st() -> Dictionary:
@@ -176,27 +198,33 @@ func get_dish_cooks(pack_id: String, career: String) -> int:
 func get_dish_need(level: int) -> int:
 	return int(ceil(level / 10.0))
 
-# 由累计烹饪次数推等级（初始1级）
+# 【改】2026-09-16 等级改显式手动制：读 dish_levels（初始1级），不再由累计次数推导
 func get_dish_level(pack_id: String, career: String) -> int:
-	var n := get_dish_cooks(pack_id, career)
-	var level := 1
-	var need := 1
-	while n >= need:
-		n -= need
-		level += 1
-		need = get_dish_need(level)
-	return level
+	return int(dish_levels.get(pack_id + "|" + career, 1))
 
-# 距下一级进度 {level, done, need}
+# 距下一级进度 {level, done, need}；done=当前段内已攒次数（升级扣消耗后的剩余口径）
 func get_dish_progress(pack_id: String, career: String) -> Dictionary:
-	var n := get_dish_cooks(pack_id, career)
-	var level := 1
-	var need := 1
-	while n >= need:
-		n -= need
-		level += 1
-		need = get_dish_need(level)
-	return {"level": level, "done": n, "need": need}
+	var level := get_dish_level(pack_id, career)
+	return {"level": level, "done": get_dish_cooks(pack_id, career), "need": get_dish_need(level)}
+
+# 【新增】2026-09-16 菜谱手动升级：消耗=当前等级所需次数；次数不足返回失败
+func upgrade_dish(pack_id: String, career: String) -> Dictionary:
+	var key := pack_id + "|" + career
+	var lv := get_dish_level(pack_id, career)
+	var need := get_dish_need(lv)
+	if get_dish_cooks(pack_id, career) < need:
+		return {"ok": false, "msg": "烹饪次数不足"}
+	dish_cooks[key] = get_dish_cooks(pack_id, career) - need   # 扣本次消耗
+	dish_levels[key] = lv + 1
+	return {"ok": true}
+
+# 【新增】任一菜可升级（烹饪次数达当前等级需求）——菜谱页签红点口径
+func has_upgradeable_dish() -> bool:
+	for pack in get_packs():
+		for career in get_careers():
+			if get_dish_cooks(str(pack.get("id", "")), str(career)) >= get_dish_need(get_dish_level(str(pack.get("id", "")), str(career))):
+				return true
+	return false
 
 # 单道菜累计固定赚钱 = Σ_{k=1}^{level-1} 500×ceil(k/10)（给该职业全部门客）
 func get_dish_income(pack_id: String, career: String) -> int:

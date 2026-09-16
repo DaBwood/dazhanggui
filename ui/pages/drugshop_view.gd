@@ -249,15 +249,15 @@ func _fill_main(body: VBoxContainer):
 	for t in [["craft", "打理", _sys().has_upgradeable_craft()],
 			["recipe", "本草秘籍", _sys().has_upgradeable_recipe()],
 			["ach", "成就", _sys().has_claimable_ach()]]:
-		var wrap := Control.new()
-		wrap.custom_minimum_size = Vector2(170, 56)   # 显式尺寸：红点按常量定位（新建 Button 当帧 size 为 0）
-		grid.add_child(wrap)
+		var wrap_node := Control.new()
+		wrap_node.custom_minimum_size = Vector2(170, 56)   # 显式尺寸：红点按常量定位（新建 Button 当帧 size 为 0）
+		grid.add_child(wrap_node)
 		var b := Button.new()
 		b.text = t[1]
 		b.position = Vector2.ZERO
 		b.size = Vector2(170, 56)
 		b.pressed.connect(func(): _switch_tab(t[0]))
-		wrap.add_child(b)
+		wrap_node.add_child(b)
 		var dot := Label.new()
 		dot.text = "●"
 		dot.add_theme_color_override("font_color", Color("#e74c3c"))
@@ -265,7 +265,7 @@ func _fill_main(body: VBoxContainer):
 		dot.position = Vector2(148, -6)   # 按钮右上角
 		dot.mouse_filter = Control.MOUSE_FILTER_IGNORE   # 红点不拦截触摸
 		dot.visible = t[2]
-		wrap.add_child(dot)
+		wrap_node.add_child(dot)
 
 # 勋章卡：当前等级/加成/下一级门槛/手动升级
 func _fill_medal_card(body: VBoxContainer):

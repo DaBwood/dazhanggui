@@ -79,14 +79,27 @@ func show_inn_view():
 	tabs.add_theme_constant_override("separation", 6)
 	vb.add_child(tabs)
 	for t in [["cook", "营业"], ["recipe", "菜谱"], ["exchange", "兑换商店"]]:
+		var tab_wrap := Control.new()
+		tab_wrap.custom_minimum_size = Vector2(104, 34)
+		tabs.add_child(tab_wrap)
 		var tb := Button.new()
 		tb.text = t[1]
-		tb.custom_minimum_size = Vector2(104, 34)
+		tb.position = Vector2.ZERO
+		tb.size = Vector2(104, 34)
 		tb.add_theme_font_size_override("font_size", 13)
 		if _tab == t[0]:
 			tb.add_theme_color_override("font_color", Color("#ffd700"))
 		tb.pressed.connect(_on_tab.bind(str(t[0])))
-		tabs.add_child(tb)
+		tab_wrap.add_child(tb)
+		if t[0] == "recipe":
+			var dot := Label.new()
+			dot.text = "●"
+			dot.add_theme_color_override("font_color", Color("#e74c3c"))
+			dot.add_theme_font_size_override("font_size", 13)
+			dot.position = Vector2(88, -5)
+			dot.mouse_filter = Control.MOUSE_FILTER_IGNORE
+			dot.visible = data.inn_system.has_upgradeable_dish()
+			tab_wrap.add_child(dot)
 	# 内容体
 	var body := VBoxContainer.new()
 	body.name = "InnBody"
@@ -492,12 +505,6 @@ func _fill_recipe(body: VBoxContainer):
 	var careers: Array = sys.get_careers()
 	if _recipe_career == "" or not (str(_recipe_career) in careers):
 		_recipe_career = str(careers[0])
-	var head := Label.new()
-	head.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
-	head.add_theme_font_size_override("font_size", 13)
-	head.add_theme_color_override("font_color", Color("#e6c07b"))
-	head.text = "做菜累计该菜烹饪次数自动升级（1~10级每级1次，每10级+1次需求）；每级给同职业门客 赚钱+500×所需次数"
-	body.add_child(head)
 	# 五职业二级页签
 	var tab_row := HBoxContainer.new()
 	tab_row.alignment = BoxContainer.ALIGNMENT_CENTER
@@ -548,6 +555,18 @@ func _make_recipe_row(pack_id: String, career: String, pack: Dictionary) -> Pane
 	line2.add_theme_color_override("font_color", Color("#c8c3e0"))
 	line2.text = "%s类门客 赚钱 +%s" % [career, c.format_number(sys.get_dish_income(pack_id, career))]
 	vb.add_child(line2)
+	
+	# 【新增】2026-09-16 菜谱手动升级按钮：次数够才亮
+	var btn_row := HBoxContainer.new()
+	btn_row.alignment = BoxContainer.ALIGNMENT_CENTER
+	vb.add_child(btn_row)
+	var up_btn := Button.new()
+	up_btn.text = "升级"
+	up_btn.custom_minimum_size = Vector2(58, 24)
+	up_btn.add_theme_font_size_override("font_size", 11)
+	up_btn.disabled = int(prog.get("done", 0)) < int(prog.get("need", 1))
+	up_btn.pressed.connect(_on_dish_upgrade.bind(pack_id, career))
+	btn_row.add_child(up_btn)
 	return card
 
 # ==================== 页签三：兑换商店 ====================
@@ -609,3 +628,12 @@ func _on_exchange_buy(index: int):
 	if data.inn_system.buy_exchange(index):
 		c.update_all_ui()
 		show_inn_view()
+
+# 【新增】2026-09-16 菜谱手动升级：成功后重建刷新+全局飘字（赚速变化）
+func _on_dish_upgrade(pack_id: String, career: String):
+	var r: Dictionary = data.inn_system.upgrade_dish(pack_id, career)
+	if not r.get("ok", false):
+		c._show_stage_hint(str(r.get("msg", "")))
+		return
+	show_inn_view()
+	c.update_all_ui()

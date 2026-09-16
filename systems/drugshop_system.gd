@@ -185,7 +185,6 @@ func _settle_one():
 	var pool := get_unlocked_recipes()
 	var rc: Dictionary = pool[randi() % pool.size()]
 	var rid: String = str(rc.get("id", ""))
-	var lv := get_recipe_level(rid)
 	pot["coins"] = int(pot.get("coins", 0)) + get_recipe_price(rid)
 	pot["exp"] = int(pot.get("exp", 0)) + int(rc.get("exp", 0))
 	var profs: Dictionary = pot.get("prof", {})

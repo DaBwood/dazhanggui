@@ -776,9 +776,9 @@ func _fill_compose_grid(grid: GridContainer):
 		if str(recipe.get("output_type", "")) == "beast":
 			# 【新增】2026-09-16 兽骨→驺虞：产出是珍兽，持有数读珍兽实例数（道具表里没有它）
 			have = data.get_beast_instance_count(out_id)
-			var btn = _make_bag_cell("%s\nx%d" % [data.get_beast_config(out_id).get("name", out_id), have])
-			btn.pressed.connect(_show_compose_popup.bind(recipe))
-			grid.add_child(btn)
+			var beast_btn = _make_bag_cell("%s\nx%d" % [data.get_beast_config(out_id).get("name", out_id), have])
+			beast_btn.pressed.connect(_show_compose_popup.bind(recipe))
+			grid.add_child(beast_btn)
 			continue
 		var out_cfg: Dictionary = data.ITEM_CONFIG.get(out_id, {})
 		# 【改】格子只显示名称+持有数（同物品页样式，直上直下自然排布）；配比与材料余量只在弹窗里展示

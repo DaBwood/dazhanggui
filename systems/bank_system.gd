@@ -106,13 +106,22 @@ func get_counter_hero(idx: int) -> String:
 	if idx < 0 or idx >= counters.size(): return ""
 	return str(counters[idx].get("hero_id", ""))
 
-# 委任门客（不锁定：可同时被派遣店铺/商战/多柜台）；新委任从当前时刻起计时
+# 委任门客（不锁定：可同时被派遣店铺/商战；【改】2026-09-16 一门客仅限一个柜台：选择器排除+此处防御双保险）
 func assign_hero(idx: int, hero_id: String) -> bool:
 	_ensure_counters()
 	if idx < 0 or idx >= get_counter_count(): return false
 	if not g.heroes.has(hero_id): return false
+	if is_hero_assigned(hero_id): return false   # 已委任其他柜台：拒绝（旧档重复占位用户自行卸任）
 	counters[idx] = {"hero_id": hero_id, "start_time": Time.get_unix_time_from_system()}
 	return true
+
+# 【新增】2026-09-16 该门客是否已委任任一柜台（钱庄内一门客一柜台）
+func is_hero_assigned(hero_id: String) -> bool:
+	_ensure_counters()
+	for c in counters:
+		if str(c.get("hero_id", "")) == hero_id:
+			return true
+	return false
 
 # 某柜台已累积秒数（封顶24小时；领取时才结算，故离线期间自然累积）
 func get_accrued_seconds(idx: int) -> int:

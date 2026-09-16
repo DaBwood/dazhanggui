@@ -30,6 +30,8 @@ var jar_yishu: int = 0              # 收益罐：待领取医术（评分不进
 var patients: int = 0               # 病人队列（体力池）：自然恢复 + 手册补充
 var patient_time: int = 0           # 上次队列结算时间戳（离线补发基准）
 var treat_queue: int = 0            # 【队列化】接诊队列：已转入待治疗（进存档，离线不做假结算）
+# 【新增】2026-09-16 病人改手动解锁（无消耗，医术达阈值后点解锁才入接诊池）：已解锁表 {pid: true}
+var patient_unlocked: Dictionary = {}
 
 func _init(p_g):
 	g = p_g
@@ -65,7 +67,7 @@ func get_save_data() -> Dictionary:
 		"illness_scores": illness_scores,
 		"yishu": yishu, "jar_yishu": jar_yishu,
 		"patients": patients, "patient_time": patient_time,
-		"treat_queue": treat_queue}}   # 接诊队列持久化：离线不做假结算，读档后接着治
+		"treat_queue": treat_queue, "patient_unlocked": patient_unlocked}}   # 接诊队列持久化；病人解锁表（手动解锁制）
 
 # 从扁平存档表认领本系统字段（旧档缺字段保持初始值；时间戳缺失从当前起算）
 func load_save_data(s: Dictionary):
@@ -80,6 +82,13 @@ func load_save_data(s: Dictionary):
 	patients = int(d.get("patients", 0))
 	patient_time = int(d.get("patient_time", 0))
 	treat_queue = int(d.get("treat_queue", 0))   # 旧版"接诊中"批次状态废弃：残留队列数按0处理
+	# 【新增】2026-09-16 病人解锁表认领；旧档无此字段→医术已达阈值的全部视为已解锁（老行为不变，仅一次性）
+	if d.has("patient_unlocked") and d.patient_unlocked is Dictionary:
+		patient_unlocked = d.patient_unlocked
+	else:
+		for p in _cfg().get("patients", []):
+			if yishu >= int(p.get("need_yishu", 0)):
+				patient_unlocked[str(p.get("id", ""))] = true
 	if patient_time <= 0:
 		patient_time = int(Time.get_unix_time_from_system())   # get_unix_time 返回 float，显式转 int 消窄化警告
 	# 旧档兼容：首轮默认只建药房（unlock_cost=0 的科室视为已建）
@@ -138,17 +147,57 @@ func add_patients(n: int):
 	_sync_patients()
 	patients += n
 
-# 已解锁病人池（医术达到阈值）
+# 已解锁病人池（【改】2026-09-16 医术达阈值 且 已手动解锁）
 func get_unlocked_patients() -> Array:
 	var pool := []
 	for p in _cfg().get("patients", []):
-		if yishu >= int(p.get("need_yishu", 0)):
+		if yishu >= int(p.get("need_yishu", 0)) and patient_unlocked.has(str(p.get("id", ""))):
 			pool.append(p)
 	return pool
 
 # 全量病人表（UI 解锁进度展示用）
 func get_patient_unlock_info() -> Array:
 	return _cfg().get("patients", [])
+
+# 【新增】2026-09-16 病人手动解锁（无消耗）+ 三入口红点口径 + 地图红点口径
+func is_patient_unlocked(pid: String) -> bool:
+	return patient_unlocked.has(pid)
+
+func unlock_patient(pid: String) -> Dictionary:
+	if is_patient_unlocked(pid):
+		return {"ok": false, "msg": "已解锁"}
+	for p in _cfg().get("patients", []):
+		if str(p.get("id", "")) == pid:
+			if yishu < int(p.get("need_yishu", 0)):
+				return {"ok": false, "msg": "医术不足"}
+			patient_unlocked[pid] = true
+			return {"ok": true}
+	return {"ok": false, "msg": "病人不存在"}
+
+# 有可手动解锁的病人（主页【病人】入口红点口径）
+func has_unlockable_patient() -> bool:
+	for p in _cfg().get("patients", []):
+		if yishu >= int(p.get("need_yishu", 0)) and not patient_unlocked.has(str(p.get("id", ""))):
+			return true
+	return false
+
+# 病人满（地图「▶」唯一红点口径，同药铺：>=上限，含手册拉超）
+func is_patients_full() -> bool:
+	return get_patient_count() >= get_patient_cap()
+
+# 科室红点口径：图纸够新增科室 或可升级科室
+func has_upgradeable_dept() -> bool:
+	for dept_id in _cfg().get("departments", {}):
+		if can_unlock_dept(dept_id).get("ok", false) or can_upgrade_dept(dept_id).get("ok", false):
+			return true
+	return false
+
+# 病症红点口径：有已解锁且评分够升级的图鉴
+func has_upgradeable_illness() -> bool:
+	for iid in get_unlocked_illnesses():
+		if can_upgrade_illness(str(iid)).get("ok", false):
+			return true
+	return false
 
 # ============ 接诊队列：转入（接诊/一键接诊只做搬运，纯改数字永不卡） ============
 func get_treat_queue() -> int:

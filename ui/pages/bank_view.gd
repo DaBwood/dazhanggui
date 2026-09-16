@@ -326,7 +326,7 @@ func _show_assign_selector(idx: int):
 	c.add_child(popup)
 	var vb = popup.get_child(0)
 	var hint := Label.new()
-	hint.text = "门客不锁定，与店铺派遣/商战全并行；同一门客可同时委任多柜台"
+	hint.text = "门客不锁定，与店铺派遣/商战全并行；同一门客只能委任一个柜台"
 	hint.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	hint.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
 	hint.add_theme_font_size_override("font_size", 12)
@@ -343,6 +343,8 @@ func _show_assign_selector(idx: int):
 	scroll.add_child(grid)
 	# 按实时赚速降序展示；卡片显示财源广进技能等级（筹算值升级的技能，用户 2026-09-12 拍板）
 	var ids: Array = data.heroes.keys()
+	# 【新增】2026-09-16 一门客一柜台：选择器排除已委任的门客
+	ids = ids.filter(func(hid): return not data.bank_system.is_hero_assigned(str(hid)))
 	ids.sort_custom(func(a, b): return data.get_hero_income(a) > data.get_hero_income(b))
 	if ids.is_empty():
 		var empty := Label.new()
