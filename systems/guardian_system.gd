@@ -194,8 +194,8 @@ func upgrade_skill(hero_id: String, skill_idx: int, batch: bool = false, use_bai
 	var remaining = int(skill.max_level) - int(skill.level)
 	var levels: int = 1
 	if batch:
-		# 资质丹可升数，封顶10级
-		levels = min(mini(int(g.items.get("aptitude_pill", 0)) / cost_per, remaining), 10)
+		# 资质丹可升数，封顶10级（float 除法防整数除法告警）
+		levels = min(mini(floori(int(g.items.get("aptitude_pill", 0)) / float(cost_per)), remaining), 10)
 	if use_baiye:
 		# 百业经验抵扣：池够升多少升多少（batch 封顶10级）
 		var per_level: int = cost_per * g.bank_system.get_baiye_per_pill()

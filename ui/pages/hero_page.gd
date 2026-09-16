@@ -25,6 +25,8 @@ var _fengzi_batch: bool = false   # 【新增】风姿十连勾选状态（面�
 var _use_baiye: bool = false
 # 【第35节】各页签当前选中技能索引（重建面板不清；满级沉底/技能数变化后自动回退）
 var _sel_idx: Dictionary = {"skill": 0, "shop": 0, "costume": 0, "halo": 0}
+# 【第35节】各页签按钮排滚动位置记忆（点按钮/升级触发重建时不跳回最左）
+var _btn_scroll: Dictionary = {"skill": 0, "shop": 0, "costume": 0, "halo": 0}
 
 
 # 由 game_controller._ready 创建本模块时注入引用
@@ -690,8 +692,8 @@ func on_aptitude_skill_upgrade(skill_index: int, mode: String = "single"):
 
 	if mode == "single":
 		levels_to_upgrade = 1
-	else:  # bulk=升级10次：按每级N丹折算可升级数
-		levels_to_upgrade = min(mini(pill_count / cost_per_level, remaining), 10)
+	else:  # bulk=升级10次：按每级N丹折算可升级数（float 除法防整数除法告警）
+		levels_to_upgrade = min(mini(floori(pill_count / float(cost_per_level)), remaining), 10)
 
 	if levels_to_upgrade > 0:
 		data.items.aptitude_pill -= levels_to_upgrade * cost_per_level  # 扣 级数×每级N丹
@@ -986,8 +988,9 @@ func _on_skill_tab_clicked(tab_id: String):
 	update_hero_panel()
 
 # ============ 【第35节】技能栏统一框架：按钮排 + 详情区 ============
-# 条目结构：{name, stars, is_max, info, pill(每级资质丹消耗,>0出抵扣勾选框对), own_check(单一勾选框文案),
-#           on_upgrade(Callable，入参 mode="single"/"bulk")}
+# 条目结构：{name, stars, is_max, info, pill(每级资质丹消耗,>0出抵扣勾选框对),
+#           own_name+own=[消耗,库存](单一勾选框文案与数值，只用自身货币的技能),
+#           on_single/on_bulk(Callable，构建时预绑定参数与模式，按钮直连)}
 
 # 星级行：星级=每级增加的资质（非资质类技能默认1星）；最多显示5颗，超出部分从最左边开始变红
 func _build_star_row(stars: int) -> HBoxContainer:
@@ -1043,11 +1046,20 @@ func _build_skill_button(sname: String, stars: int, is_max: bool, is_sel: bool, 
 	btn.pressed.connect(on_click)
 	return btn
 
-# 按钮排：HScrollContainer 只包裹按钮排（横向滑动不影响下方详情区）
+# 按钮排：ScrollContainer 只包裹按钮排（横向滑动不影响下方详情区）
+# 【热修】4.7 已移除 HScrollContainer/VScrollContainer，用 ScrollContainer + 滚动模式（同 game_controller 商铺地图先例）
 func _render_skill_buttons(list: VBoxContainer, items: Array, sel: int, tab_id: String) -> void:
-	var hscroll := HScrollContainer.new()
+	var hscroll := ScrollContainer.new()
 	hscroll.custom_minimum_size = Vector2(0, 66)
 	hscroll.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	# 【修】SHOW_NEVER=可滑动但永不显示滚动条（visible=false 会被 ScrollContainer 每次布局强制覆盖，无效）
+	hscroll.horizontal_scroll_mode = ScrollContainer.SCROLL_MODE_SHOW_NEVER
+	hscroll.vertical_scroll_mode = ScrollContainer.SCROLL_MODE_DISABLED      # 纵向锁死
+	list.add_child(hscroll)   # 先入树（滚动条仍正常运作，value_changed 存档不受影响）
+	# 滚动进度按页签记忆：滑动的每一帧都存档，重建（点按钮/升级）后 deferred 恢复，不跳回最左
+	hscroll.get_h_scroll_bar().value_changed.connect(func(v):
+		_btn_scroll[tab_id] = int(v))
+	hscroll.set_deferred("scroll_horizontal", int(_btn_scroll.get(tab_id, 0)))
 	var btn_row := HBoxContainer.new()
 	btn_row.add_theme_constant_override("separation", 8)
 	hscroll.add_child(btn_row)
@@ -1055,17 +1067,16 @@ func _render_skill_buttons(list: VBoxContainer, items: Array, sel: int, tab_id: 
 		var it: Dictionary = items[i]
 		btn_row.add_child(_build_skill_button(it["name"], it["stars"], it["is_max"], i == sel,
 			_on_skill_btn_clicked.bind(tab_id, i)))
-	list.add_child(hscroll)
 
 func _on_skill_btn_clicked(tab_id: String, idx: int):
 	_sel_idx[tab_id] = idx
 	update_hero_panel()
 
-# 详情区：左=信息（技能名/等级/当前加成/下级数值/每级消耗），右=勾选框+升级+升级10次；已满级盖红章
+# 详情区：左=信息（技能名/等级/当前加成/下级数值），右=勾选框+升级+升级10次；已满级右侧全藏只盖红章
 func _render_skill_detail(list: VBoxContainer, item: Dictionary) -> void:
-	var wrap := Control.new()
-	wrap.custom_minimum_size = Vector2(0, 108)
-	wrap.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	var detail_wrap := Control.new()
+	detail_wrap.custom_minimum_size = Vector2(0, 108)
+	detail_wrap.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	# 底色面板
 	var bg := Panel.new()
 	bg.set_anchors_preset(Control.PRESET_FULL_RECT)
@@ -1075,7 +1086,7 @@ func _render_skill_detail(list: VBoxContainer, item: Dictionary) -> void:
 	style.border_color = Color("#4a4468")
 	style.set_border_width_all(1)
 	bg.add_theme_stylebox_override("panel", style)
-	wrap.add_child(bg)
+	detail_wrap.add_child(bg)
 	# 内容行
 	var row := HBoxContainer.new()
 	row.set_anchors_preset(Control.PRESET_FULL_RECT)
@@ -1084,78 +1095,87 @@ func _render_skill_detail(list: VBoxContainer, item: Dictionary) -> void:
 	row.offset_right = -10
 	row.offset_bottom = -6
 	row.add_theme_constant_override("separation", 12)
-	wrap.add_child(row)
+	detail_wrap.add_child(row)
 	var info := Label.new()
 	info.text = item["info"]
 	info.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	info.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
 	info.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
 	row.add_child(info)
-	var right := VBoxContainer.new()
-	right.add_theme_constant_override("separation", 4)
-	row.add_child(right)
-	# 勾选框：吃资质丹的技能=资质丹/百业经验互斥对（百业经验=300×每级丹数/级）；其他=单一勾选框（只用自身货币）
-	if int(item.get("pill", 0)) > 0:
-		var chk_row := HBoxContainer.new()
-		right.add_child(chk_row)
-		var per_level: int = int(item["pill"])
-		var chk_pill := CheckBox.new()
-		chk_pill.text = "资质丹(%d/级)" % per_level
-		chk_pill.button_pressed = not _use_baiye
-		chk_pill.add_theme_font_size_override("font_size", 12)
-		chk_pill.toggled.connect(func(pressed):
-			if pressed:
-				_use_baiye = false
-				update_hero_panel()
-			elif _use_baiye:   # 互斥：不允许全不选
-				chk_pill.button_pressed = true
-		)
-		chk_row.add_child(chk_pill)
-		var chk_baiye := CheckBox.new()
-		chk_baiye.text = "百业经验(%d/级)" % (per_level * data.bank_system.get_baiye_per_pill())
-		chk_baiye.button_pressed = _use_baiye
-		chk_baiye.add_theme_font_size_override("font_size", 12)
-		chk_baiye.toggled.connect(func(pressed):
-			if pressed:
-				_use_baiye = true
-				update_hero_panel()
-			elif not _use_baiye:
-				chk_baiye.button_pressed = true
-		)
-		chk_row.add_child(chk_baiye)
-	elif str(item.get("own_check", "")) != "":
-		var chk := CheckBox.new()
-		chk.text = str(item["own_check"])
-		chk.button_pressed = true
-		chk.disabled = true   # 单一勾选框：只用自身货币，不可改
-		chk.add_theme_font_size_override("font_size", 12)
-		right.add_child(chk)
-	# 升级按钮：升级 / 升级10次（bulk 语义=最多10级）
-	var btn_row := HBoxContainer.new()
-	btn_row.add_theme_constant_override("separation", 8)
-	right.add_child(btn_row)
-	var up1 := Button.new()
-	up1.text = "升级"
-	up1.custom_minimum_size = Vector2(84, 34)
-	up1.disabled = bool(item["is_max"])
-	up1.pressed.connect(func(): item["on_upgrade"].call("single"))
-	btn_row.add_child(up1)
-	var up10 := Button.new()
-	up10.text = "升级10次"
-	up10.custom_minimum_size = Vector2(84, 34)
-	up10.disabled = bool(item["is_max"])
-	up10.pressed.connect(func(): item["on_upgrade"].call("bulk"))
-	btn_row.add_child(up10)
+	var is_max: bool = bool(item["is_max"])
+	# 已满级：右侧什么都不显示（按钮/勾选框全藏），只盖红章（见底部）
+	if not is_max:
+		var right := VBoxContainer.new()
+		right.add_theme_constant_override("separation", 4)
+		row.add_child(right)
+		# 勾选框：吃资质丹的技能=资质丹/百业经验互斥对（格式：货币名(消耗/库存)）
+		# 单一货币技能不做勾选框，直接纯文本，避免灰框看起来像没选中
+		if int(item.get("pill", 0)) > 0:
+			var chk_col := VBoxContainer.new()   # 【改】两个勾选框竖向排列
+			chk_col.add_theme_constant_override("separation", 2)
+			right.add_child(chk_col)
+			var per_level: int = int(item["pill"])
+			var pill_stock: int = int(data.items.get("aptitude_pill", 0))
+			var pool_stock: int = int(data.bank_system.get_baiye(current_hero_id))
+			var chk_pill := CheckBox.new()
+			chk_pill.text = "资质丹(%d/%d)" % [per_level, pill_stock]
+			chk_pill.button_pressed = not _use_baiye
+			chk_pill.add_theme_font_size_override("font_size", 12)
+			chk_pill.toggled.connect(func(pressed):
+				if pressed:
+					_use_baiye = false
+					update_hero_panel()
+				elif _use_baiye:   # 互斥：不允许全不选
+					chk_pill.button_pressed = true
+			)
+			chk_col.add_child(chk_pill)
+			var chk_baiye := CheckBox.new()
+			chk_baiye.text = "百业经验(%d/%d)" % [per_level * data.bank_system.get_baiye_per_pill(), pool_stock]
+			chk_baiye.button_pressed = _use_baiye
+			chk_baiye.add_theme_font_size_override("font_size", 12)
+			chk_baiye.toggled.connect(func(pressed):
+				if pressed:
+					_use_baiye = true
+					update_hero_panel()
+				elif not _use_baiye:
+					chk_baiye.button_pressed = true
+			)
+			chk_col.add_child(chk_baiye)
+		elif item.has("own"):
+			var own: Array = item["own"]
+			var own_lbl := Label.new()
+			own_lbl.text = "%s %d/%d" % [item["own_name"], own[0], own[1]]
+			own_lbl.add_theme_font_size_override("font_size", 13)
+			own_lbl.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
+			right.add_child(own_lbl)
+		# 升级按钮：升级 / 升级10次（bulk 语义=最多10级）
+		var btn_row := HBoxContainer.new()
+		btn_row.add_theme_constant_override("separation", 8)
+		right.add_child(btn_row)
+		# 【修】4.x bind 参数追加在调用参数后，链式 bind 顺序不可控；
+		#       条目构建时预绑定 on_single/on_bulk（单 bind 顺序稳定），按钮直连
+		var up1 := Button.new()
+		up1.text = "升级"
+		up1.custom_minimum_size = Vector2(84, 34)
+		up1.pressed.connect(item["on_single"])
+		btn_row.add_child(up1)
+		var up10 := Button.new()
+		up10.text = "升级10次"
+		up10.custom_minimum_size = Vector2(84, 34)
+		up10.pressed.connect(item["on_bulk"])
+		btn_row.add_child(up10)
 	# 已满级红章：盖在详情区上
-	if bool(item["is_max"]):
+	if is_max:
 		var stamp := Label.new()
 		stamp.text = "已满级"
-		stamp.set_anchors_preset(Control.PRESET_CENTER)
+		stamp.set_anchors_preset(Control.PRESET_CENTER_RIGHT)   # 【改】右侧中间
+		stamp.offset_left = -28
+		stamp.offset_right = -28
 		stamp.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 		stamp.add_theme_font_size_override("font_size", 30)
 		stamp.add_theme_color_override("font_color", Color(0.9, 0.2, 0.2, 0.7))
-		wrap.add_child(stamp)
-	list.add_child(wrap)
+		detail_wrap.add_child(stamp)
+	list.add_child(detail_wrap)
 
 # 页签渲染入口：满级技能沉底 + 选中索引回退 + 按钮排 + 详情区
 func _render_skill_tab(list: VBoxContainer, items: Array, tab_id: String) -> void:
@@ -1176,14 +1196,6 @@ func _render_skill_tab(list: VBoxContainer, items: Array, tab_id: String) -> voi
 # 【第35节】填充「技能」页：资质技能 + 守护灵技能，统一按钮排+详情区（资质类格式：资质+X（下级+Y））
 func _fill_skill_tab(list):
 	var h = data.heroes[current_hero_id]
-	# 百业经验个人池说明（技能页顶部保留）
-	var pool_lbl = Label.new()
-	pool_lbl.text = "百业经验（本门客）：%d　——勾选「百业经验」后，升级从个人池抵扣（每级=300×每级丹数）" % data.bank_system.get_baiye(current_hero_id)
-	pool_lbl.add_theme_font_size_override("font_size", 12)
-	pool_lbl.add_theme_color_override("font_color", Color("#e6c07b"))
-	pool_lbl.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
-	list.add_child(pool_lbl)
-
 	var items: Array = []
 	for i in range(h.aptitude_skills.size()):
 		var skill = h.aptitude_skills[i]
@@ -1196,7 +1208,7 @@ func _fill_skill_tab(list):
 			info += "（下级+%d）" % [(skill.level + 1) * per]
 		items.append({
 			"name": skill.name, "stars": per, "is_max": is_max, "info": info,
-			"pill": per, "on_upgrade": on_aptitude_skill_upgrade.bind(i)
+			"pill": per, "on_single": on_aptitude_skill_upgrade.bind(i, "single"), "on_bulk": on_aptitude_skill_upgrade.bind(i, "bulk")
 		})
 
 	# 守护灵技能（仅无双门客，阶段注满才显示；同样吃资质丹→抵扣勾选框对）
@@ -1217,7 +1229,7 @@ func _fill_skill_tab(list):
 					info += "（下级+%d）" % [(skill.level + 1) * per]
 				items.append({
 					"name": skill.name, "stars": per, "is_max": is_max, "info": info,
-					"pill": per, "on_upgrade": _on_guardian_skill_upgrade.bind(i)
+					"pill": per, "on_single": _on_guardian_skill_upgrade.bind(i, "single"), "on_bulk": _on_guardian_skill_upgrade.bind(i, "bulk")
 				})
 	_render_skill_tab(list, items, "skill")
 
@@ -1239,26 +1251,30 @@ func _fill_shop_tab(list):
 		else:
 			info += "（下级+%.0f%%）" % [(current_percent + skill.percent_per_level) * 100]
 		if is_caiyuan:
-			info += "\n每级需%d筹算值" % data.bank_system.get_chousuan_cost(skill.level)
+			# 货币(消耗/库存) 由勾选框显示，信息区不再写每级消耗
 			items.append({"name": skill.name, "stars": 1, "is_max": is_max, "info": info,
-				"own_check": "筹算值", "on_upgrade": on_shop_skill_chousuan_upgrade})
+				"own_name": "筹算值", "own": [data.bank_system.get_chousuan_cost(skill.level), data.bank_system.get_chousuan()],
+				"on_single": on_shop_skill_chousuan_upgrade.bind("single"), "on_bulk": on_shop_skill_chousuan_upgrade.bind("bulk")})
 		else:
-			info += "\n每级需%d算盘" % max(1, int(ceil(pow(1.05, skill.level - 1))))
+			var abacus_cost: int = max(1, int(ceil(pow(1.05, skill.level - 1))))
 			items.append({"name": skill.name, "stars": 1, "is_max": is_max, "info": info,
-				"own_check": "算盘", "on_upgrade": on_shop_skill_upgrade.bind(i)})
+				"own_name": "算盘", "own": [abacus_cost, int(data.items.get("abacus", 0))],
+				"on_single": on_shop_skill_upgrade.bind(i, "single"), "on_bulk": on_shop_skill_upgrade.bind(i, "bulk")})
 
-	# 副业资质技能（side_skill_system：只用自身货币→单一勾选框）
+	# 副业资质技能（side_skill_system：只用自身货币→单一勾选框，货币(消耗/库存)）
 	for r in data.side_skill_system.get_hero_skill_rows(current_hero_id):
 		var is_max: bool = int(r["cost"]) < 0
 		var lv: int = int(r["level"])
 		var info: String = "【%s】  Lv.%d/%d\n资质+%d" % [r["name"], lv, int(r["max"]), lv]
+		var it := {"name": r["name"], "stars": 1, "is_max": is_max, "info": info,
+			"on_single": on_side_sys_upgrade.bind(str(r["key"]), "single"), "on_bulk": on_side_sys_upgrade.bind(str(r["key"]), "bulk")}
 		if is_max:
 			info += "（已满级）"
 		else:
 			info += "（下级+%d）" % (lv + 1)
-			info += "\n每级需%d%s" % [int(r["cost"]), r["currency"]]
-		items.append({"name": r["name"], "stars": 1, "is_max": is_max, "info": info,
-			"own_check": str(r["currency"]), "on_upgrade": on_side_sys_upgrade.bind(str(r["key"]))})
+			it["own_name"] = str(r["currency"])
+			it["own"] = [int(r["cost"]), data.side_skill_system.get_stock(current_hero_id, str(r["key"]))]
+		items.append(it)
 
 	# 虫师副业技能（促织园；吃资质丹→抵扣勾选框对，上限=虫书等级×10）
 	for s in data.cuzhi_system.get_hero_side_skills(current_hero_id):
@@ -1271,7 +1287,7 @@ func _fill_shop_tab(list):
 		else:
 			info += "（下级+%d）" % [(lv + 1) * star]
 		items.append({"name": s.name, "stars": star, "is_max": is_max, "info": info,
-			"pill": star, "on_upgrade": on_side_skill_upgrade.bind(int(s.idx))})
+			"pill": star, "on_single": on_side_skill_upgrade.bind(int(s.idx), "single"), "on_bulk": on_side_skill_upgrade.bind(int(s.idx), "bulk")})
 	_render_skill_tab(list, items, "shop")
 
 # 【v4新增】填充占位页（服装/光环待开发，后续做功能时换成对应的 _fill_xxx_tab）
@@ -1302,7 +1318,7 @@ func _fill_costume_tab(list):
 			info += "（下级+%d）" % [(total + 1) * per]
 		info += "\n额外等级+%d（重复兑换服装提升上限）" % extra
 		items.append({"name": cfg.get("name", cos_id), "stars": per, "is_max": is_max, "info": info,
-			"pill": per, "on_upgrade": _on_cos_skill_upgrade.bind(cos_id)})
+			"pill": per, "on_single": _on_cos_skill_upgrade.bind(cos_id, "single"), "on_bulk": _on_cos_skill_upgrade.bind(cos_id, "bulk")})
 	if items.is_empty():
 		var lbl = Label.new()
 		lbl.text = "暂未解锁服装（点左侧【服装】按钮兑换）"
@@ -1338,10 +1354,9 @@ func _fill_halo_tab(list):
 		var info: String = "【%s】  Lv.%d/%d\n【%s】类门客资质+%d" % [cfg.get("name", cos_id), lv, cap, my_cat, lv * per]
 		if is_max:
 			info += "（已满级）"
-		else:
-			info += "\n每级需%d玉璜" % cs.get_halo_cost(lv + 1)
 		items.append({"name": cfg.get("name", cos_id), "stars": per, "is_max": is_max, "info": info,
-			"own_check": "玉璜", "on_upgrade": _on_halo_upgrade.bind(cos_id)})
+			"own_name": "玉璜", "own": [cs.get_halo_cost(lv + 1), int(data.items.get("yu_huang", 0))],
+			"on_single": _on_halo_upgrade.bind(cos_id, "single"), "on_bulk": _on_halo_upgrade.bind(cos_id, "bulk")})
 	if items.is_empty():
 		var lbl = Label.new()
 		lbl.text = "暂未解锁光环（解锁服装后获得同名光环技能）"

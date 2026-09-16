@@ -114,6 +114,23 @@ func get_hero_skill_rows(hero_id: String) -> Array:
 			"currency": str(cost_info.get("currency", ""))})
 	return rows
 
+# 【第35节】某技能当前货币库存（详情区「货币(消耗/库存)」显示用；货币归属与 _spend_one 保持一致）
+func get_stock(hero_id: String, key: String) -> int:
+	var conf := _cfg(key)
+	match str(conf.get("currency", "")):
+		"baiye":
+			return int(g.bank_system.get_baiye(hero_id))
+		"hangshi":
+			return hangshi
+		"yinyuan":
+			return yinyuan
+		"cuisine":
+			return int(g.inn_system.get_cuisine())
+		"career_book":
+			var book_id := get_career_book(str(g.heroes.get(hero_id, {}).get("category", "")))
+			return int(g.items.get(book_id, 0))
+	return 0
+
 # ============ 升级（mode="single" 升1级 / "bulk" 升级10次：资源/上限不够升剩余） ============
 func upgrade(hero_id: String, key: String, mode: String = "single") -> int:
 	if not g.heroes.has(hero_id): return 0
