@@ -95,6 +95,8 @@ func unlock_friend(friend_id: String) -> bool:
 	g.apply_courtyard_friend_unlock_bonus(friend_id)
 	# 【新增】藏品补发（二批写入式）：继承友好/才华类藏品已累计加成，新挚友即时享受
 	g.collection_system.apply_friend_unlock_bonus(friend_id)
+	# 【新增】酒肆补发（写入式+累计值）：继承餐饮/娱乐设施已累计的友好/才华，新挚友即时享受
+	g.tavern_system.apply_friend_unlock_bonus(friend_id)
 	return true
 
 # ========== 计算函数 ==========

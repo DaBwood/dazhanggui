@@ -293,6 +293,19 @@ func _add_building(content: Control, shop_id: String, pos: Vector2, bld_size: Ve
 			pdot.mouse_filter = Control.MOUSE_FILTER_IGNORE
 			pdot.visible = data.drugshop_system.is_patients_full()
 			play.add_child(pdot)
+		elif shop_id == "jiu_si":
+			# 【新增】酒肆玩法入口（叫号接待/收益罐/餐饮娱乐设施，档案四十二节批3接线）
+			play.pressed.connect(c.show_tavern_view)
+			# 地图侧唯一红点条件：有可升级/可解锁设施（酒肆内部红点在 tavern_view 内，互不穿透）
+			var tvdot := Label.new()
+			tvdot.name = "PlayDot"
+			tvdot.text = "●"
+			tvdot.add_theme_color_override("font_color", Color("#e74c3c"))
+			tvdot.add_theme_font_size_override("font_size", 14)
+			tvdot.position = Vector2(14, -7)   # 「▶」钮右上角（父钮 24×24，红点按常量定位）
+			tvdot.mouse_filter = Control.MOUSE_FILTER_IGNORE
+			tvdot.visible = data.tavern_system.has_upgradeable_facility() or data.tavern_system.has_unlockable_facility()
+			play.add_child(tvdot)
 		else:
 			play.pressed.connect(func(): c._show_stage_hint("【%s】特色玩法开发中，敬请期待" % play_shop_name))
 		bld.add_child(play)
@@ -474,6 +487,9 @@ func update_entry_buttons():
 		# 【新增】2026-09-16 医馆「▶」病人满红点随 UI 刷新
 		if shop_id == "yi_guan" and bld.has_node("PlayBtn/PlayDot"):
 			bld.get_node("PlayBtn/PlayDot").visible = data.clinic_system.is_patients_full()
+			# 【新增】2026-09-16 酒肆「▶」红点随 UI 刷新（设施可升级/可解锁点亮）
+		if shop_id == "jiu_si" and bld.has_node("PlayBtn/PlayDot"):
+			bld.get_node("PlayBtn/PlayDot").visible = data.tavern_system.has_upgradeable_facility() or data.tavern_system.has_unlockable_facility()
 		if shop_id == "hq":
 			_set_plate_text(bld, "【钱庄】")   # 【改】纯名字牌（用户 09-12 拍板不显示信息）
 			btn.modulate = Color.WHITE
