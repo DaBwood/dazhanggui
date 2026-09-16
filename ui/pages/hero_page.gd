@@ -1254,7 +1254,7 @@ func _fill_shop_tab(list):
 		if is_caiyuan:
 			# 货币(消耗/库存) 由勾选框显示，信息区不再写每级消耗
 			items.append({"name": skill.name, "stars": 1, "is_max": is_max, "info": info,
-				"own_name": "筹算值", "own": [data.bank_system.get_chousuan_cost(skill.level), data.bank_system.get_chousuan()],
+				"own_name": "筹算值", "own": [data.bank_system.get_chousuan_cost(skill.level), data.bank_system.get_chousuan(current_hero_id)],
 				"on_single": on_shop_skill_chousuan_upgrade.bind("single"), "on_bulk": on_shop_skill_chousuan_upgrade.bind("bulk")})
 		else:
 			var abacus_cost: int = max(1, int(ceil(pow(1.05, skill.level - 1))))

@@ -145,7 +145,7 @@ func _refresh_res():
 	if page == null: return
 	var bar = page.get_child(0).get_node_or_null("InnResBar")
 	if bar:
-		bar.text = "厨艺值 %d ｜ 交子 %d" % [data.inn_system.get_cuisine(), data.inn_system.get_jiaozi()]
+		bar.text = "厨艺值Σ %d ｜ 交子 %d" % [data.inn_system.get_cuisine_total(), data.inn_system.get_jiaozi()]
 
 func _fmt_secs(sec: int) -> String:
 	if sec >= 3600:

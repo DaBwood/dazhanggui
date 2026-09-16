@@ -87,7 +87,7 @@ func _fill_body(vb: VBoxContainer):
 	res.add_theme_constant_override("separation", 12)
 	vb.add_child(res)
 	var res_lbl := Label.new()
-	res_lbl.text = "筹算值 %d ｜ 信誉值 %d ｜ 百业经验Σ %d" % [sys.get_chousuan(), sys.get_xinyu(), sys.get_baiye_total()]
+	res_lbl.text = "筹算值Σ %d ｜ 信誉值 %d ｜ 百业经验Σ %d" % [sys.get_chousuan_total(), sys.get_xinyu(), sys.get_baiye_total()]
 	res_lbl.add_theme_color_override("font_color", Color("#e6c07b"))
 	res_lbl.add_theme_font_size_override("font_size", 14)
 	res.add_child(res_lbl)

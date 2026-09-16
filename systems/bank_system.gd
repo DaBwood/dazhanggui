@@ -23,7 +23,7 @@ func _init(p_g):
 # ============ 存档（本系统持有的字段） ============
 var counters: Array = []        # 柜台 [{hero_id, start_time}]，长度随解锁数懒增长
 var baiye: Dictionary = {}      # 百业经验个人池 {hero_id: 数量}
-var chousuan: int = 0           # 筹算值
+var chousuan: Dictionary = {}   # 筹算值个人池 {hero_id: 数量}【第37节】柜台产出归柜台所属门客
 var xinyu: int = 0              # 信誉值
 var xinyu_level: int = 0        # 钱庄玩法内等级（信誉等级）
 var counter_unlocked: int = 0   # 手动解锁的柜台数（前5个免费，之后每个花元宝解锁）
@@ -43,7 +43,7 @@ func get_save_data() -> Dictionary:
 func load_save_data(s: Dictionary):
 	if s.has("bank_counters") and s.bank_counters is Array: counters = s.bank_counters
 	if s.has("bank_baiye") and s.bank_baiye is Dictionary: baiye = s.bank_baiye
-	if s.has("bank_chousuan"): chousuan = int(s.bank_chousuan)
+	if s.has("bank_chousuan") and s.bank_chousuan is Dictionary: chousuan = s.bank_chousuan   # 【第37节】旧int存档丢弃=清零
 	if s.has("bank_xinyu"): xinyu = int(s.bank_xinyu)
 	if s.has("bank_xinyu_level"): xinyu_level = int(s.bank_xinyu_level)
 	if s.has("bank_counter_unlocked"): counter_unlocked = int(s.bank_counter_unlocked)
@@ -148,7 +148,7 @@ func collect_counter(idx: int) -> Dictionary:
 	var gain := get_pending(idx)
 	if int(gain["baiye"]) + int(gain["chousuan"]) + int(gain["xinyu"]) <= 0: return {}
 	baiye[hid] = int(baiye.get(hid, 0)) + int(gain["baiye"])
-	chousuan += int(gain["chousuan"])
+	chousuan[hid] = int(chousuan.get(hid, 0)) + int(gain["chousuan"])
 	xinyu += int(gain["xinyu"])
 	counters[idx]["start_time"] = Time.get_unix_time_from_system()   # 重置计时
 	gain["hero_id"] = hid
@@ -198,8 +198,16 @@ func spend_baiye_for_pills(hero_id: String, pills: int) -> bool:
 # ============ 筹算值（独立技能「财源广进」，结构/加成与原店铺技能一模一样） ============
 const CAIYUAN_NAME := "财源广进"
 
-func get_chousuan() -> int:
-	return chousuan
+# 【第37节】门客独立池查询
+func get_chousuan(hero_id: String) -> int:
+	return int(chousuan.get(hero_id, 0))
+
+# 全池合计（钱庄建筑视图显示总产量用）
+func get_chousuan_total() -> int:
+	var t := 0
+	for k in chousuan.keys():
+		t += int(chousuan[k])
+	return t
 
 # 确保门客已拥有「财源广进」：独立店铺技能，结构镜像第一个店铺技能（等级1起步，规则与原技能一致）
 # 懒创建（首次打开副业页/委任选择器/升级时），旧档零迁移
@@ -241,8 +249,8 @@ func upgrade_caiyuan_skill(hero_id: String, mode: String = "single") -> bool:
 	if lv >= max_lv: return false
 	if mode == "single":
 		var cost := get_chousuan_cost(lv)
-		if chousuan < cost: return false
-		chousuan -= cost
+		if get_chousuan(hero_id) < cost: return false
+		chousuan[hero_id] = get_chousuan(hero_id) - cost
 		skill["level"] = lv + 1
 		return true
 	else:
@@ -250,8 +258,8 @@ func upgrade_caiyuan_skill(hero_id: String, mode: String = "single") -> bool:
 		var upgraded := 0
 		while lv + upgraded < max_lv and upgraded < 10:
 			var cost := get_chousuan_cost(lv + upgraded)
-			if chousuan < cost: break
-			chousuan -= cost
+			if get_chousuan(hero_id) < cost: break
+			chousuan[hero_id] = get_chousuan(hero_id) - cost
 			upgraded += 1
 		if upgraded > 0:
 			skill["level"] = lv + upgraded

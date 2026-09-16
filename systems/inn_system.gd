@@ -22,9 +22,9 @@ func _init(p_g):
 
 # ============ 存档（本系统持有的字段） ============
 var cooking: Dictionary = {}     # 灶位 {pack_id, career, hero_id, count, start_time}（count=剩余次数）
-var cuisine: int = 0             # 厨艺值（已领取；side_skill_system「庖丁解牛」升级货币，全局池）
+var cuisine: Dictionary = {}     # 厨艺值个人池 {hero_id: 数量}【第37节】营业门客的产出归该门客
 var jiaozi: int = 0              # 交子（已领取；兑换商店货币）
-var pending: Dictionary = {"cuisine": 0, "jiao": 0, "cooks": {}}   # 收益罐：待领取（厨艺/交子/烹饪次数{"pack_id|职业": n}）
+var pending: Dictionary = {"cuisine": 0, "jiao": 0, "cooks": {}, "hero": ""}   # 收益罐：待领取（厨艺/交子/烹饪次数{"pack_id|职业": n}）
 var dish_cooks: Dictionary = {}  # 每道菜【当前等级段内】已攒烹饪次数 {"pack_id|职业": n}（升级时扣掉消耗）
 # 【新增】2026-09-16 菜谱改手动升级：显式等级表（原为由累计次数自动推导），{"pack_id|职业": lv}
 var dish_levels: Dictionary = {}
@@ -42,7 +42,7 @@ func get_save_data() -> Dictionary:
 # 从扁平存档表认领本系统字段（老档缺字段保持初始值，类型防御防一处崩整轮）
 func load_save_data(s: Dictionary):
 	if s.has("inn_cooking") and s.inn_cooking is Dictionary: cooking = s.inn_cooking
-	if s.has("inn_cuisine"): cuisine = int(s.inn_cuisine)
+	if s.has("inn_cuisine") and s.inn_cuisine is Dictionary: cuisine = s.inn_cuisine   # 【第37节】旧int存档丢弃=清零
 	if s.has("inn_jiaozi"): jiaozi = int(s.inn_jiaozi)
 	if s.has("inn_pending") and s.inn_pending is Dictionary: pending = s.inn_pending
 	if s.has("inn_dish_cooks") and s.inn_dish_cooks is Dictionary: dish_cooks = s.inn_dish_cooks
@@ -103,8 +103,16 @@ func is_bonus_career(career: String) -> bool:
 func is_cooking() -> bool:
 	return not cooking.is_empty()
 
-func get_cuisine() -> int:
-	return cuisine
+# 【第37节】门客独立池查询
+func get_cuisine(hero_id: String) -> int:
+	return int(cuisine.get(hero_id, 0))
+
+# 全池合计（客栈建筑视图显示总产量用）
+func get_cuisine_total() -> int:
+	var t := 0
+	for k in cuisine.keys():
+		t += int(cuisine[k])
+	return t
 
 func get_jiaozi() -> int:
 	return jiaozi
@@ -140,6 +148,7 @@ func _settle() -> int:
 	var career := str(cooking.get("career", ""))
 	var mult := 2 if is_bonus_career(career) else 1
 	pending["cuisine"] = int(pending.get("cuisine", 0)) + done * int(pack.get("cuisine", 0)) * mult
+	pending["hero"] = str(cooking.get("hero_id", ""))   # 【第37节】厨艺值归营业门客
 	pending["jiao"] = int(pending.get("jiao", 0)) + done * int(pack.get("jiao", 0)) * mult
 	var key := str(cooking.get("pack_id", "")) + "|" + career
 	var cooks: Dictionary = pending.get("cooks", {})
@@ -165,9 +174,11 @@ func claim() -> Dictionary:
 	for key in cooks.keys():
 		dish_cooks[key] = int(dish_cooks.get(key, 0)) + int(cooks[key])
 		out["cook_times"] += int(cooks[key])
-	cuisine += int(pending.get("cuisine", 0))
+	var hid := str(pending.get("hero", ""))
+	if hid != "":
+		cuisine[hid] = int(cuisine.get(hid, 0)) + int(pending.get("cuisine", 0))
 	jiaozi += int(pending.get("jiao", 0))
-	pending = {"cuisine": 0, "jiao": 0, "cooks": {}}
+	pending = {"cuisine": 0, "jiao": 0, "cooks": {}, "hero": ""}
 	return out
 
 # 营业状态（查询即结算）：空闲 {"active":false}；营业中含菜名/进度/剩余
@@ -244,9 +255,10 @@ func get_career_income_bonus(career: String) -> int:
 
 # ============ 厨艺值支出（side_skill_system「庖丁解牛」升级接口） ============
 # 扣厨艺值，余额不足返回 false（庖丁解牛为每门客副业技能，曲线/上限在 side_skill_system）
-func try_spend_cuisine(cost: int) -> bool:
-	if cuisine < cost: return false
-	cuisine -= cost
+# 【第37节】扣指定门客独立池，余额不足返回 false
+func try_spend_cuisine(hero_id: String, cost: int) -> bool:
+	if get_cuisine(hero_id) < cost: return false
+	cuisine[hero_id] = get_cuisine(hero_id) - cost
 	return true
 
 # ============ 兑换商店（交子货币，无限购） ============

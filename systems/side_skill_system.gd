@@ -125,7 +125,7 @@ func get_stock(hero_id: String, key: String) -> int:
 		"yinyuan":
 			return yinyuan
 		"cuisine":
-			return int(g.inn_system.get_cuisine())
+			return int(g.inn_system.get_cuisine(hero_id))
 		"career_book":
 			var book_id := get_career_book(str(g.heroes.get(hero_id, {}).get("category", "")))
 			return int(g.items.get(book_id, 0))
@@ -164,7 +164,7 @@ func _spend_one(hero_id: String, key: String, level: int) -> bool:
 			yinyuan -= cost_y
 			return true
 		"cuisine":
-			return g.inn_system.try_spend_cuisine(_paoding_curve(level))
+			return g.inn_system.try_spend_cuisine(hero_id, _paoding_curve(level))
 		"career_book":
 			var book := get_career_book(str(g.heroes[hero_id].get("category", "")))
 			var need := int(conf.get("cost", 100))
