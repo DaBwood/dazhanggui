@@ -9,7 +9,9 @@
 #   ⑤新增道具【药铺招牌】：病人计数后「＋」按钮→数量选择器（滑动条+输入框，同医馆病人手册），
 #     每个招牌 +3 病人，不受自然上限限制
 #   ⑥玩家口径统一为"病人"（"体力"是开发口径，UI 一律不显示）
-#   主页 = 勋章卡 + 收益罐(红点) + 病人行(＋招牌/营业/一键接待勾选) + 三入口(打理/本草秘籍/成就)
+#   主页 = 勋章卡 + 收益罐(红点) + 病人行(＋招牌/营业/一键接待勾选) + 三入口(打理/本草秘籍/成就，带各自红点)
+#   红点口径（2026-09-16 用户拍板）：三入口红点只在药铺页内显示（工艺可升/药方可升/成就可领）；
+#   外面地图「▶」只认"病人满"一个红点，互不穿透。顶部资源行已删（铜板/经验各使用处自显）
 #   打理 = 7工艺卡片（点卡片弹详情升级；顶部"全部升级"一次各升1级）
 #   本草秘籍 = 29药方卡片网格（锁定卡显示解锁条件；点卡片弹详情：配方/收益/升级+一键升级/解锁）
 #   成就 = 3条线 × 进度 + 4档领取
@@ -137,12 +139,7 @@ func _build(page: Panel):
 	title.text = "药铺" if _tab == "main" else ("药铺 · 打理" if _tab == "craft" else ("药铺 · 本草秘籍" if _tab == "recipe" else "药铺 · 成就"))
 	title.add_theme_font_size_override("font_size", 24)
 	top.add_child(title)
-	# 资源行：铜板 / 累计药铺经验
-	var res := Label.new()
-	res.text = "铜板 %s　累计药铺经验 %s" % [
-		c.format_number(_sys().coins), c.format_number(_sys().exp_total)]
-	res.add_theme_color_override("font_color", Color("#e6c07b"))
-	vb.add_child(res)
+	# 【删】2026-09-16 资源行（铜板/累计药铺经验）移除：用到它们的地方（收益罐/勋章卡/秘籍页）各自有显示
 	# 内容体
 	var scroll := ScrollContainer.new()
 	scroll.size_flags_vertical = Control.SIZE_EXPAND_FILL
@@ -243,18 +240,32 @@ func _fill_main(body: VBoxContainer):
 	_queue_lbl.text = _queue_text()
 	_queue_lbl.add_theme_color_override("font_color", Color("#ffd700"))
 	auto_row.add_child(_queue_lbl)
-	# 三入口按钮
+	# 三入口按钮（【新增】各自红点：工艺可升/药方可升/成就可领，仅药铺页内显示，不透到地图）
 	var grid := GridContainer.new()
 	grid.columns = 3
 	grid.add_theme_constant_override("h_separation", 8)
 	grid.add_theme_constant_override("v_separation", 8)
 	body.add_child(grid)
-	for t in [["craft", "打理"], ["recipe", "本草秘籍"], ["ach", "成就"]]:
+	for t in [["craft", "打理", _sys().has_upgradeable_craft()],
+			["recipe", "本草秘籍", _sys().has_upgradeable_recipe()],
+			["ach", "成就", _sys().has_claimable_ach()]]:
+		var wrap := Control.new()
+		wrap.custom_minimum_size = Vector2(170, 56)   # 显式尺寸：红点按常量定位（新建 Button 当帧 size 为 0）
+		grid.add_child(wrap)
 		var b := Button.new()
 		b.text = t[1]
-		b.custom_minimum_size = Vector2(170, 56)
+		b.position = Vector2.ZERO
+		b.size = Vector2(170, 56)
 		b.pressed.connect(func(): _switch_tab(t[0]))
-		grid.add_child(b)
+		wrap.add_child(b)
+		var dot := Label.new()
+		dot.text = "●"
+		dot.add_theme_color_override("font_color", Color("#e74c3c"))
+		dot.add_theme_font_size_override("font_size", 16)
+		dot.position = Vector2(148, -6)   # 按钮右上角
+		dot.mouse_filter = Control.MOUSE_FILTER_IGNORE   # 红点不拦截触摸
+		dot.visible = t[2]
+		wrap.add_child(dot)
 
 # 勋章卡：当前等级/加成/下一级门槛/手动升级
 func _fill_medal_card(body: VBoxContainer):

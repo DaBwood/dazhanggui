@@ -432,7 +432,9 @@ func get_ach_progress(line_id: String) -> int:
 		"formula_lv":
 			var total := 0
 			for rid in recipes:
-				total += get_recipe_level(rid)
+				# 【修】2026-09-16 只统计已解锁药方（原把未解锁的 Lv.1 全算进去，初始值虚高29）
+				if is_recipe_unlocked(rid):
+					total += get_recipe_level(rid)
 			return total
 		"craft_lv":
 			return get_craft_total_level()
@@ -526,3 +528,40 @@ func claim_repeat() -> Dictionary:
 	var tiers: Array = _patients_line().get("tiers", [])
 	var rewards: Array = tiers[tiers.size() - 1].get("rewards", [])   # 末档四道具
 	return {"ok": true, "rewards": _grant_rewards(rewards)}
+
+# ============ 红点判定（【新增】2026-09-16：药铺内部入口红点 + 地图病人满红点） ============
+# 有可升工艺（铜板够任意一项下级）
+func has_upgradeable_craft() -> bool:
+	for c in _cfg().get("crafts", []):
+		var cid: String = str(c.get("id", ""))
+		if cid != "" and coins >= get_craft_cost(cid):
+			return true
+	return false
+
+# 有可升药方（已解锁、未满级、熟练度够下级）
+func has_upgradeable_recipe() -> bool:
+	for rid in recipes:
+		if not is_recipe_unlocked(rid):
+			continue
+		if get_recipe_level(rid) >= get_recipe_max_level():
+			continue
+		if get_recipe_prof(rid) >= get_recipe_upgrade_cost(rid):
+			return true
+	return false
+
+# 有可领成就（任一线最低未领档达标 / 病人线满档后可重复领）
+func has_claimable_ach() -> bool:
+	for line in get_ach_list():
+		var lid: String = str(line.get("id", ""))
+		var tiers: Array = line.get("tiers", [])
+		var claimed: int = get_ach_claimed(lid)
+		if claimed < tiers.size():
+			if can_claim_ach(lid, claimed):
+				return true
+		elif lid == "patients" and can_claim_repeat():
+			return true
+	return false
+
+# 病人满了（自然恢复到上限；道具拉超也算满—— outside 地图「▶」红点唯一条件）
+func is_patients_full() -> bool:
+	return get_stamina() >= get_stamina_cap()
