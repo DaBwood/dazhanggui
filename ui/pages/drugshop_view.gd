@@ -496,16 +496,29 @@ func _fill_recipe(body: VBoxContainer):
 	body.add_child(grid)
 	for rc in _sys().get_recipe_list():
 		var rid: String = str(rc.get("id", ""))
+		# 【新增】2026-09-16 可升级药方红点（同医馆病症页模式）：外套 Control 显式尺寸
+		var wrap_node := Control.new()
+		wrap_node.custom_minimum_size = Vector2(170, 52)
+		grid.add_child(wrap_node)
 		var b := Button.new()
-		b.custom_minimum_size = Vector2(170, 52)
 		if _sys().is_recipe_unlocked(rid):
 			b.text = "%s\nLv.%d" % [rc.get("name", rid), _sys().get_recipe_level(rid)]
 		else:
 			b.text = "%s\n需经验 %s" % [rc.get("name", rid), c.format_number(_sys().get_recipe_unlock_need(rid))]
 			b.add_theme_color_override("font_color", Color("#666080"))
+		b.position = Vector2.ZERO
+		b.size = Vector2(170, 52)
 		var rid_c: String = rid
 		b.pressed.connect(func(): _show_recipe_popup(rid_c))
-		grid.add_child(b)
+		wrap_node.add_child(b)
+		var dot := Label.new()
+		dot.text = "●"
+		dot.add_theme_color_override("font_color", Color("#e74c3c"))
+		dot.add_theme_font_size_override("font_size", 15)
+		dot.position = Vector2(148, -6)   # 170宽按钮右上角
+		dot.mouse_filter = Control.MOUSE_FILTER_IGNORE
+		dot.visible = _sys().can_upgrade_recipe(rid)
+		wrap_node.add_child(dot)
 
 # 药方详情弹窗：配方/收益/升级+一键升级（未解锁则显示解锁条件+解锁按钮）
 func _show_recipe_popup(rid: String):

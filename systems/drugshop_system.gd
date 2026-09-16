@@ -537,6 +537,14 @@ func has_upgradeable_craft() -> bool:
 			return true
 	return false
 
+# 【新增】单项判定：该药方当前是否可升级（已解锁、未满级、熟练度够下级）——药方页按钮红点用
+func can_upgrade_recipe(rid: String) -> bool:
+	if not is_recipe_unlocked(rid):
+		return false
+	if get_recipe_level(rid) >= get_recipe_max_level():
+		return false
+	return get_recipe_prof(rid) >= get_recipe_upgrade_cost(rid)
+
 # 有可升药方（已解锁、未满级、熟练度够下级）
 func has_upgradeable_recipe() -> bool:
 	for rid in recipes:

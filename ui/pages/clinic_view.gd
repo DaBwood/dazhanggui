@@ -472,7 +472,8 @@ func _fill_illness(body: VBoxContainer):
 	var head := Label.new()
 	var parts := []
 	for cat in ["士", "农", "工", "商", "侠"]:
-		parts.append("%s +%d%%" % [cat, int(_sys().get_category_bonus(cat) * 100)])
+		# 【改】2026-09-16 0.05 浮点累加后×100 可能是 1264.999…，int() 截断吃掉 1（应显 1265）→ round 后取整
+		parts.append("%s +%d%%" % [cat, int(round(_sys().get_category_bonus(cat) * 100))])
 	head.text = "店铺赚速加成：%s" % "　".join(parts)
 	head.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
 	head.add_theme_color_override("font_color", Color("#e6c07b"))
