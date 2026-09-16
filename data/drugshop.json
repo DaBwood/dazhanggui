@@ -1,93 +1,2470 @@
 {
-  "_comment": "药铺玩法配置（2026-09-16 按药铺设计方案 v1.3 定稿录入）。settings=体力/接待/收益罐/熟练度参数；recipes=29张药方（exp=每次接待药铺经验，base_price=1级基础售价，售价=round(base_price×1.04^(lv-1))）；crafts=7项工艺（per_level=每个伙计赚速固定加成/级，target=all 全体商铺或职业）；medals=15级勋章（shop_pct=全体商铺赚速加成【小数制】，refine_cap=精进解锁技能等级上限加成）；achievements=3条成就线（tier rewards 发背包道具）。解锁第k张药方需累计药铺经验≥3000×(k-1)²",
-  "settings": {
-    "stamina_cap": 30,
-    "stamina_interval": 2400,
-    "prof_per_serve": 100,
-    "recipe_max_level": 15,
-    "unlock_exp_base": 3000,
-    "craft_cost_base": 2500,
-    "craft_cost_per_tier": 10,
-    "recipe_cost_base": 500,
-    "recipe_cost_pow": 2,
-    "sign_item": "drugshop_sign",
-    "sign_give": 3
+ "_comment": "药铺玩法配置（2026-09-16 按药铺设计方案 v1.3 定稿录入）。settings=体力/接待/收益罐/熟练度参数；recipes=29张药方（exp=每次接待药铺经验，base_price=1级基础售价，售价=round(base_price×1.04^(lv-1))）；crafts=7项工艺（per_level=每个伙计赚速固定加成/级，target=all 全体商铺或职业）；medals=15级勋章（shop_pct=全体商铺赚速加成【小数制】，refine_cap=精进解锁技能等级上限加成）；achievements=3条成就线（tier rewards 发背包道具）。解锁第k张药方需累计药铺经验≥3000×(k-1)²",
+ "settings": {
+  "stamina_cap": 30,
+  "stamina_interval": 2400,
+  "prof_per_serve": 100,
+  "recipe_max_level": 15,
+  "unlock_exp_base": 3000,
+  "craft_cost_base": 2500,
+  "craft_cost_per_tier": 10,
+  "recipe_cost_base": 500,
+  "recipe_cost_pow": 2,
+  "sign_item": "drugshop_sign",
+  "sign_give": 3,
+  "patients_repeat_step": 10000
+ },
+ "recipes": [
+  {
+   "id": "r01",
+   "name": "甘草汤",
+   "difficulty": "极易",
+   "difficulty_pct": 0,
+   "formula": "甘草×3",
+   "exp": 20,
+   "base_price": 34
   },
-  "recipes": [
-    {"id": "r01", "name": "甘草汤", "difficulty": "极易", "difficulty_pct": 0, "formula": "甘草×3", "exp": 20, "base_price": 34},
-    {"id": "r02", "name": "人参汤", "difficulty": "极易", "difficulty_pct": 0, "formula": "甘草×1+人参×2", "exp": 30, "base_price": 34},
-    {"id": "r03", "name": "补肺汤", "difficulty": "极易", "difficulty_pct": 0, "formula": "人参×2+黄芪×2", "exp": 40, "base_price": 43},
-    {"id": "r04", "name": "透脓散", "difficulty": "极易", "difficulty_pct": 0, "formula": "黄芪×4+当归×2", "exp": 50, "base_price": 72},
-    {"id": "r05", "name": "生髓汤", "difficulty": "难", "difficulty_pct": 15, "formula": "甘草×2+黄芪×1+当归×1+白芍×2", "exp": 60, "base_price": 83},
-    {"id": "r06", "name": "白术六一汤", "difficulty": "易", "difficulty_pct": 5, "formula": "甘草×1+白术×5", "exp": 70, "base_price": 99},
-    {"id": "r07", "name": "理中汤", "difficulty": "中", "difficulty_pct": 10, "formula": "甘草×3+人参×3+白术×3", "exp": 80, "base_price": 120},
-    {"id": "r08", "name": "养荣丸", "difficulty": "难", "difficulty_pct": 15, "formula": "黄芪×3+当归×4+白芍×1+白术×1", "exp": 90, "base_price": 127},
-    {"id": "r09", "name": "胃醒饮", "difficulty": "中", "difficulty_pct": 10, "formula": "黄芪×3+白术×2+茯苓×4", "exp": 100, "base_price": 137},
-    {"id": "r10", "name": "中和汤", "difficulty": "中", "difficulty_pct": 10, "formula": "人参×3+白术×4+茯苓×3", "exp": 110, "base_price": 151},
-    {"id": "r11", "name": "保和丸", "difficulty": "易", "difficulty_pct": 5, "formula": "茯苓×12+陈皮×5", "exp": 230, "base_price": 249},
-    {"id": "r12", "name": "陈皮茶", "difficulty": "极易", "difficulty_pct": 0, "formula": "陈皮×12", "exp": 220, "base_price": 233},
-    {"id": "r13", "name": "补阴益气煎", "difficulty": "难", "difficulty_pct": 15, "formula": "白芍×1+黄芪×3+柴胡×6+地黄×6", "exp": 210, "base_price": 225},
-    {"id": "r14", "name": "补肝汤", "difficulty": "中", "difficulty_pct": 10, "formula": "甘草×3+当归×5+白芍×5+地黄×5", "exp": 200, "base_price": 221},
-    {"id": "r15", "name": "解郁汤", "difficulty": "难", "difficulty_pct": 15, "formula": "黄芪×5+柴胡×5+地黄×5", "exp": 190, "base_price": 209},
-    {"id": "r16", "name": "调肝化瘀汤", "difficulty": "特难", "difficulty_pct": 20, "formula": "黄芪×6+白芍×5+柴胡×3+三七×2", "exp": 180, "base_price": 208},
-    {"id": "r17", "name": "少林八仙酒", "difficulty": "中", "difficulty_pct": 10, "formula": "当归×9+三七×5", "exp": 170, "base_price": 198},
-    {"id": "r18", "name": "安神止痛汤", "difficulty": "难", "difficulty_pct": 15, "formula": "甘草×2+黄芪×4+白芍×7+三七×2", "exp": 160, "base_price": 184},
-    {"id": "r19", "name": "开郁散", "difficulty": "中", "difficulty_pct": 10, "formula": "当归×3+白芍×5+白术×3+柴胡×2", "exp": 150, "base_price": 180},
-    {"id": "r20", "name": "人参败毒散", "difficulty": "中", "difficulty_pct": 10, "formula": "人参×5+茯苓×4+柴胡×4", "exp": 140, "base_price": 177},
-    {"id": "r21", "name": "小柴胡汤", "difficulty": "中", "difficulty_pct": 10, "formula": "甘草×3+人参×3+柴胡×7", "exp": 130, "base_price": 174},
-    {"id": "r22", "name": "苓术汤", "difficulty": "难", "difficulty_pct": 15, "formula": "甘草×4+白术×4+茯苓×3", "exp": 120, "base_price": 165},
-    {"id": "r23", "name": "参湿汤", "difficulty": "中", "difficulty_pct": 10, "formula": "甘草×4+白术×4+茯苓×9+陈皮×3", "exp": 240, "base_price": 247},
-    {"id": "r24", "name": "理脾汤", "difficulty": "中", "difficulty_pct": 10, "formula": "白芍×5+白术×5+茯苓×5+陈皮×5", "exp": 250, "base_price": 264},
-    {"id": "r25", "name": "消毒丹", "difficulty": "特难", "difficulty_pct": 20, "formula": "白术×4+柴胡×5+地黄×4+陈皮×5", "exp": 260, "base_price": 279},
-    {"id": "r26", "name": "灵芝酒", "difficulty": "易", "difficulty_pct": 5, "formula": "灵芝×17", "exp": 270, "base_price": 298},
-    {"id": "r27", "name": "三七灵芝酒", "difficulty": "易", "difficulty_pct": 5, "formula": "三七×12+灵芝×10", "exp": 280, "base_price": 327},
-    {"id": "r28", "name": "葆春康福酒", "difficulty": "中", "difficulty_pct": 10, "formula": "人参×10+黄芪×15+灵芝×10", "exp": 290, "base_price": 344},
-    {"id": "r29", "name": "疏肝降脂汤", "difficulty": "特难", "difficulty_pct": 20, "formula": "白芍×8+白术×10+柴胡×4+灵芝×6", "exp": 300, "base_price": 354}
-  ],
-  "crafts": [
-    {"id": "xi", "name": "洗药", "target": "all", "per_level": 0.1},
-    {"id": "shai", "name": "晒药", "target": "all", "per_level": 0.1},
-    {"id": "sui", "name": "碎药", "target": "士", "per_level": 0.5},
-    {"id": "dao", "name": "捣药", "target": "农", "per_level": 0.5},
-    {"id": "nian", "name": "碾药", "target": "工", "per_level": 0.5},
-    {"id": "ao", "name": "熬制", "target": "商", "per_level": 0.5},
-    {"id": "tie", "name": "贴膏", "target": "侠", "per_level": 0.5}
-  ],
-  "medals": [
-    {"lv": 1, "name": "药手·铜", "need_exp": 0, "shop_pct": 1.0, "refine_cap": 5},
-    {"lv": 2, "name": "药手·银", "need_exp": 300, "shop_pct": 2.0, "refine_cap": 10},
-    {"lv": 3, "name": "药手·金", "need_exp": 8000, "shop_pct": 3.0, "refine_cap": 15},
-    {"lv": 4, "name": "药师·铜", "need_exp": 29700, "shop_pct": 4.0, "refine_cap": 20},
-    {"lv": 5, "name": "药师·银", "need_exp": 112500, "shop_pct": 5.0, "refine_cap": 25},
-    {"lv": 6, "name": "药师·金", "need_exp": 274500, "shop_pct": 6.0, "refine_cap": 30},
-    {"lv": 7, "name": "药王·铜", "need_exp": 635100, "shop_pct": 7.0, "refine_cap": 35},
-    {"lv": 8, "name": "药王·银", "need_exp": 1233000, "shop_pct": 8.0, "refine_cap": 40},
-    {"lv": 9, "name": "药王·金", "need_exp": 2139000, "shop_pct": 9.0, "refine_cap": 45},
-    {"lv": 10, "name": "药圣·铜", "need_exp": 3421000, "shop_pct": 10.0, "refine_cap": 50},
-    {"lv": 11, "name": "药圣·银", "need_exp": 5149000, "shop_pct": 11.0, "refine_cap": 55},
-    {"lv": 12, "name": "药圣·金", "need_exp": 7392000, "shop_pct": 12.0, "refine_cap": 60},
-    {"lv": 13, "name": "药神·铜", "need_exp": 10220000, "shop_pct": 13.0, "refine_cap": 65},
-    {"lv": 14, "name": "药神·银", "need_exp": 13700000, "shop_pct": 14.0, "refine_cap": 70},
-    {"lv": 15, "name": "药神·金", "need_exp": 17910000, "shop_pct": 15.0, "refine_cap": 75}
-  ],
-  "achievements": [
-    {"id": "formula_lv", "name": "药方研制", "desc": "药方总等级", "tiers": [
-      {"need": 30, "rewards": [{"item": "aptitude_pill", "count": 10}]},
-      {"need": 90, "rewards": [{"item": "can_tie", "count": 5}]},
-      {"need": 200, "rewards": [{"item": "ginseng_1000", "count": 3}]},
-      {"need": 370, "rewards": [{"item": "reputation_card_adv", "count": 10}]}
-    ]},
-    {"id": "craft_lv", "name": "工艺精进", "desc": "工艺总等级", "tiers": [
-      {"need": 40, "rewards": [{"item": "hq_blueprint", "count": 20}]},
-      {"need": 120, "rewards": [{"item": "beast_fruit", "count": 50}]},
-      {"need": 260, "rewards": [{"item": "baiye_zhaji", "count": 100}]},
-      {"need": 500, "rewards": [{"item": "abacus", "count": 30}]}
-    ]},
-    {"id": "patients", "name": "悬壶济世", "desc": "累计接待病人", "tiers": [
-      {"need": 500, "rewards": [{"item": "wushuang_gugu", "count": 4}]},
-      {"need": 2500, "rewards": [{"item": "beast_fruit", "count": 50}]},
-      {"need": 8000, "rewards": [{"item": "aroma_fruit", "count": 10}]},
-      {"need": 19290, "rewards": [{"item": "patient_manual", "count": 15}]}
-    ]}
-  ]
+  {
+   "id": "r02",
+   "name": "人参汤",
+   "difficulty": "极易",
+   "difficulty_pct": 0,
+   "formula": "甘草×1+人参×2",
+   "exp": 30,
+   "base_price": 34
+  },
+  {
+   "id": "r03",
+   "name": "补肺汤",
+   "difficulty": "极易",
+   "difficulty_pct": 0,
+   "formula": "人参×2+黄芪×2",
+   "exp": 40,
+   "base_price": 43
+  },
+  {
+   "id": "r04",
+   "name": "透脓散",
+   "difficulty": "极易",
+   "difficulty_pct": 0,
+   "formula": "黄芪×4+当归×2",
+   "exp": 50,
+   "base_price": 72
+  },
+  {
+   "id": "r05",
+   "name": "生髓汤",
+   "difficulty": "难",
+   "difficulty_pct": 15,
+   "formula": "甘草×2+黄芪×1+当归×1+白芍×2",
+   "exp": 60,
+   "base_price": 83
+  },
+  {
+   "id": "r06",
+   "name": "白术六一汤",
+   "difficulty": "易",
+   "difficulty_pct": 5,
+   "formula": "甘草×1+白术×5",
+   "exp": 70,
+   "base_price": 99
+  },
+  {
+   "id": "r07",
+   "name": "理中汤",
+   "difficulty": "中",
+   "difficulty_pct": 10,
+   "formula": "甘草×3+人参×3+白术×3",
+   "exp": 80,
+   "base_price": 120
+  },
+  {
+   "id": "r08",
+   "name": "养荣丸",
+   "difficulty": "难",
+   "difficulty_pct": 15,
+   "formula": "黄芪×3+当归×4+白芍×1+白术×1",
+   "exp": 90,
+   "base_price": 127
+  },
+  {
+   "id": "r09",
+   "name": "胃醒饮",
+   "difficulty": "中",
+   "difficulty_pct": 10,
+   "formula": "黄芪×3+白术×2+茯苓×4",
+   "exp": 100,
+   "base_price": 137
+  },
+  {
+   "id": "r10",
+   "name": "中和汤",
+   "difficulty": "中",
+   "difficulty_pct": 10,
+   "formula": "人参×3+白术×4+茯苓×3",
+   "exp": 110,
+   "base_price": 151
+  },
+  {
+   "id": "r11",
+   "name": "保和丸",
+   "difficulty": "易",
+   "difficulty_pct": 5,
+   "formula": "茯苓×12+陈皮×5",
+   "exp": 230,
+   "base_price": 249
+  },
+  {
+   "id": "r12",
+   "name": "陈皮茶",
+   "difficulty": "极易",
+   "difficulty_pct": 0,
+   "formula": "陈皮×12",
+   "exp": 220,
+   "base_price": 233
+  },
+  {
+   "id": "r13",
+   "name": "补阴益气煎",
+   "difficulty": "难",
+   "difficulty_pct": 15,
+   "formula": "白芍×1+黄芪×3+柴胡×6+地黄×6",
+   "exp": 210,
+   "base_price": 225
+  },
+  {
+   "id": "r14",
+   "name": "补肝汤",
+   "difficulty": "中",
+   "difficulty_pct": 10,
+   "formula": "甘草×3+当归×5+白芍×5+地黄×5",
+   "exp": 200,
+   "base_price": 221
+  },
+  {
+   "id": "r15",
+   "name": "解郁汤",
+   "difficulty": "难",
+   "difficulty_pct": 15,
+   "formula": "黄芪×5+柴胡×5+地黄×5",
+   "exp": 190,
+   "base_price": 209
+  },
+  {
+   "id": "r16",
+   "name": "调肝化瘀汤",
+   "difficulty": "特难",
+   "difficulty_pct": 20,
+   "formula": "黄芪×6+白芍×5+柴胡×3+三七×2",
+   "exp": 180,
+   "base_price": 208
+  },
+  {
+   "id": "r17",
+   "name": "少林八仙酒",
+   "difficulty": "中",
+   "difficulty_pct": 10,
+   "formula": "当归×9+三七×5",
+   "exp": 170,
+   "base_price": 198
+  },
+  {
+   "id": "r18",
+   "name": "安神止痛汤",
+   "difficulty": "难",
+   "difficulty_pct": 15,
+   "formula": "甘草×2+黄芪×4+白芍×7+三七×2",
+   "exp": 160,
+   "base_price": 184
+  },
+  {
+   "id": "r19",
+   "name": "开郁散",
+   "difficulty": "中",
+   "difficulty_pct": 10,
+   "formula": "当归×3+白芍×5+白术×3+柴胡×2",
+   "exp": 150,
+   "base_price": 180
+  },
+  {
+   "id": "r20",
+   "name": "人参败毒散",
+   "difficulty": "中",
+   "difficulty_pct": 10,
+   "formula": "人参×5+茯苓×4+柴胡×4",
+   "exp": 140,
+   "base_price": 177
+  },
+  {
+   "id": "r21",
+   "name": "小柴胡汤",
+   "difficulty": "中",
+   "difficulty_pct": 10,
+   "formula": "甘草×3+人参×3+柴胡×7",
+   "exp": 130,
+   "base_price": 174
+  },
+  {
+   "id": "r22",
+   "name": "苓术汤",
+   "difficulty": "难",
+   "difficulty_pct": 15,
+   "formula": "甘草×4+白术×4+茯苓×3",
+   "exp": 120,
+   "base_price": 165
+  },
+  {
+   "id": "r23",
+   "name": "参湿汤",
+   "difficulty": "中",
+   "difficulty_pct": 10,
+   "formula": "甘草×4+白术×4+茯苓×9+陈皮×3",
+   "exp": 240,
+   "base_price": 247
+  },
+  {
+   "id": "r24",
+   "name": "理脾汤",
+   "difficulty": "中",
+   "difficulty_pct": 10,
+   "formula": "白芍×5+白术×5+茯苓×5+陈皮×5",
+   "exp": 250,
+   "base_price": 264
+  },
+  {
+   "id": "r25",
+   "name": "消毒丹",
+   "difficulty": "特难",
+   "difficulty_pct": 20,
+   "formula": "白术×4+柴胡×5+地黄×4+陈皮×5",
+   "exp": 260,
+   "base_price": 279
+  },
+  {
+   "id": "r26",
+   "name": "灵芝酒",
+   "difficulty": "易",
+   "difficulty_pct": 5,
+   "formula": "灵芝×17",
+   "exp": 270,
+   "base_price": 298
+  },
+  {
+   "id": "r27",
+   "name": "三七灵芝酒",
+   "difficulty": "易",
+   "difficulty_pct": 5,
+   "formula": "三七×12+灵芝×10",
+   "exp": 280,
+   "base_price": 327
+  },
+  {
+   "id": "r28",
+   "name": "葆春康福酒",
+   "difficulty": "中",
+   "difficulty_pct": 10,
+   "formula": "人参×10+黄芪×15+灵芝×10",
+   "exp": 290,
+   "base_price": 344
+  },
+  {
+   "id": "r29",
+   "name": "疏肝降脂汤",
+   "difficulty": "特难",
+   "difficulty_pct": 20,
+   "formula": "白芍×8+白术×10+柴胡×4+灵芝×6",
+   "exp": 300,
+   "base_price": 354
+  }
+ ],
+ "crafts": [
+  {
+   "id": "xi",
+   "name": "洗药",
+   "target": "all",
+   "per_level": 0.1
+  },
+  {
+   "id": "shai",
+   "name": "晒药",
+   "target": "all",
+   "per_level": 0.1
+  },
+  {
+   "id": "sui",
+   "name": "碎药",
+   "target": "士",
+   "per_level": 0.5
+  },
+  {
+   "id": "dao",
+   "name": "捣药",
+   "target": "农",
+   "per_level": 0.5
+  },
+  {
+   "id": "nian",
+   "name": "碾药",
+   "target": "工",
+   "per_level": 0.5
+  },
+  {
+   "id": "ao",
+   "name": "熬制",
+   "target": "商",
+   "per_level": 0.5
+  },
+  {
+   "id": "tie",
+   "name": "贴膏",
+   "target": "侠",
+   "per_level": 0.5
+  }
+ ],
+ "medals": [
+  {
+   "lv": 1,
+   "name": "药手·铜",
+   "need_exp": 0,
+   "shop_pct": 1.0,
+   "refine_cap": 5
+  },
+  {
+   "lv": 2,
+   "name": "药手·银",
+   "need_exp": 300,
+   "shop_pct": 2.0,
+   "refine_cap": 10
+  },
+  {
+   "lv": 3,
+   "name": "药手·金",
+   "need_exp": 8000,
+   "shop_pct": 3.0,
+   "refine_cap": 15
+  },
+  {
+   "lv": 4,
+   "name": "药师·铜",
+   "need_exp": 29700,
+   "shop_pct": 4.0,
+   "refine_cap": 20
+  },
+  {
+   "lv": 5,
+   "name": "药师·银",
+   "need_exp": 112500,
+   "shop_pct": 5.0,
+   "refine_cap": 25
+  },
+  {
+   "lv": 6,
+   "name": "药师·金",
+   "need_exp": 274500,
+   "shop_pct": 6.0,
+   "refine_cap": 30
+  },
+  {
+   "lv": 7,
+   "name": "药王·铜",
+   "need_exp": 635100,
+   "shop_pct": 7.0,
+   "refine_cap": 35
+  },
+  {
+   "lv": 8,
+   "name": "药王·银",
+   "need_exp": 1233000,
+   "shop_pct": 8.0,
+   "refine_cap": 40
+  },
+  {
+   "lv": 9,
+   "name": "药王·金",
+   "need_exp": 2139000,
+   "shop_pct": 9.0,
+   "refine_cap": 45
+  },
+  {
+   "lv": 10,
+   "name": "药圣·铜",
+   "need_exp": 3421000,
+   "shop_pct": 10.0,
+   "refine_cap": 50
+  },
+  {
+   "lv": 11,
+   "name": "药圣·银",
+   "need_exp": 5149000,
+   "shop_pct": 11.0,
+   "refine_cap": 55
+  },
+  {
+   "lv": 12,
+   "name": "药圣·金",
+   "need_exp": 7392000,
+   "shop_pct": 12.0,
+   "refine_cap": 60
+  },
+  {
+   "lv": 13,
+   "name": "药神·铜",
+   "need_exp": 10220000,
+   "shop_pct": 13.0,
+   "refine_cap": 65
+  },
+  {
+   "lv": 14,
+   "name": "药神·银",
+   "need_exp": 13700000,
+   "shop_pct": 14.0,
+   "refine_cap": 70
+  },
+  {
+   "lv": 15,
+   "name": "药神·金",
+   "need_exp": 17910000,
+   "shop_pct": 15.0,
+   "refine_cap": 75
+  }
+ ],
+ "achievements": [
+  {
+   "id": "formula_lv",
+   "name": "药方研制",
+   "desc": "药方总等级",
+   "tiers": [
+    {
+     "need": 14,
+     "rewards": [
+      {
+       "item": "aptitude_pill",
+       "count": 1
+      },
+      {
+       "item": "can_tie",
+       "count": 1
+      },
+      {
+       "item": "ginseng_1000",
+       "count": 1
+      },
+      {
+       "item": "reputation_card_adv",
+       "count": 1
+      }
+     ]
+    },
+    {
+     "need": 28,
+     "rewards": [
+      {
+       "item": "aptitude_pill",
+       "count": 1
+      },
+      {
+       "item": "can_tie",
+       "count": 1
+      },
+      {
+       "item": "ginseng_1000",
+       "count": 1
+      },
+      {
+       "item": "reputation_card_adv",
+       "count": 1
+      }
+     ]
+    },
+    {
+     "need": 41,
+     "rewards": [
+      {
+       "item": "aptitude_pill",
+       "count": 1
+      },
+      {
+       "item": "can_tie",
+       "count": 1
+      },
+      {
+       "item": "ginseng_1000",
+       "count": 1
+      },
+      {
+       "item": "reputation_card_adv",
+       "count": 1
+      }
+     ]
+    },
+    {
+     "need": 55,
+     "rewards": [
+      {
+       "item": "aptitude_pill",
+       "count": 2
+      },
+      {
+       "item": "can_tie",
+       "count": 1
+      },
+      {
+       "item": "ginseng_1000",
+       "count": 1
+      },
+      {
+       "item": "reputation_card_adv",
+       "count": 2
+      }
+     ]
+    },
+    {
+     "need": 68,
+     "rewards": [
+      {
+       "item": "aptitude_pill",
+       "count": 3
+      },
+      {
+       "item": "can_tie",
+       "count": 1
+      },
+      {
+       "item": "ginseng_1000",
+       "count": 1
+      },
+      {
+       "item": "reputation_card_adv",
+       "count": 3
+      }
+     ]
+    },
+    {
+     "need": 82,
+     "rewards": [
+      {
+       "item": "aptitude_pill",
+       "count": 3
+      },
+      {
+       "item": "can_tie",
+       "count": 2
+      },
+      {
+       "item": "ginseng_1000",
+       "count": 1
+      },
+      {
+       "item": "reputation_card_adv",
+       "count": 3
+      }
+     ]
+    },
+    {
+     "need": 96,
+     "rewards": [
+      {
+       "item": "aptitude_pill",
+       "count": 4
+      },
+      {
+       "item": "can_tie",
+       "count": 2
+      },
+      {
+       "item": "ginseng_1000",
+       "count": 1
+      },
+      {
+       "item": "reputation_card_adv",
+       "count": 4
+      }
+     ]
+    },
+    {
+     "need": 109,
+     "rewards": [
+      {
+       "item": "aptitude_pill",
+       "count": 5
+      },
+      {
+       "item": "can_tie",
+       "count": 2
+      },
+      {
+       "item": "ginseng_1000",
+       "count": 2
+      },
+      {
+       "item": "reputation_card_adv",
+       "count": 5
+      }
+     ]
+    },
+    {
+     "need": 123,
+     "rewards": [
+      {
+       "item": "aptitude_pill",
+       "count": 6
+      },
+      {
+       "item": "can_tie",
+       "count": 3
+      },
+      {
+       "item": "ginseng_1000",
+       "count": 2
+      },
+      {
+       "item": "reputation_card_adv",
+       "count": 6
+      }
+     ]
+    },
+    {
+     "need": 136,
+     "rewards": [
+      {
+       "item": "aptitude_pill",
+       "count": 7
+      },
+      {
+       "item": "can_tie",
+       "count": 3
+      },
+      {
+       "item": "ginseng_1000",
+       "count": 2
+      },
+      {
+       "item": "reputation_card_adv",
+       "count": 7
+      }
+     ]
+    },
+    {
+     "need": 150,
+     "rewards": [
+      {
+       "item": "aptitude_pill",
+       "count": 7
+      },
+      {
+       "item": "can_tie",
+       "count": 4
+      },
+      {
+       "item": "ginseng_1000",
+       "count": 2
+      },
+      {
+       "item": "reputation_card_adv",
+       "count": 7
+      }
+     ]
+    },
+    {
+     "need": 164,
+     "rewards": [
+      {
+       "item": "aptitude_pill",
+       "count": 8
+      },
+      {
+       "item": "can_tie",
+       "count": 4
+      },
+      {
+       "item": "ginseng_1000",
+       "count": 3
+      },
+      {
+       "item": "reputation_card_adv",
+       "count": 8
+      }
+     ]
+    },
+    {
+     "need": 177,
+     "rewards": [
+      {
+       "item": "aptitude_pill",
+       "count": 9
+      },
+      {
+       "item": "can_tie",
+       "count": 5
+      },
+      {
+       "item": "ginseng_1000",
+       "count": 3
+      },
+      {
+       "item": "reputation_card_adv",
+       "count": 9
+      }
+     ]
+    },
+    {
+     "need": 191,
+     "rewards": [
+      {
+       "item": "aptitude_pill",
+       "count": 10
+      },
+      {
+       "item": "can_tie",
+       "count": 5
+      },
+      {
+       "item": "ginseng_1000",
+       "count": 3
+      },
+      {
+       "item": "reputation_card_adv",
+       "count": 10
+      }
+     ]
+    },
+    {
+     "need": 204,
+     "rewards": [
+      {
+       "item": "aptitude_pill",
+       "count": 11
+      },
+      {
+       "item": "can_tie",
+       "count": 6
+      },
+      {
+       "item": "ginseng_1000",
+       "count": 4
+      },
+      {
+       "item": "reputation_card_adv",
+       "count": 11
+      }
+     ]
+    },
+    {
+     "need": 218,
+     "rewards": [
+      {
+       "item": "aptitude_pill",
+       "count": 12
+      },
+      {
+       "item": "can_tie",
+       "count": 6
+      },
+      {
+       "item": "ginseng_1000",
+       "count": 4
+      },
+      {
+       "item": "reputation_card_adv",
+       "count": 12
+      }
+     ]
+    },
+    {
+     "need": 232,
+     "rewards": [
+      {
+       "item": "aptitude_pill",
+       "count": 13
+      },
+      {
+       "item": "can_tie",
+       "count": 7
+      },
+      {
+       "item": "ginseng_1000",
+       "count": 4
+      },
+      {
+       "item": "reputation_card_adv",
+       "count": 13
+      }
+     ]
+    },
+    {
+     "need": 245,
+     "rewards": [
+      {
+       "item": "aptitude_pill",
+       "count": 14
+      },
+      {
+       "item": "can_tie",
+       "count": 7
+      },
+      {
+       "item": "ginseng_1000",
+       "count": 5
+      },
+      {
+       "item": "reputation_card_adv",
+       "count": 14
+      }
+     ]
+    },
+    {
+     "need": 259,
+     "rewards": [
+      {
+       "item": "aptitude_pill",
+       "count": 15
+      },
+      {
+       "item": "can_tie",
+       "count": 8
+      },
+      {
+       "item": "ginseng_1000",
+       "count": 5
+      },
+      {
+       "item": "reputation_card_adv",
+       "count": 15
+      }
+     ]
+    },
+    {
+     "need": 272,
+     "rewards": [
+      {
+       "item": "aptitude_pill",
+       "count": 16
+      },
+      {
+       "item": "can_tie",
+       "count": 8
+      },
+      {
+       "item": "ginseng_1000",
+       "count": 5
+      },
+      {
+       "item": "reputation_card_adv",
+       "count": 16
+      }
+     ]
+    },
+    {
+     "need": 286,
+     "rewards": [
+      {
+       "item": "aptitude_pill",
+       "count": 17
+      },
+      {
+       "item": "can_tie",
+       "count": 9
+      },
+      {
+       "item": "ginseng_1000",
+       "count": 6
+      },
+      {
+       "item": "reputation_card_adv",
+       "count": 17
+      }
+     ]
+    },
+    {
+     "need": 300,
+     "rewards": [
+      {
+       "item": "aptitude_pill",
+       "count": 18
+      },
+      {
+       "item": "can_tie",
+       "count": 9
+      },
+      {
+       "item": "ginseng_1000",
+       "count": 6
+      },
+      {
+       "item": "reputation_card_adv",
+       "count": 18
+      }
+     ]
+    },
+    {
+     "need": 313,
+     "rewards": [
+      {
+       "item": "aptitude_pill",
+       "count": 20
+      },
+      {
+       "item": "can_tie",
+       "count": 10
+      },
+      {
+       "item": "ginseng_1000",
+       "count": 7
+      },
+      {
+       "item": "reputation_card_adv",
+       "count": 20
+      }
+     ]
+    },
+    {
+     "need": 327,
+     "rewards": [
+      {
+       "item": "aptitude_pill",
+       "count": 21
+      },
+      {
+       "item": "can_tie",
+       "count": 10
+      },
+      {
+       "item": "ginseng_1000",
+       "count": 7
+      },
+      {
+       "item": "reputation_card_adv",
+       "count": 21
+      }
+     ]
+    },
+    {
+     "need": 340,
+     "rewards": [
+      {
+       "item": "aptitude_pill",
+       "count": 22
+      },
+      {
+       "item": "can_tie",
+       "count": 11
+      },
+      {
+       "item": "ginseng_1000",
+       "count": 7
+      },
+      {
+       "item": "reputation_card_adv",
+       "count": 22
+      }
+     ]
+    },
+    {
+     "need": 354,
+     "rewards": [
+      {
+       "item": "aptitude_pill",
+       "count": 23
+      },
+      {
+       "item": "can_tie",
+       "count": 11
+      },
+      {
+       "item": "ginseng_1000",
+       "count": 8
+      },
+      {
+       "item": "reputation_card_adv",
+       "count": 23
+      }
+     ]
+    },
+    {
+     "need": 368,
+     "rewards": [
+      {
+       "item": "aptitude_pill",
+       "count": 24
+      },
+      {
+       "item": "can_tie",
+       "count": 12
+      },
+      {
+       "item": "ginseng_1000",
+       "count": 8
+      },
+      {
+       "item": "reputation_card_adv",
+       "count": 24
+      }
+     ]
+    },
+    {
+     "need": 381,
+     "rewards": [
+      {
+       "item": "aptitude_pill",
+       "count": 25
+      },
+      {
+       "item": "can_tie",
+       "count": 13
+      },
+      {
+       "item": "ginseng_1000",
+       "count": 8
+      },
+      {
+       "item": "reputation_card_adv",
+       "count": 25
+      }
+     ]
+    },
+    {
+     "need": 395,
+     "rewards": [
+      {
+       "item": "aptitude_pill",
+       "count": 26
+      },
+      {
+       "item": "can_tie",
+       "count": 13
+      },
+      {
+       "item": "ginseng_1000",
+       "count": 9
+      },
+      {
+       "item": "reputation_card_adv",
+       "count": 26
+      }
+     ]
+    },
+    {
+     "need": 408,
+     "rewards": [
+      {
+       "item": "aptitude_pill",
+       "count": 28
+      },
+      {
+       "item": "can_tie",
+       "count": 14
+      },
+      {
+       "item": "ginseng_1000",
+       "count": 9
+      },
+      {
+       "item": "reputation_card_adv",
+       "count": 28
+      }
+     ]
+    },
+    {
+     "need": 422,
+     "rewards": [
+      {
+       "item": "aptitude_pill",
+       "count": 29
+      },
+      {
+       "item": "can_tie",
+       "count": 14
+      },
+      {
+       "item": "ginseng_1000",
+       "count": 10
+      },
+      {
+       "item": "reputation_card_adv",
+       "count": 29
+      }
+     ]
+    },
+    {
+     "need": 435,
+     "rewards": [
+      {
+       "item": "aptitude_pill",
+       "count": 30
+      },
+      {
+       "item": "can_tie",
+       "count": 15
+      },
+      {
+       "item": "ginseng_1000",
+       "count": 10
+      },
+      {
+       "item": "reputation_card_adv",
+       "count": 30
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "id": "craft_lv",
+   "name": "工艺精进",
+   "desc": "工艺总等级",
+   "tiers": [
+    {
+     "need": 16,
+     "rewards": [
+      {
+       "item": "hq_blueprint",
+       "count": 1
+      },
+      {
+       "item": "beast_fruit",
+       "count": 1
+      },
+      {
+       "item": "baiye_zhaji",
+       "count": 1
+      },
+      {
+       "item": "abacus",
+       "count": 1
+      }
+     ]
+    },
+    {
+     "need": 32,
+     "rewards": [
+      {
+       "item": "hq_blueprint",
+       "count": 2
+      },
+      {
+       "item": "beast_fruit",
+       "count": 4
+      },
+      {
+       "item": "baiye_zhaji",
+       "count": 8
+      },
+      {
+       "item": "abacus",
+       "count": 2
+      }
+     ]
+    },
+    {
+     "need": 47,
+     "rewards": [
+      {
+       "item": "hq_blueprint",
+       "count": 3
+      },
+      {
+       "item": "beast_fruit",
+       "count": 7
+      },
+      {
+       "item": "baiye_zhaji",
+       "count": 14
+      },
+      {
+       "item": "abacus",
+       "count": 4
+      }
+     ]
+    },
+    {
+     "need": 63,
+     "rewards": [
+      {
+       "item": "hq_blueprint",
+       "count": 4
+      },
+      {
+       "item": "beast_fruit",
+       "count": 10
+      },
+      {
+       "item": "baiye_zhaji",
+       "count": 20
+      },
+      {
+       "item": "abacus",
+       "count": 6
+      }
+     ]
+    },
+    {
+     "need": 79,
+     "rewards": [
+      {
+       "item": "hq_blueprint",
+       "count": 5
+      },
+      {
+       "item": "beast_fruit",
+       "count": 13
+      },
+      {
+       "item": "baiye_zhaji",
+       "count": 27
+      },
+      {
+       "item": "abacus",
+       "count": 8
+      }
+     ]
+    },
+    {
+     "need": 94,
+     "rewards": [
+      {
+       "item": "hq_blueprint",
+       "count": 7
+      },
+      {
+       "item": "beast_fruit",
+       "count": 17
+      },
+      {
+       "item": "baiye_zhaji",
+       "count": 34
+      },
+      {
+       "item": "abacus",
+       "count": 10
+      }
+     ]
+    },
+    {
+     "need": 110,
+     "rewards": [
+      {
+       "item": "hq_blueprint",
+       "count": 8
+      },
+      {
+       "item": "beast_fruit",
+       "count": 21
+      },
+      {
+       "item": "baiye_zhaji",
+       "count": 42
+      },
+      {
+       "item": "abacus",
+       "count": 12
+      }
+     ]
+    },
+    {
+     "need": 125,
+     "rewards": [
+      {
+       "item": "hq_blueprint",
+       "count": 10
+      },
+      {
+       "item": "beast_fruit",
+       "count": 25
+      },
+      {
+       "item": "baiye_zhaji",
+       "count": 49
+      },
+      {
+       "item": "abacus",
+       "count": 15
+      }
+     ]
+    },
+    {
+     "need": 141,
+     "rewards": [
+      {
+       "item": "hq_blueprint",
+       "count": 12
+      },
+      {
+       "item": "beast_fruit",
+       "count": 29
+      },
+      {
+       "item": "baiye_zhaji",
+       "count": 58
+      },
+      {
+       "item": "abacus",
+       "count": 17
+      }
+     ]
+    },
+    {
+     "need": 157,
+     "rewards": [
+      {
+       "item": "hq_blueprint",
+       "count": 13
+      },
+      {
+       "item": "beast_fruit",
+       "count": 33
+      },
+      {
+       "item": "baiye_zhaji",
+       "count": 66
+      },
+      {
+       "item": "abacus",
+       "count": 20
+      }
+     ]
+    },
+    {
+     "need": 172,
+     "rewards": [
+      {
+       "item": "hq_blueprint",
+       "count": 15
+      },
+      {
+       "item": "beast_fruit",
+       "count": 37
+      },
+      {
+       "item": "baiye_zhaji",
+       "count": 75
+      },
+      {
+       "item": "abacus",
+       "count": 22
+      }
+     ]
+    },
+    {
+     "need": 188,
+     "rewards": [
+      {
+       "item": "hq_blueprint",
+       "count": 17
+      },
+      {
+       "item": "beast_fruit",
+       "count": 42
+      },
+      {
+       "item": "baiye_zhaji",
+       "count": 84
+      },
+      {
+       "item": "abacus",
+       "count": 25
+      }
+     ]
+    },
+    {
+     "need": 204,
+     "rewards": [
+      {
+       "item": "hq_blueprint",
+       "count": 19
+      },
+      {
+       "item": "beast_fruit",
+       "count": 47
+      },
+      {
+       "item": "baiye_zhaji",
+       "count": 93
+      },
+      {
+       "item": "abacus",
+       "count": 28
+      }
+     ]
+    },
+    {
+     "need": 219,
+     "rewards": [
+      {
+       "item": "hq_blueprint",
+       "count": 20
+      },
+      {
+       "item": "beast_fruit",
+       "count": 51
+      },
+      {
+       "item": "baiye_zhaji",
+       "count": 102
+      },
+      {
+       "item": "abacus",
+       "count": 31
+      }
+     ]
+    },
+    {
+     "need": 235,
+     "rewards": [
+      {
+       "item": "hq_blueprint",
+       "count": 22
+      },
+      {
+       "item": "beast_fruit",
+       "count": 56
+      },
+      {
+       "item": "baiye_zhaji",
+       "count": 112
+      },
+      {
+       "item": "abacus",
+       "count": 34
+      }
+     ]
+    },
+    {
+     "need": 250,
+     "rewards": [
+      {
+       "item": "hq_blueprint",
+       "count": 24
+      },
+      {
+       "item": "beast_fruit",
+       "count": 61
+      },
+      {
+       "item": "baiye_zhaji",
+       "count": 122
+      },
+      {
+       "item": "abacus",
+       "count": 37
+      }
+     ]
+    },
+    {
+     "need": 266,
+     "rewards": [
+      {
+       "item": "hq_blueprint",
+       "count": 26
+      },
+      {
+       "item": "beast_fruit",
+       "count": 66
+      },
+      {
+       "item": "baiye_zhaji",
+       "count": 132
+      },
+      {
+       "item": "abacus",
+       "count": 40
+      }
+     ]
+    },
+    {
+     "need": 282,
+     "rewards": [
+      {
+       "item": "hq_blueprint",
+       "count": 28
+      },
+      {
+       "item": "beast_fruit",
+       "count": 71
+      },
+      {
+       "item": "baiye_zhaji",
+       "count": 142
+      },
+      {
+       "item": "abacus",
+       "count": 43
+      }
+     ]
+    },
+    {
+     "need": 297,
+     "rewards": [
+      {
+       "item": "hq_blueprint",
+       "count": 30
+      },
+      {
+       "item": "beast_fruit",
+       "count": 76
+      },
+      {
+       "item": "baiye_zhaji",
+       "count": 152
+      },
+      {
+       "item": "abacus",
+       "count": 46
+      }
+     ]
+    },
+    {
+     "need": 313,
+     "rewards": [
+      {
+       "item": "hq_blueprint",
+       "count": 33
+      },
+      {
+       "item": "beast_fruit",
+       "count": 81
+      },
+      {
+       "item": "baiye_zhaji",
+       "count": 163
+      },
+      {
+       "item": "abacus",
+       "count": 49
+      }
+     ]
+    },
+    {
+     "need": 329,
+     "rewards": [
+      {
+       "item": "hq_blueprint",
+       "count": 35
+      },
+      {
+       "item": "beast_fruit",
+       "count": 87
+      },
+      {
+       "item": "baiye_zhaji",
+       "count": 174
+      },
+      {
+       "item": "abacus",
+       "count": 52
+      }
+     ]
+    },
+    {
+     "need": 344,
+     "rewards": [
+      {
+       "item": "hq_blueprint",
+       "count": 37
+      },
+      {
+       "item": "beast_fruit",
+       "count": 92
+      },
+      {
+       "item": "baiye_zhaji",
+       "count": 184
+      },
+      {
+       "item": "abacus",
+       "count": 55
+      }
+     ]
+    },
+    {
+     "need": 360,
+     "rewards": [
+      {
+       "item": "hq_blueprint",
+       "count": 39
+      },
+      {
+       "item": "beast_fruit",
+       "count": 98
+      },
+      {
+       "item": "baiye_zhaji",
+       "count": 195
+      },
+      {
+       "item": "abacus",
+       "count": 59
+      }
+     ]
+    },
+    {
+     "need": 375,
+     "rewards": [
+      {
+       "item": "hq_blueprint",
+       "count": 41
+      },
+      {
+       "item": "beast_fruit",
+       "count": 103
+      },
+      {
+       "item": "baiye_zhaji",
+       "count": 206
+      },
+      {
+       "item": "abacus",
+       "count": 62
+      }
+     ]
+    },
+    {
+     "need": 391,
+     "rewards": [
+      {
+       "item": "hq_blueprint",
+       "count": 44
+      },
+      {
+       "item": "beast_fruit",
+       "count": 109
+      },
+      {
+       "item": "baiye_zhaji",
+       "count": 218
+      },
+      {
+       "item": "abacus",
+       "count": 65
+      }
+     ]
+    },
+    {
+     "need": 407,
+     "rewards": [
+      {
+       "item": "hq_blueprint",
+       "count": 46
+      },
+      {
+       "item": "beast_fruit",
+       "count": 115
+      },
+      {
+       "item": "baiye_zhaji",
+       "count": 229
+      },
+      {
+       "item": "abacus",
+       "count": 69
+      }
+     ]
+    },
+    {
+     "need": 422,
+     "rewards": [
+      {
+       "item": "hq_blueprint",
+       "count": 48
+      },
+      {
+       "item": "beast_fruit",
+       "count": 120
+      },
+      {
+       "item": "baiye_zhaji",
+       "count": 241
+      },
+      {
+       "item": "abacus",
+       "count": 72
+      }
+     ]
+    },
+    {
+     "need": 438,
+     "rewards": [
+      {
+       "item": "hq_blueprint",
+       "count": 50
+      },
+      {
+       "item": "beast_fruit",
+       "count": 126
+      },
+      {
+       "item": "baiye_zhaji",
+       "count": 252
+      },
+      {
+       "item": "abacus",
+       "count": 76
+      }
+     ]
+    },
+    {
+     "need": 454,
+     "rewards": [
+      {
+       "item": "hq_blueprint",
+       "count": 53
+      },
+      {
+       "item": "beast_fruit",
+       "count": 132
+      },
+      {
+       "item": "baiye_zhaji",
+       "count": 264
+      },
+      {
+       "item": "abacus",
+       "count": 79
+      }
+     ]
+    },
+    {
+     "need": 469,
+     "rewards": [
+      {
+       "item": "hq_blueprint",
+       "count": 55
+      },
+      {
+       "item": "beast_fruit",
+       "count": 138
+      },
+      {
+       "item": "baiye_zhaji",
+       "count": 276
+      },
+      {
+       "item": "abacus",
+       "count": 83
+      }
+     ]
+    },
+    {
+     "need": 485,
+     "rewards": [
+      {
+       "item": "hq_blueprint",
+       "count": 58
+      },
+      {
+       "item": "beast_fruit",
+       "count": 144
+      },
+      {
+       "item": "baiye_zhaji",
+       "count": 288
+      },
+      {
+       "item": "abacus",
+       "count": 86
+      }
+     ]
+    },
+    {
+     "need": 500,
+     "rewards": [
+      {
+       "item": "hq_blueprint",
+       "count": 60
+      },
+      {
+       "item": "beast_fruit",
+       "count": 150
+      },
+      {
+       "item": "baiye_zhaji",
+       "count": 300
+      },
+      {
+       "item": "abacus",
+       "count": 90
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "id": "patients",
+   "name": "悬壶济世",
+   "desc": "累计接待病人",
+   "tiers": [
+    {
+     "need": 500,
+     "rewards": [
+      {
+       "item": "wushuang_gugu",
+       "count": 1
+      },
+      {
+       "item": "beast_fruit",
+       "count": 1
+      },
+      {
+       "item": "aroma_fruit",
+       "count": 1
+      },
+      {
+       "item": "patient_manual",
+       "count": 1
+      }
+     ]
+    },
+    {
+     "need": 593,
+     "rewards": [
+      {
+       "item": "wushuang_gugu",
+       "count": 1
+      },
+      {
+       "item": "beast_fruit",
+       "count": 4
+      },
+      {
+       "item": "aroma_fruit",
+       "count": 1
+      },
+      {
+       "item": "patient_manual",
+       "count": 1
+      }
+     ]
+    },
+    {
+     "need": 704,
+     "rewards": [
+      {
+       "item": "wushuang_gugu",
+       "count": 1
+      },
+      {
+       "item": "beast_fruit",
+       "count": 7
+      },
+      {
+       "item": "aroma_fruit",
+       "count": 1
+      },
+      {
+       "item": "patient_manual",
+       "count": 2
+      }
+     ]
+    },
+    {
+     "need": 835,
+     "rewards": [
+      {
+       "item": "wushuang_gugu",
+       "count": 1
+      },
+      {
+       "item": "beast_fruit",
+       "count": 10
+      },
+      {
+       "item": "aroma_fruit",
+       "count": 2
+      },
+      {
+       "item": "patient_manual",
+       "count": 3
+      }
+     ]
+    },
+    {
+     "need": 991,
+     "rewards": [
+      {
+       "item": "wushuang_gugu",
+       "count": 1
+      },
+      {
+       "item": "beast_fruit",
+       "count": 13
+      },
+      {
+       "item": "aroma_fruit",
+       "count": 3
+      },
+      {
+       "item": "patient_manual",
+       "count": 4
+      }
+     ]
+    },
+    {
+     "need": 1175,
+     "rewards": [
+      {
+       "item": "wushuang_gugu",
+       "count": 1
+      },
+      {
+       "item": "beast_fruit",
+       "count": 17
+      },
+      {
+       "item": "aroma_fruit",
+       "count": 3
+      },
+      {
+       "item": "patient_manual",
+       "count": 5
+      }
+     ]
+    },
+    {
+     "need": 1394,
+     "rewards": [
+      {
+       "item": "wushuang_gugu",
+       "count": 2
+      },
+      {
+       "item": "beast_fruit",
+       "count": 21
+      },
+      {
+       "item": "aroma_fruit",
+       "count": 4
+      },
+      {
+       "item": "patient_manual",
+       "count": 6
+      }
+     ]
+    },
+    {
+     "need": 1654,
+     "rewards": [
+      {
+       "item": "wushuang_gugu",
+       "count": 2
+      },
+      {
+       "item": "beast_fruit",
+       "count": 25
+      },
+      {
+       "item": "aroma_fruit",
+       "count": 5
+      },
+      {
+       "item": "patient_manual",
+       "count": 7
+      }
+     ]
+    },
+    {
+     "need": 1962,
+     "rewards": [
+      {
+       "item": "wushuang_gugu",
+       "count": 2
+      },
+      {
+       "item": "beast_fruit",
+       "count": 29
+      },
+      {
+       "item": "aroma_fruit",
+       "count": 6
+      },
+      {
+       "item": "patient_manual",
+       "count": 9
+      }
+     ]
+    },
+    {
+     "need": 2328,
+     "rewards": [
+      {
+       "item": "wushuang_gugu",
+       "count": 3
+      },
+      {
+       "item": "beast_fruit",
+       "count": 33
+      },
+      {
+       "item": "aroma_fruit",
+       "count": 7
+      },
+      {
+       "item": "patient_manual",
+       "count": 10
+      }
+     ]
+    },
+    {
+     "need": 2762,
+     "rewards": [
+      {
+       "item": "wushuang_gugu",
+       "count": 3
+      },
+      {
+       "item": "beast_fruit",
+       "count": 37
+      },
+      {
+       "item": "aroma_fruit",
+       "count": 7
+      },
+      {
+       "item": "patient_manual",
+       "count": 11
+      }
+     ]
+    },
+    {
+     "need": 3277,
+     "rewards": [
+      {
+       "item": "wushuang_gugu",
+       "count": 3
+      },
+      {
+       "item": "beast_fruit",
+       "count": 42
+      },
+      {
+       "item": "aroma_fruit",
+       "count": 8
+      },
+      {
+       "item": "patient_manual",
+       "count": 13
+      }
+     ]
+    },
+    {
+     "need": 3888,
+     "rewards": [
+      {
+       "item": "wushuang_gugu",
+       "count": 4
+      },
+      {
+       "item": "beast_fruit",
+       "count": 47
+      },
+      {
+       "item": "aroma_fruit",
+       "count": 9
+      },
+      {
+       "item": "patient_manual",
+       "count": 14
+      }
+     ]
+    },
+    {
+     "need": 4612,
+     "rewards": [
+      {
+       "item": "wushuang_gugu",
+       "count": 4
+      },
+      {
+       "item": "beast_fruit",
+       "count": 51
+      },
+      {
+       "item": "aroma_fruit",
+       "count": 10
+      },
+      {
+       "item": "patient_manual",
+       "count": 15
+      }
+     ]
+    },
+    {
+     "need": 5472,
+     "rewards": [
+      {
+       "item": "wushuang_gugu",
+       "count": 4
+      },
+      {
+       "item": "beast_fruit",
+       "count": 56
+      },
+      {
+       "item": "aroma_fruit",
+       "count": 11
+      },
+      {
+       "item": "patient_manual",
+       "count": 17
+      }
+     ]
+    },
+    {
+     "need": 6492,
+     "rewards": [
+      {
+       "item": "wushuang_gugu",
+       "count": 5
+      },
+      {
+       "item": "beast_fruit",
+       "count": 61
+      },
+      {
+       "item": "aroma_fruit",
+       "count": 12
+      },
+      {
+       "item": "patient_manual",
+       "count": 18
+      }
+     ]
+    },
+    {
+     "need": 7702,
+     "rewards": [
+      {
+       "item": "wushuang_gugu",
+       "count": 5
+      },
+      {
+       "item": "beast_fruit",
+       "count": 66
+      },
+      {
+       "item": "aroma_fruit",
+       "count": 13
+      },
+      {
+       "item": "patient_manual",
+       "count": 20
+      }
+     ]
+    },
+    {
+     "need": 9137,
+     "rewards": [
+      {
+       "item": "wushuang_gugu",
+       "count": 6
+      },
+      {
+       "item": "beast_fruit",
+       "count": 71
+      },
+      {
+       "item": "aroma_fruit",
+       "count": 14
+      },
+      {
+       "item": "patient_manual",
+       "count": 21
+      }
+     ]
+    },
+    {
+     "need": 10841,
+     "rewards": [
+      {
+       "item": "wushuang_gugu",
+       "count": 6
+      },
+      {
+       "item": "beast_fruit",
+       "count": 76
+      },
+      {
+       "item": "aroma_fruit",
+       "count": 15
+      },
+      {
+       "item": "patient_manual",
+       "count": 23
+      }
+     ]
+    },
+    {
+     "need": 12861,
+     "rewards": [
+      {
+       "item": "wushuang_gugu",
+       "count": 7
+      },
+      {
+       "item": "beast_fruit",
+       "count": 81
+      },
+      {
+       "item": "aroma_fruit",
+       "count": 16
+      },
+      {
+       "item": "patient_manual",
+       "count": 24
+      }
+     ]
+    },
+    {
+     "need": 15258,
+     "rewards": [
+      {
+       "item": "wushuang_gugu",
+       "count": 7
+      },
+      {
+       "item": "beast_fruit",
+       "count": 87
+      },
+      {
+       "item": "aroma_fruit",
+       "count": 17
+      },
+      {
+       "item": "patient_manual",
+       "count": 26
+      }
+     ]
+    },
+    {
+     "need": 18102,
+     "rewards": [
+      {
+       "item": "wushuang_gugu",
+       "count": 7
+      },
+      {
+       "item": "beast_fruit",
+       "count": 92
+      },
+      {
+       "item": "aroma_fruit",
+       "count": 18
+      },
+      {
+       "item": "patient_manual",
+       "count": 28
+      }
+     ]
+    },
+    {
+     "need": 21476,
+     "rewards": [
+      {
+       "item": "wushuang_gugu",
+       "count": 8
+      },
+      {
+       "item": "beast_fruit",
+       "count": 98
+      },
+      {
+       "item": "aroma_fruit",
+       "count": 20
+      },
+      {
+       "item": "patient_manual",
+       "count": 29
+      }
+     ]
+    },
+    {
+     "need": 25479,
+     "rewards": [
+      {
+       "item": "wushuang_gugu",
+       "count": 8
+      },
+      {
+       "item": "beast_fruit",
+       "count": 103
+      },
+      {
+       "item": "aroma_fruit",
+       "count": 21
+      },
+      {
+       "item": "patient_manual",
+       "count": 31
+      }
+     ]
+    },
+    {
+     "need": 30228,
+     "rewards": [
+      {
+       "item": "wushuang_gugu",
+       "count": 9
+      },
+      {
+       "item": "beast_fruit",
+       "count": 109
+      },
+      {
+       "item": "aroma_fruit",
+       "count": 22
+      },
+      {
+       "item": "patient_manual",
+       "count": 33
+      }
+     ]
+    },
+    {
+     "need": 35862,
+     "rewards": [
+      {
+       "item": "wushuang_gugu",
+       "count": 9
+      },
+      {
+       "item": "beast_fruit",
+       "count": 115
+      },
+      {
+       "item": "aroma_fruit",
+       "count": 23
+      },
+      {
+       "item": "patient_manual",
+       "count": 34
+      }
+     ]
+    },
+    {
+     "need": 42547,
+     "rewards": [
+      {
+       "item": "wushuang_gugu",
+       "count": 10
+      },
+      {
+       "item": "beast_fruit",
+       "count": 120
+      },
+      {
+       "item": "aroma_fruit",
+       "count": 24
+      },
+      {
+       "item": "patient_manual",
+       "count": 36
+      }
+     ]
+    },
+    {
+     "need": 50477,
+     "rewards": [
+      {
+       "item": "wushuang_gugu",
+       "count": 10
+      },
+      {
+       "item": "beast_fruit",
+       "count": 126
+      },
+      {
+       "item": "aroma_fruit",
+       "count": 25
+      },
+      {
+       "item": "patient_manual",
+       "count": 38
+      }
+     ]
+    },
+    {
+     "need": 59885,
+     "rewards": [
+      {
+       "item": "wushuang_gugu",
+       "count": 11
+      },
+      {
+       "item": "beast_fruit",
+       "count": 132
+      },
+      {
+       "item": "aroma_fruit",
+       "count": 26
+      },
+      {
+       "item": "patient_manual",
+       "count": 40
+      }
+     ]
+    },
+    {
+     "need": 71047,
+     "rewards": [
+      {
+       "item": "wushuang_gugu",
+       "count": 11
+      },
+      {
+       "item": "beast_fruit",
+       "count": 138
+      },
+      {
+       "item": "aroma_fruit",
+       "count": 28
+      },
+      {
+       "item": "patient_manual",
+       "count": 41
+      }
+     ]
+    },
+    {
+     "need": 84289,
+     "rewards": [
+      {
+       "item": "wushuang_gugu",
+       "count": 12
+      },
+      {
+       "item": "beast_fruit",
+       "count": 144
+      },
+      {
+       "item": "aroma_fruit",
+       "count": 29
+      },
+      {
+       "item": "patient_manual",
+       "count": 43
+      }
+     ]
+    },
+    {
+     "need": 100000,
+     "rewards": [
+      {
+       "item": "wushuang_gugu",
+       "count": 12
+      },
+      {
+       "item": "beast_fruit",
+       "count": 150
+      },
+      {
+       "item": "aroma_fruit",
+       "count": 30
+      },
+      {
+       "item": "patient_manual",
+       "count": 45
+      }
+     ]
+    }
+   ]
+  }
+ ]
 }

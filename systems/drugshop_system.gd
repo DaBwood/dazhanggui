@@ -459,6 +459,19 @@ func can_claim_ach(line_id: String, tier_idx: int) -> bool:
 		return get_ach_progress(line_id) >= int(tiers[tier_idx].get("need", 0))
 	return false
 
+# 发放一组奖励入背包，返回拼接文案（领奖通道唯一入口，档领/重复领共用，【新增】2026-09-16）
+func _grant_rewards(rewards: Array) -> String:
+	var parts := []
+	for r in rewards:
+		var iid: String = str(r.get("item", ""))
+		var n: int = int(r.get("count", 0))
+		if iid == "" or n <= 0:
+			continue
+		g.items[iid] = int(g.items.get(iid, 0)) + n
+		var iname: String = g.ITEM_CONFIG.get(iid, {}).get("name", iid)
+		parts.append("%s×%d" % [iname, n])
+	return "、".join(parts)
+
 # 领取成就档奖励：道具走背包入账通道，按档幂等（已领取的档跳过）
 func claim_ach(line_id: String, tier_idx: int) -> Dictionary:
 	if not can_claim_ach(line_id, tier_idx):
@@ -469,16 +482,47 @@ func claim_ach(line_id: String, tier_idx: int) -> Dictionary:
 		var tiers: Array = line.get("tiers", [])
 		if tier_idx >= tiers.size():
 			return {"ok": false, "msg": "奖励不存在"}
-		var rewards: Array = tiers[tier_idx].get("rewards", [])
-		var parts := []
-		for r in rewards:
-			var iid: String = str(r.get("item", ""))
-			var n: int = int(r.get("count", 0))
-			if iid == "" or n <= 0:
-				continue
-			g.items[iid] = int(g.items.get(iid, 0)) + n
-			var iname: String = g.ITEM_CONFIG.get(iid, {}).get("name", iid)
-			parts.append("%s×%d" % [iname, n])
 		ach[line_id] = max(get_ach_claimed(line_id), tier_idx + 1)
-		return {"ok": true, "rewards": "、".join(parts)}
+		return {"ok": true, "rewards": _grant_rewards(tiers[tier_idx].get("rewards", []))}
 	return {"ok": false, "msg": "奖励不存在"}
+
+# ============ 病人线满档后重复领取（【新增】2026-09-16 用户拍板） ============
+# 32档领满后不设死：累计接待病人超过封顶(末档need，JSON内)的部分，每满 patients_repeat_step
+# 可再领一次末档四道具；重复次数记 ach["patients_r"]（随 ach 字典落盘）
+func _patients_line() -> Dictionary:
+	for line in get_ach_list():
+		if str(line.get("id", "")) == "patients":
+			return line
+	return {}
+
+# 病人线封顶值 = 末档 need（当前配置 100000）
+func get_patients_cap() -> int:
+	var tiers: Array = _patients_line().get("tiers", [])
+	if tiers.is_empty():
+		return 100000
+	return int(tiers[tiers.size() - 1].get("need", 100000))
+
+func get_repeat_claimed() -> int:
+	return int(ach.get("patients_r", 0))
+
+# 重复领取进度：封顶外病人池 / 步长 = 可领总次数；have=距下一次还差
+func get_repeat_progress() -> Dictionary:
+	var step: int = int(_st().get("patients_repeat_step", 10000))
+	var pool: int = max(0, patients_total - get_patients_cap())
+	var claimable_times: int = floori(float(pool) / step)
+	return {"claimable": claimable_times > get_repeat_claimed(),
+		"have": pool - get_repeat_claimed() * step, "need": step}
+
+func can_claim_repeat() -> bool:
+	# 须先领满32档
+	if get_ach_claimed("patients") < _patients_line().get("tiers", []).size():
+		return false
+	return bool(get_repeat_progress().get("claimable", false))
+
+func claim_repeat() -> Dictionary:
+	if not can_claim_repeat():
+		return {"ok": false, "msg": "病人数不足"}
+	ach["patients_r"] = get_repeat_claimed() + 1
+	var tiers: Array = _patients_line().get("tiers", [])
+	var rewards: Array = tiers[tiers.size() - 1].get("rewards", [])   # 末档四道具
+	return {"ok": true, "rewards": _grant_rewards(rewards)}

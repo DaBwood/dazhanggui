@@ -579,7 +579,7 @@ func _on_recipe_upgrade(rid: String, batch: bool):
 		return
 	_refresh()
 
-# ---------- 子页：成就（3条线 × 进度 + 4档领取） ----------
+# ---------- 子页：成就（3条线；已领取不显示，只显示最上面一档未领取，【改】2026-09-16 用户拍板） ----------
 func _fill_ach(body: VBoxContainer):
 	for line in _sys().get_ach_list():
 		var lid: String = str(line.get("id", ""))
@@ -601,42 +601,81 @@ func _fill_ach(body: VBoxContainer):
 		head.add_theme_font_size_override("font_size", 16)
 		vb.add_child(head)
 		var tiers: Array = line.get("tiers", [])
-		for i in range(tiers.size()):
-			var tier: Dictionary = tiers[i]
-			var claimed: bool = i < _sys().get_ach_claimed(lid)
-			var row := HBoxContainer.new()
-			row.add_theme_constant_override("separation", 6)
-			vb.add_child(row)
-			# 奖励文案（道具名走 ITEM_CONFIG，不臆测）
-			var parts := []
-			for r in tier.get("rewards", []):
-				var iid: String = str(r.get("item", ""))
-				var iname: String = data.ITEM_CONFIG.get(iid, {}).get("name", iid)
-				parts.append("%s×%d" % [iname, int(r.get("count", 0))])
-			var info := Label.new()
-			info.size_flags_horizontal = Control.SIZE_EXPAND_FILL
-			info.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
-			if claimed:
-				info.text = "已领取　%s" % "、".join(parts)
-				info.add_theme_color_override("font_color", Color("#666080"))
-			else:
-				info.text = "%s　%s" % [c.format_number(int(tier.get("need", 0))), "、".join(parts)]
-			row.add_child(info)
-			var btn := Button.new()
-			btn.custom_minimum_size = Vector2(72, 30)
-			if claimed:
-				btn.text = "已领取"
-				btn.disabled = true
-			else:
-				btn.text = "领取"
-				btn.disabled = not _sys().can_claim_ach(lid, i)
-				var lid_c: String = lid
-				var i_c: int = i
-				btn.pressed.connect(func(): _on_ach_claim(lid_c, i_c))
-			row.add_child(btn)
+		var claimed: int = _sys().get_ach_claimed(lid)
+		if claimed < tiers.size():
+			# 只显示当前最低未领取档（上面的档已领完不再显示）
+			_add_ach_tier_row(vb, lid, claimed, tiers[claimed])
+		elif lid == "patients":
+			# 病人线32档领满：封顶后每多接待 step 病人可再领一次末档奖励（可重复）
+			_add_repeat_row(vb)
+
+# 单个档位行：门槛 + 四道具奖励文案 + 领取按钮（未达成禁用）
+func _add_ach_tier_row(vb: VBoxContainer, lid: String, tier_idx: int, tier: Dictionary):
+	var row := HBoxContainer.new()
+	row.add_theme_constant_override("separation", 6)
+	vb.add_child(row)
+	# 奖励文案（道具名走 ITEM_CONFIG，不臆测）
+	var parts := []
+	for r in tier.get("rewards", []):
+		var iid: String = str(r.get("item", ""))
+		var iname: String = data.ITEM_CONFIG.get(iid, {}).get("name", iid)
+		parts.append("%s×%d" % [iname, int(r.get("count", 0))])
+	var info := Label.new()
+	info.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	info.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+	info.text = "第%d档 %s　%s" % [tier_idx + 1, c.format_number(int(tier.get("need", 0))), "、".join(parts)]
+	row.add_child(info)
+	var btn := Button.new()
+	btn.custom_minimum_size = Vector2(72, 30)
+	btn.text = "领取"
+	btn.disabled = not _sys().can_claim_ach(lid, tier_idx)
+	var lid_c: String = lid
+	var i_c: int = tier_idx
+	btn.pressed.connect(func(): _on_ach_claim(lid_c, i_c))
+	row.add_child(btn)
+
+# 病人线满档后重复领取行：进度 X/10000 + 领取按钮
+func _add_repeat_row(vb: VBoxContainer):
+	var rp: Dictionary = _sys().get_repeat_progress()
+	var row := HBoxContainer.new()
+	row.add_theme_constant_override("separation", 6)
+	vb.add_child(row)
+	# 末档四道具文案
+	var tiers: Array = []
+	for line in _sys().get_ach_list():
+		if str(line.get("id", "")) == "patients":
+			tiers = line.get("tiers", [])
+	var parts := []
+	if not tiers.is_empty():
+		for r in tiers[tiers.size() - 1].get("rewards", []):
+			var iid: String = str(r.get("item", ""))
+			var iname: String = data.ITEM_CONFIG.get(iid, {}).get("name", iid)
+			parts.append("%s×%d" % [iname, int(r.get("count", 0))])
+	var info := Label.new()
+	info.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	info.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+	info.text = "已领满32档，每多接待 %s 病人可再领：%s（进度 %s/%s）" % [
+		c.format_number(int(rp.get("need", 10000))), "、".join(parts),
+		c.format_number(int(rp.get("have", 0))), c.format_number(int(rp.get("need", 10000)))]
+	row.add_child(info)
+	var btn := Button.new()
+	btn.custom_minimum_size = Vector2(72, 30)
+	btn.text = "领取"
+	btn.disabled = not _sys().can_claim_repeat()
+	btn.pressed.connect(_on_repeat_claim)
+	row.add_child(btn)
 
 func _on_ach_claim(lid: String, tier_idx: int):
 	var r := _sys().claim_ach(lid, tier_idx)
+	if not r.get("ok", false):
+		c._show_stage_hint(str(r.get("msg", "")))
+		return
+	c._show_stage_hint("获得 %s" % str(r.get("rewards", "")))
+	_refresh()
+
+# 【新增】病人线满档后重复领取末档奖励
+func _on_repeat_claim():
+	var r := _sys().claim_repeat()
 	if not r.get("ok", false):
 		c._show_stage_hint(str(r.get("msg", "")))
 		return
