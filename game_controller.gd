@@ -75,6 +75,7 @@ var clinic_view   # 【新增】医馆玩法视图（商铺地图医馆「▶」
 var drugshop_view   # 【新增】药铺玩法视图（商铺地图药铺「▶」入口全屏页）
 var tavern_view   # 【新增】酒肆玩法视图（商铺地图酒肆店铺「▶」入口全屏页，按名字挂不按位置）
 var winery_view   # 【新增】酒坊玩法视图（商铺地图酒坊「▶」入口全屏页）
+var miaoyin_view   # 【新增】妙音坊玩法视图（商铺地图妙音坊「▶」入口全屏页）
 
 # ==================== 【新增】视图注册清单（2026-09-18 架构重构批次②） ====================
 # 一条 = var 成员名 + 脚本路径 + 通用入口 key；_ready 由本清单循环实例化。
@@ -107,11 +108,12 @@ const VIEW_LIST: Array = [
 	{"var": "drugshop_view", "script": "res://ui/pages/drugshop_view.gd", "key": "drugshop"},
 	{"var": "tavern_view", "script": "res://ui/pages/tavern_view.gd", "key": "tavern"},
 	{"var": "winery_view", "script": "res://ui/pages/winery_view.gd", "key": "winery"},
+	{"var": "miaoyin_view", "script": "res://ui/pages/miaoyin_view.gd", "key": "miaoyin"},
 ]
 
 # 【新增】切回闯荡页需关闭的视图 key 清单（= 原 switch_page 里 16 个手写 hide_xxx_view() 调用清单化，
 # 新可关闭视图在此追加一行即可；顺序无要求）
-const PAGE_CLOSE_LIST: Array = ["exchange", "lottery", "charity", "travel", "manor", "war", "fishing", "cuzhi", "collection", "bank", "mail", "inn", "clinic", "drugshop", "tavern", "winery"]
+const PAGE_CLOSE_LIST: Array = ["exchange", "lottery", "charity", "travel", "manor", "war", "fishing", "cuzhi", "collection", "bank", "mail", "inn", "clinic", "drugshop", "tavern", "winery", "miaoyin"]
 
 func _ready():
 	

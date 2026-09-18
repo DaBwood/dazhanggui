@@ -1,0 +1,192 @@
+{
+	"settings": {
+		"comment": "五职业/25应援物/5缘分物；应援物只在妙音坊内部使用，不进背包 items"
+	},
+	"professions": [
+		{
+			"id": "wudao",
+			"name": "舞蹈",
+			"flower": "yyf_wudao",
+			"support_items": [
+				{
+					"id": "yyw_wudao_rumen",
+					"name": "舞蹈入门书籍",
+					"exp": 1,
+					"quality": "卓越"
+				},
+				{
+					"id": "yyw_wudao_chuji",
+					"name": "舞蹈鞋",
+					"exp": 25,
+					"quality": "卓越"
+				},
+				{
+					"id": "yyw_wudao_jinjie",
+					"name": "丝绸飘带",
+					"exp": 50,
+					"quality": "传奇"
+				},
+				{
+					"id": "yyw_wudao_zhongji",
+					"name": "舞蹈进阶书籍",
+					"exp": 75,
+					"quality": "传奇"
+				},
+				{
+					"id": "yyw_wudao_gaoji",
+					"name": "丝绸舞裙",
+					"exp": 100,
+					"quality": "无双"
+				}
+			]
+		},
+		{
+			"id": "shengyue",
+			"name": "声乐",
+			"flower": "yyf_shengyue",
+			"support_items": [
+				{
+					"id": "yyw_shengyue_rumen",
+					"name": "声乐基础教材",
+					"exp": 1,
+					"quality": "卓越"
+				},
+				{
+					"id": "yyw_shengyue_chuji",
+					"name": "麦克风",
+					"exp": 25,
+					"quality": "卓越"
+				},
+				{
+					"id": "yyw_shengyue_jinjie",
+					"name": "乐谱",
+					"exp": 50,
+					"quality": "传奇"
+				},
+				{
+					"id": "yyw_shengyue_zhongji",
+					"name": "声乐高级教材",
+					"exp": 75,
+					"quality": "传奇"
+				},
+				{
+					"id": "yyw_shengyue_gaoji",
+					"name": "豪华音乐盒",
+					"exp": 100,
+					"quality": "无双"
+				}
+			]
+		},
+		{
+			"id": "yueqi",
+			"name": "乐器",
+			"flower": "yyf_yueqi",
+			"support_items": [
+				{
+					"id": "yyw_yueqi_rumen",
+					"name": "乐器基础教材",
+					"exp": 1,
+					"quality": "卓越"
+				},
+				{
+					"id": "yyw_yueqi_chuji",
+					"name": "笛子",
+					"exp": 25,
+					"quality": "卓越"
+				},
+				{
+					"id": "yyw_yueqi_jinjie",
+					"name": "古筝",
+					"exp": 50,
+					"quality": "传奇"
+				},
+				{
+					"id": "yyw_yueqi_zhongji",
+					"name": "乐器高级教材",
+					"exp": 75,
+					"quality": "传奇"
+				},
+				{
+					"id": "yyw_yueqi_gaoji",
+					"name": "琵琶",
+					"exp": 100,
+					"quality": "无双"
+				}
+			]
+		},
+		{
+			"id": "chuangzuo",
+			"name": "创作",
+			"flower": "yyf_chuangzuo",
+			"support_items": [
+				{
+					"id": "yyw_chuangzuo_rumen",
+					"name": "入门字帖",
+					"exp": 1,
+					"quality": "卓越"
+				},
+				{
+					"id": "yyw_chuangzuo_chuji",
+					"name": "小毛笔",
+					"exp": 25,
+					"quality": "卓越"
+				},
+				{
+					"id": "yyw_chuangzuo_jinjie",
+					"name": "书法毛笔",
+					"exp": 50,
+					"quality": "传奇"
+				},
+				{
+					"id": "yyw_chuangzuo_zhongji",
+					"name": "高级字帖",
+					"exp": 75,
+					"quality": "传奇"
+				},
+				{
+					"id": "yyw_chuangzuo_gaoji",
+					"name": "玉简",
+					"exp": 100,
+					"quality": "无双"
+				}
+			]
+		},
+		{
+			"id": "yitai",
+			"name": "仪态",
+			"flower": "yyf_yitai",
+			"support_items": [
+				{
+					"id": "yyw_yitai_rumen",
+					"name": "仪态基础教材",
+					"exp": 1,
+					"quality": "卓越"
+				},
+				{
+					"id": "yyw_yitai_chuji",
+					"name": "仪态镜",
+					"exp": 25,
+					"quality": "卓越"
+				},
+				{
+					"id": "yyw_yitai_jinjie",
+					"name": "高贵发饰",
+					"exp": 50,
+					"quality": "传奇"
+				},
+				{
+					"id": "yyw_yitai_zhongji",
+					"name": "高级仪态教材",
+					"exp": 75,
+					"quality": "传奇"
+				},
+				{
+					"id": "yyw_yitai_gaoji",
+					"name": "宫廷礼服",
+					"exp": 100,
+					"quality": "无双"
+				}
+			]
+		}
+	]
+}

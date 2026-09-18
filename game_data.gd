@@ -610,6 +610,8 @@ var tavern_system   # 【新增】酒肆玩法系统（逻辑在 systems/tavern_
 var _tavern_configs: Dictionary = {}   # 【新增】酒肆配置（tavern.json，由 _load_all_configs 加载）
 var winery_system   # 【新增】酒坊玩法系统（逻辑在 systems/winery_system.gd，状态内部持有随 get_save_data 落盘）
 var _winery_configs: Dictionary = {}   # 【新增】酒坊配置（winery.json，由 _load_all_configs 加载）
+var miaoyin_system   # 【新增】妙音坊玩法系统（逻辑在 systems/miaoyin_system.gd，状态内部持有随 get_save_data 落盘）
+var _miaoyin_configs: Dictionary = {}   # 【新增】妙音坊建筑配置（miaoyin_buildings.json；其余五张分表由系统懒加载）
 
 # ==================== 初始化 ====================
 # 初始化：创建各子系统（纯逻辑模块，持有本中枢引用），再加载全部配置
@@ -658,6 +660,7 @@ const SYSTEM_LIST: Array = [
 	{"key": "clinic_system", "script": "res://systems/clinic_system.gd", "cfg_var": "_clinic_configs", "cfg": "res://data/clinic.json"},
 	{"key": "tavern_system", "script": "res://systems/tavern_system.gd", "cfg_var": "_tavern_configs", "cfg": "res://data/tavern.json"},
 	{"key": "winery_system", "script": "res://systems/winery_system.gd", "cfg_var": "_winery_configs", "cfg": "res://data/winery.json"},
+	{"key": "miaoyin_system", "script": "res://systems/miaoyin_system.gd", "cfg_var": "_miaoyin_configs", "cfg": "res://data/miaoyin_buildings.json"},
 	{"key": "costume_system", "script": "res://systems/costume_system.gd", "cfg_var": "costume_configs", "cfg": "res://data/costumes.json"},
 ]
 

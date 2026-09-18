@@ -1,0 +1,905 @@
+{
+	"settings": {
+		"jar_cap_hours": 120,
+		"yyb_per_building_level": 10,
+		"yyf_per_function_level": 1,
+		"residence_support_divisor": 10,
+		"building_max_lv": 999999,
+		"facility_max_lv": 999999,
+		"cost_note": "设施升级费用=base×growth^当前等级，按设施数量分档；批次②接 UI 后使用",
+		"cost_base_by_fac_count": {
+			"4": 120,
+			"5": 150,
+			"6": 200
+		},
+		"cost_growth": 1.35,
+		"refresh_color_lvs": [
+			10,
+			25,
+			50,
+			100,
+			200
+		],
+		"refresh_colors": [
+			"#2ecc71",
+			"#3498db",
+			"#9b59b6",
+			"#e67e22",
+			"#e74c3c"
+		]
+	},
+	"buildings": [
+		{
+			"id": "canting",
+			"name": "餐厅",
+			"type": "function",
+			"unlock_medal": 1,
+			"facilities": [
+				{
+					"id": "canting_f0",
+					"name": "1号餐桌"
+				},
+				{
+					"id": "canting_f1",
+					"name": "2号餐桌"
+				},
+				{
+					"id": "canting_f2",
+					"name": "3号餐桌"
+				},
+				{
+					"id": "canting_f3",
+					"name": "4号餐桌"
+				},
+				{
+					"id": "canting_f4",
+					"name": "5号餐桌"
+				},
+				{
+					"id": "canting_f5",
+					"name": "餐厅后厨"
+				}
+			]
+		},
+		{
+			"id": "yulequ",
+			"name": "娱乐区",
+			"type": "function",
+			"unlock_medal": 1,
+			"facilities": [
+				{
+					"id": "yulequ_f0",
+					"name": "滑滑梯"
+				},
+				{
+					"id": "yulequ_f1",
+					"name": "旋转木马"
+				},
+				{
+					"id": "yulequ_f2",
+					"name": "泡澡池"
+				},
+				{
+					"id": "yulequ_f3",
+					"name": "气球打靶"
+				},
+				{
+					"id": "yulequ_f4",
+					"name": "秋千"
+				},
+				{
+					"id": "yulequ_f5",
+					"name": "热气球"
+				}
+			]
+		},
+		{
+			"id": "shengyue_jiaoshi",
+			"name": "声乐教室",
+			"type": "function",
+			"unlock_medal": 1,
+			"facilities": [
+				{
+					"id": "shengyue_jiaoshi_f0",
+					"name": "1号演唱台"
+				},
+				{
+					"id": "shengyue_jiaoshi_f1",
+					"name": "2号演唱台"
+				},
+				{
+					"id": "shengyue_jiaoshi_f2",
+					"name": "3号演唱台"
+				},
+				{
+					"id": "shengyue_jiaoshi_f3",
+					"name": "提词器"
+				},
+				{
+					"id": "shengyue_jiaoshi_f4",
+					"name": "蜂蜜柚子茶"
+				},
+				{
+					"id": "shengyue_jiaoshi_f5",
+					"name": "灵猫打碟机"
+				}
+			]
+		},
+		{
+			"id": "yueqi_jiaoshi",
+			"name": "乐器教室",
+			"type": "function",
+			"unlock_medal": 1,
+			"facilities": [
+				{
+					"id": "yueqi_jiaoshi_f0",
+					"name": "黑白钢琴键"
+				},
+				{
+					"id": "yueqi_jiaoshi_f1",
+					"name": "太鼓达人"
+				},
+				{
+					"id": "yueqi_jiaoshi_f2",
+					"name": "蘑菇架子鼓"
+				},
+				{
+					"id": "yueqi_jiaoshi_f3",
+					"name": "古筝台"
+				},
+				{
+					"id": "yueqi_jiaoshi_f4",
+					"name": "手鼓"
+				},
+				{
+					"id": "yueqi_jiaoshi_f5",
+					"name": "琵琶台"
+				}
+			]
+		},
+		{
+			"id": "shufang",
+			"name": "书坊",
+			"type": "function",
+			"unlock_medal": 1,
+			"facilities": [
+				{
+					"id": "shufang_f0",
+					"name": "1号书桌"
+				},
+				{
+					"id": "shufang_f1",
+					"name": "2号书桌"
+				},
+				{
+					"id": "shufang_f2",
+					"name": "3号书桌"
+				},
+				{
+					"id": "shufang_f3",
+					"name": "墨池"
+				},
+				{
+					"id": "shufang_f4",
+					"name": "书画字帖"
+				}
+			]
+		},
+		{
+			"id": "yitai_jiaoshi",
+			"name": "仪态教室",
+			"type": "function",
+			"unlock_medal": 1,
+			"facilities": [
+				{
+					"id": "yitai_jiaoshi_f0",
+					"name": "更衣室"
+				},
+				{
+					"id": "yitai_jiaoshi_f1",
+					"name": "猫步走道"
+				},
+				{
+					"id": "yitai_jiaoshi_f2",
+					"name": "1号瑜伽垫"
+				},
+				{
+					"id": "yitai_jiaoshi_f3",
+					"name": "2号瑜伽垫"
+				},
+				{
+					"id": "yitai_jiaoshi_f4",
+					"name": "跑步机"
+				}
+			]
+		},
+		{
+			"id": "wudao_jiaoshi",
+			"name": "舞蹈教室",
+			"type": "function",
+			"unlock_medal": 1,
+			"facilities": [
+				{
+					"id": "wudao_jiaoshi_f0",
+					"name": "舞台"
+				},
+				{
+					"id": "wudao_jiaoshi_f1",
+					"name": "跳舞机"
+				},
+				{
+					"id": "wudao_jiaoshi_f2",
+					"name": "舞蹈教练鸟"
+				},
+				{
+					"id": "wudao_jiaoshi_f3",
+					"name": "蜂窝音响"
+				}
+			]
+		},
+		{
+			"id": "xiao_juchang",
+			"name": "小剧场",
+			"type": "function",
+			"unlock_medal": 1,
+			"facilities": [
+				{
+					"id": "xiao_juchang_f0",
+					"name": "签售桌"
+				},
+				{
+					"id": "xiao_juchang_f1",
+					"name": "舞台小摊贩"
+				},
+				{
+					"id": "xiao_juchang_f2",
+					"name": "观众席"
+				},
+				{
+					"id": "xiao_juchang_f3",
+					"name": "表演舞台"
+				}
+			]
+		},
+		{
+			"id": "cuizhu_ju",
+			"name": "翠竹居",
+			"type": "residence",
+			"unlock_medal": 2,
+			"facilities": [
+				{
+					"id": "cuizhu_ju_f0",
+					"name": "床"
+				},
+				{
+					"id": "cuizhu_ju_f1",
+					"name": "梳妆台"
+				},
+				{
+					"id": "cuizhu_ju_f2",
+					"name": "储物架"
+				},
+				{
+					"id": "cuizhu_ju_f3",
+					"name": "毛巾架"
+				},
+				{
+					"id": "cuizhu_ju_f4",
+					"name": "浴室"
+				},
+				{
+					"id": "cuizhu_ju_f5",
+					"name": "墙壁装饰"
+				}
+			]
+		},
+		{
+			"id": "lianye_ju",
+			"name": "莲叶居",
+			"type": "residence",
+			"unlock_medal": 2,
+			"facilities": [
+				{
+					"id": "lianye_ju_f0",
+					"name": "床"
+				},
+				{
+					"id": "lianye_ju_f1",
+					"name": "梳妆台"
+				},
+				{
+					"id": "lianye_ju_f2",
+					"name": "储物架"
+				},
+				{
+					"id": "lianye_ju_f3",
+					"name": "毛巾架"
+				},
+				{
+					"id": "lianye_ju_f4",
+					"name": "浴室"
+				},
+				{
+					"id": "lianye_ju_f5",
+					"name": "墙壁装饰"
+				}
+			]
+		},
+		{
+			"id": "xuancao_ju",
+			"name": "萱草居",
+			"type": "residence",
+			"unlock_medal": 2,
+			"facilities": [
+				{
+					"id": "xuancao_ju_f0",
+					"name": "床"
+				},
+				{
+					"id": "xuancao_ju_f1",
+					"name": "梳妆台"
+				},
+				{
+					"id": "xuancao_ju_f2",
+					"name": "储物架"
+				},
+				{
+					"id": "xuancao_ju_f3",
+					"name": "毛巾架"
+				},
+				{
+					"id": "xuancao_ju_f4",
+					"name": "浴室"
+				},
+				{
+					"id": "xuancao_ju_f5",
+					"name": "墙壁装饰"
+				}
+			]
+		},
+		{
+			"id": "ziteng_ju",
+			"name": "紫藤居",
+			"type": "residence",
+			"unlock_medal": 2,
+			"facilities": [
+				{
+					"id": "ziteng_ju_f0",
+					"name": "床"
+				},
+				{
+					"id": "ziteng_ju_f1",
+					"name": "梳妆台"
+				},
+				{
+					"id": "ziteng_ju_f2",
+					"name": "储物架"
+				},
+				{
+					"id": "ziteng_ju_f3",
+					"name": "毛巾架"
+				},
+				{
+					"id": "ziteng_ju_f4",
+					"name": "浴室"
+				},
+				{
+					"id": "ziteng_ju_f5",
+					"name": "墙壁装饰"
+				}
+			]
+		},
+		{
+			"id": "daoxiang_ju",
+			"name": "稻香居",
+			"type": "residence",
+			"unlock_medal": 2,
+			"facilities": [
+				{
+					"id": "daoxiang_ju_f0",
+					"name": "床"
+				},
+				{
+					"id": "daoxiang_ju_f1",
+					"name": "梳妆台"
+				},
+				{
+					"id": "daoxiang_ju_f2",
+					"name": "储物架"
+				},
+				{
+					"id": "daoxiang_ju_f3",
+					"name": "毛巾架"
+				},
+				{
+					"id": "daoxiang_ju_f4",
+					"name": "浴室"
+				},
+				{
+					"id": "daoxiang_ju_f5",
+					"name": "墙壁装饰"
+				}
+			]
+		},
+		{
+			"id": "puwei_ju",
+			"name": "蒲苇居",
+			"type": "residence",
+			"unlock_medal": 2,
+			"facilities": [
+				{
+					"id": "puwei_ju_f0",
+					"name": "床"
+				},
+				{
+					"id": "puwei_ju_f1",
+					"name": "梳妆台"
+				},
+				{
+					"id": "puwei_ju_f2",
+					"name": "储物架"
+				},
+				{
+					"id": "puwei_ju_f3",
+					"name": "毛巾架"
+				},
+				{
+					"id": "puwei_ju_f4",
+					"name": "浴室"
+				},
+				{
+					"id": "puwei_ju_f5",
+					"name": "墙壁装饰"
+				}
+			]
+		},
+		{
+			"id": "lancao_ju",
+			"name": "兰草居",
+			"type": "residence",
+			"unlock_medal": 2,
+			"facilities": [
+				{
+					"id": "lancao_ju_f0",
+					"name": "床"
+				},
+				{
+					"id": "lancao_ju_f1",
+					"name": "梳妆台"
+				},
+				{
+					"id": "lancao_ju_f2",
+					"name": "储物架"
+				},
+				{
+					"id": "lancao_ju_f3",
+					"name": "毛巾架"
+				},
+				{
+					"id": "lancao_ju_f4",
+					"name": "浴室"
+				},
+				{
+					"id": "lancao_ju_f5",
+					"name": "墙壁装饰"
+				}
+			]
+		},
+		{
+			"id": "meihua_ge",
+			"name": "梅花阁",
+			"type": "residence",
+			"unlock_medal": 2,
+			"facilities": [
+				{
+					"id": "meihua_ge_f0",
+					"name": "床"
+				},
+				{
+					"id": "meihua_ge_f1",
+					"name": "梳妆台"
+				},
+				{
+					"id": "meihua_ge_f2",
+					"name": "储物架"
+				},
+				{
+					"id": "meihua_ge_f3",
+					"name": "毛巾架"
+				},
+				{
+					"id": "meihua_ge_f4",
+					"name": "浴室"
+				},
+				{
+					"id": "meihua_ge_f5",
+					"name": "墙壁装饰"
+				}
+			]
+		},
+		{
+			"id": "mudan_ge",
+			"name": "牡丹阁",
+			"type": "residence",
+			"unlock_medal": 2,
+			"facilities": [
+				{
+					"id": "mudan_ge_f0",
+					"name": "床"
+				},
+				{
+					"id": "mudan_ge_f1",
+					"name": "梳妆台"
+				},
+				{
+					"id": "mudan_ge_f2",
+					"name": "储物架"
+				},
+				{
+					"id": "mudan_ge_f3",
+					"name": "毛巾架"
+				},
+				{
+					"id": "mudan_ge_f4",
+					"name": "浴室"
+				},
+				{
+					"id": "mudan_ge_f5",
+					"name": "墙壁装饰"
+				}
+			]
+		},
+		{
+			"id": "chunshui_xuan",
+			"name": "春水轩",
+			"type": "residence",
+			"unlock_medal": 2,
+			"facilities": [
+				{
+					"id": "chunshui_xuan_f0",
+					"name": "床"
+				},
+				{
+					"id": "chunshui_xuan_f1",
+					"name": "梳妆台"
+				},
+				{
+					"id": "chunshui_xuan_f2",
+					"name": "储物架"
+				},
+				{
+					"id": "chunshui_xuan_f3",
+					"name": "毛巾架"
+				},
+				{
+					"id": "chunshui_xuan_f4",
+					"name": "浴室"
+				},
+				{
+					"id": "chunshui_xuan_f5",
+					"name": "墙壁装饰"
+				}
+			]
+		},
+		{
+			"id": "xialian_xuan",
+			"name": "夏莲轩",
+			"type": "residence",
+			"unlock_medal": 2,
+			"facilities": [
+				{
+					"id": "xialian_xuan_f0",
+					"name": "床"
+				},
+				{
+					"id": "xialian_xuan_f1",
+					"name": "梳妆台"
+				},
+				{
+					"id": "xialian_xuan_f2",
+					"name": "储物架"
+				},
+				{
+					"id": "xialian_xuan_f3",
+					"name": "毛巾架"
+				},
+				{
+					"id": "xialian_xuan_f4",
+					"name": "浴室"
+				},
+				{
+					"id": "xialian_xuan_f5",
+					"name": "墙壁装饰"
+				}
+			]
+		},
+		{
+			"id": "furong_ge",
+			"name": "芙蓉阁",
+			"type": "residence",
+			"unlock_medal": 3,
+			"facilities": [
+				{
+					"id": "furong_ge_f0",
+					"name": "床"
+				},
+				{
+					"id": "furong_ge_f1",
+					"name": "梳妆台"
+				},
+				{
+					"id": "furong_ge_f2",
+					"name": "衣柜"
+				},
+				{
+					"id": "furong_ge_f3",
+					"name": "飘窗"
+				},
+				{
+					"id": "furong_ge_f4",
+					"name": "浴缸"
+				},
+				{
+					"id": "furong_ge_f5",
+					"name": "窗户"
+				}
+			]
+		},
+		{
+			"id": "dangui_ge",
+			"name": "丹桂阁",
+			"type": "residence",
+			"unlock_medal": 3,
+			"facilities": [
+				{
+					"id": "dangui_ge_f0",
+					"name": "床"
+				},
+				{
+					"id": "dangui_ge_f1",
+					"name": "梳妆台"
+				},
+				{
+					"id": "dangui_ge_f2",
+					"name": "衣柜"
+				},
+				{
+					"id": "dangui_ge_f3",
+					"name": "飘窗"
+				},
+				{
+					"id": "dangui_ge_f4",
+					"name": "浴缸"
+				},
+				{
+					"id": "dangui_ge_f5",
+					"name": "窗户"
+				}
+			]
+		},
+		{
+			"id": "moli_ge",
+			"name": "茉莉阁",
+			"type": "residence",
+			"unlock_medal": 3,
+			"facilities": [
+				{
+					"id": "moli_ge_f0",
+					"name": "床"
+				},
+				{
+					"id": "moli_ge_f1",
+					"name": "梳妆台"
+				},
+				{
+					"id": "moli_ge_f2",
+					"name": "衣柜"
+				},
+				{
+					"id": "moli_ge_f3",
+					"name": "飘窗"
+				},
+				{
+					"id": "moli_ge_f4",
+					"name": "浴缸"
+				},
+				{
+					"id": "moli_ge_f5",
+					"name": "窗户"
+				}
+			]
+		},
+		{
+			"id": "haitang_ge",
+			"name": "海棠阁",
+			"type": "residence",
+			"unlock_medal": 3,
+			"facilities": [
+				{
+					"id": "haitang_ge_f0",
+					"name": "床"
+				},
+				{
+					"id": "haitang_ge_f1",
+					"name": "梳妆台"
+				},
+				{
+					"id": "haitang_ge_f2",
+					"name": "衣柜"
+				},
+				{
+					"id": "haitang_ge_f3",
+					"name": "飘窗"
+				},
+				{
+					"id": "haitang_ge_f4",
+					"name": "浴缸"
+				},
+				{
+					"id": "haitang_ge_f5",
+					"name": "窗户"
+				}
+			]
+		},
+		{
+			"id": "meigui_ge",
+			"name": "玫瑰阁",
+			"type": "residence",
+			"unlock_medal": 3,
+			"facilities": [
+				{
+					"id": "meigui_ge_f0",
+					"name": "床"
+				},
+				{
+					"id": "meigui_ge_f1",
+					"name": "梳妆台"
+				},
+				{
+					"id": "meigui_ge_f2",
+					"name": "衣柜"
+				},
+				{
+					"id": "meigui_ge_f3",
+					"name": "飘窗"
+				},
+				{
+					"id": "meigui_ge_f4",
+					"name": "浴缸"
+				},
+				{
+					"id": "meigui_ge_f5",
+					"name": "窗户"
+				}
+			]
+		},
+		{
+			"id": "qiuyue_xuan",
+			"name": "秋月轩",
+			"type": "residence",
+			"unlock_medal": 3,
+			"facilities": [
+				{
+					"id": "qiuyue_xuan_f0",
+					"name": "床"
+				},
+				{
+					"id": "qiuyue_xuan_f1",
+					"name": "梳妆台"
+				},
+				{
+					"id": "qiuyue_xuan_f2",
+					"name": "衣柜"
+				},
+				{
+					"id": "qiuyue_xuan_f3",
+					"name": "飘窗"
+				},
+				{
+					"id": "qiuyue_xuan_f4",
+					"name": "浴缸"
+				},
+				{
+					"id": "qiuyue_xuan_f5",
+					"name": "窗户"
+				}
+			]
+		},
+		{
+			"id": "dongxue_xuan",
+			"name": "冬雪轩",
+			"type": "residence",
+			"unlock_medal": 3,
+			"facilities": [
+				{
+					"id": "dongxue_xuan_f0",
+					"name": "床"
+				},
+				{
+					"id": "dongxue_xuan_f1",
+					"name": "梳妆台"
+				},
+				{
+					"id": "dongxue_xuan_f2",
+					"name": "衣柜"
+				},
+				{
+					"id": "dongxue_xuan_f3",
+					"name": "飘窗"
+				},
+				{
+					"id": "dongxue_xuan_f4",
+					"name": "浴缸"
+				},
+				{
+					"id": "dongxue_xuan_f5",
+					"name": "窗户"
+				}
+			]
+		},
+		{
+			"id": "yuehua_xuan",
+			"name": "月华轩",
+			"type": "residence",
+			"unlock_medal": 3,
+			"facilities": [
+				{
+					"id": "yuehua_xuan_f0",
+					"name": "床"
+				},
+				{
+					"id": "yuehua_xuan_f1",
+					"name": "梳妆台"
+				},
+				{
+					"id": "yuehua_xuan_f2",
+					"name": "衣柜"
+				},
+				{
+					"id": "yuehua_xuan_f3",
+					"name": "飘窗"
+				},
+				{
+					"id": "yuehua_xuan_f4",
+					"name": "浴缸"
+				},
+				{
+					"id": "yuehua_xuan_f5",
+					"name": "窗户"
+				}
+			]
+		},
+		{
+			"id": "chenxi_xuan",
+			"name": "晨曦轩",
+			"type": "residence",
+			"unlock_medal": 3,
+			"facilities": [
+				{
+					"id": "chenxi_xuan_f0",
+					"name": "床"
+				},
+				{
+					"id": "chenxi_xuan_f1",
+					"name": "梳妆台"
+				},
+				{
+					"id": "chenxi_xuan_f2",
+					"name": "衣柜"
+				},
+				{
+					"id": "chenxi_xuan_f3",
+					"name": "飘窗"
+				},
+				{
+					"id": "chenxi_xuan_f4",
+					"name": "浴缸"
+				},
+				{
+					"id": "chenxi_xuan_f5",
+					"name": "窗户"
+				}
+			]
+		}
+	]
+}

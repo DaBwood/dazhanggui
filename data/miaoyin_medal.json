@@ -1,0 +1,150 @@
+{
+	"settings": {
+		"initial_lv": 1,
+		"shop_pct_per_lv": 1.0,
+		"refine_cap_per_lv": 5,
+		"prosperity_note": "繁荣度=应援币总产出/分=全部已解锁建筑总等级×10"
+	},
+	"medals": [
+		{
+			"lv": 1,
+			"name": "新秀·铜",
+			"rank": "新秀",
+			"metal": "铜",
+			"need_prosperity": 4500,
+			"shop_pct": 1.0,
+			"unlock_total": 8,
+			"refine_cap": 5
+		},
+		{
+			"lv": 2,
+			"name": "新秀·银",
+			"rank": "新秀",
+			"metal": "银",
+			"need_prosperity": 10000,
+			"shop_pct": 2.0,
+			"unlock_total": 17,
+			"refine_cap": 10
+		},
+		{
+			"lv": 3,
+			"name": "新秀·金",
+			"rank": "新秀",
+			"metal": "金",
+			"need_prosperity": 60000,
+			"shop_pct": 3.0,
+			"unlock_total": 28,
+			"refine_cap": 15
+		},
+		{
+			"lv": 4,
+			"name": "偶像·铜",
+			"rank": "偶像",
+			"metal": "铜",
+			"need_prosperity": 180000,
+			"shop_pct": 4.0,
+			"unlock_total": 28,
+			"refine_cap": 20
+		},
+		{
+			"lv": 5,
+			"name": "偶像·银",
+			"rank": "偶像",
+			"metal": "银",
+			"need_prosperity": 300000,
+			"shop_pct": 5.0,
+			"unlock_total": 28,
+			"refine_cap": 25
+		},
+		{
+			"lv": 6,
+			"name": "偶像·金",
+			"rank": "偶像",
+			"metal": "金",
+			"need_prosperity": 420000,
+			"shop_pct": 6.0,
+			"unlock_total": 28,
+			"refine_cap": 30
+		},
+		{
+			"lv": 7,
+			"name": "明星·铜",
+			"rank": "明星",
+			"metal": "铜",
+			"need_prosperity": 550000,
+			"shop_pct": 7.0,
+			"unlock_total": 28,
+			"refine_cap": 35
+		},
+		{
+			"lv": 8,
+			"name": "明星·银",
+			"rank": "明星",
+			"metal": "银",
+			"need_prosperity": 680000,
+			"shop_pct": 8.0,
+			"unlock_total": 28,
+			"refine_cap": 40
+		},
+		{
+			"lv": 9,
+			"name": "明星·金",
+			"rank": "明星",
+			"metal": "金",
+			"need_prosperity": 810000,
+			"shop_pct": 9.0,
+			"unlock_total": 28,
+			"refine_cap": 45
+		},
+		{
+			"lv": 10,
+			"name": "巨星·铜",
+			"rank": "巨星",
+			"metal": "铜",
+			"need_prosperity": 940000,
+			"shop_pct": 10.0,
+			"unlock_total": 28,
+			"refine_cap": 50
+		},
+		{
+			"lv": 11,
+			"name": "巨星·银",
+			"rank": "巨星",
+			"metal": "银",
+			"need_prosperity": 1080000,
+			"shop_pct": 11.0,
+			"unlock_total": 28,
+			"refine_cap": 55
+		},
+		{
+			"lv": 12,
+			"name": "巨星·金",
+			"rank": "巨星",
+			"metal": "金",
+			"need_prosperity": 1230000,
+			"shop_pct": 12.0,
+			"unlock_total": 28,
+			"refine_cap": 60
+		},
+		{
+			"lv": 13,
+			"name": "天后·铜",
+			"rank": "天后",
+			"metal": "铜",
+			"need_prosperity": 1400000,
+			"shop_pct": 13.0,
+			"unlock_total": 28,
+			"refine_cap": 65
+		},
+		{
+			"lv": 14,
+			"name": "天后·银",
+			"rank": "天后",
+			"metal": "银",
+			"need_prosperity": 1620000,
+			"shop_pct": 14.0,
+			"unlock_total": 28,
+			"refine_cap": 70
+		}
+	]
+}

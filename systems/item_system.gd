@@ -168,6 +168,13 @@ func use_item(item_id: String, count: int) -> Dictionary:
 				var rname = g.ITEM_CONFIG.get(rid, {}).get("name", rid)
 				parts.append("【%s】×%d" % [rname, gains[rid]])
 			return {"ok": true, "msg": "获得：" + "、".join(parts), "gains": gains}
+		"miaoyin_jiasu_ka":
+			# 【新增】2026-09-18 妙音坊加速卡：每张立即获得60分钟妙音坊三轨收益（直接入账，不进收益罐）
+			if not g.miaoyin_system.has_any_output():
+				return {"ok": false, "msg": "妙音坊暂无产出，请先升级建筑"}
+			g.items[item_id] -= count
+			var my_gain: Dictionary = g.miaoyin_system.use_accelerate_card(count)
+			return {"ok": true, "msg": my_gain.get("msg", "获得60分钟妙音坊收益"), "gains": my_gain.get("gains", {})}
 	return {"ok": false, "msg": "该道具不可使用"}
 
 # 门客帖兑换（门客/挚友统一消耗 hero_token）

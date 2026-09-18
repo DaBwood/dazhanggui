@@ -1,0 +1,47 @@
+{
+	"settings": {
+		"anchor_note": "概率按建筑平均设施等级成长；某档触及上下限后五项归一化"
+	},
+	"grades": [
+		{
+			"key": "rumen",
+			"exp": 1,
+			"initial_pct": 40.0,
+			"slope_per_level": -0.02,
+			"min_pct": 25.0,
+			"max_pct": 100.0
+		},
+		{
+			"key": "chuji",
+			"exp": 25,
+			"initial_pct": 31.0,
+			"slope_per_level": -0.005,
+			"min_pct": 25.0,
+			"max_pct": 100.0
+		},
+		{
+			"key": "jinjie",
+			"exp": 50,
+			"initial_pct": 17.0,
+			"slope_per_level": 0.005,
+			"min_pct": 0.0,
+			"max_pct": 24.0
+		},
+		{
+			"key": "zhongji",
+			"exp": 75,
+			"initial_pct": 9.0,
+			"slope_per_level": 0.013,
+			"min_pct": 0.0,
+			"max_pct": 20.0
+		},
+		{
+			"key": "gaoji",
+			"exp": 100,
+			"initial_pct": 3.0,
+			"slope_per_level": 0.008,
+			"min_pct": 0.0,
+			"max_pct": 14.0
+		}
+	]
+}

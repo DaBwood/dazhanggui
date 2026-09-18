@@ -1,0 +1,28 @@
+{
+	"settings": {
+		"daily_refresh_hour": 12,
+		"opinion_count": 10,
+		"bad_min": 4,
+		"bad_max": 6,
+		"resolve_upgrade_levels": 10,
+		"bonus_thresholds": [
+			{
+				"gt": 1.0,
+				"pct": 0.15
+			},
+			{
+				"gt": 0.9,
+				"pct": 0.1
+			},
+			{
+				"gt": 0.8,
+				"pct": 0.05
+			},
+			{
+				"gt": -1.0,
+				"pct": 0.0
+			}
+		],
+		"collection_c234_bonus": 0.05
+	}
+}
