@@ -773,9 +773,9 @@ func _show_zixuan_baoyin_selector(p_qty: int, is_fragment: bool):
 	hint.text = "选择一种，获得 ×%d" % p_qty
 	hint.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	vbox.add_child(hint)
-	# 宝印二选一：开山印/宗匠印；碎片同理
-	var first_id := "kaishan_yin_fragment" if is_fragment else "kaishan_yin"
-	var second_id := "zongjiang_yin_fragment" if is_fragment else "zongjiang_yin"
+	# 【修】2026-09-18 配表实际ID：整印=开山令/宗匠令，碎片=kaishan_yin/zongjiang_yin（原 *_yin_fragment 不存在）
+	var first_id := "kaishan_yin" if is_fragment else "kaishan_ling"
+	var second_id := "zongjiang_yin" if is_fragment else "zongjiang_ling"
 	for target_id in [first_id, second_id]:
 		var line = HBoxContainer.new()
 		line.size_flags_horizontal = Control.SIZE_EXPAND_FILL

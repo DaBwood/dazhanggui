@@ -1,41 +1,42 @@
 # ============================================================
 # 钱庄玩法全屏页（商铺地图 钱庄「▶」入口，层级：BankPage z35，同藏品/兽魂页惯例）
 # 结构：顶栏（返回/标题）→ 信誉等级卡 → 柜台卡片网格 → 资源栏（信誉值 + 一键全领）
-# 柜台/委任选择器均为卡片式（2列网格，同珍兽/挚友页惯例；用户 2026-09-12 拍板）
+# 柜台/委任选择器均为卡片式（网格，同珍兽/挚友页惯例；用户 2026-09-12 拍板）
 # 重建刷新模式（同藏品页）：操作后整页重建；1秒 Timer 只刷新计时/待领文本（不重建，保滚动位置）
 # ============================================================
 class_name BankView
-extends RefCounted
+extends BaseView   # 【改】公共层下沉 ui/base_view.gd（2026-09-18 架构重构批次⑥补漏：上一轮漏交付）
 
-var c      # game_controller 根脚本引用
-var data: GameData   # 数据中枢（显式标注 GameData：让中枢字段被静态引用，消 UNUSED_PRIVATE_CLASS_VARIABLE 提示，同 shop_page 先例）
+# c/data 引用由基类持有，此处不再声明
 
 var _row_refs: Array = []   # 柜台卡片动态引用 [{idx, info, btn, hid}]，秒刷只改文本
+var _collect_all_btn: Button = null   # 【改】一键全领按钮引用（跨函数置灰；原在文件中部，迁移时归到成员区）
 
 func _init(p_c):
-	c = p_c
-	data = p_c.data
-
-func _close_node(node_name: String):
-	var n = c.get_node_or_null(node_name)
-	if n:
-		c.remove_child(n)
-		n.queue_free()
+	super(p_c)   # 【改】基类注入 c/data（2026-09-18 架构重构批次⑥补漏）
+	_page_name = "BankPage"
+	_popup_node_name = "BankAssignPopup"
 
 # ---------- 页面开关 ----------
 func show_bank_view():
+	show_view()
+
+func hide_bank_view():
+	hide_view()
+
+# 【改】钱庄生命周期挂基类入口（2026-09-18 架构重构批次⑥补漏）：
+# 基类 show_view 已负责关旧页/建 z35 根面板；钱庄只多清秒刷引用，避免跨页指到销毁节点
+func show_view():
 	_row_refs.clear()
-	_close_node("BankPage")
-	_close_node("BankAssignPopup")
-	# 根面板：禁用锚点预设，显式铺满（同藏品页）
-	var page := Panel.new()
-	page.name = "BankPage"
-	page.z_index = 35
-	page.position = Vector2.ZERO
-	page.size = c.get_viewport_rect().size
-	var bg := StyleBoxFlat.new()
-	bg.bg_color = Color("#1e1b2e")
-	page.add_theme_stylebox_override("panel", bg)
+	_collect_all_btn = null
+	super()
+
+func hide_view():
+	_row_refs.clear()
+	_collect_all_btn = null
+	super()
+
+func _build(page: Panel):
 	var vb := VBoxContainer.new()
 	vb.position = Vector2.ZERO
 	vb.size = page.size
@@ -63,7 +64,8 @@ func show_bank_view():
 	top.add_child(pad)
 	# 内容
 	_fill_body(vb)
-	c.add_child(page)
+
+func _after_build(page: Panel):
 	# 秒刷 Timer（随页面节点销毁，无需手动停）
 	var timer := Timer.new()
 	timer.name = "TickTimer"
@@ -71,11 +73,6 @@ func show_bank_view():
 	timer.timeout.connect(_refresh_rows)
 	page.add_child(timer)
 	timer.start()
-
-func hide_bank_view():
-	_close_node("BankPage")
-	_close_node("BankAssignPopup")
-	_row_refs.clear()
 
 # ---------- 内容 ----------
 func _fill_body(vb: VBoxContainer):
@@ -264,8 +261,6 @@ func _counter_info_text(idx: int, _hid: String) -> String:   # _hid 未用（名
 	return "%s\n待领 %d百业 %d筹算 %d信誉" % [t, int(p["baiye"]), int(p["chousuan"]), int(p["xinyu"])]
 
 # 秒刷：只更新计时/待领文本与领取按钮态（不整页重建，保住滚动位置）
-var _collect_all_btn: Button = null   # 【改】一键全领按钮引用（跨函数置灰）
-
 func _refresh_rows():
 	if not c.has_node("BankPage"): return
 	var total_pending := 0
@@ -320,13 +315,15 @@ func _rebuild():
 	if c.has_node("BankPage"):
 		show_bank_view()   # 整页重建（同藏品页惯例）
 
-# ---------- 委任选择器（页内弹窗 z40，卡片网格 2 列） ----------
+# ---------- 委任选择器（页内弹窗 z40，卡片网格 3 列） ----------
 func _show_assign_selector(idx: int):
-	_close_node("BankAssignPopup")
+	close_popup()
 	var popup = c._create_base_popup("委任门客到柜台%d" % (idx + 1), Vector2(480, 560))
 	popup.name = "BankAssignPopup"
 	popup.z_index = 40
 	c.add_child(popup)
+	_popup_kind = "assign"   # 【改】挂基类弹窗状态机（hide/close 时由基类清零）
+	_popup_id = str(idx)
 	var vb = popup.get_child(0)
 	var hint := Label.new()
 	hint.text = "门客不锁定，与店铺派遣/商战全并行；同一门客只能委任一个柜台"
@@ -356,7 +353,7 @@ func _show_assign_selector(idx: int):
 		grid.add_child(empty)
 	for hero_id in ids:
 		_add_hero_card(grid, idx, hero_id)
-	c._add_ok_button(vb, func(): _close_node("BankAssignPopup"), "关闭")
+	c._add_ok_button(vb, func(): close_popup(), "关闭")
 
 func _add_hero_card(grid: GridContainer, counter_idx: int, hero_id: String):
 	var h: Dictionary = data.heroes[hero_id]
@@ -402,5 +399,5 @@ func _add_hero_card(grid: GridContainer, counter_idx: int, hero_id: String):
 
 func _on_hero_picked(idx: int, hero_id: String):
 	data.bank_system.assign_hero(idx, hero_id)
-	_close_node("BankAssignPopup")
+	close_popup()
 	_rebuild()
