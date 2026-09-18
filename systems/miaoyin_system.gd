@@ -74,9 +74,9 @@ func load_save_data(s: Dictionary):
 	opinions = d.get("opinions", {"day": "", "list": []})
 	if not (opinions is Dictionary):
 		opinions = {"day": "", "list": []}
-	audition = d.get("audition", {"stage": 1})
+	audition = d.get("audition", {"stage": 1, "team": []})
 	if not (audition is Dictionary):
-		audition = {"stage": 1}
+		audition = {"stage": 1, "team": []}
 	_init_state()
 	settle_jar()   # 上线即补离线收益（只进罐，不自动入背包/已领池）
 
@@ -115,6 +115,8 @@ func _init_state() -> void:
 				arr2[i] = clampi(int(arr2[i]), 0, get_facility_max_lv())
 	_bootstrap_deadlock_if_needed()
 	_ensure_rookies()
+	audition["stage"] = maxi(1, int(audition.get("stage", 1)))
+	audition["team"] = _normalize_audition_team(get_audition_team())
 
 # 暖机保底：所有建筑设施全 0、且应援币/收益罐都无存量时，免费开 BOOTSTRAP_FACILITIES 各 1 级
 # 只在形状初始化时检查；开出 1 级后后续不会再触发，不送可自由支配应援币，保留最低升级节奏
@@ -194,6 +196,12 @@ func get_flower_by_support(support_id: String) -> String:
 		for it in p.get("support_items", []):
 			if str(it.get("id", "")) == support_id:
 				return str(p.get("flower", ""))
+	return ""
+
+func get_flower_by_profession(prof_id: String) -> String:
+	for p in get_profession_list():
+		if str(p.get("id", "")) == prof_id:
+			return str(p.get("flower", ""))
 	return ""
 
 func get_support_name_map() -> Dictionary:
@@ -777,13 +785,18 @@ func _stable_prof_id(friend_id: String) -> String:
 		return ""
 	return str(ids[abs(friend_id.hash()) % ids.size()])
 
-func _stable_good_id(friend_id: String, prof_id: String) -> String:
+func _profession_good_id(prof_id: String) -> String:
 	var ids: Array = _profession_ids()
 	if ids.size() <= 1:
 		return ""
 	var idx: int = ids.find(prof_id)
-	var off: int = 1 + abs((friend_id + "_good").hash()) % (ids.size() - 1)
-	return str(ids[(idx + off) % ids.size()])
+	if idx < 0:
+		return ""
+	return str(ids[(idx + 1) % ids.size()])
+
+func _stable_good_id(_friend_id: String, prof_id: String) -> String:
+	# 【改】2026-09-18 用户拍板：同职业挚友属性模板一致，只随等级变化；良属性由职业固定，不按挚友 id 随机
+	return _profession_good_id(prof_id)
 
 func _ensure_rookies() -> void:
 	for fid in g.friends.keys():
@@ -800,8 +813,9 @@ func _ensure_rookies() -> void:
 			r["exp"] = maxi(0, int(r.get("exp", 0)))
 			if str(r.get("prof", "")) == "":
 				r["prof"] = _stable_prof_id(friend_id)
-			if str(r.get("good", "")) == "":
-				r["good"] = _stable_good_id(friend_id, str(r.get("prof", "")))
+			var fixed_good: String = _stable_good_id(friend_id, str(r.get("prof", "")))
+			if str(r.get("good", "")) != fixed_good:
+				r["good"] = fixed_good
 			var house: String = str(r.get("house", ""))
 			if house != "":
 				var bcfg: Dictionary = get_building_cfg(house)
@@ -912,6 +926,24 @@ func train_rookie_level_up_once(friend_id: String) -> Dictionary:
 	_add_rookie_exp(r, used_exp)
 	return {"ok": true, "lv_up": int(r.get("lv", 1)) > before_lv, "exp": used_exp}
 
+# 同职业同步升一级：只处理指定职业的新秀；低等级优先，同一职业共享材料不够时后面的人不扣材料直接跳过
+func train_profession_rookies_level_up(prof_id: String) -> Dictionary:
+	var order: Array = []
+	for fid in rookies.keys():
+		var r: Dictionary = get_rookie_entry(str(fid))
+		if str(r.get("prof", "")) != prof_id:
+			continue
+		order.append({"fid": str(fid), "lv": int(r.get("lv", 1))})
+	order.sort_custom(func(a, b): return int(a.get("lv", 0)) < int(b.get("lv", 0)))
+	var up: int = 0
+	for e in order:
+		var r2: Dictionary = train_rookie_level_up_once(str(e.get("fid", "")))
+		if r2.get("ok", false) and r2.get("lv_up", false):
+			up += 1
+	if up <= 0:
+		return {"ok": false, "msg": "材料不足，未升级"}
+	return {"ok": true, "up": up, "msg": "同步升级成功 %d 人" % up}
+
 # 同步升1级：五档应援物按高经验优先批量抵扣，直到升1级或材料耗尽
 func train_rookie_until_level_up(friend_id: String) -> Dictionary:
 	var r: Dictionary = get_rookie_entry(friend_id)
@@ -949,12 +981,13 @@ func can_rookie_train(friend_id: String) -> bool:
 	var r: Dictionary = get_rookie_entry(friend_id)
 	if r.is_empty():
 		return false
-	if int(r.get("exp", 0)) >= get_rookie_next_exp(int(r.get("lv", 1))):
+	var need: int = get_rookie_next_exp(int(r.get("lv", 1))) - int(r.get("exp", 0))
+	if need <= 0:
 		return true
+	var total_exp: int = 0
 	for it in get_rookie_support_items(friend_id):
-		if int(it.get("owned", 0)) > 0:
-			return true
-	return false
+		total_exp += int(it.get("owned", 0)) * int(it.get("exp", 0))
+	return total_exp >= need
 
 func get_support_total() -> int:
 	var n: int = 0
@@ -1068,7 +1101,7 @@ func get_rookie_overview(filter_prof: String = "") -> Dictionary:
 			"house_name": str(get_building_cfg(house).get("name", "未入住")) if house != "" else "未入住",
 			"costume_count": get_rookie_costume_count(str(fid)),
 			"can_train": can_rookie_train(str(fid)),
-			"can_checkin": can_checkin_rookie(str(fid)).get("ok", false),
+			"can_checkin": (house == "" and can_checkin_rookie(str(fid)).get("ok", false)),
 		}
 		if house == "":
 			unhoused.append(entry)
@@ -1110,6 +1143,219 @@ func has_rookie_attention() -> bool:
 		if str(rookies[fid].get("house", "")) == "" and can_checkin_rookie(str(fid)).get("ok", false):
 			return true
 	return false
+
+
+# ============ 选秀闯关（批次④；每5关一轮回，三属性门，三轨奖励） ============
+func get_audition_settings() -> Dictionary:
+	return _extra("audition").get("settings", {})
+
+func get_audition_stage() -> int:
+	return maxi(1, int(audition.get("stage", 1)))
+
+func get_audition_team() -> Array:
+	if not audition.has("team") or not (audition["team"] is Array):
+		audition["team"] = []
+	return audition["team"]
+
+func _normalize_audition_team(team: Array) -> Array:
+	var out: Array = []
+	for fid in team:
+		var friend_id: String = str(fid)
+		if friend_id == "" or out.has(friend_id):
+			continue
+		var r: Dictionary = get_rookie_entry(friend_id)
+		if r.is_empty() or str(r.get("house", "")) == "":
+			continue
+		out.append(friend_id)
+	var team_size: int = int(get_audition_settings().get("team_size", 4))
+	while out.size() < team_size:
+		out.append("")
+	return out.slice(0, team_size)
+
+func set_audition_team(team: Array) -> Dictionary:
+	audition["team"] = _normalize_audition_team(team)
+	return {"ok": true}
+
+func set_audition_team_slot(slot: int, friend_id: String) -> Dictionary:
+	var team: Array = get_audition_team()
+	var team_size: int = int(get_audition_settings().get("team_size", 4))
+	if slot < 0 or slot >= team_size:
+		return {"ok": false, "msg": "槽位错误"}
+	if friend_id == "":
+		team[slot] = ""
+		audition["team"] = team
+		return {"ok": true}
+	var r: Dictionary = get_rookie_entry(friend_id)
+	if r.is_empty() or str(r.get("house", "")) == "":
+		return {"ok": false, "msg": "只能上阵已入住挚友"}
+	for i in range(team.size()):
+		if i != slot and str(team[i]) == friend_id:
+			return {"ok": false, "msg": "已在队伍中"}
+	team[slot] = friend_id
+	audition["team"] = team
+	return {"ok": true}
+
+func get_housed_rookie_ids() -> Array:
+	var out: Array = []
+	for fid in rookies.keys():
+		if str(rookies.get(fid, {}).get("house", "")) != "":
+			out.append(str(fid))
+	return out
+
+# 一键上阵：主考察职业中该属性最高4人；不足4人再用其他已入住挚友按主属性补足（通常过不了优档门，只兜底不让空槽）
+func auto_pick_audition_team(stage: int = -1) -> Array:
+	if stage < 0:
+		stage = get_audition_stage()
+	var info: Dictionary = get_audition_stage_info(stage)
+	var main_prof: String = str(info.get("main_prof", ""))
+	var candidates: Array = []
+	for fid in get_housed_rookie_ids():
+		var r: Dictionary = get_rookie_entry(fid)
+		candidates.append({"fid": fid, "is_main": str(r.get("prof", "")) == main_prof, "main_attr": int(get_rookie_attrs(fid).get(main_prof, {}).get("attr", 0))})
+	candidates.sort_custom(func(a, b):
+		if bool(a.get("is_main", false)) == bool(b.get("is_main", false)):
+			return int(a.get("main_attr", 0)) > int(b.get("main_attr", 0))
+		return bool(a.get("is_main", false)) and not bool(b.get("is_main", false)))
+	var team: Array = []
+	for c in candidates:
+		if team.size() >= int(get_audition_settings().get("team_size", 4)):
+			break
+		team.append(str(c.get("fid", "")))
+	return _normalize_audition_team(team)
+
+func _audition_stage_professions(stage: int) -> Dictionary:
+	var ids: Array = _profession_ids()
+	var cycle: int = maxi(1, int(get_audition_settings().get("cycle", 5)))
+	var p_idx: int = ((stage - 1) % cycle)
+	var main_prof: String = str(ids[mini(p_idx, ids.size() - 1)]) if not ids.is_empty() else ""
+	var good_prof: String = _profession_good_id(main_prof)
+	var bad_candidates: Array = []
+	for pid in ids:
+		if str(pid) != main_prof and str(pid) != good_prof:
+			bad_candidates.append(str(pid))
+	var bad_prof: String = str(bad_candidates[0]) if not bad_candidates.is_empty() else ""
+	return {"main": main_prof, "good": good_prof, "bad": bad_prof}
+
+func get_audition_stage_info(stage: int = -1) -> Dictionary:
+	if stage < 0:
+		stage = get_audition_stage()
+	var st: Dictionary = get_audition_settings()
+	var cycle: int = maxi(1, int(st.get("cycle", 5)))
+	var round_idx: int = int(ceil(float(stage) / float(cycle)))
+	var pos: int = ((stage - 1) % cycle) + 1
+	var rec_lv: int = int(st.get("recommended_base", 30)) + int(st.get("recommended_step", 30)) * (round_idx - 1)
+	var profs: Dictionary = _audition_stage_professions(stage)
+	var main_gate: int = int(float(st.get("main_gate_coef", 4.0)) * float(90 + 10 * rec_lv) * pow(float(st.get("main_gate_attr_coef", 0.995)), 1.0))
+	var good_gate: int = int(float(st.get("good_gate_coef", 4.0)) * float(45 + 5 * rec_lv))
+	var bad_gate: int = int(float(st.get("bad_gate_coef", 4.0)) * float(st.get("bad_attr_coef", 1.73)) * float(rec_lv))
+	var growth: float = float(st.get("reward_growth", 1.35))
+	var reward_pow: float = pow(growth, float(round_idx - 1))
+	var split: int = maxi(1, int(st.get("support_reward_split", 5)))
+	return {
+		"stage": stage, "round": round_idx, "pos": pos, "rec_lv": rec_lv,
+		"main_prof": profs.get("main", ""), "good_prof": profs.get("good", ""), "bad_prof": profs.get("bad", ""),
+		"main_gate": main_gate, "good_gate": good_gate, "bad_gate": bad_gate,
+		"yyf_reward": int(float(st.get("yyf_reward_base", 1000000)) * reward_pow),
+		"yyw_reward": int(float(st.get("yyw_reward_base", 120000)) * reward_pow),
+		"yyb_reward": int(float(st.get("yyb_reward_base", 800000000)) * reward_pow),
+		"support_reward_split": split,
+	}
+
+func get_audition_team_cards(team: Array = []) -> Array:
+	if team.is_empty():
+		team = get_audition_team()
+	var out: Array = []
+	for fid in team:
+		if str(fid) == "":
+			out.append({"fid": "", "name": "空", "prof_name": "", "lv": 0, "main_attr": 0, "good_attr": 0, "bad_attr": 0})
+			continue
+		var r: Dictionary = get_rookie_entry(str(fid))
+		var attrs: Dictionary = get_rookie_attrs(str(fid))
+		var info: Dictionary = get_audition_stage_info()
+		out.append({
+			"fid": str(fid),
+			"name": str(g.get_friend_config(str(fid)).get("name", fid)),
+			"prof_name": _profession_name(str(r.get("prof", ""))),
+			"lv": int(r.get("lv", 1)),
+			"main_attr": int(attrs.get(str(info.get("main_prof", "")), {}).get("attr", 0)),
+			"good_attr": int(attrs.get(str(info.get("good_prof", "")), {}).get("attr", 0)),
+			"bad_attr": int(attrs.get(str(info.get("bad_prof", "")), {}).get("attr", 0)),
+		})
+	return out
+
+func get_audition_team_sum(team: Array, prof_id: String) -> int:
+	var total: int = 0
+	for fid in team:
+		if str(fid) == "":
+			continue
+		total += int(get_rookie_attrs(str(fid)).get(prof_id, {}).get("attr", 0))
+	return total
+
+func can_pass_audition_stage(stage: int = -1, team: Array = []) -> Dictionary:
+	if team.is_empty():
+		team = get_audition_team()
+	var info: Dictionary = get_audition_stage_info(stage)
+	var team_size: int = int(get_audition_settings().get("team_size", 4))
+	var filled: int = 0
+	for fid in team:
+		if str(fid) != "":
+			filled += 1
+	var main_sum: int = get_audition_team_sum(team, str(info.get("main_prof", "")))
+	var good_sum: int = get_audition_team_sum(team, str(info.get("good_prof", "")))
+	var bad_sum: int = get_audition_team_sum(team, str(info.get("bad_prof", "")))
+	return {
+		"ok": filled >= team_size and main_sum >= int(info.get("main_gate", 0)) and good_sum >= int(info.get("good_gate", 0)) and bad_sum >= int(info.get("bad_gate", 0)),
+		"filled": filled, "team_size": team_size,
+		"main_sum": main_sum, "good_sum": good_sum, "bad_sum": bad_sum,
+		"main_gate": int(info.get("main_gate", 0)), "good_gate": int(info.get("good_gate", 0)), "bad_gate": int(info.get("bad_gate", 0)),
+	}
+
+func pass_audition() -> Dictionary:
+	var team: Array = get_audition_team()
+	var info: Dictionary = get_audition_stage_info()
+	if (team as Array).filter(func(x): return str(x) != "").is_empty():
+		team = auto_pick_audition_team()
+		set_audition_team(team)
+	var chk: Dictionary = can_pass_audition_stage(-1, team)
+	if not chk.get("ok", false):
+		return {"ok": false, "msg": "未达三属性达标线", "check": chk}
+	# 三轨奖励：缘分物走背包 items；应援物走妙音坊内部 yyw；应援币直接加 yyb
+	yyb += float(int(info.get("yyb_reward", 0)))
+	var flower: String = ""
+	for p in get_profession_list():
+		if str(p.get("id", "")) == str(info.get("main_prof", "")):
+			flower = str(p.get("flower", ""))
+			break
+	if flower != "":
+		g.items[flower] = int(g.items.get(flower, 0)) + int(info.get("yyf_reward", 0))
+	var yyw_reward: int = int(info.get("yyw_reward", 0))
+	var split: int = int(info.get("support_reward_split", 5))
+	for p in get_profession_list():
+		if str(p.get("id", "")) != str(info.get("main_prof", "")):
+			continue
+		var items: Array = p.get("support_items", [])
+		if items.is_empty():
+			break
+		var each: int = int(floor(float(yyw_reward) / float(split)))
+		var rem: int = yyw_reward - each * split
+		for i in range(items.size()):
+			var sid: String = str(items[i].get("id", ""))
+			if sid == "":
+				continue
+			yyw[sid] = int(yyw.get(sid, 0)) + each + (rem if i == 0 else 0)
+		break
+	audition["stage"] = get_audition_stage() + 1
+	return {"ok": true, "rewards": {"yyb": int(info.get("yyb_reward", 0)), "yyf": int(info.get("yyf_reward", 0)), "yyw": yyw_reward, "flower": flower}, "next_stage": int(audition["stage"])}
+
+func has_audition_attention() -> bool:
+	return can_pass_audition_stage(-1, auto_pick_audition_team()).get("ok", false)
+
+func get_audition_overview() -> Dictionary:
+	var info: Dictionary = get_audition_stage_info()
+	var team: Array = get_audition_team()
+	var cards: Array = get_audition_team_cards(team)
+	var chk: Dictionary = can_pass_audition_stage(-1, team)
+	return {"info": info, "team": cards, "check": chk}
 
 
 # ============ 勋章（女团等级）：繁荣度=应援币总产出/分；赚速读取式挂 shop_system ============

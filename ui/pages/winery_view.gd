@@ -375,9 +375,7 @@ func _on_buy(mid: String, n: int = 1):
 	c.update_all_ui()
 	_refresh()
 
-# ---------- 弹窗：勋章（15 级；累计酒香只作门槛不消耗；全部商铺赚速 +100%×级） ----------
-# 【统一样式】2026-09-18 用户拍板：全玩法勋章统一样式——主页右上角入口 + 药铺勋章卡样式弹窗
-# （妙音坊/厢房后续照此模板；勋章名读配置 medals[i].name，未配置时显示"酒坊勋章"）
+# 勋章固定样式（2026-09-19 用户拍板）：主页右上角【勋章】入口 -> 460×420「勋章」弹窗 -> #2a2640/#6a5f9e 勋章卡 -> 等级旁[?]规则 -> 当前效果 -> 下一级进度条 -> 升级按钮 -> 关闭。后续新玩法照此模板，不再另起样式。
 func _show_medal_popup():
 	_popup_kind = "medal"
 	_popup_id = ""
@@ -386,52 +384,79 @@ func _show_medal_popup():
 	popup.name = "WineryPopup"
 	popup.z_index = 40
 	c.add_child(popup)
-	var vb: VBoxContainer = popup.get_child(0)
+	var pvb: VBoxContainer = popup.get_child(0)
 	var lv: int = _sys().get_medal_lv()
-	# 药铺同款勋章卡（2026-09-18 逐参数对齐 drugshop_view：#2a2640 底+#6a5f9e 2px 描边/圆角6/字号18/效果色#e6c07b/钮在卡内）
 	var card := PanelContainer.new()
 	var style := StyleBoxFlat.new()
 	style.bg_color = Color("#2a2640")
 	style.border_color = Color("#6a5f9e")
 	style.set_border_width_all(2)
-	style.corner_radius_top_left = 6
-	style.corner_radius_top_right = 6
-	style.corner_radius_bottom_left = 6
-	style.corner_radius_bottom_right = 6
+	style.set_corner_radius_all(6)
 	card.add_theme_stylebox_override("panel", style)
-	vb.add_child(card)
-	var cvb := VBoxContainer.new()
-	cvb.add_theme_constant_override("separation", 4)
-	card.add_child(cvb)
+	pvb.add_child(card)
+	var vb := VBoxContainer.new()
+	vb.add_theme_constant_override("separation", 4)
+	card.add_child(vb)
 	var medals_cfg: Array = _sys()._cfg().get("medals", [])
 	var medal_name: String = "酒坊勋章"
 	if lv >= 1 and lv <= medals_cfg.size():
 		medal_name = str(medals_cfg[lv - 1].get("name", medal_name))
+	var head_row := HBoxContainer.new()
+	head_row.alignment = BoxContainer.ALIGNMENT_CENTER
+	head_row.add_theme_constant_override("separation", 6)
+	vb.add_child(head_row)
 	var head := Label.new()
 	head.text = "勋章：%s（%d级）" % [medal_name, lv]
+	head.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	head.add_theme_font_size_override("font_size", 18)
-	cvb.add_child(head)
+	head.add_theme_color_override("font_color", Color("#e6c07b"))
+	head_row.add_child(head)
+	var help_btn := Button.new()
+	help_btn.text = "?"
+	help_btn.custom_minimum_size = Vector2(24, 24)
+	help_btn.tooltip_text = "点击查看勋章规则"
+	help_btn.pressed.connect(_on_medal_help)
+	head_row.add_child(help_btn)
 	var effect := Label.new()
 	effect.text = "全部商铺赚速 +%d%%" % int(round(_sys().get_medal_shop_pct() * 100.0))
+	effect.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	effect.add_theme_color_override("font_color", Color("#e6c07b"))
-	cvb.add_child(effect)
+	vb.add_child(effect)
 	var need: int = _sys().get_next_medal_need()
 	if need < 0:
 		var max_lbl := Label.new()
 		max_lbl.text = "已达满级"
+		max_lbl.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 		max_lbl.add_theme_color_override("font_color", Color("#9a93b8"))
-		cvb.add_child(max_lbl)
+		vb.add_child(max_lbl)
 	else:
 		var next_lbl := Label.new()
 		next_lbl.text = "下一级需累计酒香 %s（当前 %s）" % [c.format_number(need), c.format_number(_sys().get_jiuxiang())]
+		next_lbl.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 		next_lbl.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
-		cvb.add_child(next_lbl)
+		vb.add_child(next_lbl)
+		var bar := ProgressBar.new()
+		bar.min_value = 0.0
+		bar.max_value = maxf(1.0, float(need))
+		bar.value = minf(float(_sys().get_jiuxiang()), float(need))
+		bar.show_percentage = true
+		bar.custom_minimum_size = Vector2(410, 18)
+		vb.add_child(bar)
+		var next_effect := Label.new()
+		next_effect.text = "下级效果：全部商铺赚速 +%d%%" % int(round(float(lv + 1) * 100.0))
+		next_effect.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+		next_effect.add_theme_color_override("font_color", Color("#7ee787"))
+		vb.add_child(next_effect)
 		var btn := Button.new()
 		btn.text = "升级勋章"
+		btn.custom_minimum_size = Vector2(130, 38)
 		btn.disabled = not _sys().can_upgrade_medal().get("ok", false)
 		btn.pressed.connect(func(): _on_medal_upgrade())
-		cvb.add_child(btn)
-	c._add_ok_button(vb, func(): close_popup())
+		vb.add_child(btn)
+	c._add_ok_button(pvb, func(): close_popup())
+
+func _on_medal_help():
+	c._show_stage_hint("酒坊勋章：累计酒香只作门槛不消耗；全部商铺赚速+100%×等级。")
 
 # 有可升级的名酒（名酒记入口红点）
 func _has_upgradeable_wine() -> bool:

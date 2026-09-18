@@ -1,8 +1,8 @@
 {
 	"settings": {
 		"cycle": 5,
-		"recommended_base": 30,
-		"recommended_step": 30,
+		"recommended_base": 1,
+		"recommended_step": 3,
 		"main_gate_coef": 4.0,
 		"main_gate_attr_coef": 0.995,
 		"good_gate_coef": 4.0,
@@ -12,7 +12,9 @@
 		"yyw_reward_base": 120000,
 		"yyb_reward_base": 800000000,
 		"reward_growth": 1.35,
-		"team_size": 4
+		"team_size": 4,
+		"support_reward_split": 5,
+		"support_reward_note": "通关奖励的应援物部分，按主考察职业的五档道具均分落入妙音坊内部 yyw 池；可调 split 或后续改配置化权重"
 	},
 	"stages": []
 }

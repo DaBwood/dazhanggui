@@ -264,55 +264,82 @@ func _fill_main(body: VBoxContainer):
 		dot.visible = t[2]
 		wrap_node.add_child(dot)
 
-# 勋章（2026-09-18 统一样式：主页右上角入口 + 勋章卡弹窗，同酒坊模板；卡内容与原页内卡一致）
+# 勋章固定样式（2026-09-19 用户拍板）：主页右上角【勋章】入口 -> 460×420「勋章」弹窗 -> #2a2640/#6a5f9e 勋章卡 -> 等级旁[?]规则 -> 当前效果 -> 下一级进度条 -> 升级按钮 -> 关闭。后续新玩法照此模板，不再另起样式。
 func _show_medal_popup():
 	_close_node("DrugshopMedalPopup")
 	var popup: PanelContainer = c._create_base_popup("勋章", Vector2(460, 420))
 	popup.name = "DrugshopMedalPopup"
-	popup.z_index = 40   # 盖过药铺全屏页，同 winery/clinic 弹窗惯例
-	c.add_child(popup)   # 弹窗工厂只创建不挂载，必须调用方 add_child
+	popup.z_index = 40
+	c.add_child(popup)
 	var pvb: VBoxContainer = popup.get_child(0)
 	var card := PanelContainer.new()
 	var style := StyleBoxFlat.new()
 	style.bg_color = Color("#2a2640")
 	style.border_color = Color("#6a5f9e")
 	style.set_border_width_all(2)
-	style.corner_radius_top_left = 6
-	style.corner_radius_top_right = 6
-	style.corner_radius_bottom_left = 6
-	style.corner_radius_bottom_right = 6
+	style.set_corner_radius_all(6)
 	card.add_theme_stylebox_override("panel", style)
 	pvb.add_child(card)
 	var vb := VBoxContainer.new()
 	vb.add_theme_constant_override("separation", 4)
 	card.add_child(vb)
+	var head_row := HBoxContainer.new()
+	head_row.alignment = BoxContainer.ALIGNMENT_CENTER
+	head_row.add_theme_constant_override("separation", 6)
+	vb.add_child(head_row)
 	var head := Label.new()
 	head.text = "勋章：%s（%d级）" % [_sys().get_medal_name(), _sys().get_medal_lv()]
+	head.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	head.add_theme_font_size_override("font_size", 18)
-	vb.add_child(head)
+	head.add_theme_color_override("font_color", Color("#e6c07b"))
+	head_row.add_child(head)
+	var help_btn := Button.new()
+	help_btn.text = "?"
+	help_btn.custom_minimum_size = Vector2(24, 24)
+	help_btn.tooltip_text = "点击查看勋章规则"
+	help_btn.pressed.connect(_on_medal_help)
+	head_row.add_child(help_btn)
 	var effect := Label.new()
-	effect.text = "全体商铺赚速 +%d%%　精进技能等级上限 +%d" % [
-		int(_sys().get_medal_shop_pct() * 100), _sys().get_refine_cap_bonus()]
+	effect.text = "全体商铺赚速 +%d%%　精进技能等级上限 +%d" % [int(_sys().get_medal_shop_pct() * 100), _sys().get_refine_cap_bonus()]
+	effect.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	effect.add_theme_color_override("font_color", Color("#e6c07b"))
 	vb.add_child(effect)
 	var nxt := _sys().get_next_medal_cfg()
 	if nxt.is_empty():
 		var max_lbl := Label.new()
 		max_lbl.text = "已达满级"
+		max_lbl.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 		max_lbl.add_theme_color_override("font_color", Color("#9a93b8"))
 		vb.add_child(max_lbl)
 	else:
+		var need: int = int(nxt.get("need_exp", 0))
 		var next_lbl := Label.new()
-		next_lbl.text = "下一级【%s】需累计药铺经验 %s（当前 %s）" % [
-			nxt.get("name", ""), c.format_number(int(nxt.get("need_exp", 0))), c.format_number(_sys().exp_total)]
+		next_lbl.text = "下一级【%s】需累计药铺经验 %s（当前 %s）" % [nxt.get("name", ""), c.format_number(need), c.format_number(_sys().exp_total)]
+		next_lbl.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 		next_lbl.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
 		vb.add_child(next_lbl)
+		var bar := ProgressBar.new()
+		bar.min_value = 0.0
+		bar.max_value = maxf(1.0, float(need))
+		bar.value = minf(float(_sys().exp_total), float(need))
+		bar.show_percentage = true
+		bar.custom_minimum_size = Vector2(410, 18)
+		vb.add_child(bar)
+		var next_effect := Label.new()
+		next_effect.text = "下级效果：全体商铺赚速 +%d%%　精进上限 +%d" % [int(float(nxt.get("shop_pct", 0.0)) * 100.0), int(nxt.get("refine_cap", 0))]
+		next_effect.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+		next_effect.add_theme_color_override("font_color", Color("#7ee787"))
+		vb.add_child(next_effect)
 		var btn := Button.new()
 		btn.text = "升级勋章"
+		btn.custom_minimum_size = Vector2(130, 38)
 		btn.disabled = not _sys().can_upgrade_medal().get("ok", false)
 		btn.pressed.connect(_on_medal_upgrade)
 		vb.add_child(btn)
 	c._add_ok_button(pvb, func(): _close_node("DrugshopMedalPopup"))
+
+func _on_medal_help():
+	c._show_stage_hint("药铺勋章：累计药铺经验只作门槛不消耗；全体商铺赚速+100%×等级，并提高精进技能等级上限。")
 
 func _on_medal_upgrade():
 	var r := _sys().upgrade_medal()

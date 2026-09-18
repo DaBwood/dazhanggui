@@ -7,7 +7,7 @@
 class_name MiaoyinView
 extends BaseView
 
-var _tab: String = "home"   # home/buildings/satisfaction/rookies；选秀=批次④
+var _tab: String = "home"   # home/buildings/satisfaction/rookies/audition
 var _rookie_filter: String = "all"   # 新秀页职业筛选：all 或 profession_id
 
 func _init(p_c):
@@ -35,6 +35,9 @@ func _build(page: Panel):
 		return
 	if _tab == "rookies":
 		_build_rookie_page(page)
+		return
+	if _tab == "audition":
+		_build_audition_page(page)
 		return
 	var root := VBoxContainer.new()
 	root.anchor_left = 0.0
@@ -66,8 +69,8 @@ func _build(page: Panel):
 	title.add_theme_color_override("font_color", Color("#ffd700"))
 	top.add_child(title)
 	var medal_btn := Button.new()
-	medal_btn.text = _sys().get_medal_name()
-	medal_btn.custom_minimum_size = Vector2(112, 40)
+	medal_btn.text = "勋章"
+	medal_btn.custom_minimum_size = Vector2(84, 40)
 	medal_btn.pressed.connect(_show_medal_popup)
 	top.add_child(medal_btn)
 	_add_btn_dot(medal_btn, _sys().can_upgrade_medal().get("ok", false))
@@ -162,9 +165,9 @@ func _build(page: Panel):
 	b_aud.text = "选秀"
 	b_aud.custom_minimum_size = Vector2(82, 52)
 	b_aud.size_flags_horizontal = Control.SIZE_EXPAND_FILL
-	b_aud.pressed.connect(_show_future.bind("选秀"))
+	b_aud.pressed.connect(_open_audition_page)
 	bottom.add_child(b_aud)
-	_add_btn_dot(b_aud, false)
+	_add_btn_dot(b_aud, _sys().has_audition_attention())
 
 func _fmt_rate(x: float) -> String:
 	if x >= 100.0:
@@ -473,17 +476,18 @@ func _build_rookie_page(page: Panel):
 	var root := _new_page_root(page)
 	_add_sub_header(root, "妙音坊新秀")
 	_ensure_rookie_shape_hint()
+	var prof_list: Array = _sys().get_profession_list()
+	var valid_filter: bool = false
+	for p in prof_list:
+		if str(p.get("id", "")) == _rookie_filter:
+			valid_filter = true
+	if not valid_filter and prof_list.size() > 0:
+		_rookie_filter = str(prof_list[0].get("id", ""))
 	var filter_row := HBoxContainer.new()
 	filter_row.alignment = BoxContainer.ALIGNMENT_CENTER
 	filter_row.add_theme_constant_override("separation", 6)
 	root.add_child(filter_row)
-	var all_btn := Button.new()
-	all_btn.text = "全部"
-	all_btn.custom_minimum_size = Vector2(54, 32)
-	all_btn.disabled = _rookie_filter == "all"
-	all_btn.pressed.connect(_set_rookie_filter.bind("all"))
-	filter_row.add_child(all_btn)
-	for p in _sys().get_profession_list():
+	for p in prof_list:
 		var pid: String = str(p.get("id", ""))
 		var b := Button.new()
 		b.text = str(p.get("name", pid))
@@ -507,6 +511,11 @@ func _build_rookie_page(page: Panel):
 	summary.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	summary.add_theme_color_override("font_color", Color("#bdb7d8"))
 	list.add_child(summary)
+	var sync_all := Button.new()
+	sync_all.text = "本职业同步升1级"
+	sync_all.custom_minimum_size = Vector2(150, 38)
+	sync_all.pressed.connect(_on_sync_profession_rookies)
+	list.add_child(sync_all)
 	_add_rookie_section(list, "已入住", housed)
 	_add_rookie_section(list, "未入住", unhoused)
 
@@ -583,7 +592,7 @@ func _show_rookie_popup(fid: String):
 	attr_lbl.add_theme_color_override("font_color", Color("#bdb7d8"))
 	vb.add_child(attr_lbl)
 	var train_tip := Label.new()
-	train_tip.text = "训练：仅吃本职业五档应援物；同步升1级=高阶优先直到升级或材料耗尽"
+	train_tip.text = "训练：仅吃本职业五档应援物；升一级=材料足够自动吃到升级，不足不扣"
 	train_tip.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	train_tip.add_theme_font_size_override("font_size", 12)
 	train_tip.add_theme_color_override("font_color", Color("#bdb7d8"))
@@ -622,13 +631,9 @@ func _show_rookie_popup(fid: String):
 	var up_btn := Button.new()
 	up_btn.text = "升一级"
 	up_btn.custom_minimum_size = Vector2(76, 34)
+	up_btn.disabled = not _sys().can_rookie_train(fid)
 	up_btn.pressed.connect(_on_train_level_up.bind(fid))
 	btns.add_child(up_btn)
-	var sync_btn := Button.new()
-	sync_btn.text = "同步升1级"
-	sync_btn.custom_minimum_size = Vector2(96, 34)
-	sync_btn.pressed.connect(_on_train_sync.bind(fid))
-	btns.add_child(sync_btn)
 	var close_btn := Button.new()
 	close_btn.text = "关闭"
 	close_btn.custom_minimum_size = Vector2(74, 34)
@@ -641,6 +646,15 @@ func _on_train_item(fid: String, sid: String, count: int):
 		c._show_stage_hint(str(r.get("msg", "训练失败")))
 		return
 	c._show_stage_hint("训练成功，经验 +%d" % int(r.get("exp", 0)))
+	c.update_all_ui()
+	_refresh()
+
+func _on_sync_profession_rookies():
+	var r: Dictionary = _sys().train_profession_rookies_level_up(_rookie_filter)
+	if not r.get("ok", false):
+		c._show_stage_hint(str(r.get("msg", "同步升级失败")))
+		return
+	c._show_stage_hint(str(r.get("msg", "同步升级成功")))
 	c.update_all_ui()
 	_refresh()
 
@@ -739,6 +753,166 @@ func _on_checkin(fid: String, bid: String):
 	_refresh()
 
 
+# ---------- 选秀子页（批次④：三属性门/一键上阵/挑战/奖励） ----------
+func _open_audition_page():
+	_tab = "audition"
+	close_popup()
+	_refresh()
+
+func _build_audition_page(page: Panel):
+	var root := _new_page_root(page)
+	_add_sub_header(root, "赛区选秀")
+	var ov: Dictionary = _sys().get_audition_overview()
+	var info: Dictionary = ov.get("info", {})
+	var chk: Dictionary = ov.get("check", {})
+	var title := Label.new()
+	title.text = "选秀第 %d 场　第 %d 轮 %d/5　推荐新秀平均等级 %d" % [int(info.get("stage", 1)), int(info.get("round", 1)), int(info.get("pos", 1)), int(info.get("rec_lv", 30))]
+	title.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	title.add_theme_font_size_override("font_size", 18)
+	title.add_theme_color_override("font_color", Color("#e6c07b"))
+	root.add_child(title)
+	var gates := VBoxContainer.new()
+	gates.add_theme_constant_override("separation", 6)
+	root.add_child(gates)
+	_add_gate_row(gates, "主属性 %s" % _sys()._profession_name(str(info.get("main_prof", ""))), int(chk.get("main_sum", 0)), int(info.get("main_gate", 0)))
+	_add_gate_row(gates, "副属性 %s" % _sys()._profession_name(str(info.get("good_prof", ""))), int(chk.get("good_sum", 0)), int(info.get("good_gate", 0)))
+	_add_gate_row(gates, "副属性 %s" % _sys()._profession_name(str(info.get("bad_prof", ""))), int(chk.get("bad_sum", 0)), int(info.get("bad_gate", 0)))
+	var reward_lbl := Label.new()
+	reward_lbl.text = "通关奖励：%s×%s　应援物×%s　应援币×%s" % [
+		str(data.ITEM_CONFIG.get(_sys().get_flower_by_profession(str(info.get("main_prof", ""))), {}).get("name", "缘分物")),
+		c.format_number(int(info.get("yyf_reward", 0))), c.format_number(int(info.get("yyw_reward", 0))), c.format_number(int(info.get("yyb_reward", 0)))]
+	reward_lbl.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	reward_lbl.add_theme_color_override("font_color", Color("#bdb7d8"))
+	root.add_child(reward_lbl)
+	var team_title := Label.new()
+	team_title.text = "上阵队伍（%d/%d）" % [int(chk.get("filled", 0)), int(chk.get("team_size", 4))]
+	team_title.add_theme_font_size_override("font_size", 16)
+	root.add_child(team_title)
+	var slots := HBoxContainer.new()
+	slots.alignment = BoxContainer.ALIGNMENT_CENTER
+	slots.add_theme_constant_override("separation", 8)
+	root.add_child(slots)
+	var team_cards: Array = ov.get("team", [])
+	for i in range(team_cards.size()):
+		var card: Dictionary = team_cards[i]
+		var b := Button.new()
+		b.custom_minimum_size = Vector2(92, 58)
+		b.text = str(card.get("name", "空")) if str(card.get("fid", "")) != "" else "空"
+		if str(card.get("fid", "")) != "":
+			b.text += "\nLv.%d" % int(card.get("lv", 0))
+		b.pressed.connect(_show_audition_team_popup.bind(i))
+		slots.add_child(b)
+	var btns := HBoxContainer.new()
+	btns.alignment = BoxContainer.ALIGNMENT_CENTER
+	btns.add_theme_constant_override("separation", 10)
+	root.add_child(btns)
+	var auto_btn := Button.new()
+	auto_btn.text = "一键上阵"
+	auto_btn.custom_minimum_size = Vector2(92, 36)
+	auto_btn.pressed.connect(_on_auto_audition_team)
+	btns.add_child(auto_btn)
+	var fight_btn := Button.new()
+	fight_btn.text = "挑战"
+	fight_btn.custom_minimum_size = Vector2(92, 36)
+	fight_btn.disabled = not chk.get("ok", false)
+	fight_btn.pressed.connect(_on_challenge_audition)
+	btns.add_child(fight_btn)
+
+func _add_gate_row(parent: VBoxContainer, label_text: String, value: int, gate: int):
+	var row := HBoxContainer.new()
+	row.alignment = BoxContainer.ALIGNMENT_CENTER
+	row.add_theme_constant_override("separation", 8)
+	parent.add_child(row)
+	var lbl := Label.new()
+	lbl.text = "%s　%s/%s" % [label_text, c.format_number(value), c.format_number(gate)]
+	lbl.custom_minimum_size = Vector2(190, 26)
+	row.add_child(lbl)
+	var bar := ProgressBar.new()
+	bar.min_value = 0.0
+	bar.max_value = maxf(1.0, float(gate))
+	bar.value = minf(float(value), float(gate))
+	bar.show_percentage = false
+	bar.custom_minimum_size = Vector2(180, 16)
+	row.add_child(bar)
+
+func _show_audition_team_popup(slot: int):
+	close_popup()
+	_popup_kind = "audition_team"
+	_popup_id = str(slot)
+	var popup: PanelContainer = c._create_base_popup("选择上阵挚友 - 槽位 %d" % (slot + 1), Vector2(500, 520))
+	popup.name = _popup_node_name
+	popup.z_index = 40
+	c.add_child(popup)
+	var vb: VBoxContainer = popup.get_child(0)
+	var tip := Label.new()
+	tip.text = "只能选已入住挚友；主属性职业优先养满4人"
+	tip.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	tip.add_theme_color_override("font_color", Color("#bdb7d8"))
+	vb.add_child(tip)
+	var scroll := ScrollContainer.new()
+	scroll.custom_minimum_size = Vector2(0, 350)
+	scroll.horizontal_scroll_mode = ScrollContainer.SCROLL_MODE_DISABLED
+	vb.add_child(scroll)
+	var rows := VBoxContainer.new()
+	rows.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	rows.add_theme_constant_override("separation", 6)
+	scroll.add_child(rows)
+	var info: Dictionary = _sys().get_audition_stage_info()
+	for fid in _sys().get_housed_rookie_ids():
+		var r: Dictionary = _sys().get_rookie_entry(fid)
+		var attrs: Dictionary = _sys().get_rookie_attrs(fid)
+		var row := HBoxContainer.new()
+		row.alignment = BoxContainer.ALIGNMENT_CENTER
+		row.add_theme_constant_override("separation", 8)
+		rows.add_child(row)
+		var name_lbl := Label.new()
+		name_lbl.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+		name_lbl.text = "%s　%s　Lv.%d　主属性 %d" % [
+			str(data.get_friend_config(fid).get("name", fid)), _sys()._profession_name(str(r.get("prof", ""))),
+			int(r.get("lv", 1)), int(attrs.get(str(info.get("main_prof", "")), {}).get("attr", 0))]
+		row.add_child(name_lbl)
+		var pick := Button.new()
+		pick.text = "上阵"
+		pick.custom_minimum_size = Vector2(70, 32)
+		pick.pressed.connect(_on_pick_audition_slot.bind(slot, fid))
+		row.add_child(pick)
+	var clear_btn := Button.new()
+	clear_btn.text = "清空该槽"
+	clear_btn.custom_minimum_size = Vector2(100, 34)
+	clear_btn.pressed.connect(_on_pick_audition_slot.bind(slot, ""))
+	vb.add_child(clear_btn)
+	var close_btn := Button.new()
+	close_btn.text = "关闭"
+	close_btn.custom_minimum_size = Vector2(100, 34)
+	close_btn.pressed.connect(close_popup)
+	vb.add_child(close_btn)
+
+func _on_pick_audition_slot(slot: int, fid: String):
+	var r: Dictionary = _sys().set_audition_team_slot(slot, fid)
+	if not r.get("ok", false):
+		c._show_stage_hint(str(r.get("msg", "上阵失败")))
+		return
+	c.update_all_ui()
+	_refresh()
+
+func _on_auto_audition_team():
+	_sys().set_audition_team(_sys().auto_pick_audition_team())
+	c._show_stage_hint("已按主属性职业自动上阵")
+	c.update_all_ui()
+	_refresh()
+
+func _on_challenge_audition():
+	var r: Dictionary = _sys().pass_audition()
+	if not r.get("ok", false):
+		c._show_stage_hint(str(r.get("msg", "挑战失败")))
+		return
+	var rewards: Dictionary = r.get("rewards", {})
+	c._show_stage_hint("通关：缘分物+%s 应援物+%s 应援币+%s" % [
+		c.format_number(int(rewards.get("yyf", 0))), c.format_number(int(rewards.get("yyw", 0))), c.format_number(int(rewards.get("yyb", 0)))])
+	c.update_all_ui()
+	_refresh()
+
+
 func _rebuild_popup():
 	if _popup_kind == "medal":
 		_show_medal_popup()
@@ -750,19 +924,20 @@ func _rebuild_popup():
 		_show_rookie_popup(_popup_id)
 	elif _popup_kind == "house" and _popup_id != "":
 		_show_house_popup(_popup_id)
+	elif _popup_kind == "audition_team":
+		_show_audition_team_popup(int(_popup_id))
 
 # ---------- 弹窗：勋章（15 级全表；繁荣度=应援币总产出/分；全部商铺赚速 +100%×级） ----------
+# 勋章固定样式（2026-09-19 用户拍板）：主页右上角【勋章】入口 -> 460×420「勋章」弹窗 -> #2a2640/#6a5f9e 勋章卡 -> 等级旁[?]规则 -> 当前效果 -> 下一级进度条 -> 升级按钮 -> 关闭。后续新玩法照此模板，不再另起样式。
 func _show_medal_popup():
 	close_popup()
 	_popup_kind = "medal"
-	var popup: PanelContainer = c._create_base_popup("妙音坊勋章", Vector2(460, 560))
+	var popup: PanelContainer = c._create_base_popup("勋章", Vector2(460, 420))
 	popup.name = _popup_node_name
 	popup.z_index = 40
 	c.add_child(popup)
-	var vb: VBoxContainer = popup.get_child(0)
+	var pvb: VBoxContainer = popup.get_child(0)
 	var lv: int = _sys().get_medal_lv()
-	var medals: Array = _sys()._extra("medal").get("medals", [])
-
 	var card := PanelContainer.new()
 	var cs := StyleBoxFlat.new()
 	cs.bg_color = Color("#2a2640")
@@ -770,26 +945,37 @@ func _show_medal_popup():
 	cs.set_border_width_all(2)
 	cs.border_color = Color("#6a5f9e")
 	card.add_theme_stylebox_override("panel", cs)
-	vb.add_child(card)
+	pvb.add_child(card)
 	var cvb := VBoxContainer.new()
-	cvb.add_theme_constant_override("separation", 8)
+	cvb.add_theme_constant_override("separation", 4)
 	card.add_child(cvb)
+	var head_row := HBoxContainer.new()
+	head_row.alignment = BoxContainer.ALIGNMENT_CENTER
+	head_row.add_theme_constant_override("separation", 6)
+	cvb.add_child(head_row)
 	var head := Label.new()
-	head.text = "当前：%s（%d级）" % [_sys().get_medal_name(lv), lv]
+	head.text = "勋章：%s（%d级）" % [_sys().get_medal_name(lv), lv]
 	head.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	head.add_theme_font_size_override("font_size", 18)
 	head.add_theme_color_override("font_color", Color("#e6c07b"))
-	cvb.add_child(head)
+	head_row.add_child(head)
+	var help_btn := Button.new()
+	help_btn.text = "?"
+	help_btn.custom_minimum_size = Vector2(24, 24)
+	help_btn.tooltip_text = "点击查看勋章规则"
+	help_btn.pressed.connect(_on_medal_help)
+	head_row.add_child(help_btn)
 	var effect := Label.new()
 	effect.text = "全部商铺赚速 +%d%%" % int(round(_sys().get_medal_shop_pct() * 100.0))
 	effect.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	effect.add_theme_color_override("font_color", Color("#e6c07b"))
 	cvb.add_child(effect)
 	var need: int = _sys().get_next_medal_need()
 	if need < 0:
 		var full := Label.new()
 		full.text = "已满级"
 		full.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
-		full.add_theme_color_override("font_color", Color("#7ee787"))
+		full.add_theme_color_override("font_color", Color("#9a93b8"))
 		cvb.add_child(full)
 	else:
 		var next_lbl := Label.new()
@@ -798,7 +984,7 @@ func _show_medal_popup():
 		cvb.add_child(next_lbl)
 		var bar := ProgressBar.new()
 		bar.min_value = 0.0
-		bar.max_value = float(need)
+		bar.max_value = maxf(1.0, float(need))
 		bar.value = minf(float(_sys().get_prosperity()), float(need))
 		bar.show_percentage = true
 		bar.custom_minimum_size = Vector2(410, 18)
@@ -808,46 +994,16 @@ func _show_medal_popup():
 		next_effect.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 		next_effect.add_theme_color_override("font_color", Color("#7ee787"))
 		cvb.add_child(next_effect)
-	var up := Button.new()
-	up.text = "升级勋章"
-	up.custom_minimum_size = Vector2(130, 38)
-	up.disabled = not _sys().can_upgrade_medal().get("ok", false)
-	up.pressed.connect(_on_medal_upgrade)
-	cvb.add_child(up)
+		var up := Button.new()
+		up.text = "升级勋章"
+		up.custom_minimum_size = Vector2(130, 38)
+		up.disabled = not _sys().can_upgrade_medal().get("ok", false)
+		up.pressed.connect(_on_medal_upgrade)
+		cvb.add_child(up)
+	c._add_ok_button(pvb, func(): close_popup())
 
-	var scroll := ScrollContainer.new()
-	scroll.custom_minimum_size = Vector2(420, 225)
-	scroll.horizontal_scroll_mode = ScrollContainer.SCROLL_MODE_DISABLED
-	vb.add_child(scroll)
-	var rows := VBoxContainer.new()
-	rows.size_flags_horizontal = Control.SIZE_EXPAND_FILL
-	rows.add_theme_constant_override("separation", 4)
-	scroll.add_child(rows)
-	for i in range(medals.size()):
-		var m: Dictionary = medals[i]
-		var row := HBoxContainer.new()
-		row.add_theme_constant_override("separation", 8)
-		rows.add_child(row)
-		var name_lbl := Label.new()
-		name_lbl.text = "Lv.%d %s" % [int(m.get("lv", i + 1)), str(m.get("name", ""))]
-		name_lbl.size_flags_horizontal = Control.SIZE_EXPAND_FILL
-		if int(m.get("lv", 0)) == lv:
-			name_lbl.add_theme_color_override("font_color", Color("#ffd700"))
-		row.add_child(name_lbl)
-		var need_lbl := Label.new()
-		need_lbl.text = "繁荣度 %s" % c.format_number(int(m.get("need_prosperity", 0)))
-		need_lbl.add_theme_color_override("font_color", Color("#bdb7d8"))
-		row.add_child(need_lbl)
-		var eff_lbl := Label.new()
-		eff_lbl.text = "+%d%%" % int(round(float(m.get("shop_pct", 0.0)) * 100.0))
-		eff_lbl.add_theme_color_override("font_color", Color("#e6c07b"))
-		row.add_child(eff_lbl)
-
-	var close_btn := Button.new()
-	close_btn.text = "关闭"
-	close_btn.custom_minimum_size = Vector2(100, 36)
-	close_btn.pressed.connect(close_popup)
-	vb.add_child(close_btn)
+func _on_medal_help():
+	c._show_stage_hint("妙音坊勋章：繁荣度=应援币总产出/分；全部商铺赚速+100%×等级；升级只校验繁荣度，不消耗繁荣度。")
 
 func _on_medal_upgrade():
 	var r: Dictionary = _sys().upgrade_medal()
