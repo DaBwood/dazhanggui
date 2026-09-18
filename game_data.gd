@@ -551,7 +551,7 @@ var soul_bone_seq: int = 0   # 【新增】魂骨uid自增序号
 var fishing_system   # 垂钓系统（第8批新增）
 var _fishing_configs: Dictionary = {}   # 垂钓配置（fishing.json，由 _load_all_configs 加载）
 var costume_system    # 【服装系统】
-var costume_configs   # 【服装系统】服装配置
+var costume_configs: Dictionary = {}   # 【服装系统】服装配置（⚠️必须带类型默认值，校验在加载前读它）
 # 【促织系统】存档字段
 var cuzhi_caught: Dictionary = {}      # key=促织id, value={"level":1,"exp":0}
 var cuzhi_fate: Dictionary = {}        # key=职业, value=缘分点数
@@ -613,43 +613,78 @@ var _winery_configs: Dictionary = {}   # 【新增】酒坊配置（winery.json�
 
 # ==================== 初始化 ====================
 # 初始化：创建各子系统（纯逻辑模块，持有本中枢引用），再加载全部配置
+# ==================== 【新增】系统注册清单（2026-09-18 架构重构批次①） ====================
+# 一个系统一条，四处注册（实例化/配置加载/存档/读档）全部由本清单驱动，禁止再手写：
+#   ① var xxx_system 声明行仍保留（GDScript 无法动态建成员，g.xxx 几百处调用不动）
+#   ② _init 实例化 / _load_all_configs 配置 / save_game 存档 / load_game 读档 = 四个循环
+# 字段：key=中枢成员名（须已有同名 var 声明） script=系统脚本路径
+#       cfg_var=配置变量名（无配置留空） cfg=配置 JSON 路径（无配置留空）
+# ⚠️ 清单顺序即读档认领顺序：drugshop_system 必须排在 talent_system 之前
+#    （天赋 sync_skills 要读药铺勋章精进上限，须先让药铺完成认领）
+# ⚠️ 例外说明：cuzhi 配置自加载（cuzhi_system 构造函数内）不进清单；item/travel/stage 配置
+#    加载有副作用（初始道具发放/常量表），走各自专用加载函数；net_system（云存档）生命周期
+#    独立，明确不纳入清单。
+const SYSTEM_LIST: Array = [
+	{"key": "hero_system", "script": "res://systems/hero_system.gd", "cfg_var": "_hero_configs", "cfg": "res://data/heroes.json"},
+	{"key": "friend_system", "script": "res://systems/friend_system.gd", "cfg_var": "_friend_configs", "cfg": "res://data/friends.json"},
+	{"key": "apprentice_system", "script": "res://systems/apprentice_system.gd", "cfg_var": "", "cfg": ""},
+	{"key": "beast_system", "script": "res://systems/beast_system.gd", "cfg_var": "_beast_configs", "cfg": BEAST_CONFIG_PATH},
+	{"key": "shop_system", "script": "res://systems/shop_system.gd", "cfg_var": "_shop_configs", "cfg": "res://data/shops.json"},
+	{"key": "stage_system", "script": "res://systems/stage_system.gd", "cfg_var": "", "cfg": ""},
+	{"key": "item_system", "script": "res://systems/item_system.gd", "cfg_var": "", "cfg": ""},
+	{"key": "travel_system", "script": "res://systems/travel_system.gd", "cfg_var": "", "cfg": ""},
+	{"key": "charity_system", "script": "res://systems/charity_system.gd", "cfg_var": "", "cfg": ""},
+	{"key": "lottery_system", "script": "res://systems/lottery_system.gd", "cfg_var": "", "cfg": ""},
+	{"key": "mall_system", "script": "res://systems/mall_system.gd", "cfg_var": "", "cfg": ""},
+	{"key": "manor_system", "script": "res://systems/manor_system.gd", "cfg_var": "_manor_configs", "cfg": "res://data/manor.json"},
+	{"key": "courtyard_system", "script": "res://systems/courtyard_system.gd", "cfg_var": "_courtyard_configs", "cfg": "res://data/courtyard.json"},
+	{"key": "war_system", "script": "res://systems/war_system.gd", "cfg_var": "_war_configs", "cfg": "res://data/war.json"},
+	{"key": "goal_system", "script": "res://systems/goal_system.gd", "cfg_var": "_goal_configs", "cfg": "res://data/goals.json"},
+	{"key": "fishing_system", "script": "res://systems/fishing_system.gd", "cfg_var": "_fishing_configs", "cfg": "res://data/fishing.json"},
+	{"key": "soul_system", "script": "res://systems/soul_system.gd", "cfg_var": "_soul_configs", "cfg": "res://data/soulstones.json"},
+	{"key": "soulpower_system", "script": "res://systems/soulpower_system.gd", "cfg_var": "_soulpower_configs", "cfg": "res://data/soulpower.json"},
+	{"key": "cuzhi_system", "script": "res://systems/cuzhi_system.gd", "cfg_var": "", "cfg": ""},
+	{"key": "guardian_system", "script": "res://systems/guardian_system.gd", "cfg_var": "_guardian_configs", "cfg": "res://data/guardian.json"},
+	{"key": "token_system", "script": "res://systems/token_system.gd", "cfg_var": "_token_configs", "cfg": "res://data/tokens.json"},
+	{"key": "fengzi_system", "script": "res://systems/fengzi_system.gd", "cfg_var": "_fengzi_configs", "cfg": "res://data/fengzi.json"},
+	{"key": "drugshop_system", "script": "res://systems/drugshop_system.gd", "cfg_var": "_drugshop_configs", "cfg": "res://data/drugshop.json"},
+	{"key": "talent_system", "script": "res://systems/talent_system.gd", "cfg_var": "_talent_configs", "cfg": "res://data/talent.json"},
+	{"key": "collection_system", "script": "res://systems/collection_system.gd", "cfg_var": "_collection_configs", "cfg": "res://data/collection.json"},
+	{"key": "guild_system", "script": "res://systems/guild_system.gd", "cfg_var": "_guild_configs", "cfg": "res://data/guild.json"},
+	{"key": "mail_system", "script": "res://systems/mail_system.gd", "cfg_var": "", "cfg": ""},
+	{"key": "bank_system", "script": "res://systems/bank_system.gd", "cfg_var": "_bank_configs", "cfg": "res://data/bank.json"},
+	{"key": "inn_system", "script": "res://systems/inn_system.gd", "cfg_var": "_inn_configs", "cfg": "res://data/inn.json"},
+	{"key": "side_skill_system", "script": "res://systems/side_skill_system.gd", "cfg_var": "_side_skill_configs", "cfg": "res://data/side_skill.json"},
+	{"key": "clinic_system", "script": "res://systems/clinic_system.gd", "cfg_var": "_clinic_configs", "cfg": "res://data/clinic.json"},
+	{"key": "tavern_system", "script": "res://systems/tavern_system.gd", "cfg_var": "_tavern_configs", "cfg": "res://data/tavern.json"},
+	{"key": "winery_system", "script": "res://systems/winery_system.gd", "cfg_var": "_winery_configs", "cfg": "res://data/winery.json"},
+	{"key": "costume_system", "script": "res://systems/costume_system.gd", "cfg_var": "costume_configs", "cfg": "res://data/costumes.json"},
+]
+
+# 【新增】全部系统实例（_init 由 SYSTEM_LIST 循环填充；save/load 共用此一份，杜绝双清单漂移）
+var _system_instances: Array = []
+
+# 【新增】启动校验：清单每条 key 必须有非空实例、cfg_var 必须有配置——"漏 var 声明/漏配置行"
+# 由此从运行时静默 nil 变为启动即报错定位（2026-09-18 酒坊批次"丢 var 声明"教训的根治）
+func _validate_registrations() -> void:
+	for e in SYSTEM_LIST:
+		if get(e.get("key", "")) == null:
+			push_error("[注册校验] 系统实例为空: " + str(e.get("key", "")) + "（SYSTEM_LIST 有登记但缺 var 声明或脚本加载失败）")
+		var cv: String = str(e.get("cfg_var", ""))
+		if cv != "" and (get(cv) == null or get(cv).is_empty()):
+			push_error("[注册校验] 配置为空: " + cv + "（cfg_var 名写错或对应 JSON 缺失/为空）")
+
 func _init():
-	hero_system = HeroSystem.new(self)
-	friend_system = FriendSystem.new(self)
-	apprentice_system = ApprenticeSystem.new(self)
-	beast_system = BeastSystem.new(self)
-	shop_system = ShopSystem.new(self)
-	stage_system = StageSystem.new(self)
-	item_system = ItemSystem.new(self)
-	travel_system = TravelSystem.new(self)
-	charity_system = CharitySystem.new(self)
-	lottery_system = LotterySystem.new(self)
-	mall_system = MallSystem.new(self)
-	manor_system = ManorSystem.new(self)
-	courtyard_system = CourtyardSystem.new(self)   # 【第7批新增】宅院技艺卷轴系统
-	war_system = WarSystem.new(self)
-	goal_system = GoalSystem.new(self)
-	soul_system = SoulSystem.new(self)   # 【新增】兽魂系统
-	soulpower_system = SoulpowerSystem.new(self)   # 【新增】魂力培养系统
-	fishing_system = FishingSystem.new(self)   # 【第8批新增】垂钓系统
-	costume_system = CostumeSystem.new(self)
-	cuzhi_system = CuzhiSystem.new(self)
-	guardian_system = GuardianSystem.new(self)
-	token_system = TokenSystem.new(self)   # 【新增】信物系统
-	fengzi_system = FengziSystem.new(self)   # 【新增】风姿系统
-	talent_system = TalentSystem.new(self)   # 【新增】天赋系统
-	collection_system = CollectionSystem.new(self)
-	guild_system = GuildSystem.new(self)   # 【新增】商会系统
-	mail_system = MailSystem.new(self)
-	bank_system = BankSystem.new(self)   # 【新增】钱庄玩法系统
-	inn_system = InnSystem.new(self)   # 【新增】客栈玩法系统
-	side_skill_system = SideSkillSystem.new(self)   # 【新增】副业技能系统
-	clinic_system = ClinicSystem.new(self)   # 【新增】医馆玩法系统
-	drugshop_system = DrugshopSystem.new(self)   # 【新增】药铺玩法系统
-	tavern_system = TavernSystem.new(self)   # 【新增】酒肆玩法系统
-	winery_system = WinerySystem.new(self)   # 【新增】酒坊玩法系统
+	# 【改】实例化由 SYSTEM_LIST 清单循环驱动（原 34 行手写，2026-09-18 架构重构批次①）
+	# set() 动态赋值到同名 var 声明；顺序=清单顺序=读档认领顺序（drugshop 先于 talent）
+	for e in SYSTEM_LIST:
+		set(e.get("key", ""), load(e.get("script", "")).new(self))
+		_system_instances.append(get(e.get("key", "")))
 	
 	_load_all_configs()
+	# 【改】校验必须在配置加载后跑：加载前配置变量全是声明默认值（裸声明 var 默认 null），
+	# 会误报"配置为空"（2026-09-18 costume_configs 踩过）；此时为空才真=JSON 缺失
+	_validate_registrations()
 
 # ==================== 配置加载 ====================
 
@@ -665,33 +700,17 @@ func _load_json(path: String) -> Dictionary:
 	return json.get_data()
 
 func _load_all_configs():
-	_hero_configs = _load_json("res://data/heroes.json")
-	_friend_configs = _load_json("res://data/friends.json")
-	_vip_rewards = _load_json("res://data/vip_rewards.json")
-	_shop_configs = _load_json("res://data/shops.json")
-	_beast_configs = _load_json(BEAST_CONFIG_PATH)
-	_manor_configs = _load_json("res://data/manor.json")   # 【第4批新增】庄园配置
-	_courtyard_configs = _load_json("res://data/courtyard.json")   # 【第7批新增】宅院技艺配置
-	_war_configs = _load_json("res://data/war.json")   # 【第5批新增】商战配置
-	_goal_configs = _load_json("res://data/goals.json")   # 【第6批新增】挚友目标配置
-	_soul_configs = _load_json("res://data/soulstones.json")   # 【新增】兽魂配置
-	_soulpower_configs = _load_json("res://data/soulpower.json")   # 【新增】魂力培养配置
-	_fishing_configs = _load_json("res://data/fishing.json")   # 【第8批新增】垂钓配置
-	costume_configs = _load_json("res://data/costumes.json")   # 【服装系统】
-	_guardian_configs = _load_json("res://data/guardian.json")  # 【新增】守护灵配置
-	_token_configs = _load_json("res://data/tokens.json")   # 【新增】信物配置
-	_fengzi_configs = _load_json("res://data/fengzi.json")   # 【新增】风姿配置
-	_talent_configs = _load_json("res://data/talent.json")   # 【新增】天赋配置
-	_collection_configs = _load_json("res://data/collection.json")   # 函数名以现有配置加载辅助函数为准
+	_vip_rewards = _load_json("res://data/vip_rewards.json")   # 【改】无系统直属，仍手写
+	# 【改】系统直属配置由 SYSTEM_LIST 清单循环驱动（原 24 行手写，2026-09-18 架构重构批次①）
+	# ⚠️ cfg_var 在清单里显式声明，不靠规则推导（costume_configs 无前下划线，推导会踩）
+	for e in SYSTEM_LIST:
+		var cv: String = str(e.get("cfg_var", ""))
+		if cv != "":
+			set(cv, _load_json(e.get("cfg", "")))
+	# 【改】以上 20 个系统直属配置全部由上方 SYSTEM_LIST 循环加载（原 21 行手写残留，
+	# 与循环重复赋同值，2026-09-18 架构重构批次①清除）；仅 manhuang 无直属系统，保留手写
 	_manhuang_configs = _load_json("res://data/manhuang.json")   # 【新增】蛮荒礼盒可选道具
-	_guild_configs = _load_json("res://data/guild.json")   # 【新增】商会配置
-	_inn_configs = _load_json("res://data/inn.json")   # 【新增】客栈配置
-	_side_skill_configs = _load_json("res://data/side_skill.json")   # 【新增】副业技能配置
-	_clinic_configs = _load_json("res://data/clinic.json")   # 【新增】医馆配置
-	_drugshop_configs = _load_json("res://data/drugshop.json")   # 【新增】药铺配置
-	_tavern_configs = _load_json("res://data/tavern.json")   # 【新增】酒肆配置
-	_winery_configs = _load_json("res://data/winery.json")   # 【新增】酒坊配置
-	
+
 	_load_items_config()   # 【重构新增】道具表
 	_load_travel_config()  # 【重构新增】游历配置
 	_load_stage_box_config()  # 【新增】关卡宝箱掉落表
@@ -844,15 +863,9 @@ func save_game():
 		"last_login_time": last_login_time,
 		"last_logout_time": last_logout_time,
 	}
-	# 各子系统把自己的字段合并进来（新系统加存档字段只需改它自己的 get_save_data）
-	var systems = [hero_system, friend_system, apprentice_system, beast_system, shop_system,
-		stage_system, item_system, travel_system, charity_system, lottery_system, mall_system,
-		manor_system,courtyard_system,war_system,goal_system,fishing_system,soul_system,
-		soulpower_system,cuzhi_system,guardian_system,token_system,fengzi_system,drugshop_system,talent_system,
-		collection_system,guild_system,mail_system,bank_system,inn_system,side_skill_system,clinic_system,
-		tavern_system,winery_system,]
-	# 【修】save 数组漏登记 drugshop_system 导致药铺状态不落盘（每次打开全新）——2026-09-16 修复
-	for sys in systems:
+	# 【改】存档循环走 _system_instances（SYSTEM_LIST 驱动，2026-09-18 架构重构批次①）；
+	# 各子系统把自己的字段合并进来（新系统加存档字段=清单登记一行+改它自己的 get_save_data）
+	for sys in _system_instances:
 		save_data.merge(sys.get_save_data(), true)
 	var file = FileAccess.open(save_path, FileAccess.WRITE)
 	if file:
@@ -898,15 +911,8 @@ func load_game():
 		save_id = str(data.save_id)
 	
 	# ===== 各子系统认领自己的字段（含旧存档兼容逻辑） =====
-	var systems = [hero_system, friend_system, apprentice_system, beast_system, shop_system,
-		stage_system, item_system, travel_system, charity_system, lottery_system, mall_system,
-		manor_system,courtyard_system,war_system,goal_system,fishing_system,soul_system,
-		soulpower_system,cuzhi_system,guardian_system,token_system,fengzi_system,drugshop_system,talent_system,
-		collection_system,guild_system,mail_system,bank_system,inn_system,side_skill_system,clinic_system,
-		tavern_system,winery_system,]
-	# 【注】load 数组内 drugshop_system 排在 talent_system 之前：talent 读档 sync_skills
-	# 要读药铺勋章精进上限，须先让药铺状态完成认领（save 数组顺序无要求，一并同序）
-	for sys in systems:
+	# 【改】读档循环走 _system_instances（顺序=清单顺序，drugshop 先于 talent 由清单保证）
+	for sys in _system_instances:
 		sys.load_save_data(data)
 
 # ==================== 子系统API转发区 ====================
