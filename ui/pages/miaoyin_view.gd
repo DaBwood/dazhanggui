@@ -1,11 +1,13 @@
 # ============================================================
 # 妙音坊全屏页（商铺地图 妙音坊「▶」入口；Page z35 / 弹窗 z40，照 BaseView 新模式）
 # 第一批：主页骨架 + 收益罐领取 + 加速卡使用弹窗 + 勋章弹窗（含赚速升级挂点）
-# 底部【建筑/新秀/满意度/选秀】先占位提示“后续版本开放”：对应批次②③④再接，勿提前透数值。
+# 第二批：建筑页/设施升级弹窗/焕新表现 + 满意度意见簿（空态等批次③入住后自动有数据）。
 # 红点口径：只页内展示（勋章可升 / 收益罐可领），不穿透商铺地图（照 2026-09-18 用户拍板）。
 # ============================================================
 class_name MiaoyinView
 extends BaseView
+
+var _tab: String = "home"   # home/buildings/satisfaction；新秀=批次③、选秀=批次④
 
 func _init(p_c):
 	super(p_c)
@@ -24,6 +26,12 @@ func hide_miaoyin_view():
 
 func _build(page: Panel):
 	_sys().settle_jar()
+	if _tab == "buildings":
+		_build_building_page(page)
+		return
+	if _tab == "satisfaction":
+		_build_satisfaction_page(page)
+		return
 	var root := VBoxContainer.new()
 	root.anchor_left = 0.0
 	root.anchor_top = 0.0
@@ -120,19 +128,39 @@ func _build(page: Panel):
 	cv.add_child(claim)
 	_add_btn_dot(claim, pending_total > 0)
 
-	# 底部四入口：本批只做占位提示，红点随对应批次接入
+	# 底部四入口：建筑/满意度批次②已接；新秀/选秀仍占位，红点随对应批次接入
 	var bottom := HBoxContainer.new()
 	bottom.alignment = BoxContainer.ALIGNMENT_CENTER
 	bottom.add_theme_constant_override("separation", 10)
 	root.add_child(bottom)
-	for name in ["建筑", "新秀", "满意度", "选秀"]:
-		var b := Button.new()
-		b.text = name
-		b.custom_minimum_size = Vector2(82, 52)
-		b.size_flags_horizontal = Control.SIZE_EXPAND_FILL
-		b.pressed.connect(_show_future.bind(name))
-		bottom.add_child(b)
-		_add_btn_dot(b, false)
+	var b_build := Button.new()
+	b_build.text = "建筑"
+	b_build.custom_minimum_size = Vector2(82, 52)
+	b_build.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	b_build.pressed.connect(_open_building_page)
+	bottom.add_child(b_build)
+	_add_btn_dot(b_build, _sys().has_any_upgradeable_building())
+	var b_rookie := Button.new()
+	b_rookie.text = "新秀"
+	b_rookie.custom_minimum_size = Vector2(82, 52)
+	b_rookie.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	b_rookie.pressed.connect(_show_future.bind("新秀"))
+	bottom.add_child(b_rookie)
+	_add_btn_dot(b_rookie, false)
+	var b_sat := Button.new()
+	b_sat.text = "满意度"
+	b_sat.custom_minimum_size = Vector2(82, 52)
+	b_sat.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	b_sat.pressed.connect(_open_satisfaction_page)
+	bottom.add_child(b_sat)
+	_add_btn_dot(b_sat, _sys().get_bad_unresolved_count() > 0)
+	var b_aud := Button.new()
+	b_aud.text = "选秀"
+	b_aud.custom_minimum_size = Vector2(82, 52)
+	b_aud.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	b_aud.pressed.connect(_show_future.bind("选秀"))
+	bottom.add_child(b_aud)
+	_add_btn_dot(b_aud, false)
 
 func _fmt_rate(x: float) -> String:
 	if x >= 100.0:
@@ -160,11 +188,276 @@ func _on_claim_pressed():
 	c.update_all_ui()
 	_refresh()
 
+# ---------- 内部子页切换：主页 / 建筑 / 满意度（新秀=批次③，选秀=批次④，仍占位） ----------
+func _open_building_page():
+	_tab = "buildings"
+	close_popup()
+	_refresh()
+
+func _open_satisfaction_page():
+	_tab = "satisfaction"
+	close_popup()
+	_refresh()
+
+func _go_home():
+	_tab = "home"
+	close_popup()
+	_refresh()
+
+func _new_page_root(page: Panel) -> VBoxContainer:
+	var root := VBoxContainer.new()
+	root.anchor_left = 0.0
+	root.anchor_top = 0.0
+	root.anchor_right = 1.0
+	root.anchor_bottom = 1.0
+	root.offset_left = 14
+	root.offset_top = 12
+	root.offset_right = -14
+	root.offset_bottom = -14
+	root.add_theme_constant_override("separation", 10)
+	page.add_child(root)
+	return root
+
+func _add_sub_header(root: VBoxContainer, title_text: String):
+	var top := HBoxContainer.new()
+	top.alignment = BoxContainer.ALIGNMENT_CENTER
+	top.add_theme_constant_override("separation", 8)
+	root.add_child(top)
+	var back := Button.new()
+	back.text = "返回"
+	back.custom_minimum_size = Vector2(72, 40)
+	back.pressed.connect(_go_home)
+	top.add_child(back)
+	var title := Label.new()
+	title.text = title_text
+	title.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	title.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	title.add_theme_font_size_override("font_size", 22)
+	title.add_theme_color_override("font_color", Color("#ffd700"))
+	top.add_child(title)
+	var yyb_lbl := Label.new()
+	yyb_lbl.text = "应援币 %s" % c.format_number(int(_sys().yyb))
+	yyb_lbl.custom_minimum_size = Vector2(112, 40)
+	yyb_lbl.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	top.add_child(yyb_lbl)
+
+func _build_building_page(page: Panel):
+	var root := _new_page_root(page)
+	_add_sub_header(root, "妙音坊建筑")
+	var tip := Label.new()
+	tip.text = "建筑按下一级费用升序；[荐]=当前最省钱升级。设施名变色/红星为焕新表现，不加属性。"
+	tip.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+	tip.add_theme_color_override("font_color", Color("#bdb7d8"))
+	root.add_child(tip)
+	var scroll := ScrollContainer.new()
+	scroll.size_flags_vertical = Control.SIZE_EXPAND_FILL
+	scroll.horizontal_scroll_mode = ScrollContainer.SCROLL_MODE_DISABLED
+	root.add_child(scroll)
+	var list := VBoxContainer.new()
+	list.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	list.add_theme_constant_override("separation", 8)
+	scroll.add_child(list)
+	for card in _sys().get_building_card_list():
+		var bid: String = str(card.get("bid", ""))
+		var b := Button.new()
+		b.custom_minimum_size = Vector2(0, 64)
+		b.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+		if card.get("unlocked", false):
+			var prefix: String = "[荐] " if card.get("recommended", false) else ""
+			var type_name: String = "功能" if str(card.get("type", "")) == "function" else "居所"
+			b.text = "%s%s（%s）  Lv.%d\n下一级费用 %s" % [
+				prefix, str(card.get("name", bid)), type_name, int(card.get("level", 0)),
+				c.format_number(int(card.get("next_cost", 0)))]
+			b.pressed.connect(_show_building_popup.bind(bid))
+			_add_btn_dot(b, card.get("upgradeable", false))
+		else:
+			b.text = "锁 %s（%s）\n需要勋章 %d 级解锁" % [
+				str(card.get("name", bid)), "功能" if str(card.get("type", "")) == "function" else "居所",
+				int(card.get("unlock_medal", 1))]
+			var need_lv: int = int(card.get("unlock_medal", 1))
+			b.pressed.connect(func(): c._show_stage_hint("需要妙音坊勋章 %d 级解锁" % need_lv))
+		list.add_child(b)
+
+func _show_building_popup(bid: String):
+	var bcfg: Dictionary = _sys().get_building_cfg(bid)
+	if bcfg.is_empty():
+		return
+	close_popup()
+	_popup_kind = "building"
+	_popup_id = bid
+	var popup: PanelContainer = c._create_base_popup(str(bcfg.get("name", "建筑")), Vector2(520, 560))
+	popup.name = _popup_node_name
+	popup.z_index = 40
+	c.add_child(popup)
+	var vb: VBoxContainer = popup.get_child(0)
+	var head := Label.new()
+	var type_name: String = "功能建筑" if str(bcfg.get("type", "")) == "function" else "居住建筑"
+	head.text = "%s　总等级 Lv.%d　%s" % [type_name, _sys().get_building_level(bid), str(bcfg.get("name", bid))]
+	head.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	head.add_theme_font_size_override("font_size", 16)
+	vb.add_child(head)
+	var yyb_lbl := Label.new()
+	yyb_lbl.text = "应援币 %s　设施等级独立，建筑等级=设施等级之和" % c.format_number(int(_sys().yyb))
+	yyb_lbl.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	yyb_lbl.add_theme_color_override("font_color", Color("#bdb7d8"))
+	vb.add_child(yyb_lbl)
+	var sync_row := HBoxContainer.new()
+	sync_row.alignment = BoxContainer.ALIGNMENT_CENTER
+	sync_row.add_theme_constant_override("separation", 10)
+	vb.add_child(sync_row)
+	var sync1 := Button.new()
+	sync1.text = "同步+1"
+	sync1.custom_minimum_size = Vector2(112, 36)
+	sync1.disabled = not _sys().can_upgrade_building_sync(bid, 1).get("ok", false)
+	sync1.pressed.connect(_on_building_sync.bind(bid, 1))
+	sync_row.add_child(sync1)
+	var sync10 := Button.new()
+	sync10.text = "同步十连"
+	sync10.custom_minimum_size = Vector2(112, 36)
+	sync10.disabled = not _sys().can_upgrade_building_sync(bid, 10).get("ok", false)
+	sync10.pressed.connect(_on_building_sync.bind(bid, 10))
+	sync_row.add_child(sync10)
+	var scroll := ScrollContainer.new()
+	scroll.custom_minimum_size = Vector2(0, 330)
+	scroll.horizontal_scroll_mode = ScrollContainer.SCROLL_MODE_DISABLED
+	vb.add_child(scroll)
+	var rows := VBoxContainer.new()
+	rows.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	rows.add_theme_constant_override("separation", 6)
+	scroll.add_child(rows)
+	for i in range(_sys().get_facility_count(bid)):
+		var fac: Dictionary = _sys().get_facility_cfg(bid, i)
+		var lv: int = _sys().get_facility_level(bid, i)
+		var row := HBoxContainer.new()
+		row.alignment = BoxContainer.ALIGNMENT_CENTER
+		row.add_theme_constant_override("separation", 6)
+		rows.add_child(row)
+		var name_lbl := Label.new()
+		name_lbl.text = _sys().get_facility_display_name(str(fac.get("name", "")), lv)
+		name_lbl.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+		name_lbl.add_theme_color_override("font_color", _sys().get_facility_color(lv))
+		row.add_child(name_lbl)
+		var lv_lbl := Label.new()
+		lv_lbl.text = "Lv.%d" % lv
+		lv_lbl.custom_minimum_size = Vector2(58, 30)
+		row.add_child(lv_lbl)
+		var cost_lbl := Label.new()
+		cost_lbl.text = "%s / %s" % [
+			c.format_number(_sys().get_facility_upgrade_cost(bid, i, 1)),
+			c.format_number(_sys().get_facility_upgrade_cost(bid, i, 10))]
+		cost_lbl.custom_minimum_size = Vector2(116, 30)
+		cost_lbl.add_theme_color_override("font_color", Color("#bdb7d8"))
+		row.add_child(cost_lbl)
+		var up1 := Button.new()
+		up1.text = "+1"
+		up1.custom_minimum_size = Vector2(52, 32)
+		up1.disabled = not _sys().can_upgrade_facility(bid, i, 1).get("ok", false)
+		up1.pressed.connect(_on_facility_upgrade.bind(bid, i, 1))
+		row.add_child(up1)
+		var up10 := Button.new()
+		up10.text = "+10"
+		up10.custom_minimum_size = Vector2(56, 32)
+		up10.disabled = not _sys().can_upgrade_facility(bid, i, 10).get("ok", false)
+		up10.pressed.connect(_on_facility_upgrade.bind(bid, i, 10))
+		row.add_child(up10)
+	var close_btn := Button.new()
+	close_btn.text = "关闭"
+	close_btn.custom_minimum_size = Vector2(100, 34)
+	close_btn.pressed.connect(close_popup)
+	vb.add_child(close_btn)
+
+func _on_facility_upgrade(bid: String, fac_idx: int, count: int):
+	var r: Dictionary = _sys().upgrade_facility(bid, fac_idx, count)
+	if not r.get("ok", false):
+		c._show_stage_hint(str(r.get("msg", "升级失败")))
+		return
+	c._show_stage_hint("十连升级成功" if count >= 10 else "升级成功")
+	c.update_all_ui()
+	_refresh()
+
+func _on_building_sync(bid: String, count: int):
+	var r: Dictionary = _sys().upgrade_building_sync(bid, count)
+	if not r.get("ok", false):
+		c._show_stage_hint(str(r.get("msg", "同步升级失败")))
+		return
+	c._show_stage_hint("同步十连：%d 个设施升级" % int(r.get("count", 0)) if count >= 10 else "同步升级：%d 个设施升级" % int(r.get("count", 0)))
+	c.update_all_ui()
+	_refresh()
+
+func _build_satisfaction_page(page: Panel):
+	var root := _new_page_root(page)
+	_add_sub_header(root, "满意度")
+	var score: float = _sys().get_satisfaction_score()
+	var bonus_pct: float = _sys().get_satisfaction_bonus_pct()
+	var c234_pct: float = _sys().get_collection_satisfaction_pct()
+	var bad_n: int = _sys().get_bad_unresolved_count()
+	var summary := Label.new()
+	summary.text = "满意度 %.0f%%　三轨产出 +%.0f%%　未处理差评 %d　每日12:00刷新" % [score * 100.0, bonus_pct * 100.0, bad_n]
+	summary.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	summary.add_theme_font_size_override("font_size", 16)
+	root.add_child(summary)
+	if c234_pct > 0.0:
+		var c234_lbl := Label.new()
+		c234_lbl.text = "藏品 c234「曲高和寡」：满意度 +%.0f%%" % (c234_pct * 100.0)
+		c234_lbl.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+		c234_lbl.add_theme_color_override("font_color", Color("#7ee787"))
+		root.add_child(c234_lbl)
+	var scroll := ScrollContainer.new()
+	scroll.size_flags_vertical = Control.SIZE_EXPAND_FILL
+	scroll.horizontal_scroll_mode = ScrollContainer.SCROLL_MODE_DISABLED
+	root.add_child(scroll)
+	var rows := VBoxContainer.new()
+	rows.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	rows.add_theme_constant_override("separation", 8)
+	scroll.add_child(rows)
+	var ops: Array = _sys().get_opinion_list()
+	if ops.is_empty():
+		var empty := Label.new()
+		empty.text = "暂无入住挚友，意见簿为空；批次③接入入住后自动生成。"
+		empty.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+		empty.add_theme_color_override("font_color", Color("#bdb7d8"))
+		rows.add_child(empty)
+		return
+	for op in ops:
+		var row := HBoxContainer.new()
+		row.alignment = BoxContainer.ALIGNMENT_CENTER
+		row.add_theme_constant_override("separation", 8)
+		rows.add_child(row)
+		var state_lbl := Label.new()
+		if op.get("bad", false):
+			state_lbl.text = "[差评]"
+			state_lbl.add_theme_color_override("font_color", Color("#ff6b6b"))
+		elif op.get("resolved", false):
+			state_lbl.text = "[已处理]"
+			state_lbl.add_theme_color_override("font_color", Color("#7ee787"))
+		else:
+			state_lbl.text = "[好评]"
+			state_lbl.add_theme_color_override("font_color", Color("#9be28f"))
+		state_lbl.custom_minimum_size = Vector2(70, 30)
+		row.add_child(state_lbl)
+		var text_lbl := Label.new()
+		text_lbl.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+		text_lbl.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+		if op.get("bad", false):
+			text_lbl.text = "%s 不满：%s / %s" % [str(op.get("friend_name", "")), str(op.get("building_name", "")), str(op.get("facility_name", ""))]
+		else:
+			text_lbl.text = "%s 满意：%s / %s" % [str(op.get("friend_name", "")), str(op.get("building_name", "")), str(op.get("facility_name", ""))]
+		row.add_child(text_lbl)
+		if op.get("bad", false):
+			var go := Button.new()
+			go.text = "前往"
+			go.custom_minimum_size = Vector2(64, 32)
+			go.pressed.connect(_show_building_popup.bind(str(op.get("bid", ""))))
+			row.add_child(go)
+
+
 func _rebuild_popup():
 	if _popup_kind == "medal":
 		_show_medal_popup()
 	elif _popup_kind == "accel":
 		_show_accel_popup()
+	elif _popup_kind == "building" and _popup_id != "":
+		_show_building_popup(_popup_id)
 
 # ---------- 弹窗：勋章（15 级全表；繁荣度=应援币总产出/分；全部商铺赚速 +100%×级） ----------
 func _show_medal_popup():
