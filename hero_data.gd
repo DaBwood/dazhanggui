@@ -106,7 +106,9 @@ static func get_extra_income(g, hero_id: String) -> int:
 	extra += g.collection_system.get_flat_income_bonus(hero_id)
 	# 【新增】客栈菜谱固定赚钱：同职业门客 Σ每道菜 500×升级所需烹饪次数（累加制）
 	extra += g.inn_system.get_career_income_bonus(hero.get("category", ""))
-	
+	# 【新增】酒坊名酒记固定赚速（绑定职业门客：Σ品质序×10000 + 品质序×5000×(级-1)；2026-09-18 用户拍板按职业接入，读取式）
+	extra += g.winery_system.get_career_wine_income(hero.get("category", ""))
+
 	return extra
 
 # 门客的百分比加成总和（挚友 + 珍兽；TODO: 藏宝加成）

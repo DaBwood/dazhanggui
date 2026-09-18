@@ -1,0 +1,1049 @@
+{
+	"_comment": "酒坊配置（酒坊设计方案 v1.0，2026-09-17 定稿；2026-09-18 用户拍板修订：流程无上限、声望卡每5级一段共6段至30级/31级起高级卡）。settings 全参数单点可调。",
+	"settings": {
+		"brew_output_per_lv": 5,
+		"career_pct_per_lv": 0.1,
+		"process_max_lv": 9999,
+		"buy_price": 100,
+		"buy_weekly_limit": 15,
+		"init_materials": 10,
+		"medal_shop_pct_per_lv": 1.0,
+		"satis_loop": 1000,
+		"wine_max_lv": 100,
+		"wine_income_base": 10000,
+		"wine_income_per_lv": 5000,
+		"brew_step_div": 36,
+		"bond_max_lv": 50,
+		"bond_cost_early": 200,
+		"bond_cost_early_lv": 5,
+		"bond_cost_mid": 400,
+		"bond_cost_mid_lv": 10,
+		"bond_cost_late_base": 120,
+		"bond_cost_late_offset": 195,
+		"bond_bonus_per_point": 0.0003,
+		"bond_bonus_cap": 0.25,
+		"quality_order_normal": 1,
+		"process_cost_base": 500,
+		"process_cost_step": 250
+	},
+	"materials": [
+		{
+			"id": "huaguo",
+			"name": "花果"
+		},
+		{
+			"id": "gaoliang",
+			"name": "高粱"
+		},
+		{
+			"id": "daogu",
+			"name": "稻谷"
+		}
+	],
+	"workshops": [
+		{
+			"id": "huaguo",
+			"name": "花果酒坊",
+			"material": "huaguo",
+			"material_name": "花果",
+			"processes": [
+				{
+					"id": "huaguo_1",
+					"name": "除梗",
+					"career": "士"
+				},
+				{
+					"id": "huaguo_2",
+					"name": "浸渍",
+					"career": "农"
+				},
+				{
+					"id": "huaguo_3",
+					"name": "发酵",
+					"career": "工"
+				},
+				{
+					"id": "huaguo_4",
+					"name": "压榨",
+					"career": "商"
+				},
+				{
+					"id": "huaguo_5",
+					"name": "窖藏",
+					"career": "侠"
+				}
+			]
+		},
+		{
+			"id": "gaoliang",
+			"name": "高粱酒坊",
+			"material": "gaoliang",
+			"material_name": "高粱",
+			"processes": [
+				{
+					"id": "gaoliang_1",
+					"name": "制曲",
+					"career": "士"
+				},
+				{
+					"id": "gaoliang_2",
+					"name": "下沙",
+					"career": "农"
+				},
+				{
+					"id": "gaoliang_3",
+					"name": "发酵",
+					"career": "工"
+				},
+				{
+					"id": "gaoliang_4",
+					"name": "蒸馏",
+					"career": "商"
+				},
+				{
+					"id": "gaoliang_5",
+					"name": "存酒",
+					"career": "侠"
+				}
+			]
+		},
+		{
+			"id": "daogu",
+			"name": "稻谷酒坊",
+			"material": "daogu",
+			"material_name": "稻谷",
+			"processes": [
+				{
+					"id": "daogu_1",
+					"name": "粮食处理",
+					"career": "士"
+				},
+				{
+					"id": "daogu_2",
+					"name": "加曲",
+					"career": "农"
+				},
+				{
+					"id": "daogu_3",
+					"name": "发酵",
+					"career": "工"
+				},
+				{
+					"id": "daogu_4",
+					"name": "制酒",
+					"career": "商"
+				},
+				{
+					"id": "daogu_5",
+					"name": "存酒",
+					"career": "侠"
+				}
+			]
+		}
+	],
+	"quality_anchor": {
+		"_comment": "品质概率锚点：S=该坊五流程等级之和。S=45(全9级：五流程各9级)为基准锚点；S每+1→普通-0.06/优秀-0.01/卓越+0.02/传奇+0.02/无双+0.03；clamp≥0后归一化。S<45 同斜率反向；流程无上限，S>45 继续平移。",
+		"anchor_S": 45,
+		"table": {
+			"1": 46.58,
+			"2": 23.15,
+			"3": 14.86,
+			"4": 10.54,
+			"5": 4.87
+		},
+		"delta": {
+			"1": -0.06,
+			"2": -0.01,
+			"3": 0.02,
+			"4": 0.02,
+			"5": 0.03
+		}
+	},
+	"wines": [
+		{
+			"id": "ruilu_jiu",
+			"name": "瑞露酒",
+			"material": "huaguo",
+			"quality": 5,
+			"career": "商",
+			"baiye": 50,
+			"bond": 500,
+			"satis": 5
+		},
+		{
+			"id": "jiuyun_gujiu",
+			"name": "九酝古酒",
+			"material": "gaoliang",
+			"quality": 5,
+			"career": "侠",
+			"baiye": 50,
+			"bond": 100,
+			"satis": 100
+		},
+		{
+			"id": "hupo_jiu",
+			"name": "琥珀酒",
+			"material": "daogu",
+			"quality": 5,
+			"career": "工",
+			"baiye": 500,
+			"bond": 50,
+			"satis": 5
+		},
+		{
+			"id": "jinjing_lu",
+			"name": "金茎露",
+			"material": "huaguo",
+			"quality": 4,
+			"career": "士",
+			"baiye": 40,
+			"bond": 400,
+			"satis": 5
+		},
+		{
+			"id": "jiannan_shaochun",
+			"name": "剑南烧春",
+			"material": "gaoliang",
+			"quality": 4,
+			"career": "农",
+			"baiye": 40,
+			"bond": 40,
+			"satis": 95
+		},
+		{
+			"id": "xianlao_jiu",
+			"name": "仙醪酒",
+			"material": "daogu",
+			"quality": 4,
+			"career": "侠",
+			"baiye": 400,
+			"bond": 40,
+			"satis": 5
+		},
+		{
+			"id": "houer_jiu",
+			"name": "猴儿酒",
+			"material": "huaguo",
+			"quality": 3,
+			"career": "工",
+			"baiye": 30,
+			"bond": 300,
+			"satis": 10
+		},
+		{
+			"id": "suhexiang_jiu",
+			"name": "苏合香酒",
+			"material": "gaoliang",
+			"quality": 3,
+			"career": "商",
+			"baiye": 30,
+			"bond": 30,
+			"satis": 90
+		},
+		{
+			"id": "zhuye_chun",
+			"name": "竹叶春",
+			"material": "daogu",
+			"quality": 3,
+			"career": "农",
+			"baiye": 300,
+			"bond": 30,
+			"satis": 10
+		},
+		{
+			"id": "putao_jiu",
+			"name": "葡萄酒",
+			"material": "huaguo",
+			"quality": 2,
+			"career": "侠",
+			"baiye": 20,
+			"bond": 200,
+			"satis": 15
+		},
+		{
+			"id": "puzhong_jiu",
+			"name": "蒲中酒",
+			"material": "gaoliang",
+			"quality": 2,
+			"career": "士",
+			"baiye": 20,
+			"bond": 20,
+			"satis": 85
+		},
+		{
+			"id": "meishou_jiu",
+			"name": "眉寿酒",
+			"material": "daogu",
+			"quality": 2,
+			"career": "商",
+			"baiye": 200,
+			"bond": 20,
+			"satis": 15
+		},
+		{
+			"id": "bifang_jiu",
+			"name": "碧芳酒",
+			"material": "huaguo",
+			"quality": 1,
+			"career": "农",
+			"baiye": 10,
+			"bond": 100,
+			"satis": 20
+		},
+		{
+			"id": "ehuang_jiu",
+			"name": "鹅黄酒",
+			"material": "gaoliang",
+			"quality": 1,
+			"career": "工",
+			"baiye": 10,
+			"bond": 10,
+			"satis": 80
+		},
+		{
+			"id": "fengzhou_jiu",
+			"name": "凤州酒",
+			"material": "daogu",
+			"quality": 1,
+			"career": "士",
+			"baiye": 100,
+			"bond": 10,
+			"satis": 20
+		}
+	],
+	"wine_quality_mult": {
+		"1": 10,
+		"2": 5,
+		"3": 3,
+		"4": 2,
+		"5": 1
+	},
+	"medals": [
+		{
+			"need_jiuxiang": 0,
+			"shop_pct": 1.0,
+			"refine_cap": 3,
+			"name": "酒徒铜质勋章"
+		},
+		{
+			"need_jiuxiang": 3000,
+			"shop_pct": 2.0,
+			"refine_cap": 6,
+			"name": "酒徒银质勋章"
+		},
+		{
+			"need_jiuxiang": 15000,
+			"shop_pct": 3.0,
+			"refine_cap": 9,
+			"name": "酒徒金质勋章"
+		},
+		{
+			"need_jiuxiang": 45000,
+			"shop_pct": 4.0,
+			"refine_cap": 12,
+			"name": "酒宗铜质勋章"
+		},
+		{
+			"need_jiuxiang": 100000,
+			"shop_pct": 5.0,
+			"refine_cap": 15,
+			"name": "酒宗银质勋章"
+		},
+		{
+			"need_jiuxiang": 200000,
+			"shop_pct": 6.0,
+			"refine_cap": 18,
+			"name": "酒宗金质勋章"
+		},
+		{
+			"need_jiuxiang": 500000,
+			"shop_pct": 7.0,
+			"refine_cap": 21,
+			"name": "酒皇铜质勋章"
+		},
+		{
+			"need_jiuxiang": 1000000,
+			"shop_pct": 8.0,
+			"refine_cap": 24,
+			"name": "酒皇银质勋章"
+		},
+		{
+			"need_jiuxiang": 3000000,
+			"shop_pct": 9.0,
+			"refine_cap": 27,
+			"name": "酒皇金质勋章"
+		},
+		{
+			"need_jiuxiang": 6500000,
+			"shop_pct": 10.0,
+			"refine_cap": 30,
+			"name": "酒仙铜质勋章"
+		},
+		{
+			"need_jiuxiang": 15000000,
+			"shop_pct": 11.0,
+			"refine_cap": 33,
+			"name": "酒仙银质勋章"
+		},
+		{
+			"need_jiuxiang": 35000000,
+			"shop_pct": 12.0,
+			"refine_cap": 36,
+			"name": "酒仙金质勋章"
+		},
+		{
+			"need_jiuxiang": 60000000,
+			"shop_pct": 13.0,
+			"refine_cap": 39,
+			"name": "酒神铜质勋章"
+		},
+		{
+			"need_jiuxiang": 90000000,
+			"shop_pct": 14.0,
+			"refine_cap": 42,
+			"name": "酒神银质勋章"
+		},
+		{
+			"need_jiuxiang": 100000000,
+			"shop_pct": 15.0,
+			"refine_cap": 45,
+			"name": "酒神金质勋章"
+		}
+	],
+	"bond_rewards": [
+		{
+			"lv": 1,
+			"items": [
+				{
+					"id": "recruit_gold",
+					"count": 1
+				}
+			],
+			"rep": 5,
+			"rep_adv": false,
+			"furniture": 0
+		},
+		{
+			"lv": 2,
+			"items": [
+				{
+					"id": "kezhong_card",
+					"count": 1
+				}
+			],
+			"rep": 5,
+			"rep_adv": false,
+			"furniture": 0
+		},
+		{
+			"lv": 3,
+			"items": [
+				{
+					"id": "abacus",
+					"count": 1
+				}
+			],
+			"rep": 5,
+			"rep_adv": false,
+			"furniture": 0
+		},
+		{
+			"lv": 4,
+			"items": [
+				{
+					"id": "beast_fruit",
+					"count": 1
+				}
+			],
+			"rep": 5,
+			"rep_adv": false,
+			"furniture": 0
+		},
+		{
+			"lv": 5,
+			"items": [
+				{
+					"id": "aptitude_pill",
+					"count": 1
+				}
+			],
+			"rep": 5,
+			"rep_adv": false,
+			"furniture": 40
+		},
+		{
+			"lv": 6,
+			"items": [
+				{
+					"id": "wood_comb",
+					"count": 1
+				}
+			],
+			"rep": 10,
+			"rep_adv": false,
+			"furniture": 0
+		},
+		{
+			"lv": 7,
+			"items": [
+				{
+					"id": "random_book",
+					"count": 1
+				}
+			],
+			"rep": 10,
+			"rep_adv": false,
+			"furniture": 0
+		},
+		{
+			"lv": 8,
+			"items": [
+				{
+					"id": "rouge",
+					"count": 1
+				}
+			],
+			"rep": 10,
+			"rep_adv": false,
+			"furniture": 0
+		},
+		{
+			"lv": 9,
+			"items": [
+				{
+					"id": "minjing_shouji",
+					"count": 1
+				}
+			],
+			"rep": 10,
+			"rep_adv": false,
+			"furniture": 0
+		},
+		{
+			"lv": 10,
+			"items": [
+				{
+					"id": "ginseng_1000",
+					"count": 1
+				}
+			],
+			"rep": 10,
+			"rep_adv": false,
+			"furniture": 80
+		},
+		{
+			"lv": 11,
+			"items": [
+				{
+					"id": "shop_blueprint",
+					"count": 1
+				}
+			],
+			"rep": 20,
+			"rep_adv": false,
+			"furniture": 0
+		},
+		{
+			"lv": 12,
+			"items": [
+				{
+					"id": "wish_stone",
+					"count": 1
+				}
+			],
+			"rep": 20,
+			"rep_adv": false,
+			"furniture": 0
+		},
+		{
+			"lv": 13,
+			"items": [
+				{
+					"id": "drugshop_sign",
+					"count": 1
+				}
+			],
+			"rep": 20,
+			"rep_adv": false,
+			"furniture": 0
+		},
+		{
+			"lv": 14,
+			"items": [
+				{
+					"id": "hq_blueprint",
+					"count": 1
+				}
+			],
+			"rep": 20,
+			"rep_adv": false,
+			"furniture": 0
+		},
+		{
+			"lv": 15,
+			"items": [
+				{
+					"id": "aptitude_pill",
+					"count": 1
+				}
+			],
+			"rep": 20,
+			"rep_adv": false,
+			"furniture": 80
+		},
+		{
+			"lv": 16,
+			"items": [
+				{
+					"id": "tong_zan",
+					"count": 1
+				}
+			],
+			"rep": 40,
+			"rep_adv": false,
+			"furniture": 0
+		},
+		{
+			"lv": 17,
+			"items": [
+				{
+					"id": "aroma_fruit",
+					"count": 1
+				}
+			],
+			"rep": 40,
+			"rep_adv": false,
+			"furniture": 0
+		},
+		{
+			"lv": 18,
+			"items": [
+				{
+					"id": "xiang_nang",
+					"count": 1
+				}
+			],
+			"rep": 40,
+			"rep_adv": false,
+			"furniture": 0
+		},
+		{
+			"lv": 19,
+			"items": [
+				{
+					"id": "patient_manual",
+					"count": 1
+				}
+			],
+			"rep": 40,
+			"rep_adv": false,
+			"furniture": 0
+		},
+		{
+			"lv": 20,
+			"items": [
+				{
+					"id": "wushuang_gugu",
+					"count": 1
+				}
+			],
+			"rep": 40,
+			"rep_adv": false,
+			"furniture": 80
+		},
+		{
+			"lv": 21,
+			"items": [
+				{
+					"id": "jia_niang",
+					"count": 1
+				}
+			],
+			"rep": 60,
+			"rep_adv": false,
+			"furniture": 0
+		},
+		{
+			"lv": 22,
+			"items": [
+				{
+					"id": "yin_erhuan",
+					"count": 1
+				}
+			],
+			"rep": 60,
+			"rep_adv": false,
+			"furniture": 0
+		},
+		{
+			"lv": 23,
+			"items": [
+				{
+					"id": "chanwu_card",
+					"count": 1
+				}
+			],
+			"rep": 60,
+			"rep_adv": false,
+			"furniture": 0
+		},
+		{
+			"lv": 24,
+			"items": [
+				{
+					"id": "suiji_piwen",
+					"count": 1
+				}
+			],
+			"rep": 60,
+			"rep_adv": false,
+			"furniture": 0
+		},
+		{
+			"lv": 25,
+			"items": [
+				{
+					"id": "zixuan_baoyin",
+					"count": 1
+				}
+			],
+			"rep": 60,
+			"rep_adv": false,
+			"furniture": 100
+		},
+		{
+			"lv": 26,
+			"items": [
+				{
+					"id": "minjing_shouji",
+					"count": 1
+				}
+			],
+			"rep": 80,
+			"rep_adv": false,
+			"furniture": 0
+		},
+		{
+			"lv": 27,
+			"items": [
+				{
+					"id": "beast_fruit",
+					"count": 1
+				}
+			],
+			"rep": 80,
+			"rep_adv": false,
+			"furniture": 0
+		},
+		{
+			"lv": 28,
+			"items": [
+				{
+					"id": "baoyin_fragment",
+					"count": 1
+				}
+			],
+			"rep": 80,
+			"rep_adv": false,
+			"furniture": 0
+		},
+		{
+			"lv": 29,
+			"items": [
+				{
+					"id": "tong_zan",
+					"count": 1
+				}
+			],
+			"rep": 80,
+			"rep_adv": false,
+			"furniture": 0
+		},
+		{
+			"lv": 30,
+			"items": [
+				{
+					"id": "wushuang_jingpo",
+					"count": 1
+				}
+			],
+			"rep": 80,
+			"rep_adv": false,
+			"furniture": 100
+		},
+		{
+			"lv": 31,
+			"items": [
+				{
+					"id": "shicai_tanglei",
+					"count": 1
+				}
+			],
+			"rep": 10,
+			"rep_adv": true,
+			"furniture": 0
+		},
+		{
+			"lv": 32,
+			"items": [
+				{
+					"id": "shicai_tanglei",
+					"count": 1
+				}
+			],
+			"rep": 10,
+			"rep_adv": true,
+			"furniture": 0
+		},
+		{
+			"lv": 33,
+			"items": [
+				{
+					"id": "shicai_daxia",
+					"count": 1
+				}
+			],
+			"rep": 10,
+			"rep_adv": true,
+			"furniture": 0
+		},
+		{
+			"lv": 34,
+			"items": [
+				{
+					"id": "shicai_daxia",
+					"count": 1
+				}
+			],
+			"rep": 10,
+			"rep_adv": true,
+			"furniture": 0
+		},
+		{
+			"lv": 35,
+			"items": [
+				{
+					"id": "aptitude_pill",
+					"count": 1
+				}
+			],
+			"rep": 10,
+			"rep_adv": true,
+			"furniture": 100
+		},
+		{
+			"lv": 36,
+			"items": [
+				{
+					"id": "minjing_shouji",
+					"count": 1
+				}
+			],
+			"rep": 20,
+			"rep_adv": true,
+			"furniture": 0
+		},
+		{
+			"lv": 37,
+			"items": [
+				{
+					"id": "xiang_nang",
+					"count": 1
+				}
+			],
+			"rep": 20,
+			"rep_adv": true,
+			"furniture": 0
+		},
+		{
+			"lv": 38,
+			"items": [
+				{
+					"id": "hq_blueprint",
+					"count": 1
+				}
+			],
+			"rep": 20,
+			"rep_adv": true,
+			"furniture": 0
+		},
+		{
+			"lv": 39,
+			"items": [
+				{
+					"id": "awaken_fruit",
+					"count": 1
+				}
+			],
+			"rep": 20,
+			"rep_adv": true,
+			"furniture": 0
+		},
+		{
+			"lv": 40,
+			"items": [
+				{
+					"id": "wushuang_jingpo",
+					"count": 1
+				}
+			],
+			"rep": 20,
+			"rep_adv": true,
+			"furniture": 100
+		},
+		{
+			"lv": 41,
+			"items": [
+				{
+					"id": "shicai_jirou",
+					"count": 1
+				}
+			],
+			"rep": 30,
+			"rep_adv": true,
+			"furniture": 0
+		},
+		{
+			"lv": 42,
+			"items": [
+				{
+					"id": "shicai_jirou",
+					"count": 1
+				}
+			],
+			"rep": 30,
+			"rep_adv": true,
+			"furniture": 0
+		},
+		{
+			"lv": 43,
+			"items": [
+				{
+					"id": "shicai_pangxie",
+					"count": 1
+				}
+			],
+			"rep": 30,
+			"rep_adv": true,
+			"furniture": 0
+		},
+		{
+			"lv": 44,
+			"items": [
+				{
+					"id": "shicai_pangxie",
+					"count": 1
+				}
+			],
+			"rep": 30,
+			"rep_adv": true,
+			"furniture": 0
+		},
+		{
+			"lv": 45,
+			"items": [
+				{
+					"id": "aptitude_pill",
+					"count": 1
+				}
+			],
+			"rep": 30,
+			"rep_adv": true,
+			"furniture": 200
+		},
+		{
+			"lv": 46,
+			"items": [
+				{
+					"id": "aptitude_pill",
+					"count": 1
+				}
+			],
+			"rep": 40,
+			"rep_adv": true,
+			"furniture": 0
+		},
+		{
+			"lv": 47,
+			"items": [
+				{
+					"id": "aptitude_pill",
+					"count": 1
+				}
+			],
+			"rep": 40,
+			"rep_adv": true,
+			"furniture": 0
+		},
+		{
+			"lv": 48,
+			"items": [
+				{
+					"id": "aptitude_pill",
+					"count": 1
+				}
+			],
+			"rep": 40,
+			"rep_adv": true,
+			"furniture": 0
+		},
+		{
+			"lv": 49,
+			"items": [
+				{
+					"id": "aptitude_pill",
+					"count": 1
+				}
+			],
+			"rep": 40,
+			"rep_adv": true,
+			"furniture": 0
+		},
+		{
+			"lv": 50,
+			"items": [
+				{
+					"id": "hero_token",
+					"count": 1
+				}
+			],
+			"rep": 40,
+			"rep_adv": true,
+			"furniture": 0
+		}
+	],
+	"bond_tier_names": [
+		{
+			"lv": 0,
+			"name": "不期而遇"
+		},
+		{
+			"lv": 4,
+			"name": "泛泛之交"
+		},
+		{
+			"lv": 8,
+			"name": "志同道合"
+		},
+		{
+			"lv": 12,
+			"name": "相见恨晚"
+		},
+		{
+			"lv": 17,
+			"name": "肝胆相照"
+		},
+		{
+			"lv": 23,
+			"name": "莫逆于心"
+		},
+		{
+			"lv": 30,
+			"name": "心心相印"
+		},
+		{
+			"lv": 39,
+			"name": "死生契阔"
+		}
+	]
+}

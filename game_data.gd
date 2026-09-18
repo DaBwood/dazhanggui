@@ -608,6 +608,8 @@ var drugshop_system   # 【新增】药铺玩法系统（逻辑在 systems/drugs
 var _drugshop_configs: Dictionary = {}   # 【新增】药铺配置（drugshop.json，由 _load_all_configs 加载）
 var tavern_system   # 【新增】酒肆玩法系统（逻辑在 systems/tavern_system.gd，状态内部持有随 get_save_data 落盘）
 var _tavern_configs: Dictionary = {}   # 【新增】酒肆配置（tavern.json，由 _load_all_configs 加载）
+var winery_system   # 【新增】酒坊玩法系统（逻辑在 systems/winery_system.gd，状态内部持有随 get_save_data 落盘）
+var _winery_configs: Dictionary = {}   # 【新增】酒坊配置（winery.json，由 _load_all_configs 加载）
 
 # ==================== 初始化 ====================
 # 初始化：创建各子系统（纯逻辑模块，持有本中枢引用），再加载全部配置
@@ -645,6 +647,7 @@ func _init():
 	clinic_system = ClinicSystem.new(self)   # 【新增】医馆玩法系统
 	drugshop_system = DrugshopSystem.new(self)   # 【新增】药铺玩法系统
 	tavern_system = TavernSystem.new(self)   # 【新增】酒肆玩法系统
+	winery_system = WinerySystem.new(self)   # 【新增】酒坊玩法系统
 	
 	_load_all_configs()
 
@@ -687,6 +690,7 @@ func _load_all_configs():
 	_clinic_configs = _load_json("res://data/clinic.json")   # 【新增】医馆配置
 	_drugshop_configs = _load_json("res://data/drugshop.json")   # 【新增】药铺配置
 	_tavern_configs = _load_json("res://data/tavern.json")   # 【新增】酒肆配置
+	_winery_configs = _load_json("res://data/winery.json")   # 【新增】酒坊配置
 	
 	_load_items_config()   # 【重构新增】道具表
 	_load_travel_config()  # 【重构新增】游历配置
@@ -846,7 +850,7 @@ func save_game():
 		manor_system,courtyard_system,war_system,goal_system,fishing_system,soul_system,
 		soulpower_system,cuzhi_system,guardian_system,token_system,fengzi_system,drugshop_system,talent_system,
 		collection_system,guild_system,mail_system,bank_system,inn_system,side_skill_system,clinic_system,
-		tavern_system,]
+		tavern_system,winery_system,]
 	# 【修】save 数组漏登记 drugshop_system 导致药铺状态不落盘（每次打开全新）——2026-09-16 修复
 	for sys in systems:
 		save_data.merge(sys.get_save_data(), true)
@@ -899,7 +903,7 @@ func load_game():
 		manor_system,courtyard_system,war_system,goal_system,fishing_system,soul_system,
 		soulpower_system,cuzhi_system,guardian_system,token_system,fengzi_system,drugshop_system,talent_system,
 		collection_system,guild_system,mail_system,bank_system,inn_system,side_skill_system,clinic_system,
-		tavern_system,]
+		tavern_system,winery_system,]
 	# 【注】load 数组内 drugshop_system 排在 talent_system 之前：talent 读档 sync_skills
 	# 要读药铺勋章精进上限，须先让药铺状态完成认领（save 数组顺序无要求，一并同序）
 	for sys in systems:

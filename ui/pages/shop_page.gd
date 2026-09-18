@@ -293,6 +293,10 @@ func _add_building(content: Control, shop_id: String, pos: Vector2, bld_size: Ve
 			pdot.mouse_filter = Control.MOUSE_FILTER_IGNORE
 			pdot.visible = data.drugshop_system.is_patients_full()
 			play.add_child(pdot)
+		elif shop_id == "jiu_fang":
+			# 【新增】酒坊玩法入口（批次②：三作坊/酿酒/采买；勋章/名酒记/品酒/酒客故事批次③）
+			play.pressed.connect(c.show_winery_view)
+			# 【改】2026-09-18 用户拍板：酒坊无"体力满"类强提醒，红点全部内部展示（winery_view 内），不穿透地图
 		elif shop_id == "jiu_si":
 			# 【新增】酒肆玩法入口（叫号接待/收益罐/餐饮娱乐设施，档案四十二节批3接线）
 			play.pressed.connect(c.show_tavern_view)
