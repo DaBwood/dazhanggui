@@ -8,13 +8,9 @@
 # 红点口径（照药铺互不穿透）：作坊卡红点=该坊任意流程可升（酒艺值够）；地图「▶」红点批次②不挂（酒坊无"满"类状态）
 # ============================================================
 class_name WineryView
-extends RefCounted
+extends BaseView   # 【改】公共层下沉 ui/base_view.gd（2026-09-18 架构重构批次③）
 
-var c      # game_controller 根脚本引用
-var data: GameData   # 数据中枢（显式标注 GameData：让中枢字段被静态引用，消 UNUSED 提示，同 clinic/drugshop 先例）
-
-var _popup_kind: String = ""     # 当前弹窗类型："" / "workshop" / "brew" / "buy"
-var _popup_id: String = ""       # 作坊弹窗的作坊 id
+# c/data 引用、弹窗状态机（_popup_kind/_popup_id）由基类持有，此处不再声明
 var _buy_tab: String = "shop"    # 采买弹窗页签 shop / bag（类变量记忆，不依赖节点重建默认值，协作踩坑 35）
 var _drink_tab: String = "huaguo"   # 品酒弹窗酒架页签（按材料：huaguo/gaoliang/daogu）
 var _story_tab: String = "all"      # 酒客故事筛选页签（all/士/农/工/商/侠）
@@ -23,38 +19,19 @@ const QUALITY_NAMES := ["普通", "优秀", "卓越", "传奇", "无双"]
 const QUALITY_COLORS := ["#f2f2f2", "#3498db", "#9b59b6", "#e67e22", "#e74c3c"]   # 品质色规范（档案三-40）
 
 func _init(p_c):
-	c = p_c
-	data = p_c.data
-
-func _close_node(node_name: String):
-	var n = c.get_node_or_null(node_name)
-	if n:
-		c.remove_child(n)
-		n.queue_free()
+	super(p_c)   # 【改】基类注入 c/data（2026-09-18 架构重构批次③）
+	_page_name = "WineryPage"
+	_popup_node_name = "WineryPopup"
 
 func _sys() -> WinerySystem:
 	return data.winery_system
 
-# ---------- 页面开关 ----------
+# ---------- 页面开关（公共逻辑在 base_view.gd；薄封装保留 show_<key>_view 命名，controller VIEW_LIST 按 key 分发） ----------
 func show_winery_view():
-	_close_node("WineryPage")
-	_close_node("WineryPopup")
-	var page := Panel.new()
-	page.name = "WineryPage"
-	page.z_index = 35
-	page.position = Vector2.ZERO
-	page.size = c.get_viewport_rect().size
-	var bg := StyleBoxFlat.new()
-	bg.bg_color = Color("#1e1b2e")
-	page.add_theme_stylebox_override("panel", bg)
-	c.add_child(page)
-	_build(page)
+	show_view()
 
 func hide_winery_view():
-	_popup_kind = ""
-	_popup_id = ""
-	_close_node("WineryPage")
-	_close_node("WineryPopup")
+	hide_view()
 
 # ---------- 页面构建 ----------
 func _build(page: Panel):
@@ -161,9 +138,8 @@ func _build(page: Panel):
 	bottom.add_child(b_buy)
 
 # ---------- 操作后统一刷新：重建页面 + 原位重建弹窗 ----------
-func _refresh():
-	_close_node("WineryPage")
-	show_winery_view()
+# 【改】页面重建=基类 _refresh（关页→show_view→按状态调本函数）；此处仅做弹窗按状态分发（2026-09-18 批次③）
+func _rebuild_popup():
 	if _popup_kind == "workshop" and _popup_id != "":
 		_show_workshop_popup(_popup_id)
 	elif _popup_kind == "brew":
@@ -241,7 +217,7 @@ func _show_workshop_popup(wid: String):
 	prob.text = "ⓘ 当前品质概率：" + "　".join(parts)
 	prob.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
 	vb.add_child(prob)
-	c._add_ok_button(vb, func(): _close_popup())
+	c._add_ok_button(vb, func(): close_popup())
 
 func _on_process_upgrade(wid: String, pid: String, sync: bool):
 	var r: Dictionary
@@ -298,7 +274,7 @@ func _show_brew_popup():
 		var mid_c: String = mid
 		btn.pressed.connect(func(): _on_brew(mid_c, int(num.value)))
 		row.add_child(btn)
-	c._add_ok_button(vb, func(): _close_popup())
+	c._add_ok_button(vb, func(): close_popup())
 
 func _on_brew(mid: String, n: int):
 	var r := _sys().brew(mid, n)
@@ -339,7 +315,7 @@ func _show_buy_popup():
 		_fill_buy_shop(vb)
 	else:
 		_fill_buy_bag(vb)
-	c._add_ok_button(vb, func(): _close_popup())
+	c._add_ok_button(vb, func(): close_popup())
 
 func _fill_buy_shop(vb: VBoxContainer):
 	var price: int = int(_sys()._st().get("buy_price", 100))
@@ -399,11 +375,6 @@ func _on_buy(mid: String, n: int = 1):
 	c.update_all_ui()
 	_refresh()
 
-func _close_popup():
-	_popup_kind = ""
-	_popup_id = ""
-	_close_node("WineryPopup")
-
 # ---------- 弹窗：勋章（15 级；累计酒香只作门槛不消耗；全部商铺赚速 +100%×级） ----------
 # 【统一样式】2026-09-18 用户拍板：全玩法勋章统一样式——主页右上角入口 + 药铺勋章卡样式弹窗
 # （妙音坊/厢房后续照此模板；勋章名读配置 medals[i].name，未配置时显示"酒坊勋章"）
@@ -460,25 +431,7 @@ func _show_medal_popup():
 		btn.disabled = not _sys().can_upgrade_medal().get("ok", false)
 		btn.pressed.connect(func(): _on_medal_upgrade())
 		cvb.add_child(btn)
-	c._add_ok_button(vb, func(): _close_popup())
-
-# 按钮右上角内部红点（锚定右上，不依赖节点尺寸；酒坊红点一律内部展示，不穿透地图）
-func _add_btn_dot(btn: Button, cond: bool):
-	var d := Label.new()
-	d.text = "●"
-	d.add_theme_color_override("font_color", Color("#e74c3c"))
-	d.add_theme_font_size_override("font_size", 14)
-	d.anchor_left = 1.0
-	d.anchor_right = 1.0
-	d.anchor_top = 0.0
-	d.anchor_bottom = 0.0
-	d.offset_left = -18
-	d.offset_right = -2
-	d.offset_top = 2
-	d.offset_bottom = 18
-	d.mouse_filter = Control.MOUSE_FILTER_IGNORE
-	d.visible = cond
-	btn.add_child(d)
+	c._add_ok_button(vb, func(): close_popup())
 
 # 有可升级的名酒（名酒记入口红点）
 func _has_upgradeable_wine() -> bool:
@@ -528,7 +481,7 @@ func _show_wines_popup():
 		var wid_c: String = wid4
 		card.pressed.connect(func(): _show_wine_info(wid_c))
 		grid.add_child(card)
-	c._add_ok_button(vb, func(): _close_popup())
+	c._add_ok_button(vb, func(): close_popup())
 
 # ---------- 弹窗：酒详情（三属性 / 升级消耗=累计酿造瓶数） ----------
 func _show_wine_info(wine_id: String):
@@ -694,7 +647,7 @@ func _show_drink_popup():
 		var wid_c2: String = wid5
 		db.pressed.connect(func(): _on_drink(invited, wid_c2))
 		wrow.add_child(db)
-	c._add_ok_button(vb, func(): _close_popup())
+	c._add_ok_button(vb, func(): close_popup())
 
 func _on_drink(hero_id: String, wine_id: String):
 	var r := _sys().drink(hero_id, wine_id, 1)
@@ -783,7 +736,7 @@ func _show_story_popup():
 		var hid_c: String = hero_id
 		card.pressed.connect(func(): _show_bond_popup(hid_c))
 		body.add_child(card)
-	c._add_ok_button(vb, func(): _close_popup())
+	c._add_ok_button(vb, func(): close_popup())
 
 # 某档奖励的展示文案（道具名查 ITEM_CONFIG + 声望卡 + 家具币）
 func _bond_reward_text(lv: int) -> String:
