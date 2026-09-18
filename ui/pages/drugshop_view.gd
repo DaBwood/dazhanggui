@@ -139,6 +139,16 @@ func _build(page: Panel):
 	title.text = "药铺" if _tab == "main" else ("药铺 · 打理" if _tab == "craft" else ("药铺 · 本草秘籍" if _tab == "recipe" else "药铺 · 成就"))
 	title.add_theme_font_size_override("font_size", 24)
 	top.add_child(title)
+	# 【改】2026-09-18 勋章统一样式：右上角入口+弹窗（同酒坊模板），替代原主页内嵌勋章卡
+	var medal_sp := Control.new()
+	medal_sp.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	top.add_child(medal_sp)
+	var medal_btn := Button.new()
+	medal_btn.text = "勋章"
+	medal_btn.custom_minimum_size = Vector2(84, 42)
+	medal_btn.pressed.connect(_show_medal_popup)
+	top.add_child(medal_btn)
+	_add_btn_dot(medal_btn, _sys().can_upgrade_medal().get("ok", false))   # 内部红点：勋章可升
 	# 【删】2026-09-16 资源行（铜板/累计药铺经验）移除：用到它们的地方（收益罐/勋章卡/秘籍页）各自有显示
 	# 内容体
 	var scroll := ScrollContainer.new()
@@ -176,11 +186,13 @@ func _refresh():
 	if _popup_rid != "" and c.get_node_or_null("DrugshopPopup") != null:
 		_close_node("DrugshopPopup")
 		_show_recipe_popup(_popup_rid)
+	# 勋章弹窗重建（独立节点名，与秘籍弹窗互不干扰）
+	if c.get_node_or_null("DrugshopMedalPopup") != null:
+		_close_node("DrugshopMedalPopup")
+		_show_medal_popup()
 
-# ---------- 主页：勋章卡 + 收益罐 + 病人行 + 三入口 ----------
+# ---------- 主页：收益罐 + 病人行 + 三入口（勋章已改右上角弹窗，2026-09-18 统一样式） ----------
 func _fill_main(body: VBoxContainer):
-	# 勋章卡
-	_fill_medal_card(body)
 	# 收益罐（铜板/药铺经验/熟练度，领取统一入账）
 	var jar_row := HBoxContainer.new()
 	jar_row.add_theme_constant_override("separation", 8)
@@ -267,8 +279,14 @@ func _fill_main(body: VBoxContainer):
 		dot.visible = t[2]
 		wrap_node.add_child(dot)
 
-# 勋章卡：当前等级/加成/下一级门槛/手动升级
-func _fill_medal_card(body: VBoxContainer):
+# 勋章（2026-09-18 统一样式：主页右上角入口 + 勋章卡弹窗，同酒坊模板；卡内容与原页内卡一致）
+func _show_medal_popup():
+	_close_node("DrugshopMedalPopup")
+	var popup: PanelContainer = c._create_base_popup("勋章", Vector2(460, 420))
+	popup.name = "DrugshopMedalPopup"
+	popup.z_index = 40   # 盖过药铺全屏页，同 winery/clinic 弹窗惯例
+	c.add_child(popup)   # 弹窗工厂只创建不挂载，必须调用方 add_child
+	var pvb: VBoxContainer = popup.get_child(0)
 	var card := PanelContainer.new()
 	var style := StyleBoxFlat.new()
 	style.bg_color = Color("#2a2640")
@@ -279,7 +297,7 @@ func _fill_medal_card(body: VBoxContainer):
 	style.corner_radius_bottom_left = 6
 	style.corner_radius_bottom_right = 6
 	card.add_theme_stylebox_override("panel", style)
-	body.add_child(card)
+	pvb.add_child(card)
 	var vb := VBoxContainer.new()
 	vb.add_theme_constant_override("separation", 4)
 	card.add_child(vb)
@@ -309,6 +327,25 @@ func _fill_medal_card(body: VBoxContainer):
 		btn.disabled = not _sys().can_upgrade_medal().get("ok", false)
 		btn.pressed.connect(_on_medal_upgrade)
 		vb.add_child(btn)
+	c._add_ok_button(pvb, func(): _close_node("DrugshopMedalPopup"))
+
+# 按钮右上角内部红点（全玩法统一模板，同 winery_view._add_btn_dot）
+func _add_btn_dot(btn: Button, cond: bool):
+	var d := Label.new()
+	d.text = "●"
+	d.add_theme_color_override("font_color", Color("#e74c3c"))
+	d.add_theme_font_size_override("font_size", 14)
+	d.anchor_left = 1.0
+	d.anchor_right = 1.0
+	d.anchor_top = 0.0
+	d.anchor_bottom = 0.0
+	d.offset_left = -18
+	d.offset_right = -2
+	d.offset_top = 2
+	d.offset_bottom = 18
+	d.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	d.visible = cond
+	btn.add_child(d)
 
 func _on_medal_upgrade():
 	var r := _sys().upgrade_medal()

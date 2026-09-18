@@ -417,19 +417,20 @@ func _show_medal_popup():
 	c.add_child(popup)
 	var vb: VBoxContainer = popup.get_child(0)
 	var lv: int = _sys().get_medal_lv()
-	# 药铺同款勋章卡（深色紫底）
+	# 药铺同款勋章卡（2026-09-18 逐参数对齐 drugshop_view：#2a2640 底+#6a5f9e 2px 描边/圆角6/字号18/效果色#e6c07b/钮在卡内）
 	var card := PanelContainer.new()
-	var cstyle := StyleBoxFlat.new()
-	cstyle.bg_color = Color("#2a2440")
-	cstyle.set_corner_radius_all(8)
-	cstyle.content_margin_left = 10
-	cstyle.content_margin_right = 10
-	cstyle.content_margin_top = 8
-	cstyle.content_margin_bottom = 8
-	card.add_theme_stylebox_override("panel", cstyle)
+	var style := StyleBoxFlat.new()
+	style.bg_color = Color("#2a2640")
+	style.border_color = Color("#6a5f9e")
+	style.set_border_width_all(2)
+	style.corner_radius_top_left = 6
+	style.corner_radius_top_right = 6
+	style.corner_radius_bottom_left = 6
+	style.corner_radius_bottom_right = 6
+	card.add_theme_stylebox_override("panel", style)
 	vb.add_child(card)
 	var cvb := VBoxContainer.new()
-	cvb.add_theme_constant_override("separation", 6)
+	cvb.add_theme_constant_override("separation", 4)
 	card.add_child(cvb)
 	var medals_cfg: Array = _sys()._cfg().get("medals", [])
 	var medal_name: String = "酒坊勋章"
@@ -437,28 +438,28 @@ func _show_medal_popup():
 		medal_name = str(medals_cfg[lv - 1].get("name", medal_name))
 	var head := Label.new()
 	head.text = "勋章：%s（%d级）" % [medal_name, lv]
-	head.add_theme_font_size_override("font_size", 20)
+	head.add_theme_font_size_override("font_size", 18)
 	cvb.add_child(head)
 	var effect := Label.new()
 	effect.text = "全部商铺赚速 +%d%%" % int(round(_sys().get_medal_shop_pct() * 100.0))
-	effect.add_theme_color_override("font_color", Color("#f1c40f"))
-	effect.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+	effect.add_theme_color_override("font_color", Color("#e6c07b"))
 	cvb.add_child(effect)
 	var need: int = _sys().get_next_medal_need()
-	var prog := Label.new()
 	if need < 0:
-		prog.text = "已满级"
+		var max_lbl := Label.new()
+		max_lbl.text = "已达满级"
+		max_lbl.add_theme_color_override("font_color", Color("#9a93b8"))
+		cvb.add_child(max_lbl)
 	else:
-		prog.text = "下级需求：累计酒香 %s" % c.format_number(need)
-	prog.add_theme_color_override("font_color", Color("#9a93b8"))
-	prog.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
-	cvb.add_child(prog)
-	var btn := Button.new()
-	btn.text = "升级"
-	btn.custom_minimum_size = Vector2(0, 44)
-	btn.disabled = not _sys().can_upgrade_medal().get("ok", false)
-	btn.pressed.connect(func(): _on_medal_upgrade())
-	vb.add_child(btn)
+		var next_lbl := Label.new()
+		next_lbl.text = "下一级需累计酒香 %s（当前 %s）" % [c.format_number(need), c.format_number(_sys().get_jiuxiang())]
+		next_lbl.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+		cvb.add_child(next_lbl)
+		var btn := Button.new()
+		btn.text = "升级勋章"
+		btn.disabled = not _sys().can_upgrade_medal().get("ok", false)
+		btn.pressed.connect(func(): _on_medal_upgrade())
+		cvb.add_child(btn)
 	c._add_ok_button(vb, func(): _close_popup())
 
 # 按钮右上角内部红点（锚定右上，不依赖节点尺寸；酒坊红点一律内部展示，不穿透地图）
