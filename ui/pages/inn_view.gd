@@ -7,10 +7,9 @@
 # 菜谱页签内再分五职业二级页签（每页签 10 道菜）
 # ============================================================
 class_name InnView
-extends RefCounted
+extends BaseView   # 【改】公共层下沉 ui/base_view.gd（2026-09-18 架构重构批次⑥）
 
-var c      # game_controller 根脚本引用
-var data: GameData   # 数据中枢（显式标注 GameData：让中枢字段被静态引用，消 UNUSED 提示，同 bank_view 先例）
+# c/data 引用由基类持有，此处不再声明
 
 var _tab: String = "cook"        # 当前页签 cook/recipe/exchange
 var _recipe_career: String = ""  # 菜谱二级页签当前职业
@@ -19,28 +18,32 @@ var _jar_lbl: Label = null       # 收益罐文本（秒刷只改文本）
 var _jar_btn: Button = null      # 领取按钮（秒刷改禁用态）
 
 func _init(p_c):
-	c = p_c
-	data = p_c.data
-
-func _close_node(node_name: String):
-	var n = c.get_node_or_null(node_name)
-	if n:
-		c.remove_child(n)
-		n.queue_free()
+	super(p_c)   # 【改】基类注入 c/data（2026-09-18 架构重构批次⑥）
+	_page_name = "InnPage"
+	_popup_node_name = "InnHeroPopup"   # 选人弹窗走基类；打包弹窗（InnPackPopup）独立，show/hide 里显式关
 
 # ---------- 页面开关 ----------
 func show_inn_view():
-	_close_node("InnPage")
-	_close_node("InnHeroPopup")
+	show_view()
+
+func hide_inn_view():
+	hide_view()
+
+# 【改】客栈生命周期挂基类入口（2026-09-18 架构重构批次⑥）：
+# 双弹窗（选人/打包）基类只认一个 _popup_node_name，打包弹窗在建页前显式关；
+# hide 比基类多清三个秒刷引用（原 hide_inn_view 语义，基类无此职责）
+func show_view():
 	_close_node("InnPackPopup")
-	var page := Panel.new()
-	page.name = "InnPage"
-	page.z_index = 35
-	page.position = Vector2.ZERO
-	page.size = c.get_viewport_rect().size
-	var bg := StyleBoxFlat.new()
-	bg.bg_color = Color("#1e1b2e")
-	page.add_theme_stylebox_override("panel", bg)
+	super()
+
+func hide_view():
+	_status_lbl = null
+	_jar_lbl = null
+	_jar_btn = null
+	_close_node("InnPackPopup")
+	super()
+
+func _build(page: Panel):
 	var vb := VBoxContainer.new()
 	vb.position = Vector2.ZERO
 	vb.size = page.size
@@ -107,7 +110,8 @@ func show_inn_view():
 	body.add_theme_constant_override("separation", 6)
 	vb.add_child(body)
 	_fill_body(body)
-	c.add_child(page)
+
+func _after_build(page: Panel):
 	_refresh_res()
 	# 秒刷 Timer（随页面节点销毁，无需手动停）
 	var timer := Timer.new()
@@ -116,14 +120,6 @@ func show_inn_view():
 	timer.timeout.connect(_on_tick)
 	page.add_child(timer)
 	timer.start()
-
-func hide_inn_view():
-	_close_node("InnPage")
-	_close_node("InnHeroPopup")
-	_close_node("InnPackPopup")
-	_status_lbl = null
-	_jar_lbl = null
-	_jar_btn = null
 
 func _on_tab(tab: String):
 	_tab = tab
