@@ -1,995 +1,1330 @@
 {
-  "_comment": "道具配置表。config=道具定义(name名称/desc描述/use使用方式,use可省略); initial=新档初始数量(未列出的道具自动补0)",
-  "config": {
-	"hero_box": {
-	  "name": "门客盒子",
-	  "desc": "打开后可从所有门客中选择一个获得",
-	  "use": {
-		"type": "hero_box",
-		"btn": "打开"
-	  }
-	},
-	"friend_box": {
-		"name": "挚友盒子",
-		"desc": "打开后可从所有挚友中选择一个获得",
-		"use": {
-			"type": "friend_box",
-			"btn": "打开"
+	"_comment": "道具配置表。config=道具定义(name名称/desc描述/use使用方式,use可省略); initial=新档初始数量(未列出的道具自动补0)",
+	"config": {
+		"hero_box": {
+			"name": "门客盒子",
+			"desc": "打开后可从所有门客中选择一个获得",
+			"use": {
+				"type": "hero_box",
+				"btn": "打开"
+			}
+		},
+		"friend_box": {
+			"name": "挚友盒子",
+			"desc": "打开后可从所有挚友中选择一个获得",
+			"use": {
+				"type": "friend_box",
+				"btn": "打开"
+			}
+		},
+		"item_box": {
+			"name": "物品盒子",
+			"desc": "打开后可选择任意道具获得（支持批量）",
+			"use": {
+				"type": "item_box",
+				"btn": "打开"
+			}
+		},
+		"cos_box": {
+			"name": "服装盒子",
+			"desc": "打开后从所有服装中选择一件获得",
+			"use": {
+				"type": "cos_box",
+				"btn": "打开"
+			}
+		},
+		"manhuang_box": {
+			"name": "蛮荒礼盒",
+			"desc": "打开后自选一种蛮荒兑换道具×100（九渊之水/玉灵芝/虎魄耀石/龙魂精元/扶桑枝）",
+			"use": {
+				"type": "manhuang_box",
+				"btn": "打开"
+			}
+		},
+		"suitbox_礼遇": {
+			"name": "礼遇自选锦盒",
+			"desc": "使用后任选以下藏品碎片×1：云霞纳岳、金声玉振、栖凤鸣弦",
+			"use": {
+				"type": "suit_frag_box",
+				"btn": "使用",
+				"title": "选择碎片"
+			}
+		},
+		"suitbox_冕瑞": {
+			"name": "冕瑞自选锦盒",
+			"desc": "使用后任选以下藏品碎片×1：龙耀金冕、金诏凤仪",
+			"use": {
+				"type": "suit_frag_box",
+				"btn": "使用",
+				"title": "选择碎片"
+			}
+		},
+		"suitbox_宸华": {
+			"name": "宸华自选锦盒",
+			"desc": "使用后任选以下藏品碎片×1：宫宴秘盏、龙纹碎壁、金爵桂魂",
+			"use": {
+				"type": "suit_frag_box",
+				"btn": "使用",
+				"title": "选择碎片"
+			}
+		},
+		"suitbox_醉栖": {
+			"name": "醉栖自选锦盒",
+			"desc": "使用后任选以下藏品碎片×1：兽首醉尊、凤栖梧桐",
+			"use": {
+				"type": "suit_frag_box",
+				"btn": "使用",
+				"title": "选择碎片"
+			}
+		},
+		"suitbox_共欢": {
+			"name": "共欢自选锦盒",
+			"desc": "使用后任选以下藏品碎片×1：回忆皆财、共享欢乐",
+			"use": {
+				"type": "suit_frag_box",
+				"btn": "使用",
+				"title": "选择碎片"
+			}
+		},
+		"suitbox_锦忆": {
+			"name": "锦忆自选锦盒",
+			"desc": "使用后任选以下藏品碎片×1：岁华锦匣、汴梁庆",
+			"use": {
+				"type": "suit_frag_box",
+				"btn": "使用",
+				"title": "选择碎片"
+			}
+		},
+		"suitbox_瑞光": {
+			"name": "瑞光自选锦盒",
+			"desc": "使用后任选以下藏品碎片×1：青禽衔光、琅华千色",
+			"use": {
+				"type": "suit_frag_box",
+				"btn": "使用",
+				"title": "选择碎片"
+			}
+		},
+		"suitbox_承运": {
+			"name": "承运自选锦盒",
+			"desc": "使用后任选以下藏品碎片×1：珐彩翔龙、吉庆长明",
+			"use": {
+				"type": "suit_frag_box",
+				"btn": "使用",
+				"title": "选择碎片"
+			}
+		},
+		"suitbox_重华": {
+			"name": "重华自选锦盒",
+			"desc": "使用后任选以下藏品碎片×1：碧潭凝露、千枝承光、鲤映烛辉",
+			"use": {
+				"type": "suit_frag_box",
+				"btn": "使用",
+				"title": "选择碎片"
+			}
+		},
+		"suitbox_阖欢": {
+			"name": "阖欢自选锦盒",
+			"desc": "使用后任选以下藏品碎片×1：花间锦色、飞花逐扇、长夜雁灯",
+			"use": {
+				"type": "suit_frag_box",
+				"btn": "使用",
+				"title": "选择碎片"
+			}
+		},
+		"suitbox_寰商": {
+			"name": "寰商自选锦盒",
+			"desc": "使用后任选以下藏品碎片×1：民商衡运、货通天下",
+			"use": {
+				"type": "suit_frag_box",
+				"btn": "使用",
+				"title": "选择碎片"
+			}
+		},
+		"suitbox_市贾": {
+			"name": "市贾自选锦盒",
+			"desc": "使用后任选以下藏品碎片×1：走笔绘商、百宝货箱、信印生辉",
+			"use": {
+				"type": "suit_frag_box",
+				"btn": "使用",
+				"title": "选择碎片"
+			}
+		},
+		"suitbox_丹凤": {
+			"name": "丹凤自选锦盒",
+			"desc": "使用后任选以下藏品碎片×1：聚焰环凤、凤鸟铜灯",
+			"use": {
+				"type": "suit_frag_box",
+				"btn": "使用",
+				"title": "选择碎片"
+			}
+		},
+		"suitbox_锦堂": {
+			"name": "锦堂自选锦盒",
+			"desc": "使用后任选以下藏品碎片×1：彩云龙鼓、凤衔香、晋盘礼",
+			"use": {
+				"type": "suit_frag_box",
+				"btn": "使用",
+				"title": "选择碎片"
+			}
+		},
+		"suitbox_清辉": {
+			"name": "清辉自选锦盒",
+			"desc": "使用后任选以下藏品碎片×1：缠枝玉壶、宫灯计",
+			"use": {
+				"type": "suit_frag_box",
+				"btn": "使用",
+				"title": "选择碎片"
+			}
+		},
+		"suitbox_星光": {
+			"name": "星光自选锦盒",
+			"desc": "使用后任选以下藏品碎片×1：兰烬羽扇、云筝栖羽、蝶梦九霄、芳阮凝香、天香乘鸾",
+			"use": {
+				"type": "suit_frag_box",
+				"btn": "使用",
+				"title": "选择碎片"
+			}
+		},
+		"suitbox_韶华": {
+			"name": "韶华自选锦盒",
+			"desc": "使用后任选以下藏品碎片×1：云裳乐舞、芳翎戏春",
+			"use": {
+				"type": "suit_frag_box",
+				"btn": "使用",
+				"title": "选择碎片"
+			}
+		},
+		"suitbox_坤舆": {
+			"name": "坤舆自选锦盒",
+			"desc": "使用后任选以下藏品碎片×1：驼峰丝路、笙竹云岫、釉彩万象",
+			"use": {
+				"type": "suit_frag_box",
+				"btn": "使用",
+				"title": "选择碎片"
+			}
+		},
+		"suitbox_瑶华": {
+			"name": "瑶华自选锦盒",
+			"desc": "使用后任选以下藏品碎片×1：花彩盘龙瓶、龙凤冠",
+			"use": {
+				"type": "suit_frag_box",
+				"btn": "使用",
+				"title": "选择碎片"
+			}
+		},
+		"suitbox_国香": {
+			"name": "国香自选锦盒",
+			"desc": "使用后任选以下藏品碎片×1：仙鹤龙耳炉、山河社稷、凤鸟悬鼓",
+			"use": {
+				"type": "suit_frag_box",
+				"btn": "使用",
+				"title": "选择碎片"
+			}
+		},
+		"suitbox_玉瑞": {
+			"name": "玉瑞自选锦盒",
+			"desc": "使用后任选以下藏品碎片×1：莲鹤方壶、榴开百子",
+			"use": {
+				"type": "suit_frag_box",
+				"btn": "使用",
+				"title": "选择碎片"
+			}
+		},
+		"suitbox_琅轩": {
+			"name": "琅轩自选锦盒",
+			"desc": "使用后任选以下藏品碎片×1：与天对话、梅花瞻瓶、花蝶云肩",
+			"use": {
+				"type": "suit_frag_box",
+				"btn": "使用",
+				"title": "选择碎片"
+			}
+		},
+		"suitbox_离尘": {
+			"name": "离尘自选锦盒",
+			"desc": "使用后任选以下藏品碎片×1：纹银香囊、长明袖灯、博山炉",
+			"use": {
+				"type": "suit_frag_box",
+				"btn": "使用",
+				"title": "选择碎片"
+			}
+		},
+		"suitbox_溯光": {
+			"name": "溯光自选锦盒",
+			"desc": "使用后任选以下藏品碎片×1：岁月轮转、盛世镜",
+			"use": {
+				"type": "suit_frag_box",
+				"btn": "使用",
+				"title": "选择碎片"
+			}
+		},
+		"suitbox_超然": {
+			"name": "超然自选锦盒",
+			"desc": "使用后任选以下藏品碎片×1：素纱禅衣、魂幡帛画",
+			"use": {
+				"type": "suit_frag_box",
+				"btn": "使用",
+				"title": "选择碎片"
+			}
+		},
+		"suitbox_碧爻": {
+			"name": "碧爻自选锦盒",
+			"desc": "使用后任选以下藏品碎片×1：湘妃竹、和氏璧、撼龙经",
+			"use": {
+				"type": "suit_frag_box",
+				"btn": "使用",
+				"title": "选择碎片"
+			}
+		},
+		"suitbox_剑魂": {
+			"name": "剑魂自选锦盒",
+			"desc": "使用后任选以下藏品碎片×1：干将、莫邪",
+			"use": {
+				"type": "suit_frag_box",
+				"btn": "使用",
+				"title": "选择碎片"
+			}
+		},
+		"suitbox_童忆": {
+			"name": "童忆自选锦盒",
+			"desc": "使用后任选以下藏品碎片×1：少时画影、清风童趣、柿柿如意",
+			"use": {
+				"type": "suit_frag_box",
+				"btn": "使用",
+				"title": "选择碎片"
+			}
+		},
+		"suitbox_求知": {
+			"name": "求知自选锦盒",
+			"desc": "使用后任选以下藏品碎片×1：杏坛讲学、鲤跃龙门",
+			"use": {
+				"type": "suit_frag_box",
+				"btn": "使用",
+				"title": "选择碎片"
+			}
+		},
+		"suitbox_魂器": {
+			"name": "魂器自选锦盒",
+			"desc": "使用后任选以下藏品碎片×1：瀚海乾坤罩、明月夜、观音泪",
+			"use": {
+				"type": "suit_frag_box",
+				"btn": "使用",
+				"title": "选择碎片"
+			}
+		},
+		"suitbox_风华": {
+			"name": "风华自选锦盒",
+			"desc": "使用后任选以下藏品碎片×1：炽耀千秋、逐梦荣光",
+			"use": {
+				"type": "suit_frag_box",
+				"btn": "使用",
+				"title": "选择碎片"
+			}
+		},
+		"suitbox_续缘": {
+			"name": "续缘自选锦盒",
+			"desc": "使用后任选以下藏品碎片×1：王权剑、无尽酒壶",
+			"use": {
+				"type": "suit_frag_box",
+				"btn": "使用",
+				"title": "选择碎片"
+			}
+		},
+		"suitbox_奥林": {
+			"name": "奥林自选锦盒",
+			"desc": "使用后任选以下藏品碎片×1：橄榄诗语、花忆奥韵、天下和顺",
+			"use": {
+				"type": "suit_frag_box",
+				"btn": "使用",
+				"title": "选择碎片"
+			}
+		},
+		"suitbox_水玉": {
+			"name": "水玉自选锦盒",
+			"desc": "使用后任选以下藏品碎片×1：千年御水滴、天罡寒玉、七宝妙树皮",
+			"use": {
+				"type": "suit_frag_box",
+				"btn": "使用",
+				"title": "选择碎片"
+			}
+		},
+		"suitbox_时霜": {
+			"name": "时霜自选锦盒",
+			"desc": "使用后任选以下藏品碎片×1：冰凌雪枪、无尽沙漏、四相镜",
+			"use": {
+				"type": "suit_frag_box",
+				"btn": "使用",
+				"title": "选择碎片"
+			}
+		},
+		"suitbox_周年": {
+			"name": "周年自选锦盒",
+			"desc": "使用后任选以下藏品碎片×1：掌斯卡、流年如虹",
+			"use": {
+				"type": "suit_frag_box",
+				"btn": "使用",
+				"title": "选择碎片"
+			}
+		},
+		"suitbox_春意盎然": {
+			"name": "春意盎然自选锦盒",
+			"desc": "使用后任选以下藏品碎片×1：花醉云裳、细雨轻尘、春江水暖",
+			"use": {
+				"type": "suit_frag_box",
+				"btn": "使用",
+				"title": "选择碎片"
+			}
+		},
+		"suitbox_迎春": {
+			"name": "迎春自选锦盒",
+			"desc": "使用后任选以下藏品碎片×1：辞旧迎新、醒狮献瑞、光阴流年",
+			"use": {
+				"type": "suit_frag_box",
+				"btn": "使用",
+				"title": "选择碎片"
+			}
+		},
+		"suitbox_花火": {
+			"name": "花火自选锦盒",
+			"desc": "使用后任选以下藏品碎片×1：流光溢彩、浮光耀耀",
+			"use": {
+				"type": "suit_frag_box",
+				"btn": "使用",
+				"title": "选择碎片"
+			}
+		},
+		"suitbox_凝冰": {
+			"name": "凝冰自选锦盒",
+			"desc": "使用后任选以下藏品碎片×1：凝冰旖梦、笙歌曼舞、刻烛成歌",
+			"use": {
+				"type": "suit_frag_box",
+				"btn": "使用",
+				"title": "选择碎片"
+			}
+		},
+		"suitbox_五艳": {
+			"name": "五艳自选锦盒",
+			"desc": "使用后任选以下藏品碎片×1：幽谷、桃源、芙蕖、东篱、暗香",
+			"use": {
+				"type": "suit_frag_box",
+				"btn": "使用",
+				"title": "选择碎片"
+			}
+		},
+		"shop_blueprint": {
+			"name": "商铺图纸",
+			"desc": "用于解锁新商铺"
+		},
+		"hq_blueprint": {
+			"name": "钱庄图纸",
+			"desc": "用于升级钱庄建筑"
+		},
+		"recruit_bronze": {
+			"name": "募工铜牌",
+			"desc": "使用后随机店铺店员+1",
+			"use": {
+				"type": "quantity",
+				"btn": "使用",
+				"title": "使用募工铜牌"
+			}
+		},
+		"recruit_silver": {
+			"name": "募工银牌",
+			"desc": "使用后随机店铺店员+3",
+			"use": {
+				"type": "quantity",
+				"btn": "使用",
+				"title": "使用募工银牌"
+			}
+		},
+		"recruit_gold": {
+			"name": "募工金牌",
+			"desc": "使用后随机店铺店员+5",
+			"use": {
+				"type": "quantity",
+				"btn": "使用",
+				"title": "使用募工金牌"
+			}
+		},
+		"hun_gu_box": {
+			"name": "魂骨盒子",
+			"desc": "打开后自选部位和品级，获得一块魂骨",
+			"use": {
+				"type": "hun_gu_box",
+				"btn": "打开"
+			}
+		},
+		"huo_qi": {
+			"name": "火器",
+			"desc": "使用后随机一名侠门客基础赚速+500",
+			"use": {
+				"type": "quantity",
+				"btn": "使用",
+				"title": "使用火器"
+			}
+		},
+		"ci_qi": {
+			"name": "瓷器",
+			"desc": "使用后随机一名商门客基础赚速+500",
+			"use": {
+				"type": "quantity",
+				"btn": "使用",
+				"title": "使用瓷器"
+			}
+		},
+		"qiong_jiang": {
+			"name": "琼浆",
+			"desc": "使用后随机一名工门客基础赚速+500",
+			"use": {
+				"type": "quantity",
+				"btn": "使用",
+				"title": "使用琼浆"
+			}
+		},
+		"cha_ye": {
+			"name": "茶叶",
+			"desc": "使用后随机一名农门客基础赚速+500",
+			"use": {
+				"type": "quantity",
+				"btn": "使用",
+				"title": "使用茶叶"
+			}
+		},
+		"xuan_zhi": {
+			"name": "宣纸",
+			"desc": "使用后随机一名士门客基础赚速+500",
+			"use": {
+				"type": "quantity",
+				"btn": "使用",
+				"title": "使用宣纸"
+			}
+		},
+		"random_book": {
+			"name": "随机书籍",
+			"desc": "打开后随机获得一本：仕途/农业/工业/经商/侠义之道",
+			"use": {
+				"type": "quantity",
+				"btn": "打开",
+				"title": "打开随机书籍"
+			}
+		},
+		"aptitude_pill": {
+			"name": "资质丹",
+			"desc": "提升门客资质"
+		},
+		"small_aptitude_pill": {
+			"name": "小资质丹",
+			"desc": "20个可在背包合成1个资质丹"
+		},
+		"guild_hammer": {
+			"name": "商会锤",
+			"desc": "商会道具建设消耗"
+		},
+		"treasure_box": {
+			"name": "珍宝箱",
+			"desc": "打开后随机获得火器/瓷器/琼浆/茶叶/宣纸×500",
+			"use": {
+				"type": "treasure_box",
+				"btn": "打开"
+			}
+		},
+		"canpo_zhuiyu": {
+			"name": "残破缀玉",
+			"desc": "20个可自选合成1枚缀玉（攀竹/织梦/莺歌/落花/流云）"
+		},
+		"experience": {
+			"name": "阅历",
+			"desc": "门客升级所需经验"
+		},
+		"abacus": {
+			"name": "算盘",
+			"desc": "提升店铺算力效率"
+		},
+		"fengyasong": {
+			"name": "风雅颂",
+			"desc": "门客突破所需"
+		},
+		"exp_box": {
+			"name": "阅历箱",
+			"desc": "打开获得99999阅历",
+			"use": {
+				"type": "quantity",
+				"btn": "打开",
+				"title": "打开阅历箱"
+			}
+		},
+		"ginseng": {
+			"name": "百年人参",
+			"desc": "指定门客基础赚速+2000",
+			"use": {
+				"type": "ginseng",
+				"btn": "使用",
+				"title": "使用百年人参"
+			}
+		},
+		"ginseng_1000": {
+			"name": "千年人参",
+			"desc": "指定门客基础赚速+20000",
+			"use": {
+				"type": "ginseng",
+				"btn": "使用",
+				"title": "使用千年人参"
+			}
+		},
+		"wood_comb": {
+			"name": "木梳",
+			"desc": "赠送给挚友，友好+1"
+		},
+		"tong_zan": {
+			"name": "铜簪",
+			"desc": "赠送挚友，友好度+2",
+			"type": "gift"
+		},
+		"yin_erhuan": {
+			"name": "银耳环",
+			"desc": "赠送挚友，友好度+5",
+			"type": "gift"
+		},
+		"rouge": {
+			"name": "胭脂",
+			"desc": "赠送给挚友，才华+1"
+		},
+		"xiang_nang": {
+			"name": "香囊",
+			"desc": "赠送挚友，才华+2",
+			"type": "gift"
+		},
+		"huarong_xia": {
+			"name": "花容匣",
+			"desc": "赠送挚友，才华+5",
+			"type": "gift"
+		},
+		"energy_pill": {
+			"name": "精力丹",
+			"desc": "恢复3点精力"
+		},
+		"stage_box": {
+			"name": "关卡宝箱",
+			"desc": "通关小关获得的宝箱",
+			"use": {
+				"type": "quantity",
+				"btn": "打开",
+				"title": "打开关卡宝箱"
+			}
+		},
+		"hour_card": {
+			"name": "小时卡",
+			"desc": "使用后获得当前总赚速一小时的铜钱",
+			"use": {
+				"type": "quantity",
+				"btn": "使用",
+				"title": "使用小时卡"
+			}
+		},
+		"beast_fruit": {
+			"name": "珍兽果",
+			"desc": "升级珍兽等级"
+		},
+		"aroma_fruit": {
+			"name": "奇香果",
+			"desc": "刷新珍兽技能"
+		},
+		"awaken_fruit": {
+			"name": "觉醒果",
+			"desc": "用于珍兽觉醒；可通过活动或回收驺虞获得"
+		},
+		"stamina_pill": {
+			"name": "体力丹",
+			"desc": "使用后恢复1点游历体力，可超过体力上限",
+			"type": "use"
+		},
+		"lottery_ticket": {
+			"name": "抽奖券",
+			"desc": "用于闯荡页面的抽奖"
+		},
+		"hero_token": {
+			"name": "门客帖",
+			"desc": "用于兑换门客"
+		},
+		"friend_token": {
+			"name": "挚友帖",
+			"desc": "用于兑换挚友"
+		},
+		"vitality_pill": {
+			"name": "活力丹",
+			"desc": "使用后徒弟槽位活力+5"
+		},
+		"wish_stone": {
+			"name": "许愿石",
+			"desc": "用于刷新挚友店铺技能，必定获得20%-30%加成"
+		},
+		"reputation_card": {
+			"name": "声望卡",
+			"desc": "使用后声望 +10",
+			"use": {
+				"type": "quantity",
+				"btn": "使用",
+				"title": "使用声望卡"
+			}
+		},
+		"reputation_card_adv": {
+			"name": "高级声望卡",
+			"desc": "使用后声望 +100",
+			"use": {
+				"type": "quantity",
+				"btn": "使用",
+				"title": "使用高级声望卡"
+			}
+		},
+		"rose_perfume": {
+			"name": "玫瑰香水",
+			"desc": "与指定挚友吟诗作对（谈心）"
+		},
+		"xia_way": {
+			"name": "侠义之道",
+			"desc": "提升%s类门客的XX之道技能"
+		},
+		"nong_way": {
+			"name": "农业之道",
+			"desc": "提升%s类门客的XX之道技能"
+		},
+		"shi_way": {
+			"name": "仕途之道",
+			"desc": "提升%s类门客的XX之道技能"
+		},
+		"gong_way": {
+			"name": "工业之道",
+			"desc": "提升%s类门客的XX之道技能"
+		},
+		"shang_way": {
+			"name": "经商之道",
+			"desc": "提升%s类门客的XX之道技能"
+		},
+		"patient_manual": {
+			"name": "病人手册",
+			"desc": "医馆玩法立即获得三名病人"
+		},
+		"drugshop_sign": {
+			"name": "药铺招牌",
+			"desc": "药铺玩法立即获得三名病人"
+		},
+		"baiye_zhaji": {
+			"name": "百业札记",
+			"desc": "使用后选择一名门客，百业经验+10（可在背包批量使用）",
+			"use": {
+				"type": "baiye_zhaji",
+				"btn": "使用",
+				"per": 10
+			}
+		},
+		"wushuang_gugu": {
+			"name": "无双兽骨",
+			"desc": "每40个可在背包【合成】页合成一只珍兽驺虞"
+		},
+		"ke_shi_tu_zhi": {
+			"name": "科室图纸",
+			"desc": "医馆升级科室所用图纸，接诊病人时有概率掉落"
+		},
+		"shicai_jidan": {
+			"name": "鸡蛋食材包",
+			"desc": "客栈烹饪食材，获取途径待活动接入"
+		},
+		"shicai_fenmian": {
+			"name": "粉面食材包",
+			"desc": "客栈烹饪食材，获取途径待活动接入"
+		},
+		"shicai_shengfen": {
+			"name": "生粉食材包",
+			"desc": "客栈烹饪食材，获取途径待活动接入"
+		},
+		"shicai_yinliao": {
+			"name": "饮料食材包",
+			"desc": "客栈烹饪食材，获取途径待活动接入"
+		},
+		"shicai_zhurou": {
+			"name": "猪肉食材包",
+			"desc": "客栈烹饪食材，获取途径待活动接入"
+		},
+		"shicai_yulei": {
+			"name": "鱼类食材包",
+			"desc": "客栈烹饪食材，获取途径待活动接入"
+		},
+		"shicai_tanglei": {
+			"name": "汤类食材包",
+			"desc": "客栈烹饪食材，获取途径待活动接入"
+		},
+		"shicai_daxia": {
+			"name": "大虾食材包",
+			"desc": "客栈烹饪食材，获取途径待活动接入"
+		},
+		"shicai_jirou": {
+			"name": "鸡肉食材包",
+			"desc": "客栈烹饪食材，获取途径待活动接入"
+		},
+		"shicai_pangxie": {
+			"name": "螃蟹食材包",
+			"desc": "客栈烹饪食材，获取途径待活动接入"
+		},
+		"can_tie": {
+			"name": "门客残帖",
+			"desc": "10张合成1张门客帖"
+		},
+		"kaishan_yin": {
+			"name": "开山印碎片",
+			"desc": "20个合成1个开山令"
+		},
+		"zongjiang_yin": {
+			"name": "宗匠印碎片",
+			"desc": "20个合成1个宗匠令"
+		},
+		"tao_bao_quan": {
+			"name": "淘宝券",
+			"desc": "用于淘宝抽取藏品（单次1张，十连10张），获取途径：活动"
+		},
+		"ying_chong_guang": {
+			"name": "萤虫光",
+			"desc": "藏品升级道具：1~100级使用"
+		},
+		"zhu_huo_guang": {
+			"name": "烛火光",
+			"desc": "藏品升级道具：101~200级使用"
+		},
+		"xing_yao_guang": {
+			"name": "星曜光",
+			"desc": "藏品升级道具：201~300级使用"
+		},
+		"yue_hua_guang": {
+			"name": "月华光",
+			"desc": "藏品升级道具：301~400级使用"
+		},
+		"ri_lun_guang": {
+			"name": "日轮光",
+			"desc": "藏品升级道具：401~500级使用"
+		},
+		"frag_zhuoyue": {
+			"name": "通用碎片·卓越",
+			"desc": "合成/晋升任意卓越藏品时抵扣碎片"
+		},
+		"frag_youxiu": {
+			"name": "通用碎片·优秀",
+			"desc": "合成/晋升任意优秀藏品时抵扣碎片"
+		},
+		"frag_putong": {
+			"name": "通用碎片·普通",
+			"desc": "合成/晋升任意普通藏品时抵扣碎片"
+		},
+		"cuzhi_cage": {
+			"name": "促织笼",
+			"desc": "用于在促织园捕捉促织的道具",
+			"type": "consumable",
+			"price": 0,
+			"hide_in_bag": false
+		},
+		"wuse_shi": {
+			"name": "五色石",
+			"desc": "蕴含五行之力的彩石，用于解锁兽魂魂盘的格子"
+		},
+		"soul_stone_box": {
+			"name": "魂石宝箱",
+			"desc": "打开后随机获得一块优秀品质的魂石",
+			"use": {
+				"type": "soul_stone_box",
+				"btn": "打开"
+			}
+		},
+		"soul_wushuang_box": {
+			"name": "无双魂石箱",
+			"desc": "打开后获得一块四格同色的无双品质魂石",
+			"use": {
+				"type": "soul_wushuang_box",
+				"btn": "打开"
+			}
+		},
+		"wushuang_cuzhi_box": {
+			"name": "无双促织盒子",
+			"desc": "打开后可自选一只无双及以上促织",
+			"type": "consumable",
+			"use": {
+				"type": "wushuang_cuzhi_box",
+				"btn": "打开"
+			}
+		},
+		"cuzhi_migao": {
+			"name": "促织蜜膏",
+			"desc": "用于加速促织培育，每个可减少1分钟培育时间",
+			"type": "consumable"
+		},
+		"cuzhi_jinghua": {
+			"name": "促织精华",
+			"desc": "用于升级门客装备的促织，回收时返还"
+		},
+		"wuxing_yan": {
+			"name": "五行岩",
+			"desc": "五行系列促织蜕壳所需的道具"
+		},
+		"sanguo_yan": {
+			"name": "三国岩",
+			"desc": "三国系列促织蜕壳所需的道具"
+		},
+		"jianghu_yan": {
+			"name": "江湖岩",
+			"desc": "江湖系列促织蜕壳所需的道具"
+		},
+		"shanhai_yan": {
+			"name": "山海岩",
+			"desc": "山海系列促织蜕壳所需的道具"
+		},
+		"wuling_yan": {
+			"name": "五灵岩",
+			"desc": "五灵系列促织蜕壳所需的道具"
+		},
+		"zui_xian_niang": {
+			"name": "醉仙酿",
+			"desc": "李白赋诗升级所需"
+		},
+		"qing_feng_jian": {
+			"name": "青锋剑",
+			"desc": "李白信物【青锋剑】专属升级道具，雷霆净世每级消耗600个；获取途径待接"
+		},
+		"qing_lian_shi_hao": {
+			"name": "青莲诗毫",
+			"desc": "李白风姿【醉墨挥毫】专属升级道具，每级固定消耗600个；获取途径待接"
+		},
+		"ning_lei_jing": {
+			"name": "凝泪晶",
+			"desc": "白月初晋升【续缘】专属道具，仙缘梦绕每级消耗600个；获取途径待接"
+		},
+		"xuyuan_tianshu": {
+			"name": "续缘天书",
+			"desc": "白月初信物【续缘天书】专属升级道具，转世续缘每级消耗600个；获取途径待接"
+		},
+		"zongjiang_ling": {
+			"name": "宗匠令",
+			"desc": "兑换一代宗匠系列门客所需"
+		},
+		"kaishan_ling": {
+			"name": "开山令",
+			"desc": "兑换开山鼻祖系列门客所需"
+		},
+		"panzhu_zhuiyu": {
+			"name": "攀竹缀玉",
+			"desc": "兑换门客【马湘兰】所需"
+		},
+		"zhimeng_zhuiyu": {
+			"name": "织梦缀玉",
+			"desc": "兑换门客【董小宛】所需"
+		},
+		"yingge_zhuiyu": {
+			"name": "莺歌缀玉",
+			"desc": "兑换门客【卞玉京】所需"
+		},
+		"luohua_zhuiyu": {
+			"name": "落花缀玉",
+			"desc": "兑换门客【李香君】所需"
+		},
+		"liuyun_zhuiyu": {
+			"name": "流云缀玉",
+			"desc": "兑换门客【寇白门】所需"
+		},
+		"xuanhe_qixi": {
+			"name": "宣和七玺",
+			"desc": "兑换门客【宋徽宗】所需"
+		},
+		"tiankui_lingqi": {
+			"name": "天魁令旗",
+			"desc": "兑换门客【宋江】所需"
+		},
+		"yuanhun_dou": {
+			"name": "冤魂斗",
+			"desc": "兑换门客【活阎王】所需"
+		},
+		"quanxiang_guan": {
+			"name": "权相之冠",
+			"desc": "兑换门客【蔡京】所需"
+		},
+		"fangtian_huaji": {
+			"name": "方天画戟",
+			"desc": "兑换门客【吕布】所需"
+		},
+		"taia_jian": {
+			"name": "泰阿剑",
+			"desc": "兑换门客【秦始皇】所需"
+		},
+		"hufu_junling": {
+			"name": "虎符军令",
+			"desc": "兑换门客【孙武】所需"
+		},
+		"suitang_huaben": {
+			"name": "隋唐话本",
+			"desc": "兑换门客【秦琼尉迟恭】所需"
+		},
+		"bawang_qiang": {
+			"name": "霸王枪",
+			"desc": "兑换门客【项羽】所需"
+		},
+		"huanglong_jinduan": {
+			"name": "黄龙锦缎",
+			"desc": "兑换门客【宋太祖】所需"
+		},
+		"tiangong_zanchui": {
+			"name": "天工錾锤",
+			"desc": "兑换门客【石敢当】所需"
+		},
+		"qisheng_mianju": {
+			"name": "七圣面具",
+			"desc": "兑换门客【百戏圣刀】所需"
+		},
+		"danqing_pan": {
+			"name": "丹青盘",
+			"desc": "兑换门客【敦煌匠神】所需"
+		},
+		"cangbao_tu": {
+			"name": "藏宝图",
+			"desc": "兑换门客【滚海蛟】所需"
+		},
+		"huojian_qiang": {
+			"name": "火尖枪",
+			"desc": "兑换门客【哪吒】所需"
+		},
+		"shoulie_guren": {
+			"name": "狩猎骨刃",
+			"desc": "兑换门客【敖武】所需"
+		},
+		"chengzu_chiling": {
+			"name": "成祖敕令",
+			"desc": "兑换门客【郑和】所需"
+		},
+		"wulong_xiuqiu": {
+			"name": "舞龙绣球",
+			"desc": "兑换门客【龙骧】所需"
+		},
+		"yugu_dao": {
+			"name": "鱼骨刀",
+			"desc": "兑换门客【罗海王】所需"
+		},
+		"yuye_jinhua": {
+			"name": "玉叶金花",
+			"desc": "兑换门客【小柒】所需"
+		},
+		"linglong_hebao": {
+			"name": "玲珑荷包",
+			"desc": "兑换门客【小八】所需"
+		},
+		"long_zhi_cao": {
+			"name": "龙芝草",
+			"desc": "魂体升级材料，每级消耗60个"
+		},
+		"cui_gu_jing_chen": {
+			"name": "淬骨精尘",
+			"desc": "魂骨技能升级材料（赚钱技能 星数×3/级，资质技能 星数×10/级）"
+		},
+		"jinghe_bainian": {
+			"name": "百年晶核",
+			"desc": "百年魂骨升阶材料，每阶消耗13个"
+		},
+		"jinghe_qiannian": {
+			"name": "千年晶核",
+			"desc": "千年魂骨升阶材料，每阶消耗5个"
+		},
+		"jinghe_wannian": {
+			"name": "万年晶核",
+			"desc": "万年魂骨升阶材料，每阶消耗4个"
+		},
+		"jinghe_shiwannian": {
+			"name": "十万年晶核",
+			"desc": "十万年魂骨升阶材料，每阶消耗2个"
+		},
+		"jinghe_baiwannian": {
+			"name": "百万年晶核",
+			"desc": "百万年魂骨升阶材料，每阶消耗1个"
+		},
+		"feng_shen_zhi": {
+			"name": "封神志",
+			"desc": "兑换封神灵兽"
+		},
+		"shan_hai_shi": {
+			"name": "山海石",
+			"desc": "兑换山海异兽"
+		},
+		"hong_huang_huo": {
+			"name": "鸿荒火",
+			"desc": "兑换上古凶兽"
+		},
+		"jiu_yuan_shui": {
+			"name": "九渊之水",
+			"desc": "兑换蛮荒主兽"
+		},
+		"yu_ling_zhi": {
+			"name": "玉灵芝",
+			"desc": "兑换蛮荒主兽·乘黄"
+		},
+		"hu_po_yao_shi": {
+			"name": "虎魄耀石",
+			"desc": "兑换蛮荒主兽·陆吾"
+		},
+		"long_hun_jing_yuan": {
+			"name": "龙魂精元",
+			"desc": "兑换蛮荒主兽·应龙"
+		},
+		"fu_sang_zhi": {
+			"name": "扶桑枝",
+			"desc": "兑换蛮荒主兽·金乌"
+		},
+		"long_zhuo_xi": {
+			"name": "龙擢星玺",
+			"desc": "兑换星神圣兽"
+		},
+		"xing_wu_po": {
+			"name": "星武珀石",
+			"desc": "兑换星神圣兽"
+		},
+		"xing_shu_lin": {
+			"name": "星枢麟角",
+			"desc": "兑换星神圣兽"
+		},
+		"yu_shi": {
+			"name": "鱼食",
+			"desc": "升级门客装备的渔获技能所用饵料（垂钓玩法材料）",
+			"hide_in_bag": true
+		},
+		"minjing_shouji": {
+			"name": "市井手记",
+			"desc": "使用后随机给一名门客增加10点百业经验",
+			"use": {
+				"type": "quantity",
+				"btn": "使用",
+				"title": "使用市井手记"
+			}
+		},
+		"jia_niang": {
+			"name": "佳酿",
+			"desc": "酒肆玩法：立即获得 2 点叫号"
+		},
+		"chanwu_card": {
+			"name": "产物卡",
+			"desc": "使用后获得当前庄园12小时的全部产物",
+			"use": {
+				"type": "quantity",
+				"btn": "使用",
+				"title": "使用产物卡"
+			}
+		},
+		"yu_huang": {
+			"name": "玉璜",
+			"desc": "半璧形的古玉（后续玩法更新后使用）"
+		},
+		"tanmu_zan": {
+			"name": "檀木簪",
+			"desc": "檀木雕琢的发簪（后续玩法更新后使用）"
+		},
+		"shengshi_zhong": {
+			"name": "盛世钟",
+			"desc": "清平盛世系列服装的兑换道具（后续玩法产出）"
+		},
+		"jingzhong_bei": {
+			"name": "精忠碑",
+			"desc": "精忠报国系列服装的兑换道具（后续玩法产出）"
+		},
+		"feng_yu": {
+			"name": "凤羽",
+			"desc": "五凤来仪系列服装的兑换道具（后续玩法产出）"
+		},
+		"jin_furong": {
+			"name": "金芙蓉",
+			"desc": "百花齐放系列服装的兑换道具（后续玩法产出）"
+		},
+		"jian_wan": {
+			"name": "剑丸",
+			"desc": "君子如剑系列服装的兑换道具（后续玩法产出）"
+		},
+		"tian_xing": {
+			"name": "天星",
+			"desc": "汴梁女团系列服装的兑换道具（后续玩法产出）"
+		},
+		"bogu_juan": {
+			"name": "博古卷",
+			"desc": "传世珍宝系列服装的兑换道具（后续玩法产出）"
+		},
+		"fengyou_wuyue_shi": {
+			"name": "凤游五岳石",
+			"desc": "山河五岳系列服装的兑换道具（后续玩法产出）"
+		},
+		"yulin_jue": {
+			"name": "蕴灵珏",
+			"desc": "守护灵注灵材料，每级消耗随等级提升"
+		},
+		"ke_ting_yiyun": {
+			"name": "柯亭遗韵",
+			"desc": "解锁守护灵幻化：蔡文姬"
+		},
+		"yan_yue_gufeng": {
+			"name": "偃月孤锋",
+			"desc": "解锁守护灵幻化：关羽"
+		},
+		"bai_he_yushan": {
+			"name": "白鹤羽扇",
+			"desc": "解锁守护灵幻化：诸葛亮"
+		},
+		"ming_kong_xuanjue": {
+			"name": "明空玄珏",
+			"desc": "解锁守护灵幻化：武则天"
+		},
+		"jiajibi": {
+			"name": "家具币",
+			"desc": "酒坊玩法：用于购置家具（效果接入中，暂为占位道具）"
+		},
+		"kezhong_card": {
+			"name": "刻钟卡",
+			"desc": "使用后获得当前赚速1分钟的铜钱；60张可在背包【合成】合成1张小时卡",
+			"use": {
+				"type": "quantity",
+				"btn": "使用",
+				"title": "使用刻钟卡"
+			}
+		},
+		"suiji_piwen": {
+			"name": "随机批文",
+			"desc": "酒坊玩法：随机批文（效果接入中，暂为占位道具）"
+		},
+		"zixuan_baoyin": {
+			"name": "自选宝印",
+			"desc": "打开后选择获得开山印或宗匠印 ×1，可批量打开",
+			"use": {
+				"type": "zixuan_baoyin",
+				"btn": "打开",
+				"title": "打开自选宝印"
+			}
+		},
+		"baoyin_fragment": {
+			"name": "自选宝印碎片",
+			"desc": "打开后选择获得开山印碎片或宗匠印碎片 ×1，可批量打开",
+			"use": {
+				"type": "zixuan_baoyin_fragment",
+				"btn": "打开",
+				"title": "打开自选宝印碎片"
+			}
+		},
+		"wushuang_jingpo": {
+			"name": "无双精魄",
+			"desc": "20个可在背包【合成】合成珍兽【白泽】"
+		},
+		"huaguo": {
+			"name": "花果",
+			"desc": "酒坊玩法：花果酒坊的酿酒材料（材料库存以酒坊内为准，可在酒坊【采买】购得）"
+		},
+		"gaoliang": {
+			"name": "高粱",
+			"desc": "酒坊玩法：高粱酒坊的酿酒材料（材料库存以酒坊内为准，可在酒坊【采买】购得）"
+		},
+		"daogu": {
+			"name": "稻谷",
+			"desc": "酒坊玩法：稻谷酒坊的酿酒材料（材料库存以酒坊内为准，可在酒坊【采买】购得）"
 		}
 	},
-	"item_box": {
-		"name": "物品盒子",
-		"desc": "打开后可选择任意道具获得（支持批量）",
-		"use": {
-			"type": "item_box",
-			"btn": "打开"
-		}
-	},
-	"cos_box": {
-		"name": "服装盒子",
-		"desc": "打开后从所有服装中选择一件获得",
-		"use": {
-			"type": "cos_box",
-			"btn": "打开"
-		}
-	},
-	"manhuang_box": {
-	  "name": "蛮荒礼盒",
-	  "desc": "打开后自选一种蛮荒兑换道具×100（九渊之水/玉灵芝/虎魄耀石/龙魂精元/扶桑枝）",
-	  "use": {
-		"type": "manhuang_box",
-		"btn": "打开"
-	  }
-	},
-	"suitbox_礼遇": {"name": "礼遇自选锦盒", "desc": "使用后任选以下藏品碎片×1：云霞纳岳、金声玉振、栖凤鸣弦", "use": {"type": "suit_frag_box", "btn": "使用", "title": "选择碎片"}},
-	"suitbox_冕瑞": {"name": "冕瑞自选锦盒", "desc": "使用后任选以下藏品碎片×1：龙耀金冕、金诏凤仪", "use": {"type": "suit_frag_box", "btn": "使用", "title": "选择碎片"}},
-	"suitbox_宸华": {"name": "宸华自选锦盒", "desc": "使用后任选以下藏品碎片×1：宫宴秘盏、龙纹碎壁、金爵桂魂", "use": {"type": "suit_frag_box", "btn": "使用", "title": "选择碎片"}},
-	"suitbox_醉栖": {"name": "醉栖自选锦盒", "desc": "使用后任选以下藏品碎片×1：兽首醉尊、凤栖梧桐", "use": {"type": "suit_frag_box", "btn": "使用", "title": "选择碎片"}},
-	"suitbox_共欢": {"name": "共欢自选锦盒", "desc": "使用后任选以下藏品碎片×1：回忆皆财、共享欢乐", "use": {"type": "suit_frag_box", "btn": "使用", "title": "选择碎片"}},
-	"suitbox_锦忆": {"name": "锦忆自选锦盒", "desc": "使用后任选以下藏品碎片×1：岁华锦匣、汴梁庆", "use": {"type": "suit_frag_box", "btn": "使用", "title": "选择碎片"}},
-	"suitbox_瑞光": {"name": "瑞光自选锦盒", "desc": "使用后任选以下藏品碎片×1：青禽衔光、琅华千色", "use": {"type": "suit_frag_box", "btn": "使用", "title": "选择碎片"}},
-	"suitbox_承运": {"name": "承运自选锦盒", "desc": "使用后任选以下藏品碎片×1：珐彩翔龙、吉庆长明", "use": {"type": "suit_frag_box", "btn": "使用", "title": "选择碎片"}},
-	"suitbox_重华": {"name": "重华自选锦盒", "desc": "使用后任选以下藏品碎片×1：碧潭凝露、千枝承光、鲤映烛辉", "use": {"type": "suit_frag_box", "btn": "使用", "title": "选择碎片"}},
-	"suitbox_阖欢": {"name": "阖欢自选锦盒", "desc": "使用后任选以下藏品碎片×1：花间锦色、飞花逐扇、长夜雁灯", "use": {"type": "suit_frag_box", "btn": "使用", "title": "选择碎片"}},
-	"suitbox_寰商": {"name": "寰商自选锦盒", "desc": "使用后任选以下藏品碎片×1：民商衡运、货通天下", "use": {"type": "suit_frag_box", "btn": "使用", "title": "选择碎片"}},
-	"suitbox_市贾": {"name": "市贾自选锦盒", "desc": "使用后任选以下藏品碎片×1：走笔绘商、百宝货箱、信印生辉", "use": {"type": "suit_frag_box", "btn": "使用", "title": "选择碎片"}},
-	"suitbox_丹凤": {"name": "丹凤自选锦盒", "desc": "使用后任选以下藏品碎片×1：聚焰环凤、凤鸟铜灯", "use": {"type": "suit_frag_box", "btn": "使用", "title": "选择碎片"}},
-	"suitbox_锦堂": {"name": "锦堂自选锦盒", "desc": "使用后任选以下藏品碎片×1：彩云龙鼓、凤衔香、晋盘礼", "use": {"type": "suit_frag_box", "btn": "使用", "title": "选择碎片"}},
-	"suitbox_清辉": {"name": "清辉自选锦盒", "desc": "使用后任选以下藏品碎片×1：缠枝玉壶、宫灯计", "use": {"type": "suit_frag_box", "btn": "使用", "title": "选择碎片"}},
-	"suitbox_星光": {"name": "星光自选锦盒", "desc": "使用后任选以下藏品碎片×1：兰烬羽扇、云筝栖羽、蝶梦九霄、芳阮凝香、天香乘鸾", "use": {"type": "suit_frag_box", "btn": "使用", "title": "选择碎片"}},
-	"suitbox_韶华": {"name": "韶华自选锦盒", "desc": "使用后任选以下藏品碎片×1：云裳乐舞、芳翎戏春", "use": {"type": "suit_frag_box", "btn": "使用", "title": "选择碎片"}},
-	"suitbox_坤舆": {"name": "坤舆自选锦盒", "desc": "使用后任选以下藏品碎片×1：驼峰丝路、笙竹云岫、釉彩万象", "use": {"type": "suit_frag_box", "btn": "使用", "title": "选择碎片"}},
-	"suitbox_瑶华": {"name": "瑶华自选锦盒", "desc": "使用后任选以下藏品碎片×1：花彩盘龙瓶、龙凤冠", "use": {"type": "suit_frag_box", "btn": "使用", "title": "选择碎片"}},
-	"suitbox_国香": {"name": "国香自选锦盒", "desc": "使用后任选以下藏品碎片×1：仙鹤龙耳炉、山河社稷、凤鸟悬鼓", "use": {"type": "suit_frag_box", "btn": "使用", "title": "选择碎片"}},
-	"suitbox_玉瑞": {"name": "玉瑞自选锦盒", "desc": "使用后任选以下藏品碎片×1：莲鹤方壶、榴开百子", "use": {"type": "suit_frag_box", "btn": "使用", "title": "选择碎片"}},
-	"suitbox_琅轩": {"name": "琅轩自选锦盒", "desc": "使用后任选以下藏品碎片×1：与天对话、梅花瞻瓶、花蝶云肩", "use": {"type": "suit_frag_box", "btn": "使用", "title": "选择碎片"}},
-	"suitbox_离尘": {"name": "离尘自选锦盒", "desc": "使用后任选以下藏品碎片×1：纹银香囊、长明袖灯、博山炉", "use": {"type": "suit_frag_box", "btn": "使用", "title": "选择碎片"}},
-	"suitbox_溯光": {"name": "溯光自选锦盒", "desc": "使用后任选以下藏品碎片×1：岁月轮转、盛世镜", "use": {"type": "suit_frag_box", "btn": "使用", "title": "选择碎片"}},
-	"suitbox_超然": {"name": "超然自选锦盒", "desc": "使用后任选以下藏品碎片×1：素纱禅衣、魂幡帛画", "use": {"type": "suit_frag_box", "btn": "使用", "title": "选择碎片"}},
-	"suitbox_碧爻": {"name": "碧爻自选锦盒", "desc": "使用后任选以下藏品碎片×1：湘妃竹、和氏璧、撼龙经", "use": {"type": "suit_frag_box", "btn": "使用", "title": "选择碎片"}},
-	
-	"suitbox_剑魂": {"name": "剑魂自选锦盒", "desc": "使用后任选以下藏品碎片×1：干将、莫邪", "use": {"type": "suit_frag_box", "btn": "使用", "title": "选择碎片"}},
-	
-	"suitbox_童忆": {"name": "童忆自选锦盒", "desc": "使用后任选以下藏品碎片×1：少时画影、清风童趣、柿柿如意", "use": {"type": "suit_frag_box", "btn": "使用", "title": "选择碎片"}},
-	
-	"suitbox_求知": {"name": "求知自选锦盒", "desc": "使用后任选以下藏品碎片×1：杏坛讲学、鲤跃龙门", "use": {"type": "suit_frag_box", "btn": "使用", "title": "选择碎片"}},
-	
-	"suitbox_魂器": {"name": "魂器自选锦盒", "desc": "使用后任选以下藏品碎片×1：瀚海乾坤罩、明月夜、观音泪", "use": {"type": "suit_frag_box", "btn": "使用", "title": "选择碎片"}},
-	
-	"suitbox_风华": {"name": "风华自选锦盒", "desc": "使用后任选以下藏品碎片×1：炽耀千秋、逐梦荣光", "use": {"type": "suit_frag_box", "btn": "使用", "title": "选择碎片"}},
-	
-	"suitbox_续缘": {"name": "续缘自选锦盒", "desc": "使用后任选以下藏品碎片×1：王权剑、无尽酒壶", "use": {"type": "suit_frag_box", "btn": "使用", "title": "选择碎片"}},
-	
-	"suitbox_奥林": {"name": "奥林自选锦盒", "desc": "使用后任选以下藏品碎片×1：橄榄诗语、花忆奥韵、天下和顺", "use": {"type": "suit_frag_box", "btn": "使用", "title": "选择碎片"}},
-	
-	"suitbox_水玉": {"name": "水玉自选锦盒", "desc": "使用后任选以下藏品碎片×1：千年御水滴、天罡寒玉、七宝妙树皮", "use": {"type": "suit_frag_box", "btn": "使用", "title": "选择碎片"}},
-	
-	"suitbox_时霜": {"name": "时霜自选锦盒", "desc": "使用后任选以下藏品碎片×1：冰凌雪枪、无尽沙漏、四相镜", "use": {"type": "suit_frag_box", "btn": "使用", "title": "选择碎片"}},
-	
-	"suitbox_周年": {"name": "周年自选锦盒", "desc": "使用后任选以下藏品碎片×1：掌斯卡、流年如虹", "use": {"type": "suit_frag_box", "btn": "使用", "title": "选择碎片"}},
-	
-	"suitbox_春意盎然": {"name": "春意盎然自选锦盒", "desc": "使用后任选以下藏品碎片×1：花醉云裳、细雨轻尘、春江水暖", "use": {"type": "suit_frag_box", "btn": "使用", "title": "选择碎片"}},
-	
-	"suitbox_迎春": {"name": "迎春自选锦盒", "desc": "使用后任选以下藏品碎片×1：辞旧迎新、醒狮献瑞、光阴流年", "use": {"type": "suit_frag_box", "btn": "使用", "title": "选择碎片"}},
-	
-	"suitbox_花火": {"name": "花火自选锦盒", "desc": "使用后任选以下藏品碎片×1：流光溢彩、浮光耀耀", "use": {"type": "suit_frag_box", "btn": "使用", "title": "选择碎片"}},
-	
-	"suitbox_凝冰": {"name": "凝冰自选锦盒", "desc": "使用后任选以下藏品碎片×1：凝冰旖梦、笙歌曼舞、刻烛成歌", "use": {"type": "suit_frag_box", "btn": "使用", "title": "选择碎片"}},
-	
-	"suitbox_五艳": {"name": "五艳自选锦盒", "desc": "使用后任选以下藏品碎片×1：幽谷、桃源、芙蕖、东篱、暗香", "use": {"type": "suit_frag_box", "btn": "使用", "title": "选择碎片"}},
-	
-	"shop_blueprint": {"name": "商铺图纸","desc": "用于解锁新商铺"},
-	"hq_blueprint": {
-	  "name": "钱庄图纸",
-	  "desc": "用于升级钱庄建筑"
-	},
-	"recruit_bronze": {
-	  "name": "募工铜牌",
-	  "desc": "使用后随机店铺店员+1",
-	  "use": {
-		"type": "quantity",
-		"btn": "使用",
-		"title": "使用募工铜牌"
-	  }
-	},
-	"recruit_silver": {
-	  "name": "募工银牌",
-	  "desc": "使用后随机店铺店员+3",
-	  "use": {
-		"type": "quantity",
-		"btn": "使用",
-		"title": "使用募工银牌"
-	  }
-	},
-	"recruit_gold": {
-	  "name": "募工金牌",
-	  "desc": "使用后随机店铺店员+5",
-	  "use": {
-		"type": "quantity",
-		"btn": "使用",
-		"title": "使用募工金牌"
-	  }
-	},
-	"hun_gu_box": {
-		"name": "魂骨盒子",
-		"desc": "打开后自选部位和品级，获得一块魂骨",
-		"use": { "type": "hun_gu_box", "btn": "打开" 
-		}
-	},
-	"huo_qi": {
-	  "name": "火器",
-	  "desc": "使用后随机一名侠门客基础赚速+500",
-	  "use": {
-		"type": "quantity",
-		"btn": "使用",
-		"title": "使用火器"
-	  }
-	},
-	"ci_qi": {
-	  "name": "瓷器",
-	  "desc": "使用后随机一名商门客基础赚速+500",
-	  "use": {
-		"type": "quantity",
-		"btn": "使用",
-		"title": "使用瓷器"
-	  }
-	},
-	"qiong_jiang": {
-	  "name": "琼浆",
-	  "desc": "使用后随机一名工门客基础赚速+500",
-	  "use": {
-		"type": "quantity",
-		"btn": "使用",
-		"title": "使用琼浆"
-	  }
-	},
-	"cha_ye": {
-	  "name": "茶叶",
-	  "desc": "使用后随机一名农门客基础赚速+500",
-	  "use": {
-		"type": "quantity",
-		"btn": "使用",
-		"title": "使用茶叶"
-	  }
-	},
-	"xuan_zhi": {
-	  "name": "宣纸",
-	  "desc": "使用后随机一名士门客基础赚速+500",
-	  "use": {
-		"type": "quantity",
-		"btn": "使用",
-		"title": "使用宣纸"
-	  }
-	},
-	"random_book": {
-	  "name": "随机书籍",
-	  "desc": "打开后随机获得一本：仕途/农业/工业/经商/侠义之道",
-	  "use": {
-		"type": "quantity",
-		"btn": "打开",
-		"title": "打开随机书籍"
-	  }
-	},
-	"aptitude_pill": {
-	  "name": "资质丹",
-	  "desc": "提升门客资质"
-	},
-	"small_aptitude_pill": {"name": "小资质丹", "desc": "20个可在背包合成1个资质丹"},
-	"guild_hammer": {"name": "商会锤", "desc": "商会道具建设消耗"},
-	"treasure_box": {"name": "珍宝箱", "desc": "打开后随机获得火器/瓷器/琼浆/茶叶/宣纸×500", "use": {"type": "treasure_box", "btn": "打开"}},
-	"canpo_zhuiyu": {"name": "残破缀玉", "desc": "20个可自选合成1枚缀玉（攀竹/织梦/莺歌/落花/流云）"},
-	"experience": {
-	  "name": "阅历",
-	  "desc": "门客升级所需经验"
-	},
-	"abacus": {
-	  "name": "算盘",
-	  "desc": "提升店铺算力效率"
-	},
-	"fengyasong": {
-	  "name": "风雅颂",
-	  "desc": "门客突破所需"
-	},
-	"exp_box": {
-	  "name": "阅历箱",
-	  "desc": "打开获得99999阅历",
-	  "use": {
-		"type": "quantity",
-		"btn": "打开",
-		"title": "打开阅历箱"
-	  }
-	},
-	"ginseng": {
-	  "name": "百年人参",
-	  "desc": "指定门客基础赚速+2000",
-	  "use": {
-		"type": "ginseng",
-		"btn": "使用",
-		"title": "使用百年人参"
-	  }
-	},
-	"ginseng_1000": {
-	  "name": "千年人参",
-	  "desc": "指定门客基础赚速+20000",
-	  "use": {
-		"type": "ginseng",
-		"btn": "使用",
-		"title": "使用千年人参"
-	  }
-	},
-	"wood_comb": {
-	  "name": "木梳",
-	  "desc": "赠送给挚友，友好+1"
-	},
-	"tong_zan": {
-	  "name": "铜簪",
-	  "desc": "赠送挚友，友好度+2",
-	  "type": "gift"
-	},
-	"yin_erhuan": {
-	  "name": "银耳环",
-	  "desc": "赠送挚友，友好度+5",
-	  "type": "gift"
-	},
-	"rouge": {
-	  "name": "胭脂",
-	  "desc": "赠送给挚友，才华+1"
-	},
-	"xiang_nang": {
-	  "name": "香囊",
-	  "desc": "赠送挚友，才华+2",
-	  "type": "gift"
-	},
-	"huarong_xia": {
-	  "name": "花容匣",
-	  "desc": "赠送挚友，才华+5",
-	  "type": "gift"
-	},
-	"energy_pill": {
-	  "name": "精力丹",
-	  "desc": "恢复3点精力"
-	},
-	"stage_box": {
-	  "name": "关卡宝箱",
-	  "desc": "通关小关获得的宝箱",
-	  "use": {
-		"type": "quantity",
-		"btn": "打开",
-		"title": "打开关卡宝箱"
-	  }
-	},
-	"hour_card": {
-	  "name": "小时卡",
-	  "desc": "使用后获得当前总赚速一小时的铜钱",
-	  "use": {
-		"type": "quantity",
-		"btn": "使用",
-		"title": "使用小时卡"
-	  }
-	},
-	"beast_fruit": {
-	  "name": "珍兽果",
-	  "desc": "升级珍兽等级"
-	},
-	"aroma_fruit": {
-	  "name": "奇香果",
-	  "desc": "刷新珍兽技能"
-	},
-	"awaken_fruit": {
-	  "name": "觉醒果",
-	  "desc": "用于珍兽觉醒；可通过活动或回收驺虞获得"
-	},
-	"stamina_pill": {
-	  "name": "体力丹",
-	  "desc": "使用后恢复1点游历体力，可超过体力上限",
-	  "type": "use"
-	},
-	"lottery_ticket": {
-	  "name": "抽奖券",
-	  "desc": "用于闯荡页面的抽奖"
-	},
-	"hero_token": {
-	  "name": "门客帖",
-	  "desc": "用于兑换门客"
-	},
-	"friend_token": {
-	  "name": "挚友帖",
-	  "desc": "用于兑换挚友"
-	},
-	"vitality_pill": {
-	  "name": "活力丹",
-	  "desc": "使用后徒弟槽位活力+5"
-	},
-	"wish_stone": {
-	  "name": "许愿石",
-	  "desc": "用于刷新挚友店铺技能，必定获得20%-30%加成"
-	},
-	"reputation_card": {
-	  "name": "声望卡",
-	  "desc": "使用后声望 +10",
-	  "use": {
-		"type": "quantity",
-		"btn": "使用",
-		"title": "使用声望卡"
-	  }
-	},
-	"reputation_card_adv": {
-	  "name": "高级声望卡",
-	  "desc": "使用后声望 +100",
-	  "use": {
-		"type": "quantity",
-		"btn": "使用",
-		"title": "使用高级声望卡"
-	  }
-	},
-	"rose_perfume": {
-	  "name": "玫瑰香水",
-	  "desc": "与指定挚友吟诗作对（谈心）"
-	},
-	"xia_way": {
-	  "name": "侠义之道",
-	  "desc": "提升%s类门客的XX之道技能"
-	},
-	"nong_way": {
-	  "name": "农业之道",
-	  "desc": "提升%s类门客的XX之道技能"
-	},
-	"shi_way": {
-	  "name": "仕途之道",
-	  "desc": "提升%s类门客的XX之道技能"
-	},
-	"gong_way": {
-	  "name": "工业之道",
-	  "desc": "提升%s类门客的XX之道技能"
-	},
-	"shang_way": {
-	  "name": "经商之道",
-	  "desc": "提升%s类门客的XX之道技能"
-	},
-	"patient_manual": {
-	  "name": "病人手册",
-	  "desc": "医馆玩法立即获得三名病人"
-	},
-	"drugshop_sign": {
-	  "name": "药铺招牌",
-	  "desc": "药铺玩法立即获得三名病人"
-	},
-	"baiye_zhaji": {
-	  "name": "百业札记",
-	  "desc": "使用后选择一名门客，百业经验+10（可在背包批量使用）",
-	  "use": {
-		"type": "baiye_zhaji",
-		"btn": "使用",
-		"per": 10
-	  }
-	},
-	"wushuang_gugu": {
-	  "name": "无双兽骨",
-	  "desc": "每40个可在背包【合成】页合成一只珍兽驺虞"
-	},
-	"ke_shi_tu_zhi": {
-	  "name": "科室图纸",
-	  "desc": "医馆升级科室所用图纸，接诊病人时有概率掉落"
-	},
-	"shicai_jidan": {
-	  "name": "鸡蛋食材包",
-	  "desc": "客栈烹饪食材，获取途径待活动接入"
-},
-"shicai_fenmian": {
-  "name": "粉面食材包",
-  "desc": "客栈烹饪食材，获取途径待活动接入"
-},
-"shicai_shengfen": {
-  "name": "生粉食材包",
-  "desc": "客栈烹饪食材，获取途径待活动接入"
-},
-"shicai_yinliao": {
-  "name": "饮料食材包",
-  "desc": "客栈烹饪食材，获取途径待活动接入"
-},
-"shicai_zhurou": {
-  "name": "猪肉食材包",
-  "desc": "客栈烹饪食材，获取途径待活动接入"
-},
-"shicai_yulei": {
-  "name": "鱼类食材包",
-  "desc": "客栈烹饪食材，获取途径待活动接入"
-},
-"shicai_tanglei": {
-  "name": "汤类食材包",
-  "desc": "客栈烹饪食材，获取途径待活动接入"
-},
-"shicai_daxia": {
-  "name": "大虾食材包",
-  "desc": "客栈烹饪食材，获取途径待活动接入"
-},
-"shicai_jirou": {
-  "name": "鸡肉食材包",
-  "desc": "客栈烹饪食材，获取途径待活动接入"
-},
-"shicai_pangxie": {
-  "name": "螃蟹食材包",
-  "desc": "客栈烹饪食材，获取途径待活动接入"
-},
-"can_tie": {
-  "name": "门客残帖",
-  "desc": "10张合成1张门客帖"
-},
-"kaishan_yin": {
-  "name": "开山印碎片",
-  "desc": "20个合成1个开山令"
-},
-"zongjiang_yin": {
-  "name": "宗匠印碎片",
-  "desc": "20个合成1个宗匠令"
-},"shicai_jidan": {
-  "name": "鸡蛋食材包",
-  "desc": "客栈烹饪食材，获取途径待活动接入"
-},
-"shicai_fenmian": {
-  "name": "粉面食材包",
-  "desc": "客栈烹饪食材，获取途径待活动接入"
-},
-"shicai_shengfen": {
-  "name": "生粉食材包",
-  "desc": "客栈烹饪食材，获取途径待活动接入"
-},
-"shicai_yinliao": {
-  "name": "饮料食材包",
-  "desc": "客栈烹饪食材，获取途径待活动接入"
-},
-"shicai_zhurou": {
-  "name": "猪肉食材包",
-  "desc": "客栈烹饪食材，获取途径待活动接入"
-},
-"shicai_yulei": {
-  "name": "鱼类食材包",
-  "desc": "客栈烹饪食材，获取途径待活动接入"
-},
-"shicai_tanglei": {
-  "name": "汤类食材包",
-  "desc": "客栈烹饪食材，获取途径待活动接入"
-},
-"shicai_daxia": {
-  "name": "大虾食材包",
-  "desc": "客栈烹饪食材，获取途径待活动接入"
-},
-"shicai_jirou": {
-  "name": "鸡肉食材包",
-  "desc": "客栈烹饪食材，获取途径待活动接入"
-},
-"shicai_pangxie": {
-  "name": "螃蟹食材包",
-  "desc": "客栈烹饪食材，获取途径待活动接入"
-},
-"can_tie": {
-  "name": "门客残帖",
-  "desc": "10张合成1张门客帖"
-},
-"kaishan_yin": {
-  "name": "开山印碎片",
-  "desc": "20个合成1个开山令"
-},
-"zongjiang_yin": {
-  "name": "宗匠印碎片",
-  "desc": "20个合成1个宗匠令"
-},
-	"tao_bao_quan": {
-		"name": "淘宝券",
-		"desc": "用于淘宝抽取藏品（单次1张，十连10张），获取途径：活动"
-	},
-	"ying_chong_guang": {"name": "萤虫光", "desc": "藏品升级道具：1~100级使用"},
-	"zhu_huo_guang": {"name": "烛火光", "desc": "藏品升级道具：101~200级使用"},
-	"xing_yao_guang": {"name": "星曜光", "desc": "藏品升级道具：201~300级使用"},
-	"yue_hua_guang": {"name": "月华光", "desc": "藏品升级道具：301~400级使用"},
-	"ri_lun_guang": {"name": "日轮光", "desc": "藏品升级道具：401~500级使用"},
-	"frag_zhuoyue": {"name": "通用碎片·卓越", "desc": "合成/晋升任意卓越藏品时抵扣碎片"},
-	"frag_youxiu": {"name": "通用碎片·优秀", "desc": "合成/晋升任意优秀藏品时抵扣碎片"},
-	"frag_putong": {"name": "通用碎片·普通", "desc": "合成/晋升任意普通藏品时抵扣碎片"},
-	"cuzhi_cage": {
-	"name": "促织笼",
-	"desc": "用于在促织园捕捉促织的道具",
-	"type": "consumable",
-	"price": 0,
-	"hide_in_bag": false
-	},
-	"wuse_shi": {
-		"name": "五色石",
-		"desc": "蕴含五行之力的彩石，用于解锁兽魂魂盘的格子"
-	},
-	"soul_stone_box": {
-		"name": "魂石宝箱",
-		"desc": "打开后随机获得一块优秀品质的魂石",
-		"use": { "type": "soul_stone_box", "btn": "打开" }
-	},
-	"soul_wushuang_box": {
-		"name": "无双魂石箱",
-		"desc": "打开后获得一块四格同色的无双品质魂石",
-		"use": { "type": "soul_wushuang_box", "btn": "打开" }
-	},
-	"wushuang_cuzhi_box": {
-		"name": "无双促织盒子",
-		"desc": "打开后可自选一只无双及以上促织",
-		"type": "consumable",
-		"use": { "type": "wushuang_cuzhi_box", "btn": "打开" }
-	},
-	"cuzhi_migao": {
-		"name": "促织蜜膏",
-		"desc": "用于加速促织培育，每个可减少1分钟培育时间",
-		"type": "consumable"
-	},
-	"cuzhi_jinghua": {
-		"name": "促织精华",
-		 "desc": "用于升级门客装备的促织，回收时返还"
-	},
-	"wuxing_yan": {
-		"name": "五行岩",
-		"desc": "五行系列促织蜕壳所需的道具"
-	},
-	"sanguo_yan": {
-		"name": "三国岩",
-		"desc": "三国系列促织蜕壳所需的道具"
-	},
-	"jianghu_yan": {
-		"name": "江湖岩",
-		"desc": "江湖系列促织蜕壳所需的道具"
-	},
-	"shanhai_yan": {
-		"name": "山海岩",
-		"desc": "山海系列促织蜕壳所需的道具"
-	},
-	"wuling_yan": {
-		"name": "五灵岩",
-		"desc": "五灵系列促织蜕壳所需的道具"
-	},
-	"zui_xian_niang": {
-	  "name": "醉仙酿",
-	  "desc": "李白赋诗升级所需"
-	},
-	"qing_feng_jian": {
-		"name": "青锋剑", 
-		"desc": "李白信物【青锋剑】专属升级道具，雷霆净世每级消耗600个；获取途径待接"
-	},
-	"qing_lian_shi_hao": {
-		"name": "青莲诗毫",
-		"desc": "李白风姿【醉墨挥毫】专属升级道具，每级固定消耗600个；获取途径待接"
-	},
-	"ning_lei_jing": {
-		"name": "凝泪晶", 
-		"desc": "白月初晋升【续缘】专属道具，仙缘梦绕每级消耗600个；获取途径待接"
-	},
-	"xuyuan_tianshu": {
-		"name": "续缘天书",
-		 "desc": "白月初信物【续缘天书】专属升级道具，转世续缘每级消耗600个；获取途径待接"
-	},
-	"zongjiang_ling": {
-	  "name": "宗匠令",
-	  "desc": "兑换一代宗匠系列门客所需"
-	},
-	"kaishan_ling": {
-	  "name": "开山令",
-	  "desc": "兑换开山鼻祖系列门客所需"
-	},
-	"panzhu_zhuiyu": {
-	  "name": "攀竹缀玉",
-	  "desc": "兑换门客【马湘兰】所需"
-	},
-	"zhimeng_zhuiyu": {
-	  "name": "织梦缀玉",
-	  "desc": "兑换门客【董小宛】所需"
-	},
-	"yingge_zhuiyu": {
-	  "name": "莺歌缀玉",
-	  "desc": "兑换门客【卞玉京】所需"
-	},
-	"luohua_zhuiyu": {
-	  "name": "落花缀玉",
-	  "desc": "兑换门客【李香君】所需"
-	},
-	"liuyun_zhuiyu": {
-	  "name": "流云缀玉",
-	  "desc": "兑换门客【寇白门】所需"
-	},
-	"xuanhe_qixi": {
-	  "name": "宣和七玺",
-	  "desc": "兑换门客【宋徽宗】所需"
-	},
-	"tiankui_lingqi": {
-	  "name": "天魁令旗",
-	  "desc": "兑换门客【宋江】所需"
-	},
-	"yuanhun_dou": {
-	  "name": "冤魂斗",
-	  "desc": "兑换门客【活阎王】所需"
-	},
-	"quanxiang_guan": {
-	  "name": "权相之冠",
-	  "desc": "兑换门客【蔡京】所需"
-	},
-	"fangtian_huaji": {
-	  "name": "方天画戟",
-	  "desc": "兑换门客【吕布】所需"
-	},
-	"taia_jian": {
-	  "name": "泰阿剑",
-	  "desc": "兑换门客【秦始皇】所需"
-	},
-	"hufu_junling": {
-	  "name": "虎符军令",
-	  "desc": "兑换门客【孙武】所需"
-	},
-	"suitang_huaben": {
-	  "name": "隋唐话本",
-	  "desc": "兑换门客【秦琼尉迟恭】所需"
-	},
-	"bawang_qiang": {
-	  "name": "霸王枪",
-	  "desc": "兑换门客【项羽】所需"
-	},
-	"huanglong_jinduan": {
-	  "name": "黄龙锦缎",
-	  "desc": "兑换门客【宋太祖】所需"
-	},
-	"tiangong_zanchui": {
-	  "name": "天工錾锤",
-	  "desc": "兑换门客【石敢当】所需"
-	},
-	"qisheng_mianju": {
-	  "name": "七圣面具",
-	  "desc": "兑换门客【百戏圣刀】所需"
-	},
-	"danqing_pan": {
-	  "name": "丹青盘",
-	  "desc": "兑换门客【敦煌匠神】所需"
-	},
-	"cangbao_tu": {
-	  "name": "藏宝图",
-	  "desc": "兑换门客【滚海蛟】所需"
-	},
-	"huojian_qiang": {
-	  "name": "火尖枪",
-	  "desc": "兑换门客【哪吒】所需"
-	},
-	"shoulie_guren": {
-	  "name": "狩猎骨刃",
-	  "desc": "兑换门客【敖武】所需"
-	},
-	"chengzu_chiling": {
-	  "name": "成祖敕令",
-	  "desc": "兑换门客【郑和】所需"
-	},
-	"wulong_xiuqiu": {
-	  "name": "舞龙绣球",
-	  "desc": "兑换门客【龙骧】所需"
-	},
-	"yugu_dao": {
-	  "name": "鱼骨刀",
-	  "desc": "兑换门客【罗海王】所需"
-	},
-	"yuye_jinhua": {
-	  "name": "玉叶金花",
-	  "desc": "兑换门客【小柒】所需"
-	},
-	"linglong_hebao": {
-	  "name": "玲珑荷包",
-	  "desc": "兑换门客【小八】所需"
-	},
-	"long_zhi_cao": {
-		"name": "龙芝草",
-		"desc": "魂体升级材料，每级消耗60个"
-	},
-	"cui_gu_jing_chen": {
-		"name": "淬骨精尘",
-		"desc": "魂骨技能升级材料（赚钱技能 星数×3/级，资质技能 星数×10/级）"
-	},
-	"jinghe_bainian": {
-		"name": "百年晶核",
-		"desc": "百年魂骨升阶材料，每阶消耗13个"
-	},
-	"jinghe_qiannian": {
-		"name": "千年晶核",
-		"desc": "千年魂骨升阶材料，每阶消耗5个"
-	},
-	"jinghe_wannian": {
-		"name": "万年晶核",
-		"desc": "万年魂骨升阶材料，每阶消耗4个"
-	},
-	"jinghe_shiwannian": {
-		"name": "十万年晶核",
-		"desc": "十万年魂骨升阶材料，每阶消耗2个"
-	},
-	"jinghe_baiwannian": {
-		"name": "百万年晶核",
-		"desc": "百万年魂骨升阶材料，每阶消耗1个"
-	},
-	"feng_shen_zhi": {
-	  "name": "封神志",
-	  "desc": "兑换封神灵兽"
-	},
-	"shan_hai_shi": {
-	  "name": "山海石",
-	  "desc": "兑换山海异兽"
-	},
-	"hong_huang_huo": {
-	  "name": "鸿荒火",
-	  "desc": "兑换上古凶兽"
-	},
-	"jiu_yuan_shui": {
-	  "name": "九渊之水",
-	  "desc": "兑换蛮荒主兽"
-	},
-	"yu_ling_zhi": {
-	  "name": "玉灵芝",
-	  "desc": "兑换蛮荒主兽·乘黄"
-	},
-	"hu_po_yao_shi": {
-	  "name": "虎魄耀石",
-	  "desc": "兑换蛮荒主兽·陆吾"
-	},
-	"long_hun_jing_yuan": {
-	  "name": "龙魂精元",
-	  "desc": "兑换蛮荒主兽·应龙"
-	},
-	"fu_sang_zhi": {
-	  "name": "扶桑枝",
-	  "desc": "兑换蛮荒主兽·金乌"
-	},
-	"long_zhuo_xi": {
-	  "name": "龙擢星玺",
-	  "desc": "兑换星神圣兽"
-	},
-	"xing_wu_po": {
-	  "name": "星武珀石",
-	  "desc": "兑换星神圣兽"
-	},
-	"xing_shu_lin": {
-	  "name": "星枢麟角",
-	  "desc": "兑换星神圣兽"
-	},
-	"yu_shi": {
-	  "name": "鱼食",
-	  "desc": "垂钓相关的饵料（后续玩法更新后使用）",
-	  "hide_in_bag": true
-	},
-	"minjing_shouji": {
-	  "name": "市井手记",
-	  "desc": "记录市井百态的手记（后续玩法更新后使用）"
-	},
-	"jia_niang": {
-	  "name": "佳酿",
-	  "desc": "酒肆玩法：立即获得 2 点叫号"
-	},
-	"chanwu_card": {
-	  "name": "产物卡",
-	  "desc": "使用后获得当前庄园12小时的全部产物",
-	  "use": {
-		"type": "quantity",
-		"btn": "使用",
-		"title": "使用产物卡"
-	  }
-	},
-	"yu_huang": {
-	  "name": "玉璜",
-	  "desc": "半璧形的古玉（后续玩法更新后使用）"
-	},
-	"tanmu_zan": {
-	  "name": "檀木簪",
-	  "desc": "檀木雕琢的发簪（后续玩法更新后使用）"
-	},
-	"shengshi_zhong": {
-	  "name": "盛世钟",
-	  "desc": "清平盛世系列服装的兑换道具（后续玩法产出）"
-	},
-	"jingzhong_bei": {
-	  "name": "精忠碑",
-	  "desc": "精忠报国系列服装的兑换道具（后续玩法产出）"
-	},
-	"feng_yu": {
-	  "name": "凤羽",
-	  "desc": "五凤来仪系列服装的兑换道具（后续玩法产出）"
-	},
-	"jin_furong": {
-	  "name": "金芙蓉",
-	  "desc": "百花齐放系列服装的兑换道具（后续玩法产出）"
-	},
-	"jian_wan": {
-	  "name": "剑丸",
-	  "desc": "君子如剑系列服装的兑换道具（后续玩法产出）"
-	},
-	"tian_xing": {
-	  "name": "天星",
-	  "desc": "汴梁女团系列服装的兑换道具（后续玩法产出）"
-	},
-	"bogu_juan": {
-	  "name": "博古卷",
-	  "desc": "传世珍宝系列服装的兑换道具（后续玩法产出）"
-	},
-	"fengyou_wuyue_shi": {
-	  "name": "凤游五岳石",
-	  "desc": "山河五岳系列服装的兑换道具（后续玩法产出）"
-	},
-	"yulin_jue":{
-		"name": "蕴灵珏",
-		"desc": "守护灵注灵材料，每级消耗随等级提升"
-	},
-	"ke_ting_yiyun":{
-		"name": "柯亭遗韵",
-		"desc": "解锁守护灵幻化：蔡文姬"
-	},
-	"yan_yue_gufeng":{
-		"name": "偃月孤锋",
-		"desc": "解锁守护灵幻化：关羽"
-	},
-	"bai_he_yushan":{
-		"name": "白鹤羽扇",
-		"desc": "解锁守护灵幻化：诸葛亮"
-	},
-	"ming_kong_xuanjue":{
-		"name": "明空玄珏",
-		"desc": "解锁守护灵幻化：武则天"
-	},
-	"jiajibi":{
-		"name": "家具币",
-		"desc": "酒坊玩法：用于购置家具（效果接入中，暂为占位道具）"
-	},
-	"kezhong_card":{
-		"name": "刻钟卡",
-		"desc": "酒坊玩法：加速道具（效果接入中，暂为占位道具）"
-	},
-	"suiji_piwen":{
-		"name": "随机批文",
-		"desc": "酒坊玩法：随机批文（效果接入中，暂为占位道具）"
-	},
-	"zixuan_baoyin":{
-		"name": "自选宝印",
-		"desc": "酒坊玩法：自选宝印（效果接入中，暂为占位道具）"
-	},
-	"baoyin_fragment":{
-		"name": "自选宝印碎片",
-		"desc": "酒坊玩法：自选宝印碎片（效果接入中，暂为占位道具）"
-	},
-	"wushuang_jingpo":{
-		"name": "无双精魄",
-		"desc": "酒坊玩法：无双精魄（效果接入中，暂为占位道具）"
-	},
-	"huaguo":{
-		"name": "花果",
-		"desc": "酒坊玩法：花果酒坊的酿酒材料（材料库存以酒坊内为准，可在酒坊【采买】购得）"
-	},
-	"gaoliang":{
-		"name": "高粱",
-		"desc": "酒坊玩法：高粱酒坊的酿酒材料（材料库存以酒坊内为准，可在酒坊【采买】购得）"
-	},
-	"daogu":{
-		"name": "稻谷",
-		"desc": "酒坊玩法：稻谷酒坊的酿酒材料（材料库存以酒坊内为准，可在酒坊【采买】购得）"
+	"initial": {
+		"shop_blueprint": 999,
+		"hq_blueprint": 999,
+		"aptitude_pill": 999,
+		"experience": 999999,
+		"abacus": 999,
+		"fengyasong": 999,
+		"exp_box": 999,
+		"ginseng": 999,
+		"wood_comb": 200000,
+		"rouge": 999,
+		"energy_pill": 999,
+		"zui_xian_niang": 48600,
+		"hour_card": 0,
+		"beast_fruit": 0,
+		"aroma_fruit": 0,
+		"feng_shen_zhi": 0,
+		"shan_hai_shi": 0,
+		"hong_huang_huo": 0,
+		"jiu_yuan_shui": 0,
+		"long_zhuo_xi": 0,
+		"xing_wu_po": 0,
+		"xing_shu_lin": 0,
+		"lottery_ticket": 0,
+		"hero_token": 0,
+		"friend_token": 0,
+		"ginseng_1000": 0,
+		"vitality_pill": 0,
+		"wish_stone": 0,
+		"hero_box": 0,
+		"zongjiang_ling": 100,
+		"kaishan_ling": 0,
+		"panzhu_zhuiyu": 0,
+		"zhimeng_zhuiyu": 0,
+		"yingge_zhuiyu": 0,
+		"luohua_zhuiyu": 0,
+		"liuyun_zhuiyu": 100,
+		"xuanhe_qixi": 0,
+		"tiankui_lingqi": 0,
+		"yuanhun_dou": 0,
+		"quanxiang_guan": 100,
+		"fangtian_huaji": 0,
+		"taia_jian": 0,
+		"hufu_junling": 100,
+		"suitang_huaben": 0,
+		"bawang_qiang": 0,
+		"huanglong_jinduan": 100,
+		"tiangong_zanchui": 0,
+		"qisheng_mianju": 0,
+		"danqing_pan": 0,
+		"cangbao_tu": 0,
+		"huojian_qiang": 0,
+		"shoulie_guren": 0,
+		"chengzu_chiling": 0,
+		"wulong_xiuqiu": 0,
+		"yugu_dao": 0,
+		"yuye_jinhua": 0,
+		"linglong_hebao": 100,
+		"reputation_card": 0,
+		"reputation_card_adv": 0,
+		"rose_perfume": 0,
+		"xia_way": 0,
+		"nong_way": 0,
+		"shi_way": 0,
+		"gong_way": 0,
+		"shang_way": 0,
+		"recruit_bronze": 0,
+		"recruit_silver": 0,
+		"recruit_gold": 0,
+		"huo_qi": 0,
+		"ci_qi": 0,
+		"qiong_jiang": 0,
+		"cha_ye": 0,
+		"xuan_zhi": 0,
+		"random_book": 0,
+		"stage_box": 0,
+		"patient_manual": 0,
+		"drugshop_sign": 0,
+		"cricket_cage": 0,
+		"stamina_pill": 0,
+		"tong_zan": 0,
+		"yin_erhuan": 0,
+		"xiang_nang": 0,
+		"huarong_xia": 0,
+		"yu_shi": 0,
+		"minjing_shouji": 0,
+		"jia_niang": 0,
+		"chanwu_card": 0,
+		"yu_huang": 0,
+		"tanmu_zan": 0,
+		"manhuang_box": 5,
+		"long_zhi_cao": 5000,
+		"cui_gu_jing_chen": 5000,
+		"jinghe_bainian": 50,
+		"jinghe_qiannian": 50,
+		"jinghe_wannian": 50,
+		"jinghe_shiwannian": 50,
+		"jinghe_baiwannian": 50,
+		"hun_gu_box": 20,
+		"cuzhi_exp_low": 0,
+		"cuzhi_exp_high": 0,
+		"yulin_jue": 9999,
+		"ke_ting_yiyun": 1,
+		"yan_yue_gufeng": 1,
+		"bai_he_yushan": 1,
+		"ming_kong_xuanjue": 1
 	}
-  },
-  "initial": {
-	"shop_blueprint": 999,
-	"hq_blueprint": 999,
-	"aptitude_pill": 999,
-	"experience": 999999,
-	"abacus": 999,
-	"fengyasong": 999,
-	"exp_box": 999,
-	"ginseng": 999,
-	"wood_comb": 200000,
-	"rouge": 999,
-	"energy_pill": 999,
-	"zui_xian_niang": 48600,
-	"hour_card": 0,
-	"beast_fruit": 0,
-	"aroma_fruit": 0,
-	"feng_shen_zhi": 0,
-	"shan_hai_shi": 0,
-	"hong_huang_huo": 0,
-	"jiu_yuan_shui": 0,
-	"long_zhuo_xi": 0,
-	"xing_wu_po": 0,
-	"xing_shu_lin": 0,
-	"lottery_ticket": 0,
-	"hero_token": 0,
-	"friend_token": 0,
-	"ginseng_1000": 0,
-	"vitality_pill": 0,
-	"wish_stone": 0,
-	"hero_box": 0,
-	"zongjiang_ling": 100,
-	"kaishan_ling": 0,
-	"panzhu_zhuiyu": 0,
-	"zhimeng_zhuiyu": 0,
-	"yingge_zhuiyu": 0,
-	"luohua_zhuiyu": 0,
-	"liuyun_zhuiyu": 100,
-	"xuanhe_qixi": 0,
-	"tiankui_lingqi": 0,
-	"yuanhun_dou": 0,
-	"quanxiang_guan": 100,
-	"fangtian_huaji": 0,
-	"taia_jian": 0,
-	"hufu_junling": 100,
-	"suitang_huaben": 0,
-	"bawang_qiang": 0,
-	"huanglong_jinduan": 100,
-	"tiangong_zanchui": 0,
-	"qisheng_mianju": 0,
-	"danqing_pan": 0,
-	"cangbao_tu": 0,
-	"huojian_qiang": 0,
-	"shoulie_guren": 0,
-	"chengzu_chiling": 0,
-	"wulong_xiuqiu": 0,
-	"yugu_dao": 0,
-	"yuye_jinhua": 0,
-	"linglong_hebao": 100,
-	"reputation_card": 0,
-	"reputation_card_adv": 0,
-	"rose_perfume": 0,
-	"xia_way": 0,
-	"nong_way": 0,
-	"shi_way": 0,
-	"gong_way": 0,
-	"shang_way": 0,
-	"recruit_bronze": 0,
-	"recruit_silver": 0,
-	"recruit_gold": 0,
-	"huo_qi": 0,
-	"ci_qi": 0,
-	"qiong_jiang": 0,
-	"cha_ye": 0,
-	"xuan_zhi": 0,
-	"random_book": 0,
-	"stage_box": 0,
-	"patient_manual": 0,
-	"drugshop_sign": 0,
-	"cricket_cage": 0,
-	"stamina_pill": 0,
-	"tong_zan": 0,
-	"yin_erhuan": 0,
-	"xiang_nang": 0,
-	"huarong_xia": 0,
-	"yu_shi": 0,
-	"minjing_shouji": 0,
-	"jia_niang": 0,
-	"chanwu_card": 0,
-	"yu_huang": 0,
-	"tanmu_zan": 0,
-	"manhuang_box": 5,
-	"long_zhi_cao": 5000,
-	"cui_gu_jing_chen": 5000,
-	"jinghe_bainian": 50,
-	"jinghe_qiannian": 50,
-	"jinghe_wannian": 50,
-	"jinghe_shiwannian": 50,
-	"jinghe_baiwannian": 50,
-	"hun_gu_box": 20,
-	"cuzhi_exp_low": 0,
-	"cuzhi_exp_high": 0,
-	"yulin_jue": 9999,
-	"ke_ting_yiyun": 1,
-	"yan_yue_gufeng": 1,
-	"bai_he_yushan": 1,
-	"ming_kong_xuanjue": 1
-  }
 }

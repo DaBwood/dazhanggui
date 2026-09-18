@@ -47,6 +47,12 @@ func use_item(item_id: String, count: int) -> Dictionary:
 			var gain = g.get_total_auto_income() * 3600 * count
 			g.money += gain
 			return {"ok": true, "msg": "获得铜钱 ×%d" % gain}
+		"kezhong_card":
+			# 【新增】2026-09-18 刻钟卡：每张获得当前自动赚速1分钟的铜钱（小时卡=3600秒的1/60）
+			g.items.kezhong_card -= count
+			var gain_minute = g.get_total_auto_income() * 60 * count
+			g.money += gain_minute
+			return {"ok": true, "msg": "获得当前1分钟赚速铜钱 ×%d" % gain_minute}
 		"reputation_card":
 			g.items.reputation_card -= count
 			g.reputation += 10 * count
@@ -89,6 +95,19 @@ func use_item(item_id: String, count: int) -> Dictionary:
 			for hid in buff_gains.keys():
 				buff_parts.append("【%s】额外赚速+%d" % [g.heroes[hid].name, buff_gains[hid]])
 			return {"ok": true, "msg": "、".join(buff_parts)}
+		"minjing_shouji":
+			# 【新增】2026-09-18 市井手记：每本随机一名已拥有门客 +10 百业经验（逐个随机，可命中同一门客）
+			if g.heroes.is_empty(): return {"ok": false, "msg": "还没有已拥有的门客"}
+			g.items[item_id] -= count
+			var baiye_gains = {}
+			for i in range(count):
+				var hid = g.heroes.keys()[randi() % g.heroes.size()]
+				g.bank_system.add_baiye(hid, 10)
+				baiye_gains[hid] = baiye_gains.get(hid, 0) + 10
+			var baiye_parts = []
+			for hid in baiye_gains.keys():
+				baiye_parts.append("【%s】百业经验+%d" % [g.heroes[hid].name, baiye_gains[hid]])
+			return {"ok": true, "msg": "、".join(baiye_parts)}
 		"random_book":
 			# 【新增】随机书籍：每打开1个，从五种之道中随机获得一本
 			g.items.random_book -= count

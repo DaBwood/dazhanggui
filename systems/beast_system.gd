@@ -201,8 +201,8 @@ func get_beast_recycle_info(beast_id: String, instance_index: int = 0) -> Dictio
 	var instance = get_beast_instance(beast_id, instance_index)
 	if cfg.is_empty() or instance == null:
 		return {"ok": false, "reason": "珍兽不存在", "awaken_fruit": 0, "beast_fruit": 0}
-	# 当前版本只允许回收驺虞
-	if beast_id != "zou_yu":
+	# 【改】2026-09-18 白泽同驺虞：无光环/无兑换道具/可重复获得的无双珍兽，允许回收
+	if not ["zou_yu", "bai_ze"].has(beast_id):
 		return {"ok": false, "reason": "该珍兽暂不可回收", "awaken_fruit": 0, "beast_fruit": 0}
 	if instance.get("equipped_hero", "") != "":
 		return {"ok": false, "reason": "请先卸下再回收", "awaken_fruit": 0, "beast_fruit": 0}

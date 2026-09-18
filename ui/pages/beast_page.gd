@@ -15,6 +15,10 @@ var _current_beast_id: String = ""
 var _current_beast_index: int = 0
 var _selected_beast_skill_index: int = -1
 
+# 【改】2026-09-18 回收弹窗选中态：卡片多选（key=beast_id:index）+ 底部确认，回收成功不关闭只刷新
+var _recycle_selected_keys: Array = []
+var _recycle_confirm_btn: Button = null
+
 var _detail_tab: String = "skill"   # 【新增】珍兽详情页签：skill=技能 aura=光环
 
 # 由 game_controller._ready 创建本模块时注入引用
@@ -574,72 +578,211 @@ func _show_hero_equip_selector(beast_id: String, instance_index: int):
 	
 	c.add_child(panel)
 
-# 【新增】珍兽回收面板：当前仅驺虞可回收
+# 【改】2026-09-18 珍兽回收面板：驺虞/白泽卡片多选（3列网格），回收成功不关闭只刷新
 func _show_beast_recycle_panel():
+	if c.has_node("BeastRecyclePanel"): return
+	_recycle_selected_keys.clear()
+
 	var panel = c._create_base_popup("回收珍兽", Vector2(520, 420))
 	panel.name = "BeastRecyclePanel"
 	var vbox = panel.get_child(0)
 
-	var count = data.beast_system.get_beast_instance_count("zou_yu")
-	if count <= 0:
+	# 【改】2026-09-18 回收区改 3 列卡片多选：驺虞/白泽同规则（未装备才可回收，返觉醒果×15 / 珍兽果×400）
+	var scroll = ScrollContainer.new()
+	scroll.name = "RecycleScroll"
+	scroll.custom_minimum_size = Vector2(480, 300)
+	vbox.add_child(scroll)
+
+	var grid = GridContainer.new()
+	grid.name = "RecycleGrid"
+	grid.columns = 3
+	grid.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	grid.add_theme_constant_override("h_separation", 6)
+	grid.add_theme_constant_override("v_separation", 6)
+	scroll.add_child(grid)
+	_fill_beast_recycle_cards(grid)
+
+	# 底部操作：回收 / 关闭 并列（回收成功不关闭，见 _on_recycle_selected）
+	var bottom = HBoxContainer.new()
+	bottom.alignment = BoxContainer.ALIGNMENT_CENTER
+	bottom.add_theme_constant_override("separation", 12)
+	vbox.add_child(bottom)
+
+	_recycle_confirm_btn = Button.new()
+	_recycle_confirm_btn.text = "回收"
+	_recycle_confirm_btn.custom_minimum_size = Vector2(120, 40)
+	_recycle_confirm_btn.disabled = true
+	_recycle_confirm_btn.pressed.connect(_on_recycle_selected)
+	bottom.add_child(_recycle_confirm_btn)
+
+	var close_btn = Button.new()
+	close_btn.text = "关闭"
+	close_btn.custom_minimum_size = Vector2(120, 40)
+	close_btn.pressed.connect(_close_beast_recycle_panel)
+	bottom.add_child(close_btn)
+
+	c.add_child(panel)
+
+# 【新增】2026-09-18 回收卡片网格：按钮卡片 + ☑/☐ 多选，装备中的珍兽置灰并给原因
+func _fill_beast_recycle_cards(grid):
+	for child in grid.get_children():
+		grid.remove_child(child)
+		child.queue_free()
+
+	var recyclable_ids := ["zou_yu", "bai_ze"]
+	var total := 0
+	for beast_id in recyclable_ids:
+		total += data.beast_system.get_beast_instance_count(beast_id)
+	if total <= 0:
 		var empty = Label.new()
-		empty.text = "当前没有可回收的驺虞"
+		empty.text = "当前没有可回收的驺虞/白泽"
 		empty.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
-		vbox.add_child(empty)
-	else:
-		var scroll = ScrollContainer.new()
-		scroll.custom_minimum_size = Vector2(480, 280)
-		vbox.add_child(scroll)
+		grid.add_child(empty)
+		return
 
-		var list = VBoxContainer.new()
-		list.size_flags_horizontal = Control.SIZE_EXPAND_FILL
-		scroll.add_child(list)
-
+	for beast_id in recyclable_ids:
+		var cfg = data.get_beast_config(beast_id)
+		var count = data.beast_system.get_beast_instance_count(beast_id)
 		for i in range(count):
-			var inst = data.get_beast_instance("zou_yu", i)
+			var inst = data.get_beast_instance(beast_id, i)
 			if inst == null: continue
-			var info = data.beast_system.get_beast_recycle_info("zou_yu", i)
-
-			var row = HBoxContainer.new()
-			row.size_flags_horizontal = Control.SIZE_EXPAND_FILL
-			row.add_theme_constant_override("separation", 8)
-			list.add_child(row)
+			var info = data.beast_system.get_beast_recycle_info(beast_id, i)
 
 			var eq = inst.get("equipped_hero", "")
 			var eq_name = "未装备"
 			if eq != "" and data.heroes.has(eq):
 				eq_name = data.heroes[eq].name
 
-			var lbl = Label.new()
-			lbl.size_flags_horizontal = Control.SIZE_EXPAND_FILL
-			lbl.text = "驺虞 #%d  Lv.%d（%s）→ 觉醒果×15 / 珍兽果×400" % [i + 1, inst.level, eq_name]
-			row.add_child(lbl)
+			var key := "%s:%d" % [beast_id, i]
+			var selected: bool = _recycle_selected_keys.has(key)
+			var base_text := "%s #%d\nLv.%d（%s）" % [cfg.get("name", beast_id), i + 1, inst.level, eq_name]
+			var card := Button.new()
+			card.custom_minimum_size = Vector2(150, 64)
+			card.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+			card.mouse_filter = Control.MOUSE_FILTER_PASS
+			card.add_theme_font_size_override("font_size", 12)
+			card.disabled = not info.get("ok", false)
+			card.tooltip_text = info.get("reason", "") if not info.get("ok", false) else "点击选中/取消（可多选）"
+			card.pressed.connect(_on_recycle_card_clicked.bind(beast_id, i, card, base_text))
+			grid.add_child(card)
+			_set_recycle_card_visual(card, base_text, selected)
 
-			var btn = Button.new()
-			btn.text = "回收"
-			btn.disabled = not info.get("ok", false)
-			btn.tooltip_text = info.get("reason", "")
-			btn.pressed.connect(_on_recycle_beast.bind("zou_yu", i))
-			row.add_child(btn)
+# 【新增】多选卡片视觉：☑/☐ + 选中金字（用户要“特效或勾选框”，这里用勾选框+变色）
+func _set_recycle_card_visual(btn, base_text: String, selected: bool):
+	btn.text = ("☑ " if selected else "☐ ") + base_text
+	btn.add_theme_color_override("font_color", Color(1.0, 0.85, 0.3) if selected else Color(0.9, 0.85, 0.75))
 
-	var cancel = Button.new()
-	cancel.text = "关闭"
-	cancel.pressed.connect(func(): c._safe_close("BeastRecyclePanel"))
-	vbox.add_child(cancel)
+# 【修】2026-09-18 选中key有效性：数据里已不存在的实例不可再被选中/回收
+func _recycle_key_exists(key) -> bool:
+	var parts := String(key).split(":")
+	if parts.size() != 2:
+		return false
+	return data.get_beast_instance(parts[0], int(parts[1])) != null
 
-	c.add_child(panel)
+# 【修】剔除失效选中key；返回是否有剔除（供调用方决定是否原地刷新）
+func _prune_recycle_selection() -> bool:
+	var removed: bool = false
+	for key in _recycle_selected_keys.duplicate():
+		if not _recycle_key_exists(key):
+			_recycle_selected_keys.erase(key)
+			removed = true
+	if _recycle_confirm_btn:
+		_recycle_confirm_btn.disabled = _recycle_selected_keys.is_empty()
+	return removed
 
-# 【新增】回收一只驺虞
-func _on_recycle_beast(beast_id: String, instance_index: int):
-	var res: Dictionary = data.beast_system.recycle_beast(beast_id, instance_index)
-	if not res.get("ok", false):
-		c._show_stage_hint(res.get("reason", "回收失败"))
+func _on_recycle_card_clicked(beast_id: String, instance_index: int, card, base_text: String):
+	# 卡片是旧帧残留时，点一下也触发剔除并重建网格，防止“不存在还能选”
+	if data.get_beast_instance(beast_id, instance_index) == null:
+		_prune_recycle_selection()
+		_refresh_beast_recycle_panel()
 		return
-	c._safe_close("BeastRecyclePanel")
+	var key := "%s:%d" % [beast_id, instance_index]
+	if _recycle_selected_keys.has(key):
+		_recycle_selected_keys.erase(key)
+	else:
+		_recycle_selected_keys.append(key)
+	_set_recycle_card_visual(card, base_text, _recycle_selected_keys.has(key))
+	if _recycle_confirm_btn:
+		_recycle_confirm_btn.disabled = _recycle_selected_keys.is_empty()
+
+func _on_recycle_selected():
+	var had_selection: bool = not _recycle_selected_keys.is_empty()
+	# 先剔除已不存在/状态变化的旧选中，避免拿旧下标去回收导致一串“珍兽不存在”
+	if _prune_recycle_selection():
+		_refresh_beast_recycle_panel()
+	if _recycle_selected_keys.is_empty():
+		if had_selection:
+			c._show_stage_hint("所选珍兽已不存在或状态变化，请重新选择")
+		else:
+			c._show_stage_hint("请先点击卡片选择要回收的珍兽（可多选）")
+		return
+
+	# 批量回收：同种珍兽按下标倒序删，避免先删小号导致后续下标位移
+	var by_beast := {}
+	for key in _recycle_selected_keys.duplicate():
+		var parts := String(key).split(":")
+		var bid := parts[0]
+		if not by_beast.has(bid):
+			by_beast[bid] = []
+		by_beast[bid].append(int(parts[1]))
+
+	var ok_count := 0
+	var total_awaken := 0
+	var total_beast := 0
+	var fail_parts := []
+	for bid in by_beast.keys():
+		var idxs = by_beast[bid]
+		idxs.sort()
+		idxs.reverse()
+		for idx in idxs:
+			var res: Dictionary = data.beast_system.recycle_beast(bid, idx)
+			if res.get("ok", false):
+				ok_count += 1
+				total_awaken += int(res.get("awaken_fruit", 0))
+				total_beast += int(res.get("beast_fruit", 0))
+			else:
+				fail_parts.append(str(res.get("reason", "回收失败")))
+
+	if ok_count <= 0:
+		# 全失败也原地刷新并剔除失效key；不能只飘字不重建，否则旧卡片会继续可选
+		_prune_recycle_selection()
+		_refresh_beast_recycle_panel()
+		var fail_msg := "未知原因"
+		if not fail_parts.is_empty():
+			fail_msg = "；".join(fail_parts)
+		c._show_stage_hint("回收失败：" + fail_msg)
+		return
+
+	var msg := "回收珍兽×%d：觉醒果×%d / 珍兽果×%d" % [ok_count, total_awaken, total_beast]
+	if not fail_parts.is_empty():
+		msg += "（失败：%s）" % "；".join(fail_parts)
+	c._show_stage_hint(msg)
+
+	_recycle_selected_keys.clear()
+	if _recycle_confirm_btn:
+		_recycle_confirm_btn.disabled = true
+	# 【修】2026-09-18 先原地刷新回收网格，再刷新主界面/全局UI；旧卡片立即remove_child，避免queue_free延迟造成“回收后还在”
+	_refresh_beast_recycle_panel()
 	update_beast_page()
 	c.update_bag_list()
 	c.update_hero_panel()
 	c.update_all_ui()
+
+# 【新增】回收成功后原地刷新卡片网格（不关窗口）
+func _refresh_beast_recycle_panel():
+	if not c.has_node("BeastRecyclePanel"): return
+	_prune_recycle_selection()
+	var panel = c.get_node("BeastRecyclePanel")
+	# 【修】2026-09-18 弹窗真实结构是 panel -> vbox(未命名) -> RecycleScroll -> RecycleGrid；
+	#        NodePath "RecycleScroll/RecycleGrid" 要求逐级直接子节点，会找不到而不刷新；改递归 find_child。
+	var grid = panel.find_child("RecycleGrid", true, false)
+	if grid:
+		_fill_beast_recycle_cards(grid)
+
+func _close_beast_recycle_panel():
+	_recycle_selected_keys.clear()
+	_recycle_confirm_btn = null
+	c._safe_close("BeastRecyclePanel")
 
 func _on_hero_equipped_beast(hero_id: String, beast_id: String, instance_index: int):
 	data.equip_beast(hero_id, beast_id, instance_index)

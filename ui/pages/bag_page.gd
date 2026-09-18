@@ -33,6 +33,9 @@ const COMPOSE_RECIPES: Array = [
 	{"output": "hero_token", "material": "can_tie", "ratio": 10},
 	{"output": "kaishan_ling", "material": "kaishan_yin", "ratio": 20},
 	{"output": "zongjiang_ling", "material": "zongjiang_yin", "ratio": 20},
+	# 【新增】2026-09-18 刻钟卡×60→小时卡；无双精魄×20→珍兽白泽（白泽同驺虞走珍兽产出分支）
+	{"output": "hour_card", "material": "kezhong_card", "ratio": 60},
+	{"output": "bai_ze", "material": "wushuang_jingpo", "ratio": 20, "output_type": "beast"},
 	# 【新增】2026-09-16 无双兽骨×40→珍兽驺虞（产出是珍兽不是道具：格子/弹窗走 output_type 分支）
 	{"output": "zou_yu", "material": "wushuang_gugu", "ratio": 40, "output_type": "beast"},
 ]
@@ -252,6 +255,14 @@ func _on_detail_use(item_id: String, qty: int, popup: Control):
 		"suit_frag_box":
 			popup.queue_free()
 			c.show_suit_frag_box_selector(item_id, qty)
+		"zixuan_baoyin":
+			# 【新增】2026-09-18 自选宝印：N连开扣N个，二选一得N个所选
+			popup.queue_free()
+			_show_zixuan_baoyin_selector(qty, false)
+		"zixuan_baoyin_fragment":
+			# 【新增】2026-09-18 自选宝印碎片：N连开扣N个，二选一得N个所选
+			popup.queue_free()
+			_show_zixuan_baoyin_selector(qty, true)
 		"treasure_box":   # 【新增】珍宝箱：五种商品×500随机
 			popup.queue_free()
 			_open_treasure_boxes(qty)
@@ -752,6 +763,45 @@ func _on_manhuang_box_pick(popup, item_id: String, qty: int):
 	c._show_stage_hint("获得【%s】×%d" % [data.ITEM_CONFIG.get(item_id, {}).get("name", item_id), 100 * qty])
 	c.update_bag_list()
 
+# 【新增】2026-09-18 自选宝印/自选宝印碎片选择器：N连开=扣N个盒子，二选一得N个所选
+func _show_zixuan_baoyin_selector(p_qty: int, is_fragment: bool):
+	var src_id := "baoyin_fragment" if is_fragment else "zixuan_baoyin"
+	var title := "自选宝印碎片（使用%d个）" % p_qty if is_fragment else "自选宝印（使用%d个）" % p_qty
+	var popup = c._create_base_popup(title, Vector2(420, 320))
+	var vbox = popup.get_child(0)
+	var hint = Label.new()
+	hint.text = "选择一种，获得 ×%d" % p_qty
+	hint.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	vbox.add_child(hint)
+	# 宝印二选一：开山印/宗匠印；碎片同理
+	var first_id := "kaishan_yin_fragment" if is_fragment else "kaishan_yin"
+	var second_id := "zongjiang_yin_fragment" if is_fragment else "zongjiang_yin"
+	for target_id in [first_id, second_id]:
+		var line = HBoxContainer.new()
+		line.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+		var lbl = Label.new()
+		lbl.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+		lbl.text = "%s ×%d" % [data.ITEM_CONFIG.get(target_id, {}).get("name", target_id), p_qty]
+		line.add_child(lbl)
+		var btn = Button.new()
+		btn.text = "选择"
+		btn.custom_minimum_size = Vector2(80, 40)
+		btn.pressed.connect(_on_zixuan_baoyin_pick.bind(popup, src_id, target_id, p_qty))
+		line.add_child(btn)
+		vbox.add_child(line)
+	c._add_ok_button(vbox, func(): popup.queue_free(), "关闭")
+	c.add_child(popup)
+
+# 【新增】2026-09-18 自选宝印确认：扣N个源道具，发N个所选目标
+func _on_zixuan_baoyin_pick(popup, src_id: String, target_id: String, qty: int):
+	if int(data.items.get(src_id, 0)) < qty:
+		c._show_stage_hint("%s不足！" % data.ITEM_CONFIG.get(src_id, {}).get("name", src_id))
+		return
+	data.items[src_id] -= qty
+	data.items[target_id] = int(data.items.get(target_id, 0)) + qty
+	popup.queue_free()
+	c._show_stage_hint("获得【%s】×%d" % [data.ITEM_CONFIG.get(target_id, {}).get("name", target_id), qty])
+	c.update_bag_list()
 
 # 【改】魂骨盒子选择器：带数量（同部位同品级 ×N）
 func _show_hungu_box_selector(p_qty: int):
