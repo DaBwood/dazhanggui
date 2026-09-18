@@ -10,10 +10,9 @@
 # 重建刷新模式：操作后整页重建；0.05s Timer 推进接待批次+刷文本（不重建保流畅）
 # ============================================================
 class_name TavernView
-extends RefCounted
+extends BaseView   # 【改】公共层下沉 ui/base_view.gd（2026-09-18 架构重构批次⑤）
 
-var c      # game_controller 根脚本引用
-var data: GameData   # 数据中枢（显式标注 GameData：让中枢字段被静态引用，消 UNUSED 提示，同 inn/clinic 先例）
+# c/data 引用、弹窗状态机（_popup_kind/_popup_id）由基类持有，此处不再声明
 
 var _tab: String = "main"              # 当前视图 main/餐饮/娱乐
 var _proj: Dictionary = {"餐饮": "", "娱乐": ""}   # 各区域当前选中项目（页签状态，切区保留）
@@ -22,29 +21,40 @@ var _jh_lbl: Label = null              # 叫号计数文本（主页）
 var _cd_lbl: Label = null              # 叫号恢复倒计时文本（主页）
 var _jar_lbl: Label = null             # 收益罐文本（主页）
 var _tq_lbl: Label = null              # 接待队列状态文本（主页）
-var _popup_kind: String = ""           # 当前打开的弹窗类别 info/facility
-var _popup_id: String = ""             # 当前弹窗对应的设施 id（facility 用）
+# _popup_kind/_popup_id 由基类 BaseView 持有（2026-09-18 架构重构批次⑤），此处不再声明
 
 func _init(p_c):
-	c = p_c
-	data = p_c.data
-
-func _close_node(node_name: String):
-	var n = c.get_node_or_null(node_name)
-	if n:
-		c.remove_child(n)
-		n.queue_free()
+	super(p_c)   # 【改】基类注入 c/data（2026-09-18 架构重构批次⑤）
+	_page_name = "TavernPage"
+	_popup_node_name = "TavernPopup"
+	_page_bg = "#33150f"   # 深酒红棕底（无素材期的代码配色，后续丢"红尘酒楼"图换底）
 
 func _sys() -> TavernSystem:
 	return data.tavern_system
 
 # ---------- 页面开关 ----------
 func show_tavern_view():
-	_close_node("TavernPage")
-	_close_node("TavernPopup")
+	show_view()
+
+func hide_tavern_view():
+	hide_view()
+
+# 【改】酒肆生命周期特殊，整体重写基类入口（2026-09-18 架构重构批次⑤）：
+# 打开=清弹窗状态+关页关弹窗+建页（基类 show_view 刻意不清状态是照顾 _refresh 重建链，酒肆惯例相反）；
+# 建页走 _build_page 而非基类 show_view 尾部——_build_page 不关弹窗节点，
+# 道具面板等"无状态弹窗"刷新重建页面后仍须可见（基类 show_view 会把它们一并关掉）
+func show_view():
 	_popup_kind = ""
 	_popup_id = ""
+	_close_node(_page_name)
+	_close_node(_popup_node_name)
 	_build_page()
+
+# 关闭=进出复位页签（原 hide_tavern_view 语义，同 clinic 惯例）+ 基类清理。
+# 基类比原实现多清 _popup_kind/_popup_id，无观测差异：下次 show 本就会清，页关期间无人读状态
+func hide_view():
+	_tab = "main"   # 下次进入回到主页（同 clinic 进出复位惯例）
+	super()
 
 # 仅重建页面不关弹窗：连升/连解锁时设施弹窗常驻原位刷新（_refresh 用）；进出酒肆才全关
 func _build_page():
@@ -64,11 +74,6 @@ func _build_page():
 	_timer.autostart = true
 	_timer.timeout.connect(_on_tick)
 	page.add_child(_timer)
-
-func hide_tavern_view():
-	_tab = "main"   # 下次进入回到主页（同 clinic 进出复位惯例）
-	_close_node("TavernPage")
-	_close_node("TavernPopup")
 
 func _switch_tab(t: String):
 	_tab = t
