@@ -20,10 +20,9 @@
 # 重建刷新模式：操作后整页重建（同医馆惯例）
 # ============================================================
 class_name DrugshopView
-extends RefCounted
+extends BaseView   # 【改】公共层下沉 ui/base_view.gd（2026-09-18 架构重构批次④）
 
-var c      # game_controller 根脚本引用
-var data: GameData   # 数据中枢（显式标注 GameData：让中枢字段被静态引用，消 UNUSED 提示，同 clinic_view 先例）
+# c/data 引用由基类持有，此处不再声明
 
 var _tab: String = "main"        # 当前视图 main/craft/recipe/ach
 var _timer: Timer = null         # 后台节拍定时器（0.5s）
@@ -37,42 +36,28 @@ var _serve_btn: Button = null    # 【新增】营业按钮引用（节拍里刷
 var _popup_rid: String = ""      # 当前打开的药方弹窗 id（升级后重建用）
 
 func _init(p_c):
-	c = p_c
-	data = p_c.data
-
-func _close_node(node_name: String):
-	var n = c.get_node_or_null(node_name)
-	if n:
-		c.remove_child(n)
-		n.queue_free()
+	super(p_c)   # 【改】基类注入 c/data（2026-09-18 架构重构批次④）
+	_page_name = "DrugshopPage"
+	_popup_node_name = "DrugshopPopup"
 
 func _sys() -> DrugshopSystem:
 	return data.drugshop_system
 
-# ---------- 页面开关 ----------
+# ---------- 页面开关（公共页骨架在 base_view.gd；薄封装保留 show_<key>_view 命名，controller VIEW_LIST 按 key 分发） ----------
 func show_drugshop_view():
-	_close_node("DrugshopPage")
-	_close_node("DrugshopPopup")
-	var page := Panel.new()
-	page.name = "DrugshopPage"
-	page.z_index = 35
-	page.position = Vector2.ZERO
-	page.size = c.get_viewport_rect().size
-	var bg := StyleBoxFlat.new()
-	bg.bg_color = Color("#1e1b2e")
-	page.add_theme_stylebox_override("panel", bg)
-	c.add_child(page)
-	_build(page)
-	# 后台节拍：0.5s 一次（推进计算队列 + 刷文本，不重建页面）
+	show_view()
+
+func hide_drugshop_view():
+	hide_view()
+
+# 【改】后台节拍挂在基类建页后的钩子（原 show_drugshop_view 尾部，2026-09-18 批次④）；
+# Timer 挂在 page 上，随关页 queue_free 自动销毁，hide 无需手动停
+func _after_build(page: Panel):
 	_timer = Timer.new()
 	_timer.wait_time = 0.5
 	_timer.autostart = true
 	_timer.timeout.connect(_on_tick)
 	page.add_child(_timer)
-
-func hide_drugshop_view():
-	_close_node("DrugshopPage")
-	_close_node("DrugshopPopup")
 
 func _on_tick():
 	# 推进计算队列（时间盒 2ms；病人恢复与结算解耦，互不阻塞）
@@ -328,24 +313,6 @@ func _show_medal_popup():
 		btn.pressed.connect(_on_medal_upgrade)
 		vb.add_child(btn)
 	c._add_ok_button(pvb, func(): _close_node("DrugshopMedalPopup"))
-
-# 按钮右上角内部红点（全玩法统一模板，同 winery_view._add_btn_dot）
-func _add_btn_dot(btn: Button, cond: bool):
-	var d := Label.new()
-	d.text = "●"
-	d.add_theme_color_override("font_color", Color("#e74c3c"))
-	d.add_theme_font_size_override("font_size", 14)
-	d.anchor_left = 1.0
-	d.anchor_right = 1.0
-	d.anchor_top = 0.0
-	d.anchor_bottom = 0.0
-	d.offset_left = -18
-	d.offset_right = -2
-	d.offset_top = 2
-	d.offset_bottom = 18
-	d.mouse_filter = Control.MOUSE_FILTER_IGNORE
-	d.visible = cond
-	btn.add_child(d)
 
 func _on_medal_upgrade():
 	var r := _sys().upgrade_medal()

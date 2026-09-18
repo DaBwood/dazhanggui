@@ -52,6 +52,7 @@ func show_view():
 	page.add_theme_stylebox_override("panel", bg)
 	c.add_child(page)
 	_build(page)
+	_after_build(page)   # 子类可选钩子：挂 Timer 等页面级附件（drugshop/tavern 用）
 
 # 关闭全屏页：清弹窗状态 + 关页面 + 关弹窗
 func hide_view():
@@ -78,7 +79,13 @@ func _rebuild_popup():
 	pass
 
 # 子类必须实现：构建页面内容（page 为铺满视口的 z35 Panel）
+@warning_ignore("unused_parameter")
 func _build(page: Panel):
+	pass
+
+# 子类可选重写：_build 之后的页面级附件（如后台节拍 Timer 挂在 page 上随关页自动销毁）
+@warning_ignore("unused_parameter")
+func _after_build(page: Panel):
 	pass
 
 # 按钮右上角内部红点（锚定右上，不依赖节点尺寸；全玩法统一模板，红点一律页内展示不穿透地图）
