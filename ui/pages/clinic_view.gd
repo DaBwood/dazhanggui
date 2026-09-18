@@ -9,10 +9,9 @@
 # 重建刷新模式：操作后整页重建；0.05s Timer 推进治疗批次+刷文本（不重建保流畅）
 # ============================================================
 class_name ClinicView
-extends RefCounted
+extends BaseView   # 【改】公共层下沉 ui/base_view.gd（2026-09-18 架构重构批次⑧）
 
-var c      # game_controller 根脚本引用
-var data: GameData   # 数据中枢（显式标注 GameData：让中枢字段被静态引用，消 UNUSED 提示，同 inn_view 先例）
+# c/data 引用由基类持有，此处不再声明
 
 var _tab: String = "main"        # 当前视图 main/patient/dept/illness
 var _timer: Timer = null         # 批处理/秒刷定时器（0.05s）
@@ -20,46 +19,31 @@ var _count_lbl: Label = null     # 病人数量文本
 var _cd_lbl: Label = null        # 恢复倒计时文本
 var _jar_lbl: Label = null       # 收益罐文本
 var _tq_lbl: Label = null        # 接诊队列状态文本
-var _popup_kind: String = ""     # 当前打开的弹窗类别 dept/illness（升级后重建用）
-var _popup_id: String = ""       # 当前弹窗对应的科室/病症 id
+# _popup_kind/_popup_id 由基类 BaseView 持有（2026-09-18 架构重构批次⑧），此处不再声明
 
 func _init(p_c):
-	c = p_c
-	data = p_c.data
-
-func _close_node(node_name: String):
-	var n = c.get_node_or_null(node_name)
-	if n:
-		c.remove_child(n)
-		n.queue_free()
+	super(p_c)   # 【改】基类注入 c/data（2026-09-18 架构重构批次⑧）
+	_page_name = "ClinicPage"
+	_popup_node_name = "ClinicPopup"
 
 func _sys() -> ClinicSystem:
 	return data.clinic_system
 
 # ---------- 页面开关 ----------
 func show_clinic_view():
-	_close_node("ClinicPage")
-	_close_node("ClinicPopup")
-	var page := Panel.new()
-	page.name = "ClinicPage"
-	page.z_index = 35
-	page.position = Vector2.ZERO
-	page.size = c.get_viewport_rect().size
-	var bg := StyleBoxFlat.new()
-	bg.bg_color = Color("#1e1b2e")
-	page.add_theme_stylebox_override("panel", bg)
-	c.add_child(page)
-	_build(page)
-	# 批处理定时器：0.05s 一次，每次最多跑 4ms（约5000+/秒，帧压力恒定）
+	show_view()
+
+func hide_clinic_view():
+	hide_view()
+
+# 【改】批处理定时器挂在基类建页后的钩子（原 show_clinic_view 尾部，2026-09-18 批次⑧）；
+# Timer 挂在 page 上，随关页 queue_free 自动销毁，hide 无需手动停
+func _after_build(page: Panel):
 	_timer = Timer.new()
 	_timer.wait_time = 0.05
 	_timer.autostart = true
 	_timer.timeout.connect(_on_tick)
 	page.add_child(_timer)
-
-func hide_clinic_view():
-	_close_node("ClinicPage")
-	_close_node("ClinicPopup")
 
 func _on_tick():
 	# 接诊队列批处理（时间盒 4ms，治完自然停；队列在页面外也随存档保留，重开页面继续治）
