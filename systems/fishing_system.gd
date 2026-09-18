@@ -23,6 +23,10 @@ extends RefCounted
 # GameData 中枢引用（不标注类型，避免类之间循环引用导致解析失败）
 var g
 
+# 【新增】钓鱼勋章：等级/累计钓鱼经验由本系统自持并随 get_save_data 落盘（其他钓鱼状态仍在 GameData 中枢）
+var medal_lv: int = 1
+var exp_total: int = 0
+
 # 品质顺延顺序（roll到的品质当前池无候选时按此顺序向下找）
 const QUALITY_ORDER: Array = ["极.无双", "无双", "传奇", "普通", "无"]   # 【改】新增极.无双档（最高档，顺延顺序龙头）
 
@@ -60,6 +64,8 @@ func load_save_data(s: Dictionary):
 	if s.has("fishing_fish_dev"): g.fishing_fish_dev = s.fishing_fish_dev.duplicate(true)
 	if s.has("fishing_dilong_spent"): g.fishing_dilong_spent = int(s.fishing_dilong_spent)     # 【新增】旧档缺字段保持0，不追溯
 	if s.has("fishing_chilong_spent"): g.fishing_chilong_spent = int(s.fishing_chilong_spent)   # 【新增】
+	if s.has("fishing_medal_lv"): medal_lv = clampi(int(s.fishing_medal_lv), 1, _medal_cfgs().size())
+	if s.has("fishing_medal_exp"): exp_total = maxi(0, int(s.fishing_medal_exp))
 
 # ============ 配置读取 ============
 # settings 数值段（缺项给默认值兜底）
@@ -71,6 +77,52 @@ func _setting_int(key: String, default_val: int) -> int:
 
 func _setting_float(key: String, default_val: float) -> float:
 	return float(_settings().get(key, default_val))
+
+# ============ 钓鱼勋章（2026-09-19：照药铺模型，累计钓鱼经验只作门槛） ============
+func _medal_cfgs() -> Array:
+	return g._fishing_configs.get("medals", [])
+
+func _medal_cfg(lv: int = -1) -> Dictionary:
+	if lv < 0:
+		lv = medal_lv
+	var arr: Array = _medal_cfgs()
+	if lv < 1 or lv > arr.size():
+		return {}
+	return arr[lv - 1]
+
+func get_medal_lv() -> int:
+	return medal_lv
+
+func get_medal_name() -> String:
+	return str(_medal_cfg().get("name", "钓鱼勋章"))
+
+func get_medal_shop_pct() -> float:
+	return float(_medal_cfg().get("shop_pct", 0.0))
+
+func get_refine_cap_bonus() -> int:
+	return int(_medal_cfg().get("refine_cap", 0))
+
+func get_next_medal_cfg() -> Dictionary:
+	return _medal_cfg(medal_lv + 1)
+
+func can_upgrade_medal() -> Dictionary:
+	var nxt: Dictionary = get_next_medal_cfg()
+	if nxt.is_empty():
+		return {"ok": false, "msg": "已达满级"}
+	if exp_total < int(nxt.get("need_exp", 0)):
+		return {"ok": false, "msg": "钓鱼经验不足"}
+	return {"ok": true}
+
+func upgrade_medal() -> Dictionary:
+	var chk: Dictionary = can_upgrade_medal()
+	if not chk.get("ok", false):
+		return chk
+	medal_lv = clampi(medal_lv + 1, 1, _medal_cfgs().size())
+	return {"ok": true}
+
+func add_fishing_medal_exp(quality: String) -> void:
+	var exp_map: Dictionary = g._fishing_configs.get("medal_exp_by_quality", {})
+	exp_total += int(exp_map.get(quality, exp_map.get("普通", 0)))
 
 # 当前钓点显示名（预留多钓点：按 location_id 查 locations 配置）
 func get_location_name(location_id: String = "pond") -> String:
@@ -242,6 +294,7 @@ func do_fishing(location_id: String = "pond") -> Dictionary:
 	# 计数类任务进度累计：只统计渔获（kind=fish），道具不计数
 	# putong_up=普通及以上品质；any=任意渔获
 	if fish.get("kind", "fish") == "fish":
+		add_fishing_medal_exp(quality)
 		for t in g.fishing_tasks:
 			var cfg = _get_task_cfg(t.get("id", ""))
 			if cfg.get("type", "") != "count": continue
@@ -578,7 +631,7 @@ func get_fish_skills(fish_id: String) -> Array:
 	var dev = get_fish_dev(fish_id)
 	var tier = int(dev.get("tier", 1))
 	var xp_need = int(cfg.get("skill_xp_per_level", 1500))
-	var max_lv = int(cfg.get("skill_max_level", 100))
+	var max_lv = int(cfg.get("skill_max_level", 100)) + get_refine_cap_bonus()
 	var list = []
 	var skills_cfg: Array = cfg.get("skills", [])
 	for i in range(skills_cfg.size()):
@@ -659,7 +712,7 @@ func feed_skill(fish_id: String, skill_index: int, mat: String) -> Dictionary:
 		return {"ok": false, "reason": "技能未解锁（需%d阶）" % int(sc.get("unlock_tier", 1))}
 	var key = str(skill_index)
 	var lv = int(dev.skills.get(key, 0))
-	var max_lv = int(cfg.get("skill_max_level", 100))
+	var max_lv = int(cfg.get("skill_max_level", 100)) + get_refine_cap_bonus()
 	if lv >= max_lv:
 		return {"ok": false, "reason": "技能已满级"}
 	var need = int(cfg.get("skill_xp_per_level", 1500))
@@ -698,7 +751,7 @@ func feed_skill_max(fish_id: String, skill_index: int) -> Dictionary:
 		return {"ok": false, "reason": "技能未解锁（需%d阶）" % int(sc.get("unlock_tier", 1))}
 	var key = str(skill_index)
 	var from_lv = int(dev.skills.get(key, 0))
-	var max_lv = int(cfg.get("skill_max_level", 100))
+	var max_lv = int(cfg.get("skill_max_level", 100)) + get_refine_cap_bonus()
 	if from_lv >= max_lv:
 		return {"ok": false, "reason": "技能已满级"}
 	var order = ["yu_shi", "无", "普通", "传奇"]   # 消耗顺序：便宜优先

@@ -105,6 +105,19 @@ func build_fishing_view(page, vbox):
 	dex_dot.name = "DexDot"
 	dex_wrap.add_child(dex_dot)
 
+	# 勋章按钮（固定样式入口；红点=钓鱼勋章可升级）
+	var medal_wrap = Control.new()
+	medal_wrap.custom_minimum_size = Vector2(110, 60)
+	var medal_btn = Button.new()
+	medal_btn.text = "勋章"
+	medal_btn.custom_minimum_size = Vector2(110, 60)
+	medal_btn.pressed.connect(_on_medal_btn)
+	medal_wrap.add_child(medal_btn)
+	var medal_dot = _make_red_dot()
+	medal_dot.name = "MedalDot"
+	medal_wrap.add_child(medal_dot)
+	op_box2.add_child(medal_wrap)
+
 	# 钓点按钮（按钮文本=当前钓点名，点击弹窗显示当前可钓渔获）
 	var loc_btn = Button.new()
 	loc_btn.name = "FishingLocBtn"
@@ -136,6 +149,101 @@ func _make_red_dot() -> ColorRect:
 	dot.position = Vector2(94, 2)
 	dot.visible = false
 	return dot
+
+# ============ 钓鱼勋章（固定勋章样式：入口【勋章】 -> 460×420勋章卡 -> 等级旁[?] -> 当前效果/进度/升级） ============
+func _on_medal_btn():
+	if c.has_node("FishingMedalPopup"):
+		c.get_node("FishingMedalPopup").queue_free()
+		return
+	_show_medal_popup()
+
+func _show_medal_popup():
+	var fs = data.fishing_system
+	var popup: PanelContainer = c._create_base_popup("勋章", Vector2(460, 420))
+	popup.name = "FishingMedalPopup"
+	popup.z_index = 40
+	c.add_child(popup)
+	var pvb: VBoxContainer = popup.get_child(0)
+	var card := PanelContainer.new()
+	var style := StyleBoxFlat.new()
+	style.bg_color = Color("#2a2640")
+	style.border_color = Color("#6a5f9e")
+	style.set_border_width_all(2)
+	style.set_corner_radius_all(6)
+	card.add_theme_stylebox_override("panel", style)
+	pvb.add_child(card)
+	var vb := VBoxContainer.new()
+	vb.add_theme_constant_override("separation", 4)
+	card.add_child(vb)
+	var head_row := HBoxContainer.new()
+	head_row.alignment = BoxContainer.ALIGNMENT_CENTER
+	head_row.add_theme_constant_override("separation", 6)
+	vb.add_child(head_row)
+	var head := Label.new()
+	head.text = "勋章：%s（%d级）" % [fs.get_medal_name(), fs.get_medal_lv()]
+	head.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	head.add_theme_font_size_override("font_size", 18)
+	head.add_theme_color_override("font_color", Color("#e6c07b"))
+	head_row.add_child(head)
+	var help_btn := Button.new()
+	help_btn.text = "?"
+	help_btn.custom_minimum_size = Vector2(24, 24)
+	help_btn.tooltip_text = "点击查看勋章规则"
+	help_btn.pressed.connect(_on_medal_help)
+	head_row.add_child(help_btn)
+	var effect := Label.new()
+	effect.text = "全部商铺赚速 +%d%%　精进技能等级上限 +%d" % [int(fs.get_medal_shop_pct() * 100), fs.get_refine_cap_bonus()]
+	effect.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	effect.add_theme_color_override("font_color", Color("#e6c07b"))
+	vb.add_child(effect)
+	var nxt: Dictionary = fs.get_next_medal_cfg()
+	if nxt.is_empty():
+		var max_lbl := Label.new()
+		max_lbl.text = "已满级"
+		max_lbl.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+		max_lbl.add_theme_color_override("font_color", Color("#9a93b8"))
+		vb.add_child(max_lbl)
+	else:
+		var need: int = int(nxt.get("need_exp", 0))
+		var next_lbl := Label.new()
+		next_lbl.text = "下一级需累计钓鱼经验 %s（当前 %s）" % [c.format_number(need), c.format_number(fs.exp_total)]
+		next_lbl.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+		next_lbl.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+		vb.add_child(next_lbl)
+		var bar := ProgressBar.new()
+		bar.min_value = 0.0
+		bar.max_value = maxf(1.0, float(need))
+		bar.value = minf(float(fs.exp_total), float(need))
+		bar.show_percentage = true
+		bar.custom_minimum_size = Vector2(410, 18)
+		vb.add_child(bar)
+		var next_effect := Label.new()
+		next_effect.text = "下级效果：全部商铺赚速 +%d%%　精进上限 +%d" % [int(float(nxt.get("shop_pct", 0.0)) * 100.0), int(nxt.get("refine_cap", 0))]
+		next_effect.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+		next_effect.add_theme_color_override("font_color", Color("#7ee787"))
+		vb.add_child(next_effect)
+		var up_btn := Button.new()
+		up_btn.text = "升级勋章"
+		up_btn.custom_minimum_size = Vector2(130, 38)
+		up_btn.disabled = not fs.can_upgrade_medal().get("ok", false)
+		up_btn.pressed.connect(_on_medal_upgrade)
+		vb.add_child(up_btn)
+	c._add_ok_button(pvb, func(): popup.queue_free(), "关闭")
+
+func _on_medal_help():
+	c._show_stage_hint("钓鱼勋章：普通鱼+5、优秀鱼+10、卓越鱼+30、传奇鱼+60、无双/极.无双鱼+100；累计经验只作门槛不消耗。")
+
+func _on_medal_upgrade():
+	var fs = data.fishing_system
+	var r: Dictionary = fs.upgrade_medal()
+	if not r.get("ok", false):
+		c._show_stage_hint(str(r.get("msg", "暂不可升级")))
+		return
+	c._show_stage_hint("勋章升级成功")
+	_refresh_dots()
+	if c.has_node("FishingMedalPopup"):
+		c.get_node("FishingMedalPopup").queue_free()
+		_show_medal_popup()
 
 # ============ 显示/隐藏 ============
 # 打开垂钓：隐藏闯荡主入口区和其他子视图，只留垂钓视图
@@ -190,6 +298,8 @@ func _refresh_dots():
 	if task_dot: task_dot.visible = fs.has_ready_task()
 	var dex_dot = view.find_child("DexDot", true, false)
 	if dex_dot: dex_dot.visible = fs.has_claimable_dex()
+	var medal_dot = view.find_child("MedalDot", true, false)
+	if medal_dot: medal_dot.visible = fs.can_upgrade_medal().get("ok", false)
 
 # ============ 钓鱼 ============
 # 点击钓鱼：调系统抛竿，结果显示在结果栏；触发任务/新图鉴时额外提示

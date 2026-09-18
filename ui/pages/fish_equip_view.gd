@@ -240,7 +240,7 @@ func _on_feed_btn(fish_id: String, skill_index: int):
 	feed_all_btn.custom_minimum_size = Vector2(100, 36)
 	var dev = fs.get_fish_dev(fish_id)
 	var cfg = fs._get_dev_cfg(fish_id)
-	var max_lv = int(cfg.get("skill_max_level", 100))
+	var max_lv = int(cfg.get("skill_max_level", 100)) + fs.get_refine_cap_bonus()
 	var has_mat = false
 	for m in mats:
 		if fs.get_fodder_count(m[0]) > 0:

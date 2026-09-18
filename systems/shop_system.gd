@@ -88,7 +88,7 @@ func get_shop_auto_income(shop_id: String) -> int:
 	var subtotal = base + staff
 	
 	# 总百分比（【新增】叠加宅院商铺卷二：店铺总赚速 +25%×卷二等级）
-	var bonus = 1.0 + get_global_bonus_percent() + hero_bonus + friend_shop_bonus + g.get_courtyard_shop_percent_bonus(shop_id) + g.guild_system.get_career_bonus(str(s.get("category", ""))) + g.clinic_system.get_category_bonus(str(s.get("category", ""))) + g.drugshop_system.get_medal_shop_pct() + g.winery_system.get_medal_shop_pct() + g.winery_system.get_workshop_career_pct(str(s.get("category", ""))) + g.miaoyin_system.get_medal_shop_pct()   # 【改】末项【新增】：医馆病症图鉴职业加成（读取式）+ 药铺勋章全体商铺赚速%（【修】2026-09-16 漏接导致升级勋章无加成无飘字）+ 酒坊勋章全体商铺赚速% + 酒坊流程职业加成（读取式）+ 妙音坊勋章全体商铺赚速%
+	var bonus = 1.0 + get_global_bonus_percent() + hero_bonus + friend_shop_bonus + g.get_courtyard_shop_percent_bonus(shop_id) + g.guild_system.get_career_bonus(str(s.get("category", ""))) + g.clinic_system.get_category_bonus(str(s.get("category", ""))) + g.drugshop_system.get_medal_shop_pct() + g.winery_system.get_medal_shop_pct() + g.winery_system.get_workshop_career_pct(str(s.get("category", ""))) + g.miaoyin_system.get_medal_shop_pct() + g.fishing_system.get_medal_shop_pct()   # 【改】末项【新增】：医馆病症图鉴职业加成（读取式）+ 药铺/酒坊/妙音坊/钓鱼勋章全体商铺赚速%（读取式）+ 酒坊流程职业加成
 	
 	
 	#返回最终赚速
