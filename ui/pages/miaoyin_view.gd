@@ -7,7 +7,8 @@
 class_name MiaoyinView
 extends BaseView
 
-var _tab: String = "home"   # home/buildings/satisfaction；新秀=批次③、选秀=批次④
+var _tab: String = "home"   # home/buildings/satisfaction/rookies；选秀=批次④
+var _rookie_filter: String = "all"   # 新秀页职业筛选：all 或 profession_id
 
 func _init(p_c):
 	super(p_c)
@@ -31,6 +32,9 @@ func _build(page: Panel):
 		return
 	if _tab == "satisfaction":
 		_build_satisfaction_page(page)
+		return
+	if _tab == "rookies":
+		_build_rookie_page(page)
 		return
 	var root := VBoxContainer.new()
 	root.anchor_left = 0.0
@@ -144,9 +148,9 @@ func _build(page: Panel):
 	b_rookie.text = "新秀"
 	b_rookie.custom_minimum_size = Vector2(82, 52)
 	b_rookie.size_flags_horizontal = Control.SIZE_EXPAND_FILL
-	b_rookie.pressed.connect(_show_future.bind("新秀"))
+	b_rookie.pressed.connect(_open_rookie_page)
 	bottom.add_child(b_rookie)
-	_add_btn_dot(b_rookie, false)
+	_add_btn_dot(b_rookie, _sys().has_rookie_attention())
 	var b_sat := Button.new()
 	b_sat.text = "满意度"
 	b_sat.custom_minimum_size = Vector2(82, 52)
@@ -451,6 +455,290 @@ func _build_satisfaction_page(page: Panel):
 			row.add_child(go)
 
 
+# ---------- 新秀子页（批次③：挚友=新秀；总览/详情/训练/入住；芳华待专项定稿后追加） ----------
+func _open_rookie_page():
+	_tab = "rookies"
+	close_popup()
+	_refresh()
+
+func _set_rookie_filter(prof_id: String):
+	_rookie_filter = prof_id
+	close_popup()
+	_refresh()
+
+func _rookie_card_attention(entry: Dictionary) -> bool:
+	return entry.get("can_train", false) or entry.get("can_checkin", false)
+
+func _build_rookie_page(page: Panel):
+	var root := _new_page_root(page)
+	_add_sub_header(root, "妙音坊新秀")
+	_ensure_rookie_shape_hint()
+	var filter_row := HBoxContainer.new()
+	filter_row.alignment = BoxContainer.ALIGNMENT_CENTER
+	filter_row.add_theme_constant_override("separation", 6)
+	root.add_child(filter_row)
+	var all_btn := Button.new()
+	all_btn.text = "全部"
+	all_btn.custom_minimum_size = Vector2(54, 32)
+	all_btn.disabled = _rookie_filter == "all"
+	all_btn.pressed.connect(_set_rookie_filter.bind("all"))
+	filter_row.add_child(all_btn)
+	for p in _sys().get_profession_list():
+		var pid: String = str(p.get("id", ""))
+		var b := Button.new()
+		b.text = str(p.get("name", pid))
+		b.custom_minimum_size = Vector2(54, 32)
+		b.disabled = _rookie_filter == pid
+		b.pressed.connect(_set_rookie_filter.bind(pid))
+		filter_row.add_child(b)
+	var scroll := ScrollContainer.new()
+	scroll.size_flags_vertical = Control.SIZE_EXPAND_FILL
+	scroll.horizontal_scroll_mode = ScrollContainer.SCROLL_MODE_DISABLED
+	root.add_child(scroll)
+	var list := VBoxContainer.new()
+	list.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	list.add_theme_constant_override("separation", 8)
+	scroll.add_child(list)
+	var ov: Dictionary = _sys().get_rookie_overview(_rookie_filter)
+	var housed: Array = ov.get("housed", [])
+	var unhoused: Array = ov.get("unhoused", [])
+	var summary := Label.new()
+	summary.text = "已入住 %d　未入住 %d　空居所 %d　入住免费" % [housed.size(), unhoused.size(), _sys().get_empty_residences().size()]
+	summary.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	summary.add_theme_color_override("font_color", Color("#bdb7d8"))
+	list.add_child(summary)
+	_add_rookie_section(list, "已入住", housed)
+	_add_rookie_section(list, "未入住", unhoused)
+
+func _ensure_rookie_shape_hint():
+	# 触一次新秀注册，避免总览首次打开为空
+	_sys().get_rookie_overview(_rookie_filter)
+
+func _add_rookie_section(list: VBoxContainer, title: String, entries: Array):
+	var sec := Label.new()
+	sec.text = "%s（%d）" % [title, entries.size()]
+	sec.add_theme_font_size_override("font_size", 18)
+	sec.add_theme_color_override("font_color", Color("#e6c07b"))
+	list.add_child(sec)
+	if entries.is_empty():
+		var empty := Label.new()
+		empty.text = "暂无"
+		empty.add_theme_color_override("font_color", Color("#bdb7d8"))
+		list.add_child(empty)
+		return
+	for e in entries:
+		var fid: String = str(e.get("fid", ""))
+		var b := Button.new()
+		b.custom_minimum_size = Vector2(0, 58)
+		b.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+		b.text = "%s　%s　Lv.%d\n居所：%s　服装：%d　经验 %s/%s" % [
+			str(e.get("name", fid)), str(e.get("prof_name", "")), int(e.get("lv", 1)),
+			str(e.get("house_name", "未入住")), int(e.get("costume_count", 0)),
+			c.format_number(int(e.get("exp", 0))), c.format_number(int(e.get("next_exp", 0)))]
+		b.pressed.connect(_show_rookie_popup.bind(fid))
+		list.add_child(b)
+		_add_btn_dot(b, _rookie_card_attention(e))
+
+func _show_rookie_popup(fid: String):
+	var r: Dictionary = _sys().get_rookie_entry(fid)
+	if r.is_empty():
+		return
+	close_popup()
+	_popup_kind = "rookie"
+	_popup_id = fid
+	var cfg: Dictionary = data.get_friend_config(fid)
+	var popup: PanelContainer = c._create_base_popup(str(cfg.get("name", fid)), Vector2(470, 560))
+	popup.name = _popup_node_name
+	popup.z_index = 40
+	c.add_child(popup)
+	var vb: VBoxContainer = popup.get_child(0)
+	var lv: int = int(r.get("lv", 1))
+	var cur_exp: int = int(r.get("exp", 0))
+	var next_exp: int = _sys().get_rookie_next_exp(lv)
+	var head := Label.new()
+	head.text = "%s　Lv.%d　服装 %d 件" % [_sys()._profession_name(str(r.get("prof", ""))), lv, _sys().get_rookie_costume_count(fid)]
+	head.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	head.add_theme_font_size_override("font_size", 16)
+	vb.add_child(head)
+	var house_txt := Label.new()
+	house_txt.text = "居所：%s" % (str(_sys().get_building_cfg(str(r.get("house", ""))).get("name", "未入住")) if str(r.get("house", "")) != "" else "未入住")
+	house_txt.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	house_txt.add_theme_color_override("font_color", Color("#bdb7d8"))
+	vb.add_child(house_txt)
+	var bar := ProgressBar.new()
+	bar.min_value = 0.0
+	bar.max_value = float(next_exp)
+	bar.value = minf(float(cur_exp), float(next_exp))
+	bar.show_percentage = true
+	bar.custom_minimum_size = Vector2(420, 18)
+	vb.add_child(bar)
+	var attrs: Dictionary = _sys().get_rookie_attrs(fid)
+	var attr_lbl := Label.new()
+	var attr_parts: Array = []
+	for pid in attrs.keys():
+		attr_parts.append("%s %s%d" % [_sys()._profession_name(pid), str(attrs[pid].get("tag", "")), int(attrs[pid].get("attr", 0))])
+	attr_lbl.text = "　".join(attr_parts)
+	attr_lbl.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	attr_lbl.add_theme_font_size_override("font_size", 13)
+	attr_lbl.add_theme_color_override("font_color", Color("#bdb7d8"))
+	vb.add_child(attr_lbl)
+	var train_tip := Label.new()
+	train_tip.text = "训练：仅吃本职业五档应援物；同步升1级=高阶优先直到升级或材料耗尽"
+	train_tip.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	train_tip.add_theme_font_size_override("font_size", 12)
+	train_tip.add_theme_color_override("font_color", Color("#bdb7d8"))
+	vb.add_child(train_tip)
+	var scroll := ScrollContainer.new()
+	scroll.custom_minimum_size = Vector2(0, 190)
+	scroll.horizontal_scroll_mode = ScrollContainer.SCROLL_MODE_DISABLED
+	vb.add_child(scroll)
+	var rows := VBoxContainer.new()
+	rows.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	rows.add_theme_constant_override("separation", 4)
+	scroll.add_child(rows)
+	for it in _sys().get_rookie_support_items(fid):
+		var sid: String = str(it.get("id", ""))
+		var row := HBoxContainer.new()
+		row.alignment = BoxContainer.ALIGNMENT_CENTER
+		row.add_theme_constant_override("separation", 6)
+		rows.add_child(row)
+		var name_lbl := Label.new()
+		name_lbl.text = "%s（+%d经验）" % [str(it.get("name", sid)), int(it.get("exp", 0))]
+		name_lbl.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+		row.add_child(name_lbl)
+		var own_lbl := Label.new()
+		own_lbl.text = "×%d" % int(it.get("owned", 0))
+		own_lbl.custom_minimum_size = Vector2(54, 28)
+		row.add_child(own_lbl)
+	var btns := HBoxContainer.new()
+	btns.alignment = BoxContainer.ALIGNMENT_CENTER
+	btns.add_theme_constant_override("separation", 8)
+	vb.add_child(btns)
+	var house_btn := Button.new()
+	house_btn.text = "住所"
+	house_btn.custom_minimum_size = Vector2(74, 34)
+	house_btn.pressed.connect(_show_house_popup.bind(fid))
+	btns.add_child(house_btn)
+	var up_btn := Button.new()
+	up_btn.text = "升一级"
+	up_btn.custom_minimum_size = Vector2(76, 34)
+	up_btn.pressed.connect(_on_train_level_up.bind(fid))
+	btns.add_child(up_btn)
+	var sync_btn := Button.new()
+	sync_btn.text = "同步升1级"
+	sync_btn.custom_minimum_size = Vector2(96, 34)
+	sync_btn.pressed.connect(_on_train_sync.bind(fid))
+	btns.add_child(sync_btn)
+	var close_btn := Button.new()
+	close_btn.text = "关闭"
+	close_btn.custom_minimum_size = Vector2(74, 34)
+	close_btn.pressed.connect(close_popup)
+	btns.add_child(close_btn)
+
+func _on_train_item(fid: String, sid: String, count: int):
+	var r: Dictionary = _sys().train_rookie(fid, sid, count)
+	if not r.get("ok", false):
+		c._show_stage_hint(str(r.get("msg", "训练失败")))
+		return
+	c._show_stage_hint("训练成功，经验 +%d" % int(r.get("exp", 0)))
+	c.update_all_ui()
+	_refresh()
+
+func _on_train_level_up(fid: String):
+	var r: Dictionary = _sys().train_rookie_level_up_once(fid)
+	if not r.get("ok", false):
+		c._show_stage_hint(str(r.get("msg", "升级失败")))
+		return
+	c._show_stage_hint("升级成功")
+	c.update_all_ui()
+	_refresh()
+
+func _on_train_sync(fid: String):
+	var r: Dictionary = _sys().train_rookie_until_level_up(fid)
+	if not r.get("ok", false):
+		c._show_stage_hint(str(r.get("msg", "训练失败")))
+		return
+	if r.get("lv_up", false):
+		c._show_stage_hint("升级成功")
+	else:
+		c._show_stage_hint("已消耗材料，但未升级")
+	c.update_all_ui()
+	_refresh()
+
+func _show_house_popup(fid: String):
+	var r: Dictionary = _sys().get_rookie_entry(fid)
+	if r.is_empty():
+		return
+	close_popup()
+	_popup_kind = "house"
+	_popup_id = fid
+	var cfg: Dictionary = data.get_friend_config(fid)
+	var popup: PanelContainer = c._create_base_popup("安排住所 - " + str(cfg.get("name", fid)), Vector2(520, 520))
+	popup.name = _popup_node_name
+	popup.z_index = 40
+	c.add_child(popup)
+	var vb: VBoxContainer = popup.get_child(0)
+	var tip := Label.new()
+	tip.text = "入住免费；每职业最多入住%d人；替换会把原住客迁出" % MiaoyinSystem.ROOKIE_PROF_CAP
+	tip.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	tip.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+	tip.add_theme_font_size_override("font_size", 12)
+	tip.add_theme_color_override("font_color", Color("#bdb7d8"))
+	vb.add_child(tip)
+	var scroll := ScrollContainer.new()
+	scroll.custom_minimum_size = Vector2(0, 330)
+	scroll.horizontal_scroll_mode = ScrollContainer.SCROLL_MODE_DISABLED
+	vb.add_child(scroll)
+	var rows := VBoxContainer.new()
+	rows.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	rows.add_theme_constant_override("separation", 6)
+	scroll.add_child(rows)
+	var cur_house: String = str(r.get("house", ""))
+	for card in _sys().get_residence_cards():
+		var bid: String = str(card.get("bid", ""))
+		var row := HBoxContainer.new()
+		row.alignment = BoxContainer.ALIGNMENT_CENTER
+		row.add_theme_constant_override("separation", 8)
+		rows.add_child(row)
+		var name_lbl := Label.new()
+		name_lbl.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+		name_lbl.text = "%s　Lv.%d　应援 %d/分" % [str(card.get("name", bid)), int(card.get("level", 0)), int(card.get("yyw_per_min", 0))]
+		row.add_child(name_lbl)
+		var occ_lbl := Label.new()
+		occ_lbl.custom_minimum_size = Vector2(96, 30)
+		occ_lbl.text = str(card.get("occupant_name", "")) if str(card.get("occupant", "")) != "" else "空"
+		row.add_child(occ_lbl)
+		var go := Button.new()
+		go.custom_minimum_size = Vector2(70, 32)
+		if bid == cur_house:
+			go.text = "当前"
+			go.disabled = true
+		elif str(card.get("occupant", "")) == "":
+			go.text = "入住"
+			go.disabled = not _sys().can_checkin_rookie(fid, bid).get("ok", false)
+		else:
+			go.text = "替换"
+			go.disabled = not _sys().can_checkin_rookie(fid, bid).get("ok", false)
+		if go.disabled:
+			go.tooltip_text = str(_sys().can_checkin_rookie(fid, bid).get("msg", ""))
+		go.pressed.connect(_on_checkin.bind(fid, bid))
+		row.add_child(go)
+	var close_btn := Button.new()
+	close_btn.text = "关闭"
+	close_btn.custom_minimum_size = Vector2(100, 34)
+	close_btn.pressed.connect(close_popup)
+	vb.add_child(close_btn)
+
+func _on_checkin(fid: String, bid: String):
+	var r: Dictionary = _sys().checkin_rookie(fid, bid)
+	if not r.get("ok", false):
+		c._show_stage_hint(str(r.get("msg", "入住失败")))
+		return
+	c._show_stage_hint(str(r.get("msg", "入住成功")))
+	c.update_all_ui()
+	_refresh()
+
+
 func _rebuild_popup():
 	if _popup_kind == "medal":
 		_show_medal_popup()
@@ -458,6 +746,10 @@ func _rebuild_popup():
 		_show_accel_popup()
 	elif _popup_kind == "building" and _popup_id != "":
 		_show_building_popup(_popup_id)
+	elif _popup_kind == "rookie" and _popup_id != "":
+		_show_rookie_popup(_popup_id)
+	elif _popup_kind == "house" and _popup_id != "":
+		_show_house_popup(_popup_id)
 
 # ---------- 弹窗：勋章（15 级全表；繁荣度=应援币总产出/分；全部商铺赚速 +100%×级） ----------
 func _show_medal_popup():

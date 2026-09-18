@@ -26,6 +26,12 @@ var audition: Dictionary = {"stage": 1}              # 选秀关卡（批次④�
 # 六配置分表缓存：buildings 由 GameData SYSTEM_LIST 直挂 _miaoyin_configs，其余五张懒加载缓存
 var _extra_cfg: Dictionary = {}
 
+# 暖机保底（2026-09-18 用户拍板A）：新档/老档死结存档自动免费开 1 级，避免“无产出→无应援币→无法升级”死结
+const BOOTSTRAP_FACILITIES := [
+	{"bid": "canting", "fac_idx": 0},     # 餐厅 / 1号餐桌：功能建筑，提供缘分物轨
+	{"bid": "cuizhu_ju", "fac_idx": 0},   # 翠竹居 / 床：居住建筑，提供应援物轨
+]
+
 const EXTRA_CFG_PATHS := {
 	"professions": "res://data/miaoyin_professions.json",
 	"support_table": "res://data/miaoyin_support_table.json",
@@ -107,6 +113,30 @@ func _init_state() -> void:
 			var arr2: Array = buildings[bid]
 			for i in range(arr2.size()):
 				arr2[i] = clampi(int(arr2[i]), 0, get_facility_max_lv())
+	_bootstrap_deadlock_if_needed()
+	_ensure_rookies()
+
+# 暖机保底：所有建筑设施全 0、且应援币/收益罐都无存量时，免费开 BOOTSTRAP_FACILITIES 各 1 级
+# 只在形状初始化时检查；开出 1 级后后续不会再触发，不送可自由支配应援币，保留最低升级节奏
+func _bootstrap_deadlock_if_needed() -> void:
+	var has_level: bool = false
+	for bid in buildings.keys():
+		if get_building_level(str(bid)) > 0:
+			has_level = true
+			break
+	if has_level or yyb > 0.0 or int(floor(float(jar.get("yyb", 0.0)))) > 0:
+		return
+	for sid in get_support_ids():
+		if int(floor(float(jar.get("yyw", {}).get(sid, 0.0)))) > 0:
+			return
+	for fid in get_flower_ids():
+		if int(floor(float(jar.get("yyf", {}).get(fid, 0.0)))) > 0:
+			return
+	for spec in BOOTSTRAP_FACILITIES:
+		var bid: String = str(spec.get("bid", ""))
+		var idx: int = int(spec.get("fac_idx", 0))
+		if buildings.has(bid) and idx >= 0 and idx < (buildings[bid] as Array).size():
+			(buildings[bid] as Array)[idx] = maxi(1, int((buildings[bid] as Array)[idx]))
 
 func _new_jar() -> Dictionary:
 	return {"last": int(Time.get_unix_time_from_system()), "yyb": 0.0, "yyw": {}, "yyf": {}}
@@ -402,9 +432,33 @@ func get_satisfaction_settings() -> Dictionary:
 	return _extra("satisfaction").get("settings", {})
 
 func get_opinion_day() -> String:
-	# 设计口径为每日 12:00 刷新；这里按本地日期归并，跨天首次访问刷新，避免存档写入过于频繁
+	# 严格按本地每日 12:00 切档：12:00 前仍算前一天，12:00 及以后算当天
 	var dt: Dictionary = Time.get_datetime_dict_from_system()
-	return "%04d-%02d-%02d" % [int(dt.get("year", 1970)), int(dt.get("month", 1)), int(dt.get("day", 1))]
+	if int(dt.get("hour", 0)) >= int(get_satisfaction_settings().get("daily_refresh_hour", 12)):
+		return _format_opinion_day(int(dt.get("year", 1970)), int(dt.get("month", 1)), int(dt.get("day", 1)))
+	var y: int = int(dt.get("year", 1970))
+	var m: int = int(dt.get("month", 1))
+	var d: int = int(dt.get("day", 1)) - 1
+	if d < 1:
+		m -= 1
+		if m < 1:
+			m = 12
+			y -= 1
+		d = _days_in_month(y, m)
+	return _format_opinion_day(y, m, d)
+
+func _format_opinion_day(y: int, m: int, d: int) -> String:
+	return "%04d-%02d-%02d" % [y, m, d]
+
+func _days_in_month(y: int, m: int) -> int:
+	match m:
+		1, 3, 5, 7, 8, 10, 12:
+			return 31
+		4, 6, 9, 11:
+			return 30
+		2:
+			return 29 if ((y % 4 == 0 and y % 100 != 0) or y % 400 == 0) else 28
+	return 30
 
 func _housed_rookie_entries() -> Array:
 	var out: Array = []
@@ -699,6 +753,364 @@ func _fmt_num(n: int) -> String:
 	if n >= 10000:
 		return "%.2f万" % (float(n) / 10000.0)
 	return str(n)
+
+# ============ 新秀系统（批次③：挚友=新秀；现有 category 字段弃用，prof/good 按挚友 id 稳定注册） ============
+const ROOKIE_LEVEL_EXP_BASE := 1200.0   # 升级经验=1200×目标等级²（目标=当前等级+1，exp 为当前级内进度）
+const CHECKIN_SUPPORT_COST := 0         # 【改】2026-09-18 用户拍板：入住免费，不消耗任意应援物
+const ROOKIE_PROF_CAP := 4              # 每职业已入住上限 4 人（共20=20栋居住建筑）
+
+func _profession_ids() -> Array:
+	var ids: Array = []
+	for p in get_profession_list():
+		ids.append(str(p.get("id", "")))
+	return ids
+
+func _profession_name(prof_id: String) -> String:
+	for p in get_profession_list():
+		if str(p.get("id", "")) == prof_id:
+			return str(p.get("name", prof_id))
+	return prof_id
+
+func _stable_prof_id(friend_id: String) -> String:
+	var ids: Array = _profession_ids()
+	if ids.is_empty():
+		return ""
+	return str(ids[abs(friend_id.hash()) % ids.size()])
+
+func _stable_good_id(friend_id: String, prof_id: String) -> String:
+	var ids: Array = _profession_ids()
+	if ids.size() <= 1:
+		return ""
+	var idx: int = ids.find(prof_id)
+	var off: int = 1 + abs((friend_id + "_good").hash()) % (ids.size() - 1)
+	return str(ids[(idx + off) % ids.size()])
+
+func _ensure_rookies() -> void:
+	for fid in g.friends.keys():
+		var friend_id: String = str(fid)
+		if not rookies.has(friend_id):
+			var prof: String = _stable_prof_id(friend_id)
+			rookies[friend_id] = {"lv": 1, "exp": 0, "prof": prof, "good": _stable_good_id(friend_id, prof), "house": ""}
+		else:
+			var r: Dictionary = rookies[friend_id]
+			if not (r is Dictionary):
+				rookies[friend_id] = {"lv": 1, "exp": 0, "prof": _stable_prof_id(friend_id), "good": _stable_good_id(friend_id, _stable_prof_id(friend_id)), "house": ""}
+				continue
+			r["lv"] = maxi(1, int(r.get("lv", 1)))
+			r["exp"] = maxi(0, int(r.get("exp", 0)))
+			if str(r.get("prof", "")) == "":
+				r["prof"] = _stable_prof_id(friend_id)
+			if str(r.get("good", "")) == "":
+				r["good"] = _stable_good_id(friend_id, str(r.get("prof", "")))
+			var house: String = str(r.get("house", ""))
+			if house != "":
+				var bcfg: Dictionary = get_building_cfg(house)
+				if bcfg.is_empty() or str(bcfg.get("type", "")) != "residence" or not is_building_unlocked(bcfg):
+					r["house"] = ""
+			else:
+				r["house"] = ""
+
+func get_rookie_entry(friend_id: String) -> Dictionary:
+	_ensure_rookies()
+	return rookies.get(friend_id, {})
+
+func get_rookie_costume_count(friend_id: String) -> int:
+	# 挚友服装当前系统为 copies 计数；展示“已兑换服装数”。若后续朋友服装改 base/extra 轨，再按 base 求和替换这里
+	var n: int = 0
+	for cfg in g.costume_system.get_friend_costume_cfgs(friend_id):
+		if g.costume_system.get_friend_cos_copies(friend_id, str(cfg.get("id", ""))) > 0:
+			n += 1
+	return n
+
+func get_rookie_next_exp(lv: int) -> int:
+	return int(ROOKIE_LEVEL_EXP_BASE * pow(float(lv + 1), 2.0))
+
+func _add_rookie_exp(r: Dictionary, add_exp: int) -> void:
+	r["exp"] = int(r.get("exp", 0)) + add_exp
+	while int(r["exp"]) >= get_rookie_next_exp(int(r.get("lv", 1))):
+		r["exp"] = int(r["exp"]) - get_rookie_next_exp(int(r.get("lv", 1)))
+		r["lv"] = int(r.get("lv", 1)) + 1
+
+func get_rookie_main_attr(lv: int) -> int:
+	return 90 + 10 * lv
+
+func get_rookie_good_attr(lv: int) -> int:
+	return 45 + 5 * lv
+
+func get_rookie_bad_attr(lv: int) -> int:
+	return int(round(float(lv) * 5.0 / 3.0))
+
+func get_rookie_attrs(friend_id: String) -> Dictionary:
+	var r: Dictionary = get_rookie_entry(friend_id)
+	var out: Dictionary = {}
+	var prof: String = str(r.get("prof", ""))
+	var good: String = str(r.get("good", ""))
+	var lv: int = int(r.get("lv", 1))
+	for pid in _profession_ids():
+		if pid == prof:
+			out[pid] = {"attr": get_rookie_main_attr(lv), "tag": "优"}
+		elif pid == good:
+			out[pid] = {"attr": get_rookie_good_attr(lv), "tag": "良"}
+		else:
+			out[pid] = {"attr": get_rookie_bad_attr(lv), "tag": "差"}
+	return out
+
+func get_rookie_support_items(friend_id: String) -> Array:
+	var r: Dictionary = get_rookie_entry(friend_id)
+	var prof: String = str(r.get("prof", ""))
+	var out: Array = []
+	for p in get_profession_list():
+		if str(p.get("id", "")) != prof:
+			continue
+		for it in p.get("support_items", []):
+			var sid: String = str(it.get("id", ""))
+			out.append({"id": sid, "name": str(it.get("name", sid)), "exp": int(it.get("exp", 0)), "owned": int(yyw.get(sid, 0))})
+	return out
+
+func train_rookie(friend_id: String, support_id: String, count: int = 1) -> Dictionary:
+	var r: Dictionary = get_rookie_entry(friend_id)
+	if r.is_empty():
+		return {"ok": false, "msg": "新秀不存在"}
+	var item: Dictionary = {}
+	for it in get_rookie_support_items(friend_id):
+		if str(it.get("id", "")) == support_id:
+			item = it
+	if item.is_empty():
+		return {"ok": false, "msg": "不是该职业应援物"}
+	if count <= 0 or int(yyw.get(support_id, 0)) < count:
+		return {"ok": false, "msg": "应援物不足"}
+	yyw[support_id] = int(yyw.get(support_id, 0)) - count
+	_add_rookie_exp(r, int(item.get("exp", 0)) * count)
+	return {"ok": true, "count": count, "exp": int(item.get("exp", 0)) * count}
+
+# 升一级：只在本职业材料总经验足够升1级时消耗；不足则一颗都不扣（高经验优先，尾数自然进下一级进度）
+func train_rookie_level_up_once(friend_id: String) -> Dictionary:
+	var r: Dictionary = get_rookie_entry(friend_id)
+	if r.is_empty():
+		return {"ok": false, "msg": "新秀不存在"}
+	var before_lv: int = int(r.get("lv", 1))
+	_add_rookie_exp(r, 0)
+	if int(r.get("lv", 1)) > before_lv:
+		return {"ok": true, "lv_up": true, "msg": "已升级"}
+	var need: int = get_rookie_next_exp(int(r.get("lv", 1))) - int(r.get("exp", 0))
+	var total_exp: int = 0
+	for it in get_rookie_support_items(friend_id):
+		total_exp += int(it.get("owned", 0)) * int(it.get("exp", 0))
+	if total_exp < need:
+		return {"ok": false, "msg": "材料不足，未消耗"}
+	var used_exp: int = 0
+	for exp_val in [100, 75, 50, 25, 1]:
+		for it in get_rookie_support_items(friend_id):
+			if int(it.get("exp", 0)) != int(exp_val):
+				continue
+			var sid: String = str(it.get("id", ""))
+			while used_exp < need and int(yyw.get(sid, 0)) > 0:
+				yyw[sid] = int(yyw.get(sid, 0)) - 1
+				used_exp += int(exp_val)
+		if used_exp >= need:
+			break
+	_add_rookie_exp(r, used_exp)
+	return {"ok": true, "lv_up": int(r.get("lv", 1)) > before_lv, "exp": used_exp}
+
+# 同步升1级：五档应援物按高经验优先批量抵扣，直到升1级或材料耗尽
+func train_rookie_until_level_up(friend_id: String) -> Dictionary:
+	var r: Dictionary = get_rookie_entry(friend_id)
+	if r.is_empty():
+		return {"ok": false, "msg": "新秀不存在"}
+	var before_lv: int = int(r.get("lv", 1))
+	_add_rookie_exp(r, 0)
+	if int(r.get("lv", 1)) > before_lv:
+		return {"ok": true, "lv_up": true, "msg": "已升级"}
+	var need: int = get_rookie_next_exp(int(r.get("lv", 1))) - int(r.get("exp", 0))
+	var used_exp: int = 0
+	var exps: Array = [100, 75, 50, 25, 1]
+	for exp_val in exps:
+		for it in get_rookie_support_items(friend_id):
+			if int(it.get("exp", 0)) != int(exp_val):
+				continue
+			var sid: String = str(it.get("id", ""))
+			var can_use: int = min(int(yyw.get(sid, 0)), int(ceil(float(max(0, need - used_exp)) / float(exp_val))))
+			if can_use <= 0:
+				continue
+			yyw[sid] = int(yyw.get(sid, 0)) - can_use
+			used_exp += can_use * int(exp_val)
+			if used_exp >= need:
+				break
+		if used_exp >= need:
+			break
+	if used_exp <= 0:
+		return {"ok": false, "msg": "没有可用应援物"}
+	_add_rookie_exp(r, used_exp)
+	if int(r.get("lv", 1)) > before_lv:
+		return {"ok": true, "lv_up": true, "exp": used_exp}
+	return {"ok": true, "lv_up": false, "exp": used_exp, "msg": "材料不足，未升级"}
+
+func can_rookie_train(friend_id: String) -> bool:
+	var r: Dictionary = get_rookie_entry(friend_id)
+	if r.is_empty():
+		return false
+	if int(r.get("exp", 0)) >= get_rookie_next_exp(int(r.get("lv", 1))):
+		return true
+	for it in get_rookie_support_items(friend_id):
+		if int(it.get("owned", 0)) > 0:
+			return true
+	return false
+
+func get_support_total() -> int:
+	var n: int = 0
+	for sid in get_support_ids():
+		n += int(yyw.get(sid, 0))
+	return n
+
+func _consume_any_support(cost: int) -> Dictionary:
+	var left: int = cost
+	var used: Dictionary = {}
+	for sid in get_support_ids():
+		if left <= 0:
+			break
+		var have: int = int(yyw.get(sid, 0))
+		if have <= 0:
+			continue
+		var take: int = mini(have, left)
+		yyw[sid] = have - take
+		used[sid] = take
+		left -= take
+	if left > 0:
+		return {"ok": false, "msg": "任意应援物不足（需%d个）" % cost, "used": used, "left": left}
+	return {"ok": true, "used": used}
+
+func get_house_occupant(bid: String) -> String:
+	for fid in rookies.keys():
+		var r: Dictionary = rookies.get(fid, {})
+		if str(r.get("house", "")) == bid:
+			return str(fid)
+	return ""
+
+func get_empty_residences() -> Array:
+	var out: Array = []
+	for b in get_building_list():
+		var bid: String = str(b.get("id", ""))
+		if str(b.get("type", "")) == "residence" and is_building_unlocked(b) and get_house_occupant(bid) == "":
+			out.append(bid)
+	return out
+
+func get_housed_count_by_prof(prof: String, exclude_fid: String = "", exclude_occupant: String = "") -> int:
+	var n: int = 0
+	for fid in rookies.keys():
+		if str(fid) == exclude_fid or str(fid) == exclude_occupant:
+			continue
+		var r: Dictionary = rookies.get(fid, {})
+		if str(r.get("house", "")) != "" and str(r.get("prof", "")) == prof:
+			n += 1
+	return n
+
+func can_checkin_rookie(friend_id: String, bid: String = "") -> Dictionary:
+	var r: Dictionary = get_rookie_entry(friend_id)
+	if r.is_empty():
+		return {"ok": false, "msg": "新秀不存在"}
+	if CHECKIN_SUPPORT_COST > 0 and get_support_total() < CHECKIN_SUPPORT_COST:
+		return {"ok": false, "msg": "任意应援物不足（需%d个）" % CHECKIN_SUPPORT_COST}
+	var target_bid: String = bid
+	if target_bid == "":
+		var empty: Array = get_empty_residences()
+		if empty.is_empty():
+			return {"ok": false, "msg": "暂无空居所"}
+		target_bid = str(empty[0])
+	var bcfg: Dictionary = get_building_cfg(target_bid)
+	if bcfg.is_empty() or str(bcfg.get("type", "")) != "residence":
+		return {"ok": false, "msg": "不是居住建筑"}
+	if not is_building_unlocked(bcfg):
+		return {"ok": false, "msg": "居所未解锁"}
+	var occupant: String = get_house_occupant(target_bid)
+	if occupant == friend_id:
+		return {"ok": false, "msg": "已入住该居所"}
+	if get_housed_count_by_prof(str(r.get("prof", "")), friend_id, occupant) >= ROOKIE_PROF_CAP:
+		return {"ok": false, "msg": "该职业已住满%d人" % ROOKIE_PROF_CAP}
+	return {"ok": true, "bid": target_bid, "occupant": occupant, "cost": CHECKIN_SUPPORT_COST}
+
+func checkin_rookie(friend_id: String, bid: String = "") -> Dictionary:
+	var chk: Dictionary = can_checkin_rookie(friend_id, bid)
+	if not chk.get("ok", false):
+		return chk
+	if CHECKIN_SUPPORT_COST > 0:
+		var consume: Dictionary = _consume_any_support(CHECKIN_SUPPORT_COST)
+		if not consume.get("ok", false):
+			return consume
+	var r: Dictionary = get_rookie_entry(friend_id)
+	var target_bid: String = str(chk.get("bid", ""))
+	var occupant: String = str(chk.get("occupant", ""))
+	if occupant != "" and occupant != friend_id:
+		rookies[occupant]["house"] = ""
+	r["house"] = target_bid
+	# 【改】2026-09-18 用户拍板：入住不立刻刷新满意度；只等每日12:00统一刷新，当天没加成可接受
+	return {"ok": true, "bid": target_bid, "occupant": occupant, "msg": "入住成功"}
+
+func get_rookie_overview(filter_prof: String = "") -> Dictionary:
+	_ensure_rookies()
+	var housed: Array = []
+	var unhoused: Array = []
+	for fid in rookies.keys():
+		var r: Dictionary = rookies.get(fid, {})
+		var prof: String = str(r.get("prof", ""))
+		if filter_prof != "" and filter_prof != "all" and prof != filter_prof:
+			continue
+		var house: String = str(r.get("house", ""))
+		var entry: Dictionary = {
+			"fid": str(fid),
+			"name": str(g.get_friend_config(str(fid)).get("name", fid)),
+			"lv": int(r.get("lv", 1)),
+			"exp": int(r.get("exp", 0)),
+			"next_exp": get_rookie_next_exp(int(r.get("lv", 1))),
+			"prof": prof,
+			"prof_name": _profession_name(prof),
+			"good": str(r.get("good", "")),
+			"house": house,
+			"house_name": str(get_building_cfg(house).get("name", "未入住")) if house != "" else "未入住",
+			"costume_count": get_rookie_costume_count(str(fid)),
+			"can_train": can_rookie_train(str(fid)),
+			"can_checkin": can_checkin_rookie(str(fid)).get("ok", false),
+		}
+		if house == "":
+			unhoused.append(entry)
+		else:
+			housed.append(entry)
+	housed.sort_custom(func(a, b):
+		if str(a.get("prof", "")) == str(b.get("prof", "")):
+			return int(a.get("lv", 0)) > int(b.get("lv", 0))
+		return str(a.get("prof_name", "")) < str(b.get("prof_name", "")))
+	unhoused.sort_custom(func(a, b):
+		if str(a.get("prof", "")) == str(b.get("prof", "")):
+			return int(a.get("lv", 0)) > int(b.get("lv", 0))
+		return str(a.get("prof_name", "")) < str(b.get("prof_name", "")))
+	return {"housed": housed, "unhoused": unhoused}
+
+func get_residence_cards() -> Array:
+	var out: Array = []
+	for b in get_building_list():
+		var bid: String = str(b.get("id", ""))
+		if str(b.get("type", "")) != "residence" or not is_building_unlocked(b):
+			continue
+		var lv: int = get_building_level(bid)
+		var occupant: String = get_house_occupant(bid)
+		out.append({
+			"bid": bid,
+			"name": str(b.get("name", bid)),
+			"level": lv,
+			"yyw_per_min": int(ceil(float(lv) / float(get_settings().get("residence_support_divisor", 10)))),
+			"occupant": occupant,
+			"occupant_name": str(g.get_friend_config(occupant).get("name", occupant)) if occupant != "" else "",
+		})
+	return out
+
+func has_rookie_attention() -> bool:
+	_ensure_rookies()
+	for fid in rookies.keys():
+		if can_rookie_train(str(fid)):
+			return true
+		if str(rookies[fid].get("house", "")) == "" and can_checkin_rookie(str(fid)).get("ok", false):
+			return true
+	return false
+
 
 # ============ 勋章（女团等级）：繁荣度=应援币总产出/分；赚速读取式挂 shop_system ============
 func get_medal_count() -> int:
