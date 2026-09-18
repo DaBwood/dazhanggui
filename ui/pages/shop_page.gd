@@ -263,13 +263,13 @@ func _add_building(content: Control, shop_id: String, pos: Vector2, bld_size: Ve
 			play_shop_name = str(data.get_shop_config(shop_id).get("name", ""))
 		if shop_id == "hq":
 			# 【新增】钱庄玩法入口（批次2：柜台委任/百业经验/筹算值/信誉值）
-			play.pressed.connect(c.show_bank_view)
+			play.pressed.connect(c.show_view.bind("bank"))
 		elif shop_id == "ke_zhan":
 			# 【新增】客栈玩法入口（批次3：营业/菜谱/庖丁解牛/兑换商店）
-			play.pressed.connect(c.show_inn_view)
+			play.pressed.connect(c.show_view.bind("inn"))
 		elif shop_id == "yi_guan":
 			# 【新增】医馆玩法入口（病人队列/科室升级/病症图鉴）
-			play.pressed.connect(c.show_clinic_view)
+			play.pressed.connect(c.show_view.bind("clinic"))
 			# 【新增】2026-09-16 病人满红点（地图侧唯一红点条件；医馆内部红点在 clinic_view 内，互不穿透）
 			var cydot := Label.new()
 			cydot.name = "PlayDot"
@@ -282,7 +282,7 @@ func _add_building(content: Control, shop_id: String, pos: Vector2, bld_size: Ve
 			play.add_child(cydot)
 		elif shop_id == "yao_pu":
 			# 【新增】药铺玩法入口（体力接待/收益罐/工艺/药方/勋章/成就）
-			play.pressed.connect(c.show_drugshop_view)
+			play.pressed.connect(c.show_view.bind("drugshop"))
 			# 【新增】2026-09-16 病人满红点（地图侧唯一红点条件；药铺内部红点在 drugshop_view 内，互不穿透）
 			var pdot := Label.new()
 			pdot.name = "PlayDot"
@@ -295,11 +295,11 @@ func _add_building(content: Control, shop_id: String, pos: Vector2, bld_size: Ve
 			play.add_child(pdot)
 		elif shop_id == "jiu_fang":
 			# 【新增】酒坊玩法入口（批次②：三作坊/酿酒/采买；勋章/名酒记/品酒/酒客故事批次③）
-			play.pressed.connect(c.show_winery_view)
+			play.pressed.connect(c.show_view.bind("winery"))
 			# 【改】2026-09-18 用户拍板：酒坊无"体力满"类强提醒，红点全部内部展示（winery_view 内），不穿透地图
 		elif shop_id == "jiu_si":
 			# 【新增】酒肆玩法入口（叫号接待/收益罐/餐饮娱乐设施，档案四十二节批3接线）
-			play.pressed.connect(c.show_tavern_view)
+			play.pressed.connect(c.show_view.bind("tavern"))
 			# 地图侧唯一红点条件：有可升级/可解锁设施（酒肆内部红点在 tavern_view 内，互不穿透）
 			var tvdot := Label.new()
 			tvdot.name = "PlayDot"

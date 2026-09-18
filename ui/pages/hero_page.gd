@@ -369,7 +369,7 @@ func update_hero_panel():
 		fish_btn.text = "【%s】%d阶" % [data.fishing_system.get_fish_name(equipped_fish), data.fishing_system.get_fish_tier(equipped_fish)]
 	else:
 		fish_btn.text = "渔获"
-	fish_btn.pressed.connect(c.show_fish_equip_view.bind(current_hero_id))
+	fish_btn.pressed.connect(c.show_view.bind("fish_equip", [current_hero_id]))
 	
 		# 【新增】促织装备按钮（左列第3行第3格，与珍兽/渔获并排）
 	var cuzhi_btn = c.get_node("HeroPanel").get_node_or_null("CuzhiEquipBtn")

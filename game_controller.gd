@@ -76,6 +76,43 @@ var drugshop_view   # 【新增】药铺玩法视图（商铺地图药铺「▶�
 var tavern_view   # 【新增】酒肆玩法视图（商铺地图酒肆店铺「▶」入口全屏页，按名字挂不按位置）
 var winery_view   # 【新增】酒坊玩法视图（商铺地图酒坊「▶」入口全屏页）
 
+# ==================== 【新增】视图注册清单（2026-09-18 架构重构批次②） ====================
+# 一条 = var 成员名 + 脚本路径 + 通用入口 key；_ready 由本清单循环实例化。
+# 新视图接入 = var 声明一行 + 本清单一条，不再手写 XxxView.new(self)。
+# key 约定 = 视图内 show_<key>_view / hide_<key>_view 的方法名中段，
+#  show_view(key)/hide_view(key) 通用入口按此约定分发；带参视图用 show_view(key, [参数])。
+# ⚠️ 仅登记实例化、不走通用入口：courtyard（庄园页签内容，无独立 show/hide）、
+#    costume（页面直调 c.costume_view.show_xxx_popup）、
+#    soul/soulpower（beast_page 直调 c.soul_view.show_soul_view / c.soulpower_view.show_hunli_view）
+# ⚠️ mall_panel/player_panel 是弹窗面板非视图，不进清单，仍手写实例化
+const VIEW_LIST: Array = [
+	{"var": "exchange_view", "script": "res://ui/pages/exchange_view.gd", "key": "exchange"},
+	{"var": "lottery_view", "script": "res://ui/pages/lottery_view.gd", "key": "lottery"},
+	{"var": "charity_view", "script": "res://ui/pages/charity_view.gd", "key": "charity"},
+	{"var": "travel_view", "script": "res://ui/pages/travel_view.gd", "key": "travel"},
+	{"var": "manor_view", "script": "res://ui/pages/manor_view.gd", "key": "manor"},
+	{"var": "courtyard_view", "script": "res://ui/pages/courtyard_view.gd", "key": "courtyard"},
+	{"var": "war_view", "script": "res://ui/pages/war_view.gd", "key": "war"},
+	{"var": "fishing_view", "script": "res://ui/pages/fishing_view.gd", "key": "fishing"},
+	{"var": "fish_equip_view", "script": "res://ui/pages/fish_equip_view.gd", "key": "fish_equip"},
+	{"var": "costume_view", "script": "res://ui/pages/costume_view.gd", "key": "costume"},
+	{"var": "soul_view", "script": "res://ui/pages/soul_view.gd", "key": "soul"},
+	{"var": "soulpower_view", "script": "res://ui/pages/soulpower_view.gd", "key": "soulpower"},
+	{"var": "cuzhi_view", "script": "res://ui/pages/cuzhi_view.gd", "key": "cuzhi"},
+	{"var": "collection_view", "script": "res://ui/pages/collection_view.gd", "key": "collection"},
+	{"var": "bank_view", "script": "res://ui/pages/bank_view.gd", "key": "bank"},
+	{"var": "mail_view", "script": "res://ui/pages/mail_view.gd", "key": "mail"},
+	{"var": "inn_view", "script": "res://ui/pages/inn_view.gd", "key": "inn"},
+	{"var": "clinic_view", "script": "res://ui/pages/clinic_view.gd", "key": "clinic"},
+	{"var": "drugshop_view", "script": "res://ui/pages/drugshop_view.gd", "key": "drugshop"},
+	{"var": "tavern_view", "script": "res://ui/pages/tavern_view.gd", "key": "tavern"},
+	{"var": "winery_view", "script": "res://ui/pages/winery_view.gd", "key": "winery"},
+]
+
+# 【新增】切回闯荡页需关闭的视图 key 清单（= 原 switch_page 里 16 个手写 hide_xxx_view() 调用清单化，
+# 新可关闭视图在此追加一行即可；顺序无要求）
+const PAGE_CLOSE_LIST: Array = ["exchange", "lottery", "charity", "travel", "manor", "war", "fishing", "cuzhi", "collection", "bank", "mail", "inn", "clinic", "drugshop", "tavern", "winery"]
+
 func _ready():
 	
 	# Web 端访问不到系统字体，中文会变豆腐块；显式指定全局回退字体
@@ -97,29 +134,12 @@ func _ready():
 	friend_page = FriendPage.new(self)
 	apprentice_page = ApprenticePage.new(self)
 	adventure_page = AdventurePage.new(self)
-	exchange_view = ExchangeView.new(self)
-	lottery_view = LotteryView.new(self)
-	charity_view = CharityView.new(self)
-	travel_view = TravelView.new(self)
+	# 【改】视图实例化由 VIEW_LIST 循环驱动（原 21 行手写，2026-09-18 架构重构批次②）
+	# set() 动态赋值到同名 var 声明；新视图接入 = var 声明一行 + VIEW_LIST 一条
+	for e in VIEW_LIST:
+		set(e.get("var", ""), load(e.get("script", "")).new(self))
 	mall_panel = MallPanel.new(self)
 	player_panel = PlayerPanel.new(self)
-	manor_view = ManorView.new(self)
-	courtyard_view = CourtyardView.new(self)   # 【第7批新增】宅院页签内容
-	war_view = WarView.new(self)
-	fishing_view = FishingView.new(self)   # 【第8批新增】垂钓视图
-	fish_equip_view = FishEquipView.new(self)   # 【第8批新增】渔获装备弹窗
-	costume_view = CostumeView.new(self)
-	soul_view = SoulView.new(self)   # 【新增】兽魂视图
-	soulpower_view = SoulpowerView.new(self)   # 【新增】魂力培养视图
-	cuzhi_view = CuzhiView.new(self)
-	collection_view = CollectionView.new(self)
-	bank_view = BankView.new(self)   # 【新增】钱庄玩法视图
-	mail_view = MailView.new(self)   # 【新增】邮件视图
-	inn_view = InnView.new(self)   # 【新增】客栈玩法视图
-	clinic_view = ClinicView.new(self)   # 【新增】医馆玩法视图
-	drugshop_view = DrugshopView.new(self)   # 【新增】药铺玩法视图
-	tavern_view = TavernView.new(self)   # 【新增】酒肆玩法视图
-	winery_view = WineryView.new(self)   # 【新增】酒坊玩法视图
 	
 	# 正常退出时存档
 	tree_exiting.connect(on_exit)
@@ -145,8 +165,6 @@ func _ready():
 	# 【新增】2026-09-08 丢档事故后写死：无论有无令牌一律先过登录门。
 	# 令牌只作"免密快捷进入"凭证，绝不再静默直通；下载仲裁统一在玩家点了"进入游戏"之后才发生
 	_show_login_gate()
-
-
 
 # 【新增】进入游戏：登录门通过后才执行（原 _ready 中 data.load_game() 起的初始化段原样移入，只进一次）
 func _enter_game():
@@ -406,23 +424,10 @@ func switch_page(page_id: String):
 	#进入关卡页面更新
 	if page_id == "stage": update_stage_page()
 	#回到闯荡页面关闭各个子页面
-	if page_id == "adventure": 
-		hide_exchange_view()
-		hide_lottery_view()
-		hide_charity_view()
-		hide_travel_view()
-		hide_manor_view()
-		hide_war_view() 
-		hide_fishing_view()   # 【第8批新增】关闭垂钓子视图 
-		hide_cuzhi_view()
-		hide_collection_view()
-		hide_bank_view()   # 【新增】钱庄玩法页
-		hide_mail_view()
-		hide_inn_view()   # 【新增】客栈玩法页
-		hide_clinic_view()   # 【新增】医馆玩法页
-		hide_drugshop_view()   # 【新增】药铺玩法页
-		hide_tavern_view()   # 【新增】酒肆玩法页
-		hide_winery_view()   # 【新增】酒坊玩法页
+	if page_id == "adventure":
+		# 【改】隐藏链改 PAGE_CLOSE_LIST 循环驱动（原 16 个手写 hide_xxx_view()，2026-09-18 架构重构批次②）
+		for _close_key in PAGE_CLOSE_LIST:
+			hide_view(_close_key)
 		update_adventure_page()
 		
 	
@@ -1027,7 +1032,6 @@ func on_exit():
 	data.last_logout_time = Time.get_unix_time_from_system()
 	data.save_game()
 
-
 # ============ 存档三保险（2026-08-31 新增）：定期存档 + Web切后台补存 + 退出按钮 ============
 # 背景：手机 Web 端划掉标签页不会触发 tree_exiting，旧版"只在退出时存档"导致怎么玩都不落盘
 
@@ -1046,7 +1050,6 @@ func _setup_web_save_hook():
 func _on_web_page_hide(_args):
 	if data != null:
 		data.save_game()
-
 
 # 【新增】点退出：二次确认弹窗（说明会自动存档）
 func _on_exit_btn_pressed():
@@ -1091,7 +1094,6 @@ func _on_exit_confirmed():
 	else:
 		get_tree().quit()
 
-
 func print_scene_tree_to_file():
 	var lines = []
 	_collect_node_lines(get_tree().root, 0, lines)
@@ -1115,7 +1117,6 @@ func _collect_node_lines(node: Node, depth: int, lines: Array):
 	lines.append("%s%s (%s)%s" % [indent, node.name, node.get_class(), visible_txt])
 	for child in node.get_children():
 		_collect_node_lines(child, depth + 1, lines)
-
 
 # ============ 云存档（弱联网·Cloudflare Worker，2026-09-06 新增） ============
 # 原则：纯存储转发、后存覆盖先存、本地存档为断网兜底
@@ -1155,7 +1156,6 @@ func _on_net_login_result(ok: bool, msg: String):
 	_net_login_pending = true   # 等仲裁结果决定用哪份档、何时进游戏（登录只发生在登录门，中途登录入口已封）
 	_show_sync_mask()           # 【新增】拆门后到仲裁完成前挡空白
 	net.download_save()
-
 
 # 【新增】下载结果统一处理：登录门仲裁 / 启动自动登录仲裁 / 游戏中途登录冲突 / 手动恢复 共用一个入口
 func _on_net_download_result(ok: bool, has_save: bool, save_text: String, updated_at: int):
@@ -1505,7 +1505,6 @@ func _on_web_login_form_result(args):
 		net.login(str(args[1]), str(args[2]))
 	elif mode == "register":
 		net.register(str(args[1]), str(args[2]))
-
 
 # ==================== 页面方法转发区 ====================
 # ==================== 【转发】府邸页 → pages/mansion_page.gd ====================
@@ -1857,16 +1856,38 @@ func generate_adventure_page():
 func update_adventure_page():
 	return adventure_page.update_adventure_page()
 
+# ==================== 【新增】视图通用入口（2026-09-18 架构重构批次②） ====================
+# show_view/hide_view 按 VIEW_LIST 的 key 分发到视图同名方法 show_<key>_view / hide_<key>_view；
+# key 与视图方法名的对应关系在 VIEW_LIST 登记时保证；未登记/方法缺失 push_error 报错定位（不静默 nil）
+func _get_view_by_key(key: String):
+	for e in VIEW_LIST:
+		if e.get("key", "") == key:
+			return get(e.get("var", ""))
+	push_error("[视图] 未登记的 key: " + key + "（VIEW_LIST 缺条目或 key 写错）")
+	return null
+
+func show_view(key: String, args: Array = []):
+	var v = _get_view_by_key(key)
+	if v == null:
+		return
+	if not v.has_method("show_" + key + "_view"):
+		push_error("[视图] 方法缺失: show_" + key + "_view（key 与视图方法名中段不一致）")
+		return
+	return v.callv("show_" + key + "_view", args)
+
+func hide_view(key: String):
+	var v = _get_view_by_key(key)
+	if v == null:
+		return
+	if not v.has_method("hide_" + key + "_view"):
+		push_error("[视图] 方法缺失: hide_" + key + "_view（key 与视图方法名中段不一致）")
+		return
+	return v.call("hide_" + key + "_view")
+
 # ==================== 【转发】闯荡-兑换子视图（门客/挚友/珍兽/系列） → pages/exchange_view.gd ====================
 
 func _on_exchange_back_pressed():
 	return exchange_view._on_exchange_back_pressed()
-
-func show_exchange_view():
-	return exchange_view.show_exchange_view()
-
-func hide_exchange_view():
-	return exchange_view.hide_exchange_view()
 
 func show_beast_exchange_view():
 	return exchange_view.show_beast_exchange_view()
@@ -1921,12 +1942,6 @@ func _on_exchange_beast(beast_id: String):
 
 # ==================== 【转发】闯荡-抽奖子视图 → pages/lottery_view.gd ====================
 
-func show_lottery_view():
-	return lottery_view.show_lottery_view()
-
-func hide_lottery_view():
-	return lottery_view.hide_lottery_view()
-
 func update_lottery_view():
 	return lottery_view.update_lottery_view()
 
@@ -1944,12 +1959,6 @@ func _show_lottery_results(results: Array):
 
 # ==================== 【转发】闯荡-行善子视图 → pages/charity_view.gd ====================
 
-func show_charity_view():
-	return charity_view.show_charity_view()
-
-func hide_charity_view():
-	return charity_view.hide_charity_view()
-
 func update_charity_view():
 	return charity_view.update_charity_view()
 
@@ -1957,12 +1966,6 @@ func _on_charity():
 	return charity_view._on_charity()
 
 # ==================== 【转发】闯荡-游历子视图 → pages/travel_view.gd ====================
-
-func show_travel_view():
-	return travel_view.show_travel_view()
-
-func hide_travel_view():
-	return travel_view.hide_travel_view()
 
 func update_travel_view():
 	return travel_view.update_travel_view()
@@ -2074,14 +2077,6 @@ func show_exit_confirm():
 func build_manor_view(page, vbox):
 	return manor_view.build_manor_view(page, vbox)
 
-# 打开庄园
-func show_manor_view():
-	return manor_view.show_manor_view()
-
-# 返回闯荡主页
-func hide_manor_view():
-	return manor_view.hide_manor_view()
-
 # 刷新庄园界面
 func update_manor_view():
 	return manor_view.update_manor_view()
@@ -2096,14 +2091,6 @@ func update_courtyard_view(list: VBoxContainer):
 func build_war_view(page, vbox):
 	return war_view.build_war_view(page, vbox)
 
-# 打开商战
-func show_war_view():
-	return war_view.show_war_view()
-
-# 返回闯荡主页
-func hide_war_view():
-	return war_view.hide_war_view()
-
 # 刷新商战界面
 func update_war_view():
 	return war_view.update_war_view()
@@ -2114,92 +2101,25 @@ func update_war_view():
 func build_fishing_view(page, vbox):
 	return fishing_view.build_fishing_view(page, vbox)
 
-# 打开垂钓
-func show_fishing_view():
-	return fishing_view.show_fishing_view()
-
-# 返回闯荡主页
-func hide_fishing_view():
-	return fishing_view.hide_fishing_view()
-
-# 打开门客渔获装备弹窗（由 hero_page 渔获按钮触发）
-func show_fish_equip_view(hero_id: String):
-	return fish_equip_view.show_fish_equip_view(hero_id)
-
-
 # ==================== 【转发】促织园视图 → pages/cuzhi_view.gd ====================
 func build_cuzhi_view(page, vbox):
 	return cuzhi_view.build_cuzhi_view(page, vbox)
 
-func show_cuzhi_view():
-	return cuzhi_view.show_cuzhi_view()
-
-func hide_cuzhi_view():
-	return cuzhi_view.hide_cuzhi_view()
-
 # ==================== 【转发】藏品视图 → pages/collection_view.gd ====================
-func show_collection_view():
-	return collection_view.show_collection_view()
-
-func hide_collection_view():
-	return collection_view.hide_collection_view()
-
 # ==================== 【转发】钱庄玩法视图 → pages/bank_view.gd ====================
-func show_bank_view():
-	return bank_view.show_bank_view()
-
-func hide_bank_view():
-	return bank_view.hide_bank_view()
-
 
 # ==================== 【转发】客栈玩法视图 → pages/inn_view.gd ====================
-func show_inn_view():
-	return inn_view.show_inn_view()
-
-func hide_inn_view():
-	return inn_view.hide_inn_view()
-
 
 # ==================== 【转发】医馆玩法视图 → pages/clinic_view.gd ====================
-func show_clinic_view():
-	return clinic_view.show_clinic_view()
-
-func hide_clinic_view():
-	return clinic_view.hide_clinic_view()
-
 # ==================== 【转发】药铺玩法视图 → pages/drugshop_view.gd ====================
-func show_drugshop_view():
-	return drugshop_view.show_drugshop_view()
-
-func hide_drugshop_view():
-	return drugshop_view.hide_drugshop_view()
-
 # 府邸【藏品】入口
 func on_collection():
 	collection_view.show_collection_view()
 
 # ==================== 【转发】酒肆玩法视图 → pages/tavern_view.gd ====================
-func show_tavern_view():
-	return tavern_view.show_tavern_view()
-
-func hide_tavern_view():
-	return tavern_view.hide_tavern_view()
-
 # ==================== 【转发】酒坊玩法视图 → pages/winery_view.gd ====================
-func show_winery_view():
-	return winery_view.show_winery_view()
-
-func hide_winery_view():
-	return winery_view.hide_winery_view()
-
 
 # ==================== 【转发】邮件视图 → pages/mail_view.gd ====================
-func show_mail_view():
-	return mail_view.show_mail_view()
-
-func hide_mail_view():
-	return mail_view.hide_mail_view()
-
 func on_mail():
 	mail_view.show_mail_view()
 
@@ -2217,7 +2137,6 @@ const TXT_VIP_TITLE = "VIP 特权"
 const TXT_HQ_CLICK = "💰 点击赚钱"
 const TXT_BATCH_HIRE = "十连招募"
 const TXT_CLOSE = "关闭"
-
 
 # ============ 建结构 ============
 func _build_scene_shell():
@@ -2320,7 +2239,6 @@ func _build_scene_shell():
 	timer.autostart = true
 	add_child(timer)
 
-
 # 统一建场景弹窗：Panel + 全矩形内边距 VBox，底色与弹窗工厂一致
 # （尺寸为默认值，_apply_portrait_layout 会居中 + 钳进视口）
 func _make_scene_popup(p_name: String, p_size: Vector2, vbox_name: String = "VBoxContainer") -> Panel:
@@ -2344,7 +2262,6 @@ func _make_scene_popup(p_name: String, p_size: Vector2, vbox_name: String = "VBo
 	p.add_child(vbox)
 	add_child(p)
 	return p
-
 
 # 充值页（TabBar 3页签 + 3个内容容器 + CloseBtn 在 VBox 内）
 func _build_recharge_page():
@@ -2384,7 +2301,6 @@ func _build_recharge_page():
 	rc_close.text = TXT_CLOSE
 	rc.add_child(rc_close)
 
-
 # VIP 面板（标题/等级/经验/进度条/列表/CloseBtn 全在 VBox 内）
 func _build_vip_panel():
 	var vip = _make_scene_popup("VIPPanel", Vector2(520, 720))
@@ -2414,7 +2330,6 @@ func _build_vip_panel():
 	vip_close.text = TXT_CLOSE
 	vb.add_child(vip_close)
 
-
 # 钱庄面板（注意：CloseBtn 是 HQPanel 直接子节点，不在 VBox 内）
 func _build_hq_panel():
 	var hq = _make_scene_popup("HQPanel", Vector2(480, 320))
@@ -2441,7 +2356,6 @@ func _build_hq_panel():
 	hq_close.position = Vector2(hq.size.x - 90, 8)   # 右上角
 	hq_close.custom_minimum_size = Vector2(80, 36)
 	hq.add_child(hq_close)
-
 
 # 店铺面板（5个派遣位 AssignSlot_0..4 + ShopCloseBtn 直接子节点）
 func _build_shop_panel():
@@ -2591,7 +2505,6 @@ func _apply_portrait_layout():
 				sz = Vector2(minf(sz.x, vs.x - 40), minf(sz.y, vs.y - 80))
 				p.size = sz
 			p.position = ((vs - sz) / 2).max(Vector2.ZERO)
-
 
 # 【新增】无双促织盒子使用入口（由 bag_page 调用）
 func show_wushuang_box_selector():

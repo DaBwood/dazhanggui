@@ -58,7 +58,7 @@ func generate_adventure_page():
 	exchange_btn.name = "ExchangeBtn"
 	exchange_btn.text = "兑换"
 	exchange_btn.custom_minimum_size = Vector2(180, 60)
-	exchange_btn.pressed.connect(c.show_exchange_view)
+	exchange_btn.pressed.connect(c.show_view.bind("exchange"))
 	entry_grid.add_child(exchange_btn)
 	
 	# 兑换子页面（目录：珍兽兑换 / 门客帖兑换）
@@ -186,7 +186,7 @@ func generate_adventure_page():
 	lottery_btn.name = "LotteryBtn"
 	lottery_btn.text = "抽奖"
 	lottery_btn.custom_minimum_size = Vector2(180, 60)
-	lottery_btn.pressed.connect(c.show_lottery_view)
+	lottery_btn.pressed.connect(c.show_view.bind("lottery"))
 	entry_grid.add_child(lottery_btn)
 	
 	# --- 抽奖子页面 ---
@@ -199,7 +199,7 @@ func generate_adventure_page():
 	
 	var lot_back_btn = Button.new()
 	lot_back_btn.text = "< 返回闯荡"
-	lot_back_btn.pressed.connect(c.hide_lottery_view)
+	lot_back_btn.pressed.connect(c.hide_view.bind("lottery"))
 	lottery_view.add_child(lot_back_btn)
 	
 	var lot_res = Label.new()
@@ -245,7 +245,7 @@ func generate_adventure_page():
 	var charity_btn = Button.new()
 	charity_btn.text = "行善"
 	charity_btn.custom_minimum_size = Vector2(180, 60)
-	charity_btn.pressed.connect(c.show_charity_view)
+	charity_btn.pressed.connect(c.show_view.bind("charity"))
 	entry_grid.add_child(charity_btn)
 	
 	# --- 行善子页面 ---
@@ -258,7 +258,7 @@ func generate_adventure_page():
 	
 	var c_back = Button.new()
 	c_back.text = "< 返回闯荡"
-	c_back.pressed.connect(c.hide_charity_view)
+	c_back.pressed.connect(c.hide_view.bind("charity"))
 	charity_view.add_child(c_back)
 	
 	var c_info = Label.new()
@@ -300,7 +300,7 @@ func generate_adventure_page():
 	var travel_btn = Button.new()
 	travel_btn.text = "游历"
 	travel_btn.custom_minimum_size = Vector2(180, 60)
-	travel_btn.pressed.connect(c.show_travel_view)
+	travel_btn.pressed.connect(c.show_view.bind("travel"))
 	entry_grid.add_child(travel_btn)
 	
 	# --- 【新增】游历子页面 ---
@@ -313,7 +313,7 @@ func generate_adventure_page():
 	
 	var t_back = Button.new()
 	t_back.text = "< 返回闯荡"
-	t_back.pressed.connect(c.hide_travel_view)
+	t_back.pressed.connect(c.hide_view.bind("travel"))
 	travel_view.add_child(t_back)
 	
 	# 体力/声望显示

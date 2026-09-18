@@ -29,7 +29,7 @@ func build_manor_view(page, vbox):
 	var manor_btn = Button.new()
 	manor_btn.text = "庄园"
 	manor_btn.custom_minimum_size = Vector2(180, 60)
-	manor_btn.pressed.connect(c.show_manor_view)
+	manor_btn.pressed.connect(c.show_view.bind("manor"))
 	vbox.get_node("AdventureEntryGrid").add_child(manor_btn)
 	
 	# --- 庄园子页面 ---
@@ -42,7 +42,7 @@ func build_manor_view(page, vbox):
 	
 	var back_btn = Button.new()
 	back_btn.text = "< 返回闯荡"
-	back_btn.pressed.connect(c.hide_manor_view)
+	back_btn.pressed.connect(c.hide_view.bind("manor"))
 	view.add_child(back_btn)
 	
 	# 仓库总览（独立仓库，产物用于宅院技艺卷轴升级）

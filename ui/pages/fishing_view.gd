@@ -24,7 +24,7 @@ func build_fishing_view(page, vbox):
 	var fish_btn = Button.new()
 	fish_btn.text = "垂钓"
 	fish_btn.custom_minimum_size = Vector2(180, 60)
-	fish_btn.pressed.connect(c.show_fishing_view)
+	fish_btn.pressed.connect(c.show_view.bind("fishing"))
 	vbox.get_node("AdventureEntryGrid").add_child(fish_btn)
 
 	# --- 垂钓子页面 ---
@@ -37,7 +37,7 @@ func build_fishing_view(page, vbox):
 
 	var back_btn = Button.new()
 	back_btn.text = "< 返回闯荡"
-	back_btn.pressed.connect(c.hide_fishing_view)
+	back_btn.pressed.connect(c.hide_view.bind("fishing"))
 	view.add_child(back_btn)
 
 	var title = Label.new()

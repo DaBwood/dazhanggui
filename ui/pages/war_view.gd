@@ -32,7 +32,7 @@ func build_war_view(page, vbox):
 	var war_btn = Button.new()
 	war_btn.text = "商战"
 	war_btn.custom_minimum_size = Vector2(180, 60)
-	war_btn.pressed.connect(c.show_war_view)
+	war_btn.pressed.connect(c.show_view.bind("war"))
 	vbox.get_node("AdventureEntryGrid").add_child(war_btn)
 	
 	# --- 商战子页面 ---
@@ -45,7 +45,7 @@ func build_war_view(page, vbox):
 	
 	var back_btn = Button.new()
 	back_btn.text = "< 返回闯荡"
-	back_btn.pressed.connect(c.hide_war_view)
+	back_btn.pressed.connect(c.hide_view.bind("war"))
 	view.add_child(back_btn)
 	
 	# 货币栏：商战积分 / 商战税引
