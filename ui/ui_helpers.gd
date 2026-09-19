@@ -212,19 +212,29 @@ func flash_red(node_path: String):
 	btn.add_theme_stylebox_override("normal", red)
 	btn.add_theme_stylebox_override("hover", red)
 	btn.add_theme_stylebox_override("pressed", red)
+	# 【修】回调不捕获节点本体与样式板——闪红期间页面可能已刷新重建（如庄园升级后 update_manor_view 重建
+	# 地块钮），闭包捕获 freed 对象会在 tween 触发时被引擎刷 "Lambda capture was freed" 错误甚至崩（2026-09-19 复现）。
+	# 改为只捕获路径字符串（永不失效）；原件样式板挂在按钮 meta 上（生命周期跟随按钮），回调重新解析+校验 meta
+	btn.set_meta("flash_orig", {"normal": original_normal, "hover": original_hover, "pressed": original_pressed})
+	var btn_path := str(btn.get_path())
 	var tween = c.create_tween()
 	tween.tween_interval(0.2)
 	tween.tween_callback(func():
-		btn.add_theme_stylebox_override("normal", original_normal)
-		if original_hover != null:
-			btn.add_theme_stylebox_override("hover", original_hover)
+		var b = c.get_node_or_null(btn_path)
+		if b == null or not b.has_meta("flashing"):
+			return
+		var orig = b.get_meta("flash_orig")
+		b.add_theme_stylebox_override("normal", orig["normal"])
+		if orig["hover"] != null:
+			b.add_theme_stylebox_override("hover", orig["hover"])
 		else:
-			btn.remove_theme_stylebox_override("hover")
-		if original_pressed != null:
-			btn.add_theme_stylebox_override("pressed", original_pressed)
+			b.remove_theme_stylebox_override("hover")
+		if orig["pressed"] != null:
+			b.add_theme_stylebox_override("pressed", orig["pressed"])
 		else:
-			btn.remove_theme_stylebox_override("pressed")
-		btn.remove_meta("flashing")
+			b.remove_theme_stylebox_override("pressed")
+		b.remove_meta("flashing")
+		b.remove_meta("flash_orig")
 	)
 
 # ============ 顶部提示 / 解锁提示 / 数量选择器 ============

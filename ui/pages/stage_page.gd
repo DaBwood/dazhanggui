@@ -175,11 +175,15 @@ func on_stage_trade():
 func on_stage_boss():
 	var result = data.do_stage_boss()
 	if not result.ok:
+		var bb = c.find_child("BossBtn", true, false)   # 【改】RefCounted 模块无 find_child，经 c（controller 根节点）递归找
+		if bb != null: c.flash_red(bb.get_path())   # 【新增】闪红审计：操作失败反馈（2026-09-19）
 		return
 	
 	if result.win:
 		c._show_stage_hint("谈判成功！声望 +10，抽奖券 +1")
 	else:
+		var bb2 = c.find_child("BossBtn", true, false)   # 【改】RefCounted 模块无 find_child，经 c（controller 根节点）递归找
+		if bb2 != null: c.flash_red(bb2.get_path())   # 【新增】闪红审计：操作失败反馈（2026-09-19）
 		c._show_stage_hint("谈判失败！Boss 赚速 %s，我方仅 %s" % [
 			c.format_number(result.boss_income),
 			c.format_number(result.hero_power)

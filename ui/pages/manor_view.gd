@@ -247,7 +247,7 @@ func _build_plot_row(sid: String, plot_index: int, land_word: String) -> HBoxCon
 	# 品种升级（耗铜钱，费用随等级平方增长）
 	var lv_btn = Button.new()
 	lv_btn.text = "等级↑ %s" % c.format_number(data.get_manor_level_up_cost(lv))
-	lv_btn.pressed.connect(_on_upgrade_level.bind(sid, plot_index))
+	lv_btn.pressed.connect(func(): _on_upgrade_level(sid, plot_index, lv_btn))
 	row.add_child(lv_btn)
 	
 	# 土地/血统升级（耗商铺图纸）
@@ -270,7 +270,7 @@ func _on_batch_toggled(pressed: bool):
 
 
 # 升级某块的品种等级（勾选"等级十连"时一次连升10级；失败弹原因）
-func _on_upgrade_level(species_id: String, plot_index: int):
+func _on_upgrade_level(species_id: String, plot_index: int, lv_btn: Button = null):
 	# 【改】十连状态读模块变量（勾选框在弹窗内），不再按节点名查找
 	var r
 	if _batch_checked:
@@ -278,6 +278,7 @@ func _on_upgrade_level(species_id: String, plot_index: int):
 	else:
 		r = data.upgrade_manor_plot_level(species_id, plot_index)
 	if not r.ok:
+		if lv_btn != null: c.flash_red(lv_btn.get_path())   # 【新增】闪红审计：操作失败反馈（2026-09-19）
 		c._show_stage_hint(r.reason)
 	update_manor_view()
 	_refresh_species_popup()   # 【新增】刷新弹窗内等级/费用显示

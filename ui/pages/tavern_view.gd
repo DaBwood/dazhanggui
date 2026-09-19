@@ -494,7 +494,7 @@ func _show_facility_popup(fid: String):
 		up_btn.text = "升级"
 		up_btn.custom_minimum_size = Vector2(0, 42)
 		up_btn.disabled = not _sys().can_upgrade_facility(fid).get("ok", false)
-		up_btn.pressed.connect(func(): _on_facility_upgrade(fid, str(fcfg.get("project", "")), sync_cb.button_pressed))
+		up_btn.pressed.connect(func(): _on_facility_upgrade(fid, str(fcfg.get("project", "")), sync_cb.button_pressed, up_btn))
 		vb.add_child(up_btn)
 	c._add_ok_button(vb, func(): _close_node("TavernPopup"))
 
@@ -506,7 +506,7 @@ func _on_facility_unlock(fid: String):
 	c._show_stage_hint("解锁成功")
 	_refresh()
 
-func _on_facility_upgrade(fid: String, project: String, sync: bool):
+func _on_facility_upgrade(fid: String, project: String, sync: bool, up_btn: Button = null):
 	var r: Dictionary
 	if sync:
 		r = _sys().upgrade_project(project)
@@ -517,6 +517,7 @@ func _on_facility_upgrade(fid: String, project: String, sync: bool):
 		if r.get("ok", false):
 			c._show_stage_hint("升级成功")
 	if not r.get("ok", false):
+		if up_btn != null: c.flash_red(up_btn.get_path())   # 【新增】闪红审计：操作失败反馈（2026-09-19）
 		c._show_stage_hint(str(r.get("msg", "")))
 		return
 	_refresh()

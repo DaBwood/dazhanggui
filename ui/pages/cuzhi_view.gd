@@ -550,6 +550,7 @@ func _show_guarantee_selector():
 				popup.queue_free()
 				_refresh_catch()
 			else:
+				c.flash_red(btn.get_path())   # 【新增】闪红审计：操作失败反馈（2026-09-19）
 				c._show_stage_hint("兑换失败")
 		)
 		grid.add_child(btn)
@@ -1539,6 +1540,7 @@ func show_wushuang_box_selector():
 				c._show_stage_hint("获得 %s！" % cdata.name)
 				popup.queue_free()
 			else:
+				c.flash_red(btn.get_path())   # 【新增】闪红审计：操作失败反馈（2026-09-19）
 				c._show_stage_hint("兑换失败")
 		)
 		grid.add_child(btn)

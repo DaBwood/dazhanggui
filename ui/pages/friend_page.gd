@@ -786,6 +786,7 @@ func _on_skill_upgrade_in_popup(is_fixed: bool):
 		_update_friend_page_detail()
 		c.update_all_ui()
 	else:
+		if popup != null: c.flash_red(popup.get_path())   # 【新增】闪红审计：操作失败反馈（2026-09-19）
 		c._show_stage_hint("缘分不足！")
 
 # ============ 美名弹窗 ============

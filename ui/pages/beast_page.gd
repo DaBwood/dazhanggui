@@ -714,6 +714,7 @@ func _on_recycle_selected():
 		if had_selection:
 			c._show_stage_hint("所选珍兽已不存在或状态变化，请重新选择")
 		else:
+			c.flash_red(_recycle_confirm_btn.get_path())   # 【新增】闪红审计：操作失败反馈（2026-09-19）
 			c._show_stage_hint("请先点击卡片选择要回收的珍兽（可多选）")
 		return
 
@@ -750,6 +751,7 @@ func _on_recycle_selected():
 		var fail_msg := "未知原因"
 		if not fail_parts.is_empty():
 			fail_msg = "；".join(fail_parts)
+		c.flash_red(_recycle_confirm_btn.get_path())   # 【新增】闪红审计：操作失败反馈（2026-09-19）
 		c._show_stage_hint("回收失败：" + fail_msg)
 		return
 

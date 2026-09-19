@@ -212,6 +212,8 @@ func _on_upgrade_scroll(tech_id: String, project_key: String, volume: String):
 		result = data.upgrade_courtyard_scroll(tech_id, project_key, volume)
 
 	if not result.ok:
+		var pop2 = c.get_node_or_null("CourtyardTechPopup")
+		if pop2 != null: c.flash_red(pop2.get_path())   # 【新增】闪红审计：操作失败反馈（2026-09-19）
 		c._show_stage_hint(result.get("reason", "升级失败"))
 	else:
 		c.update_all_ui()

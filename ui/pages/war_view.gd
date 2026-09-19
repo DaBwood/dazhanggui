@@ -295,7 +295,7 @@ func _build_squad_card(idx: int) -> PanelContainer:
 				battle_btn.text = "今日已出战"
 				battle_btn.disabled = true
 			battle_btn.custom_minimum_size = Vector2(120, 44)
-			battle_btn.pressed.connect(_on_battle.bind(idx))
+			battle_btn.pressed.connect(_on_battle.bind(idx, battle_btn))
 			row_box.add_child(battle_btn)
 	return card
 
@@ -379,9 +379,10 @@ func _on_remove_hero(popup, squad_index: int, slot: int):
 	_refresh_battle_popup()
 
 # 出战：以队内"今日未出战门客"的赚速和为战力，对比 NPC 商队结算
-func _on_battle(idx: int):
+func _on_battle(idx: int, battle_btn: Button = null):
 	var r = data.war_battle(idx)
 	if not r.ok:
+		if battle_btn != null: c.flash_red(battle_btn.get_path())   # 【新增】闪红审计：操作失败反馈（2026-09-19）
 		c._show_stage_hint(r.reason)
 	else:
 		var msg = "战胜商队！" if r.win else "败给商队……"

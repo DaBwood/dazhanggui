@@ -208,7 +208,7 @@ func _create_role_exchange_card(role_type: String, role_id: String, cost: int) -
 	else:
 		status_lbl.text = "兑换（%d/%d）" % [have, cost]
 		cell.disabled = have < cost
-		cell.pressed.connect(_on_exchange_role.bind(role_type, role_id, cost))
+		cell.pressed.connect(func(): _on_exchange_role(role_type, role_id, cost, cell))
 	
 	return cell
 
@@ -290,11 +290,11 @@ func _create_series_exchange_card(entry: Dictionary, series: Dictionary) -> Butt
 	else:
 		status_lbl.text = "兑换（%d/%d）" % [have, entry.cost]
 		cell.disabled = have < entry.cost
-		cell.pressed.connect(_on_exchange_series_hero.bind(entry, series))
+		cell.pressed.connect(func(): _on_exchange_series_hero(entry, series, cell))
 	
 	return cell
 
-func _on_exchange_series_hero(entry: Dictionary, series: Dictionary):
+func _on_exchange_series_hero(entry: Dictionary, series: Dictionary, cell: Button = null):
 	var friend_id = ""
 	if series.get("grant_friend", false):
 		friend_id = entry.get("friend", "")
@@ -313,9 +313,10 @@ func _on_exchange_series_hero(entry: Dictionary, series: Dictionary):
 		c.generate_hero_list()
 		c.update_friend_page()
 	else:
+		c.flash_red(cell.get_path())   # 【新增】闪红审计：操作失败反馈（2026-09-19）
 		c._show_stage_hint(result.reason)
 
-func _on_exchange_role(role_type: String, role_id: String, cost: int):
+func _on_exchange_role(role_type: String, role_id: String, cost: int, cell: Button = null):
 	var result = data.exchange_role_with_token(role_type, role_id, cost)
 	if result.ok:
 		var cfg = data.get_hero_config(role_id) if role_type == "hero" else data.get_friend_config(role_id)
@@ -327,6 +328,7 @@ func _on_exchange_role(role_type: String, role_id: String, cost: int):
 			c.generate_hero_list()
 		c.update_friend_page()
 	else:
+		c.flash_red(cell.get_path())   # 【新增】闪红审计：操作失败反馈（2026-09-19）
 		c._show_stage_hint(result.reason)
 
 
@@ -334,6 +336,7 @@ func _on_exchange_beast(beast_id: String):
 	var cfg = data.get_beast_config(beast_id)
 	var ex = cfg.get("exchange_item", "")
 	if data.items.get(ex, 0) < 100:
+		c.flash_red("PageContainer/AdventurePage/ExchangeView/BeastExchangeView")   # 【新增】闪红审计：操作失败反馈（2026-09-19）
 		c._show_stage_hint("【%s】兑换道具不足！" % cfg.name)
 		return
 	data.items[ex] -= 100
@@ -346,6 +349,7 @@ func _on_exchange_beast(beast_id: String):
 		if c.has_node("PageContainer/AdventurePage/ExchangeView/BeastExchangeView") and c.get_node("PageContainer/AdventurePage/ExchangeView/BeastExchangeView").visible:
 			update_beast_exchange_view()
 	else:
+		c.flash_red("PageContainer/AdventurePage/ExchangeView/BeastExchangeView")   # 【新增】闪红审计：操作失败反馈（2026-09-19）
 		c._show_stage_hint("兑换失败")
 
 # 【服装系统】兑换目录追加「服装兑换」入口按钮（代码创建，只建一次）

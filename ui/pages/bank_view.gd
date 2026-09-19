@@ -114,7 +114,7 @@ func _fill_body(vb: VBoxContainer):
 	else:
 		up_btn.text = "升级（%d 信誉值）" % sys.get_xinyu_cost()
 		up_btn.disabled = sys.get_xinyu() < sys.get_xinyu_cost()
-		up_btn.pressed.connect(_on_xinyu_upgrade)
+		up_btn.pressed.connect(func(): _on_xinyu_upgrade(up_btn))
 	up_row.add_child(up_btn)
 	# 柜台区：卡片网格（3列，用户拍板）；长说明文案已删（2026-09-16 用户要求）
 	var scroll := ScrollContainer.new()
@@ -247,7 +247,7 @@ func _add_unlock_card(grid: GridContainer):
 	else:
 		info.text = "花%d元宝解锁柜台%d" % [sys.get_counter_unlock_cost(), count + 1]
 		btn.disabled = int(data.yuanbao) < sys.get_counter_unlock_cost()
-		btn.pressed.connect(_on_unlock)
+		btn.pressed.connect(func(): _on_unlock(btn))
 
 func _counter_info_text(idx: int, _hid: String) -> String:   # _hid 未用（名字在卡片标题显示），下划线前缀消 UNUSED_PARAMETER 提示
 	var sys = data.bank_system
@@ -299,17 +299,22 @@ func _on_unassign(idx: int):
 	_rebuild()
 
 # 花元宝手动解锁柜台（+卡入口；5个以后每个5000元宝，受钱庄店铺等级上限约束）
-func _on_unlock():
+func _on_unlock(btn: Button = null):
 	if data.bank_system.unlock_counter():
 		c.update_all_ui()   # 元宝变动刷新顶栏
 		_rebuild()
 	else:
+		if btn != null: c.flash_red(btn.get_path())   # 【新增】闪红审计：操作失败反馈（2026-09-19）
 		c._show_stage_hint("元宝不足")
 
-func _on_xinyu_upgrade():
+func _on_xinyu_upgrade(up_btn: Button = null):
 	if data.bank_system.upgrade_xinyu_level():
 		c.update_all_ui()   # 徒弟赚速/珍兽上限变动 → 全局赚速飘字
 		_rebuild()
+	else:
+		# 钮禁用时点不到，能走到这=满级等边缘态；补反馈不留静默失败
+		if up_btn != null: c.flash_red(up_btn.get_path())   # 【新增】闪红审计：操作失败反馈（2026-09-19）
+		c._show_stage_hint("信誉值不足或已满级")
 
 func _rebuild():
 	if c.has_node("BankPage"):

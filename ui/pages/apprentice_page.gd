@@ -166,7 +166,7 @@ func _update_apprentice_train(content: VBoxContainer):
 		btn.custom_minimum_size = Vector2(100, 40)
 		if first.state == "training":
 			btn.text = "培养"
-			btn.pressed.connect(_on_train_apprentice.bind(i))
+			btn.pressed.connect(_on_train_apprentice.bind(i, btn))
 		else:
 			# 待结业（结业的徒弟会离开槽位）
 			btn.text = "结业"
@@ -212,7 +212,7 @@ func _update_apprentice_list_view(content: VBoxContainer, state: String):
 		empty.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 		content.add_child(empty)
 
-func _on_train_apprentice(slot: int):
+func _on_train_apprentice(slot: int, btn: Button = null):
 	if _apprentice_batch_train:
 		var result = data.train_apprentice_batch(slot)
 		if result.ok:
@@ -225,7 +225,7 @@ func _on_train_apprentice(slot: int):
 				msg += "（%s）" % result.stop_reason
 			c._show_stage_hint(msg)
 		else:
-			_handle_train_fail(slot, result.reason)
+			_handle_train_fail(slot, result.reason, btn)
 	else:
 		var result = data.train_apprentice(slot)
 		if result.ok:
@@ -234,12 +234,13 @@ func _on_train_apprentice(slot: int):
 			if result.get("adult", false):
 				c._show_stage_hint("培养完成！徒弟已成年，可以结业了")
 		else:
-			_handle_train_fail(slot, result.reason)
+			_handle_train_fail(slot, result.reason, btn)
 
-func _handle_train_fail(slot: int, reason: String):
+func _handle_train_fail(slot: int, reason: String, btn: Button = null):
 	if reason == "活力不足" and data.items.get("vitality_pill", 0) > 0:
 		_show_vitality_pill_prompt(slot)
 	else:
+		if btn != null: c.flash_red(btn.get_path())   # 【新增】闪红审计：操作失败反馈（2026-09-19）
 		c._show_stage_hint(reason)
 
 func _show_graduate_selector(slot: int):

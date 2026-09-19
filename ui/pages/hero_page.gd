@@ -1764,6 +1764,7 @@ func _on_guardian_avatar_unlock(avatar_id: String):
 		c.update_all_ui()
 		c.update_bag_list()
 	else:
+		c.flash_red("GuardianAvatarPopup")   # 【新增】闪红审计：操作失败反馈（2026-09-19）
 		c._show_stage_hint("道具不足，无法解锁")
 
 # 【新增】守护灵技能升级回调
@@ -2142,6 +2143,7 @@ func _show_token_bind_selector(idx: int):
 				update_hero_panel()
 				c.update_all_ui()
 			else:
+				c.flash_red(btn.get_path())   # 【新增】闪红审计：操作失败反馈（2026-09-19）
 				c._show_stage_hint(res.get("msg", "绑定失败"))
 		)
 		list.add_child(btn)

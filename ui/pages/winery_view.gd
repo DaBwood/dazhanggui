@@ -206,7 +206,7 @@ func _show_workshop_popup(wid: String):
 			btn.text = "升级 %s" % c.format_number(_sys().get_process_upgrade_cost(wid, pid))   # 本次消耗直接显示在按钮上
 			btn.disabled = not _sys().can_upgrade_process(wid, pid).get("ok", false)
 			var pid_c: String = pid
-			btn.pressed.connect(func(): _on_process_upgrade(wid, pid_c, sync_chk.button_pressed))
+			btn.pressed.connect(func(): _on_process_upgrade(wid, pid_c, sync_chk.button_pressed, btn))
 		row.add_child(btn)
 	# 概率详情ⓘ（当前 S 五档概率，只读展示）
 	var prob := Label.new()
@@ -219,13 +219,14 @@ func _show_workshop_popup(wid: String):
 	vb.add_child(prob)
 	c._add_ok_button(vb, func(): close_popup())
 
-func _on_process_upgrade(wid: String, pid: String, sync: bool):
+func _on_process_upgrade(wid: String, pid: String, sync: bool, btn: Button = null):
 	var r: Dictionary
 	if sync:
 		r = _sys().sync_upgrade_workshop(wid)
 	else:
 		r = _sys().upgrade_process(wid, pid)
 	if not r.get("ok", false):
+		if btn != null: c.flash_red(btn.get_path())   # 【新增】闪红审计：操作失败反馈（2026-09-19）
 		c._show_stage_hint(str(r.get("msg", "")))
 		return
 	c.update_all_ui()   # 流程职业加成→商铺赚速变化→全局飘字
