@@ -226,8 +226,87 @@ func upgrade_caiyi_skill(friend_id: String, skill_key: String, batch: bool) -> i
 	return upgraded
 
 # 超群绝伦效果：缘分门客资质加成（由 HeroData.get_total_aptitude 按 bound_heroes 接入）
+# ========== 芳华技能（妙音坊缘分物消费端，2026-09-19 实装；方案=妙音坊设计方案§十四） ==========
+# 9 技能链式解锁，效果全部挂"缘分门客"（同才华轨：固定→get_friend_fixed_bonus /
+# 资质→get_friend_aptitude_bonus / 百分比→get_friend_percent_bonus）。存档=挚友档内 fanghua_skills[9]，
+# 旧档缺省全 0 懒创建零迁移（方案原写 save["miaoyin"]["fanghua"]，随才华轨改挚友档内存储，save/load 零改动）。
+# ⚠️ 挚友"职业"由 friends.json 的 yyf_career 字段提供（映射五种缘分之花）——实装前挚友无此字段，
+#    初版映射已写入 friends.json；调整映射只改 json 不改代码
+const FANGHUA_SKILLS := [
+	{"name": "伊人芳华", "k": 1,     "kind": "fixed",    "value": 3000},   # 美名≥伊人
+	{"name": "佳人芳华", "k": 150,   "kind": "aptitude", "value": 1},      # 伊人100级 且 美名≥佳人
+	{"name": "丽人芳华", "k": 400,   "kind": "aptitude", "value": 1},      # 佳人100级 且 美名≥丽人
+	{"name": "红粉芳华", "k": 5,     "kind": "percent",  "value": 0.001},  # 丽人150级 且 美名≥红粉
+	{"name": "婵娟芳华", "k": 1500,  "kind": "aptitude", "value": 1},      # 红粉200级 且 美名≥婵娟【拟补档】
+	{"name": "花魁芳华", "k": 4000,  "kind": "aptitude", "value": 1},      # 婵娟250级 且 美名≥花魁【拟补档】
+	{"name": "国色芳华", "k": 10000, "kind": "percent",  "value": 0.001},  # 美名≥国色
+	{"name": "仙子芳华", "k": 25000, "kind": "percent",  "value": 0.001},  # 美名≥仙子
+	{"name": "天仙芳华", "k": 60000, "kind": "percent",  "value": 0.001},  # 美名≥天仙
+]
+# 前置技能等级门槛：下标 1~5 需前一技能达到（佳人←伊人100/丽人←佳人100/红粉←丽人150/婵娟←红粉200/花魁←婵娟250）
+const FANGHUA_PREV_LEVEL := [0, 100, 100, 150, 200, 250, 0, 0, 0]
+# 美名门槛：芳华九档与 FRIEND_TITLES 同名同序，伊人=TITLES[3] … 天仙=TITLES[11]
+const FANGHUA_TITLE_BASE := 3
+
+func _get_fanghua_arr(friend_id: String) -> Array:
+	# 读存档挚友实体（g.friends 存的是解锁时刻配置拷贝；芳华等级是玩家数据必须读存档）
+	var f = g.friends.get(friend_id, {})   # 挚友不存在=空字典兜底，调用方只传已拥有挚友
+	if not f.has("fanghua_skills"):
+		f["fanghua_skills"] = [0, 0, 0, 0, 0, 0, 0, 0, 0]   # 懒创建：旧档零迁移
+	var arr = f["fanghua_skills"]
+	while arr.size() < 9:
+		arr.append(0)
+	return arr
+
+func get_fanghua_level(friend_id: String, idx: int) -> int:
+	return int(_get_fanghua_arr(friend_id)[idx])
+
+func get_fanghua_unlock_state(friend_id: String, idx: int) -> Dictionary:
+	# {unlocked, reason}；reason 非空=未解锁原因（UI 直接展示在消耗位）
+	var arr = _get_fanghua_arr(friend_id)
+	var title_idx = get_friend_title_index(friend_id)
+	var need_title = FANGHUA_TITLE_BASE + idx
+	if title_idx < need_title:
+		return {"unlocked": false, "reason": "需美名「%s」" % g.FRIEND_TITLES[need_title].title}
+	var prev_req = FANGHUA_PREV_LEVEL[idx]
+	if prev_req > 0 and arr[idx - 1] < prev_req:
+		return {"unlocked": false, "reason": "需「%s」%d级" % [FANGHUA_SKILLS[idx - 1].name, prev_req]}
+	return {"unlocked": true, "reason": ""}
+
+func get_fanghua_cost(friend_id: String, idx: int) -> int:
+	# 消耗 = ceil(100 × kᵢ × 当前等级^1.6)（方案§十四定稿公式）
+	var lv = _get_fanghua_arr(friend_id)[idx]
+	return int(ceil(100.0 * float(FANGHUA_SKILLS[idx].k) * pow(float(lv), 1.6)))
+
+func get_fanghua_flower(friend_id: String) -> String:
+	# 缘分之花道具 id（yyf_wudao/shengyue/yueqi/chuangzuo/yitai），映射在 friends.json 的 yyf_career。
+	# ⚠️必须读配置 g.get_friend_config 不读存档快照：g.friends 是解锁时刻的配置拷贝，老档挚友没有 yyf_career 字段（踩坑32）
+	return str(g.get_friend_config(friend_id).get("yyf_career", "yyf_yueqi"))
+
+func upgrade_fanghua(friend_id: String, idx: int, batch: bool) -> Dictionary:
+	# 返回 {upgraded, msg}；batch=十连（最多10级，花不足则升剩余级数，与才艺同口径）
+	var arr = _get_fanghua_arr(friend_id)
+	var st = get_fanghua_unlock_state(friend_id, idx)
+	if not st.unlocked:
+		return {"upgraded": 0, "msg": st.reason}
+	var flower = get_fanghua_flower(friend_id)
+	var limit = 10 if batch else 1
+	var upgraded := 0
+	while upgraded < limit:
+		var cost = get_fanghua_cost(friend_id, idx)
+		if int(g.items.get(flower, 0)) < cost:
+			break
+		g.items[flower] -= cost
+		arr[idx] += 1
+		upgraded += 1
+	if upgraded == 0:
+		return {"upgraded": 0, "msg": "缘分之花不足！"}
+	return {"upgraded": upgraded, "msg": ""}
+
 func get_friend_aptitude_bonus(friend_id: String) -> int:
-	return get_caiyi_skill_level(friend_id, "chaoqun") * int(CAIYI_SKILLS["chaoqun"]["value_per_level"])
+	var fhq = _get_fanghua_arr(friend_id)   # 【新增】芳华·佳人/丽人/婵娟/花魁：缘分门客资质 +1/级
+	return get_caiyi_skill_level(friend_id, "chaoqun") * int(CAIYI_SKILLS["chaoqun"]["value_per_level"]) \
+		+ (fhq[1] + fhq[2] + fhq[4] + fhq[5])
 
 # 挚友的固定加成（天生丽质 → 额外赚速）
 func get_friend_fixed_bonus(friend_id: String) -> int:
@@ -236,13 +315,15 @@ func get_friend_fixed_bonus(friend_id: String) -> int:
 	var total = f.fixed_skill_level * (100 + 10 * (f.fixed_skill_level - 1))
 	# 【新增】多才多艺（挚友才艺技能）：每级缘分门客固定赚钱 +5000
 	total += get_caiyi_skill_level(friend_id, "duocai") * int(CAIYI_SKILLS["duocai"]["value_per_level"])
+	total += _get_fanghua_arr(friend_id)[0] * 3000   # 【新增】芳华·伊人：缘分门客固定赚钱 +3000/级
 	return total
 
 # 挚友的百分比加成（花开富贵 → 百分比）
 func get_friend_percent_bonus(friend_id: String) -> float:
 	if not g.friends.has(friend_id): return 0.0
 	var f = g.friends[friend_id]
-	return f.percent_skill_level * 0.05
+	var fhp = _get_fanghua_arr(friend_id)   # 【新增】芳华·红粉/国色/仙子/天仙：缘分门客赚速 +0.1%/级
+	return f.percent_skill_level * 0.05 + (fhp[3] + fhp[6] + fhp[7] + fhp[8]) * 0.001
 
 # 谈心
 # 谈心：随机一位已拥有挚友，缘分+才华，有空位则领养徒弟
@@ -354,15 +435,40 @@ func gift_friend(friend_id: String, item_id: String) -> bool:
 			return false
 	return true
 
-# 挚友当前美名下标：友好和才华都达标才算，-1=无美名
+# 挚友当前美名下标（2026-09-19 改手动晋升制）：读存档 title_index 字段，-1=无美名。
+# 旧档无该字段=首次访问按旧自动规则（_calc_title_index）定格回填，不追溯、不自动涨，
+# 此后只能靠 promote_title() 手动晋升（用户拍板：可晋升时美名标签亮红点提示）。
 func get_friend_title_index(friend_id: String) -> int:
 	if not g.friends.has(friend_id): return -1
 	var f = g.friends[friend_id]
+	if not f.has("title_index"):
+		f["title_index"] = _calc_title_index(f)   # 懒迁移：旧自动档定格为已晋升档
+	return int(f["title_index"])
+
+# 旧自动规则：友好+才华双达标取最高档（仅用于旧档首访回填，新档晋升不走这里）
+func _calc_title_index(f: Dictionary) -> int:
 	var idx = -1
 	for i in range(g.FRIEND_TITLES.size()):
 		if f.friendly >= g.FRIEND_TITLES[i].req and f.talent >= g.FRIEND_TITLES[i].req:
 			idx = i
 	return idx
+
+# 可晋升的下一档下标（属性双达标 且 未晋升到顶），-1=不可晋升——美名红点判定唯一入口
+func get_promotable_title_index(friend_id: String) -> int:
+	if not g.friends.has(friend_id): return -1
+	var nxt = get_friend_title_index(friend_id) + 1
+	if nxt >= g.FRIEND_TITLES.size(): return -1
+	var f = g.friends[friend_id]
+	if f.friendly >= g.FRIEND_TITLES[nxt].req and f.talent >= g.FRIEND_TITLES[nxt].req:
+		return nxt
+	return -1
+
+# 手动晋升美名：条件达标则定格下一档并返回 true，否则 false
+func promote_title(friend_id: String) -> bool:
+	var nxt = get_promotable_title_index(friend_id)
+	if nxt < 0: return false
+	g.friends[friend_id]["title_index"] = nxt
+	return true
 
 # 挚友当前美名（无美名返回"无"）
 func get_friend_title(friend_id: String) -> String:

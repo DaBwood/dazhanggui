@@ -21,6 +21,7 @@ var current_friend_id: String = ""
 # 【新增】技能弹窗页签状态：_skill_tab=商铺/门客；_hero_sub_tab=门客页签下四级子页签
 var _skill_tab: String = "shop"
 var _hero_sub_tab: String = "menke"
+var _fanghua_sel: int = 0   # 【新增】芳华页签选中技能下标（类变量记忆，弹窗重建不丢，踩坑35）
 
 func _init(p_c):
 	c = p_c
@@ -356,6 +357,22 @@ func _update_friend_page_detail():
 	attr_box.get_node("TalentLabel").text = "才华：%d" % f.talent
 	attr_box.get_node("FriendTitle").text = "美名：%s" % data.get_friend_title(fid)
 
+	# 【新增】美名可晋升红点（2026-09-19 手动晋升制）：钉在左侧「美名」标签钮右上角
+	var title_btn = detail.find_child("Tab_美名", true, false)
+	if title_btn:
+		var dot = title_btn.get_node_or_null("PromoteDot")
+		if dot == null:
+			dot = Label.new()
+			dot.name = "PromoteDot"
+			dot.text = "●"
+			dot.add_theme_font_size_override("font_size", 14)
+			dot.add_theme_color_override("font_color", Color("#e74c3c"))
+			dot.set_anchors_preset(Control.PRESET_TOP_RIGHT)
+			dot.position = Vector2(-14, -6)
+			dot.mouse_filter = Control.MOUSE_FILTER_IGNORE   # 不挡按钮点击
+			title_btn.add_child(dot)
+		dot.visible = data.friend_system.get_promotable_title_index(fid) >= 0
+
 	# 刷新底部礼物栏
 	_refresh_gift_bar()
 
@@ -608,8 +625,11 @@ func _build_hero_tab(body: VBoxContainer, fid: String):
 			_build_menke_skills(content, fid)
 		"caiyi":
 			_build_caiyi_skills(content, fid)
+		"fanghua":
+			# 【新增】芳华技能（妙音坊缘分物消耗端，2026-09-19 实装，方案§十四）
+			_build_fanghua_skills(content, fid)
 		_:
-			# 芳华技能（妙音坊）/ 无双技能：后续版本开放
+			# 无双技能：后续版本开放
 			var hint = Label.new()
 			hint.text = "后续版本开放"
 			hint.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
@@ -762,6 +782,193 @@ func _on_caiyi_skill_upgrade(skill_key: String):
 			if btn:
 				c.flash_red(btn.get_path())
 
+# 【新增】芳华技能子页签（妙音坊设计方案§十四）：照门客技能栏版式=上排滑动按钮排+详情区
+# （9 行平铺会超高挡住底部子页签；按钮排横向滑动、详情区固定一块，总高≈200 恒不超）
+func _build_fanghua_skills(content: VBoxContainer, fid: String):
+	var fs = data.friend_system
+	var flower = fs.get_fanghua_flower(fid)
+	var flower_name = str(data.ITEM_CONFIG.get(flower, {}).get("name", flower))
+	var have = int(data.items.get(flower, 0))
+	# 顶部提示：本挚友吃哪种花、当前拥有多少
+	var head = Label.new()
+	head.text = "芳华消耗：%s（拥有 %s）" % [flower_name, c.format_number(have)]
+	head.add_theme_font_size_override("font_size", 12)
+	head.add_theme_color_override("font_color", Color("#c8a2d8"))
+	content.add_child(head)
+	# 上排：9 技能滑动按钮排（ScrollContainer 只包按钮排，横向滑动不影响下方详情区；照 hero_page 第35节）
+	var hscroll := ScrollContainer.new()
+	hscroll.custom_minimum_size = Vector2(0, 66)
+	hscroll.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	hscroll.horizontal_scroll_mode = ScrollContainer.SCROLL_MODE_SHOW_NEVER   # 可滑动但永不显示滚动条
+	hscroll.vertical_scroll_mode = ScrollContainer.SCROLL_MODE_DISABLED       # 纵向锁死
+	content.add_child(hscroll)
+	var btn_row := HBoxContainer.new()
+	btn_row.add_theme_constant_override("separation", 8)
+	hscroll.add_child(btn_row)
+	# 选中下标越界回退（防下标悬空）
+	var sel: int = clampi(_fanghua_sel, 0, fs.FANGHUA_SKILLS.size() - 1)
+	_fanghua_sel = sel
+	for i in range(fs.FANGHUA_SKILLS.size()):
+		var info: Dictionary = fs.FANGHUA_SKILLS[i]
+		btn_row.add_child(_build_fanghua_btn(str(info.name), fs.get_fanghua_level(fid, i), i == sel,
+			_on_fanghua_sel.bind(i)))
+	# 下方：选中技能详情区
+	_build_fanghua_detail(content, fid, sel)
+
+# 芳华技能按钮：矩形，上=技能名，下=等级；选中蓝框（照 hero_page._build_skill_button 版式）
+func _build_fanghua_btn(sname: String, lv: int, is_sel: bool, on_click: Callable) -> Button:
+	var btn := Button.new()
+	btn.custom_minimum_size = Vector2(100, 58)
+	btn.mouse_filter = Control.MOUSE_FILTER_PASS   # 穿透触摸滑动
+	var style := StyleBoxFlat.new()
+	style.bg_color = Color("#2c2844")
+	style.set_corner_radius_all(4)
+	if is_sel:
+		style.border_color = Color("#5aa9e6")
+		style.set_border_width_all(2)
+	else:
+		style.border_color = Color("#4a4468")
+		style.set_border_width_all(1)
+	btn.add_theme_stylebox_override("normal", style)
+	var hover: StyleBoxFlat = style.duplicate()
+	hover.bg_color = Color("#38325a")
+	btn.add_theme_stylebox_override("hover", hover)
+	btn.add_theme_stylebox_override("pressed", style)
+	var vb := VBoxContainer.new()
+	vb.set_anchors_preset(Control.PRESET_FULL_RECT)
+	vb.alignment = BoxContainer.ALIGNMENT_CENTER
+	vb.add_theme_constant_override("separation", 2)
+	btn.add_child(vb)
+	var name_lbl := Label.new()
+	name_lbl.text = sname
+	name_lbl.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	name_lbl.add_theme_font_size_override("font_size", 12)
+	vb.add_child(name_lbl)
+	var lv_lbl := Label.new()
+	lv_lbl.text = "%d级" % lv
+	lv_lbl.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	lv_lbl.add_theme_font_size_override("font_size", 11)
+	if lv > 0:
+		lv_lbl.add_theme_color_override("font_color", Color("#ffd700"))   # 有等级=金字
+	vb.add_child(lv_lbl)
+	btn.pressed.connect(on_click)
+	return btn
+
+# 芳华详情区：左=信息（技能名/等级/当前效果/下级效果/未解锁红字条件），右=拥有/消耗+升级钮+十连勾选
+func _build_fanghua_detail(content: VBoxContainer, fid: String, idx: int):
+	var fs = data.friend_system
+	var info: Dictionary = fs.FANGHUA_SKILLS[idx]
+	var lv = fs.get_fanghua_level(fid, idx)
+	var st = fs.get_fanghua_unlock_state(fid, idx)
+	var cost = fs.get_fanghua_cost(fid, idx)
+	var have = int(data.items.get(fs.get_fanghua_flower(fid), 0))
+	# 效果文案按类型：fixed=固定赚钱 / aptitude=资质 / percent=赚速百分比
+	var now_txt := ""
+	var next_txt := ""
+	match str(info.kind):
+		"fixed":
+			now_txt = "缘分门客赚钱+%s" % c.format_number(lv * int(info.value))
+			next_txt = "下级+%s" % c.format_number((lv + 1) * int(info.value))
+		"aptitude":
+			now_txt = "缘分门客资质+%d" % (lv * int(info.value))
+			next_txt = "下级+%d" % ((lv + 1) * int(info.value))
+		_:
+			now_txt = "缘分门客赚钱+%.1f%%" % (lv * float(info.value) * 100.0)
+			next_txt = "下级+%.1f%%" % ((lv + 1) * float(info.value) * 100.0)
+	var detail_wrap := Control.new()
+	detail_wrap.custom_minimum_size = Vector2(0, 108)
+	detail_wrap.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	content.add_child(detail_wrap)
+	var bg := Panel.new()
+	bg.set_anchors_preset(Control.PRESET_FULL_RECT)
+	var bgstyle := StyleBoxFlat.new()
+	bgstyle.bg_color = Color("#232035")
+	bgstyle.set_corner_radius_all(6)
+	bgstyle.border_color = Color("#4a4468")
+	bgstyle.set_border_width_all(1)
+	bg.add_theme_stylebox_override("panel", bgstyle)
+	detail_wrap.add_child(bg)
+	var row := HBoxContainer.new()
+	row.set_anchors_preset(Control.PRESET_FULL_RECT)
+	row.offset_left = 10
+	row.offset_top = 6
+	row.offset_right = -10
+	row.offset_bottom = -6
+	row.add_theme_constant_override("separation", 12)
+	detail_wrap.add_child(row)
+	var mid := VBoxContainer.new()
+	mid.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	mid.add_theme_constant_override("separation", 2)
+	row.add_child(mid)
+	var t := Label.new()
+	t.text = "%s  %d级" % [str(info.name), lv]
+	t.add_theme_color_override("font_color", Color("#ffd700"))
+	mid.add_child(t)
+	var e1 := Label.new()
+	e1.text = now_txt
+	mid.add_child(e1)
+	var e2 := Label.new()
+	e2.text = "（%s）" % next_txt
+	e2.add_theme_font_size_override("font_size", 12)
+	mid.add_child(e2)
+	if not st.unlocked:
+		var lock := Label.new()
+		lock.text = str(st.reason)
+		lock.add_theme_font_size_override("font_size", 12)
+		lock.add_theme_color_override("font_color", Color("#e74c3c"))
+		mid.add_child(lock)
+	# 右侧：拥有/消耗 + 升级按钮 + 十连勾选（未解锁=按钮禁用，消耗位显示解锁条件）
+	var right := VBoxContainer.new()
+	right.add_theme_constant_override("separation", 4)
+	right.size_flags_vertical = Control.SIZE_SHRINK_CENTER
+	row.add_child(right)
+	var cost_txt = str(cost) if st.unlocked else str(st.reason)
+	var cost_lbl := Label.new()
+	cost_lbl.text = "%s / %s" % [c.format_number(have), cost_txt]
+	right.add_child(cost_lbl)
+	var up_row := HBoxContainer.new()
+	up_row.alignment = BoxContainer.ALIGNMENT_END
+	up_row.add_theme_constant_override("separation", 4)
+	right.add_child(up_row)
+	var btn := Button.new()
+	btn.name = "FanghuaUpgradeBtn%d" % idx
+	btn.text = "升级"
+	btn.custom_minimum_size = Vector2(90, 34)
+	btn.disabled = not (st.unlocked and have >= cost)
+	btn.pressed.connect(_on_fanghua_upgrade.bind(idx))
+	up_row.add_child(btn)
+	var check := CheckBox.new()
+	check.name = "FanghuaBatchCheck%d" % idx
+	check.text = "十连"
+	up_row.add_child(check)
+
+# 【新增】芳华技能按钮切换：记选中下标并重建弹窗（选中态类变量记忆，不丢）
+func _on_fanghua_sel(idx: int):
+	_fanghua_sel = idx
+	_refresh_skill_popup()
+
+# 【新增】芳华技能升级：十连勾选=最多连升10级，花不足则升剩余级数（与才艺同口径）
+func _on_fanghua_upgrade(idx: int):
+	var fid = current_friend_id
+	if fid == "" or not data.friends.has(fid): return
+	var popup = c.get_node_or_null("SkillPopup")
+	var batch = false
+	if popup:
+		var check = popup.find_child("FanghuaBatchCheck%d" % idx, true, false)
+		if check != null:
+			batch = check.button_pressed
+	var res: Dictionary = data.friend_system.upgrade_fanghua(fid, idx, batch)
+	if int(res.get("upgraded", 0)) > 0:
+		_refresh_skill_popup()
+		_update_friend_page_detail()
+		c.update_all_ui()
+	else:
+		c._show_stage_hint(str(res.get("msg", "缘分之花不足！")))
+		if popup:
+			var btn = popup.find_child("FanghuaUpgradeBtn%d" % idx, true, false)
+			if btn:
+				c.flash_red(btn.get_path())
+
 func _on_skill_upgrade_in_popup(is_fixed: bool):
 	var fid = current_friend_id  
 	if fid == "" or not data.friends.has(fid): return
@@ -803,7 +1010,7 @@ func _show_title_popup():
 	var titles = data.FRIEND_TITLES
 	var idx = data.get_friend_title_index(fid)
 
-	var panel = c._create_base_popup("美名一览", Vector2(420, 300), Vector2(366, 140))
+	var panel = c._create_base_popup("美名一览", Vector2(420, 340), Vector2(366, 140))
 	panel.name = "TitlePopup"
 	var vbox = panel.get_child(0)
 
@@ -839,15 +1046,40 @@ func _show_title_popup():
 		max_lbl.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 		vbox.add_child(max_lbl)
 
-	# 说明行：告知自动判定，消除"找晋升按钮"的疑惑
-	var tip_lbl = Label.new()
-	tip_lbl.text = "（友好、才华达标后美名自动晋升）"
-	tip_lbl.add_theme_color_override("font_color", Color("#888888"))
-	tip_lbl.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
-	vbox.add_child(tip_lbl)
+	# 【新增】可晋升→晋升按钮（2026-09-19 手动晋升制；满级自然无钮）
+	var promo = data.friend_system.get_promotable_title_index(fid)
+	if promo >= 0:
+		var pbtn = Button.new()
+		pbtn.name = "PromoteTitleBtn"
+		pbtn.text = "晋升【%s】" % titles[promo].title
+		pbtn.pressed.connect(_on_promote_title)
+		vbox.add_child(pbtn)
+	elif idx < titles.size() - 1:
+		# 【改】手动晋升制说明（原"自动晋升"提示作废，2026-09-19）：未达标时提示养成方向
+		var tip_lbl = Label.new()
+		tip_lbl.text = "（友好、才华达标后点「晋升」按钮）"
+		tip_lbl.add_theme_color_override("font_color", Color("#888888"))
+		tip_lbl.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+		vbox.add_child(tip_lbl)
 
 	c._add_ok_button(vbox, func(): c._safe_close("TitlePopup"), "关闭")
 	c.add_child(panel)
+
+# 【新增】美名手动晋升：成功后重开弹窗刷新+详情同步，失败闪红提示
+func _on_promote_title():
+	var fid = current_friend_id
+	if fid == "" or not data.friends.has(fid): return
+	if data.friend_system.promote_title(fid):
+		if c.has_node("TitlePopup"): c.get_node("TitlePopup").queue_free()
+		_show_title_popup()
+		_update_friend_page_detail()
+		c.update_all_ui()
+	else:
+		c._show_stage_hint("晋升条件未达标！")
+		if c.has_node("TitlePopup"):
+			var pbtn = c.get_node("TitlePopup").find_child("PromoteTitleBtn", true, false)
+			if pbtn:
+				c.flash_red(pbtn.get_path())
 
 
 # ============ 底部礼物栏 ============

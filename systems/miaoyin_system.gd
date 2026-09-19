@@ -779,10 +779,24 @@ func _profession_name(prof_id: String) -> String:
 			return str(p.get("name", prof_id))
 	return prof_id
 
+# 【改】2026-09-19 用户拍板：挚友新秀职业 = 挚友 category 职业映射（侠→舞蹈/商→创作/工→乐器/农→声乐/士→仪态），
+# 替换原 id-hash 随机摊派（hash 不保证五职业人数均衡、也不讲人设）。芳华消耗之花同此映射（friends.json yyf_career）。
+const CATEGORY_PROF_MAP := {
+	"侠": "wudao",
+	"商": "chuangzuo",
+	"工": "yueqi",
+	"农": "shengyue",
+	"士": "yitai",
+}
+
 func _stable_prof_id(friend_id: String) -> String:
 	var ids: Array = _profession_ids()
 	if ids.is_empty():
 		return ""
+	# 职业映射优先；挚友配置缺 category（配置异常）时回退 hash，保证返回值稳定非空
+	var cat = str(g.get_friend_config(friend_id).get("category", ""))
+	if CATEGORY_PROF_MAP.has(cat):
+		return str(CATEGORY_PROF_MAP[cat])
 	return str(ids[abs(friend_id.hash()) % ids.size()])
 
 func _profession_good_id(prof_id: String) -> String:
@@ -811,8 +825,9 @@ func _ensure_rookies() -> void:
 				continue
 			r["lv"] = maxi(1, int(r.get("lv", 1)))
 			r["exp"] = maxi(0, int(r.get("exp", 0)))
-			if str(r.get("prof", "")) == "":
-				r["prof"] = _stable_prof_id(friend_id)
+			# 【改】2026-09-19 职业映射重构：prof 由 category 唯一决定，每次加载强制同步——
+			# 旧档 hash 分配自动纠偏；prof 是系统指派字段（玩家不可选），强刷安全（good 字段本就每轮强刷对齐）
+			r["prof"] = _stable_prof_id(friend_id)
 			var fixed_good: String = _stable_good_id(friend_id, str(r.get("prof", "")))
 			if str(r.get("good", "")) != fixed_good:
 				r["good"] = fixed_good
