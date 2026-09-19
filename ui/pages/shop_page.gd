@@ -29,6 +29,20 @@ const BUILDING_IMG_DIR := "res://assets/shops/"
 const MAP_BG_IMG := "res://assets/shops/map_bg.png"
 # 特色玩法七店（钱庄=总部 hq 在地图"最左最中间"；其余 6 店挂 24×24 玩法入口占位钮，批次2+ 逐个接通）
 const PLAY_SHOPS := ["hq", "ke_zhan", "yi_guan", "yao_pu", "jiu_fang", "jiu_si", "miaoyin_fang"]
+
+# 【新增】批次C（2026-09-19 重构）：特色玩法「▶」入口的视图映射——表驱动替代 7 段 if/elif 链，
+# 新增带入口的店铺=这里加一行。红点哪些店铺有（PLAY_SHOP_DOTS）与可见条件（_play_dot_visible）集中管理
+const PLAY_SHOP_VIEWS := {
+	"hq": "bank",               # 钱庄：柜台委任/百业经验/筹算值/信誉值
+	"ke_zhan": "inn",           # 客栈：营业/菜谱/庖丁解牛/兑换商店
+	"yi_guan": "clinic",        # 医馆：病人队列/科室升级/病症图鉴
+	"yao_pu": "drugshop",       # 药铺：体力接待/收益罐/工艺/药方/勋章/成就
+	"jiu_fang": "winery",       # 酒坊：三作坊/酿酒/采买/勋章/名酒记/品酒/酒客故事
+	"miaoyin_fang": "miaoyin",  # 妙音坊：主页/收益罐/加速卡/勋章/新秀/选秀
+	"jiu_si": "tavern",         # 酒肆：叫号接待/收益罐/餐饮娱乐设施
+}
+# 地图侧有红点的店铺（红点 Label 恒创建、visible 随条件切，update_entry_buttons 靠 has_node("PlayBtn/PlayDot") 找到它）
+const PLAY_SHOP_DOTS := ["yi_guan", "yao_pu", "jiu_si"]
 const MAP_ROWS := 3   # 街景三排建筑
 const MAP_COLS := 7   # 每排 7 栋 = 21 店铺
 const MAP_PAD := 16
@@ -261,61 +275,36 @@ func _add_building(content: Control, shop_id: String, pos: Vector2, bld_size: Ve
 		var play_shop_name: String = "钱庄"
 		if shop_id != "hq":
 			play_shop_name = str(data.get_shop_config(shop_id).get("name", ""))
-		if shop_id == "hq":
-			# 【新增】钱庄玩法入口（批次2：柜台委任/百业经验/筹算值/信誉值）
-			play.pressed.connect(c.show_view.bind("bank"))
-		elif shop_id == "ke_zhan":
-			# 【新增】客栈玩法入口（批次3：营业/菜谱/庖丁解牛/兑换商店）
-			play.pressed.connect(c.show_view.bind("inn"))
-		elif shop_id == "yi_guan":
-			# 【新增】医馆玩法入口（病人队列/科室升级/病症图鉴）
-			play.pressed.connect(c.show_view.bind("clinic"))
-			# 【新增】2026-09-16 病人满红点（地图侧唯一红点条件；医馆内部红点在 clinic_view 内，互不穿透）
-			var cydot := Label.new()
-			cydot.name = "PlayDot"
-			cydot.text = "●"
-			cydot.add_theme_color_override("font_color", Color("#e74c3c"))
-			cydot.add_theme_font_size_override("font_size", 14)
-			cydot.position = Vector2(14, -7)
-			cydot.mouse_filter = Control.MOUSE_FILTER_IGNORE
-			cydot.visible = data.clinic_system.is_patients_full()
-			play.add_child(cydot)
-		elif shop_id == "yao_pu":
-			# 【新增】药铺玩法入口（体力接待/收益罐/工艺/药方/勋章/成就）
-			play.pressed.connect(c.show_view.bind("drugshop"))
-			# 【新增】2026-09-16 病人满红点（地图侧唯一红点条件；药铺内部红点在 drugshop_view 内，互不穿透）
-			var pdot := Label.new()
-			pdot.name = "PlayDot"
-			pdot.text = "●"
-			pdot.add_theme_color_override("font_color", Color("#e74c3c"))
-			pdot.add_theme_font_size_override("font_size", 14)
-			pdot.position = Vector2(14, -7)   # 「▶」钮右上角（父钮 24×24，红点按常量定位）
-			pdot.mouse_filter = Control.MOUSE_FILTER_IGNORE
-			pdot.visible = data.drugshop_system.is_patients_full()
-			play.add_child(pdot)
-		elif shop_id == "jiu_fang":
-			# 【新增】酒坊玩法入口（批次②：三作坊/酿酒/采买；勋章/名酒记/品酒/酒客故事批次③）
-			play.pressed.connect(c.show_view.bind("winery"))
-			# 【改】2026-09-18 用户拍板：酒坊无"体力满"类强提醒，红点全部内部展示（winery_view 内），不穿透地图
-		elif shop_id == "miaoyin_fang":
-			# 【新增】妙音坊玩法入口（第一批：主页/收益罐/加速卡/勋章；红点页内展示，不穿透地图）
-			play.pressed.connect(c.show_view.bind("miaoyin"))
-		elif shop_id == "jiu_si":
-			# 【新增】酒肆玩法入口（叫号接待/收益罐/餐饮娱乐设施，档案四十二节批3接线）
-			play.pressed.connect(c.show_view.bind("tavern"))
-			# 地图侧唯一红点条件：有可升级/可解锁设施（酒肆内部红点在 tavern_view 内，互不穿透）
-			var tvdot := Label.new()
-			tvdot.name = "PlayDot"
-			tvdot.text = "●"
-			tvdot.add_theme_color_override("font_color", Color("#e74c3c"))
-			tvdot.add_theme_font_size_override("font_size", 14)
-			tvdot.position = Vector2(14, -7)   # 「▶」钮右上角（父钮 24×24，红点按常量定位）
-			tvdot.mouse_filter = Control.MOUSE_FILTER_IGNORE
-			tvdot.visible = data.tavern_system.has_upgradeable_facility() or data.tavern_system.has_unlockable_facility()
-			play.add_child(tvdot)
+		if PLAY_SHOP_VIEWS.has(shop_id):
+			# 【改】批次C：if/elif 链 → 表驱动；红点 Label 对 PLAY_SHOP_DOTS 内店铺恒创建（visible 随条件），
+			# 与旧行为一致——update_entry_buttons 靠 has_node("PlayBtn/PlayDot") 找它做后续刷新
+			play.pressed.connect(c.show_view.bind(PLAY_SHOP_VIEWS[shop_id]))
+			if PLAY_SHOP_DOTS.has(shop_id):
+				var dot := Label.new()
+				dot.name = "PlayDot"
+				dot.text = "●"
+				dot.add_theme_color_override("font_color", Color("#e74c3c"))
+				dot.add_theme_font_size_override("font_size", 14)
+				dot.position = Vector2(14, -7)   # 「▶」钮右上角（父钮 24×24，红点按常量定位）
+				dot.mouse_filter = Control.MOUSE_FILTER_IGNORE
+				dot.visible = _play_dot_visible(shop_id)
+				play.add_child(dot)
 		else:
 			play.pressed.connect(func(): c._show_stage_hint("【%s】特色玩法开发中，敬请期待" % play_shop_name))
 		bld.add_child(play)
+
+# 【新增】批次C：地图侧「▶」红点唯一条件（各玩法内部红点互不穿透，2026-09-16 口径）——
+# 医馆/药铺=病人满；酒肆=有可升级或可解锁设施；其余玩法无地图侧红点（页内展示）
+func _play_dot_visible(shop_id: String) -> bool:
+	match shop_id:
+		"yi_guan":
+			return data.clinic_system.is_patients_full()
+		"yao_pu":
+			return data.drugshop_system.is_patients_full()
+		"jiu_si":
+			return data.tavern_system.has_upgradeable_facility() or data.tavern_system.has_unlockable_facility()
+	return false
+
 
 func on_shop_entry_pressed(shop_id: String):
 	if data.shops.has(shop_id):
@@ -450,7 +439,7 @@ func on_hq_upgrade():
 		c.update_all_ui()
 		c.update_bag_list()
 	else:
-		c.flash_red("HQPanel/HQUpgradeBtn")
+		c.flash_red("HQPanel/VBoxContainer/HBoxContainer/HQUpgradeBtn")   # 【修】路径缺 VBoxContainer/HBoxContainer 中段，has_node 恒 false 永不闪红（2026-09-19 用户实测）
 
 func on_current_shop_upgrade():
 	if data.upgrade_shop(c.current_shop_id):
