@@ -559,10 +559,17 @@ func get_satisfaction_rate() -> float:
 	return float(good) / float(list.size())
 
 func get_collection_satisfaction_pct() -> float:
-	# c234「曲高和寡」= 妙音坊店员数量藏品：设计方案指定满意度+5%；其 special 槽已挂徒弟赚速，故此处读取式直连
-	if g.collection_system.is_owned("c234"):
-		return float(get_satisfaction_settings().get("collection_c234_bonus", 0.05))
-	return 0.0
+	# 仅 c194「冷月寒泉」= 满意度产出+2%（固定值不叠星，读取式，2026-09-19 藏宝接线批次）。
+	# ⚠历史错线已拆除：c234 曲高和寡是妙音坊店员数量藏品（xlsx 原始设计），曾被误挂满意度+5%（设计方案186行笔误）
+	return g.collection_system.get_special_pct("c194", 0.02)
+
+# 【新增】满意度页藏品加成行：逐件列出拥有的藏品（c234 固定 settings 值 / c194 固定 2%）。
+# 文案必须是"满意度产出"——本加成乘在产出率上（get_satisfaction_output_rate），不是满意度本体的百分比
+func get_collection_satisfaction_lines() -> Array:
+	var lines := []
+	if g.collection_system.is_owned("c194"):
+		lines.append("藏品 c194「冷月寒泉」：满意度产出 +2%")
+	return lines
 
 func get_satisfaction_score() -> float:
 	return clampf(get_satisfaction_rate() + get_collection_satisfaction_pct(), 0.0, 1.0)

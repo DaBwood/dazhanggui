@@ -70,7 +70,12 @@ func load_save_data(s: Dictionary):
 	if d.has("facility_levels") and d.facility_levels is Dictionary:
 		facility_levels = d.facility_levels
 	else:
-		_init_facilities_only()   # 有酒肆段但无设施表：补初始设施（不发友好/才华，累计值从零起）
+		_init_facilities_only()
+	# 【新增】2026-09-19 空设施表自愈：旧档 bug 会把空表 {} 存进存档（初始装配空跑过），
+	# "is Dictionary" 分支照样采纳空表 → 无设施 → 每客银条恒 0（收入=get_income_per_guest 按已解锁设施求和）。
+	# 空表=从未装配成功=羁绊也没发过 → _init_defaults 整体重来安全（granted 不防重复，故只在空表时触发这一次）
+	if facility_levels.is_empty():
+		_init_defaults()   # 有酒肆段但无设施表：补初始设施（不发友好/才华，累计值从零起）
 	if d.has("granted") and d.granted is Dictionary:
 		granted = d.granted
 	if d.has("caiyi") and d.caiyi is Dictionary:
@@ -202,7 +207,7 @@ func _serve_one():
 	if randf() < float(_st().get("serve_exp_pct", 0.5)):
 		var hero_ids: Array = g.heroes.keys()
 		if not hero_ids.is_empty():
-			g.bank_system.add_baiye(str(hero_ids[randi() % hero_ids.size()]), get_baiye_per_guest())
+			g.hero_system.add_baiye(str(hero_ids[randi() % hero_ids.size()]), get_baiye_per_guest())
 	else:
 		var friend_ids: Array = g.friends.keys()
 		if not friend_ids.is_empty():
@@ -316,7 +321,8 @@ func get_income_per_guest() -> int:
 	for f in get_facility_list():
 		if is_facility_unlocked(str(f.get("id", ""))):
 			total += get_facility_income(f)
-	return total
+	# 【新增】2026-09-19 藏品「招财进宝」酒肆银条收益+2%（固定值，合成即生效升星不叠加；round 防低基数取整吞加成）
+	return int(round(total * (1.0 + g.collection_system.get_special_pct("c187", 0.02))))
 
 # 每客百业经验 = 20 + 酒肆等级×1
 func get_baiye_per_guest() -> int:

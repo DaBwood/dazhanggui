@@ -193,11 +193,11 @@ func upgrade_skill(hero_id: String, skill_idx: int, batch: bool = false, use_bai
 		levels = min(mini(floori(int(g.items.get("aptitude_pill", 0)) / float(cost_per)), remaining), 10)
 	if use_baiye:
 		# 百业经验抵扣：池够升多少升多少（batch 封顶10级）
-		var per_level: int = cost_per * g.bank_system.get_baiye_per_pill()
-		var pool: int = g.bank_system.get_baiye(hero_id)
+		var per_level: int = cost_per * g.hero_system.get_baiye_per_pill()
+		var pool: int = g.hero_system.get_baiye(hero_id)
 		levels = 1 if not batch else min(mini(floori(pool / float(per_level)), remaining), 10)
 		if levels <= 0: return 0
-		if not g.bank_system.spend_baiye_for_pills(hero_id, levels * cost_per): return 0
+		if not g.hero_system.spend_baiye_for_pills(hero_id, levels * cost_per): return 0
 		skill.level = int(skill.level) + levels
 		return levels
 	if int(g.items.get("aptitude_pill", 0)) < cost_per: return 0

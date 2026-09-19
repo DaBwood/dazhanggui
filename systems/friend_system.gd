@@ -66,16 +66,30 @@ func _prepare_chat_adoption(default_friend_id: String) -> Dictionary:
 	return bless
 
 # 【新增】四批：精力懒结算——基础每小时恢复1点（c190改速度）；满值不溢出、超出不截断；新存档字段 energy_time，老存档默认当前时刻
+# ============ 谈心精力（挚友域，2026-09-19 从 collection_system 归位：机制属挚友，藏品加成仍问 collection） ============
+# 身份成长曲线=game_data.TALK_ENERGY_CAP/REGEN 查表（各 60 项=身份 1~60 级，1 级 3 点/3600 秒 → 60 级 30 点/1800 秒封顶）
+func _talk_energy_base() -> Array:
+	var lv: int = mini(maxi(g.identity_level, 1), 60)
+	return [int(g.TALK_ENERGY_CAP[lv - 1]), int(g.TALK_ENERGY_REGEN[lv - 1])]
+
+func get_energy_cap() -> int:
+	# c200「君不见」= 上限+1（固定不叠星）；kind=energy_max_up 叠星加成由 collection 侧求和
+	return int(_talk_energy_base()[0]) + g.collection_system.get_energy_max_up_sum() + (1 if g.collection_system.is_owned("c200") else 0)
+
+func get_energy_regen_seconds() -> int:
+	# 全局下限 300 秒/点
+	return maxi(300, int(_talk_energy_base()[1]) - g.collection_system.get_energy_regen_down_sum())
+
 func _settle_energy() -> void:
 	var now = Time.get_unix_time_from_system()
 	if g.energy_time <= 0.0:
 		g.energy_time = now
 		return
-	var cap = g.collection_system.get_energy_cap()
+	var cap = get_energy_cap()
 	if g.energy >= cap:
 		g.energy_time = now
 		return
-	var secs = g.collection_system.get_energy_regen_seconds()
+	var secs = get_energy_regen_seconds()
 	var regen = int((now - g.energy_time) / secs)
 	if regen > 0:
 		g.energy = min(cap, g.energy + regen)

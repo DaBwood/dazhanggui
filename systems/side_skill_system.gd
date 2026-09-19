@@ -119,7 +119,7 @@ func get_stock(hero_id: String, key: String) -> int:
 	var conf := _cfg(key)
 	match str(conf.get("currency", "")):
 		"baiye":
-			return int(g.bank_system.get_baiye(hero_id))
+			return int(g.hero_system.get_baiye(hero_id))
 		"hangshi":
 			return hangshi
 		"yinyuan":
@@ -152,7 +152,7 @@ func _spend_one(hero_id: String, key: String, level: int) -> bool:
 	match str(conf.get("currency", "")):
 		"baiye":
 			# 复用「300百业经验=1资质丹」抵扣规则：1级=300经验
-			return g.bank_system.spend_baiye_for_pills(hero_id, 1)
+			return g.hero_system.spend_baiye_for_pills(hero_id, 1)
 		"hangshi":
 			var cost_h := int(conf.get("cost", 100))
 			if hangshi < cost_h: return false

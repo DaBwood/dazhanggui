@@ -293,12 +293,12 @@ func upgrade_side_skill(hero_id: String, skill_idx: int, batch: bool = false, us
 		levels = min(mini(affordable, remaining), 10)
 	if use_baiye:
 		# 百业经验抵扣：池够升多少升多少（batch 封顶10级）
-		var per_level: int = star * g.bank_system.get_baiye_per_pill()
-		var pool: int = g.bank_system.get_baiye(hero_id)
+		var per_level: int = star * g.hero_system.get_baiye_per_pill()
+		var pool: int = g.hero_system.get_baiye(hero_id)
 		levels = 1 if not batch else min(mini(floori(pool / float(per_level)), remaining), 10)
 		if levels <= 0:
 			return false
-		if not g.bank_system.spend_baiye_for_pills(hero_id, levels * star):
+		if not g.hero_system.spend_baiye_for_pills(hero_id, levels * star):
 			return false
 		skill.side_level = int(skill.get("side_level", 0)) + levels
 		return true

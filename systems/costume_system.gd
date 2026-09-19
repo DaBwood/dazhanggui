@@ -178,11 +178,11 @@ func upgrade_cos_skill(hero_id: String, cos_id: String, mode: String = "single",
 	var levels = 0
 	if use_baiye:
 		# 百业经验抵扣：池够升多少升多少（bulk 封顶10级）
-		var per_level: int = cost * g.bank_system.get_baiye_per_pill()
-		var affordable: int = floori(g.bank_system.get_baiye(hero_id) / float(per_level))
+		var per_level: int = cost * g.hero_system.get_baiye_per_pill()
+		var affordable: int = floori(g.hero_system.get_baiye(hero_id) / float(per_level))
 		levels = min(mini(affordable, max_lv - base), limit)
 		if levels <= 0: return {"ok": false, "msg": "百业经验不足"}
-		if not g.bank_system.spend_baiye_for_pills(hero_id, levels * cost):
+		if not g.hero_system.spend_baiye_for_pills(hero_id, levels * cost):
 			return {"ok": false, "msg": "百业经验不足"}
 		st["base"] = base + levels
 		return {"ok": true, "levels": levels}

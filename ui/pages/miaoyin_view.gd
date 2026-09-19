@@ -396,19 +396,19 @@ func _build_satisfaction_page(page: Panel):
 	_add_sub_header(root, "满意度")
 	var score: float = _sys().get_satisfaction_score()
 	var bonus_pct: float = _sys().get_satisfaction_bonus_pct()
-	var c234_pct: float = _sys().get_collection_satisfaction_pct()
 	var bad_n: int = _sys().get_bad_unresolved_count()
 	var summary := Label.new()
 	summary.text = "满意度 %.0f%%　三轨产出 +%.0f%%　未处理差评 %d　每日12:00刷新" % [score * 100.0, bonus_pct * 100.0, bad_n]
 	summary.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	summary.add_theme_font_size_override("font_size", 16)
 	root.add_child(summary)
-	if c234_pct > 0.0:
-		var c234_lbl := Label.new()
-		c234_lbl.text = "藏品 c234「曲高和寡」：满意度 +%.0f%%" % (c234_pct * 100.0)
-		c234_lbl.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
-		c234_lbl.add_theme_color_override("font_color", Color("#7ee787"))
-		root.add_child(c234_lbl)
+	# 【改】2026-09-19：逐件列出拥有的满意度产出藏品（含 c194 冷月寒泉）；文案=满意度产出（乘产出率，非满意度本体）
+	for line_text in _sys().get_collection_satisfaction_lines():
+		var cl := Label.new()
+		cl.text = line_text
+		cl.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+		cl.add_theme_color_override("font_color", Color("#7ee787"))
+		root.add_child(cl)
 	var scroll := ScrollContainer.new()
 	scroll.size_flags_vertical = Control.SIZE_EXPAND_FILL
 	scroll.horizontal_scroll_mode = ScrollContainer.SCROLL_MODE_DISABLED

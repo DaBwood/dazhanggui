@@ -410,7 +410,7 @@ func _show_baiye_selector():
 		var h = data.heroes[hero_id]
 		var btn = Button.new()
 		btn.text = "【%s】%s Lv.%d | %s/秒 | 百业经验 %s" % [h.name, h.category, h.level,
-			c.format_number(data.get_hero_income(hero_id)), c.format_number(data.bank_system.get_baiye(hero_id))]
+			c.format_number(data.get_hero_income(hero_id)), c.format_number(data.hero_system.get_baiye(hero_id))]
 		btn.pressed.connect(_on_baiye_target_selected.bind(hero_id))
 		list.add_child(btn)
 
@@ -429,7 +429,7 @@ func _on_baiye_target_selected(hero_id: String):
 	# 每本 +per 百业经验（per 进道具 use 配置，不硬编码）；入钱庄百业个人池
 	var per: int = int(data.ITEM_CONFIG.get("baiye_zhaji", {}).get("use", {}).get("per", 10))
 	data.items["baiye_zhaji"] = int(data.items.get("baiye_zhaji", 0)) - count
-	data.bank_system.add_baiye(hero_id, per * count)
+	data.hero_system.add_baiye(hero_id, per * count)
 	c._show_stage_hint("【%s】百业经验 +%d" % [data.heroes[hero_id].name, per * count])
 	_pending_baiye_count = 0
 	_close_baiye_selector()

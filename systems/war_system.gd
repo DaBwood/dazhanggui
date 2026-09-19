@@ -72,7 +72,9 @@ func get_hero_name(hero_id: String) -> String:
 func get_tax_multiplier() -> float:
 	var st = get_settings()
 	var t = (g.war_tax_level - 1) / float(st.get("tax_mult_curve_levels", 98))
-	return float(st.get("tax_mult_base", 1.0)) + float(st.get("tax_mult_span", 1.58)) * pow(maxf(t, 0.0), float(st.get("tax_mult_curve_exp", 1.5)))
+	var base: float = float(st.get("tax_mult_base", 1.0)) + float(st.get("tax_mult_span", 1.58)) * pow(maxf(t, 0.0), float(st.get("tax_mult_curve_exp", 1.5)))
+	# 【新增】2026-09-19 藏品「惟妙惟肖」c202 税所收益+2%（固定值不叠星，读取式）：乘在倍数上——待领显示与实领同口径
+	return base * (1.0 + g.collection_system.get_special_pct("c202", 0.02))
 
 # 税所累积上限（分钟）
 func get_tax_cap_minutes() -> int:

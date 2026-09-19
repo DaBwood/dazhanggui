@@ -102,7 +102,7 @@ func use_item(item_id: String, count: int) -> Dictionary:
 			var baiye_gains = {}
 			for i in range(count):
 				var hid = g.heroes.keys()[randi() % g.heroes.size()]
-				g.bank_system.add_baiye(hid, 10)
+				g.hero_system.add_baiye(hid, 10)
 				baiye_gains[hid] = baiye_gains.get(hid, 0) + 10
 			var baiye_parts = []
 			for hid in baiye_gains.keys():

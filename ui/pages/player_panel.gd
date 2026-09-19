@@ -109,7 +109,8 @@ func open_player_panel():
 	chest_btn.name = "DailyChestBtn"
 	chest_btn.custom_minimum_size = Vector2(160, 50)
 	if data.can_claim_daily_reward():
-		chest_btn.text = "每日宝箱\n领 %s 元宝" % c.format_number(data.identity_level * 10000)
+		# 【改】2026-09-19 显示含藏品加成（c205~c219 拥有每件+1000/日），与 game_data.claim_daily_reward 同口径
+		chest_btn.text = "每日宝箱\n领 %s 元宝" % c.format_number(data.identity_level * 10000 + data.collection_system.get_identity_chest_yuanbao())
 	else:
 		chest_btn.text = "每日宝箱\n已领取"
 		chest_btn.disabled = true

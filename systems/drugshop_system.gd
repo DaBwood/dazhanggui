@@ -185,7 +185,9 @@ func _settle_one():
 	var pool := get_unlocked_recipes()
 	var rc: Dictionary = pool[randi() % pool.size()]
 	var rid: String = str(rc.get("id", ""))
-	pot["coins"] = int(pot.get("coins", 0)) + get_recipe_price(rid)
+	# 【改】2026-09-19 藏品「落地生财」铜板+2%/星（读取式）：入罐时加成——收益罐显示=实领
+	# round 而非 int：34 基础 × 2% = 0.68，int 取整会吞掉低星加成，四舍五入保证每单至少体现 +1
+	pot["coins"] = int(pot.get("coins", 0)) + int(round(get_recipe_price(rid) * (1.0 + g.collection_system.get_special_star_pct("c192", 0.02))))
 	pot["exp"] = int(pot.get("exp", 0)) + int(rc.get("exp", 0))
 	var profs: Dictionary = pot.get("prof", {})
 	profs[rid] = int(profs.get(rid, 0)) + int(_st().get("prof_per_serve", 100))

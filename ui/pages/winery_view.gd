@@ -83,7 +83,7 @@ func _build(page: Panel):
 		var card := Button.new()
 		card.text = "%s　五流程合计 S=%d 级\n单次酿造 酒香+%d / 酒艺+%d（点按进入）" % [
 			w.get("name", wid), _sys().get_workshop_S(wid),
-			_sys().get_brew_output(wid), _sys().get_brew_output(wid)]
+			_sys().get_brew_output_jiuxiang(wid), _sys().get_brew_output(wid)]
 		card.custom_minimum_size = Vector2(0, 72)
 		card.add_theme_font_size_override("font_size", 18)
 		var wid_c: String = wid
@@ -174,7 +174,7 @@ func _show_workshop_popup(wid: String):
 	var vb: VBoxContainer = popup.get_child(0)
 	var info := Label.new()
 	info.text = "五流程合计 S=%d 级　单次酿造 酒香+%d / 酒艺+%d" % [
-		_sys().get_workshop_S(wid), _sys().get_brew_output(wid), _sys().get_brew_output(wid)]
+		_sys().get_workshop_S(wid), _sys().get_brew_output_jiuxiang(wid), _sys().get_brew_output(wid)]
 	info.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
 	vb.add_child(info)
 	# 同步升级勾选（一键拉平五流程，酒艺值不足自动停）
@@ -247,7 +247,7 @@ func _show_brew_popup():
 		var have: int = _sys().get_material(mid)
 		var head := Label.new()
 		head.text = "%s　库存 %d　单次酿造 酒香+%d / 酒艺+%d" % [
-			m.get("name", mid), have, _sys().get_brew_output(mid), _sys().get_brew_output(mid)]
+			m.get("name", mid), have, _sys().get_brew_output_jiuxiang(mid), _sys().get_brew_output(mid)]
 		head.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
 		vb.add_child(head)
 		# 滑杆批量（1~库存）+ 数字显示 + 酿造按钮（数量选择器用滑杆+SpinBox，同体力丹范式，不依赖手机键盘）
@@ -609,7 +609,7 @@ func _show_drink_popup():
 		var st := Label.new()
 		st.text = "交情 %s（Lv.%d）　百业经验 %s　满意 %d" % [
 			c.format_number(_sys().get_bond_exp(invited)), _sys().get_bond_level(invited),
-			c.format_number(data.bank_system.get_baiye(invited)), _sys().get_bond_satis(invited)]
+			c.format_number(data.hero_system.get_baiye(invited)), _sys().get_bond_satis(invited)]
 		st.add_theme_color_override("font_color", Color("#9a93b8"))
 		st.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
 		vb.add_child(st)

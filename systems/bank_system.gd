@@ -22,7 +22,6 @@ func _init(p_g):
 
 # ============ 存档（本系统持有的字段） ============
 var counters: Array = []        # 柜台 [{hero_id, start_time}]，长度随解锁数懒增长
-var baiye: Dictionary = {}      # 百业经验个人池 {hero_id: 数量}
 var chousuan: Dictionary = {}   # 筹算值个人池 {hero_id: 数量}【第37节】柜台产出归柜台所属门客
 var xinyu: int = 0              # 信誉值
 var xinyu_level: int = 0        # 钱庄玩法内等级（信誉等级）
@@ -32,7 +31,6 @@ var counter_unlocked: int = 0   # 手动解锁的柜台数（前5个免费，之
 func get_save_data() -> Dictionary:
 	return {
 		"bank_counters": counters,
-		"bank_baiye": baiye,
 		"bank_chousuan": chousuan,
 		"bank_xinyu": xinyu,
 		"bank_xinyu_level": xinyu_level,
@@ -42,7 +40,6 @@ func get_save_data() -> Dictionary:
 # 从扁平存档表认领本系统字段（老档缺字段则保持初始值，类型防御防一处崩整轮）
 func load_save_data(s: Dictionary):
 	if s.has("bank_counters") and s.bank_counters is Array: counters = s.bank_counters
-	if s.has("bank_baiye") and s.bank_baiye is Dictionary: baiye = s.bank_baiye
 	if s.has("bank_chousuan") and s.bank_chousuan is Dictionary: chousuan = s.bank_chousuan   # 【第37节】旧int存档丢弃=清零
 	if s.has("bank_xinyu"): xinyu = int(s.bank_xinyu)
 	if s.has("bank_xinyu_level"): xinyu_level = int(s.bank_xinyu_level)
@@ -60,9 +57,6 @@ func get_cap_seconds() -> int:
 	return int(_st().get("cap_seconds", 86400))
 
 # 百业经验抵扣单价：1颗资质丹 = 300 百业经验
-func get_baiye_per_pill() -> int:
-	return int(_st().get("baiye_per_pill", 300))
-
 # ============ 柜台 ============
 # 已解锁柜台数 = 前5个免费 + 手动解锁数（用户拍板：不随店铺等级自动解锁），封顶30
 func get_counter_count() -> int:
@@ -137,7 +131,7 @@ func get_pending(idx: int) -> Dictionary:
 	var st: Dictionary = _st()
 	return {
 		"baiye": ticks * int(st.get("tick_baiye", 1)),
-		"chousuan": ticks * int(st.get("tick_chousuan", 40)),
+		"chousuan": int(ticks * int(st.get("tick_chousuan", 40)) * (1.0 + g.collection_system.get_special_pct("c204", 0.02))),   # 【新增】藏品「飞衡」筹算值产出+2%/星（读取式，2026-09-19）
 		"xinyu": ticks * int(st.get("tick_xinyu", 40)),
 	}
 
@@ -147,7 +141,7 @@ func collect_counter(idx: int) -> Dictionary:
 	if hid == "" or not g.heroes.has(hid): return {}
 	var gain := get_pending(idx)
 	if int(gain["baiye"]) + int(gain["chousuan"]) + int(gain["xinyu"]) <= 0: return {}
-	baiye[hid] = int(baiye.get(hid, 0)) + int(gain["baiye"])
+	g.hero_system.add_baiye(hid, int(gain["baiye"]))   # 【改】2026-09-19 域归位：百业池在 hero_system
 	chousuan[hid] = int(chousuan.get(hid, 0)) + int(gain["chousuan"])
 	xinyu += int(gain["xinyu"])
 	counters[idx]["start_time"] = Time.get_unix_time_from_system()   # 重置计时
@@ -172,27 +166,6 @@ func unassign_hero(idx: int) -> Dictionary:
 	if idx >= 0 and idx < counters.size():
 		counters[idx] = {"hero_id": "", "start_time": 0}
 	return gain
-
-# ============ 百业经验（每门客个人池） ============
-func get_baiye(hero_id: String) -> int:
-	return int(baiye.get(hero_id, 0))
-
-# 【新增】2026-09-16 百业札记入账入口：道具使用/活动发放统一走这里（个人池直加，无上限）
-func add_baiye(hero_id: String, n: int):
-	baiye[hero_id] = get_baiye(hero_id) + n
-
-func get_baiye_total() -> int:
-	var total := 0
-	for k in baiye.keys():
-		total += int(baiye[k])
-	return total
-
-# 用百业经验抵扣 pills 颗资质丹（300×pills 经验），成功扣池返回 true
-func spend_baiye_for_pills(hero_id: String, pills: int) -> bool:
-	var need := pills * get_baiye_per_pill()
-	if get_baiye(hero_id) < need: return false
-	baiye[hero_id] = get_baiye(hero_id) - need
-	return true
 
 # ============ 筹算值（门客店铺技能第二货币轨） ============
 # ============ 筹算值（独立技能「财源广进」，结构/加成与原店铺技能一模一样） ============

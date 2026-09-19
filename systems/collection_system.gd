@@ -75,6 +75,24 @@ func get_total_score() -> int:
 		total += get_collection_score(cid)
 	return total
 
+# 【新增】系统向藏品特殊效果按星取值（2026-09-19 藏宝接线批次）：已拥有=per_star×当前星数，否则 0。读取式统一入口
+func get_special_star_pct(coll_id: String, per_star: float) -> float:
+	if not is_owned(coll_id): return 0.0
+	return per_star * float(get_star(coll_id))
+
+# 【新增】系统向藏品特殊效果固定值（2026-09-19 用户指正：这类效果合成即生效、升星不叠加，最多就是标称值）
+func get_special_pct(coll_id: String, pct: float) -> float:
+	if not is_owned(coll_id): return 0.0
+	return pct
+
+# 【新增】2026-09-19 身份宝箱藏品加成：15 件"每日身份宝箱元宝+1000"（c205~c219 连续号段），
+# 固定值不叠星——拥有每件 +1000 元宝/日（游戏内"每日宝箱"= 身份等级×1万 + 本加成）
+func get_identity_chest_yuanbao() -> int:
+	var n := 0
+	for i in range(205, 220):
+		if is_owned("c%d" % i): n += 1
+	return n * 1000
+
 # ---------- 藏宝勋章（2026-09-19，照钓鱼勋章固定样式；15级 need_score 门槛，配置见 settings.medal） ----------
 func _medal_cfgs() -> Array:
 	return _settings().get("medal", [])
@@ -664,8 +682,11 @@ func get_war_points_pct() -> float:
 	return _owned_special_sum("war_points_pct") / 100.0
 
 # 精力（挚友）：上限（c200 每星+1，基础100）与恢复秒数（c190 每星-30秒，基础3600=每小时1点，下限300）
-func get_energy_cap() -> int:
-	return 100 + int(_owned_special_sum("energy_max_up"))
+# ============ 谈心精力藏品加成（挚友域机制，2026-09-19 归位：上限/恢复本体在 friend_system） ============
+# kind=energy_max_up 按星求和（叠星类）
+func get_energy_max_up_sum() -> int:
+	return int(_owned_special_sum("energy_max_up"))
 
-func get_energy_regen_seconds() -> int:
-	return maxi(300, 3600 - int(_owned_special_sum("energy_regen_down")))
+# kind=energy_regen_down 按星求和（叠星类，念奴娇每星-30 秒）
+func get_energy_regen_down_sum() -> int:
+	return int(_owned_special_sum("energy_regen_down"))

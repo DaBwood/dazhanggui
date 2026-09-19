@@ -6,7 +6,7 @@
 # 货币线：酒艺值（酿造产出，升流程）｜酒香值（酿造产出，累计升勋章 15 级，只增不减）｜元宝（采买材料）
 # 加成接线：①勋章全部商铺赚速%（shop_system 百分比层，同药铺勋章挂点）
 #           ②流程对应职业商铺赚速+10%×级（读取式，shop_system 百分比层追加）
-# 待接入（方案 §8 挂标记，勿动）：勋章 refine_cap 写入天赋 / 藏品对酒香加成 / 家具币挂点 / 6 种新道具效果
+# 待接入（方案 §8 挂标记，勿动）：勋章 refine_cap 写入天赋 / 藏品对酒香加成(已接 2026-09-19: c196 玉生烟 +2%/星) / 家具币挂点 / 6 种新道具效果
 # 状态内部持有随 get_save_data 落盘（game_data 只注册系统+加载配置，零新字段，同 drugshop 惯例）
 # ============================================================
 class_name WinerySystem
@@ -251,6 +251,10 @@ func sync_upgrade_workshop(wid: String) -> Dictionary:
 	return {"ok": true, "up": up}
 
 # 单次酿造产出：五流程 Σ（每级每流程 酒香/酒艺 各 +5×级）
+# 【新增】单次酿造酒香（含藏品「玉生烟」+2%/星加成）：预览/累计同口径，升星自动生效
+func get_brew_output_jiuxiang(wid: String) -> int:
+	return int(get_brew_output(wid) * (1.0 + g.collection_system.get_special_pct("c196", 0.02)))
+
 func get_brew_output(wid: String) -> int:
 	var per: int = int(_st().get("brew_output_per_lv", 5))
 	var total := 0
@@ -330,9 +334,12 @@ func brew(mid: String, n: int = 1) -> Dictionary:
 				wines[wid2]["brewed"] = int(wines[wid2].get("brewed", 0)) + 1
 				break
 	g.items[mid] = get_material(mid) - n   # 消耗走物品表
-	jiuxiang += output * n   # 累计酒香（勋章进度，只增不减）
+	# 【改】2026-09-19 藏品「玉生烟」酒香产出+2%/星（读取式）：累计点加成——预览/实发同口径
+	jiuxiang += int(output * n * (1.0 + g.collection_system.get_special_pct("c196", 0.02)))   # 累计酒香（勋章进度，只增不减）
 	jiuyi += output * n      # 酒艺值入池（升流程）
-	return {"ok": true, "n": n, "got": got, "jiuxiang": output * n, "jiuyi": output * n}
+	# 【改】2026-09-19 接入挂标记「藏品对酒香加成」：藏品「玉生烟」酒香产出+2%/星（读取式）
+	var jiuxiang_out := int(output * n * (1.0 + g.collection_system.get_special_pct("c196", 0.02)))
+	return {"ok": true, "n": n, "got": got, "jiuxiang": jiuxiang_out, "jiuyi": output * n}
 
 # 有可酿材料（地图/主页红点用；库存读物品表）
 func has_brewable() -> bool:
@@ -499,7 +506,7 @@ func drink(hero_id: String, wine_id: String, n: int = 1) -> Dictionary:
 	_wine_entry(wine_id)["cnt"] = get_wine_cnt(wine_id) - n
 	var bonus: float = get_bond_bonus_pct(hero_id)
 	var baiye_gain: int = int(round(float(wc.get("baiye", 0)) * (1.0 + bonus))) * n
-	g.bank_system.add_baiye(hero_id, baiye_gain)
+	g.hero_system.add_baiye(hero_id, baiye_gain)
 	var b: Dictionary = get_bond(hero_id)
 	b["exp"] = get_bond_exp(hero_id) + int(wc.get("bond", 0)) * n
 	b["satis"] = get_bond_satis(hero_id) + int(wc.get("satis", 0)) * n

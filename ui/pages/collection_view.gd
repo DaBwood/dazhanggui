@@ -464,7 +464,12 @@ func _collection_special_effect(cid: String) -> String:
 		"energy_regen_down":
 			return "特殊效果：精力恢复 -%d秒/点（当前★%d）" % [int(per0 * st0), st0]
 	if kind == "" or kind == "display":
-		return "特殊效果：后续版本开放"
+		# 【改】2026-09-19：desc-only 特殊效果显示真实文案+接入状态（38 个待接线藏品，清单见 藏品特殊效果待接线清单.md）
+		var sp_desc := str(sp.get("desc", ""))
+		if sp_desc == "":
+			return "特殊效果：后续版本开放"
+		var tag := "（已接入）" if sp.get("wired", false) else "（未开放）"
+		return "特殊效果：%s%s" % [sp_desc, tag]
 	var st = sys.get_star(cid) if sys.is_owned(cid) else 1
 	var per_star = float(sp.get("per_star", 0))
 	var is_pct = kind.ends_with("_pct")

@@ -254,7 +254,8 @@ func _treat_one():
 	var illnesses := get_unlocked_illnesses()
 	var illness_id: String = illnesses[randi() % illnesses.size()]
 	var preview := get_illness_preview(illness_id)
-	var bonus: float = float(patient.get("bonus", 0))
+	# 【新增】藏品「财源广进」医馆评分产出+2%/星（读取式，2026-09-19）
+	var bonus: float = float(patient.get("bonus", 0)) + g.collection_system.get_special_star_pct("c201", 0.02)
 	var score_gain := int(floor(preview["score"] * (1.0 + bonus)))
 	jar_yishu += int(preview["yishu"])
 	illness_scores[illness_id] = get_illness_score(illness_id) + score_gain
@@ -365,6 +366,12 @@ func get_illness_preview(illness_id: String) -> Dictionary:
 		yishu_sum += get_dept_yishu(str(dept_id))
 		score_sum += get_dept_score(str(dept_id))
 	return {"yishu": yishu_sum, "score": score_sum}
+
+# 【新增】含藏品「财源广进」+2%/星的评分预览：显示口径与结算口径一致（_treat_one 内 bonus 含同一读取式）
+func get_illness_preview_boosted(illness_id: String) -> Dictionary:
+	var p := get_illness_preview(illness_id)
+	p["score"] = int(int(p["score"]) * (1.0 + g.collection_system.get_special_star_pct("c201", 0.02)))
+	return p
 
 # 已解锁病症列表：读缓存（脏时重建）；返回只读引用，外部勿修改
 func get_unlocked_illnesses() -> Array:

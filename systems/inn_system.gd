@@ -147,7 +147,8 @@ func _settle() -> int:
 	if done <= 0: return 0
 	var career := str(cooking.get("career", ""))
 	var mult := 2 if is_bonus_career(career) else 1
-	pending["cuisine"] = int(pending.get("cuisine", 0)) + done * int(pack.get("cuisine", 0)) * mult
+	# 【改】2026-09-19 藏品「青云梯」厨艺+2%/星（读取式）：入待领时加成——收益罐显示=实领
+	pending["cuisine"] = int(pending.get("cuisine", 0)) + int(done * int(pack.get("cuisine", 0)) * mult * (1.0 + g.collection_system.get_special_star_pct("c198", 0.02)))
 	pending["hero"] = str(cooking.get("hero_id", ""))   # 【第37节】厨艺值归营业门客
 	pending["jiao"] = int(pending.get("jiao", 0)) + done * int(pack.get("jiao", 0)) * mult
 	var key := str(cooking.get("pack_id", "")) + "|" + career

@@ -15,9 +15,37 @@ func _init(p_g):
 
 # ============ 存档：本系统拥有的字段 ============
 # 提供本系统的存档字段（由 GameData.save_game 合并进扁平存档表，格式与旧版完全一致）
+# 百业经验个人池 {hero_id: 数量}（2026-09-19 从 bank_system 归位：门客域资源，钱庄/酒肆/酒坊产出统一 add_baiye 入账）
+var baiye: Dictionary = {}
+
+# ============ 百业经验（门客域，2026-09-19 归位自 bank_system） ============
+func get_baiye(hero_id: String) -> int:
+	return int(baiye.get(hero_id, 0))
+
+func add_baiye(hero_id: String, n: int):
+	baiye[hero_id] = get_baiye(hero_id) + n
+
+func get_baiye_total() -> int:
+	var total := 0
+	for k in baiye.keys():
+		total += int(baiye[k])
+	return total
+
+# 兑换价配置暂留 bank.json settings（百业经验由钱庄 tick 产出，产出速率与兑换价同文件）；门客域读取
+func get_baiye_per_pill() -> int:
+	return int(g._bank_configs.get("settings", {}).get("baiye_per_pill", 300))
+
+# 用百业经验抵扣 pills 颗资质丹（baiye_per_pill×pills 经验），成功扣池返回 true
+func spend_baiye_for_pills(hero_id: String, pills: int) -> bool:
+	var need := pills * get_baiye_per_pill()
+	if get_baiye(hero_id) < need: return false
+	baiye[hero_id] = get_baiye(hero_id) - need
+	return true
+
 func get_save_data() -> Dictionary:
 	return {
 		"heroes": g.heroes,   # 门客数据
+		"hero_baiye": baiye,
 	}
 
 # 从扁平存档表认领本系统字段（含旧存档兼容逻辑；老存档缺字段则保持初始值）
@@ -31,6 +59,11 @@ func load_save_data(s: Dictionary):
 		if hero.has("base_income"):
 			hero["extra_income"] = hero.get("extra_income", 0) + int(hero["base_income"])
 			hero.erase("base_income")
+	# 【新增】百业经验池：新键 hero_baiye；旧档从钱庄段 bank_baiye 收养（2026-09-19 域归位迁移）
+	if s.has("hero_baiye") and s.hero_baiye is Dictionary:
+		baiye = s.hero_baiye.duplicate(true)
+	elif s.has("bank_baiye") and s.bank_baiye is Dictionary:
+		baiye = s.bank_baiye.duplicate(true)
 
 # ============ 以下为原 game_data.gd 搬迁函数（逻辑未改，仅成员访问加了 g. 前缀） ============
 

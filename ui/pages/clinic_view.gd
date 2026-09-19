@@ -533,7 +533,7 @@ func _show_illness_popup(illness_id: String):
 	# 收益预览（不含病人加成）
 	var preview := _sys().get_illness_preview(illness_id)
 	var gain := Label.new()
-	gain.text = "诊治可获得：医术 %d　评分 %d" % [int(preview["yishu"]), int(preview["score"])]
+	gain.text = "诊治可获得：医术 %d　评分 %d" % [int(preview["yishu"]), int(_sys().get_illness_preview_boosted(illness_id)["score"])]
 	vb.add_child(gain)
 	# 当前加成
 	var pct_lbl := Label.new()

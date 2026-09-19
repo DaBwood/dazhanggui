@@ -676,10 +676,10 @@ func on_aptitude_skill_upgrade(skill_index: int, mode: String = "single"):
 
 	# 百业经验抵扣路径：池够升多少升多少（single=1级，bulk 封顶10级）
 	if _use_baiye:
-		var baiye_per_level: int = cost_per_level * data.bank_system.get_baiye_per_pill()
+		var baiye_per_level: int = cost_per_level * data.hero_system.get_baiye_per_pill()
 		if mode != "single":
-			levels_to_upgrade = min(mini(floori(data.bank_system.get_baiye(current_hero_id) / float(baiye_per_level)), remaining), 10)
-		if levels_to_upgrade > 0 and data.bank_system.spend_baiye_for_pills(current_hero_id, levels_to_upgrade * cost_per_level):
+			levels_to_upgrade = min(mini(floori(data.hero_system.get_baiye(current_hero_id) / float(baiye_per_level)), remaining), 10)
+		if levels_to_upgrade > 0 and data.hero_system.spend_baiye_for_pills(current_hero_id, levels_to_upgrade * cost_per_level):
 			skill.level += levels_to_upgrade
 			update_hero_panel()
 			c.update_all_ui()
@@ -1117,7 +1117,7 @@ func _render_skill_detail(list: VBoxContainer, item: Dictionary) -> void:
 			right.add_child(chk_col)
 			var per_level: int = int(item["pill"])
 			var pill_stock: int = int(data.items.get("aptitude_pill", 0))
-			var pool_stock: int = int(data.bank_system.get_baiye(current_hero_id))
+			var pool_stock: int = int(data.hero_system.get_baiye(current_hero_id))
 			var chk_pill := CheckBox.new()
 			chk_pill.text = "资质丹(%d/%d)" % [per_level, pill_stock]
 			chk_pill.button_pressed = not _use_baiye
@@ -1131,7 +1131,7 @@ func _render_skill_detail(list: VBoxContainer, item: Dictionary) -> void:
 			)
 			chk_col.add_child(chk_pill)
 			var chk_baiye := CheckBox.new()
-			chk_baiye.text = "百业经验(%d/%d)" % [per_level * data.bank_system.get_baiye_per_pill(), pool_stock]
+			chk_baiye.text = "百业经验(%d/%d)" % [per_level * data.hero_system.get_baiye_per_pill(), pool_stock]
 			chk_baiye.button_pressed = _use_baiye
 			chk_baiye.add_theme_font_size_override("font_size", 12)
 			chk_baiye.toggled.connect(func(pressed):
