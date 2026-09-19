@@ -36,8 +36,29 @@
 			"xing_yao_guang": 5,
 			"yue_hua_guang": 3,
 			"ri_lun_guang": 1
-		}
+		},
+		"score_base": {
+			"0": 116650, "1": 13320, "2": 1980, "3": 345, "4": 100
+		},
+		"medal": [
+			{"name": "藏者铜质勋章", "need_score": 0, "shop_pct": 1.0, "skill_cap": 5},
+			{"name": "藏者银质勋章", "need_score": 81500, "shop_pct": 2.0, "skill_cap": 10},
+			{"name": "藏者金质勋章", "need_score": 3300000, "shop_pct": 3.0, "skill_cap": 15},
+			{"name": "藏客铜质勋章", "need_score": 41000000, "shop_pct": 4.0, "skill_cap": 20},
+			{"name": "藏客银质勋章", "need_score": 300000000, "shop_pct": 5.0, "skill_cap": 25},
+			{"name": "藏客金质勋章", "need_score": 1000000000, "shop_pct": 6.0, "skill_cap": 30},
+			{"name": "藏主铜质勋章", "need_score": 1700000000, "shop_pct": 7.0, "skill_cap": 35},
+			{"name": "藏主银质勋章", "need_score": 2500000000, "shop_pct": 8.0, "skill_cap": 40},
+			{"name": "藏主金质勋章", "need_score": 4350000000, "shop_pct": 9.0, "skill_cap": 45},
+			{"name": "藏师铜质勋章", "need_score": 6650000000, "shop_pct": 10.0, "skill_cap": 50},
+			{"name": "藏师银质勋章", "need_score": 9450000000, "shop_pct": 11.0, "skill_cap": 55},
+			{"name": "藏师金质勋章", "need_score": 12500000000, "shop_pct": 12.0, "skill_cap": 60},
+			{"name": "藏家铜质勋章", "need_score": 16000000000, "shop_pct": 13.0, "skill_cap": 65},
+			{"name": "藏家银质勋章", "need_score": 20000000000, "shop_pct": 14.0, "skill_cap": 70},
+			{"name": "藏家金质勋章", "need_score": 24500000000, "shop_pct": 15.0, "skill_cap": 75}
+		]
 	},
+
 	"collections": {
 		"c000": {
 			"name": "芳翎戏春",

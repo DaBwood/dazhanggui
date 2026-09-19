@@ -47,15 +47,73 @@ func get_lottery_pool() -> Array:
 	return _cfg().get("lottery", [])
 
 # ---------- 存档 ----------
+var medal_lv: int = 1   # 【新增】藏宝勋章等级（2026-09-19；1=藏者铜质初始档，照钓鱼勋章存档模式）
+
 func get_save_data() -> Dictionary:
 	return {"collections_owned": _owned, "collection_frags": _frags,
-		"collection_suits": _suits, "collection_picks": _picks}
+		"collection_suits": _suits, "collection_picks": _picks,
+		"collection_medal_lv": medal_lv}
 
 func load_save_data(d) -> void:
 	if d.has("collections_owned") and d.collections_owned is Dictionary: _owned = d.collections_owned
 	if d.has("collection_frags") and d.collection_frags is Dictionary: _frags = d.collection_frags
 	if d.has("collection_suits") and d.collection_suits is Dictionary: _suits = d.collection_suits
 	if d.has("collection_picks") and d.collection_picks is Dictionary: _picks = d.collection_picks
+	if d.has("collection_medal_lv"): medal_lv = clampi(int(d.collection_medal_lv), 1, _medal_cfgs().size())
+
+# ---------- 藏品评分（2026-09-19：藏宝勋章门槛；单件=品质基数×等级×星级，基数见 settings.score_base） ----------
+func get_collection_score(coll_id: String) -> int:
+	if not is_owned(coll_id): return 0
+	var q = int(get_collection(coll_id).get("quality", 4))
+	var base = int(_settings().get("score_base", {}).get(str(q), 100))
+	return base * get_level(coll_id) * get_star(coll_id)
+
+# 藏品总评分=已拥有求和（只作勋章升级门槛，不消耗）
+func get_total_score() -> int:
+	var total = 0
+	for cid in _owned.keys():
+		total += get_collection_score(cid)
+	return total
+
+# ---------- 藏宝勋章（2026-09-19，照钓鱼勋章固定样式；15级 need_score 门槛，配置见 settings.medal） ----------
+func _medal_cfgs() -> Array:
+	return _settings().get("medal", [])
+
+func _medal_cfg(lv: int = -1) -> Dictionary:
+	if lv < 0: lv = medal_lv
+	var arr: Array = _medal_cfgs()
+	if lv >= 1 and lv <= arr.size(): return arr[lv - 1]
+	return {}
+
+func get_medal_lv() -> int:
+	return medal_lv
+
+func get_medal_name() -> String:
+	return str(_medal_cfg().get("name", "藏宝勋章"))
+
+func get_medal_shop_pct() -> float:
+	return float(_medal_cfg().get("shop_pct", 0.0))
+
+func get_medal_skill_cap() -> int:
+	return int(_medal_cfg().get("skill_cap", 0))
+
+func get_next_medal_cfg() -> Dictionary:
+	return _medal_cfg(medal_lv + 1)
+
+func can_upgrade_medal() -> Dictionary:
+	var nxt: Dictionary = get_next_medal_cfg()
+	if nxt.is_empty(): return {"ok": false, "msg": "已达满级"}
+	if get_total_score() < int(nxt.get("need_score", 0)):
+		return {"ok": false, "msg": "藏品总评分不足"}
+	return {"ok": true}
+
+func upgrade_medal() -> Dictionary:
+	var chk: Dictionary = can_upgrade_medal()
+	if not chk.get("ok", false): return chk
+	# skill_cap（初始技能等级上限）挂起不接：配置已带，效果待门客玩法完善时接入
+	# （同酒坊/妙音坊挂标记，2026-09-19 用户拍板；商铺赚速%走 get_medal_shop_pct 读取式已生效）
+	medal_lv = clampi(medal_lv + 1, 1, _medal_cfgs().size())
+	return {"ok": true}
 
 # ---------- 基础查询 ----------
 func is_owned(coll_id: String) -> bool:

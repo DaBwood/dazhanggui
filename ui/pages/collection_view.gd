@@ -63,9 +63,22 @@ func show_collection_view():
 	title.add_theme_font_size_override("font_size", 22)
 	title.add_theme_color_override("font_color", Color("#ffd700"))
 	top.add_child(title)
-	var pad = Control.new()
-	pad.custom_minimum_size = Vector2(90, 44)
-	top.add_child(pad)
+	# 【新增】右上角勋章入口（2026-09-19，照钓鱼勋章固定样式；红点=评分达下一档可升级）
+	var medal_btn = Button.new()
+	medal_btn.name = "MedalEntryBtn"
+	medal_btn.text = "勋章"
+	medal_btn.custom_minimum_size = Vector2(90, 44)
+	medal_btn.pressed.connect(_on_medal_btn)
+	top.add_child(medal_btn)
+	if data.collection_system.can_upgrade_medal().get("ok", false):
+		var mdot = Label.new()
+		mdot.name = "MedalDot"
+		mdot.text = "●"
+		mdot.add_theme_color_override("font_color", Color(1, 0.2, 0.2))
+		mdot.set_anchors_preset(Control.PRESET_TOP_RIGHT)
+		mdot.position = Vector2(-14, -2)
+		mdot.mouse_filter = Control.MOUSE_FILTER_IGNORE   # 不挡按钮点击
+		medal_btn.add_child(mdot)
 	
 	# 动态内容区
 	var body = VBoxContainer.new()
@@ -163,6 +176,129 @@ func _fill_main(body: VBoxContainer):
 	tip.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	tip.add_theme_color_override("font_color", Color(0.6, 0.6, 0.65))
 	body.add_child(tip)
+
+# ============ 藏宝勋章（2026-09-19，固定勋章样式：入口【勋章】-> 460×420勋章卡 -> [?] -> 当前效果/进度/升级） ============
+func _on_medal_btn():
+	if c.has_node("CollectionMedalPopup"):
+		c.get_node("CollectionMedalPopup").queue_free()
+		return
+	_show_medal_popup()
+
+func _show_medal_popup():
+	var popup: PanelContainer = c._create_base_popup("勋章", Vector2(460, 420))
+	popup.name = "CollectionMedalPopup"
+	popup.z_index = 40
+	c.add_child(popup)
+	_build_medal_card(popup)
+
+# 勋章卡内容构建：保留基座内容盒，只换 MedalCardBox。原地重建、不 free 弹窗节点——
+# queue_free 同帧重建同名节点会被引擎自动改名，safe_close 按原名找不到（升级后关不掉的根因，2026-09-19 修）
+func _build_medal_card(popup: PanelContainer):
+	var cs = data.collection_system
+	var pvb: VBoxContainer = popup.get_child(0) as VBoxContainer
+	if pvb == null:
+		pvb = VBoxContainer.new()
+		popup.add_child(pvb)
+	var old_box = pvb.get_node_or_null("MedalCardBox")
+	if old_box: old_box.queue_free()
+	var box := VBoxContainer.new()
+	box.name = "MedalCardBox"
+	pvb.add_child(box)
+	var card := PanelContainer.new()
+	var style := StyleBoxFlat.new()
+	style.bg_color = Color("#2a2640")
+	style.border_color = Color("#6a5f9e")
+	style.set_border_width_all(2)
+	style.set_corner_radius_all(6)
+	card.add_theme_stylebox_override("panel", style)
+	box.add_child(card)
+	var vb := VBoxContainer.new()
+	vb.add_theme_constant_override("separation", 4)
+	card.add_child(vb)
+	var head_row := HBoxContainer.new()
+	head_row.alignment = BoxContainer.ALIGNMENT_CENTER
+	head_row.add_theme_constant_override("separation", 6)
+	vb.add_child(head_row)
+	var head := Label.new()
+	head.text = "%s（%d级）" % [cs.get_medal_name(), cs.get_medal_lv()]
+	head.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	head.add_theme_font_size_override("font_size", 18)
+	head.add_theme_color_override("font_color", Color("#e6c07b"))
+	head_row.add_child(head)
+	var help_btn := Button.new()
+	help_btn.text = "?"
+	help_btn.custom_minimum_size = Vector2(24, 24)
+	help_btn.tooltip_text = "点击查看勋章规则"
+	help_btn.pressed.connect(_on_medal_help)
+	head_row.add_child(help_btn)
+	# 当前效果（skill_cap 挂起不接，同酒坊/妙音坊标注）
+	var cur := Label.new()
+	cur.text = "全部商铺赚速 +%d%%　初始技能等级上限 +%d（待接入）" % [int(cs.get_medal_shop_pct() * 100), cs.get_medal_skill_cap()]
+	cur.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	vb.add_child(cur)
+	# 下级效果+评分进度（照钓鱼勋章版式）
+	var nxt: Dictionary = cs.get_next_medal_cfg()
+	if not nxt.is_empty():
+		var nxt_lbl := Label.new()
+		nxt_lbl.text = "下级：全部商铺赚速 +%d%%　初始技能等级上限 +%d（待接入）" % [int(float(nxt.get("shop_pct", 0.0)) * 100), int(nxt.get("skill_cap", 0))]
+		nxt_lbl.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+		nxt_lbl.add_theme_font_size_override("font_size", 12)
+		nxt_lbl.add_theme_color_override("font_color", Color("#7ee787"))
+		vb.add_child(nxt_lbl)
+		var need: int = int(nxt.get("need_score", 0))
+		var score: int = cs.get_total_score()
+		var pr := ProgressBar.new()
+		pr.min_value = 0
+		pr.max_value = need
+		pr.value = mini(score, need)
+		pr.show_percentage = false
+		pr.custom_minimum_size = Vector2(0, 12)
+		vb.add_child(pr)
+		var pr_lbl := Label.new()
+		pr_lbl.text = "藏品总评分：%s / %s" % [c.format_number(score), c.format_number(need)]
+		pr_lbl.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+		pr_lbl.add_theme_font_size_override("font_size", 12)
+		vb.add_child(pr_lbl)
+		var up := Button.new()
+		up.text = "升级勋章"
+		var chk: Dictionary = cs.can_upgrade_medal()
+		up.disabled = not chk.get("ok", false)
+		up.tooltip_text = str(chk.get("msg", ""))
+		up.pressed.connect(_on_medal_upgrade)
+		vb.add_child(up)
+	else:
+		var max_lbl := Label.new()
+		max_lbl.text = "已达满级"
+		max_lbl.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+		vb.add_child(max_lbl)
+	c._add_ok_button(box, func(): c._safe_close("CollectionMedalPopup"), "关闭")
+
+func _on_medal_help():
+	c._show_stage_hint("藏品评分：单件=品质基数×等级×星级（普通100/优秀345/卓越1980/传奇13320/无双116650）；总评分=已拥有藏品求和，只作升级门槛不消耗。")
+
+func _on_medal_upgrade():
+	var cs = data.collection_system
+	var r: Dictionary = cs.upgrade_medal()
+	if not r.get("ok", false):
+		c._show_stage_hint(str(r.get("msg", "暂不可升级")))
+		return
+	c._show_stage_hint("勋章升级成功")
+	_refresh_body()
+	_refresh_medal_popup()   # 勋章卡原地重建（不动弹窗节点）
+	# 右上角入口红点即时刷新（入口在顶栏，_refresh_body 管不到）
+	var page = c.get_node_or_null("CollectionPage")
+	if page:
+		var entry = page.find_child("MedalEntryBtn", true, false)
+		if entry:
+			var dot = entry.get_node_or_null("MedalDot")
+			if dot:
+				dot.visible = cs.can_upgrade_medal().get("ok", false)
+
+# 勋章卡原地刷新：只重建 MedalCardBox 内容，弹窗节点保留原名（防 safe_close 找不到）
+func _refresh_medal_popup():
+	var popup = c.get_node_or_null("CollectionMedalPopup")
+	if popup:
+		_build_medal_card(popup)
 
 # ===== 藏宝阁 =====
 # 藏宝阁：顶部五个品质按钮切换，下面只显示当前品质的藏品
