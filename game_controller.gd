@@ -12,6 +12,7 @@ var data: GameData
 #页面切换
 var current_page: String = "shop"   # shop / hero / bag
 
+@warning_ignore("unused_private_class_variable")
 var _quantity_item_id: String = ""   # 数量选择器当前操作的道具ID
 
 # 【新增】自动存档计数（秒）

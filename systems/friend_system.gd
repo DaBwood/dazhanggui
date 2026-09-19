@@ -31,10 +31,8 @@ func load_save_data(s: Dictionary):
 	for friend_id in g.friends.keys():
 		if not g._friend_configs.has(friend_id):
 			g.friends.erase(friend_id)
-	# 旧存档兼容：没有店铺技能数据的挚友补初始化
-	for friend_id in g.friends.keys():
-		if not g.friends[friend_id].has("shop_skills"):
-			_init_friend_shop_skills(friend_id)
+	# 【删】批次E（2026-09-19）：挚友店铺技能 load 时回填已删——挚友获取路径(91/129行)与
+	# 读取守卫(has shop_skills 则懒初始化)已覆盖，新档获取即初始化，不受影响
 
 # ============ 以下为原 game_data.gd 搬迁函数（逻辑未改，仅成员访问加了 g. 前缀） ============
 

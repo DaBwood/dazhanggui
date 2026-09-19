@@ -83,13 +83,10 @@ func load_save_data(s: Dictionary):
 	patients = int(d.get("patients", 0))
 	patient_time = int(d.get("patient_time", 0))
 	treat_queue = int(d.get("treat_queue", 0))   # 旧版"接诊中"批次状态废弃：残留队列数按0处理
-	# 【新增】2026-09-16 病人解锁表认领；旧档无此字段→医术已达阈值的全部视为已解锁（老行为不变，仅一次性）
+	# 【新增】2026-09-16 病人解锁表认领；已解锁表 {pid: true}
+	# 【删】批次E（2026-09-19）：旧档按医术阈值的一次性回填已删——测试期存档全为新格式，字段自首批落盘即有
 	if d.has("patient_unlocked") and d.patient_unlocked is Dictionary:
 		patient_unlocked = d.patient_unlocked
-	else:
-		for p in _cfg().get("patients", []):
-			if yishu >= int(p.get("need_yishu", 0)):
-				patient_unlocked[str(p.get("id", ""))] = true
 	if patient_time <= 0:
 		patient_time = int(Time.get_unix_time_from_system())   # get_unix_time 返回 float，显式转 int 消窄化警告
 	# 旧档兼容：首轮默认只建药房（unlock_cost=0 的科室视为已建）

@@ -57,12 +57,7 @@ func get_level_up_cost(level: int) -> int:
 	var inc_amt = int(s.get("cost_increment_amount", 1))
 	return base + int((level - 1) / float(inc_lv)) * inc_amt
 
-# 【新增】根据等级反推累计消耗（旧档兼容用）
-func _calc_total_yulin_cost(level: int) -> int:
-	var total = 0
-	for i in range(1, level):
-		total += get_level_up_cost(i)
-	return total
+# 【删】批次E：_calc_total_yulin_cost 唯一调用方（旧档反推回填）已删，函数随删防 UNUSED 警告
 
 # 【新增】检查当前等级是否被阶段解锁条件锁住
 func _is_level_blocked(hero_id: String) -> bool:
@@ -278,11 +273,8 @@ func get_save_data() -> Dictionary:
 func load_save_data(data: Dictionary):
 	if data.has("guardian_spirits") and data.guardian_spirits is Dictionary:
 		g.guardian_spirits = data.guardian_spirits
-	# 【新增】旧档兼容：补 total_yulin_cost（根据等级反推累计消耗）
-	for hero_id in g.guardian_spirits.keys():
-		var gs = g.guardian_spirits[hero_id]
-		if not gs.has("total_yulin_cost"):
-			gs.total_yulin_cost = _calc_total_yulin_cost(gs.level)
+	# 【删】批次E（2026-09-19）：total_yulin_cost 旧档反推回填已删——init_guardian 新建自带该字段，
+	# 读取方(119/125/178行)全部 get 默认，无双门客补初始化循环保留（新门客获取也靠它）
 	# 旧档兼容：为所有无双门客补初始化（已存在的不覆盖）
 	for hero_id in g.heroes.keys():
 		if g.heroes[hero_id].get("quality", 0) == 2:

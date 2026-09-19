@@ -25,30 +25,11 @@ func get_save_data() -> Dictionary:
 
 # 从扁平存档表认领本系统字段（含旧存档兼容逻辑；老存档缺字段则保持初始值）
 func load_save_data(s: Dictionary):
-	# 【修复】旧版漏读 graduated_apprentices，导致已结业徒弟重启游戏后丢失；
-	# 必须先读结业列表，再做下面的槽位迁移（迁移会向结业列表追加）
+	# 结业徒弟列表先读（2026-09-19 批次E：旧版漏读修复与槽位迁移块已删，读序约束随之消失）
 	if s.has("graduated_apprentices"): g.graduated_apprentices = s.graduated_apprentices
-	if s.has("apprentices"):
-		g.apprentices = s.apprentices
-		# 兼容旧存档：补齐到5个槽位
-		while g.apprentices.size() < 5:
-			g.apprentices.append(null)
-		# 旧存档单人徒弟（字典）包成数组；已结业的移到结业列表
-		for i in range(g.apprentices.size()):
-			var entry = g.apprentices[i]
-			if entry == null: continue
-			if entry is Dictionary:
-				entry = [entry]
-			var remaining = []
-			for a in entry:
-				if a.get("state", "") in ["magician", "lover", "married"]:
-					g.graduated_apprentices.append(a)
-				else:
-					remaining.append(a)
-			if remaining.size() > 0:
-				g.apprentices[i] = remaining
-			else:
-				g.apprentices[i] = null
+	if s.has("apprentices"): g.apprentices = s.apprentices
+	# 【删】批次E（重构顺手清）：补齐5槽/单字典包数组/出师提取迁移块已删——
+	# 测试期存档全为新格式；新档槽位由中枢 game_data.apprentices 初始化为5个数组槽
 	if s.has("apprentice_vigor"): g.apprentice_vigor = s.apprentice_vigor
 	if s.has("apprentice_vigor_time"): g.apprentice_vigor_time = s.apprentice_vigor_time
 
@@ -162,7 +143,7 @@ func _get_single_apprentice_income(a: Dictionary) -> int:
 func get_apprentice_income(slot: int) -> int:
 	var entry = g.apprentices[slot]
 	if entry == null: return 0
-	var list = entry if entry is Array else [entry]   # 兼容旧存档
+	var list = entry   # 【删】批次E：槽位恒为数组，单字典兼容分支已随迁移块删除
 	var total = 0
 	for a in list:
 		total += _get_single_apprentice_income(a)

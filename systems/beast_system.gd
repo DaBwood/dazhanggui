@@ -30,19 +30,8 @@ func get_save_data() -> Dictionary:
 func load_save_data(s: Dictionary):
 	if s.has("beasts"):
 		g.beasts = s.beasts
-		# 兼容旧存档：给没有 refresh_count 的珍兽技能补上
-		for bid in g.beasts.keys():
-			var d = g.beasts[bid]
-			var instances = d if d is Array else [d]
-			for inst in instances:
-				for sk in inst.get("skills", []):
-					if not sk.has("refresh_count"):
-						sk.refresh_count = 0
-				if not inst.has("aura2_lv"): inst["aura2_lv"] = 1   # 【新增】旧档兼容：光环二初始1级
-				if not inst.has("aura3_lv"): inst["aura3_lv"] = 1   # 【新增】旧档兼容：光环三初始1级
-				# 【新增】旧档兼容：觉醒次数/额外觉醒上限
-				if not inst.has("awaken_count"): inst["awaken_count"] = 0
-				if not inst.has("awaken_limit_bonus"): inst["awaken_limit_bonus"] = 0
+		# 【删】批次E（重构顺手清）：refresh_count/光环二/光环三/觉醒字段的旧档补齐循环已删——
+		# 捕获创建（_make_skill/实例构造）自带全字段，光环/觉醒读取方均 get 默认，测试期存档全为新格式
 	if s.has("beast_fruit"):
 		g.items["beast_fruit"] = int(g.items.get("beast_fruit", 0)) + int(s.beast_fruit)
 	if s.has("aroma_fruit"):
@@ -241,16 +230,16 @@ func refresh_beast_skill(beast_id: String, instance_index: int, skill_index: int
 		# 奇香果刷新：固定消耗1个，15%-25%
 		if int(g.items.get("aroma_fruit", 0)) < 1: return false   # 【改】奇香果改走道具
 		g.items["aroma_fruit"] -= 1   # 【改】
-		skill.refresh_count += 1
+		skill["refresh_count"] = int(skill.get("refresh_count", 0)) + 1   # 【改】批次E：直读改 get 默认（防旧实例无字段崩）
 		var new_val = randf_range(0.15, 0.251)
 		if new_val > 0.25: new_val = 0.25
 		skill.percent = max(skill.percent, new_val)
 	else:
 		# 铜钱刷新：指数增长费用
-		var cost = 100 * int(pow(2, skill.refresh_count))
+		var cost = 100 * int(pow(2, int(skill.get("refresh_count", 0))))   # 【改】批次E
 		if g.money < cost: return false
 		g.money -= cost
-		skill.refresh_count += 1
+		skill["refresh_count"] = int(skill.get("refresh_count", 0)) + 1   # 【改】批次E：直读改 get 默认（防旧实例无字段崩）
 		
 		var roll = randf()
 		var new_val: float

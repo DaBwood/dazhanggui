@@ -394,6 +394,7 @@ var _friend_configs: Dictionary = {}
 
 var _vip_rewards: Dictionary = {}
 
+@warning_ignore("unused_private_class_variable")   # 【新增】批次D：配置走 SYSTEM_LIST 动态注册（set 赋值/get 或跨文件读取），分析器扫不到属误报，非真未使用
 var _shop_configs: Dictionary = {}
 
 var _manhuang_configs: Dictionary = {}   # 【新增】蛮荒礼盒配置（data/manhuang.json：自选道具列表）
@@ -427,6 +428,7 @@ var identity_level: int = 1
 
 var last_daily_reward_time: int = 0
 
+@warning_ignore("unused_private_class_variable")   # 【新增】批次D：配置走 SYSTEM_LIST 动态注册（set 赋值/get 或跨文件读取），分析器扫不到属误报，非真未使用
 var _beast_configs: Dictionary = {}
 
 var beasts: Dictionary = {}
@@ -533,22 +535,29 @@ var charity_system   # 行善系统
 var lottery_system   # 抽奖系统
 var mall_system   # 商城/VIP系统
 var manor_system   # 庄园系统（第4批新增）
+@warning_ignore("unused_private_class_variable")   # 【新增】批次D：配置走 SYSTEM_LIST 动态注册（set 赋值/get 或跨文件读取），分析器扫不到属误报，非真未使用
 var _manor_configs: Dictionary = {}   # 庄园配置（manor.json，由 _load_all_configs 加载）
 var courtyard_system   # 宅院系统（第7批新增）
+@warning_ignore("unused_private_class_variable")   # 【新增】批次D：配置走 SYSTEM_LIST 动态注册（set 赋值/get 或跨文件读取），分析器扫不到属误报，非真未使用
 var _courtyard_configs: Dictionary = {}   # 宅院配置（courtyard.json，由 _load_all_configs 加载）
 var war_system   # 商战系统（第5批新增）
+@warning_ignore("unused_private_class_variable")   # 【新增】批次D：配置走 SYSTEM_LIST 动态注册（set 赋值/get 或跨文件读取），分析器扫不到属误报，非真未使用
 var _war_configs: Dictionary = {}   # 商战配置（war.json，由 _load_all_configs 加载）
 var goal_system   # 挚友目标系统（第6批新增）
+@warning_ignore("unused_private_class_variable")   # 【新增】批次D：配置走 SYSTEM_LIST 动态注册（set 赋值/get 或跨文件读取），分析器扫不到属误报，非真未使用
 var _goal_configs: Dictionary = {}   # 挚友目标配置（goals.json，由 _load_all_configs 加载）
 var soul_system   # 【新增】兽魂系统（魂盘+魂石，逻辑在 systems/soul_system.gd）
+@warning_ignore("unused_private_class_variable")   # 【新增】批次D：配置走 SYSTEM_LIST 动态注册（set 赋值/get 或跨文件读取），分析器扫不到属误报，非真未使用
 var _soul_configs: Dictionary = {}   # 【新增】兽魂配置（soulstones.json，由 _load_all_configs 加载）
 var soul_stones: Dictionary = {}   # 【新增】魂石仓库 {uid: 魂石数据}（soul_system 读写，存档由它认领）
 var soul_stone_seq: int = 0   # 【新增】魂石uid自增序号
 var soulpower_system   # 【新增】魂力培养系统（魂体+魂骨，逻辑在 systems/soulpower_system.gd）
+@warning_ignore("unused_private_class_variable")   # 【新增】批次D：配置走 SYSTEM_LIST 动态注册（set 赋值/get 或跨文件读取），分析器扫不到属误报，非真未使用
 var _soulpower_configs: Dictionary = {}   # 【新增】魂力培养配置（soulpower.json，由 _load_all_configs 加载）
 var soul_bones: Dictionary = {}   # 【新增】魂骨仓库 {uid: 魂骨数据}（soulpower_system 读写，存档由它认领）
 var soul_bone_seq: int = 0   # 【新增】魂骨uid自增序号
 var fishing_system   # 垂钓系统（第8批新增）
+@warning_ignore("unused_private_class_variable")   # 【新增】批次D：配置走 SYSTEM_LIST 动态注册（set 赋值/get 或跨文件读取），分析器扫不到属误报，非真未使用
 var _fishing_configs: Dictionary = {}   # 垂钓配置（fishing.json，由 _load_all_configs 加载）
 var costume_system    # 【服装系统】
 var costume_configs: Dictionary = {}   # 【服装系统】服装配置（⚠️必须带类型默认值，校验在加载前读它）
@@ -567,26 +576,32 @@ var cuzhi_equip_levels: Dictionary = {}  # {促织id: 装备等级}
 
 var guardian_system   # 【新增】守护灵系统
 var guardian_spirits: Dictionary = {}  # 【新增】守护灵数据 {hero_id: {level, skills, avatar, avatars}}
+@warning_ignore("unused_private_class_variable")   # 【新增】批次D：配置走 SYSTEM_LIST 动态注册（set 赋值/get 或跨文件读取），分析器扫不到属误报，非真未使用
 var _guardian_configs: Dictionary = {}  # 【新增】守护灵配置
 
 var token_system   # 【新增】信物系统
 var hero_tokens: Dictionary = {}   # 【新增】信物存档 {hero_id: {"level": int, "binds": [门客id, 门客id]}}
+@warning_ignore("unused_private_class_variable")   # 【新增】批次D：配置走 SYSTEM_LIST 动态注册（set 赋值/get 或跨文件读取），分析器扫不到属误报，非真未使用
 var _token_configs: Dictionary = {}   # 【新增】信物配置（tokens.json）
 
 var fengzi_system   # 【新增】风姿系统
 var hero_fengzi: Dictionary = {}   # 【新增】风姿存档 {hero_id: {"level": 风姿等级}}
+@warning_ignore("unused_private_class_variable")   # 【新增】批次D：配置走 SYSTEM_LIST 动态注册（set 赋值/get 或跨文件读取），分析器扫不到属误报，非真未使用
 var _fengzi_configs: Dictionary = {}   # 【新增】风姿配置（fengzi.json）
 
 var talent_system   # 【新增】天赋系统
 var hero_talents: Dictionary = {}   # 【新增】天赋存档 {hero_id: {"star": 星级}}
+@warning_ignore("unused_private_class_variable")   # 【新增】批次D：配置走 SYSTEM_LIST 动态注册（set 赋值/get 或跨文件读取），分析器扫不到属误报，非真未使用
 var _talent_configs: Dictionary = {}   # 【新增】天赋配置（talent.json）
 var hero_contracts: Dictionary = {}   # 【新增】苦情契约存档 {hero_id: {"level": int, "friends": [挚友id,...]}}
 
 # ① var 声明区（talent_system 附近）【新增】
 var collection_system   # 藏品系统
+@warning_ignore("unused_private_class_variable")   # 【新增】批次D：配置走 SYSTEM_LIST 动态注册（set 赋值/get 或跨文件读取），分析器扫不到属误报，非真未使用
 var _collection_configs: Dictionary = {}
 
 var guild_system   # 【新增】商会系统（逻辑在 systems/guild_system.gd）
+@warning_ignore("unused_private_class_variable")   # 【新增】批次D：配置走 SYSTEM_LIST 动态注册（set 赋值/get 或跨文件读取），分析器扫不到属误报，非真未使用
 var _guild_configs: Dictionary = {}   # 【新增】商会配置（guild.json，由 _load_all_configs 加载）
 
 var mail_system   # 【新增】邮件系统（逻辑在 systems/mail_system.gd，纯本地存档）
@@ -607,10 +622,13 @@ var drugshop_system   # 【新增】药铺玩法系统（逻辑在 systems/drugs
 @warning_ignore("unused_private_class_variable")
 var _drugshop_configs: Dictionary = {}   # 【新增】药铺配置（drugshop.json，由 _load_all_configs 加载）
 var tavern_system   # 【新增】酒肆玩法系统（逻辑在 systems/tavern_system.gd，状态内部持有随 get_save_data 落盘）
+@warning_ignore("unused_private_class_variable")   # 【新增】批次D：配置走 SYSTEM_LIST 动态注册（set 赋值/get 或跨文件读取），分析器扫不到属误报，非真未使用
 var _tavern_configs: Dictionary = {}   # 【新增】酒肆配置（tavern.json，由 _load_all_configs 加载）
 var winery_system   # 【新增】酒坊玩法系统（逻辑在 systems/winery_system.gd，状态内部持有随 get_save_data 落盘）
+@warning_ignore("unused_private_class_variable")   # 【新增】批次D：配置走 SYSTEM_LIST 动态注册（set 赋值/get 或跨文件读取），分析器扫不到属误报，非真未使用
 var _winery_configs: Dictionary = {}   # 【新增】酒坊配置（winery.json，由 _load_all_configs 加载）
 var miaoyin_system   # 【新增】妙音坊玩法系统（逻辑在 systems/miaoyin_system.gd，状态内部持有随 get_save_data 落盘）
+@warning_ignore("unused_private_class_variable")   # 【新增】批次D：配置走 SYSTEM_LIST 动态注册（set 赋值/get 或跨文件读取），分析器扫不到属误报，非真未使用
 var _miaoyin_configs: Dictionary = {}   # 【新增】妙音坊建筑配置（miaoyin_buildings.json；其余五张分表由系统懒加载）
 
 # ==================== 初始化 ====================
@@ -626,6 +644,7 @@ var _miaoyin_configs: Dictionary = {}   # 【新增】妙音坊建筑配置（mi
 # ⚠️ 例外说明：cuzhi 配置自加载（cuzhi_system 构造函数内）不进清单；item/travel/stage 配置
 #    加载有副作用（初始道具发放/常量表），走各自专用加载函数；net_system（云存档）生命周期
 #    独立，明确不纳入清单。
+# ⚠️ cfg_var 声明行一律带 @warning_ignore("unused_private_class_variable")：动态注册分析器扫不到会误报，新系统照抄。
 const SYSTEM_LIST: Array = [
 	{"key": "hero_system", "script": "res://systems/hero_system.gd", "cfg_var": "_hero_configs", "cfg": "res://data/heroes.json"},
 	{"key": "friend_system", "script": "res://systems/friend_system.gd", "cfg_var": "_friend_configs", "cfg": "res://data/friends.json"},
@@ -663,6 +682,24 @@ const SYSTEM_LIST: Array = [
 	{"key": "miaoyin_system", "script": "res://systems/miaoyin_system.gd", "cfg_var": "_miaoyin_configs", "cfg": "res://data/miaoyin_buildings.json"},
 	{"key": "costume_system", "script": "res://systems/costume_system.gd", "cfg_var": "costume_configs", "cfg": "res://data/costumes.json"},
 ]
+
+# 【新增】批次D（2026-09-19 重构）：配置孤儿扫描的特殊加载认领清单——
+# res://data/ 下每张 JSON 的合法来源只有两类：① SYSTEM_LIST 的 cfg 字段；② 本清单（无直属系统手写/
+# 系统构造自加载/有副作用的专用 loader）。扫描见 _check_orphan_configs()：未认领=启动 push_warning，
+# 只检查不自动加载（推导变量名会踩 costume_configs 无前下划线的坑，明确不做自动加载版）
+const CONFIG_SPECIAL_LOADERS := {
+	"vip_rewards.json": "_vip_rewards 手写加载（_load_all_configs 内）",
+	"manhuang.json": "_manhuang_configs 手写加载（无直属系统）",
+	"items.json": "_load_items_config 专用 loader（config/initial 拆分）",
+	"travel.json": "_load_travel_config 专用 loader（settings 常量有副作用）",
+	"stage_box.json": "_load_stage_box_config 专用 loader",
+	"cuzhi.json": "cuzhi_system 构造内自加载（SYSTEM_LIST 注释明示的例外）",
+	"miaoyin_professions.json": "miaoyin_system 内部子配置表（构造内成组自加载）",
+	"miaoyin_support_table.json": "miaoyin_system 内部子配置表（构造内成组自加载）",
+	"miaoyin_medal.json": "miaoyin_system 内部子配置表（构造内成组自加载）",
+	"miaoyin_audition.json": "miaoyin_system 内部子配置表（构造内成组自加载）",
+	"miaoyin_satisfaction.json": "miaoyin_system 内部子配置表（构造内成组自加载）",
+}
 
 # 【新增】全部系统实例（_init 由 SYSTEM_LIST 循环填充；save/load 共用此一份，杜绝双清单漂移）
 var _system_instances: Array = []
@@ -717,7 +754,7 @@ func _load_all_configs():
 	_load_items_config()   # 【重构新增】道具表
 	_load_travel_config()  # 【重构新增】游历配置
 	_load_stage_box_config()  # 【新增】关卡宝箱掉落表
-	
+	_check_orphan_configs()   # 【新增】批次D：孤儿配置扫描（全部专用 loader 跑完后检查，零告警=基线）
 
 # 【第1批新增】加载 res://data/items.json：道具定义 + 新档初始数量（未列出的道具自动补0）
 func _load_items_config():
@@ -756,6 +793,28 @@ func _load_travel_config():
 func _load_stage_box_config():
 	var d = _load_json("res://data/stage_box.json")
 	STAGE_BOX_POOL = d.get("pool", [])
+
+# 【新增】批次D（2026-09-19 重构）：配置孤儿扫描——res://data/ 下每张 JSON 必须被认领
+# （SYSTEM_LIST cfg 或 CONFIG_SPECIAL_LOADERS），否则启动即 push_warning。治"新增系统/配置忘了登记，
+# 运行时静默没数据"（2026-09-18 酒坊批次丢 var 声明同类病，从运行期 nil 提前到启动期报警）。
+# 若告警的文件确属特殊加载：加进 CONFIG_SPECIAL_LOADERS 并写明 loader；若是新系统忘登记：补 SYSTEM_LIST。
+func _check_orphan_configs() -> void:
+	var claimed := {}
+	for e in SYSTEM_LIST:
+		var p: String = str(e.get("cfg", ""))
+		if p != "":
+			claimed[p.get_file()] = true
+	for fn in CONFIG_SPECIAL_LOADERS.keys():
+		claimed[fn] = true
+	var dir := DirAccess.open("res://data")
+	if dir == null:
+		push_warning("[配置扫描] 打不开 res://data 目录")
+		return
+	for fn in dir.get_files():
+		if not fn.ends_with(".json"):
+			continue
+		if not claimed.has(fn):
+			push_warning("[配置扫描] 孤儿配置: " + fn + "（res://data/ 存在但无系统认领——新系统忘登记 SYSTEM_LIST？或属特殊加载，加入 CONFIG_SPECIAL_LOADERS 并注明 loader）")
 
 # 获取门客配置（只读模板）
 func get_hero_config(hero_id: String) -> Dictionary:
