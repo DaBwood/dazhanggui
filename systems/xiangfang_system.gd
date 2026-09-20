@@ -254,6 +254,20 @@ func roll_quality_key(fengshui_level: int) -> String:
 			return str(names[i].get("key", ""))
 	return str(names[names.size() - 1].get("key", ""))
 
+# 风水详情展示行（当前风水等级 L 的 10 档：名称/峰值P/当前权重%，供详情弹窗表格用）
+func get_fengshui_rows(fengshui_level: int) -> Array:
+	var pcts: Array = get_fengshui_weights(fengshui_level)
+	var out: Array = []
+	var weights: Array = _cfg().get("fengshui", {}).get("weights", [])
+	for i in range(mini(weights.size(), pcts.size())):
+		out.append({
+			"key": str(weights[i].get("key", "")),
+			"name": str(weights[i].get("name", "")),
+			"P": int(weights[i].get("P", 0)),
+			"pct": float(pcts[i]),
+		})
+	return out
+
 # ============ 套装（手动解锁/升级制，用户 2026-09-20 拍板） ============
 # 套装等级=存档 set_levels[sid]（初始 0=未解锁无效果）；解锁/升级前提=套内最低件等级≥目标级
 func get_set_level(sid: String) -> int:

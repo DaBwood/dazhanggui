@@ -1,8 +1,9 @@
 # ============================================================
 # 厢房全屏页（府邸「厢房」入口；Page z35 / 弹窗 z40，照 BaseView 新模式）
-# 批次①（2026-09-20）：主界面（风水角标）+ 家具图鉴（套装列表/家具详情升级/套装面板）+ 工坊直购。
-# 批次②：回收 + 风水详情弹窗 + 勋章；批次③：命盘页；批次④：HeroData 接入。本文件头部注释随批更新。
-# 红点口径：照 2026-09-18 拍板——页内展示不穿透地图（批次②起挂）。
+# 批次①（2026-09-20）：主界面 + 家具图鉴（升级/套装面板）+ 工坊直购。
+# 批次②（2026-09-20）：回收（详情页满级富余件）+ 风水详情弹窗（角标点入）+ 勋章（入口/15级列表/升级，
+#   shop bonus 挂点=systems/shop_system.gd get_shop_auto_income 末项）；批次③：命盘页；批次④：HeroData 接入。
+# 红点口径：照 2026-09-18 拍板——页内展示不穿透地图（批次②起挂：勋章可升级/套装可进阶亮红点）。
 # 弹窗刷新：原地重建内容（基座面板不动，只换 VBox 内容），规避"关弹窗+立刻重建同名"自动改名雷（勋章热修同款）。
 # ============================================================
 class_name XiangfangView
@@ -54,7 +55,7 @@ func _build_home_page(page: Panel):
 	root.add_theme_constant_override("separation", 10)
 	page.add_child(root)
 
-	# 顶栏：返回 + 标题 + 右垫片（勋章入口批次②）
+	# 顶栏：返回 + 标题 + 勋章入口（可升级亮红点）
 	var top := HBoxContainer.new()
 	top.alignment = BoxContainer.ALIGNMENT_CENTER
 	top.add_theme_constant_override("separation", 8)
@@ -71,16 +72,20 @@ func _build_home_page(page: Panel):
 	title.add_theme_font_size_override("font_size", 24)
 	title.add_theme_color_override("font_color", Color("#ffd700"))
 	top.add_child(title)
-	var spacer := Control.new()
-	spacer.custom_minimum_size = Vector2(72, 40)
-	top.add_child(spacer)
+	var medal_btn := Button.new()
+	medal_btn.text = "勋章"
+	medal_btn.custom_minimum_size = Vector2(72, 40)
+	medal_btn.pressed.connect(func(): _show_medal_popup())
+	top.add_child(medal_btn)
+	_add_btn_dot(medal_btn, _sys().can_upgrade_medal().get("ok", false))
 
-	# 左上风水角标：风水值 + 等级 + 距下级（详情弹窗批次②接，本期纯展示）
-	var fs_lbl := Label.new()
-	fs_lbl.text = "风水 %s · %d 级（距下级还需 %d 点）" % [
+	# 左上风水角标（可点入详情弹窗）：风水值 + 等级 + 距下级
+	var fs_btn := Button.new()
+	fs_btn.text = "风水 %s · %d 级（距下级还需 %d 点）▸" % [
 		c.format_number(_sys().get_fengshui()), _sys().get_fengshui_level(), _sys().get_fengshui_to_next()]
-	fs_lbl.add_theme_color_override("font_color", Color("#8fd3c7"))
-	root.add_child(fs_lbl)
+	fs_btn.add_theme_color_override("font_color", Color("#8fd3c7"))
+	fs_btn.pressed.connect(func(): _show_fengshui_popup())
+	root.add_child(fs_btn)
 
 	# 资源行：舒适度 / 家具币 / 风水符
 	var res := HBoxContainer.new()
@@ -415,6 +420,12 @@ func _rebuild_popup():
 		_show_furniture_popup(_popup_id)
 	elif _popup_kind == "buy":
 		_show_buy_popup(_popup_id)
+	elif _popup_kind == "recycle":
+		_show_recycle_popup(_popup_id)
+	elif _popup_kind == "fengshui":
+		_show_fengshui_popup()
+	elif _popup_kind == "medal":
+		_show_medal_popup()
 
 # 取弹窗内容 VBox：已有基座则清空内容原地重建（不新建同名节点，规避自动改名雷）；无则新建
 func _popup_vbox(title: String, size: Vector2) -> VBoxContainer:
@@ -426,10 +437,11 @@ func _popup_vbox(title: String, size: Vector2) -> VBoxContainer:
 	_close_node(_popup_node_name)
 	_popup_panel = c._create_base_popup(title, size)
 	_popup_panel.name = _popup_node_name
+	_popup_panel.z_index = 40   # 【关键】必须高于全屏页 z35（照妙音坊勋章弹窗模板），否则弹窗被页面盖住"隐身"
 	c.add_child(_popup_panel)
 	return _popup_panel.get_child(0)
 
-# ---- 家具详情弹窗：效果/拥有/升级/一键升级 ----
+# ---- 家具详情弹窗：效果/拥有/升级/一键升级/满级回收 ----
 func _show_furniture_popup(fid: String):
 	_popup_kind = "furniture"
 	_popup_id = fid
@@ -437,7 +449,7 @@ func _show_furniture_popup(fid: String):
 	if fc.is_empty():
 		close_popup()
 		return
-	var vbox: VBoxContainer = _popup_vbox("家具详情", Vector2(460, 430))
+	var vbox: VBoxContainer = _popup_vbox("家具详情", Vector2(460, 460))
 	var q: Dictionary = _sys().get_quality_cfg(str(fc.get("quality", "")))
 	var st: Dictionary = _sys().get_furniture_state(fid)
 	var color: Color = Color(QUALITY_COLORS.get(str(fc.get("quality", "")), "#ffffff"))
@@ -471,11 +483,19 @@ func _show_furniture_popup(fid: String):
 		nxt_l.add_theme_color_override("font_color", Color("#8fd3c7"))
 		vbox.add_child(nxt_l)
 	elif st["lv"] >= _sys().get_max_lv():
+		# 满级：富余件回收（回收价=品质工坊价×80%，返家具币道具）
+		var recyc: int = _sys().get_recyclable_count(fid)
 		var max_l := Label.new()
-		max_l.text = "已满级（满级富余件可回收，批次②开放）"
+		max_l.text = "已满级（富余 %d 件可回收）" % recyc
 		max_l.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 		max_l.add_theme_color_override("font_color", Color("#ffd700"))
 		vbox.add_child(max_l)
+		if recyc > 0:
+			var rec_btn := Button.new()
+			rec_btn.text = "回收富余"
+			rec_btn.custom_minimum_size = Vector2(0, 36)
+			rec_btn.pressed.connect(func(): _show_recycle_popup(fid))
+			vbox.add_child(rec_btn)
 
 	# 升级按钮
 	var chk: Dictionary = _sys().can_upgrade(fid)
@@ -499,6 +519,163 @@ func _show_furniture_popup(fid: String):
 	vbox.add_child(up_all_btn)
 
 	c._add_ok_button(vbox, func(): close_popup(), "关闭")
+
+# ---- 回收弹窗：满级富余件数量选择，返家具币 ----
+func _show_recycle_popup(fid: String):
+	_popup_kind = "recycle"
+	_popup_id = fid
+	var fc: Dictionary = _sys().get_furniture_cfg(fid)
+	var avail: int = _sys().get_recyclable_count(fid)
+	if fc.is_empty() or avail <= 0:
+		close_popup()
+		return
+	var vbox: VBoxContainer = _popup_vbox("回收家具", Vector2(440, 280))
+	var price: int = _sys().get_recycle_price(str(fc.get("quality", "")))
+
+	var name_l := Label.new()
+	name_l.text = "%s · 回收价 %d 家具币/件（可回收 %d 件）" % [fc.get("name", ""), price, avail]
+	name_l.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	name_l.add_theme_font_size_override("font_size", 14)
+	vbox.add_child(name_l)
+
+	var pair: Dictionary = c.ui_helpers._create_slider_spin_pair(vbox, avail, 1)
+	var total_l := Label.new()
+	total_l.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	vbox.add_child(total_l)
+	var _upd := func():
+		total_l.text = "合计返还：%d 家具币" % (int(pair["spin"].value) * price)
+	pair["slider"].value_changed.connect(func(_v): _upd.call())
+	pair["spin"].value_changed.connect(func(_v): _upd.call())
+	_upd.call()
+
+	var rec_btn := Button.new()
+	rec_btn.text = "回收"
+	rec_btn.custom_minimum_size = Vector2(0, 40)
+	rec_btn.pressed.connect(func():
+		_on_recycle(fid, int(pair["spin"].value), rec_btn))
+	vbox.add_child(rec_btn)
+
+	c._add_ok_button(vbox, func(): close_popup(), "关闭")
+
+func _on_recycle(fid: String, n: int, btn: Button):
+	var r: Dictionary = _sys().recycle_furniture(fid, n)
+	if not r.get("ok", false):
+		c._show_stage_hint(str(r.get("reason", "回收失败")))
+		_flash_btn(btn)
+		return
+	c._show_stage_hint("回收成功：+%d 家具币" % int(r.get("gain", 0)))
+	_refresh()
+
+# ---- 风水详情弹窗：推导说明 + 10 档品质概率表 ----
+func _show_fengshui_popup():
+	_popup_kind = "fengshui"
+	_popup_id = ""
+	var vbox: VBoxContainer = _popup_vbox("风水详情", Vector2(470, 470))
+	var fs_l: int = _sys().get_fengshui_level()
+
+	var head_l := Label.new()
+	head_l.text = "风水 %s · %d 级（距下级还需 %d 点）" % [
+		c.format_number(_sys().get_fengshui()), fs_l, _sys().get_fengshui_to_next()]
+	head_l.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	head_l.add_theme_font_size_override("font_size", 16)
+	head_l.add_theme_color_override("font_color", Color("#8fd3c7"))
+	vbox.add_child(head_l)
+
+	var note_l := Label.new()
+	note_l.text = "来源：无双家具等级×100（唯一）｜效果：卜卦命格品质概率（命盘批次③开放）"
+	note_l.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	note_l.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+	note_l.add_theme_font_size_override("font_size", 11)
+	note_l.add_theme_color_override("font_color", Color("#888888"))
+	vbox.add_child(note_l)
+
+	# 10 档概率表（当前风水等级权重，峰值 P 标注）
+	var scroll := ScrollContainer.new()
+	scroll.custom_minimum_size = Vector2(0, 240)
+	scroll.size_flags_vertical = Control.SIZE_EXPAND_FILL
+	scroll.horizontal_scroll_mode = ScrollContainer.SCROLL_MODE_DISABLED
+	vbox.add_child(scroll)
+	var rows := VBoxContainer.new()
+	rows.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	rows.add_theme_constant_override("separation", 2)
+	scroll.add_child(rows)
+	for row in _sys().get_fengshui_rows(fs_l):
+		var row_l := Label.new()
+		row_l.text = "%s　%.2f%%（峰值 %d 级）" % [row["name"], float(row["pct"]) * 100.0, int(row["P"])]
+		row_l.add_theme_font_size_override("font_size", 13)
+		row_l.add_theme_color_override("font_color", Color("#dddddd") if int(row["P"]) > fs_l else Color("#888888"))
+		rows.add_child(row_l)
+
+	c._add_ok_button(vbox, func(): close_popup(), "关闭")
+
+# ---- 勋章弹窗：当前/效果 + 15 级列表 + 升级 ----
+func _show_medal_popup():
+	_popup_kind = "medal"
+	_popup_id = ""
+	var vbox: VBoxContainer = _popup_vbox("厢房勋章", Vector2(480, 520))
+	var comfort: int = _sys().get_total_comfort()
+
+	var cur: Dictionary = _sys().get_current_medal_cfg()
+	var cur_l := Label.new()
+	cur_l.text = "当前：%s · 全部商铺赚速 +%.0f%%" % [cur.get("name", ""), float(cur.get("shop_pct", 0.0)) * 100.0]
+	cur_l.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	cur_l.add_theme_font_size_override("font_size", 15)
+	cur_l.add_theme_color_override("font_color", Color("#ffd700"))
+	vbox.add_child(cur_l)
+	var sub_l := Label.new()
+	sub_l.text = "舒适度 %s（勋章门槛=舒适度，唯一消耗口）" % c.format_number(comfort)
+	sub_l.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	sub_l.add_theme_font_size_override("font_size", 11)
+	sub_l.add_theme_color_override("font_color", Color("#aaaaaa"))
+	vbox.add_child(sub_l)
+
+	# 15 级列表（滚动）
+	var scroll := ScrollContainer.new()
+	scroll.custom_minimum_size = Vector2(0, 260)
+	scroll.size_flags_vertical = Control.SIZE_EXPAND_FILL
+	scroll.horizontal_scroll_mode = ScrollContainer.SCROLL_MODE_DISABLED
+	vbox.add_child(scroll)
+	var rows := VBoxContainer.new()
+	rows.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	rows.add_theme_constant_override("separation", 2)
+	scroll.add_child(rows)
+	for m in _sys().get_medal_list():
+		var mlv: int = int(m.get("lv", 0))
+		var mneed: int = int(m.get("need_comfort", 0))
+		var tag: String = "［当前］" if mlv == _sys().medal_lv else ("✓" if mlv < _sys().medal_lv else "")
+		var row_l := Label.new()
+		row_l.text = "Lv%d %s　舒适度≥%s　商铺+%.0f%%　%s" % [
+			mlv, m.get("name", ""), c.format_number(mneed), float(m.get("shop_pct", 0.0)) * 100.0, tag]
+		row_l.add_theme_font_size_override("font_size", 12)
+		var row_color: String = "#ffd700" if mlv == _sys().medal_lv else ("#7ee08a" if mlv < _sys().medal_lv else "#888888")
+		row_l.add_theme_color_override("font_color", Color(row_color))
+		rows.add_child(row_l)
+
+	# 升级按钮（可升级亮红点；顶部入口同步亮）
+	var chk: Dictionary = _sys().can_upgrade_medal()
+	var up_btn := Button.new()
+	up_btn.text = "升级勋章"
+	up_btn.disabled = not chk.get("ok", false)
+	up_btn.custom_minimum_size = Vector2(0, 40)
+	up_btn.pressed.connect(func(): _on_medal_upgrade(up_btn))
+	vbox.add_child(up_btn)
+	if not chk.get("ok", false):
+		var reason_l := Label.new()
+		reason_l.text = str(chk.get("reason", ""))
+		reason_l.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+		reason_l.add_theme_color_override("font_color", Color("#e74c3c"))
+		vbox.add_child(reason_l)
+
+	c._add_ok_button(vbox, func(): close_popup(), "关闭")
+
+func _on_medal_upgrade(btn: Button):
+	var r: Dictionary = _sys().upgrade_medal()
+	if not r.get("ok", false):
+		c._show_stage_hint(str(r.get("reason", "无法升级")))
+		_flash_btn(btn)
+		return
+	c._show_stage_hint("勋章升级成功：%s" % _sys().get_medal_name())
+	_refresh()
 
 # 套装解锁/升级：条件未达→红色提示+按钮闪红；成功→提示并刷新（页+弹窗按状态原地重建）
 func _on_advance_set(sid: String, btn: Button):
