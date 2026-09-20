@@ -126,6 +126,13 @@ func _build_home_page(page: Panel):
 	note.add_theme_color_override("font_color", Color("#888888"))
 	root.add_child(note)
 
+# 卡片子节点全部 IGNORE：Label/VBox 默认拦点击不冒泡，会吃掉卡片的 gui_input（照 inn_view「点击穿透到卡片」惯例）
+func _pass_clicks(card: Control) -> void:
+	for child in card.get_children():
+		if child is Control:
+			(child as Control).mouse_filter = Control.MOUSE_FILTER_IGNORE
+			_pass_clicks(child)
+
 func _make_entry_btn(text: String, on_press: Callable) -> Button:
 	var btn := Button.new()
 	btn.text = text
@@ -211,6 +218,7 @@ func _build_catalog_page(page: Panel):
 		info_l.add_theme_font_size_override("font_size", 11)
 		info_l.add_theme_color_override("font_color", Color("#aaaaaa"))
 		vl.add_child(info_l)
+		_pass_clicks(row)   # 子节点穿透，否则文字区吃掉点击
 		row.gui_input.connect(func(ev: InputEvent):
 			if ev is InputEventMouseButton and ev.pressed and ev.button_index == MOUSE_BUTTON_LEFT:
 				_sel_set = sid
@@ -230,7 +238,7 @@ func _build_catalog_page(page: Panel):
 	grid_scroll.horizontal_scroll_mode = ScrollContainer.SCROLL_MODE_DISABLED
 	right.add_child(grid_scroll)
 	var grid := GridContainer.new()
-	grid.columns = 3
+	grid.columns = 4
 	grid.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	grid.add_theme_constant_override("h_separation", 6)
 	grid.add_theme_constant_override("v_separation", 6)
@@ -282,6 +290,7 @@ func _build_catalog_page(page: Panel):
 # 家具卡片：品质色卡 + 名 + 等级/件数（整卡点击进详情弹窗）
 func _make_furniture_card(fc: Dictionary) -> PanelContainer:
 	var st: Dictionary = _sys().get_furniture_state(str(fc.get("id", "")))
+	var q: Dictionary = _sys().get_quality_cfg(str(fc.get("quality", "")))
 	var card := PanelContainer.new()
 	var cs := StyleBoxFlat.new()
 	cs.bg_color = Color("#262238")
@@ -289,35 +298,47 @@ func _make_furniture_card(fc: Dictionary) -> PanelContainer:
 	cs.set_border_width_all(2)
 	cs.set_corner_radius_all(5)
 	card.add_theme_stylebox_override("panel", cs)
-	card.custom_minimum_size = Vector2(118, 84)
+	card.custom_minimum_size = Vector2(88, 96)
+	card.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	card.mouse_filter = Control.MOUSE_FILTER_STOP
 	var vl := VBoxContainer.new()
+	vl.alignment = BoxContainer.ALIGNMENT_CENTER
 	card.add_child(vl)
 	var name_l := Label.new()
 	name_l.text = str(fc.get("name", ""))
 	name_l.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
-	name_l.add_theme_font_size_override("font_size", 12)
+	name_l.add_theme_font_size_override("font_size", 11)
 	name_l.add_theme_color_override("font_color", Color(QUALITY_COLORS.get(str(fc.get("quality", "")), "#ffffff")))
 	name_l.clip_text = true
 	vl.add_child(name_l)
-	var info_l := Label.new()
-	var q: Dictionary = _sys().get_quality_cfg(str(fc.get("quality", "")))
-	var status: String = "Lv%d · %d件" % [st["lv"], st["cnt"]] if st["cnt"] > 0 else "未拥有"
-	info_l.text = status
-	info_l.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
-	info_l.add_theme_font_size_override("font_size", 11)
-	info_l.add_theme_color_override("font_color", Color("#bbbbbb") if st["cnt"] > 0 else Color("#777777"))
-	vl.add_child(info_l)
-	var career_l := Label.new()
-	career_l.text = "%s · %s" % [fc.get("career", ""), q.get("name", "")]
-	career_l.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
-	career_l.add_theme_font_size_override("font_size", 10)
-	career_l.add_theme_color_override("font_color", Color("#888888"))
-	vl.add_child(career_l)
+	var qc_l := Label.new()
+	qc_l.text = "%s · %s" % [q.get("name", ""), fc.get("career", "")]
+	qc_l.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	qc_l.add_theme_font_size_override("font_size", 10)
+	qc_l.add_theme_color_override("font_color", Color("#888888"))
+	vl.add_child(qc_l)
+	# 等级：lv=0 显示未解锁（用户 2026-09-20 拍板）
+	var lv_l := Label.new()
+	if st["lv"] > 0:
+		lv_l.text = "等级 Lv%d" % st["lv"]
+		lv_l.add_theme_color_override("font_color", Color("#7ee08a"))
+	else:
+		lv_l.text = "未解锁"
+		lv_l.add_theme_color_override("font_color", Color("#777777"))
+	lv_l.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	lv_l.add_theme_font_size_override("font_size", 11)
+	vl.add_child(lv_l)
+	var cnt_l := Label.new()
+	cnt_l.text = "拥有 %d" % st["cnt"]
+	cnt_l.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	cnt_l.add_theme_font_size_override("font_size", 10)
+	cnt_l.add_theme_color_override("font_color", Color("#bbbbbb"))
+	vl.add_child(cnt_l)
 	var fid: String = str(fc.get("id", ""))
 	card.gui_input.connect(func(ev: InputEvent):
 		if ev is InputEventMouseButton and ev.pressed and ev.button_index == MOUSE_BUTTON_LEFT:
 			_show_furniture_popup(fid))
+	_pass_clicks(card)   # 子节点穿透
 	return card
 
 # ==================== 工坊页 ====================
@@ -362,18 +383,18 @@ func _build_workshop_page(page: Panel):
 	note.add_theme_color_override("font_color", Color("#888888"))
 	root.add_child(note)
 
-	# 直购网格
-	var scroll := ScrollContainer.new()
-	scroll.size_flags_vertical = Control.SIZE_EXPAND_FILL
-	scroll.horizontal_scroll_mode = ScrollContainer.SCROLL_MODE_DISABLED
-	root.add_child(scroll)
+	# 直购网格：不滚动·铺满·按品质高→低排序（64 件≈8列×8行均分页面，用户 2026-09-20 拍板）
 	var grid := GridContainer.new()
-	grid.columns = 3
+	grid.columns = 8
+	grid.size_flags_vertical = Control.SIZE_EXPAND_FILL
 	grid.size_flags_horizontal = Control.SIZE_EXPAND_FILL
-	grid.add_theme_constant_override("h_separation", 6)
-	grid.add_theme_constant_override("v_separation", 6)
-	scroll.add_child(grid)
-	for fc in _sys().get_workshop_items():
+	grid.add_theme_constant_override("h_separation", 4)
+	grid.add_theme_constant_override("v_separation", 4)
+	root.add_child(grid)
+	var rank: Dictionary = {"wushuang": 0, "chuanqi": 1, "zhuoyue": 2, "youxiu": 3, "putong": 4}
+	var shop_items: Array = _sys().get_workshop_items()
+	shop_items.sort_custom(func(a, b): return int(rank.get(str(a.get("quality", "")), 9)) < int(rank.get(str(b.get("quality", "")), 9)))
+	for fc in shop_items:
 		grid.add_child(_make_workshop_card(fc))
 
 func _make_workshop_card(fc: Dictionary) -> PanelContainer:
@@ -382,36 +403,34 @@ func _make_workshop_card(fc: Dictionary) -> PanelContainer:
 	cs.bg_color = Color("#262238")
 	cs.border_color = Color(QUALITY_COLORS.get(str(fc.get("quality", "")), "#ffffff"))
 	cs.set_border_width_all(2)
-	cs.set_corner_radius_all(5)
+	cs.set_corner_radius_all(4)
 	card.add_theme_stylebox_override("panel", cs)
-	card.custom_minimum_size = Vector2(118, 84)
+	card.custom_minimum_size = Vector2(66, 54)
+	card.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	card.size_flags_vertical = Control.SIZE_EXPAND_FILL
 	card.mouse_filter = Control.MOUSE_FILTER_STOP
 	var vl := VBoxContainer.new()
+	vl.alignment = BoxContainer.ALIGNMENT_CENTER
 	card.add_child(vl)
 	var name_l := Label.new()
 	name_l.text = str(fc.get("name", ""))
 	name_l.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
-	name_l.add_theme_font_size_override("font_size", 12)
+	name_l.add_theme_font_size_override("font_size", 10)
 	name_l.add_theme_color_override("font_color", Color(QUALITY_COLORS.get(str(fc.get("quality", "")), "#ffffff")))
 	name_l.clip_text = true
 	vl.add_child(name_l)
 	var price: int = _sys().get_workshop_price(str(fc.get("quality", "")))
 	var price_l := Label.new()
-	price_l.text = "%d 家具币" % price
+	price_l.text = "%d币" % price
 	price_l.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
-	price_l.add_theme_font_size_override("font_size", 12)
+	price_l.add_theme_font_size_override("font_size", 10)
 	price_l.add_theme_color_override("font_color", Color("#ffd700"))
 	vl.add_child(price_l)
-	var own_l := Label.new()
-	own_l.text = "持有 %d" % _sys().get_furniture_state(str(fc.get("id", "")))["cnt"]
-	own_l.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
-	own_l.add_theme_font_size_override("font_size", 10)
-	own_l.add_theme_color_override("font_color", Color("#888888"))
-	vl.add_child(own_l)
 	var fid: String = str(fc.get("id", ""))
 	card.gui_input.connect(func(ev: InputEvent):
 		if ev is InputEventMouseButton and ev.pressed and ev.button_index == MOUSE_BUTTON_LEFT:
 			_show_buy_popup(fid))
+	_pass_clicks(card)   # 子节点穿透
 	return card
 
 # ==================== 弹窗（原地重建内容模式） ====================
@@ -473,7 +492,7 @@ func _show_furniture_popup(fid: String):
 	cur_l.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	cur_l.add_theme_color_override("font_color", Color("#7ee08a"))
 	vbox.add_child(cur_l)
-	if st["lv"] > 0 and st["lv"] < _sys().get_max_lv():
+	if st["lv"] < _sys().get_max_lv():
 		var cost: int = _sys().get_upgrade_cost(fid, st["lv"])
 		var nxt_l := Label.new()
 		nxt_l.text = "下级效果：%s（消耗 %d 件同名家具，返 %d 风水符）" % [
@@ -608,74 +627,87 @@ func _show_fengshui_popup():
 
 	c._add_ok_button(vbox, func(): close_popup(), "关闭")
 
-# ---- 勋章弹窗：当前/效果 + 15 级列表 + 升级 ----
+# ---- 勋章弹窗：统一样式（照钓鱼/妙音坊勋章模板，用户 2026-09-20 拍板） ----
 func _show_medal_popup():
 	_popup_kind = "medal"
 	_popup_id = ""
-	var vbox: VBoxContainer = _popup_vbox("厢房勋章", Vector2(480, 520))
-	var comfort: int = _sys().get_total_comfort()
-
-	var cur: Dictionary = _sys().get_current_medal_cfg()
-	var cur_l := Label.new()
-	cur_l.text = "当前：%s · 全部商铺赚速 +%.0f%%" % [cur.get("name", ""), float(cur.get("shop_pct", 0.0)) * 100.0]
-	cur_l.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
-	cur_l.add_theme_font_size_override("font_size", 15)
-	cur_l.add_theme_color_override("font_color", Color("#ffd700"))
-	vbox.add_child(cur_l)
-	var sub_l := Label.new()
-	sub_l.text = "舒适度 %s（勋章门槛=舒适度，唯一消耗口）" % c.format_number(comfort)
-	sub_l.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
-	sub_l.add_theme_font_size_override("font_size", 11)
-	sub_l.add_theme_color_override("font_color", Color("#aaaaaa"))
-	vbox.add_child(sub_l)
-
-	# 15 级列表（滚动）
-	var scroll := ScrollContainer.new()
-	scroll.custom_minimum_size = Vector2(0, 260)
-	scroll.size_flags_vertical = Control.SIZE_EXPAND_FILL
-	scroll.horizontal_scroll_mode = ScrollContainer.SCROLL_MODE_DISABLED
-	vbox.add_child(scroll)
-	var rows := VBoxContainer.new()
-	rows.size_flags_horizontal = Control.SIZE_EXPAND_FILL
-	rows.add_theme_constant_override("separation", 2)
-	scroll.add_child(rows)
-	for m in _sys().get_medal_list():
-		var mlv: int = int(m.get("lv", 0))
-		var mneed: int = int(m.get("need_comfort", 0))
-		var tag: String = "［当前］" if mlv == _sys().medal_lv else ("✓" if mlv < _sys().medal_lv else "")
-		var row_l := Label.new()
-		row_l.text = "Lv%d %s　舒适度≥%s　商铺+%.0f%%　%s" % [
-			mlv, m.get("name", ""), c.format_number(mneed), float(m.get("shop_pct", 0.0)) * 100.0, tag]
-		row_l.add_theme_font_size_override("font_size", 12)
-		var row_color: String = "#ffd700" if mlv == _sys().medal_lv else ("#7ee08a" if mlv < _sys().medal_lv else "#888888")
-		row_l.add_theme_color_override("font_color", Color(row_color))
-		rows.add_child(row_l)
-
-	# 升级按钮（可升级亮红点；顶部入口同步亮）
-	var chk: Dictionary = _sys().can_upgrade_medal()
-	var up_btn := Button.new()
-	up_btn.text = "升级勋章"
-	up_btn.disabled = not chk.get("ok", false)
-	up_btn.custom_minimum_size = Vector2(0, 40)
-	up_btn.pressed.connect(func(): _on_medal_upgrade(up_btn))
-	vbox.add_child(up_btn)
-	if not chk.get("ok", false):
-		var reason_l := Label.new()
-		reason_l.text = str(chk.get("reason", ""))
-		reason_l.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
-		reason_l.add_theme_color_override("font_color", Color("#e74c3c"))
-		vbox.add_child(reason_l)
-
+	var vbox: VBoxContainer = _popup_vbox("勋章", Vector2(460, 420))
+	var card := PanelContainer.new()
+	var style := StyleBoxFlat.new()
+	style.bg_color = Color("#2a2640")
+	style.border_color = Color("#6a5f9e")
+	style.set_border_width_all(2)
+	style.set_corner_radius_all(6)
+	card.add_theme_stylebox_override("panel", style)
+	vbox.add_child(card)
+	var vb := VBoxContainer.new()
+	vb.add_theme_constant_override("separation", 4)
+	card.add_child(vb)
+	var head_row := HBoxContainer.new()
+	head_row.alignment = BoxContainer.ALIGNMENT_CENTER
+	head_row.add_theme_constant_override("separation", 6)
+	vb.add_child(head_row)
+	var head := Label.new()
+	head.text = "勋章：%s（%d级）" % [_sys().get_medal_name(), _sys().medal_lv]
+	head.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	head.add_theme_font_size_override("font_size", 18)
+	head.add_theme_color_override("font_color", Color("#e6c07b"))
+	head_row.add_child(head)
+	var help_btn := Button.new()
+	help_btn.text = "?"
+	help_btn.custom_minimum_size = Vector2(24, 24)
+	help_btn.tooltip_text = "点击查看勋章规则"
+	help_btn.pressed.connect(_on_medal_help)
+	head_row.add_child(help_btn)
+	var effect := Label.new()
+	effect.text = "全部商铺赚速 +%d%%" % int(_sys().get_medal_shop_pct() * 100)
+	effect.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	effect.add_theme_color_override("font_color", Color("#e6c07b"))
+	vb.add_child(effect)
+	var nxt: Dictionary = _sys().get_next_medal_cfg()
+	if nxt.is_empty():
+		var max_lbl := Label.new()
+		max_lbl.text = "已满级"
+		max_lbl.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+		max_lbl.add_theme_color_override("font_color", Color("#9a93b8"))
+		vb.add_child(max_lbl)
+	else:
+		var need: int = int(nxt.get("need_comfort", 0))
+		var next_lbl := Label.new()
+		next_lbl.text = "下一级需舒适度 %s（当前 %s）" % [c.format_number(need), c.format_number(_sys().get_total_comfort())]
+		next_lbl.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+		next_lbl.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+		vb.add_child(next_lbl)
+		var bar := ProgressBar.new()
+		bar.min_value = 0.0
+		bar.max_value = maxf(1.0, float(need))
+		bar.value = minf(float(_sys().get_total_comfort()), float(need))
+		bar.show_percentage = true
+		bar.custom_minimum_size = Vector2(410, 18)
+		vb.add_child(bar)
+		var next_effect := Label.new()
+		next_effect.text = "下级效果：全部商铺赚速 +%d%%" % int(float(nxt.get("shop_pct", 0.0)) * 100.0)
+		next_effect.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+		next_effect.add_theme_color_override("font_color", Color("#7ee787"))
+		vb.add_child(next_effect)
+		var up_btn := Button.new()
+		up_btn.text = "升级勋章"
+		up_btn.custom_minimum_size = Vector2(130, 38)
+		up_btn.disabled = not _sys().can_upgrade_medal().get("ok", false)
+		up_btn.pressed.connect(_on_medal_upgrade)
+		vb.add_child(up_btn)
 	c._add_ok_button(vbox, func(): close_popup(), "关闭")
 
-func _on_medal_upgrade(btn: Button):
+func _on_medal_help():
+	c._show_stage_hint("厢房勋章：舒适度达到门槛即可升级（舒适度只作门槛不消耗）；每级全部商铺赚速+100%；技能等级上限效果挂起未接入。")
+
+func _on_medal_upgrade():
 	var r: Dictionary = _sys().upgrade_medal()
 	if not r.get("ok", false):
-		c._show_stage_hint(str(r.get("reason", "无法升级")))
-		_flash_btn(btn)
+		c._show_stage_hint(str(r.get("reason", "暂不可升级")))
 		return
-	c._show_stage_hint("勋章升级成功：%s" % _sys().get_medal_name())
-	_refresh()
+	c._show_stage_hint("勋章升级成功")
+	_refresh()   # 页+弹窗按状态原地重建（进度条/红点同步）
 
 # 套装解锁/升级：条件未达→红色提示+按钮闪红；成功→提示并刷新（页+弹窗按状态原地重建）
 func _on_advance_set(sid: String, btn: Button):

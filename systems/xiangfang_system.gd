@@ -1,8 +1,8 @@
 # ============================================================
 # 厢房玩法系统（批次① 2026-09-20：家具/升级/套装/舒适度/风水推导/工坊直购/回收/勋章）
 # 设计口径：厢房设计方案 v1.0 §1~§5、§7；配置 data/xiangfang.json（296 家具/20 套装/勋章 15 级/风水概率）
-# 家具模型：{lv, cnt}——lv=当前等级(0=未解锁)，cnt=持有件数；升级 n→n+1 消耗 cost(n) 件同名家具并返风水符；
-#           首件获得自动 0→1 解锁（无双"初始未解锁、首个同名件解锁"口径对全品质统一，玩家零成本理解）。
+# 家具模型：{lv, cnt}——lv=当前等级(0=未解锁)，cnt=富余件数(未消耗)；不自动解锁：
+#           0→1 消耗 1 件、n→n+1(n≥1) 消耗 cost(n) 件同名家具并返风水符（用户 2026-09-20 拍板：买 1 件≠解锁）。
 # 舒适度=Σ等级×每级舒适度（推导值，唯一消耗口=勋章门槛）；风水=Σ无双家具等级×100（唯一来源=无双家具）。
 # 套装等级=手动解锁/升级（用户 2026-09-20 拍板）：存档存 set_lv，解锁/升级无消耗；
 #           前提=套内家具最低件等级≥目标级（0→1 需全套≥1 级，1→2 需全套≥2 级，依此类推，上限 50）；
@@ -19,7 +19,8 @@ extends RefCounted
 var g
 
 # ---------- 存档字段（内部持有，随 get_save_data 落盘） ----------
-var furniture: Dictionary = {}   # {fid: {lv, cnt}}
+var furniture: Dictionary = {}   # {fid: {lv, cnt}}（cnt=富余件数；存档格式 fv=2，旧档 fv=1 读档时自动折算）
+var furniture_fmt: int = 2       # 家具存档格式版本：1=旧(total计数+首件自动解锁)，2=富余计数
 var set_levels: Dictionary = {}  # {sid: 套装等级}（手动解锁/升级制，用户 2026-09-20 拍板；上限=套内最低件等级）
 var medal_lv: int = 1            # 勋章等级 1~15
 
@@ -32,7 +33,7 @@ func _init(p_g):
 # ============ 存档：本系统拥有的字段 ============
 func get_save_data() -> Dictionary:
 	return {"xiangfang": {
-		"furniture": furniture, "set_levels": set_levels, "medal": medal_lv,
+		"furniture": furniture, "fv": furniture_fmt, "set_levels": set_levels, "medal": medal_lv,
 	}}
 
 # 从扁平存档表认领本系统字段（旧档缺 xiangfang 段则按初始形状建档）
@@ -47,6 +48,14 @@ func load_save_data(s: Dictionary):
 	# 旧版内置 jiajibi 字段迁移：一次性折算进道具轨（防早期测试档丢币）
 	if d.has("jiajibi") and int(d.get("jiajibi", 0)) > 0:
 		_grant_jiajibi(int(d.get("jiajibi", 0)))
+	# 旧档迁移 fv1→fv2：旧 cnt=总获得件数（首件自动解锁不消耗），新 cnt=富余=total-lv（0→1 那件要补扣）
+	furniture_fmt = int(d.get("fv", 1))
+	if furniture_fmt < 2:
+		for fid in furniture.keys():
+			var e0 = furniture[fid]
+			if e0 is Dictionary and int(e0.get("lv", 0)) > 0:
+				e0["cnt"] = maxi(0, int(e0.get("cnt", 0)) - int(e0.get("lv", 0)))
+		furniture_fmt = 2
 	medal_lv = clampi(int(d.get("medal", 1)), 1, get_medal_count())
 	_init_state()
 
@@ -90,7 +99,9 @@ func get_set_furniture(sid: String) -> Array:
 	for fid in s.get("items", []):
 		var fc: Dictionary = get_furniture_cfg(str(fid))
 		if not fc.is_empty():
-			out.append(fc)
+			var with_id: Dictionary = fc.duplicate()   # duplicate 防改到共享配置
+			with_id["id"] = str(fid)
+			out.append(with_id)
 	return out
 
 # ============ 家具状态 ============
@@ -103,14 +114,12 @@ func get_furniture_state(fid: String) -> Dictionary:
 func is_unlocked(fid: String) -> bool:
 	return get_furniture_state(fid)["lv"] > 0
 
-# 发放家具：cnt 增加；首件自动 0→1 解锁（无双口径，全品质统一）
+# 发放家具：富余 cnt 增加；不自动解锁（0→1 靠升级消耗 1 件，用户 2026-09-20 拍板）
 func gain_furniture(fid: String, n: int) -> void:
 	if n <= 0 or get_furniture_cfg(fid).is_empty():
 		return
 	var e: Dictionary = furniture.get(fid, {"lv": 0, "cnt": 0})
 	e["cnt"] = int(e.get("cnt", 0)) + n
-	if int(e.get("lv", 0)) == 0:
-		e["lv"] = 1
 	furniture[fid] = e
 
 # 升级消耗：n→n+1 需同名件数；无双固定 1，其余 1+floor((n-1)/step)
@@ -120,18 +129,18 @@ func get_upgrade_cost(fid: String, n: int) -> int:
 		return 0
 	if str(q.get("cost_mode", "step")) == "fixed":
 		return int(q.get("cost_fixed", 1))
+	if n <= 0:
+		return 1   # 0→1 解锁消耗 1 件（全品质统一）
 	var step: int = maxi(1, int(q.get("cost_step", 1)))
 	return 1 + int(floor((n - 1) / float(step)))
 
 # 可升级判定：未满级 且 富余件数(cnt-(lv-1)) ≥ 消耗
 func can_upgrade(fid: String) -> Dictionary:
 	var st: Dictionary = get_furniture_state(fid)
-	if st["lv"] <= 0:
-		return {"ok": false, "reason": "尚未拥有"}
 	if st["lv"] >= get_max_lv():
 		return {"ok": false, "reason": "已满级"}
 	var cost: int = get_upgrade_cost(fid, st["lv"])
-	if st["cnt"] - (st["lv"] - 1) < cost:
+	if st["cnt"] < cost:
 		return {"ok": false, "reason": "同名家具不足（需%d件）" % cost, "cost": cost}
 	return {"ok": true, "cost": cost}
 
@@ -341,7 +350,9 @@ func get_workshop_items() -> Array:
 		for fid in s.get("items", []):
 			var fc: Dictionary = fcfg.get(str(fid), {})
 			if not fc.is_empty():
-				out.append(fc)
+				var with_id: Dictionary = fc.duplicate()   # duplicate 防改到共享配置
+				with_id["id"] = str(fid)
+				out.append(with_id)
 	return out
 
 # 工坊直购：扣家具币、发家具
@@ -367,7 +378,7 @@ func get_recyclable_count(fid: String) -> int:
 	var st: Dictionary = get_furniture_state(fid)
 	if st["lv"] < get_max_lv():
 		return 0
-	return st["cnt"] - (st["lv"] - 1)
+	return st["cnt"]   # cnt 即富余件数，满级全部可回收
 
 func recycle_furniture(fid: String, n: int) -> Dictionary:
 	var avail: int = get_recyclable_count(fid)
