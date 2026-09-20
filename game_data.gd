@@ -1596,6 +1596,25 @@ func get_hero_fish_aptitude(hero_id: String):
 func get_hero_costume_aptitude(hero_id: String) -> int:
 	return costume_system.get_hero_costume_aptitude(hero_id)
 
+# 厢房加成门客
+func get_hero_xiangfang_furniture_aptitude(hero_id: String) -> int:
+	return xiangfang_system.get_hero_furniture_aptitude(hero_id)
+
+func get_hero_xiangfang_furniture_income(hero_id: String) -> int:
+	return xiangfang_system.get_hero_furniture_flat_income(hero_id)
+
+func get_hero_xiangfang_set_aptitude(hero_id: String) -> int:
+	return xiangfang_system.get_hero_set_aptitude(hero_id)
+
+func get_hero_xiangfang_set_percent(hero_id: String) -> float:
+	return xiangfang_system.get_hero_set_percent(hero_id)
+
+func get_hero_mingpan_aptitude(hero_id: String) -> int:
+	return mingpan_system.get_hero_aptitude(hero_id)
+
+func get_hero_mingpan_pct(hero_id: String) -> float:
+	return mingpan_system.get_hero_pct(hero_id)
+
 func get_hero_costume_series_pct(hero_id: String) -> float:
 	return costume_system.get_hero_costume_series_pct(hero_id)
 

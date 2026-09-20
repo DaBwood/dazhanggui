@@ -3,7 +3,9 @@
 # 批次①（2026-09-20）：主界面 + 家具图鉴（升级/套装面板）+ 工坊直购。
 # 批次②（2026-09-20）：回收（详情页满级富余件）+ 风水详情弹窗（角标点入）+ 勋章（入口/15级列表/升级，
 #   shop bonus 挂点=systems/shop_system.gd get_shop_auto_income 末项）。
-# 批次③（2026-09-20）：命盘页（5 盘 Tab/10 槽/卜卦/自动卜卦/加成总览/升级效果，逻辑在 mingpan_system.gd）；批次④：HeroData 接入。
+# 批次③（2026-09-20）：命盘页（5 盘 Tab/10 槽/卜卦/自动卜卦/加成总览/升级效果，逻辑在 mingpan_system.gd）。
+# 批次④（2026-09-20）：HeroData 四链接入（hero_data.gd 三链+game_data.gd 转发块+勋章技能上限写天赋系统）
+#   + 升级效果弹窗。四批齐了，本页功能完整。
 # 红点口径：照 2026-09-18 拍板——页内展示不穿透地图（批次②起挂：勋章可升级/套装可进阶亮红点）。
 # 弹窗刷新：原地重建内容（基座面板不动，只换 VBox 内容），规避"关弹窗+立刻重建同名"自动改名雷（勋章热修同款）。
 # ============================================================
@@ -20,6 +22,9 @@ var _tab: String = "home"        # home / catalog / workshop
 var _sel_set: String = "s01"     # 图鉴当前选中套装
 var _sel_plate: String = "p1"    # 命盘当前选中盘
 var _pending_luck: Dictionary = {}   # 卜卦待二选一的新命格（替换/放弃后清空）
+var _upresult: Dictionary = {}       # 升级效果弹窗数据（升级前后等级/舒适度/风水差值）
+var _auto_divining: bool = false     # 自动卜卦进行中（再按一次停止）
+var _auto_stats: Dictionary = {}     # 自动卜卦暂停时的计数（卦数/装上数）
 var _popup_panel: PanelContainer = null   # 当前弹窗基座（原地重建内容用）
 
 func _init(p_c):
@@ -140,6 +145,24 @@ func _pass_clicks(card: Control) -> void:
 			(child as Control).mouse_filter = Control.MOUSE_FILTER_IGNORE
 			_pass_clicks(child)
 
+# 卡片红点（_add_btn_dot 的 Control 通用版：卡片是 PanelContainer 非 Button，照抄锚点定位实现）
+func _card_dot(card: Control, cond: bool) -> void:
+	var d := Label.new()
+	d.text = "●"
+	d.add_theme_color_override("font_color", Color("#e74c3c"))
+	d.add_theme_font_size_override("font_size", 14)
+	d.anchor_left = 1.0
+	d.anchor_right = 1.0
+	d.anchor_top = 0.0
+	d.anchor_bottom = 0.0
+	d.offset_left = -18
+	d.offset_right = -2
+	d.offset_top = 2
+	d.offset_bottom = 18
+	d.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	d.visible = cond
+	card.add_child(d)
+
 func _make_entry_btn(text: String, on_press: Callable) -> Button:
 	var btn := Button.new()
 	btn.text = text
@@ -226,6 +249,7 @@ func _build_catalog_page(page: Panel):
 		info_l.add_theme_color_override("font_color", Color("#aaaaaa"))
 		vl.add_child(info_l)
 		_pass_clicks(row)   # 子节点穿透，否则文字区吃掉点击
+		_card_dot(row, _sys().set_has_action(sid))   # 套内有可操作项亮红点
 		row.gui_input.connect(func(ev: InputEvent):
 			if ev is InputEventMouseButton and ev.pressed and ev.button_index == MOUSE_BUTTON_LEFT:
 				_sel_set = sid
@@ -346,6 +370,7 @@ func _make_furniture_card(fc: Dictionary) -> PanelContainer:
 		if ev is InputEventMouseButton and ev.pressed and ev.button_index == MOUSE_BUTTON_LEFT:
 			_show_furniture_popup(fid))
 	_pass_clicks(card)   # 子节点穿透
+	_card_dot(card, _sys().can_upgrade(fid).get("ok", false))   # 可升级/解锁红点（页内展示不穿透）
 	return card
 
 # ==================== 工坊页 ====================
@@ -460,6 +485,8 @@ func _rebuild_popup():
 		_show_overview_popup()
 	elif _popup_kind == "upeffect":
 		_show_upeffect_popup()
+	elif _popup_kind == "upresult":
+		_show_upresult_popup(_popup_id)
 
 # 取弹窗内容 VBox：已有基座则清空内容原地重建（不新建同名节点，规避自动改名雷）；无则新建
 func _popup_vbox(title: String, size: Vector2) -> VBoxContainer:
@@ -534,7 +561,7 @@ func _show_furniture_popup(fid: String):
 	# 升级按钮
 	var chk: Dictionary = _sys().can_upgrade(fid)
 	var up_btn := Button.new()
-	up_btn.text = "升级"
+	up_btn.text = "解锁" if st["lv"] == 0 else "升级"   # 0→1 语义=解锁（用户拍板）
 	up_btn.disabled = not chk.get("ok", false)
 	up_btn.custom_minimum_size = Vector2(0, 40)
 	up_btn.pressed.connect(func(): _on_upgrade(fid, false, up_btn))
@@ -623,7 +650,9 @@ func _show_fengshui_popup():
 	note_l.add_theme_color_override("font_color", Color("#888888"))
 	vbox.add_child(note_l)
 
-	# 10 档概率表（当前风水等级权重，峰值 P 标注）
+	# 10 档概率表：当前等级 vs 下一级（用户拍板：只看这两列）
+	var cur_rows: Array = _sys().get_fengshui_rows(fs_l)
+	var nxt_rows: Array = _sys().get_fengshui_rows(fs_l + 1)
 	var scroll := ScrollContainer.new()
 	scroll.custom_minimum_size = Vector2(0, 240)
 	scroll.size_flags_vertical = Control.SIZE_EXPAND_FILL
@@ -633,11 +662,17 @@ func _show_fengshui_popup():
 	rows.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	rows.add_theme_constant_override("separation", 2)
 	scroll.add_child(rows)
-	for row in _sys().get_fengshui_rows(fs_l):
+	var head_row := Label.new()
+	head_row.text = "品质　　当前　→　下一级"
+	head_row.add_theme_font_size_override("font_size", 12)
+	head_row.add_theme_color_override("font_color", Color("#aaaaaa"))
+	rows.add_child(head_row)
+	for i in range(mini(cur_rows.size(), nxt_rows.size())):
 		var row_l := Label.new()
-		row_l.text = "%s　%.2f%%（峰值 %d 级）" % [row["name"], float(row["pct"]) * 100.0, int(row["P"])]
+		row_l.text = "%s　%.2f%% → %.2f%%" % [
+			cur_rows[i]["name"], float(cur_rows[i]["pct"]) * 100.0, float(nxt_rows[i]["pct"]) * 100.0]
 		row_l.add_theme_font_size_override("font_size", 13)
-		row_l.add_theme_color_override("font_color", Color("#dddddd") if int(row["P"]) > fs_l else Color("#888888"))
+		row_l.add_theme_color_override("font_color", Color("#dddddd"))
 		rows.add_child(row_l)
 
 	c._add_ok_button(vbox, func(): close_popup(), "关闭")
@@ -741,14 +776,25 @@ func _effect_text(fc: Dictionary, lv: int) -> String:
 	return "%s类门客赚钱 +%s" % [fc.get("career", ""), c.format_number(lv * int(q.get("attr_per_lv", 0)))]
 
 func _on_upgrade(fid: String, is_all: bool, btn: Button):
+	# 升级前快照（效果弹窗差值用）
+	var st0: Dictionary = _sys().get_furniture_state(fid)
+	var comfort0: int = _sys().get_total_comfort()
+	var fs0: int = _sys().get_fengshui()
 	var r: Dictionary = _sys().upgrade_all(fid) if is_all else _sys().upgrade_furniture(fid)
 	if not r.get("ok", false):
 		c._show_stage_hint(str(r.get("reason", "无法升级")))
 		_flash_btn(btn)
 		return
-	var msg: String = "升级成功：Lv%d" % int(r.get("lv", 0)) if not is_all else "一键升级 %d 次" % int(r.get("times", 0))
-	c._show_stage_hint(msg)
-	_refresh()   # 重建页面（角标/套装等级）+ 按弹窗状态原地重建详情
+	var st1: Dictionary = _sys().get_furniture_state(fid)
+	_upresult = {
+		"lv0": st0["lv"], "lv1": st1["lv"],
+		"d_comfort": _sys().get_total_comfort() - comfort0,
+		"d_fengshui": _sys().get_fengshui() - fs0,
+	}
+	_popup_kind = "upresult"
+	_popup_id = fid
+	c._show_stage_hint("升级成功：Lv%d" % st1["lv"])
+	_refresh()   # 重建页面+按弹窗状态原地重建
 
 # ---- 工坊购买弹窗：滑条+SpinBox 数量选择 ----
 func _show_buy_popup(fid: String):
@@ -916,7 +962,7 @@ func _build_mingpan_page(page: Panel):
 	divine_btn.pressed.connect(func(): _on_divine(divine_btn))
 	ops.add_child(divine_btn)
 	var auto_btn := Button.new()
-	auto_btn.text = "自动卜卦"
+	auto_btn.text = "停止" if _auto_divining else "自动卜卦"
 	auto_btn.custom_minimum_size = Vector2(110, 42)
 	auto_btn.pressed.connect(func(): _on_auto_divine())
 	ops.add_child(auto_btn)
@@ -1103,6 +1149,13 @@ func _show_divine_popup():
 		cmp_l.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 		cmp_l.add_theme_color_override("font_color", Color("#7ee787") if diff >= 0.0 else Color("#e74c3c"))
 		vbox.add_child(cmp_l)
+		# 真实赚速增量（替换基准，用户拍板）：装上后总赚速变化，涨绿跌红
+		var d_money: float = _msys().luck_money_impact(luck)
+		var money_l := Label.new()
+		money_l.text = "装上后赚速变化：%+d/秒" % int(d_money)
+		money_l.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+		money_l.add_theme_color_override("font_color", Color("#7ee787") if d_money >= 0.0 else Color("#e74c3c"))
+		vbox.add_child(money_l)
 		var old_q: String = str((_msys().get_quality_cfg(str(old.get("q", ""))) as Dictionary).get("name", ""))
 		var old_l := Label.new()
 		old_l.text = "原命格：%s Lv%d" % [old_q, int(old.get("lv", 1))]
@@ -1124,6 +1177,11 @@ func _show_divine_popup():
 	drop_btn.custom_minimum_size = Vector2(130, 40)
 	drop_btn.pressed.connect(func():
 		_pending_luck = {}
+		if _auto_divining:
+			c._show_stage_hint("已放弃（自动卜卦继续）")
+			_refresh()
+			_auto_resume()
+			return
 		close_popup()
 		_refresh())
 	btn_row.add_child(drop_btn)
@@ -1136,20 +1194,70 @@ func _on_install_pending():
 		close_popup()
 		return
 	_msys().install_luck(_pending_luck)
-	c._show_stage_hint("命格已装上")
 	_pending_luck = {}
+	if _auto_divining:
+		_auto_stats["replaced"] = int(_auto_stats.get("replaced", 0)) + 1
+		c._show_stage_hint("已装上（自动卜卦继续）")
+		_refresh()
+		_auto_resume()
+		return
+	c._show_stage_hint("命格已装上")
 	_refresh()
 
-# 自动卜卦：连抽直到符尽（上限 3000 防呆），更优才替换
+# 自动卜卦（用户拍板节奏）：每 0.5 秒一卦；低于/等于槽内现值的自动消失，更高的弹窗暂停手动二选一；
+# 选择后自动续抽，直到符尽或手动按「停止」
 func _on_auto_divine():
+	if _auto_divining:
+		_auto_divining = false
+		c._show_stage_hint("已停止自动卜卦")
+		_refresh()
+		return
 	if not _msys().can_divine():
 		c._show_stage_hint("风水符不足")
 		return
-	var r: Dictionary = _msys().auto_divine(3000)
-	c._show_stage_hint("自动卜卦 %d 卦：替换 %d 次%s" % [
-		int(r.get("rolls", 0)), int(r.get("replaced", 0)),
-		("，命盘升 %d 级" % int(r.get("ups", 0))) if int(r.get("ups", 0)) > 0 else ""])
+	_auto_divining = true
 	_refresh()
+	_auto_divine_step(0, 0)
+
+func _auto_divine_step(rolls: int, replaced: int):
+	if not _auto_divining:
+		return
+	if not _msys().can_divine():
+		_auto_divining = false
+		c._show_stage_hint("自动卜卦结束：共 %d 卦，装上 %d 个" % [rolls, replaced])
+		_refresh()
+		return
+	var r: Dictionary = _msys().divine()
+	if not r.get("ok", false):
+		_auto_divining = false
+		_refresh()
+		return
+	rolls += 1
+	if int(r.get("ups", 0)) > 0:
+		c._show_stage_hint("命盘升级：%d 级！" % _msys().plate_lv)
+	var luck: Dictionary = r.get("luck", {})
+	var delta: float = _msys().luck_money_impact(luck)   # 真实赚速增量（临时换装重算，>0 更好）
+	var better: bool = delta > 0.0
+	if better:
+		# 更好的命格：暂停弹窗，玩家手动二选一后由 _auto_resume 续抽
+		_auto_stats = {"rolls": rolls, "replaced": replaced}
+		_pending_luck = luck
+		_show_divine_popup()
+	else:
+		_refresh()   # 进度条跳动
+		await c.get_tree().create_timer(0.5).timeout
+		_auto_divine_step(rolls, replaced)
+
+# 自动卜卦暂停后恢复（替换/放弃按钮都走这里）
+func _auto_resume():
+	if _auto_stats.is_empty():
+		return
+	var rolls: int = int(_auto_stats.get("rolls", 0))
+	var replaced: int = int(_auto_stats.get("replaced", 0))
+	_auto_stats = {}
+	_refresh()
+	await c.get_tree().create_timer(0.5).timeout
+	_auto_divine_step(rolls, replaced)
 
 # 加成总览：按门客聚合全部盘贡献
 func _show_overview_popup():
@@ -1200,11 +1308,52 @@ func _show_upeffect_popup():
 		line.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 		line.add_theme_color_override("font_color", Color("#dddddd") if float(nxt[k]) <= float(cur[k]) else Color("#7ee787"))
 		vbox.add_child(line)
-	var note_l := Label.new()
-	note_l.text = "命盘升级：每卦+1 进度，满 %d 升级（不 retroactive，老命格保留）" % _msys().get_current_need()
-	note_l.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
-	note_l.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
-	note_l.add_theme_font_size_override("font_size", 11)
-	note_l.add_theme_color_override("font_color", Color("#888888"))
-	vbox.add_child(note_l)
+	c._add_ok_button(vbox, func(): close_popup(), "关闭")
+
+
+# ---- 升级效果弹窗（批次④）：旧→新具体数值，涨绿跌红铁律 ----
+func _show_upresult_popup(fid: String):
+	if _upresult.is_empty():
+		close_popup()
+		return
+	var fc: Dictionary = _sys().get_furniture_cfg(fid)
+	if fc.is_empty():
+		close_popup()
+		return
+	_popup_kind = "upresult"
+	_popup_id = fid
+	var vbox: VBoxContainer = _popup_vbox("升级效果", Vector2(440, 330))
+	var lv0: int = int(_upresult.get("lv0", 0))
+	var lv1: int = int(_upresult.get("lv1", 0))
+
+	var head := Label.new()
+	head.text = "%s　Lv%d → Lv%d" % [fc.get("name", ""), lv0, lv1]
+	head.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	head.add_theme_font_size_override("font_size", 16)
+	head.add_theme_color_override("font_color", Color(QUALITY_COLORS.get(str(fc.get("quality", "")), "#ffffff")))
+	vbox.add_child(head)
+
+	# 主属性效果：lv0=0（未解锁）时旧值按 0 显示
+	var eff := Label.new()
+	eff.text = "%s → %s" % [_effect_text(fc, lv0), _effect_text(fc, lv1)]
+	eff.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	eff.add_theme_color_override("font_color", Color("#7ee787"))
+	vbox.add_child(eff)
+
+	var dc: int = int(_upresult.get("d_comfort", 0))
+	if dc != 0:
+		var comfort_l := Label.new()
+		comfort_l.text = "舒适度 +%d（当前 %s）" % [dc, c.format_number(_sys().get_total_comfort())]
+		comfort_l.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+		comfort_l.add_theme_color_override("font_color", Color("#8fd3c7"))
+		vbox.add_child(comfort_l)
+
+	var dfs: int = int(_upresult.get("d_fengshui", 0))
+	if dfs != 0:
+		var fs_l := Label.new()
+		fs_l.text = "风水 +%d（当前 %s · %d 级）" % [dfs, c.format_number(_sys().get_fengshui()), _sys().get_fengshui_level()]
+		fs_l.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+		fs_l.add_theme_color_override("font_color", Color("#8fd3c7"))
+		vbox.add_child(fs_l)
+
 	c._add_ok_button(vbox, func(): close_popup(), "关闭")

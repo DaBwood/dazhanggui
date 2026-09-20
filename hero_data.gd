@@ -32,6 +32,10 @@ static func get_total_aptitude(g, hero_id: String) -> int:
 	total += g.get_hero_costume_aptitude(hero_id)   
 	# 【新增】兽魂词条资质（装备珍兽魂盘的激发格词条之和）
 	total += g.get_hero_soul_aptitude(hero_id)
+	# 【厢房批次④】家具资质（无双/传奇·按职业）+ 套装资质（潇湘幽竹类·全体）+ 命格资质（外圈槽）
+	total += g.get_hero_xiangfang_furniture_aptitude(hero_id)
+	total += g.get_hero_xiangfang_set_aptitude(hero_id)
+	total += g.get_hero_mingpan_aptitude(hero_id)
 	# 【新增】魂力资质（装备珍兽魂体：等级+魂骨+技能+共鸣）
 	total += g.get_hero_hunli_aptitude(hero_id)
 	# 【新增】促织装备资质加成（无双6/级，极无双7/级）
@@ -93,6 +97,8 @@ static func get_extra_income(g, hero_id: String) -> int:
 	extra += g.get_hero_fish_flat_income(hero_id)
 	# 【新增】魂力固定赚速（装备珍兽魂骨的赚钱技能）
 	extra += g.get_hero_hunli_income(hero_id)
+	# 【厢房批次④】家具固定赚钱（卓越/优秀/普通·按职业）
+	extra += g.get_hero_xiangfang_furniture_income(hero_id)
 	
 	# 【促织培育】部位固定赚速（按职业汇总极无双促织）
 	extra += g.cuzhi_system.get_career_peiyu_flat_income(hero.get("category", ""))
@@ -150,7 +156,10 @@ static func get_percent_bonus(g, hero_id: String) -> float:
 	bonus += g.talent_system.get_income_pct(hero_id)
 	# 【新增】藏品特殊效果百分比（指定/类别/五艳/自选/无双以上门客 + 套装已接入类）
 	bonus += g.collection_system.get_percent_bonus(hero_id)
-	
+	# 【厢房批次④】套装职业赚钱%（表值×套装等级）+ 命格四象赚钱%（内圈槽）
+	bonus += g.get_hero_xiangfang_set_percent(hero_id)
+	bonus += g.get_hero_mingpan_pct(hero_id)
+
 	return bonus
 
 # 门客总赚速 = 基础赚速 × (1 + 百分比加成) + 额外赚速

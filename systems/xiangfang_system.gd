@@ -8,7 +8,8 @@
 #           前提=套内家具最低件等级≥目标级（0→1 需全套≥1 级，1→2 需全套≥2 级，依此类推，上限 50）；
 #           条件未达点击弹提示"需要全套家具达到XX级"；效果=配置表值×套装等级（表值同 xlsx）。
 # 勋章：15 级×舒适度门槛手动升级；效果①全部商铺赚速+100%/级=读取式挂 shop bonus 链（批次② view+挂点）；
-#       效果②初始技能等级上限挂起未接（同酒坊/妙音坊，配置已带 skill_cap 字段）。
+#       效果②初始技能等级上限：批次④已接 talent_system.apply_skill_cap_delta（仿药铺范式，
+#       升级差值写入+读档漏补自愈 cap_applied_lv）；四链读取函数 get_hero_* 供 hero_data 经 game_data 转发接入。
 # 货币：家具币=普通道具 items 轨（id "jiajibi"，道具表原有占位道具，用户 2026-09-20 拍板接入——
 #       不开独立货币 var，珍兽果双轨坑铁律）；风水符=普通道具 fengshui_fu 同轨。回收主来源，批次②接 UI。
 # ============================================================
@@ -23,6 +24,7 @@ var furniture: Dictionary = {}   # {fid: {lv, cnt}}（cnt=富余件数；存档�
 var furniture_fmt: int = 2       # 家具存档格式版本：1=旧(total计数+首件自动解锁)，2=富余计数
 var set_levels: Dictionary = {}  # {sid: 套装等级}（手动解锁/升级制，用户 2026-09-20 拍板；上限=套内最低件等级）
 var medal_lv: int = 1            # 勋章等级 1~15
+var cap_applied_lv: int = 1      # 技能上限已写入天赋系统的勋章等级（读档漏补自愈，防重复/漏写）
 
 # 家具币道具 id（道具表 items.json 原有占位道具，直接复用不开存档字段）
 const JIAJIBI_ITEM := "jiajibi"
@@ -34,6 +36,7 @@ func _init(p_g):
 func get_save_data() -> Dictionary:
 	return {"xiangfang": {
 		"furniture": furniture, "fv": furniture_fmt, "set_levels": set_levels, "medal": medal_lv,
+		"cap_applied_lv": cap_applied_lv,
 	}}
 
 # 从扁平存档表认领本系统字段（旧档缺 xiangfang 段则按初始形状建档）
@@ -57,6 +60,7 @@ func load_save_data(s: Dictionary):
 				e0["cnt"] = maxi(0, int(e0.get("cnt", 0)) - int(e0.get("lv", 0)))
 		furniture_fmt = 2
 	medal_lv = clampi(int(d.get("medal", 1)), 1, get_medal_count())
+	cap_applied_lv = clampi(int(d.get("cap_applied_lv", medal_lv if int(d.get("fv", 1)) >= 2 else 1)), 1, medal_lv)
 	_init_state()
 
 # 存档形状兜底：逐件钳等级/件数（空容器也是 Dictionary，读档即自愈，防"空表死锁"同类坑）
@@ -69,6 +73,15 @@ func _init_state() -> void:
 			continue
 		entry["lv"] = clampi(int(entry.get("lv", 0)), 0, get_max_lv())
 		entry["cnt"] = maxi(0, int(entry.get("cnt", 0)))
+	# 套装等级钳到当前上限内（上限随家具等级变化，读取式重钳即对齐）
+	for sid in set_levels.keys():
+		set_levels[sid] = clampi(int(set_levels[sid]), 0, get_set_max_level(str(sid)))
+	# 技能上限漏补自愈：cap_applied_lv < medal_lv 时把差值补写天赋系统（写入式幂等）
+	if cap_applied_lv < medal_lv:
+		var dcap: int = get_medal_skill_cap_at(medal_lv) - get_medal_skill_cap_at(cap_applied_lv)
+		if g.talent_system != null and dcap > 0:
+			g.talent_system.apply_skill_cap_delta(dcap)
+		cap_applied_lv = medal_lv
 
 # ============ 配置读取（静态匹配读配置不读存档快照——加成范式铁律） ============
 func _cfg() -> Dictionary:
@@ -295,6 +308,16 @@ func get_set_max_level(sid: String) -> int:
 		return 0
 	return lv_min
 
+# 套装行红点条件：套内任一家具可升级/可解锁，或套装本身可解锁/升级（页内展示不穿透）
+func set_has_action(sid: String) -> bool:
+	if can_advance_set(sid).get("ok", false):
+		return true
+	var s: Dictionary = get_set_cfg(sid)
+	for fid in s.get("items", []):
+		if can_upgrade(str(fid)).get("ok", false):
+			return true
+	return false
+
 # 解锁/升级判定：set_lv+1 ≤ 套内最低件等级
 func can_advance_set(sid: String) -> Dictionary:
 	var cur: int = get_set_level(sid)
@@ -421,16 +444,92 @@ func can_upgrade_medal() -> Dictionary:
 		return {"ok": false, "reason": "舒适度不足（%d/%d）" % [get_total_comfort(), need], "need": need}
 	return {"ok": true, "need": need}
 
+# 手动升级勋章：舒适度门槛不消耗；精进上限差值写入天赋解锁技能（仿药铺 upgrade_medal 范式）
 func upgrade_medal() -> Dictionary:
 	var chk: Dictionary = can_upgrade_medal()
 	if not chk.get("ok", false):
 		return chk
+	var old_cap: int = get_medal_skill_cap()
 	medal_lv = mini(medal_lv + 1, get_medal_count())
+	var new_cap: int = get_medal_skill_cap()
+	if g.talent_system != null and new_cap > old_cap:
+		g.talent_system.apply_skill_cap_delta(new_cap - old_cap)
+	cap_applied_lv = medal_lv
 	return {"ok": true, "lv": medal_lv}
 
 # 全部商铺赚速加成（倍率，1.0=+100%；shop_system bonus 链读取式挂点，批次②接入）
 func get_medal_shop_pct() -> float:
 	return float(get_current_medal_cfg().get("shop_pct", 0.0))
 
+# 指定等级勋章的初始技能等级上限（效果②，批次④接入天赋系统）
+func get_medal_skill_cap_at(lv: int) -> int:
+	return int(get_medal_cfg(lv).get("skill_cap", 0))
+
+func get_medal_skill_cap() -> int:
+	return get_medal_skill_cap_at(medal_lv)
+
 func get_medal_name() -> String:
 	return str(get_current_medal_cfg().get("name", "厢房勋章"))
+
+# ============ HeroData 四链接入（批次④ 2026-09-20；经 game_data 转发块供 hero_data.gd 读取式调用） ============
+# 家具资质链：无双/传奇家具，按主属性职业匹配门客 category，Σ 等级×每级资质
+func get_hero_furniture_aptitude(hero_id: String) -> int:
+	var hero: Dictionary = g.heroes.get(hero_id, {})
+	if not (hero is Dictionary):
+		return 0
+	var career: String = str(hero.get("category", ""))
+	var total: int = 0
+	var fcfg: Dictionary = _cfg().get("furniture", {})
+	for fid in furniture.keys():
+		var fc: Dictionary = fcfg.get(str(fid), {})
+		var qk: String = str(fc.get("quality", ""))
+		if qk != "wushuang" and qk != "chuanqi":
+			continue
+		if str(fc.get("career", "")) != career:
+			continue
+		var st: Dictionary = get_furniture_state(str(fid))
+		if st["lv"] <= 0:
+			continue
+		total += st["lv"] * int(get_quality_cfg(qk).get("attr_per_lv", 0))
+	return total
+
+# 家具固定赚钱链：卓越/优秀/普通家具，按职业匹配，Σ 等级×每级固定赚钱（走 extra_income 链）
+func get_hero_furniture_flat_income(hero_id: String) -> int:
+	var hero: Dictionary = g.heroes.get(hero_id, {})
+	if not (hero is Dictionary):
+		return 0
+	var career: String = str(hero.get("category", ""))
+	var total: int = 0
+	var fcfg: Dictionary = _cfg().get("furniture", {})
+	for fid in furniture.keys():
+		var fc: Dictionary = fcfg.get(str(fid), {})
+		var qk: String = str(fc.get("quality", ""))
+		if qk != "zhuoyue" and qk != "youxiu" and qk != "putong":
+			continue
+		if str(fc.get("career", "")) != career:
+			continue
+		var st: Dictionary = get_furniture_state(str(fid))
+		if st["lv"] <= 0:
+			continue
+		total += st["lv"] * int(get_quality_cfg(qk).get("attr_per_lv", 0))
+	return total
+
+# 套装资质链：aptitude_all 类套装（潇湘幽竹），表值×套装等级，全体门客生效（hero_id 未用=全体，下划线消警告）
+func get_hero_set_aptitude(_hero_id: String) -> int:
+	var total: int = 0
+	for s in get_set_list():
+		if str(s.get("effect", "")) == "aptitude_all":
+			total += int(s.get("aptitude", 0)) * get_set_level(str(s.get("id", "")))
+	return total
+
+# 套装百分比链：career_pct 类套装，表值×套装等级，匹配门客职业（走 percent 链）
+func get_hero_set_percent(hero_id: String) -> float:
+	var hero: Dictionary = g.heroes.get(hero_id, {})
+	if not (hero is Dictionary):
+		return 0.0
+	var career: String = str(hero.get("category", ""))
+	var total: float = 0.0
+	for s in get_set_list():
+		if str(s.get("effect", "")) == "career_pct" and str(s.get("career", "")) == career:
+			total += float(s.get("pct", 0.0)) / 100.0 * float(get_set_level(str(s.get("id", ""))))
+	return total

@@ -56,10 +56,10 @@ func _init_state() -> void:
 		var slots: Dictionary = pd.get("slots", {})
 		if not (slots is Dictionary):
 			slots = {}
+		var norm_slots: Dictionary = {}
 		for idx in slots.keys():
 			var sd = slots[idx]
 			if not (sd is Dictionary):
-				slots.erase(idx)
 				continue
 			sd["q"] = str(sd.get("q", ""))
 			sd["lv"] = maxi(1, int(sd.get("lv", 1)))
@@ -67,7 +67,8 @@ func _init_state() -> void:
 			if not (heroes is Dictionary):
 				heroes = {}
 			sd["heroes"] = heroes
-		pd["slots"] = slots
+			norm_slots[str(int(idx))] = sd
+		pd["slots"] = norm_slots
 	_refresh_unlocks()
 
 # 按配置重算解锁盘列表（p1 恒解锁；其余=命盘等级+门客数双门槛，实时状态读取式）
@@ -232,16 +233,50 @@ func roll_luck() -> Dictionary:
 		heroes[str(hid)] = _roll_value(qkey, luck_lv, is_outer)
 	return {"plate": pid, "slot": slot, "q": qkey, "lv": luck_lv, "outer": is_outer, "heroes": heroes}
 
-# 命格总值（对比/自动替换用；外圈=资质和，内圈=赚钱%和——同槽同量纲，可直接比）
+# 命格原始数值和（展示用：外圈=资质和，内圈=赚钱%和；对比请用 luck_money_impact）
 func luck_value(luck: Dictionary) -> float:
 	var total: float = 0.0
 	for v in luck.get("heroes", {}).values():
 		total += float(v)
 	return total
 
-# 目标槽原命格（无则空字典）
+# 命格真实赚速增量（对比/自动替换基准，用户拍板：面上数值不可比，门客有强弱）。
+# 口径=真实重算：临时装上新命格 → 逐门客读 HeroData.get_income（全链含截断/跨门客权重）→ 还原旧命格。
+# 返回"装上此命格后总赚速变化量"（替换判据：>0 才更好；空槽必为正）。
+func luck_money_impact(luck: Dictionary) -> float:
+	var pid: String = str(luck.get("plate", ""))
+	var slot: int = int(luck.get("slot", 0))
+	var old: Dictionary = get_slot_luck(pid, slot)
+	var touched: Array = (luck.get("heroes", {}) as Dictionary).keys().duplicate()
+	for hid in (old.get("heroes", {}) as Dictionary).keys():
+		var hs: String = str(hid)
+		if not touched.has(hs):
+			touched.append(hs)
+	if touched.is_empty():
+		return 0.0
+	var before: Dictionary = {}
+	for hid in touched:
+		before[str(hid)] = HeroData.get_income(g, str(hid))
+	install_luck(luck)
+	var total: float = 0.0
+	for hid in touched:
+		total += HeroData.get_income(g, str(hid)) - float(before[str(hid)])
+	# 还原旧命格（临时换装只用于测算，不落状态）
+	if old.is_empty():
+		if plates.has(pid) and plates[pid] is Dictionary:
+			(plates[pid]["slots"] as Dictionary).erase(str(slot))
+	else:
+		if not plates.has(pid) or not (plates[pid] is Dictionary):
+			plates[pid] = {"slots": {}}
+		plates[pid]["slots"][str(slot)] = old.duplicate(true)
+	return total
+
+# 目标槽原命格（无则空字典）。槽位键统一字符串：JSON 落盘后 int 键会变 string，兼容双查（丢档假象修复）
 func get_slot_luck(pid: String, slot: int) -> Dictionary:
-	var sd: Dictionary = get_plate_slots(pid).get(slot, {})
+	var slots: Dictionary = get_plate_slots(pid)
+	var sd = slots.get(slot, null)
+	if sd == null:
+		sd = slots.get(str(slot), {})
 	return sd if sd is Dictionary else {}
 
 # 卜卦一卦：扣符+roll+进度+1；返回新命格（不自动装槽，由玩家二选一）
@@ -259,7 +294,7 @@ func install_luck(luck: Dictionary) -> void:
 		return
 	if not plates.has(pid) or not (plates[pid] is Dictionary):
 		plates[pid] = {"slots": {}}
-	plates[pid]["slots"][int(luck.get("slot", 0))] = {
+	plates[pid]["slots"][str(int(luck.get("slot", 0)))] = {   # 键用字符串，与 JSON 落盘形态一致
 		"q": str(luck.get("q", "")), "lv": int(luck.get("lv", 1)),
 		"heroes": (luck.get("heroes", {}) as Dictionary).duplicate(),
 	}
@@ -276,8 +311,7 @@ func auto_divine(max_rolls: int) -> Dictionary:
 		rolls += 1
 		ups += int(r.get("ups", 0))
 		var luck: Dictionary = r.get("luck", {})
-		var old: Dictionary = get_slot_luck(str(luck.get("plate", "")), int(luck.get("slot", 0)))
-		if old.is_empty() or luck_value(luck) > luck_value(old):
+		if luck_money_impact(luck) > 0.0:   # 真实赚速增量为正才自动替换
 			install_luck(luck)
 			replaced += 1
 	return {"rolls": rolls, "replaced": replaced, "ups": ups}
