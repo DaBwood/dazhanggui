@@ -1,0 +1,2508 @@
+{
+  "_comment": "厢房配置。settings=全局参数；qualities=五档品质定义（comfort每级舒适度/attr主属性及每级值/cost_mode=fixed固定1件或step每cost_step级消耗+1/talisman每消耗1件返风水符）；workshop_price=工坊直购价（家具币）；sets=20套装（effect=aptitude_all全门客资质/career_pct职业赚钱%%，效果=表值×套装等级，套装等级=套内最低件等级，无上限）；furniture=296件（career=主属性作用职业）；medal=勋章15级（need_comfort舒适度门槛/shop_pct全部商铺赚速/skill_cap挂起未接）；fengshui=风水推导+命格品质概率：风水=Σ无双家具等级×100，等级=floor(风水/100)+1；权重w=max(0,min(a+b(L-1), a+b(P-1)-b(L-P)))，峰值P后对称回落",
+  "settings": {
+    "max_lv": 50,
+    "talisman_item": "fengshui_fu",
+    "workshop_sets": [
+      "s01",
+      "s02",
+      "s03",
+      "s04",
+      "s05"
+    ],
+    "recycle_pct": 0.8,
+    "fengshui_per_wushuang_lv": 100
+  },
+  "qualities": {
+    "wushuang": {
+      "name": "无双",
+      "comfort": 720,
+      "attr": "aptitude",
+      "attr_per_lv": 6,
+      "cost_mode": "fixed",
+      "cost_fixed": 1,
+      "talisman": 56
+    },
+    "chuanqi": {
+      "name": "传奇",
+      "comfort": 240,
+      "attr": "aptitude",
+      "attr_per_lv": 2,
+      "cost_mode": "step",
+      "cost_step": 10,
+      "talisman": 8
+    },
+    "zhuoyue": {
+      "name": "卓越",
+      "attr": "income",
+      "attr_per_lv": 30000,
+      "comfort": 60,
+      "cost_mode": "step",
+      "cost_step": 4,
+      "talisman": 4
+    },
+    "youxiu": {
+      "name": "优秀",
+      "attr": "income",
+      "attr_per_lv": 10000,
+      "comfort": 20,
+      "cost_mode": "step",
+      "cost_step": 3,
+      "talisman": 2
+    },
+    "putong": {
+      "name": "普通",
+      "attr": "income",
+      "attr_per_lv": 5000,
+      "comfort": 10,
+      "cost_mode": "step",
+      "cost_step": 2,
+      "talisman": 1
+    }
+  },
+  "workshop_price": {
+    "putong": 20,
+    "youxiu": 50,
+    "zhuoyue": 170,
+    "chuanqi": 720,
+    "wushuang": 2160
+  },
+  "sets": [
+    {
+      "id": "s01",
+      "name": "潇湘幽竹",
+      "effect": "aptitude_all",
+      "aptitude": 1,
+      "items": [
+        "f001",
+        "f002",
+        "f003",
+        "f004",
+        "f005",
+        "f006"
+      ]
+    },
+    {
+      "id": "s02",
+      "name": "强身健体",
+      "effect": "career_pct",
+      "career": "农",
+      "pct": 0.5,
+      "items": [
+        "f007",
+        "f008",
+        "f009",
+        "f010",
+        "f011",
+        "f012",
+        "f013",
+        "f014",
+        "f015",
+        "f016",
+        "f017",
+        "f018",
+        "f019",
+        "f020",
+        "f021"
+      ]
+    },
+    {
+      "id": "s03",
+      "name": "奇观摆件",
+      "effect": "career_pct",
+      "career": "商",
+      "pct": 0.5,
+      "items": [
+        "f022",
+        "f023",
+        "f024",
+        "f025",
+        "f026",
+        "f027",
+        "f028",
+        "f029",
+        "f030",
+        "f031",
+        "f032",
+        "f033",
+        "f034",
+        "f035"
+      ]
+    },
+    {
+      "id": "s04",
+      "name": "修身养性",
+      "effect": "career_pct",
+      "career": "工",
+      "pct": 0.5,
+      "items": [
+        "f036",
+        "f037",
+        "f038",
+        "f039",
+        "f040",
+        "f041",
+        "f042",
+        "f043",
+        "f044",
+        "f045",
+        "f046",
+        "f047",
+        "f048",
+        "f049"
+      ]
+    },
+    {
+      "id": "s05",
+      "name": "精美家私",
+      "effect": "career_pct",
+      "career": "士",
+      "pct": 0.5,
+      "items": [
+        "f050",
+        "f051",
+        "f052",
+        "f053",
+        "f054",
+        "f055",
+        "f056",
+        "f057",
+        "f058",
+        "f059",
+        "f060",
+        "f061",
+        "f062",
+        "f063",
+        "f064"
+      ]
+    },
+    {
+      "id": "s06",
+      "name": "徽州故梦",
+      "effect": "career_pct",
+      "career": "侠",
+      "pct": 0.5,
+      "items": [
+        "f065",
+        "f066",
+        "f067",
+        "f068",
+        "f069",
+        "f070",
+        "f071",
+        "f072",
+        "f073",
+        "f074",
+        "f075",
+        "f076",
+        "f077",
+        "f078",
+        "f079",
+        "f080",
+        "f081"
+      ]
+    },
+    {
+      "id": "s07",
+      "name": "山河如梦",
+      "effect": "career_pct",
+      "career": "士",
+      "pct": 0.5,
+      "items": [
+        "f082",
+        "f083",
+        "f084",
+        "f085",
+        "f086",
+        "f087",
+        "f088",
+        "f089",
+        "f090",
+        "f091",
+        "f092",
+        "f093",
+        "f094",
+        "f095",
+        "f096",
+        "f097",
+        "f098"
+      ]
+    },
+    {
+      "id": "s08",
+      "name": "仲夏之梦",
+      "effect": "career_pct",
+      "career": "农",
+      "pct": 0.5,
+      "items": [
+        "f099",
+        "f100",
+        "f101",
+        "f102",
+        "f103",
+        "f104",
+        "f105",
+        "f106",
+        "f107",
+        "f108",
+        "f109",
+        "f110",
+        "f111",
+        "f112",
+        "f113",
+        "f114",
+        "f115"
+      ]
+    },
+    {
+      "id": "s09",
+      "name": "童趣萌心",
+      "effect": "career_pct",
+      "career": "侠",
+      "pct": 0.5,
+      "items": [
+        "f116",
+        "f117",
+        "f118",
+        "f119",
+        "f120",
+        "f121",
+        "f122",
+        "f123",
+        "f124",
+        "f125",
+        "f126",
+        "f127",
+        "f128",
+        "f129",
+        "f130",
+        "f131",
+        "f132"
+      ]
+    },
+    {
+      "id": "s10",
+      "name": "海底乐园",
+      "effect": "career_pct",
+      "career": "工",
+      "pct": 1.0,
+      "items": [
+        "f133",
+        "f134",
+        "f135",
+        "f136",
+        "f137",
+        "f138",
+        "f139",
+        "f140",
+        "f141",
+        "f142",
+        "f143",
+        "f144",
+        "f145",
+        "f146",
+        "f147",
+        "f148",
+        "f149",
+        "f150"
+      ]
+    },
+    {
+      "id": "s11",
+      "name": "异国奇缘",
+      "effect": "career_pct",
+      "career": "商",
+      "pct": 1.5,
+      "items": [
+        "f151",
+        "f152",
+        "f153",
+        "f154",
+        "f155",
+        "f156",
+        "f157",
+        "f158",
+        "f159",
+        "f160",
+        "f161",
+        "f162",
+        "f163",
+        "f164",
+        "f165",
+        "f166",
+        "f167",
+        "f168"
+      ]
+    },
+    {
+      "id": "s12",
+      "name": "皇家风云",
+      "effect": "career_pct",
+      "career": "侠",
+      "pct": 2.0,
+      "items": [
+        "f169",
+        "f170",
+        "f171",
+        "f172",
+        "f173",
+        "f174",
+        "f175",
+        "f176",
+        "f177",
+        "f178",
+        "f179",
+        "f180",
+        "f181",
+        "f182",
+        "f183",
+        "f184",
+        "f185"
+      ]
+    },
+    {
+      "id": "s13",
+      "name": "三山五园",
+      "effect": "career_pct",
+      "career": "侠",
+      "pct": 0.5,
+      "items": [
+        "f186",
+        "f187",
+        "f188",
+        "f189",
+        "f190",
+        "f191",
+        "f192",
+        "f193",
+        "f194",
+        "f195",
+        "f196",
+        "f197",
+        "f198",
+        "f199",
+        "f200",
+        "f201"
+      ]
+    },
+    {
+      "id": "s14",
+      "name": "京曲华章",
+      "effect": "career_pct",
+      "career": "士",
+      "pct": 1.0,
+      "items": [
+        "f202",
+        "f203",
+        "f204",
+        "f205",
+        "f206",
+        "f207",
+        "f208",
+        "f209",
+        "f210",
+        "f211",
+        "f212",
+        "f213",
+        "f214",
+        "f215",
+        "f216"
+      ]
+    },
+    {
+      "id": "s15",
+      "name": "山河共枕",
+      "effect": "career_pct",
+      "career": "士",
+      "pct": 0.5,
+      "items": [
+        "f217",
+        "f218",
+        "f219",
+        "f220"
+      ]
+    },
+    {
+      "id": "s16",
+      "name": "良宵美时",
+      "effect": "career_pct",
+      "career": "士",
+      "pct": 1.0,
+      "items": [
+        "f221",
+        "f222",
+        "f223",
+        "f224",
+        "f225",
+        "f226",
+        "f227",
+        "f228"
+      ]
+    },
+    {
+      "id": "s17",
+      "name": "广府缩影",
+      "effect": "career_pct",
+      "career": "工",
+      "pct": 1.0,
+      "items": [
+        "f229",
+        "f230",
+        "f231",
+        "f232",
+        "f233",
+        "f234",
+        "f235",
+        "f236",
+        "f237",
+        "f238",
+        "f239",
+        "f240",
+        "f241",
+        "f242",
+        "f243",
+        "f244"
+      ]
+    },
+    {
+      "id": "s18",
+      "name": "魔女小屋",
+      "effect": "career_pct",
+      "career": "商",
+      "pct": 1.0,
+      "items": [
+        "f245",
+        "f246",
+        "f247",
+        "f248",
+        "f249",
+        "f250",
+        "f251",
+        "f252",
+        "f253",
+        "f254",
+        "f255",
+        "f256",
+        "f257",
+        "f258",
+        "f259",
+        "f260",
+        "f261",
+        "f262"
+      ]
+    },
+    {
+      "id": "s19",
+      "name": "乐享延年",
+      "effect": "career_pct",
+      "career": "士",
+      "pct": 10.0,
+      "items": [
+        "f263",
+        "f264",
+        "f265",
+        "f266",
+        "f267",
+        "f268",
+        "f269",
+        "f270",
+        "f271",
+        "f272",
+        "f273",
+        "f274",
+        "f275",
+        "f276",
+        "f277",
+        "f278",
+        "f279",
+        "f280",
+        "f281",
+        "f282",
+        "f283",
+        "f284",
+        "f285",
+        "f286",
+        "f287",
+        "f288",
+        "f289",
+        "f290"
+      ]
+    },
+    {
+      "id": "s20",
+      "name": "悦动全运",
+      "effect": "career_pct",
+      "career": "农",
+      "pct": 1.0,
+      "items": [
+        "f291",
+        "f292",
+        "f293",
+        "f294",
+        "f295",
+        "f296"
+      ]
+    }
+  ],
+  "furniture": {
+    "f001": {
+      "name": "凉夏竹塌",
+      "set": "s01",
+      "quality": "zhuoyue",
+      "career": "农"
+    },
+    "f002": {
+      "name": "竹架",
+      "set": "s01",
+      "quality": "youxiu",
+      "career": "侠"
+    },
+    "f003": {
+      "name": "朴素竹桌",
+      "set": "s01",
+      "quality": "youxiu",
+      "career": "士"
+    },
+    "f004": {
+      "name": "兰竹交椅",
+      "set": "s01",
+      "quality": "putong",
+      "career": "农"
+    },
+    "f005": {
+      "name": "竹篾灯笼",
+      "set": "s01",
+      "quality": "putong",
+      "career": "工"
+    },
+    "f006": {
+      "name": "竹编簸箕",
+      "set": "s01",
+      "quality": "putong",
+      "career": "商"
+    },
+    "f007": {
+      "name": "宝马香车",
+      "set": "s02",
+      "quality": "wushuang",
+      "career": "农"
+    },
+    "f008": {
+      "name": "轰隆跑道",
+      "set": "s02",
+      "quality": "chuanqi",
+      "career": "侠"
+    },
+    "f009": {
+      "name": "扫地机器人",
+      "set": "s02",
+      "quality": "chuanqi",
+      "career": "士"
+    },
+    "f010": {
+      "name": "牦牛摇摇车",
+      "set": "s02",
+      "quality": "zhuoyue",
+      "career": "农"
+    },
+    "f011": {
+      "name": "杠铃",
+      "set": "s02",
+      "quality": "zhuoyue",
+      "career": "工"
+    },
+    "f012": {
+      "name": "木制吸尘器",
+      "set": "s02",
+      "quality": "zhuoyue",
+      "career": "商"
+    },
+    "f013": {
+      "name": "嘿哈沙袋",
+      "set": "s02",
+      "quality": "youxiu",
+      "career": "士"
+    },
+    "f014": {
+      "name": "天威兵器架",
+      "set": "s02",
+      "quality": "youxiu",
+      "career": "农"
+    },
+    "f015": {
+      "name": "动感单车",
+      "set": "s02",
+      "quality": "youxiu",
+      "career": "工"
+    },
+    "f016": {
+      "name": "跑步机",
+      "set": "s02",
+      "quality": "youxiu",
+      "career": "商"
+    },
+    "f017": {
+      "name": "扫把",
+      "set": "s02",
+      "quality": "youxiu",
+      "career": "侠"
+    },
+    "f018": {
+      "name": "蹲式马桶",
+      "set": "s02",
+      "quality": "youxiu",
+      "career": "士"
+    },
+    "f019": {
+      "name": "青铜投壶",
+      "set": "s02",
+      "quality": "putong",
+      "career": "工"
+    },
+    "f020": {
+      "name": "悬箭台",
+      "set": "s02",
+      "quality": "putong",
+      "career": "商"
+    },
+    "f021": {
+      "name": "木人椿",
+      "set": "s02",
+      "quality": "putong",
+      "career": "侠"
+    },
+    "f022": {
+      "name": "海盗船",
+      "set": "s03",
+      "quality": "wushuang",
+      "career": "侠"
+    },
+    "f023": {
+      "name": "时来运转",
+      "set": "s03",
+      "quality": "chuanqi",
+      "career": "农"
+    },
+    "f024": {
+      "name": "玛雅水滩",
+      "set": "s03",
+      "quality": "chuanqi",
+      "career": "商"
+    },
+    "f025": {
+      "name": "摇钱树",
+      "set": "s03",
+      "quality": "chuanqi",
+      "career": "商"
+    },
+    "f026": {
+      "name": "候风地动仪",
+      "set": "s03",
+      "quality": "zhuoyue",
+      "career": "侠"
+    },
+    "f027": {
+      "name": "浑天仪",
+      "set": "s03",
+      "quality": "zhuoyue",
+      "career": "士"
+    },
+    "f028": {
+      "name": "恐龙化石",
+      "set": "s03",
+      "quality": "youxiu",
+      "career": "商"
+    },
+    "f029": {
+      "name": "大黄鸭",
+      "set": "s03",
+      "quality": "youxiu",
+      "career": "侠"
+    },
+    "f030": {
+      "name": "熊猫抱竹",
+      "set": "s03",
+      "quality": "youxiu",
+      "career": "士"
+    },
+    "f031": {
+      "name": "钓鱼台",
+      "set": "s03",
+      "quality": "youxiu",
+      "career": "农"
+    },
+    "f032": {
+      "name": "烤肉架",
+      "set": "s03",
+      "quality": "youxiu",
+      "career": "工"
+    },
+    "f033": {
+      "name": "斗鸡台",
+      "set": "s03",
+      "quality": "youxiu",
+      "career": "商"
+    },
+    "f034": {
+      "name": "兔儿爷雕像",
+      "set": "s03",
+      "quality": "putong",
+      "career": "农"
+    },
+    "f035": {
+      "name": "猜蛋",
+      "set": "s03",
+      "quality": "putong",
+      "career": "工"
+    },
+    "f036": {
+      "name": "动物爬架",
+      "set": "s04",
+      "quality": "wushuang",
+      "career": "士"
+    },
+    "f037": {
+      "name": "卧佛山",
+      "set": "s04",
+      "quality": "chuanqi",
+      "career": "商"
+    },
+    "f038": {
+      "name": "木鸢飞行棋",
+      "set": "s04",
+      "quality": "chuanqi",
+      "career": "侠"
+    },
+    "f039": {
+      "name": "杨木茶桌",
+      "set": "s04",
+      "quality": "zhuoyue",
+      "career": "工"
+    },
+    "f040": {
+      "name": "蛤蟆神像",
+      "set": "s04",
+      "quality": "zhuoyue",
+      "career": "士"
+    },
+    "f041": {
+      "name": "古筝台",
+      "set": "s04",
+      "quality": "zhuoyue",
+      "career": "农"
+    },
+    "f042": {
+      "name": "竹影棋桌",
+      "set": "s04",
+      "quality": "zhuoyue",
+      "career": "工"
+    },
+    "f043": {
+      "name": "雪雕铜钱",
+      "set": "s04",
+      "quality": "youxiu",
+      "career": "侠"
+    },
+    "f044": {
+      "name": "破翁救友",
+      "set": "s04",
+      "quality": "youxiu",
+      "career": "士"
+    },
+    "f045": {
+      "name": "心动麦克风",
+      "set": "s04",
+      "quality": "youxiu",
+      "career": "农"
+    },
+    "f046": {
+      "name": "架子鼓",
+      "set": "s04",
+      "quality": "youxiu",
+      "career": "工"
+    },
+    "f047": {
+      "name": "遮阳椅",
+      "set": "s04",
+      "quality": "youxiu",
+      "career": "商"
+    },
+    "f048": {
+      "name": "竹禅惊鹿",
+      "set": "s04",
+      "quality": "putong",
+      "career": "工"
+    },
+    "f049": {
+      "name": "琵琶架",
+      "set": "s04",
+      "quality": "putong",
+      "career": "商"
+    },
+    "f050": {
+      "name": "鸳鸯浴池",
+      "set": "s05",
+      "quality": "wushuang",
+      "career": "农"
+    },
+    "f051": {
+      "name": "柏木冰鉴",
+      "set": "s05",
+      "quality": "chuanqi",
+      "career": "侠"
+    },
+    "f052": {
+      "name": "烤肉炉",
+      "set": "s05",
+      "quality": "chuanqi",
+      "career": "士"
+    },
+    "f053": {
+      "name": "招财猫",
+      "set": "s05",
+      "quality": "zhuoyue",
+      "career": "侠"
+    },
+    "f054": {
+      "name": "灯影戏",
+      "set": "s05",
+      "quality": "zhuoyue",
+      "career": "士"
+    },
+    "f055": {
+      "name": "调酒台",
+      "set": "s05",
+      "quality": "zhuoyue",
+      "career": "农"
+    },
+    "f056": {
+      "name": "坐式马桶",
+      "set": "s05",
+      "quality": "zhuoyue",
+      "career": "工"
+    },
+    "f057": {
+      "name": "仓鼠电风扇",
+      "set": "s05",
+      "quality": "zhuoyue",
+      "career": "商"
+    },
+    "f058": {
+      "name": "账桌",
+      "set": "s05",
+      "quality": "youxiu",
+      "career": "士"
+    },
+    "f059": {
+      "name": "手摇洗衣机",
+      "set": "s05",
+      "quality": "youxiu",
+      "career": "农"
+    },
+    "f060": {
+      "name": "饮料机",
+      "set": "s05",
+      "quality": "youxiu",
+      "career": "工"
+    },
+    "f061": {
+      "name": "楠木按摩椅",
+      "set": "s05",
+      "quality": "youxiu",
+      "career": "商"
+    },
+    "f062": {
+      "name": "关扑御赏器",
+      "set": "s05",
+      "quality": "putong",
+      "career": "工"
+    },
+    "f063": {
+      "name": "百宝箱",
+      "set": "s05",
+      "quality": "putong",
+      "career": "商"
+    },
+    "f064": {
+      "name": "木燕乘风",
+      "set": "s05",
+      "quality": "putong",
+      "career": "侠"
+    },
+    "f065": {
+      "name": "许国石坊",
+      "set": "s06",
+      "quality": "wushuang",
+      "career": "士"
+    },
+    "f066": {
+      "name": "乌檀床",
+      "set": "s06",
+      "quality": "wushuang",
+      "career": "农"
+    },
+    "f067": {
+      "name": "徽漆屏风",
+      "set": "s06",
+      "quality": "chuanqi",
+      "career": "工"
+    },
+    "f068": {
+      "name": "八碗八",
+      "set": "s06",
+      "quality": "chuanqi",
+      "career": "商"
+    },
+    "f069": {
+      "name": "鱼灯",
+      "set": "s06",
+      "quality": "chuanqi",
+      "career": "侠"
+    },
+    "f070": {
+      "name": "壁立架",
+      "set": "s06",
+      "quality": "zhuoyue",
+      "career": "商"
+    },
+    "f071": {
+      "name": "徐徐榻",
+      "set": "s06",
+      "quality": "zhuoyue",
+      "career": "侠"
+    },
+    "f072": {
+      "name": "文墨书桌",
+      "set": "s06",
+      "quality": "zhuoyue",
+      "career": "士"
+    },
+    "f073": {
+      "name": "堂堂椅",
+      "set": "s06",
+      "quality": "zhuoyue",
+      "career": "农"
+    },
+    "f074": {
+      "name": "文思椅",
+      "set": "s06",
+      "quality": "youxiu",
+      "career": "侠"
+    },
+    "f075": {
+      "name": "怀瑾案",
+      "set": "s06",
+      "quality": "youxiu",
+      "career": "士"
+    },
+    "f076": {
+      "name": "躬行隔断",
+      "set": "s06",
+      "quality": "youxiu",
+      "career": "农"
+    },
+    "f077": {
+      "name": "灰岩地板",
+      "set": "s06",
+      "quality": "youxiu",
+      "career": "工"
+    },
+    "f078": {
+      "name": "红梅白瓷",
+      "set": "s06",
+      "quality": "putong",
+      "career": "士"
+    },
+    "f079": {
+      "name": "床头柜",
+      "set": "s06",
+      "quality": "putong",
+      "career": "农"
+    },
+    "f080": {
+      "name": "映雪灯",
+      "set": "s06",
+      "quality": "putong",
+      "career": "工"
+    },
+    "f081": {
+      "name": "囊萤灯",
+      "set": "s06",
+      "quality": "putong",
+      "career": "商"
+    },
+    "f082": {
+      "name": "故梦忆",
+      "set": "s07",
+      "quality": "wushuang",
+      "career": "农"
+    },
+    "f083": {
+      "name": "请君对弈",
+      "set": "s07",
+      "quality": "chuanqi",
+      "career": "商"
+    },
+    "f084": {
+      "name": "鼓鼓声威",
+      "set": "s07",
+      "quality": "chuanqi",
+      "career": "侠"
+    },
+    "f085": {
+      "name": "运筹山河",
+      "set": "s07",
+      "quality": "chuanqi",
+      "career": "士"
+    },
+    "f086": {
+      "name": "凤吟鸣钟",
+      "set": "s07",
+      "quality": "zhuoyue",
+      "career": "士"
+    },
+    "f087": {
+      "name": "闲茶妙语",
+      "set": "s07",
+      "quality": "zhuoyue",
+      "career": "农"
+    },
+    "f088": {
+      "name": "博古架",
+      "set": "s07",
+      "quality": "zhuoyue",
+      "career": "工"
+    },
+    "f089": {
+      "name": "凤鸾案台",
+      "set": "s07",
+      "quality": "youxiu",
+      "career": "士"
+    },
+    "f090": {
+      "name": "战鼓雷动",
+      "set": "s07",
+      "quality": "youxiu",
+      "career": "农"
+    },
+    "f091": {
+      "name": "八阵图",
+      "set": "s07",
+      "quality": "youxiu",
+      "career": "工"
+    },
+    "f092": {
+      "name": "煮酒笑谈",
+      "set": "s07",
+      "quality": "youxiu",
+      "career": "商"
+    },
+    "f093": {
+      "name": "琼玉红毯",
+      "set": "s07",
+      "quality": "youxiu",
+      "career": "侠"
+    },
+    "f094": {
+      "name": "松木隔栅",
+      "set": "s07",
+      "quality": "putong",
+      "career": "士"
+    },
+    "f095": {
+      "name": "烛火千灯",
+      "set": "s07",
+      "quality": "putong",
+      "career": "农"
+    },
+    "f096": {
+      "name": "绸缪帷幄",
+      "set": "s07",
+      "quality": "putong",
+      "career": "工"
+    },
+    "f097": {
+      "name": "燕宾椅",
+      "set": "s07",
+      "quality": "putong",
+      "career": "商"
+    },
+    "f098": {
+      "name": "书卷千秋",
+      "set": "s07",
+      "quality": "putong",
+      "career": "侠"
+    },
+    "f099": {
+      "name": "轻语小榻",
+      "set": "s08",
+      "quality": "wushuang",
+      "career": "侠"
+    },
+    "f100": {
+      "name": "藤蔓千秋",
+      "set": "s08",
+      "quality": "wushuang",
+      "career": "士"
+    },
+    "f101": {
+      "name": "乘叶凉亭",
+      "set": "s08",
+      "quality": "chuanqi",
+      "career": "农"
+    },
+    "f102": {
+      "name": "春树暮云",
+      "set": "s08",
+      "quality": "chuanqi",
+      "career": "工"
+    },
+    "f103": {
+      "name": "玲珑灯",
+      "set": "s08",
+      "quality": "chuanqi",
+      "career": "商"
+    },
+    "f104": {
+      "name": "春水满池",
+      "set": "s08",
+      "quality": "zhuoyue",
+      "career": "农"
+    },
+    "f105": {
+      "name": "乘风椅",
+      "set": "s08",
+      "quality": "zhuoyue",
+      "career": "工"
+    },
+    "f106": {
+      "name": "春芳幻梦",
+      "set": "s08",
+      "quality": "zhuoyue",
+      "career": "商"
+    },
+    "f107": {
+      "name": "灯照浮云桌",
+      "set": "s08",
+      "quality": "zhuoyue",
+      "career": "侠"
+    },
+    "f108": {
+      "name": "花影卷云桌",
+      "set": "s08",
+      "quality": "zhuoyue",
+      "career": "士"
+    },
+    "f109": {
+      "name": "一枕无忧",
+      "set": "s08",
+      "quality": "youxiu",
+      "career": "农"
+    },
+    "f110": {
+      "name": "绿篱屏风",
+      "set": "s08",
+      "quality": "youxiu",
+      "career": "工"
+    },
+    "f111": {
+      "name": "西风绿叶灯",
+      "set": "s08",
+      "quality": "youxiu",
+      "career": "商"
+    },
+    "f112": {
+      "name": "千辉灯",
+      "set": "s08",
+      "quality": "youxiu",
+      "career": "侠"
+    },
+    "f113": {
+      "name": "绿意地毯",
+      "set": "s08",
+      "quality": "youxiu",
+      "career": "士"
+    },
+    "f114": {
+      "name": "花意围栏",
+      "set": "s08",
+      "quality": "putong",
+      "career": "侠"
+    },
+    "f115": {
+      "name": "青藤摇摇椅",
+      "set": "s08",
+      "quality": "putong",
+      "career": "士"
+    },
+    "f116": {
+      "name": "旅行小车",
+      "set": "s09",
+      "quality": "wushuang",
+      "career": "工"
+    },
+    "f117": {
+      "name": "云容清歌",
+      "set": "s09",
+      "quality": "wushuang",
+      "career": "商"
+    },
+    "f118": {
+      "name": "天鹅梦",
+      "set": "s09",
+      "quality": "chuanqi",
+      "career": "工"
+    },
+    "f119": {
+      "name": "可爱萌兔屏",
+      "set": "s09",
+      "quality": "chuanqi",
+      "career": "商"
+    },
+    "f120": {
+      "name": "快乐旋转轮",
+      "set": "s09",
+      "quality": "chuanqi",
+      "career": "侠"
+    },
+    "f121": {
+      "name": "猫猫滑滑梯",
+      "set": "s09",
+      "quality": "chuanqi",
+      "career": "士"
+    },
+    "f122": {
+      "name": "猫乐窝",
+      "set": "s09",
+      "quality": "chuanqi",
+      "career": "农"
+    },
+    "f123": {
+      "name": "扭蛋机",
+      "set": "s09",
+      "quality": "zhuoyue",
+      "career": "商"
+    },
+    "f124": {
+      "name": "茸茸地毯",
+      "set": "s09",
+      "quality": "zhuoyue",
+      "career": "侠"
+    },
+    "f125": {
+      "name": "无忧椅",
+      "set": "s09",
+      "quality": "zhuoyue",
+      "career": "士"
+    },
+    "f126": {
+      "name": "狗狗躺椅",
+      "set": "s09",
+      "quality": "zhuoyue",
+      "career": "农"
+    },
+    "f127": {
+      "name": "熊掌椅",
+      "set": "s09",
+      "quality": "youxiu",
+      "career": "侠"
+    },
+    "f128": {
+      "name": "满庭芳",
+      "set": "s09",
+      "quality": "youxiu",
+      "career": "士"
+    },
+    "f129": {
+      "name": "猪盆栽",
+      "set": "s09",
+      "quality": "youxiu",
+      "career": "侠"
+    },
+    "f130": {
+      "name": "棉绒地毯",
+      "set": "s09",
+      "quality": "youxiu",
+      "career": "工"
+    },
+    "f131": {
+      "name": "垂耳兔",
+      "set": "s09",
+      "quality": "putong",
+      "career": "侠"
+    },
+    "f132": {
+      "name": "滑稽鼠桌",
+      "set": "s09",
+      "quality": "putong",
+      "career": "侠"
+    },
+    "f133": {
+      "name": "梦幻贝壳床",
+      "set": "s10",
+      "quality": "wushuang",
+      "career": "工"
+    },
+    "f134": {
+      "name": "鱼儿球",
+      "set": "s10",
+      "quality": "wushuang",
+      "career": "商"
+    },
+    "f135": {
+      "name": "灵鲲之梦",
+      "set": "s10",
+      "quality": "chuanqi",
+      "career": "工"
+    },
+    "f136": {
+      "name": "蜃梦海音",
+      "set": "s10",
+      "quality": "chuanqi",
+      "career": "商"
+    },
+    "f137": {
+      "name": "黄金沙滩",
+      "set": "s10",
+      "quality": "chuanqi",
+      "career": "侠"
+    },
+    "f138": {
+      "name": "彩虹池",
+      "set": "s10",
+      "quality": "chuanqi",
+      "career": "士"
+    },
+    "f139": {
+      "name": "海梦清澜",
+      "set": "s10",
+      "quality": "chuanqi",
+      "career": "农"
+    },
+    "f140": {
+      "name": "企乐软软椅",
+      "set": "s10",
+      "quality": "zhuoyue",
+      "career": "工"
+    },
+    "f141": {
+      "name": "遥海趣桌",
+      "set": "s10",
+      "quality": "zhuoyue",
+      "career": "商"
+    },
+    "f142": {
+      "name": "花中镜",
+      "set": "s10",
+      "quality": "zhuoyue",
+      "career": "侠"
+    },
+    "f143": {
+      "name": "水母幻彩灯",
+      "set": "s10",
+      "quality": "zhuoyue",
+      "career": "士"
+    },
+    "f144": {
+      "name": "梦晚静池",
+      "set": "s10",
+      "quality": "zhuoyue",
+      "career": "农"
+    },
+    "f145": {
+      "name": "珊瑚枝",
+      "set": "s10",
+      "quality": "youxiu",
+      "career": "农"
+    },
+    "f146": {
+      "name": "海草屏",
+      "set": "s10",
+      "quality": "youxiu",
+      "career": "工"
+    },
+    "f147": {
+      "name": "企鹅凳",
+      "set": "s10",
+      "quality": "youxiu",
+      "career": "商"
+    },
+    "f148": {
+      "name": "海星灯",
+      "set": "s10",
+      "quality": "youxiu",
+      "career": "侠"
+    },
+    "f149": {
+      "name": "落琼烛灯",
+      "set": "s10",
+      "quality": "youxiu",
+      "career": "士"
+    },
+    "f150": {
+      "name": "海洋地板",
+      "set": "s10",
+      "quality": "youxiu",
+      "career": "农"
+    },
+    "f151": {
+      "name": "莲月睡佛",
+      "set": "s11",
+      "quality": "wushuang",
+      "career": "工"
+    },
+    "f152": {
+      "name": "山间音铃",
+      "set": "s11",
+      "quality": "wushuang",
+      "career": "商"
+    },
+    "f153": {
+      "name": "琵琶门神",
+      "set": "s11",
+      "quality": "wushuang",
+      "career": "侠"
+    },
+    "f154": {
+      "name": "沐香歌",
+      "set": "s11",
+      "quality": "chuanqi",
+      "career": "工"
+    },
+    "f155": {
+      "name": "自由之风",
+      "set": "s11",
+      "quality": "chuanqi",
+      "career": "商"
+    },
+    "f156": {
+      "name": "卧红尘",
+      "set": "s11",
+      "quality": "chuanqi",
+      "career": "侠"
+    },
+    "f157": {
+      "name": "孔雀天平",
+      "set": "s11",
+      "quality": "chuanqi",
+      "career": "士"
+    },
+    "f158": {
+      "name": "九色鹿雕像",
+      "set": "s11",
+      "quality": "chuanqi",
+      "career": "农"
+    },
+    "f159": {
+      "name": "贺今朝",
+      "set": "s11",
+      "quality": "zhuoyue",
+      "career": "工"
+    },
+    "f160": {
+      "name": "骆驼洲",
+      "set": "s11",
+      "quality": "zhuoyue",
+      "career": "商"
+    },
+    "f161": {
+      "name": "清轸摇月烛",
+      "set": "s11",
+      "quality": "zhuoyue",
+      "career": "侠"
+    },
+    "f162": {
+      "name": "幻彩琴音桌",
+      "set": "s11",
+      "quality": "zhuoyue",
+      "career": "士"
+    },
+    "f163": {
+      "name": "归鸿立屏",
+      "set": "s11",
+      "quality": "zhuoyue",
+      "career": "农"
+    },
+    "f164": {
+      "name": "两心隔",
+      "set": "s11",
+      "quality": "youxiu",
+      "career": "工"
+    },
+    "f165": {
+      "name": "灯挂椅",
+      "set": "s11",
+      "quality": "youxiu",
+      "career": "商"
+    },
+    "f166": {
+      "name": "悬铃宝柜",
+      "set": "s11",
+      "quality": "youxiu",
+      "career": "侠"
+    },
+    "f167": {
+      "name": "扇形小板凳",
+      "set": "s11",
+      "quality": "youxiu",
+      "career": "士"
+    },
+    "f168": {
+      "name": "素雅地毯",
+      "set": "s11",
+      "quality": "youxiu",
+      "career": "农"
+    },
+    "f169": {
+      "name": "沐沁香浴",
+      "set": "s12",
+      "quality": "wushuang",
+      "career": "工"
+    },
+    "f170": {
+      "name": "金銮御座",
+      "set": "s12",
+      "quality": "wushuang",
+      "career": "商"
+    },
+    "f171": {
+      "name": "凤凰木花",
+      "set": "s12",
+      "quality": "wushuang",
+      "career": "侠"
+    },
+    "f172": {
+      "name": "龙抱清池",
+      "set": "s12",
+      "quality": "wushuang",
+      "career": "士"
+    },
+    "f173": {
+      "name": "浮鲤游龙塌",
+      "set": "s12",
+      "quality": "chuanqi",
+      "career": "商"
+    },
+    "f174": {
+      "name": "双鹤游龙",
+      "set": "s12",
+      "quality": "chuanqi",
+      "career": "侠"
+    },
+    "f175": {
+      "name": "金盆珠宝",
+      "set": "s12",
+      "quality": "chuanqi",
+      "career": "士"
+    },
+    "f176": {
+      "name": "龙纹柱",
+      "set": "s12",
+      "quality": "chuanqi",
+      "career": "农"
+    },
+    "f177": {
+      "name": "金龙炉",
+      "set": "s12",
+      "quality": "zhuoyue",
+      "career": "商"
+    },
+    "f178": {
+      "name": "金缕玉碧",
+      "set": "s12",
+      "quality": "zhuoyue",
+      "career": "侠"
+    },
+    "f179": {
+      "name": "貔貅雕像",
+      "set": "s12",
+      "quality": "zhuoyue",
+      "career": "士"
+    },
+    "f180": {
+      "name": "仙鹤拂尘",
+      "set": "s12",
+      "quality": "zhuoyue",
+      "career": "农"
+    },
+    "f181": {
+      "name": "余音绕梁",
+      "set": "s12",
+      "quality": "zhuoyue",
+      "career": "工"
+    },
+    "f182": {
+      "name": "鎏金御扇",
+      "set": "s12",
+      "quality": "youxiu",
+      "career": "侠"
+    },
+    "f183": {
+      "name": "红木太师椅",
+      "set": "s12",
+      "quality": "youxiu",
+      "career": "士"
+    },
+    "f184": {
+      "name": "流苏落地灯",
+      "set": "s12",
+      "quality": "youxiu",
+      "career": "农"
+    },
+    "f185": {
+      "name": "祥瑞地板",
+      "set": "s12",
+      "quality": "youxiu",
+      "career": "工"
+    },
+    "f186": {
+      "name": "琉璃塔",
+      "set": "s13",
+      "quality": "wushuang",
+      "career": "士"
+    },
+    "f187": {
+      "name": "鼠首铜像",
+      "set": "s13",
+      "quality": "chuanqi",
+      "career": "商"
+    },
+    "f188": {
+      "name": "虎首铜像",
+      "set": "s13",
+      "quality": "chuanqi",
+      "career": "侠"
+    },
+    "f189": {
+      "name": "龙首铜像",
+      "set": "s13",
+      "quality": "chuanqi",
+      "career": "士"
+    },
+    "f190": {
+      "name": "马首铜像",
+      "set": "s13",
+      "quality": "chuanqi",
+      "career": "农"
+    },
+    "f191": {
+      "name": "猴首铜像",
+      "set": "s13",
+      "quality": "chuanqi",
+      "career": "工"
+    },
+    "f192": {
+      "name": "狗首铜像",
+      "set": "s13",
+      "quality": "chuanqi",
+      "career": "商"
+    },
+    "f193": {
+      "name": "牛首铜像",
+      "set": "s13",
+      "quality": "chuanqi",
+      "career": "侠"
+    },
+    "f194": {
+      "name": "兔首铜像",
+      "set": "s13",
+      "quality": "chuanqi",
+      "career": "士"
+    },
+    "f195": {
+      "name": "蛇首铜像",
+      "set": "s13",
+      "quality": "chuanqi",
+      "career": "农"
+    },
+    "f196": {
+      "name": "羊首铜像",
+      "set": "s13",
+      "quality": "chuanqi",
+      "career": "工"
+    },
+    "f197": {
+      "name": "鸡首铜像",
+      "set": "s13",
+      "quality": "chuanqi",
+      "career": "商"
+    },
+    "f198": {
+      "name": "猪首铜像",
+      "set": "s13",
+      "quality": "chuanqi",
+      "career": "侠"
+    },
+    "f199": {
+      "name": "凤栖松",
+      "set": "s13",
+      "quality": "zhuoyue",
+      "career": "农"
+    },
+    "f200": {
+      "name": "香山红叶",
+      "set": "s13",
+      "quality": "zhuoyue",
+      "career": "工"
+    },
+    "f201": {
+      "name": "四十景图屏",
+      "set": "s13",
+      "quality": "youxiu",
+      "career": "士"
+    },
+    "f202": {
+      "name": "聆音阁",
+      "set": "s14",
+      "quality": "wushuang",
+      "career": "侠"
+    },
+    "f203": {
+      "name": "京梦风华",
+      "set": "s14",
+      "quality": "wushuang",
+      "career": "士"
+    },
+    "f204": {
+      "name": "声满歌楼",
+      "set": "s14",
+      "quality": "chuanqi",
+      "career": "工"
+    },
+    "f205": {
+      "name": "梨园戏版",
+      "set": "s14",
+      "quality": "chuanqi",
+      "career": "商"
+    },
+    "f206": {
+      "name": "云霞翠轩",
+      "set": "s14",
+      "quality": "zhuoyue",
+      "career": "农"
+    },
+    "f207": {
+      "name": "戏台屏墙",
+      "set": "s14",
+      "quality": "zhuoyue",
+      "career": "工"
+    },
+    "f208": {
+      "name": "脸谱架",
+      "set": "s14",
+      "quality": "zhuoyue",
+      "career": "商"
+    },
+    "f209": {
+      "name": "京剧戏箱",
+      "set": "s14",
+      "quality": "zhuoyue",
+      "career": "侠"
+    },
+    "f210": {
+      "name": "八仙桌",
+      "set": "s14",
+      "quality": "zhuoyue",
+      "career": "士"
+    },
+    "f211": {
+      "name": "戏敲木凳",
+      "set": "s14",
+      "quality": "zhuoyue",
+      "career": "农"
+    },
+    "f212": {
+      "name": "京韵锦屏",
+      "set": "s14",
+      "quality": "youxiu",
+      "career": "农"
+    },
+    "f213": {
+      "name": "笙歌鼎沸",
+      "set": "s14",
+      "quality": "youxiu",
+      "career": "工"
+    },
+    "f214": {
+      "name": "故渊隔",
+      "set": "s14",
+      "quality": "youxiu",
+      "career": "商"
+    },
+    "f215": {
+      "name": "鸾镜朱颜",
+      "set": "s14",
+      "quality": "youxiu",
+      "career": "侠"
+    },
+    "f216": {
+      "name": "安乐软椅",
+      "set": "s14",
+      "quality": "youxiu",
+      "career": "士"
+    },
+    "f217": {
+      "name": "秦王剑",
+      "set": "s15",
+      "quality": "wushuang",
+      "career": "商"
+    },
+    "f218": {
+      "name": "青铜马车",
+      "set": "s15",
+      "quality": "chuanqi",
+      "career": "工"
+    },
+    "f219": {
+      "name": "四羊方尊",
+      "set": "s15",
+      "quality": "zhuoyue",
+      "career": "士"
+    },
+    "f220": {
+      "name": "秦兵马俑",
+      "set": "s15",
+      "quality": "zhuoyue",
+      "career": "农"
+    },
+    "f221": {
+      "name": "和家圆",
+      "set": "s16",
+      "quality": "wushuang",
+      "career": "侠"
+    },
+    "f222": {
+      "name": "雪景球",
+      "set": "s16",
+      "quality": "wushuang",
+      "career": "工"
+    },
+    "f223": {
+      "name": "桃花温泉",
+      "set": "s16",
+      "quality": "wushuang",
+      "career": "商"
+    },
+    "f224": {
+      "name": "邀明月",
+      "set": "s16",
+      "quality": "chuanqi",
+      "career": "商"
+    },
+    "f225": {
+      "name": "摇摇乐",
+      "set": "s16",
+      "quality": "chuanqi",
+      "career": "侠"
+    },
+    "f226": {
+      "name": "冰凝琼华",
+      "set": "s16",
+      "quality": "chuanqi",
+      "career": "士"
+    },
+    "f227": {
+      "name": "共婵娟",
+      "set": "s16",
+      "quality": "zhuoyue",
+      "career": "农"
+    },
+    "f228": {
+      "name": "玉兔欢",
+      "set": "s16",
+      "quality": "zhuoyue",
+      "career": "工"
+    },
+    "f229": {
+      "name": "粤曲八音盒",
+      "set": "s17",
+      "quality": "wushuang",
+      "career": "商"
+    },
+    "f230": {
+      "name": "沙湾飘色",
+      "set": "s17",
+      "quality": "wushuang",
+      "career": "侠"
+    },
+    "f231": {
+      "name": "古井榕树",
+      "set": "s17",
+      "quality": "chuanqi",
+      "career": "侠"
+    },
+    "f232": {
+      "name": "鸳鸯一梦",
+      "set": "s17",
+      "quality": "chuanqi",
+      "career": "士"
+    },
+    "f233": {
+      "name": "明镜染妆",
+      "set": "s17",
+      "quality": "chuanqi",
+      "career": "农"
+    },
+    "f234": {
+      "name": "布拉肠粉",
+      "set": "s17",
+      "quality": "chuanqi",
+      "career": "工"
+    },
+    "f235": {
+      "name": "立式摆钟",
+      "set": "s17",
+      "quality": "zhuoyue",
+      "career": "士"
+    },
+    "f236": {
+      "name": "酸枝盥洗台",
+      "set": "s17",
+      "quality": "zhuoyue",
+      "career": "农"
+    },
+    "f237": {
+      "name": "茶话佳语",
+      "set": "s17",
+      "quality": "zhuoyue",
+      "career": "工"
+    },
+    "f238": {
+      "name": "广府地垫",
+      "set": "s17",
+      "quality": "zhuoyue",
+      "career": "商"
+    },
+    "f239": {
+      "name": "广府四条屏",
+      "set": "s17",
+      "quality": "youxiu",
+      "career": "士"
+    },
+    "f240": {
+      "name": "多宝格",
+      "set": "s17",
+      "quality": "youxiu",
+      "career": "农"
+    },
+    "f241": {
+      "name": "两椅一己",
+      "set": "s17",
+      "quality": "youxiu",
+      "career": "工"
+    },
+    "f242": {
+      "name": "五羊气象瓶",
+      "set": "s17",
+      "quality": "youxiu",
+      "career": "商"
+    },
+    "f243": {
+      "name": "不会晕鸡",
+      "set": "s17",
+      "quality": "youxiu",
+      "career": "侠"
+    },
+    "f244": {
+      "name": "烛照清夜",
+      "set": "s17",
+      "quality": "putong",
+      "career": "侠"
+    },
+    "f245": {
+      "name": "奇妙夜",
+      "set": "s18",
+      "quality": "wushuang",
+      "career": "农"
+    },
+    "f246": {
+      "name": "哀木秋千",
+      "set": "s18",
+      "quality": "wushuang",
+      "career": "工"
+    },
+    "f247": {
+      "name": "魔法之淬",
+      "set": "s18",
+      "quality": "chuanqi",
+      "career": "农"
+    },
+    "f248": {
+      "name": "水晶鞋一号",
+      "set": "s18",
+      "quality": "chuanqi",
+      "career": "工"
+    },
+    "f249": {
+      "name": "魔能水晶",
+      "set": "s18",
+      "quality": "chuanqi",
+      "career": "商"
+    },
+    "f250": {
+      "name": "禁忌之书",
+      "set": "s18",
+      "quality": "chuanqi",
+      "career": "侠"
+    },
+    "f251": {
+      "name": "枫叶焦糖",
+      "set": "s18",
+      "quality": "chuanqi",
+      "career": "士"
+    },
+    "f252": {
+      "name": "惊喜萌物",
+      "set": "s18",
+      "quality": "zhuoyue",
+      "career": "士"
+    },
+    "f253": {
+      "name": "吃糖倒计时",
+      "set": "s18",
+      "quality": "zhuoyue",
+      "career": "农"
+    },
+    "f254": {
+      "name": "世纪书柜",
+      "set": "s18",
+      "quality": "zhuoyue",
+      "career": "工"
+    },
+    "f255": {
+      "name": "南瓜壁炉",
+      "set": "s18",
+      "quality": "zhuoyue",
+      "career": "商"
+    },
+    "f256": {
+      "name": "暖暖诱惑",
+      "set": "s18",
+      "quality": "zhuoyue",
+      "career": "侠"
+    },
+    "f257": {
+      "name": "南瓜沙发",
+      "set": "s18",
+      "quality": "zhuoyue",
+      "career": "士"
+    },
+    "f258": {
+      "name": "魔法树",
+      "set": "s18",
+      "quality": "youxiu",
+      "career": "士"
+    },
+    "f259": {
+      "name": "秘法小夜灯",
+      "set": "s18",
+      "quality": "youxiu",
+      "career": "农"
+    },
+    "f260": {
+      "name": "咕咕课堂",
+      "set": "s18",
+      "quality": "youxiu",
+      "career": "工"
+    },
+    "f261": {
+      "name": "魔女衣架",
+      "set": "s18",
+      "quality": "youxiu",
+      "career": "商"
+    },
+    "f262": {
+      "name": "万圣地板",
+      "set": "s18",
+      "quality": "youxiu",
+      "career": "侠"
+    },
+    "f263": {
+      "name": "汤圆浴池",
+      "set": "s19",
+      "quality": "wushuang",
+      "career": "商"
+    },
+    "f264": {
+      "name": "画中洞天",
+      "set": "s19",
+      "quality": "wushuang",
+      "career": "侠"
+    },
+    "f265": {
+      "name": "小食满舟",
+      "set": "s19",
+      "quality": "wushuang",
+      "career": "士"
+    },
+    "f266": {
+      "name": "白熊冰窖",
+      "set": "s19",
+      "quality": "wushuang",
+      "career": "农"
+    },
+    "f267": {
+      "name": "莲花宝灯",
+      "set": "s19",
+      "quality": "wushuang",
+      "career": "工"
+    },
+    "f268": {
+      "name": "雪橇",
+      "set": "s19",
+      "quality": "wushuang",
+      "career": "商"
+    },
+    "f269": {
+      "name": "麒麟驾",
+      "set": "s19",
+      "quality": "wushuang",
+      "career": "侠"
+    },
+    "f270": {
+      "name": "瑶池",
+      "set": "s19",
+      "quality": "wushuang",
+      "career": "士"
+    },
+    "f271": {
+      "name": "炼丹炉",
+      "set": "s19",
+      "quality": "wushuang",
+      "career": "农"
+    },
+    "f272": {
+      "name": "飞鸟摇篮",
+      "set": "s19",
+      "quality": "wushuang",
+      "career": "工"
+    },
+    "f273": {
+      "name": "玫瑰火炬",
+      "set": "s19",
+      "quality": "wushuang",
+      "career": "侠"
+    },
+    "f274": {
+      "name": "荣誉柜",
+      "set": "s19",
+      "quality": "wushuang",
+      "career": "士"
+    },
+    "f275": {
+      "name": "灼华繁枝",
+      "set": "s19",
+      "quality": "wushuang",
+      "career": "商"
+    },
+    "f276": {
+      "name": "奇石墨池",
+      "set": "s19",
+      "quality": "wushuang",
+      "career": "侠"
+    },
+    "f277": {
+      "name": "福船载宝",
+      "set": "s19",
+      "quality": "wushuang",
+      "career": "商"
+    },
+    "f278": {
+      "name": "千灯祈愿",
+      "set": "s19",
+      "quality": "wushuang",
+      "career": "侠"
+    },
+    "f279": {
+      "name": "荷包毯",
+      "set": "s19",
+      "quality": "chuanqi",
+      "career": "商"
+    },
+    "f280": {
+      "name": "西瓜躺椅",
+      "set": "s19",
+      "quality": "chuanqi",
+      "career": "侠"
+    },
+    "f281": {
+      "name": "招财猫书架",
+      "set": "s19",
+      "quality": "chuanqi",
+      "career": "士"
+    },
+    "f282": {
+      "name": "绿荫吊床",
+      "set": "s19",
+      "quality": "chuanqi",
+      "career": "农"
+    },
+    "f283": {
+      "name": "雪地",
+      "set": "s19",
+      "quality": "chuanqi",
+      "career": "工"
+    },
+    "f284": {
+      "name": "荣光闪闪",
+      "set": "s19",
+      "quality": "chuanqi",
+      "career": "工"
+    },
+    "f285": {
+      "name": "鸟巢椅",
+      "set": "s19",
+      "quality": "chuanqi",
+      "career": "商"
+    },
+    "f286": {
+      "name": "佳人妆台",
+      "set": "s19",
+      "quality": "chuanqi",
+      "career": "侠"
+    },
+    "f287": {
+      "name": "玩趣宝箱",
+      "set": "s19",
+      "quality": "chuanqi",
+      "career": "士"
+    },
+    "f288": {
+      "name": "西域寻踪",
+      "set": "s19",
+      "quality": "chuanqi",
+      "career": "农"
+    },
+    "f289": {
+      "name": "商帐万珍",
+      "set": "s19",
+      "quality": "chuanqi",
+      "career": "工"
+    },
+    "f290": {
+      "name": "运河绘影",
+      "set": "s19",
+      "quality": "chuanqi",
+      "career": "商"
+    },
+    "f291": {
+      "name": "勇攀高峰",
+      "set": "s20",
+      "quality": "wushuang",
+      "career": "侠"
+    },
+    "f292": {
+      "name": "凌空之跃",
+      "set": "s20",
+      "quality": "wushuang",
+      "career": "士"
+    },
+    "f293": {
+      "name": "铁拳意志",
+      "set": "s20",
+      "quality": "chuanqi",
+      "career": "士"
+    },
+    "f294": {
+      "name": "棋定乾坤",
+      "set": "s20",
+      "quality": "chuanqi",
+      "career": "农"
+    },
+    "f295": {
+      "name": "篮下称王",
+      "set": "s20",
+      "quality": "chuanqi",
+      "career": "工"
+    },
+    "f296": {
+      "name": "乒乓争霸",
+      "set": "s20",
+      "quality": "chuanqi",
+      "career": "商"
+    }
+  },
+  "medal": [
+    {
+      "lv": 1,
+      "name": "雅居铜质",
+      "need_comfort": 0,
+      "shop_pct": 1.0,
+      "skill_cap": 5
+    },
+    {
+      "lv": 2,
+      "name": "雅居银质",
+      "need_comfort": 330,
+      "shop_pct": 2.0,
+      "skill_cap": 10
+    },
+    {
+      "lv": 3,
+      "name": "雅居金质",
+      "need_comfort": 830,
+      "shop_pct": 3.0,
+      "skill_cap": 15
+    },
+    {
+      "lv": 4,
+      "name": "宅院铜质",
+      "need_comfort": 1500,
+      "shop_pct": 4.0,
+      "skill_cap": 20
+    },
+    {
+      "lv": 5,
+      "name": "宅院银质",
+      "need_comfort": 2700,
+      "shop_pct": 5.0,
+      "skill_cap": 25
+    },
+    {
+      "lv": 6,
+      "name": "宅院金质",
+      "need_comfort": 5000,
+      "shop_pct": 6.0,
+      "skill_cap": 30
+    },
+    {
+      "lv": 7,
+      "name": "豪宅铜质",
+      "need_comfort": 8000,
+      "shop_pct": 7.0,
+      "skill_cap": 35
+    },
+    {
+      "lv": 8,
+      "name": "豪宅银质",
+      "need_comfort": 17000,
+      "shop_pct": 8.0,
+      "skill_cap": 40
+    },
+    {
+      "lv": 9,
+      "name": "豪宅金质",
+      "need_comfort": 33000,
+      "shop_pct": 9.0,
+      "skill_cap": 45
+    },
+    {
+      "lv": 10,
+      "name": "官邸铜质",
+      "need_comfort": 67000,
+      "shop_pct": 10.0,
+      "skill_cap": 50
+    },
+    {
+      "lv": 11,
+      "name": "官邸银质",
+      "need_comfort": 120000,
+      "shop_pct": 11.0,
+      "skill_cap": 55
+    },
+    {
+      "lv": 12,
+      "name": "官邸金质",
+      "need_comfort": 190000,
+      "shop_pct": 12.0,
+      "skill_cap": 60
+    },
+    {
+      "lv": 13,
+      "name": "仙府铜质",
+      "need_comfort": 270000,
+      "shop_pct": 13.0,
+      "skill_cap": 65
+    },
+    {
+      "lv": 14,
+      "name": "仙府银质",
+      "need_comfort": 350000,
+      "shop_pct": 14.0,
+      "skill_cap": 70
+    },
+    {
+      "lv": 15,
+      "name": "仙府金质",
+      "need_comfort": 450000,
+      "shop_pct": 15.0,
+      "skill_cap": 75
+    }
+  ],
+  "fengshui": {
+    "per_wushuang_lv": 100,
+    "level_div": 100,
+    "weights": [
+      {
+        "key": "pingfan",
+        "name": "平凡",
+        "a": 457.95,
+        "b": -8.45,
+        "P": 1
+      },
+      {
+        "key": "putong",
+        "name": "普通",
+        "a": 138.46,
+        "b": 3.52,
+        "P": 80
+      },
+      {
+        "key": "youxiu",
+        "name": "优秀",
+        "a": 48.61,
+        "b": 3.1,
+        "P": 110
+      },
+      {
+        "key": "xiyou",
+        "name": "稀有",
+        "a": 23.11,
+        "b": 2.32,
+        "P": 145
+      },
+      {
+        "key": "zhuoyue",
+        "name": "卓越",
+        "a": 16.29,
+        "b": 1.1,
+        "P": 185
+      },
+      {
+        "key": "shishi",
+        "name": "史诗",
+        "a": 8.02,
+        "b": 0.68,
+        "P": 230
+      },
+      {
+        "key": "chuanqi",
+        "name": "传奇",
+        "a": 0.42,
+        "b": 0.29,
+        "P": 280
+      },
+      {
+        "key": "chaofan",
+        "name": "超凡",
+        "a": -24.0,
+        "b": 0.2,
+        "P": 350
+      },
+      {
+        "key": "wushuang",
+        "name": "无双",
+        "a": -26.4,
+        "b": 0.12,
+        "P": 500
+      },
+      {
+        "key": "shenhua",
+        "name": "神话",
+        "a": -26.6,
+        "b": 0.07,
+        "P": 750
+      }
+    ]
+  }
+}

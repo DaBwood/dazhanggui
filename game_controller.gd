@@ -72,6 +72,7 @@ var drugshop_view   # 【新增】药铺玩法视图（商铺地图药铺「▶�
 var tavern_view   # 【新增】酒肆玩法视图（商铺地图酒肆店铺「▶」入口全屏页，按名字挂不按位置）
 var winery_view   # 【新增】酒坊玩法视图（商铺地图酒坊「▶」入口全屏页）
 var miaoyin_view   # 【新增】妙音坊玩法视图（商铺地图妙音坊「▶」入口全屏页）
+var xiangfang_view   # 【新增】厢房视图（府邸「厢房」入口全屏页，Page z35/弹窗 z40 照 BaseView 新模式）
 
 # ==================== 【新增】视图注册清单（2026-09-18 架构重构批次②） ====================
 # 一条 = var 成员名 + 脚本路径 + 通用入口 key；_ready 由本清单循环实例化。
@@ -105,6 +106,7 @@ const VIEW_LIST: Array = [
 	{"var": "tavern_view", "script": "res://ui/pages/tavern_view.gd", "key": "tavern"},
 	{"var": "winery_view", "script": "res://ui/pages/winery_view.gd", "key": "winery"},
 	{"var": "miaoyin_view", "script": "res://ui/pages/miaoyin_view.gd", "key": "miaoyin"},
+	{"var": "xiangfang_view", "script": "res://ui/pages/xiangfang_view.gd", "key": "xiangfang"},
 ]
 
 # 【新增】切回闯荡页需关闭的视图 key 清单（= 原 switch_page 里 16 个手写 hide_xxx_view() 调用清单化，
@@ -1281,6 +1283,10 @@ func build_cuzhi_view(page, vbox):
 # 府邸【藏品】入口
 func on_collection():
 	collection_view.show_collection_view()
+
+# 府邸【厢房】入口（2026-09-20 批次①）
+func on_xiangfang():
+	xiangfang_view.show_xiangfang_view()
 
 # ==================== 【转发】酒肆玩法视图 → pages/tavern_view.gd ====================
 # ==================== 【转发】酒坊玩法视图 → pages/winery_view.gd ====================

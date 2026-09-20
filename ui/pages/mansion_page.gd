@@ -58,6 +58,7 @@ func generate_mansion_list():
 		{"name": "徒弟", "func": "on_apprentice"},
 		{"name": "每日任务", "func": "on_daily_task"},
 		{"name": "藏品", "func": "on_collection"},
+		{"name": "厢房", "func": "on_xiangfang"},
 		{"name": "邮件", "func": "on_mail"},
 	]
 	

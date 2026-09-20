@@ -1,0 +1,218 @@
+{
+  "_comment": "命盘配置（厢房设计方案§6定稿）。settings=全局参数；plates=5五行盘（outer=外圈6槽·阳干+六地支·资质命格；inner=内圈4槽·神兽/方位/色/季·赚钱%%四象）；qualities=命格10档品质（apt_coef资质/级系数，pct_coef赚钱%%/级系数，颜色为命格专用扩展色表，勿与家具五档品质色混用）；level_dist=命格等级分布（区间L~L+5六档，w_k=max(0,base_k+tilt*(L-anchor)*(k-2.5))）；progress=命盘进度曲线need(n)=step*n+base（n→n+1，锚19→20=440）；卜卦全流程（roll/对比/替换）批次③实装，本配置先行全量。",
+  "settings": {
+    "talisman_item": "fengshui_fu",
+    "talisman_cost": 1,
+    "outer_slots": 6,
+    "inner_slots": 4,
+    "bind_heroes": 3,
+    "rand_min": 0.9,
+    "rand_max": 1.1,
+    "initial_plate": "p1",
+    "plate_unlocks": {
+      "p2": {
+        "plate_lv": 5,
+        "hero_count": 20
+      },
+      "p3": {
+        "plate_lv": 10,
+        "hero_count": 40
+      },
+      "p4": {
+        "plate_lv": 15,
+        "hero_count": 60
+      },
+      "p5": {
+        "plate_lv": 20,
+        "hero_count": 80
+      }
+    }
+  },
+  "plates": [
+    {
+      "id": "p1",
+      "name": "庚金",
+      "gan": "庚",
+      "outer": [
+        "庚子",
+        "庚戌",
+        "庚申",
+        "庚午",
+        "庚辰",
+        "庚寅"
+      ],
+      "inner": [
+        "白虎",
+        "西方",
+        "白色",
+        "秋季"
+      ]
+    },
+    {
+      "id": "p2",
+      "name": "甲木",
+      "gan": "甲",
+      "outer": [
+        "甲子",
+        "甲戌",
+        "甲申",
+        "甲午",
+        "甲辰",
+        "甲寅"
+      ],
+      "inner": [
+        "青龙",
+        "东方",
+        "青色",
+        "春季"
+      ]
+    },
+    {
+      "id": "p3",
+      "name": "壬水",
+      "gan": "壬",
+      "outer": [
+        "壬子",
+        "壬戌",
+        "壬申",
+        "壬午",
+        "壬辰",
+        "壬寅"
+      ],
+      "inner": [
+        "玄武",
+        "北方",
+        "黑色",
+        "冬季"
+      ]
+    },
+    {
+      "id": "p4",
+      "name": "丙火",
+      "gan": "丙",
+      "outer": [
+        "丙子",
+        "丙戌",
+        "丙申",
+        "丙午",
+        "丙辰",
+        "丙寅"
+      ],
+      "inner": [
+        "朱雀",
+        "南方",
+        "赤色",
+        "夏季"
+      ]
+    },
+    {
+      "id": "p5",
+      "name": "戊土",
+      "gan": "戊",
+      "outer": [
+        "戊子",
+        "戊戌",
+        "戊申",
+        "戊午",
+        "戊辰",
+        "戊寅"
+      ],
+      "inner": [
+        "麒麟",
+        "中方",
+        "黄色",
+        "四季"
+      ]
+    }
+  ],
+  "qualities": [
+    {
+      "key": "pingfan",
+      "name": "平凡",
+      "color": "#95a5a6",
+      "apt_coef": 1.0,
+      "pct_coef": 0.03
+    },
+    {
+      "key": "putong",
+      "name": "普通",
+      "color": "#7f8c8d",
+      "apt_coef": 1.3,
+      "pct_coef": 0.06
+    },
+    {
+      "key": "youxiu",
+      "name": "优秀",
+      "color": "#3498db",
+      "apt_coef": 1.9,
+      "pct_coef": 0.1
+    },
+    {
+      "key": "xiyou",
+      "name": "稀有",
+      "color": "#2ecc71",
+      "apt_coef": 2.6,
+      "pct_coef": 0.145
+    },
+    {
+      "key": "zhuoyue",
+      "name": "卓越",
+      "color": "#9b59b6",
+      "apt_coef": 3.5,
+      "pct_coef": 0.2
+    },
+    {
+      "key": "shishi",
+      "name": "史诗",
+      "color": "#8e44ad",
+      "apt_coef": 4.6,
+      "pct_coef": 0.28
+    },
+    {
+      "key": "chuanqi",
+      "name": "传奇",
+      "color": "#e67e22",
+      "apt_coef": 6.0,
+      "pct_coef": 0.38
+    },
+    {
+      "key": "chaofan",
+      "name": "超凡",
+      "color": "#d35400",
+      "apt_coef": 7.8,
+      "pct_coef": 0.5
+    },
+    {
+      "key": "wushuang",
+      "name": "无双",
+      "color": "#e74c3c",
+      "apt_coef": 10.0,
+      "pct_coef": 0.65
+    },
+    {
+      "key": "shenhua",
+      "name": "神话",
+      "color": "#c0392b",
+      "apt_coef": 13.0,
+      "pct_coef": 0.85
+    }
+  ],
+  "level_dist": {
+    "anchor": 19,
+    "tilt": 0.188,
+    "range": 5,
+    "base": [
+      26.83,
+      22.76,
+      18.7,
+      14.63,
+      10.57,
+      6.51
+    ]
+  },
+  "progress": {
+    "base": 60,
+    "step": 20,
+    "anchor_check": "need(19)=20*19+60=440（唯一锚点）"
+  }
+}
