@@ -2,7 +2,8 @@
 # 厢房全屏页（府邸「厢房」入口；Page z35 / 弹窗 z40，照 BaseView 新模式）
 # 批次①（2026-09-20）：主界面 + 家具图鉴（升级/套装面板）+ 工坊直购。
 # 批次②（2026-09-20）：回收（详情页满级富余件）+ 风水详情弹窗（角标点入）+ 勋章（入口/15级列表/升级，
-#   shop bonus 挂点=systems/shop_system.gd get_shop_auto_income 末项）；批次③：命盘页；批次④：HeroData 接入。
+#   shop bonus 挂点=systems/shop_system.gd get_shop_auto_income 末项）。
+# 批次③（2026-09-20）：命盘页（5 盘 Tab/10 槽/卜卦/自动卜卦/加成总览/升级效果，逻辑在 mingpan_system.gd）；批次④：HeroData 接入。
 # 红点口径：照 2026-09-18 拍板——页内展示不穿透地图（批次②起挂：勋章可升级/套装可进阶亮红点）。
 # 弹窗刷新：原地重建内容（基座面板不动，只换 VBox 内容），规避"关弹窗+立刻重建同名"自动改名雷（勋章热修同款）。
 # ============================================================
@@ -17,6 +18,8 @@ const QUALITY_COLORS := {
 
 var _tab: String = "home"        # home / catalog / workshop
 var _sel_set: String = "s01"     # 图鉴当前选中套装
+var _sel_plate: String = "p1"    # 命盘当前选中盘
+var _pending_luck: Dictionary = {}   # 卜卦待二选一的新命格（替换/放弃后清空）
 var _popup_panel: PanelContainer = null   # 当前弹窗基座（原地重建内容用）
 
 func _init(p_c):
@@ -41,6 +44,9 @@ func _build(page: Panel):
 		return
 	if _tab == "workshop":
 		_build_workshop_page(page)
+		return
+	if _tab == "mingpan":
+		_build_mingpan_page(page)
 		return
 	_build_home_page(page)
 
@@ -119,12 +125,13 @@ func _build_home_page(page: Panel):
 		_refresh())
 	grid.add_child(workshop_btn)
 
-	# 底注：命盘入口批次③
-	var note := Label.new()
-	note.text = "命盘玩法后续版本开放"
-	note.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
-	note.add_theme_color_override("font_color", Color("#888888"))
-	root.add_child(note)
+	# 命盘入口（批次③）
+	var mp_center := CenterContainer.new()
+	root.add_child(mp_center)
+	var mingpan_btn := _make_entry_btn("命盘\n（五行盘 · 卜卦）", func():
+		_tab = "mingpan"
+		_refresh())
+	mp_center.add_child(mingpan_btn)
 
 # 卡片子节点全部 IGNORE：Label/VBox 默认拦点击不冒泡，会吃掉卡片的 gui_input（照 inn_view「点击穿透到卡片」惯例）
 func _pass_clicks(card: Control) -> void:
@@ -445,6 +452,14 @@ func _rebuild_popup():
 		_show_fengshui_popup()
 	elif _popup_kind == "medal":
 		_show_medal_popup()
+	elif _popup_kind == "mingpan_detail":
+		_show_luck_detail_popup(_popup_id)
+	elif _popup_kind == "divine":
+		_show_divine_popup()
+	elif _popup_kind == "overview":
+		_show_overview_popup()
+	elif _popup_kind == "upeffect":
+		_show_upeffect_popup()
 
 # 取弹窗内容 VBox：已有基座则清空内容原地重建（不新建同名节点，规避自动改名雷）；无则新建
 func _popup_vbox(title: String, size: Vector2) -> VBoxContainer:
@@ -801,3 +816,395 @@ func _flash_btn(btn: Button):
 			btn.add_theme_stylebox_override("normal", normal)
 		btn.remove_theme_stylebox_override("hover")
 		btn.remove_theme_stylebox_override("pressed"))
+# ==================== 命盘页（批次③） ====================
+func _msys() -> MingpanSystem:
+	return data.mingpan_system
+
+func _build_mingpan_page(page: Panel):
+	var root := VBoxContainer.new()
+	root.set_anchors_preset(Control.PRESET_FULL_RECT)
+	root.offset_left = 10
+	root.offset_top = 10
+	root.offset_right = -10
+	root.offset_bottom = -10
+	root.add_theme_constant_override("separation", 6)
+	page.add_child(root)
+
+	# 顶栏
+	var top := HBoxContainer.new()
+	top.alignment = BoxContainer.ALIGNMENT_CENTER
+	top.add_theme_constant_override("separation", 8)
+	root.add_child(top)
+	var back := Button.new()
+	back.text = "返回"
+	back.custom_minimum_size = Vector2(72, 40)
+	back.pressed.connect(func():
+		_tab = "home"
+		_refresh())
+	top.add_child(back)
+	var title := Label.new()
+	title.text = "命盘"
+	title.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	title.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	title.add_theme_font_size_override("font_size", 20)
+	title.add_theme_color_override("font_color", Color("#ffd700"))
+	top.add_child(title)
+	var overview_btn := Button.new()
+	overview_btn.text = "加成总览"
+	overview_btn.custom_minimum_size = Vector2(90, 40)
+	overview_btn.pressed.connect(func(): _show_overview_popup())
+	top.add_child(overview_btn)
+
+	# 进度行：命盘等级 + 进度条
+	var prog_row := HBoxContainer.new()
+	prog_row.add_theme_constant_override("separation", 8)
+	root.add_child(prog_row)
+	var prog_lbl := Label.new()
+	prog_lbl.text = "命盘 %d 级" % _msys().plate_lv
+	prog_lbl.add_theme_font_size_override("font_size", 14)
+	prog_row.add_child(prog_lbl)
+	var bar := ProgressBar.new()
+	bar.min_value = 0.0
+	bar.max_value = float(_msys().get_current_need())
+	bar.value = float(_msys().plate_exp)
+	bar.show_percentage = false
+	bar.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	prog_row.add_child(bar)
+	var exp_lbl := Label.new()
+	exp_lbl.text = "%d/%d" % [_msys().plate_exp, _msys().get_current_need()]
+	prog_row.add_child(exp_lbl)
+
+	# 盘 Tab（未解锁置灰+悬停看条件）
+	var tabs := HBoxContainer.new()
+	tabs.alignment = BoxContainer.ALIGNMENT_CENTER
+	tabs.add_theme_constant_override("separation", 6)
+	root.add_child(tabs)
+	for pid in _msys().get_plate_list():
+		var pcfg: Dictionary = _msys().get_plate_cfg(pid)
+		var pbtn := Button.new()
+		pbtn.text = str(pcfg.get("name", pid))
+		pbtn.custom_minimum_size = Vector2(64, 34)
+		var unlocked: bool = _msys().is_unlocked_plate(pid)
+		pbtn.disabled = not unlocked
+		if not unlocked:
+			pbtn.tooltip_text = _msys().get_unlock_desc(pid)
+		if pid == _sel_plate and unlocked:
+			pbtn.add_theme_color_override("font_color", Color("#ffd700"))
+		var pid2: String = str(pid)
+		pbtn.pressed.connect(func():
+			_sel_plate = pid2
+			_refresh())
+		tabs.add_child(pbtn)
+
+	# 盘区（当前选中盘未解锁则回退 p1）
+	if not _msys().is_unlocked_plate(_sel_plate):
+		_sel_plate = "p1"
+	var plate_area := VBoxContainer.new()
+	plate_area.size_flags_vertical = Control.SIZE_EXPAND_FILL
+	plate_area.add_theme_constant_override("separation", 4)
+	root.add_child(plate_area)
+	_fill_plate_area(plate_area)
+
+	# 底部操作：卜卦 / 自动卜卦 / 升级效果
+	var ops := HBoxContainer.new()
+	ops.alignment = BoxContainer.ALIGNMENT_CENTER
+	ops.add_theme_constant_override("separation", 10)
+	root.add_child(ops)
+	var divine_btn := Button.new()
+	divine_btn.text = "卜卦（风水符 %d/%d）" % [_msys().get_talisman_count(), _msys().get_divine_cost()]
+	divine_btn.custom_minimum_size = Vector2(180, 42)
+	divine_btn.pressed.connect(func(): _on_divine(divine_btn))
+	ops.add_child(divine_btn)
+	var auto_btn := Button.new()
+	auto_btn.text = "自动卜卦"
+	auto_btn.custom_minimum_size = Vector2(110, 42)
+	auto_btn.pressed.connect(func(): _on_auto_divine())
+	ops.add_child(auto_btn)
+	var upeffect_btn := Button.new()
+	upeffect_btn.text = "升级效果"
+	upeffect_btn.custom_minimum_size = Vector2(110, 42)
+	upeffect_btn.pressed.connect(func(): _show_upeffect_popup())
+	ops.add_child(upeffect_btn)
+
+# 盘区：外圈 6 槽（3 列）+ 内圈 4 槽（4 列）
+func _fill_plate_area(plate_area: VBoxContainer):
+	var pcfg: Dictionary = _msys().get_plate_cfg(_sel_plate)
+	var outer_lbl := Label.new()
+	outer_lbl.text = "外圈 · 资质命格（%s）" % str(pcfg.get("gan", ""))
+	outer_lbl.add_theme_font_size_override("font_size", 12)
+	outer_lbl.add_theme_color_override("font_color", Color("#aaaaaa"))
+	plate_area.add_child(outer_lbl)
+	var outer_grid := GridContainer.new()
+	outer_grid.columns = 3
+	outer_grid.add_theme_constant_override("h_separation", 6)
+	outer_grid.add_theme_constant_override("v_separation", 6)
+	plate_area.add_child(outer_grid)
+	for i in range(6):
+		outer_grid.add_child(_make_slot_card(_sel_plate, i))
+	var inner_lbl := Label.new()
+	inner_lbl.text = "内圈 · 四象赚钱"
+	inner_lbl.add_theme_font_size_override("font_size", 12)
+	inner_lbl.add_theme_color_override("font_color", Color("#aaaaaa"))
+	plate_area.add_child(inner_lbl)
+	var inner_grid := GridContainer.new()
+	inner_grid.columns = 4
+	inner_grid.add_theme_constant_override("h_separation", 6)
+	inner_grid.add_theme_constant_override("v_separation", 6)
+	plate_area.add_child(inner_grid)
+	for i in range(6, 10):
+		inner_grid.add_child(_make_slot_card(_sel_plate, i))
+
+# 槽位卡：空槽=槽名；有命格=品质色+品质名+Lv+总值
+func _make_slot_card(pid: String, idx: int) -> PanelContainer:
+	var pcfg: Dictionary = _msys().get_plate_cfg(pid)
+	var slot_name: String = str(pcfg.get("outer", [])[idx]) if idx < 6 else str(pcfg.get("inner", [])[idx - 6])
+	var sd: Dictionary = _msys().get_slot_luck(pid, idx)
+	var card := PanelContainer.new()
+	var cs := StyleBoxFlat.new()
+	cs.bg_color = Color("#262238")
+	var qcolor: String = _msys().get_quality_color(str(sd.get("q", ""))) if not sd.is_empty() else "#4a4460"
+	cs.border_color = Color(qcolor)
+	cs.set_border_width_all(2)
+	cs.set_corner_radius_all(5)
+	card.add_theme_stylebox_override("panel", cs)
+	card.custom_minimum_size = Vector2(118, 62)
+	card.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	card.mouse_filter = Control.MOUSE_FILTER_STOP
+	var vl := VBoxContainer.new()
+	vl.alignment = BoxContainer.ALIGNMENT_CENTER
+	card.add_child(vl)
+	var name_l := Label.new()
+	name_l.text = slot_name
+	name_l.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	name_l.add_theme_font_size_override("font_size", 12)
+	name_l.add_theme_color_override("font_color", Color("#bbbbbb"))
+	vl.add_child(name_l)
+	var info_l := Label.new()
+	if sd.is_empty():
+		info_l.text = "空"
+		info_l.add_theme_color_override("font_color", Color("#666666"))
+	else:
+		var qcfg: Dictionary = _msys().get_quality_cfg(str(sd.get("q", "")))
+		var total: float = _msys().luck_value(sd)
+		var unit: String = "资质+%d" % int(total) if idx < 6 else "+%.2f%%" % total
+		info_l.text = "%s Lv%d · %s" % [qcfg.get("name", ""), int(sd.get("lv", 1)), unit]
+		info_l.add_theme_color_override("font_color", Color(_msys().get_quality_color(str(sd.get("q", "")))))
+	info_l.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	info_l.add_theme_font_size_override("font_size", 11)
+	vl.add_child(info_l)
+	var pid2: String = pid
+	var idx2: int = idx
+	card.gui_input.connect(func(ev: InputEvent):
+		if ev is InputEventMouseButton and ev.pressed and ev.button_index == MOUSE_BUTTON_LEFT:
+			_show_luck_detail_popup("%s:%d" % [pid2, idx2]))
+	_pass_clicks(card)
+	return card
+
+# 槽位命格详情弹窗
+func _show_luck_detail_popup(popup_id: String):
+	var parts: PackedStringArray = popup_id.split(":")
+	if parts.size() != 2:
+		close_popup()
+		return
+	var pid: String = parts[0]
+	var idx: int = int(parts[1])
+	_popup_kind = "mingpan_detail"
+	_popup_id = popup_id
+	var sd: Dictionary = _msys().get_slot_luck(pid, idx)
+	var vbox: VBoxContainer = _popup_vbox("命格详情", Vector2(440, 360))
+	var pcfg: Dictionary = _msys().get_plate_cfg(pid)
+	var slot_name: String = str(pcfg.get("outer", [])[idx]) if idx < 6 else str(pcfg.get("inner", [])[idx - 6])
+	if sd.is_empty():
+		var empty_l := Label.new()
+		empty_l.text = "%s · 空槽" % slot_name
+		empty_l.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+		vbox.add_child(empty_l)
+		c._add_ok_button(vbox, func(): close_popup(), "关闭")
+		return
+	var qcfg: Dictionary = _msys().get_quality_cfg(str(sd.get("q", "")))
+	var head := Label.new()
+	head.text = "%s · %s Lv%d" % [slot_name, qcfg.get("name", ""), int(sd.get("lv", 1))]
+	head.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	head.add_theme_font_size_override("font_size", 16)
+	head.add_theme_color_override("font_color", Color(_msys().get_quality_color(str(sd.get("q", "")))))
+	vbox.add_child(head)
+	var heroes: Dictionary = sd.get("heroes", {})
+	for hid in heroes.keys():
+		var hero_name: String = str((data.heroes.get(hid, {}) as Dictionary).get("name", hid))
+		var val: float = float(heroes[hid])
+		var line := Label.new()
+		line.text = "%s：%s" % [hero_name, ("资质 +%d" % int(val)) if idx < 6 else ("赚钱 +%.2f%%" % val)]
+		line.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+		line.add_theme_color_override("font_color", Color("#dddddd"))
+		vbox.add_child(line)
+	c._add_ok_button(vbox, func(): close_popup(), "关闭")
+
+# 卜卦一卦
+func _on_divine(btn: Button):
+	var r: Dictionary = _msys().divine()
+	if not r.get("ok", false):
+		c._show_stage_hint(str(r.get("reason", "无法卜卦")))
+		_flash_btn(btn)
+		return
+	_pending_luck = r.get("luck", {})
+	if int(r.get("ups", 0)) > 0:
+		c._show_stage_hint("命盘升级：%d 级！" % _msys().plate_lv)
+	_show_divine_popup()
+
+# 卜卦对比弹窗：新命格 vs 槽内原命格（涨绿跌红，铁律：不模糊文案）
+func _show_divine_popup():
+	if _pending_luck.is_empty():
+		close_popup()
+		return
+	_popup_kind = "divine"
+	_popup_id = ""
+	var luck: Dictionary = _pending_luck
+	var vbox: VBoxContainer = _popup_vbox("卜卦", Vector2(480, 470))
+	var pid: String = str(luck.get("plate", ""))
+	var idx: int = int(luck.get("slot", 0))
+	var pcfg: Dictionary = _msys().get_plate_cfg(pid)
+	var slot_name: String = str(pcfg.get("outer", [])[idx]) if idx < 6 else str(pcfg.get("inner", [])[idx - 6])
+	var qcfg: Dictionary = _msys().get_quality_cfg(str(luck.get("q", "")))
+	var is_outer: bool = idx < 6
+
+	var head := Label.new()
+	head.text = "新命格：%s盘 · %s · %s Lv%d" % [pcfg.get("name", ""), slot_name, qcfg.get("name", ""), int(luck.get("lv", 1))]
+	head.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	head.add_theme_font_size_override("font_size", 15)
+	head.add_theme_color_override("font_color", Color(_msys().get_quality_color(str(luck.get("q", "")))))
+	vbox.add_child(head)
+
+	# 新命格明细
+	for hid in (luck.get("heroes", {}) as Dictionary).keys():
+		var hero_name: String = str((data.heroes.get(hid, {}) as Dictionary).get("name", hid))
+		var val: float = float(luck["heroes"][hid])
+		var line := Label.new()
+		line.text = "%s：%s" % [hero_name, ("资质 +%d" % int(val)) if is_outer else ("赚钱 +%.2f%%" % val)]
+		line.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+		line.add_theme_color_override("font_color", Color("#dddddd"))
+		vbox.add_child(line)
+
+	# 对比行：同槽同量纲总值，涨绿跌红
+	var old: Dictionary = _msys().get_slot_luck(pid, idx)
+	var unit: String = "资质" if is_outer else "赚钱%"
+	var new_v: float = _msys().luck_value(luck)
+	if old.is_empty():
+		var empty_l := Label.new()
+		empty_l.text = "%s 空槽 → 直接装上" % slot_name
+		empty_l.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+		empty_l.add_theme_color_override("font_color", Color("#7ee787"))
+		vbox.add_child(empty_l)
+	else:
+		var old_v: float = _msys().luck_value(old)
+		var diff: float = new_v - old_v
+		var cmp_l := Label.new()
+		cmp_l.text = "%s 对比：%s %s vs %s（%+.2f）" % [
+			slot_name, unit, _fmt_val(old_v, is_outer), _fmt_val(new_v, is_outer), diff]
+		cmp_l.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+		cmp_l.add_theme_color_override("font_color", Color("#7ee787") if diff >= 0.0 else Color("#e74c3c"))
+		vbox.add_child(cmp_l)
+		var old_q: String = str((_msys().get_quality_cfg(str(old.get("q", ""))) as Dictionary).get("name", ""))
+		var old_l := Label.new()
+		old_l.text = "原命格：%s Lv%d" % [old_q, int(old.get("lv", 1))]
+		old_l.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+		old_l.add_theme_color_override("font_color", Color("#888888"))
+		vbox.add_child(old_l)
+
+	var btn_row := HBoxContainer.new()
+	btn_row.alignment = BoxContainer.ALIGNMENT_CENTER
+	btn_row.add_theme_constant_override("separation", 16)
+	vbox.add_child(btn_row)
+	var install_btn := Button.new()
+	install_btn.text = "替换装上"
+	install_btn.custom_minimum_size = Vector2(130, 40)
+	install_btn.pressed.connect(_on_install_pending)
+	btn_row.add_child(install_btn)
+	var drop_btn := Button.new()
+	drop_btn.text = "放弃"
+	drop_btn.custom_minimum_size = Vector2(130, 40)
+	drop_btn.pressed.connect(func():
+		_pending_luck = {}
+		close_popup()
+		_refresh())
+	btn_row.add_child(drop_btn)
+
+func _fmt_val(v: float, is_outer: bool) -> String:
+	return "%d" % int(v) if is_outer else "%.2f%%" % v
+
+func _on_install_pending():
+	if _pending_luck.is_empty():
+		close_popup()
+		return
+	_msys().install_luck(_pending_luck)
+	c._show_stage_hint("命格已装上")
+	_pending_luck = {}
+	_refresh()
+
+# 自动卜卦：连抽直到符尽（上限 3000 防呆），更优才替换
+func _on_auto_divine():
+	if not _msys().can_divine():
+		c._show_stage_hint("风水符不足")
+		return
+	var r: Dictionary = _msys().auto_divine(3000)
+	c._show_stage_hint("自动卜卦 %d 卦：替换 %d 次%s" % [
+		int(r.get("rolls", 0)), int(r.get("replaced", 0)),
+		("，命盘升 %d 级" % int(r.get("ups", 0))) if int(r.get("ups", 0)) > 0 else ""])
+	_refresh()
+
+# 加成总览：按门客聚合全部盘贡献
+func _show_overview_popup():
+	_popup_kind = "overview"
+	_popup_id = ""
+	var vbox: VBoxContainer = _popup_vbox("加成总览", Vector2(440, 420))
+	var totals: Dictionary = _msys().get_hero_totals()
+	if totals.is_empty():
+		var empty_l := Label.new()
+		empty_l.text = "暂无命格加成，先去卜卦吧"
+		empty_l.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+		vbox.add_child(empty_l)
+	else:
+		var scroll := ScrollContainer.new()
+		scroll.size_flags_vertical = Control.SIZE_EXPAND_FILL
+		scroll.horizontal_scroll_mode = ScrollContainer.SCROLL_MODE_DISABLED
+		vbox.add_child(scroll)
+		var rows := VBoxContainer.new()
+		rows.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+		rows.add_theme_constant_override("separation", 3)
+		scroll.add_child(rows)
+		for hid in totals.keys():
+			var hero_name: String = str((data.heroes.get(hid, {}) as Dictionary).get("name", hid))
+			var t: Dictionary = totals[hid]
+			var line := Label.new()
+			line.text = "%s　资质 +%d　赚钱 +%.2f%%" % [hero_name, int(t.get("apt", 0.0)), float(t.get("pct", 0.0))]
+			line.add_theme_font_size_override("font_size", 13)
+			rows.add_child(line)
+	c._add_ok_button(vbox, func(): close_popup(), "关闭")
+
+# 升级效果：当前 vs 下级 命格等级区间六档概率对照
+func _show_upeffect_popup():
+	_popup_kind = "upeffect"
+	_popup_id = ""
+	var vbox: VBoxContainer = _popup_vbox("升级效果", Vector2(440, 380))
+	var cur: Array = _msys().get_level_dist(_msys().plate_lv)
+	var nxt: Array = _msys().get_level_dist(_msys().plate_lv + 1)
+	var head := Label.new()
+	head.text = "命格等级区间（命盘 %d 级 → %d 级）" % [_msys().plate_lv, _msys().plate_lv + 1]
+	head.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	head.add_theme_font_size_override("font_size", 14)
+	head.add_theme_color_override("font_color", Color("#ffd700"))
+	vbox.add_child(head)
+	for k in range(cur.size()):
+		var line := Label.new()
+		line.text = "%d 级：现 %.2f%% → 下级 %.2f%%" % [
+			_msys().plate_lv + k, float(cur[k]) * 100.0, float(nxt[k]) * 100.0]
+		line.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+		line.add_theme_color_override("font_color", Color("#dddddd") if float(nxt[k]) <= float(cur[k]) else Color("#7ee787"))
+		vbox.add_child(line)
+	var note_l := Label.new()
+	note_l.text = "命盘升级：每卦+1 进度，满 %d 升级（不 retroactive，老命格保留）" % _msys().get_current_need()
+	note_l.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	note_l.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+	note_l.add_theme_font_size_override("font_size", 11)
+	note_l.add_theme_color_override("font_color", Color("#888888"))
+	vbox.add_child(note_l)
+	c._add_ok_button(vbox, func(): close_popup(), "关闭")
