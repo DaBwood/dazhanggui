@@ -257,13 +257,13 @@ func get_reward_base(power: float) -> int:
 
 # 单场结算（内部方法）：npc = 战力×0.8~1.3 随机；胜=全奖，负=lose_reward_pct
 # 奖励：积分 = 基数×胜负系数×(1+c068藏品加成)；税引 = 基数×0.5×胜负系数
-func _settle(power: float) -> Dictionary:
+func _settle(power: float, talent_pct: float = 0.0) -> Dictionary:
 	var st = get_settings()
 	var npc = power * randf_range(float(st.get("npc_power_min", 0.8)), float(st.get("npc_power_max", 1.3)))
 	var win = power >= npc
 	var reward_pct = 1.0 if win else float(st.get("lose_reward_pct", 0.3))
 	var base = get_reward_base(power)
-	var points = base * reward_pct * (1.0 + g.collection_system.get_war_points_pct())   # 积分吃 c068（+5%/星）
+	var points = base * reward_pct * (1.0 + g.collection_system.get_war_points_pct()) * (1.0 + talent_pct / 100.0)   # 乘区：c068（+5%/星）+ 天赋 war_points_pct（批次③）
 	var yin = base * 0.5 * reward_pct
 	g.war_points += points
 	g.war_tax_yin += yin
@@ -289,7 +289,24 @@ func battle(squad_index: int) -> Dictionary:
 	var power = 0
 	for hid in ready:
 		power += g.get_hero_income(hid)
-	var r = _settle(power)
+	# 【批次③】career_activity_pct：出战门客命中 war 活动时，全局同职业门客赚钱+%（仅战力路径生效，面板不显示——2026-09-22 用户拍板）
+	var act_careers := {}
+	for hid in ready:
+		var p2 = g.talent_system.get_career_activity_pct(hid, "war")
+		if p2 <= 0.0: continue
+		var c2: String = str(g.heroes[hid].get("category", ""))
+		act_careers[c2] = float(act_careers.get(c2, 0.0)) + p2
+	for c2 in act_careers.keys():
+		var s2 = 0
+		for hid3 in g.heroes.keys():
+			if str(g.heroes[hid3].get("category", "")) == c2:
+				s2 += g.get_hero_income(hid3)
+		power += roundi(s2 * float(act_careers[c2]) / 100.0)
+	# 【批次③】war_points_pct：出战门客积分加成求和，进 _settle 乘区
+	var pts_pct = 0.0
+	for hid in ready:
+		pts_pct += g.talent_system.get_war_points_pct(hid)
+	var r = _settle(power, pts_pct)
 	_mark_battled(ready)
 	g.war_last_battle[str(squad_index)] = _today()   # legacy 字段同步写一份（无害，兼容旧读档路径）
 	return {"ok": true, "win": r.win, "power": power, "npc_power": r.npc_power, "points": r.points, "yin": r.yin, "kills": r.kills}
@@ -307,9 +324,24 @@ func quick_battle() -> Dictionary:
 		var power = 0
 		for hid in ready:
 			power += g.get_hero_income(hid)
-		if power <= 0:
-			continue
-		var r = _settle(power)
+		# 【批次③】career_activity_pct（同 battle()：仅战力路径，面板不显示）
+		var act_careers := {}
+		for hid in ready:
+			var p2 = g.talent_system.get_career_activity_pct(hid, "war")
+			if p2 <= 0.0: continue
+			var c2: String = str(g.heroes[hid].get("category", ""))
+			act_careers[c2] = float(act_careers.get(c2, 0.0)) + p2
+		for c2 in act_careers.keys():
+			var s2 = 0
+			for hid3 in g.heroes.keys():
+				if str(g.heroes[hid3].get("category", "")) == c2:
+					s2 += g.get_hero_income(hid3)
+			power += roundi(s2 * float(act_careers[c2]) / 100.0)
+		# 【批次③】war_points_pct 求和进乘区
+		var pts_pct = 0.0
+		for hid in ready:
+			pts_pct += g.talent_system.get_war_points_pct(hid)
+		var r = _settle(power, pts_pct)
 		_mark_battled(ready)
 		g.war_last_battle[str(idx)] = _today()   # legacy 字段同步
 		if r.win:

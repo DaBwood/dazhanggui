@@ -223,7 +223,7 @@ func upgrade_worm_skill(hero_id: String, skill_idx: int) -> bool:
 # 单一入口，can_upgrade / upgrade / UI列表 三处共用，避免散改
 func get_side_max_level(hero_id: String, skill: Dictionary) -> int:
 	var hero_cat: String = str(g._hero_configs.get(hero_id, {}).get("category", ""))
-	return int(skill.level) * 10 + g.collection_system.get_worm_cap_bonus(hero_cat)
+	return int(skill.level) * 10 + g.collection_system.get_worm_cap_bonus(hero_cat) + g.talent_system.get_worm_skill_cap_bonus(hero_cat)	# 【批次③】天赋 worm_skill_cap：同职业门客 cap 求和
 
 # ========== 虫师副业技能（虫书激活后获得同名技能，纯资质，资质丹升级）==========
 

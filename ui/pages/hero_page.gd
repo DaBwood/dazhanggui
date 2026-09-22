@@ -272,7 +272,12 @@ func update_hero_panel():
 	if c.has_node("HeroPanel/HeroName"):
 		# 【新增】标题追加天赋星级（★×N；0星不显示）
 		var star_txt = data.talent_system.get_star_text(current_hero_id)
-		c.get_node("HeroPanel/HeroName").text = "【%s】%s %s Lv.%d%s" % [h.name, h.category, quality_tag, h.level, (" " + star_txt) if star_txt != "" else ""]
+		# 【改】copy_max_level 持有者（王昭君·宁胡和议/花木兰·替父从军）：显示有效等级=max(自身, 复制等级)，与赚钱口径一致
+		var show_lv = int(h.level)
+		var copy_lv = data.talent_system.get_copy_level(current_hero_id)
+		if copy_lv > 0:
+			show_lv = maxi(show_lv, copy_lv)
+		c.get_node("HeroPanel/HeroName").text = "【%s】%s %s Lv.%d%s" % [h.name, h.category, quality_tag, show_lv, (" " + star_txt) if star_txt != "" else ""]
 	if c.has_node("HeroPanel/HeroIncome"):
 		# 【改】口径对齐：门客个体=赚钱（全局汇总才叫赚速）
 		c.get_node("HeroPanel/HeroIncome").text = "赚钱：%s/秒  资质：%d" % [c.format_number(income), total_aptitude]
@@ -476,7 +481,13 @@ func update_hero_panel():
 	var lv_btn = level_box.get_node("LevelUpBtnBox/LevelUpBtn")
 	var batch_check = level_box.get_node("LevelUpBtnBox/BatchCheck")
 	
-	if need_bt:
+	# 【新增】copy_max_level 持有者：真实等级不用手动升（等级随全门客最高复制），整个升级区隐藏
+	# （突破按钮一并隐藏：突破要求真实等级到节点 50+突破×50，复制档升不了级永远点不亮，留死按钮更糟）
+	var is_copy_holder = data.talent_system.get_copy_level(current_hero_id) > 0
+	level_box.visible = not is_copy_holder
+	if is_copy_holder:
+		pass
+	elif need_bt:
 		# 到达突破节点：按钮显示 突破+风雅颂数量，隐藏勾选框
 		lv_btn.text = "突破\n%d" % bt_cost
 		batch_check.visible = false
@@ -894,7 +905,13 @@ func update_hero_list():
 			continue
 		
 		if name_lbl:
-			name_lbl.text = "【%s】Lv.%d | %s" % [h.name, h.level, h.category]
+			# 【改】copy_max_level 持有者列表同步显示有效等级（未拥有门客按配置原等级）
+			var show_lv2 = int(h.level)
+			if data.heroes.has(hero_id):
+				var copy_lv2 = data.talent_system.get_copy_level(hero_id)
+				if copy_lv2 > 0:
+					show_lv2 = maxi(show_lv2, copy_lv2)
+			name_lbl.text = "【%s】Lv.%d | %s" % [h.name, show_lv2, h.category]
 			# 【新增】门客名字按品质着色（传奇橙#e67e22/无双红#e74c3c，普通白）
 			name_lbl.add_theme_color_override("font_color", Color(HeroData.get_quality_color(int(h.get("quality", 0)))))
 		if income_lbl:

@@ -352,7 +352,7 @@ func get_beast_max_level(_beast_id: String, _instance_index: int = 0) -> int:
 		for inst in instances:
 			extra += int(inst.get("aura3_lv", 1))
 	# 【改】珍兽等级上限=200+光环三总和+藏品套装档+钱庄信誉值（全局读取）
-	return 200 + extra + g.collection_system.get_suit_limit_bonus("beast_level_cap") + g.bank_system.get_beast_level_cap_bonus()
+	return 200 + extra + g.collection_system.get_suit_limit_bonus("beast_level_cap") + g.bank_system.get_beast_level_cap_bonus() + g.talent_system.get_beast_level_cap_bonus()	# 【批次③】天赋 beast_level_cap：全体门客 cap 求和
 
 # 【新增】系列是否集齐（同品质珍兽全部拥有）→ 光环二升级解锁条件
 func is_series_complete(beast_id: String) -> bool:

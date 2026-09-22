@@ -116,11 +116,17 @@ func upgrade_hq() -> bool:
 		return true
 	return false
 
+# 商铺等级上限：默认 20 + 天赋 shop_level_cap 求和（2026-09-21 拍板"商铺默认满级 20，天赋可+"）
+func get_shop_level_cap() -> int:
+	return 20 + g.talent_system.get_shop_level_cap_bonus()
+
 #店铺升级
 func upgrade_shop(shop_id: String) -> bool:
 	if shop_id == "": return false
 	if not g.shops.has(shop_id): return false
 	var s = g.shops[shop_id]
+	# 【批次③】等级上限闸门：到顶拒绝（调用方闪红提示）
+	if int(s.level) >= get_shop_level_cap(): return false
 	if g.items.shop_blueprint >= s.upgrade_cost:
 		g.items.shop_blueprint -= s.upgrade_cost
 		s.level += 1

@@ -288,6 +288,148 @@ func get_star_text(hero_id: String) -> String:
 		txt += "★"
 	return txt
 
+# ============ 天赋/光环效果读取入口（批次③接线：读取式，乘在各系统源点） ============
+# 生效天赋清单：只取当前品质档 tiers[当前档]，且该档不在 suspended_tiers（挂起档灰显不生效）
+# 拍板（2026-09-21）：多档天赋非累积——当前品质体现对应档参数
+func _active_talent_effects(hero_id: String) -> Array:
+	var tcfg: Dictionary = get_hero_talent_cfg(hero_id)
+	if tcfg.is_empty(): return []
+	var tier: String = get_current_tier(hero_id)
+	if tier == "": return []
+	if tcfg.get("suspended_tiers", []).has(tier): return []
+	return tcfg.get("tiers", {}).get(tier, [])
+
+# 门客赚钱百分比（hero_data get_percent_bonus 调用）：
+# career_pct=同职业门客 / all_hero_pct=全体门客 / series_pct=指定系列（系列归属取 hero_auras.json）
+func get_hero_talent_pct(hero_id: String) -> float:
+	if not g.heroes.has(hero_id): return 0.0
+	var cat: String = str(g.heroes[hero_id].get("category", ""))
+	var total = 0.0
+	for hid in g.heroes.keys():
+		for e in _active_talent_effects(hid):
+			match str(e.get("kind", "")):
+				"career_pct":
+					if str(g.heroes[hid].get("category", "")) == cat:
+						total += float(e.get("pct", 0))
+				"all_hero_pct":
+					total += float(e.get("pct", 0))
+				"series_pct":
+					if str(get_hero_aura_cfg(hero_id).get("series", "")) == str(e.get("series", "")):
+						total += float(e.get("pct", 0))
+	return total
+
+# 系列光环赚钱百分比（hero_data get_percent_bonus 调用）：
+# self_pct=自身 / career_pct=全体同职业门客（持有者本人也算同职业）；per 为百分制（5=5%）
+func get_aura_pct(hero_id: String) -> float:
+	if not g.heroes.has(hero_id): return 0.0
+	var cat: String = str(g.heroes[hero_id].get("category", ""))
+	var total = 0.0
+	for hid in g.heroes.keys():
+		if str(g.heroes[hid].get("category", "")) != cat: continue
+		for sk in get_hero_aura_cfg(hid).get("skills", []):
+			var kind = str(sk.get("effect", {}).get("kind", ""))
+			if kind == "self_pct" or kind == "career_pct":
+				total += float(sk.get("effect", {}).get("per", 0)) * get_aura_level(hid, sk)
+	return total
+
+# 系列光环资质（hero_data get_total_aptitude 调用）：自身 series_aptitude 技能 等级×每级资质
+func get_series_aptitude_bonus(hero_id: String) -> int:
+	var total = 0
+	for sk in get_hero_aura_cfg(hero_id).get("skills", []):
+		if str(sk.get("effect", {}).get("kind", "")) == "series_aptitude":
+			total += int(sk.get("effect", {}).get("per", 0)) * get_aura_level(hero_id, sk)
+	return total
+
+# copy_max_level（hero_data get_base_income / get_global_contribution 调用）：
+# 复制源=全门客最高等级门客；2026-09-22 用户补拍板：等级和突破次数都复制（有效值=max(自身, 复制值)，等级受档上限约束）
+func get_copy_stats(hero_id: String) -> Dictionary:
+	for e in _active_talent_effects(hero_id):
+		if str(e.get("kind", "")) == "copy_max_level":
+			var top_hid = ""
+			var top_lv = 0
+			for hid in g.heroes.keys():
+				if int(g.heroes[hid].get("level", 1)) > top_lv:
+					top_lv = int(g.heroes[hid].get("level", 1))
+					top_hid = hid
+			if top_hid == "":
+				return {"level": 0, "bt": 0}
+			return {"level": mini(top_lv, int(e.get("cap", 0))), "bt": int(g.heroes[top_hid].get("breakthrough_count", 1))}
+	return {}
+
+# 复制等级（hero_page 有效等级显示/升级区隐藏判定）：0=非复制档
+func get_copy_level(hero_id: String) -> int:
+	return int(get_copy_stats(hero_id).get("level", 0))
+
+# 虫师技能等级上限加成（cuzhi get_side_max_level 调用）：同职业拥有门客的 cap 求和
+func get_worm_skill_cap_bonus(hero_cat: String) -> int:
+	var total = 0
+	for hid in g.heroes.keys():
+		if str(g.heroes[hid].get("category", "")) != hero_cat: continue
+		for e in _active_talent_effects(hid):
+			if str(e.get("kind", "")) == "worm_skill_cap":
+				total += int(e.get("cap", 0))
+	return total
+
+# 珍兽等级上限加成（beast get_beast_max_level 调用）：全体拥有门客的 cap 求和
+func get_beast_level_cap_bonus() -> int:
+	var total = 0
+	for hid in g.heroes.keys():
+		for e in _active_talent_effects(hid):
+			if str(e.get("kind", "")) == "beast_level_cap":
+				total += int(e.get("cap", 0))
+	return total
+
+# 商铺等级上限加成（shop_system 调用）：全体拥有门客的 cap 求和（沈万三·招财进宝）
+func get_shop_level_cap_bonus() -> int:
+	var total = 0
+	for hid in g.heroes.keys():
+		for e in _active_talent_effects(hid):
+			if str(e.get("kind", "")) == "shop_level_cap":
+				total += int(e.get("cap", 0))
+	return total
+
+# 徒弟赚速百分比（apprentice 收入乘区）：全体拥有门客的 pct 求和（10=10%，调用方 /100）
+func get_apprentice_income_pct() -> float:
+	var total = 0.0
+	for hid in g.heroes.keys():
+		for e in _active_talent_effects(hid):
+			if str(e.get("kind", "")) == "apprentice_income_pct":
+				total += float(e.get("pct", 0))
+	return total
+
+# 培养见识（阅历）百分比（apprentice train 发放处乘区）：全体拥有门客的 pct 求和（10=10%）
+func get_apprentice_learn_pct() -> float:
+	var total = 0.0
+	for hid in g.heroes.keys():
+		for e in _active_talent_effects(hid):
+			if str(e.get("kind", "")) == "apprentice_learn_pct":
+				total += float(e.get("pct", 0))
+	return total
+
+# 谈心缘分百分比（friend chat 乘区）：谈心挚友职业与门客职业相同即 +%（无绑定，可叠；10=10%）
+func get_friend_chat_bond_pct(friend_category: String) -> float:
+	var total = 0.0
+	for hid in g.heroes.keys():
+		if str(g.heroes[hid].get("category", "")) != friend_category: continue
+		for e in _active_talent_effects(hid):
+			if str(e.get("kind", "")) == "friend_chat_bond_pct":
+				total += float(e.get("pct", 0))
+	return total
+
+# 活动出战同职业加成（war 战力路径）：该门客带 career_activity_pct 且活动命中时返回 pct，否则 0（5=5%）
+func get_career_activity_pct(hero_id: String, activity: String) -> float:
+	for e in _active_talent_effects(hero_id):
+		if str(e.get("kind", "")) == "career_activity_pct":
+			if e.get("activities", []).has(activity):
+				return float(e.get("pct", 0))
+	return 0.0
+
+# 商战积分加成（war settle 乘区）：该门客 war_points_pct（25=25%）
+func get_war_points_pct(hero_id: String) -> float:
+	for e in _active_talent_effects(hero_id):
+		if str(e.get("kind", "")) == "war_points_pct":
+			return float(e.get("pct", 0))
+	return 0.0
 # ============ 独有天赋配置查询（hero_talents.json） ============
 # 门客天赋配置（无天赋门客返回空字典）
 func get_hero_talent_cfg(hero_id: String) -> Dictionary:

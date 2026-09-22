@@ -134,6 +134,8 @@ func _get_single_apprentice_income(a: Dictionary) -> int:
 	var mult = 1.0 + g.collection_system.get_apprentice_suit_pct() + g.collection_system.get_apprentice_income_item_pct(a.get("career", ""), a.state == "magician")
 	# 【新增】钱庄信誉值：徒弟赚速 +2%/级（并入乘区）
 	mult += g.bank_system.get_apprentice_pct_bonus()
+	# 【批次③】天赋 apprentice_income_pct：所有徒弟赚速+%（全体门客求和，读取式）
+	mult += g.talent_system.get_apprentice_income_pct() / 100.0
 	income = int(income * mult)
 	# 【新增】钱庄信誉值：徒弟赚速固定 +500/级（乘区后追加，不吃其它百分比）
 	income += g.bank_system.get_apprentice_flat_bonus()
@@ -175,7 +177,8 @@ func train_apprentice(slot: int) -> Dictionary:
 	for a in list:
 		a.progress = min(g.APPRENTICE_MAX_PROGRESS, a.progress + g.APPRENTICE_PROGRESS_PER_TRAIN)
 	# 【改】三批：培养阅历吃藏品套装加成（市贾/童忆 +3%/档）
-	g.items.experience += int(g.APPRENTICE_TRAIN_EXP * (1.0 + g.collection_system.get_apprentice_suit_pct()))
+	# 【改】批次③：天赋 apprentice_learn_pct 乘区（见识即阅历，全体门客求和）
+	g.items.experience += int(g.APPRENTICE_TRAIN_EXP * (1.0 + g.collection_system.get_apprentice_suit_pct()) * (1.0 + g.talent_system.get_apprentice_learn_pct() / 100.0))
 	var adult = list[0].progress >= g.APPRENTICE_MAX_PROGRESS
 	if adult:
 		for a in list:

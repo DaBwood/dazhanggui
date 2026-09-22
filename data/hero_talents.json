@@ -155,7 +155,8 @@
        "quechang",
        "shangbang",
        "huashigang"
-      ]
+      ],
+      "desc": "商战，榷场，商帮，花石纲争霸等活动出战时，同职业门客赚钱+5%"
      }
     ]
    },
@@ -177,7 +178,8 @@
        "quechang",
        "shangbang",
        "huashigang"
-      ]
+      ],
+      "desc": "商战，榷场，商帮，花石纲争霸等活动出战时，同职业门客赚钱+5%"
      }
     ]
    },
@@ -199,7 +201,8 @@
        "quechang",
        "shangbang",
        "huashigang"
-      ]
+      ],
+      "desc": "商战，榷场，商帮，花石纲争霸等活动出战时，同职业门客赚钱+5%"
      }
     ]
    },
@@ -221,7 +224,8 @@
        "quechang",
        "shangbang",
        "huashigang"
-      ]
+      ],
+      "desc": "商战，榷场，商帮，花石纲争霸等活动出战时，同职业门客赚钱+5%"
      }
     ]
    },
@@ -243,7 +247,8 @@
        "quechang",
        "shangbang",
        "huashigang"
-      ]
+      ],
+      "desc": "商战，榷场，商帮，花石纲争霸等活动出战时，同职业门客赚钱+5%"
      }
     ]
    },
@@ -265,7 +270,8 @@
        "quechang",
        "shangbang",
        "huashigang"
-      ]
+      ],
+      "desc": "商战，榷场，商帮，花石纲争霸等活动出战时，同职业门客赚钱+5%"
      }
     ]
    },
@@ -287,7 +293,8 @@
        "quechang",
        "shangbang",
        "huashigang"
-      ]
+      ],
+      "desc": "商战，榷场，商帮，花石纲争霸等活动出战时，同职业门客赚钱+5%"
      }
     ]
    },
@@ -309,7 +316,8 @@
        "quechang",
        "shangbang",
        "huashigang"
-      ]
+      ],
+      "desc": "商战，榷场，商帮，花石纲争霸等活动出战时，同职业门客赚钱+5%"
      }
     ]
    },
@@ -331,7 +339,8 @@
        "quechang",
        "shangbang",
        "huashigang"
-      ]
+      ],
+      "desc": "商战，榷场，商帮，花石纲争霸等活动出战时，同职业门客赚钱+5%"
      }
     ]
    },
@@ -353,7 +362,8 @@
        "quechang",
        "shangbang",
        "huashigang"
-      ]
+      ],
+      "desc": "商战，榷场，商帮，花石纲争霸等活动出战时，同职业门客赚钱+5%"
      }
     ]
    },
@@ -375,7 +385,8 @@
        "quechang",
        "shangbang",
        "huashigang"
-      ]
+      ],
+      "desc": "商战，榷场，商帮，花石纲争霸等活动出战时，同职业门客赚钱+5%"
      }
     ]
    },
@@ -397,7 +408,8 @@
        "quechang",
        "shangbang",
        "huashigang"
-      ]
+      ],
+      "desc": "商战，榷场，商帮，花石纲争霸等活动出战时，同职业门客赚钱+5%"
      }
     ]
    },
@@ -419,7 +431,8 @@
        "quechang",
        "shangbang",
        "huashigang"
-      ]
+      ],
+      "desc": "商战，榷场，商帮，花石纲争霸等活动出战时，同职业门客赚钱+5%"
      }
     ]
    },
@@ -441,7 +454,8 @@
        "quechang",
        "shangbang",
        "huashigang"
-      ]
+      ],
+      "desc": "商战，榷场，商帮，花石纲争霸等活动出战时，同职业门客赚钱+5%"
      }
     ]
    },
@@ -463,7 +477,8 @@
        "quechang",
        "shangbang",
        "huashigang"
-      ]
+      ],
+      "desc": "商战，榷场，商帮，花石纲争霸等活动出战时，同职业门客赚钱+5%"
      }
     ]
    },
@@ -485,7 +500,8 @@
        "quechang",
        "shangbang",
        "huashigang"
-      ]
+      ],
+      "desc": "商战，榷场，商帮，花石纲争霸等活动出战时，同职业门客赚钱+5%"
      }
     ],
     "legend": [
@@ -530,7 +546,8 @@
        "quechang",
        "shangbang",
        "huashigang"
-      ]
+      ],
+      "desc": "商战，榷场，商帮，花石纲争霸等活动出战时，同职业门客赚钱+5%"
      }
     ],
     "legend": [
@@ -543,7 +560,8 @@
        "quechang",
        "shangbang",
        "huashigang"
-      ]
+      ],
+      "desc": "商战，榷场，商帮，花石纲争霸等活动出战时，同职业门客赚钱+10%"
      },
      {
       "name": "葫蝶之缘",
@@ -576,7 +594,8 @@
       "name": "葫蝶之缘",
       "kind": "friend_activity_talent_pct",
       "activity": "quechang",
-      "pct": 10
+      "pct": 10,
+      "desc": "榷场挚友出战才华+10%"
      },
      {
       "name": "葫芦仙人",
@@ -609,7 +628,8 @@
        "quechang",
        "shangbang",
        "huashigang"
-      ]
+      ],
+      "desc": "商战，榷场，商帮，花石纲争霸等活动出战时，同职业门客赚钱+5%"
      }
     ],
     "legend": [
@@ -628,7 +648,8 @@
      {
       "name": "借花献佛",
       "kind": "friend_chat_bond_pct",
-      "pct": 10
+      "pct": 10,
+      "desc": "跟同职业挚友谈心获得缘分+10%"
      }
     ]
    },
@@ -653,7 +674,8 @@
        "quechang",
        "shangbang",
        "huashigang"
-      ]
+      ],
+      "desc": "商战，榷场，商帮，花石纲争霸等活动出战时，同职业门客赚钱+5%"
      }
     ],
     "legend": [
@@ -666,7 +688,8 @@
        "quechang",
        "shangbang",
        "huashigang"
-      ]
+      ],
+      "desc": "商战，榷场，商帮，花石纲争霸等活动出战时，同职业门客赚钱+10%"
      }
     ],
     "wushuang": [
@@ -679,12 +702,14 @@
        "quechang",
        "shangbang",
        "huashigang"
-      ]
+      ],
+      "desc": "商战，榷场，商帮，花石纲争霸等活动出战时，同职业门客赚钱+20%"
      },
      {
       "name": "招财之道",
       "kind": "career_pct",
-      "pct": 5
+      "pct": 5,
+      "desc": "同职业门客赚钱+5%"
      },
      {
       "name": "神威天光",
@@ -717,7 +742,8 @@
        "quechang",
        "shangbang",
        "huashigang"
-      ]
+      ],
+      "desc": "商战，榷场，商帮，花石纲争霸等活动出战时，同职业门客赚钱+5%"
      }
     ],
     "legend": [
@@ -730,7 +756,8 @@
        "quechang",
        "shangbang",
        "huashigang"
-      ]
+      ],
+      "desc": "商战，榷场，商帮，花石纲争霸等活动出战时，同职业门客赚钱+10%"
      }
     ],
     "wushuang": [
@@ -743,12 +770,14 @@
        "quechang",
        "shangbang",
        "huashigang"
-      ]
+      ],
+      "desc": "商战，榷场，商帮，花石纲争霸等活动出战时，同职业门客赚钱+20%"
      },
      {
       "name": "招财之道",
       "kind": "career_pct",
-      "pct": 5
+      "pct": 5,
+      "desc": "同职业门客赚钱+5%"
      },
      {
       "name": "魔星降世",
@@ -780,7 +809,8 @@
        "quechang",
        "shangbang",
        "huashigang"
-      ]
+      ],
+      "desc": "商战，榷场，商帮，花石纲争霸等活动出战时，同职业门客赚钱+5%"
      }
     ],
     "legend": [
@@ -793,7 +823,8 @@
        "quechang",
        "shangbang",
        "huashigang"
-      ]
+      ],
+      "desc": "商战，榷场，商帮，花石纲争霸等活动出战时，同职业门客赚钱+10%"
      }
     ],
     "wushuang": [
@@ -806,12 +837,14 @@
        "quechang",
        "shangbang",
        "huashigang"
-      ]
+      ],
+      "desc": "商战，榷场，商帮，花石纲争霸等活动出战时，同职业门客赚钱+20%"
      },
      {
       "name": "招财之道",
       "kind": "career_pct",
-      "pct": 5
+      "pct": 5,
+      "desc": "同职业门客赚钱+5%"
      },
      {
       "name": "噬金虫",
@@ -840,7 +873,8 @@
        "quechang",
        "shangbang",
        "huashigang"
-      ]
+      ],
+      "desc": "商战，榷场，商帮，花石纲争霸等活动出战时，同职业门客赚钱+5%"
      }
     ],
     "legend": [
@@ -853,7 +887,8 @@
        "quechang",
        "shangbang",
        "huashigang"
-      ]
+      ],
+      "desc": "商战，榷场，商帮，花石纲争霸等活动出战时，同职业门客赚钱+10%"
      }
     ],
     "wushuang": [
@@ -866,12 +901,14 @@
        "quechang",
        "shangbang",
        "huashigang"
-      ]
+      ],
+      "desc": "商战，榷场，商帮，花石纲争霸等活动出战时，同职业门客赚钱+20%"
      },
      {
       "name": "招财之道",
       "kind": "career_pct",
-      "pct": 5
+      "pct": 5,
+      "desc": "同职业门客赚钱+5%"
      },
      {
       "name": "天生奇才",
@@ -903,7 +940,8 @@
        "quechang",
        "shangbang",
        "huashigang"
-      ]
+      ],
+      "desc": "商战，榷场，商帮，花石纲争霸等活动出战时，同职业门客赚钱+5%"
      },
      {
       "name": "乘胜追击",
@@ -922,12 +960,14 @@
        "quechang",
        "shangbang",
        "huashigang"
-      ]
+      ],
+      "desc": "商战，榷场，商帮，花石纲争霸等活动出战时，同职业门客赚钱+10%"
      },
      {
       "name": "乘胜追击",
       "kind": "war_points_pct",
-      "pct": 25
+      "pct": 25,
+      "desc": "商战出战该门客时，获得积分+25%"
      }
     ],
     "wushuang": [
@@ -940,17 +980,20 @@
        "quechang",
        "shangbang",
        "huashigang"
-      ]
+      ],
+      "desc": "商战，榷场，商帮，花石纲争霸等活动出战时，同职业门客赚钱+20%"
      },
      {
       "name": "招财之道",
       "kind": "career_pct",
-      "pct": 5
+      "pct": 5,
+      "desc": "同职业门客赚钱+5%"
      },
      {
       "name": "乘胜追击",
       "kind": "war_points_pct",
-      "pct": 25
+      "pct": 25,
+      "desc": "商战出战该门客时，获得积分+25%"
      },
      {
       "name": "拔刀御敌",
@@ -982,7 +1025,8 @@
        "quechang",
        "shangbang",
        "huashigang"
-      ]
+      ],
+      "desc": "商战，榷场，商帮，花石纲争霸等活动出战时，同职业门客赚钱+5%"
      },
      {
       "name": "宁胡和议",
@@ -1001,7 +1045,8 @@
        "quechang",
        "shangbang",
        "huashigang"
-      ]
+      ],
+      "desc": "商战，榷场，商帮，花石纲争霸等活动出战时，同职业门客赚钱+10%"
      },
      {
       "name": "宁胡和议",
@@ -1020,12 +1065,14 @@
        "quechang",
        "shangbang",
        "huashigang"
-      ]
+      ],
+      "desc": "商战，榷场，商帮，花石纲争霸等活动出战时，同职业门客赚钱+20%"
      },
      {
       "name": "招财之道",
       "kind": "career_pct",
-      "pct": 5
+      "pct": 5,
+      "desc": "同职业门客赚钱+5%"
      },
      {
       "name": "宁胡和议",
@@ -1063,7 +1110,8 @@
        "quechang",
        "shangbang",
        "huashigang"
-      ]
+      ],
+      "desc": "商战，榷场，商帮，花石纲争霸等活动出战时，同职业门客赚钱+5%"
      }
     ],
     "legend": [
@@ -1076,7 +1124,8 @@
        "quechang",
        "shangbang",
        "huashigang"
-      ]
+      ],
+      "desc": "商战，榷场，商帮，花石纲争霸等活动出战时，同职业门客赚钱+10%"
      }
     ],
     "wushuang": [
@@ -1089,12 +1138,14 @@
        "quechang",
        "shangbang",
        "huashigang"
-      ]
+      ],
+      "desc": "商战，榷场，商帮，花石纲争霸等活动出战时，同职业门客赚钱+20%"
      },
      {
       "name": "招财之道",
       "kind": "career_pct",
-      "pct": 5
+      "pct": 5,
+      "desc": "同职业门客赚钱+5%"
      },
      {
       "name": "纯爱天篇",
@@ -1129,7 +1180,8 @@
        "quechang",
        "shangbang",
        "huashigang"
-      ]
+      ],
+      "desc": "商战，榷场，商帮，花石纲争霸等活动出战时，同职业门客赚钱+5%"
      },
      {
       "name": "厨心共鸣",
@@ -1151,7 +1203,8 @@
        "quechang",
        "shangbang",
        "huashigang"
-      ]
+      ],
+      "desc": "商战，榷场，商帮，花石纲争霸等活动出战时，同职业门客赚钱+10%"
      },
      {
       "name": "厨心共鸣",
@@ -1159,7 +1212,8 @@
       "pair": [
        "liu_maoxing",
        "lan_feihong"
-      ]
+      ],
+      "desc": "刘昴星信物跟兰飞鸿信物共享等级"
      }
     ],
     "wushuang": [
@@ -1172,12 +1226,14 @@
        "quechang",
        "shangbang",
        "huashigang"
-      ]
+      ],
+      "desc": "商战，榷场，商帮，花石纲争霸等活动出战时，同职业门客赚钱+20%"
      },
      {
       "name": "招财之道",
       "kind": "career_pct",
-      "pct": 5
+      "pct": 5,
+      "desc": "同职业门客赚钱+5%"
      },
      {
       "name": "厨心共鸣",
@@ -1185,7 +1241,8 @@
       "pair": [
        "liu_maoxing",
        "lan_feihong"
-      ]
+      ],
+      "desc": "刘昴星信物跟兰飞鸿信物共享等级"
      },
      {
       "name": "天才阿昴",
@@ -1224,7 +1281,8 @@
        "quechang",
        "shangbang",
        "huashigang"
-      ]
+      ],
+      "desc": "商战，榷场，商帮，花石纲争霸等活动出战时，同职业门客赚钱+5%"
      },
      {
       "name": "替父从军",
@@ -1243,7 +1301,8 @@
        "quechang",
        "shangbang",
        "huashigang"
-      ]
+      ],
+      "desc": "商战，榷场，商帮，花石纲争霸等活动出战时，同职业门客赚钱+15%"
      },
      {
       "name": "替父从军",
@@ -1262,12 +1321,14 @@
        "quechang",
        "shangbang",
        "huashigang"
-      ]
+      ],
+      "desc": "商战，榷场，商帮，花石纲争霸等活动出战时，同职业门客赚钱+20%"
      },
      {
       "name": "招财之道",
       "kind": "career_pct",
-      "pct": 5
+      "pct": 5,
+      "desc": "同职业门客赚钱+5%"
      },
      {
       "name": "替父从军",
@@ -1305,7 +1366,8 @@
        "quechang",
        "shangbang",
        "huashigang"
-      ]
+      ],
+      "desc": "商战，榷场，商帮，花石纲争霸等活动出战时，同职业门客赚钱+5%"
      }
     ],
     "legend": [
@@ -1318,7 +1380,8 @@
        "quechang",
        "shangbang",
        "huashigang"
-      ]
+      ],
+      "desc": "商战，榷场，商帮，花石纲争霸等活动出战时，同职业门客赚钱+10%"
      }
     ],
     "wushuang": [
@@ -1331,12 +1394,14 @@
        "quechang",
        "shangbang",
        "huashigang"
-      ]
+      ],
+      "desc": "商战，榷场，商帮，花石纲争霸等活动出战时，同职业门客赚钱+20%"
      },
      {
       "name": "招财之道",
       "kind": "career_pct",
-      "pct": 5
+      "pct": 5,
+      "desc": "同职业门客赚钱+5%"
      },
      {
       "name": "天才阿飞",
@@ -1375,12 +1440,14 @@
        "quechang",
        "shangbang",
        "huashigang"
-      ]
+      ],
+      "desc": "商战，榷场，商帮，花石纲争霸等活动出战时，同职业门客赚钱+10%"
      },
      {
       "name": "借花献佛",
       "kind": "friend_chat_bond_pct",
-      "pct": 10
+      "pct": 10,
+      "desc": "跟同职业挚友谈心获得缘分+10%"
      }
     ]
    },
@@ -1402,7 +1469,8 @@
        "quechang",
        "shangbang",
        "huashigang"
-      ]
+      ],
+      "desc": "商战，榷场，商帮，花石纲争霸等活动出战时，同职业门客赚钱+10%"
      },
      {
       "name": "言传身教",
@@ -1430,12 +1498,14 @@
        "quechang",
        "shangbang",
        "huashigang"
-      ]
+      ],
+      "desc": "商战，榷场，商帮，花石纲争霸等活动出战时，同职业门客赚钱+10%"
      },
      {
       "name": "借花献佛",
       "kind": "friend_chat_bond_pct",
-      "pct": 10
+      "pct": 10,
+      "desc": "跟同职业挚友谈心获得缘分+10%"
      }
     ]
    },
@@ -1457,12 +1527,14 @@
        "quechang",
        "shangbang",
        "huashigang"
-      ]
+      ],
+      "desc": "商战，榷场，商帮，花石纲争霸等活动出战时，同职业门客赚钱+10%"
      },
      {
       "name": "借花献佛",
       "kind": "friend_chat_bond_pct",
-      "pct": 10
+      "pct": 10,
+      "desc": "跟同职业挚友谈心获得缘分+10%"
      }
     ]
    },
@@ -1484,12 +1556,14 @@
        "quechang",
        "shangbang",
        "huashigang"
-      ]
+      ],
+      "desc": "商战，榷场，商帮，花石纲争霸等活动出战时，同职业门客赚钱+10%"
      },
      {
       "name": "借花献佛",
       "kind": "friend_chat_bond_pct",
-      "pct": 10
+      "pct": 10,
+      "desc": "跟同职业挚友谈心获得缘分+10%"
      }
     ]
    },
@@ -1511,7 +1585,8 @@
        "quechang",
        "shangbang",
        "huashigang"
-      ]
+      ],
+      "desc": "商战，榷场，商帮，花石纲争霸等活动出战时，同职业门客赚钱+10%"
      },
      {
       "name": "为人师表",
@@ -1539,7 +1614,8 @@
        "quechang",
        "shangbang",
        "huashigang"
-      ]
+      ],
+      "desc": "商战，榷场，商帮，花石纲争霸等活动出战时，同职业门客赚钱+10%"
      },
      {
       "name": "传道授业",
@@ -1567,12 +1643,14 @@
        "quechang",
        "shangbang",
        "huashigang"
-      ]
+      ],
+      "desc": "商战，榷场，商帮，花石纲争霸等活动出战时，同职业门客赚钱+10%"
      },
      {
       "name": "借花献佛",
       "kind": "friend_chat_bond_pct",
-      "pct": 10
+      "pct": 10,
+      "desc": "跟同职业挚友谈心获得缘分+10%"
      }
     ]
    },
@@ -1594,12 +1672,14 @@
        "quechang",
        "shangbang",
        "huashigang"
-      ]
+      ],
+      "desc": "商战，榷场，商帮，花石纲争霸等活动出战时，同职业门客赚钱+10%"
      },
      {
       "name": "借花献佛",
       "kind": "friend_chat_bond_pct",
-      "pct": 10
+      "pct": 10,
+      "desc": "跟同职业挚友谈心获得缘分+10%"
      }
     ]
    },
@@ -1621,12 +1701,14 @@
        "quechang",
        "shangbang",
        "huashigang"
-      ]
+      ],
+      "desc": "商战，榷场，商帮，花石纲争霸等活动出战时，同职业门客赚钱+10%"
      },
      {
       "name": "传道授业",
       "kind": "apprentice_learn_pct",
-      "pct": 10
+      "pct": 10,
+      "desc": "同类徒弟每次培养获得见识+10%"
      }
     ]
    },
@@ -1648,12 +1730,14 @@
        "quechang",
        "shangbang",
        "huashigang"
-      ]
+      ],
+      "desc": "商战，榷场，商帮，花石纲争霸等活动出战时，同职业门客赚钱+10%"
      },
      {
       "name": "借花献佛",
       "kind": "friend_chat_bond_pct",
-      "pct": 10
+      "pct": 10,
+      "desc": "跟同职业挚友谈心获得缘分+10%"
      }
     ]
    },
@@ -1675,7 +1759,8 @@
        "quechang",
        "shangbang",
        "huashigang"
-      ]
+      ],
+      "desc": "商战，榷场，商帮，花石纲争霸等活动出战时，同职业门客赚钱+10%"
      },
      {
       "name": "乘胜追击",
@@ -1703,12 +1788,14 @@
        "quechang",
        "shangbang",
        "huashigang"
-      ]
+      ],
+      "desc": "商战，榷场，商帮，花石纲争霸等活动出战时，同职业门客赚钱+10%"
      },
      {
       "name": "传道授业",
       "kind": "apprentice_learn_pct",
-      "pct": 10
+      "pct": 10,
+      "desc": "同类徒弟每次培养获得见识+10%"
      }
     ]
    },
@@ -1730,7 +1817,8 @@
        "quechang",
        "shangbang",
        "huashigang"
-      ]
+      ],
+      "desc": "商战，榷场，商帮，花石纲争霸等活动出战时，同职业门客赚钱+10%"
      },
      {
       "name": "对酒当歌",
@@ -1758,12 +1846,14 @@
        "quechang",
        "shangbang",
        "huashigang"
-      ]
+      ],
+      "desc": "商战，榷场，商帮，花石纲争霸等活动出战时，同职业门客赚钱+10%"
      },
      {
       "name": "借花献佛",
       "kind": "friend_chat_bond_pct",
-      "pct": 10
+      "pct": 10,
+      "desc": "跟同职业挚友谈心获得缘分+10%"
      }
     ]
    },
@@ -1785,12 +1875,14 @@
        "quechang",
        "shangbang",
        "huashigang"
-      ]
+      ],
+      "desc": "商战，榷场，商帮，花石纲争霸等活动出战时，同职业门客赚钱+10%"
      },
      {
       "name": "借花献佛",
       "kind": "friend_chat_bond_pct",
-      "pct": 10
+      "pct": 10,
+      "desc": "跟同职业挚友谈心获得缘分+10%"
      }
     ]
    },
@@ -1812,12 +1904,14 @@
        "quechang",
        "shangbang",
        "huashigang"
-      ]
+      ],
+      "desc": "商战，榷场，商帮，花石纲争霸等活动出战时，同职业门客赚钱+10%"
      },
      {
       "name": "传道授业",
       "kind": "apprentice_learn_pct",
-      "pct": 10
+      "pct": 10,
+      "desc": "同类徒弟每次培养获得见识+10%"
      }
     ]
    },
@@ -1839,12 +1933,14 @@
        "quechang",
        "shangbang",
        "huashigang"
-      ]
+      ],
+      "desc": "商战，榷场，商帮，花石纲争霸等活动出战时，同职业门客赚钱+10%"
      },
      {
       "name": "借花献佛",
       "kind": "friend_chat_bond_pct",
-      "pct": 10
+      "pct": 10,
+      "desc": "跟同职业挚友谈心获得缘分+10%"
      }
     ]
    },
@@ -1866,12 +1962,14 @@
        "quechang",
        "shangbang",
        "huashigang"
-      ]
+      ],
+      "desc": "商战，榷场，商帮，花石纲争霸等活动出战时，同职业门客赚钱+10%"
      },
      {
       "name": "传道授业",
       "kind": "apprentice_learn_pct",
-      "pct": 10
+      "pct": 10,
+      "desc": "同类徒弟每次培养获得见识+10%"
      }
     ]
    },
@@ -1893,12 +1991,14 @@
        "quechang",
        "shangbang",
        "huashigang"
-      ]
+      ],
+      "desc": "商战，榷场，商帮，花石纲争霸等活动出战时，同职业门客赚钱+10%"
      },
      {
       "name": "传道授业",
       "kind": "apprentice_learn_pct",
-      "pct": 10
+      "pct": 10,
+      "desc": "同类徒弟每次培养获得见识+10%"
      }
     ]
    },
@@ -1920,7 +2020,8 @@
        "quechang",
        "shangbang",
        "huashigang"
-      ]
+      ],
+      "desc": "商战，榷场，商帮，花石纲争霸等活动出战时，同职业门客赚钱+10%"
      },
      {
       "name": "招财进宝",
@@ -1948,7 +2049,8 @@
        "quechang",
        "shangbang",
        "huashigang"
-      ]
+      ],
+      "desc": "商战，榷场，商帮，花石纲争霸等活动出战时，同职业门客赚钱+10%"
      },
      {
       "name": "巧夺天工",
@@ -1977,12 +2079,14 @@
        "quechang",
        "shangbang",
        "huashigang"
-      ]
+      ],
+      "desc": "商战，榷场，商帮，花石纲争霸等活动出战时，同职业门客赚钱+15%"
      },
      {
       "name": "招财之道",
       "kind": "career_pct",
-      "pct": 5
+      "pct": 5,
+      "desc": "同职业门客赚钱+5%"
      }
     ]
    },
@@ -2004,7 +2108,8 @@
        "quechang",
        "shangbang",
        "huashigang"
-      ]
+      ],
+      "desc": "商战，榷场，商帮，花石纲争霸等活动出战时，同职业门客赚钱+15%"
      },
      {
       "name": "权势压制",
@@ -2033,13 +2138,15 @@
        "quechang",
        "shangbang",
        "huashigang"
-      ]
+      ],
+      "desc": "商战，榷场，商帮，花石纲争霸等活动出战时，同职业门客赚钱+15%"
      },
      {
       "name": "权势压制",
       "kind": "hero_activity_income_pct",
       "activity": "yuanye",
-      "pct": 4
+      "pct": 4,
+      "desc": "元夜闹东京活动中，我方门客赚钱+4%"
      }
     ]
    },
@@ -2061,7 +2168,8 @@
        "quechang",
        "shangbang",
        "huashigang"
-      ]
+      ],
+      "desc": "商战，榷场，商帮，花石纲争霸等活动出战时，同职业门客赚钱+10%"
      },
      {
       "name": "如有神助",
@@ -2099,12 +2207,14 @@
        "quechang",
        "shangbang",
        "huashigang"
-      ]
+      ],
+      "desc": "商战，榷场，商帮，花石纲争霸等活动出战时，同职业门客赚钱+15%"
      },
      {
       "name": "借花献佛",
       "kind": "friend_chat_bond_pct",
-      "pct": 10
+      "pct": 10,
+      "desc": "跟同职业挚友谈心获得缘分+10%"
      }
     ]
    },
@@ -2126,7 +2236,8 @@
        "quechang",
        "shangbang",
        "huashigang"
-      ]
+      ],
+      "desc": "商战，榷场，商帮，花石纲争霸等活动出战时，同职业门客赚钱+15%"
      },
      {
       "name": "替天行道",
@@ -2156,12 +2267,14 @@
        "quechang",
        "shangbang",
        "huashigang"
-      ]
+      ],
+      "desc": "商战，榷场，商帮，花石纲争霸等活动出战时，同职业门客赚钱+15%"
      },
      {
       "name": "借花献佛",
       "kind": "friend_chat_bond_pct",
-      "pct": 10
+      "pct": 10,
+      "desc": "跟同职业挚友谈心获得缘分+10%"
      }
     ]
    },
@@ -2183,7 +2296,8 @@
        "quechang",
        "shangbang",
        "huashigang"
-      ]
+      ],
+      "desc": "商战，榷场，商帮，花石纲争霸等活动出战时，同职业门客赚钱+10%"
      },
      {
       "name": "北斗七星",
@@ -2219,7 +2333,8 @@
        "quechang",
        "shangbang",
        "huashigang"
-      ]
+      ],
+      "desc": "商战，榷场，商帮，花石纲争霸等活动出战时，同职业门客赚钱+10%"
      },
      {
       "name": "味觉封印",
@@ -2247,7 +2362,8 @@
        "quechang",
        "shangbang",
        "huashigang"
-      ]
+      ],
+      "desc": "商战，榷场，商帮，花石纲争霸等活动出战时，同职业门客赚钱+10%"
      },
      {
       "name": "十全厨艺",
@@ -2275,7 +2391,8 @@
        "quechang",
        "shangbang",
        "huashigang"
-      ]
+      ],
+      "desc": "商战，榷场，商帮，花石纲争霸等活动出战时，同职业门客赚钱+15%"
      },
      {
       "name": "功盖三皇",
@@ -2313,7 +2430,8 @@
        "quechang",
        "shangbang",
        "huashigang"
-      ]
+      ],
+      "desc": "商战，榷场，商帮，花石纲争霸等活动出战时，同职业门客赚钱+10%"
      },
      {
       "name": "海上霸主",
@@ -2343,7 +2461,8 @@
        "quechang",
        "shangbang",
        "huashigang"
-      ]
+      ],
+      "desc": "商战，榷场，商帮，花石纲争霸等活动出战时，同职业门客赚钱+10%"
      },
      {
       "name": "统帅三军",
@@ -2373,7 +2492,8 @@
        "quechang",
        "shangbang",
        "huashigang"
-      ]
+      ],
+      "desc": "商战，榷场，商帮，花石纲争霸等活动出战时，同职业门客赚钱+10%"
      },
      {
       "name": "混天绫舞",
@@ -2401,7 +2521,8 @@
        "quechang",
        "shangbang",
        "huashigang"
-      ]
+      ],
+      "desc": "商战，榷场，商帮，花石纲争霸等活动出战时，同职业门客赚钱+15%"
      },
      {
       "name": "兵圣",
@@ -2431,7 +2552,8 @@
        "quechang",
        "shangbang",
        "huashigang"
-      ]
+      ],
+      "desc": "商战，榷场，商帮，花石纲争霸等活动出战时，同职业门客赚钱+15%"
      },
      {
       "name": "陷阵双雄",
@@ -2461,7 +2583,8 @@
        "quechang",
        "shangbang",
        "huashigang"
-      ]
+      ],
+      "desc": "商战，榷场，商帮，花石纲争霸等活动出战时，同职业门客赚钱+15%"
      },
      {
       "name": "林中之狼",
@@ -2491,12 +2614,14 @@
        "quechang",
        "shangbang",
        "huashigang"
-      ]
+      ],
+      "desc": "商战，榷场，商帮，花石纲争霸等活动出战时，同职业门客赚钱+15%"
      },
      {
       "name": "招财之道",
       "kind": "career_pct",
-      "pct": 5
+      "pct": 5,
+      "desc": "同职业门客赚钱+5%"
      }
     ],
     "wushuang": [
@@ -2509,12 +2634,14 @@
        "quechang",
        "shangbang",
        "huashigang"
-      ]
+      ],
+      "desc": "商战，榷场，商帮，花石纲争霸等活动出战时，同职业门客赚钱+20%"
      },
      {
       "name": "招财之道",
       "kind": "career_pct",
-      "pct": 5
+      "pct": 5,
+      "desc": "同职业门客赚钱+5%"
      },
      {
       "name": "星斗恩宠",
@@ -2552,12 +2679,14 @@
        "quechang",
        "shangbang",
        "huashigang"
-      ]
+      ],
+      "desc": "商战，榷场，商帮，花石纲争霸等活动出战时，同职业门客赚钱+15%"
      },
      {
       "name": "招财之道",
       "kind": "career_pct",
-      "pct": 5
+      "pct": 5,
+      "desc": "同职业门客赚钱+5%"
      }
     ],
     "wushuang": [
@@ -2570,12 +2699,14 @@
        "quechang",
        "shangbang",
        "huashigang"
-      ]
+      ],
+      "desc": "商战，榷场，商帮，花石纲争霸等活动出战时，同职业门客赚钱+20%"
      },
      {
       "name": "招财之道",
       "kind": "career_pct",
-      "pct": 5
+      "pct": 5,
+      "desc": "同职业门客赚钱+5%"
      },
      {
       "name": "才情横溢",
@@ -2615,7 +2746,8 @@
        "quechang",
        "shangbang",
        "huashigang"
-      ]
+      ],
+      "desc": "商战，榷场，商帮，花石纲争霸等活动出战时，同职业门客赚钱+15%"
      },
      {
       "name": "霸王举鼎",
@@ -2645,7 +2777,8 @@
        "quechang",
        "shangbang",
        "huashigang"
-      ]
+      ],
+      "desc": "商战，榷场，商帮，花石纲争霸等活动出战时，同职业门客赚钱+15%"
      },
      {
       "name": "胸中兵甲",
@@ -2675,12 +2808,14 @@
        "quechang",
        "shangbang",
        "huashigang"
-      ]
+      ],
+      "desc": "商战，榷场，商帮，花石纲争霸等活动出战时，同职业门客赚钱+15%"
      },
      {
       "name": "招财之道",
       "kind": "career_pct",
-      "pct": 5
+      "pct": 5,
+      "desc": "同职业门客赚钱+5%"
      }
     ],
     "wushuang": [
@@ -2693,12 +2828,14 @@
        "quechang",
        "shangbang",
        "huashigang"
-      ]
+      ],
+      "desc": "商战，榷场，商帮，花石纲争霸等活动出战时，同职业门客赚钱+20%"
      },
      {
       "name": "招财之道",
       "kind": "career_pct",
-      "pct": 5
+      "pct": 5,
+      "desc": "同职业门客赚钱+5%"
      },
      {
       "name": "点石成金",
@@ -2730,7 +2867,8 @@
        "quechang",
        "shangbang",
        "huashigang"
-      ]
+      ],
+      "desc": "商战，榷场，商帮，花石纲争霸等活动出战时，同职业门客赚钱+15%"
      },
      {
       "name": "舞龙腾飞",
@@ -2760,7 +2898,8 @@
        "quechang",
        "shangbang",
        "huashigang"
-      ]
+      ],
+      "desc": "商战，榷场，商帮，花石纲争霸等活动出战时，同职业门客赚钱+15%"
      },
      {
       "name": "武德丰沛",
@@ -2790,7 +2929,8 @@
        "quechang",
        "shangbang",
        "huashigang"
-      ]
+      ],
+      "desc": "商战，榷场，商帮，花石纲争霸等活动出战时，同职业门客赚钱+15%"
      },
      {
       "name": "乾坤定味",
@@ -2820,12 +2960,14 @@
        "quechang",
        "shangbang",
        "huashigang"
-      ]
+      ],
+      "desc": "商战，榷场，商帮，花石纲争霸等活动出战时，同职业门客赚钱+15%"
      },
      {
       "name": "招财之道",
       "kind": "career_pct",
-      "pct": 5
+      "pct": 5,
+      "desc": "同职业门客赚钱+5%"
      }
     ]
    },
@@ -2847,12 +2989,14 @@
        "quechang",
        "shangbang",
        "huashigang"
-      ]
+      ],
+      "desc": "商战，榷场，商帮，花石纲争霸等活动出战时，同职业门客赚钱+15%"
      },
      {
       "name": "招财之道",
       "kind": "career_pct",
-      "pct": 5
+      "pct": 5,
+      "desc": "同职业门客赚钱+5%"
      }
     ]
    },
@@ -2874,12 +3018,14 @@
        "quechang",
        "shangbang",
        "huashigang"
-      ]
+      ],
+      "desc": "商战，榷场，商帮，花石纲争霸等活动出战时，同职业门客赚钱+15%"
      },
      {
       "name": "招财之道",
       "kind": "career_pct",
-      "pct": 5
+      "pct": 5,
+      "desc": "同职业门客赚钱+5%"
      }
     ]
    },
@@ -2901,12 +3047,14 @@
        "quechang",
        "shangbang",
        "huashigang"
-      ]
+      ],
+      "desc": "商战，榷场，商帮，花石纲争霸等活动出战时，同职业门客赚钱+15%"
      },
      {
       "name": "招财之道",
       "kind": "career_pct",
-      "pct": 5
+      "pct": 5,
+      "desc": "同职业门客赚钱+5%"
      }
     ]
    },
@@ -2928,12 +3076,14 @@
        "quechang",
        "shangbang",
        "huashigang"
-      ]
+      ],
+      "desc": "商战，榷场，商帮，花石纲争霸等活动出战时，同职业门客赚钱+15%"
      },
      {
       "name": "招财之道",
       "kind": "career_pct",
-      "pct": 5
+      "pct": 5,
+      "desc": "同职业门客赚钱+5%"
      }
     ]
    },
@@ -2955,12 +3105,14 @@
        "quechang",
        "shangbang",
        "huashigang"
-      ]
+      ],
+      "desc": "商战，榷场，商帮，花石纲争霸等活动出战时，同职业门客赚钱+15%"
      },
      {
       "name": "招财之道",
       "kind": "career_pct",
-      "pct": 5
+      "pct": 5,
+      "desc": "同职业门客赚钱+5%"
      },
      {
       "name": "后母辛",
@@ -2989,7 +3141,8 @@
        "quechang",
        "shangbang",
        "huashigang"
-      ]
+      ],
+      "desc": "商战，榷场，商帮，花石纲争霸等活动出战时，同职业门客赚钱+20%"
      },
      {
       "name": "进宝",
@@ -3023,12 +3176,14 @@
        "quechang",
        "shangbang",
        "huashigang"
-      ]
+      ],
+      "desc": "商战，榷场，商帮，花石纲争霸等活动出战时，同职业门客赚钱+20%"
      },
      {
       "name": "进宝",
       "kind": "all_hero_pct",
-      "pct": 5
+      "pct": 5,
+      "desc": "所有门客赚钱+5%"
      },
      {
       "name": "结绳记事",
@@ -3056,12 +3211,14 @@
        "quechang",
        "shangbang",
        "huashigang"
-      ]
+      ],
+      "desc": "商战，榷场，商帮，花石纲争霸等活动出战时，同职业门客赚钱+20%"
      },
      {
       "name": "招财之道",
       "kind": "career_pct",
-      "pct": 5
+      "pct": 5,
+      "desc": "同职业门客赚钱+5%"
      },
      {
       "name": "三过家门而不入",
@@ -3072,7 +3229,8 @@
      {
       "name": "借花献佛",
       "kind": "friend_chat_bond_pct",
-      "pct": 10
+      "pct": 10,
+      "desc": "跟同职业挚友谈心获得缘分+10%"
      }
     ]
    },
@@ -3094,12 +3252,14 @@
        "quechang",
        "shangbang",
        "huashigang"
-      ]
+      ],
+      "desc": "商战，榷场，商帮，花石纲争霸等活动出战时，同职业门客赚钱+20%"
      },
      {
       "name": "进宝",
       "kind": "all_hero_pct",
-      "pct": 5
+      "pct": 5,
+      "desc": "所有门客赚钱+5%"
      },
      {
       "name": "羿射九日",
@@ -3127,12 +3287,14 @@
        "quechang",
        "shangbang",
        "huashigang"
-      ]
+      ],
+      "desc": "商战，榷场，商帮，花石纲争霸等活动出战时，同职业门客赚钱+20%"
      },
      {
       "name": "进宝",
       "kind": "all_hero_pct",
-      "pct": 5
+      "pct": 5,
+      "desc": "所有门客赚钱+5%"
      },
      {
       "name": "百兵之主",
@@ -3160,12 +3322,14 @@
        "quechang",
        "shangbang",
        "huashigang"
-      ]
+      ],
+      "desc": "商战，榷场，商帮，花石纲争霸等活动出战时，同职业门客赚钱+20%"
      },
      {
       "name": "进宝",
       "kind": "all_hero_pct",
-      "pct": 5
+      "pct": 5,
+      "desc": "所有门客赚钱+5%"
      },
      {
       "name": "万物所出",

@@ -357,7 +357,7 @@ func chat_with_friend(once: bool = true) -> Dictionary:
 		fid = bless.target
 		var f = g.friends[fid]
 		
-		var bond_gain = int(round(f.talent * (1.0 + g.collection_system.get_chat_bond_pct() + g.collection_system.get_friend_bond_category_pct(f.category))))   # 【改】三批+四批：凝冰套装%+职业单品%（c071/073/079/081）
+		var bond_gain = int(round(f.talent * (1.0 + g.collection_system.get_chat_bond_pct() + g.collection_system.get_friend_bond_category_pct(f.category) + g.talent_system.get_friend_chat_bond_pct(f.category))))   # 【改】三批+四批：凝冰套装%+职业单品%（c071/073/079/081）
 		f.bond += bond_gain
 		# 有空位则与本次谈心的挚友领养一位徒弟（观音生效时必双胞胎）
 		var n = g.adopt_apprentice(fid, bless.force_twin)
@@ -372,7 +372,7 @@ func chat_with_friend(once: bool = true) -> Dictionary:
 			fid = bless.target
 			var f = g.friends[fid]
 			
-			var bond_gain = int(round(f.talent * (1.0 + g.collection_system.get_chat_bond_pct() + g.collection_system.get_friend_bond_category_pct(f.category))))   # 【改】三批+四批：凝冰套装%+职业单品%（c071/073/079/081）
+			var bond_gain = int(round(f.talent * (1.0 + g.collection_system.get_chat_bond_pct() + g.collection_system.get_friend_bond_category_pct(f.category) + g.talent_system.get_friend_chat_bond_pct(f.category))))   # 【改】三批+四批：凝冰套装%+职业单品%（c071/073/079/081）
 			f.bond += bond_gain
 			# 一键谈心：有几个空位，前几位挚友就各领养一位
 			var n = g.adopt_apprentice(fid, bless.force_twin)
@@ -388,7 +388,7 @@ func chat_with_specific_friend(friend_id: String) -> Dictionary:
 	if not g.friends.has(friend_id): return {"ok": false, "reason": "未拥有该挚友"}
 	var f = g.friends[friend_id]
 	
-	var bond_gain = int(round(f.talent * (1.0 + g.collection_system.get_chat_bond_pct() + g.collection_system.get_friend_bond_category_pct(f.category))))   # 【改】三批+四批：凝冰套装%+职业单品%（c071/073/079/081）
+	var bond_gain = int(round(f.talent * (1.0 + g.collection_system.get_chat_bond_pct() + g.collection_system.get_friend_bond_category_pct(f.category) + g.talent_system.get_friend_chat_bond_pct(f.category))))   # 【改】三批+四批：凝冰套装%+职业单品%（c071/073/079/081）
 	f.bond += bond_gain
 	# 【新增】观音祝福：有徒弟空位才生效并消耗一层
 	var force_twin = false

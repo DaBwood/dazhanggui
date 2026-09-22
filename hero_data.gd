@@ -36,6 +36,8 @@ static func get_total_aptitude(g, hero_id: String) -> int:
 	total += g.get_hero_xiangfang_furniture_aptitude(hero_id)
 	total += g.get_hero_xiangfang_set_aptitude(hero_id)
 	total += g.get_hero_mingpan_aptitude(hero_id)
+	# 【批次③】系列光环资质：自身 series_aptitude 技能 等级×每级资质
+	total += g.talent_system.get_series_aptitude_bonus(hero_id)
 	# 【新增】魂力资质（装备珍兽魂体：等级+魂骨+技能+共鸣）
 	total += g.get_hero_hunli_aptitude(hero_id)
 	# 【新增】促织装备资质加成（无双6/级，极无双7/级）
@@ -79,7 +81,14 @@ static func get_quality_color(quality: int) -> String:
 static func get_base_income(g, hero_id: String) -> int:
 	if not g.heroes.has(hero_id): return 0
 	var hero = g.heroes[hero_id]
-	return int(get_total_aptitude(g, hero_id) * hero.level * hero.breakthrough_count)
+	# 【批次③】copy_max_level（王昭君·宁胡和议/花木兰·替父从军）：等级与突破都复制全门客最高者（2026-09-22 用户补拍板）
+	var eff_level = int(hero.level)
+	var eff_bt = int(hero.breakthrough_count)
+	var copy_stats: Dictionary = g.talent_system.get_copy_stats(hero_id)
+	if not copy_stats.is_empty():
+		eff_level = maxi(eff_level, int(copy_stats.get("level", 0)))
+		eff_bt = maxi(eff_bt, int(copy_stats.get("bt", 0)))
+	return int(get_total_aptitude(g, hero_id) * eff_level * eff_bt)
 
 # 门客的额外赚速总和 = 额外赚速池 + 挚友固定加成 + 宅院门客卷一
 # 额外赚速池（hero.extra_income）：人参/五道道具/今日新菜等固定数值加成的累计
@@ -159,6 +168,9 @@ static func get_percent_bonus(g, hero_id: String) -> float:
 	# 【厢房批次④】套装职业赚钱%（表值×套装等级）+ 命格四象赚钱%（内圈槽）
 	bonus += g.get_hero_xiangfang_set_percent(hero_id)
 	bonus += g.get_hero_mingpan_pct(hero_id)
+	# 【批次③】品质天赋%（同职业/全体/系列）+ 系列光环%（自身/同职业）
+	bonus += g.talent_system.get_hero_talent_pct(hero_id)
+	bonus += g.talent_system.get_aura_pct(hero_id)
 
 	return bonus
 
@@ -171,7 +183,12 @@ static func get_income(g, hero_id: String) -> int:
 # （原 hero_system 的 income==0 短路不再保留：0×突破×0.5 恒为0，行为等价）
 static func get_global_contribution(g, hero_id: String) -> int:
 	if not g.heroes.has(hero_id): return 0
-	return int(get_income(g, hero_id) * g.heroes[hero_id].breakthrough_count * 0.5)
+	# 【改】copy_max_level：全局贡献的突破倍率同样取复制值（与 get_base_income 同口径）
+	var eff_bt = int(g.heroes[hero_id].breakthrough_count)
+	var copy_stats: Dictionary = g.talent_system.get_copy_stats(hero_id)
+	if not copy_stats.is_empty():
+		eff_bt = maxi(eff_bt, int(copy_stats.get("bt", 0)))
+	return int(get_income(g, hero_id) * eff_bt * 0.5)
 
 # 全门客总赚速（战力）= 所有门客总赚速之和
 # 【新增】从 hero_system.get_heroes_total_income 搬入
