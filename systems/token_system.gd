@@ -79,14 +79,90 @@ func upgrade(hero_id: String, batch: bool = false) -> int:
 	g.items[item_id] = have - can * cost_per
 	var state = _get_state(hero_id)
 	state.level = int(state.get("level", 0)) + can
+	_sync_shared_token(hero_id)	# 【批次④】token_shared 锁步：配对门客信物等级同步
 	return can
 
+
+# ============ 【批次④】信物伴生技能（tokens.json skills 段，全信物通用；星级=每级资质） ============
+func get_skill_cfgs() -> Array:
+	return g._token_configs.get("skills", [])
+
+# 上限公式：cap_base + cap_grow × (⌊信物等级/cap_every⌋ − ⌊解锁等级/cap_every⌋)
+# 解锁时恰好=基数，之后每满一个间隔+增量：点头之交 25/50/75@信物1/40/80级；意气相投 20/60@120/240级；肝胆相照 20/70@600/800级
+func get_token_skill_cap(token_lv: int, sc: Dictionary) -> int:
+	var every = maxi(int(sc.get("cap_every", 1)), 1)
+	var steps = int(floor(float(token_lv) / every)) - int(floor(float(int(sc.get("unlock_level", 1))) / every))
+	return int(sc.get("cap_base", 0)) + int(sc.get("cap_grow", 0)) * maxi(steps, 0)
+
+# 面板数据（hero_page 技能页）：解锁态/当前等级/上限；等级永不超过上限
+func get_token_skills(hero_id: String) -> Array:
+	var out: Array = []
+	if not has_token(hero_id): return out
+	var lv = get_level(hero_id)
+	var st = _get_state(hero_id)
+	var owned: Dictionary = st.get("skills", {})
+	for sc in get_skill_cfgs():
+		var cap = get_token_skill_cap(lv, sc)
+		var owned_lv = mini(int(owned.get(str(sc.get("name", "")), 0)), cap)
+		out.append({"name": str(sc.get("name", "")), "star": int(sc.get("star", 1)),
+			"unlock": int(sc.get("unlock_level", 1)), "cap": cap,
+			"level": owned_lv, "token_lv": lv})
+	return out
+
+# 升级（资质丹，每级消耗=星级；bulk=最多10级；返回实际升级级数，0=未升）
+func upgrade_token_skill(hero_id: String, skill_name: String, bulk: bool) -> int:
+	if not has_token(hero_id): return 0
+	var sc: Dictionary = {}
+	for c in get_skill_cfgs():
+		if str(c.get("name", "")) == skill_name: sc = c
+	if sc.is_empty(): return 0
+	var cap = get_token_skill_cap(get_level(hero_id), sc)
+	var st = _get_state(hero_id)
+	if not st.has("skills"): st["skills"] = {}
+	var owned_lv = int(st["skills"].get(skill_name, 0))
+	if owned_lv >= cap: return 0
+	var per: int = int(sc.get("star", 1))
+	var want: int = 10 if bulk else 1
+	var can = mini(mini(want, cap - owned_lv), floori(float(int(g.items.get("aptitude_pill", 0))) / float(per)))
+	if can <= 0: return 0
+	g.items.aptitude_pill -= can * per
+	st["skills"][skill_name] = owned_lv + can
+	return can
+
+# 伴生技能资质（hero_data get_total_aptitude 调用）：Σ 已解锁技能 等级×星级
+func get_token_skill_aptitude(hero_id: String) -> int:
+	var total = 0
+	for d in get_token_skills(hero_id):
+		if int(d.get("token_lv", 0)) >= int(d.get("unlock", 1)):
+			total += int(d.get("level", 0)) * int(d.get("star", 1))
+	return total
+
+# 【批次④】token_shared（厨心共鸣·B方案锁步）：升级一方信物后，持有共享天赋的配对门客信物等级同步对齐
+# 触发：upgrade 扣道具成功后；双向覆盖（持天赋方/配对方各自作为被升级方时都同步）
+func _sync_shared_token(upgraded_hero: String) -> void:
+	if not g.heroes.has(upgraded_hero): return
+	var up_lv = get_level(upgraded_hero)
+	for hid in g.heroes.keys():
+		if hid == upgraded_hero: continue
+		for e in g.talent_system._active_talent_effects(hid):
+			if str(e.get("kind", "")) != "token_shared": continue
+			if not e.get("pair", []).has(upgraded_hero): continue
+			if not has_token(hid): continue
+			_get_state(hid)["level"] = up_lv
+	# 反向兜底：被升级方本身是共享天赋持有者时，配对另一方同步（刘昴星侧本无升级入口，仅防御）
+	for e in g.talent_system._active_talent_effects(upgraded_hero):
+		if str(e.get("kind", "")) != "token_shared": continue
+		for p in e.get("pair", []):
+			if p == upgraded_hero or not g.heroes.has(p): continue
+			if not has_token(p): continue
+			_get_state(p)["level"] = up_lv
+
 # 升级按钮文本：单级/十连理论消耗（与实际扣费同口径）
-func get_upgrade_btn_text(hero_id: String, batch: bool) -> String:
-	var cost_per = int(get_token_cfg(hero_id).get("cost_per_level", 600))
+# 升级按钮文本（2026-09-22 改版：消耗数字移到面板资源行，按钮不再显示）
+func get_upgrade_btn_text(_hero_id: String, batch: bool) -> String:
 	if batch:
-		return "十连\n%d" % (cost_per * 10)
-	return "升级\n%d" % cost_per
+		return "十连"
+	return "升级"
 
 # ============ 羁绊绑定 ============
 # 绑定羁绊门客到第 idx 格：不能绑自己 / 未拥有 / 已在其他格绑定

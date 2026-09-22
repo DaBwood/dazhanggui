@@ -729,6 +729,14 @@ func on_shop_skill_chousuan_upgrade(mode: String = "single"):
 		c.update_all_ui()   # 店铺技能加成↑ → 派遣赚速/全局赚速飘字
 		c.update_bag_list()
 
+# 【批次④】信物伴生技能升级（资质丹，每级消耗=星级；single=1级，bulk=最多10级；上限随信物等级扩容）
+func _on_token_skill_upgrade(skill_name: String, mode: String) -> void:
+	if current_hero_id == "" or not data.heroes.has(current_hero_id): return
+	if data.token_system.upgrade_token_skill(current_hero_id, skill_name, mode != "single") > 0:
+		update_hero_panel()
+		c.update_all_ui()
+		c.update_bag_list()
+
 # 【新增】虫师副业技能升级（促织园体系走 cuzhi_system；single=升1级，bulk=升级10次）
 # 【第35节】支持百业经验抵扣（勾选状态共享 _use_baiye）
 func on_side_skill_upgrade(skill_idx: int, mode: String = "single"):
@@ -1261,6 +1269,25 @@ func _fill_skill_tab(list):
 					"name": skill.name, "stars": per, "is_max": is_max, "info": info,
 					"pill": per, "on_single": _on_guardian_skill_upgrade.bind(i, "single"), "on_bulk": _on_guardian_skill_upgrade.bind(i, "bulk")
 				})
+	# 【批次④】信物伴生技能（全信物通用；星级=每级资质；未解锁纯展示）
+	for d in data.token_system.get_token_skills(current_hero_id):
+		var t_name: String = str(d["name"])
+		var t_star: int = int(d["star"])
+		var t_lv: int = int(d["level"])
+		var t_cap: int = int(d["cap"])
+		var is_lock: bool = int(d["token_lv"]) < int(d["unlock"])
+		var t_info: String
+		if is_lock:
+			t_info = "【%s】\n信物达到%d级解锁（当前信物Lv.%d）" % [t_name, int(d["unlock"]), int(d["token_lv"])]
+		elif t_lv >= t_cap:
+			t_info = "【%s】  Lv.%d/%d\n资质+%d（已满级）" % [t_name, t_lv, t_cap, t_lv * t_star]
+		else:
+			t_info = "【%s】  Lv.%d/%d\n资质+%d（下级+%d）" % [t_name, t_lv, t_cap, t_lv * t_star, (t_lv + 1) * t_star]
+		items.append({
+			"name": t_name, "stars": t_star, "is_max": (not is_lock and t_lv >= t_cap), "info": t_info,
+			"no_action": is_lock,
+			"pill": t_star, "on_single": _on_token_skill_upgrade.bind(t_name, "single"), "on_bulk": _on_token_skill_upgrade.bind(t_name, "bulk")
+		})
 	_render_skill_tab(list, items, "skill")
 
 # 【第35节】填充「副业」页：店铺技能/财源广进/副业资质技能/虫师副业技能，统一按钮排+详情区
@@ -1986,44 +2013,67 @@ func _show_token_panel():
 	c.add_child(popup)
 	var vb = popup.get_child(0)
 	
-	# ── 信物技能信息（等级/效果/消耗/拥有数）──
+	# ── 信物技能信息（等级/效果）──【改】消耗/拥有移到升级钮上方资源行（2026-09-22 拍板）
 	var skill_lbl = Label.new()
 	skill_lbl.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	skill_lbl.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
-	skill_lbl.text = "【%s】Lv.%d（无上限）\n每级+%d资质（%s与羁绊门客）\n每级消耗%d【%s】\n拥有：%d" % [
+	skill_lbl.text = "【%s】Lv.%d（无上限）\n每级+%d资质（%s与羁绊门客）" % [
 		t_cfg.get("skill_name", "信物技能"), data.token_system.get_level(current_hero_id),
-		int(t_cfg.get("aptitude_per_level", 3)), data.heroes[current_hero_id].name,
-		int(t_cfg.get("cost_per_level", 600)), t_cfg.get("token_name", "信物"),
-		data.items.get(t_cfg.get("cost_item", ""), 0)
+		int(t_cfg.get("aptitude_per_level", 3)), data.heroes[current_hero_id].name
 	]
 	vb.add_child(skill_lbl)
 	
 	# ── 升级区（十连勾选记忆在类变量 _token_batch，升级/重建不清）──
-	var up_box = HBoxContainer.new()
-	up_box.alignment = BoxContainer.ALIGNMENT_CENTER
-	vb.add_child(up_box)
-	var up_btn = Button.new()
-	up_btn.custom_minimum_size = Vector2(130, 48)
-	up_btn.pressed.connect(func():
-		var lv = data.token_system.get_level(current_hero_id)
-		data.token_system.upgrade(current_hero_id, _token_batch)
-		if data.token_system.get_level(current_hero_id) > lv:
-			_show_token_panel()   # 重建刷新面板（勾选状态存类变量，不会丢）
-			update_hero_panel()   # 资质变化，门客面板对账
-			c.update_all_ui()
-			c.update_bag_list()
-	)
-	up_box.add_child(up_btn)
-	var batch_check = CheckBox.new()
-	batch_check.text = "十连"
-	batch_check.button_pressed = _token_batch   # 【新增】恢复上次勾选状态
-	batch_check.toggled.connect(func(pressed):
-		_token_batch = pressed   # 【新增】记录勾选变化
-		# 勾选切换时刷新按钮上的消耗数字（单级↔十连总价）
+	# 【改】资源行=【道具名】拥有/消耗（不足整体变红）；token_shared 共享方（刘昴星）无升级区，改显金色共享标注
+	var shared_partner: String = data.talent_system.get_token_shared_partner(current_hero_id)
+	if shared_partner == "":
+		var cost_item: String = t_cfg.get("cost_item", "")
+		var cost_need: int = int(t_cfg.get("cost_per_level", 600)) * (10 if _token_batch else 1)	# 十连时消耗×10
+		var cost_have: int = int(data.items.get(cost_item, 0))
+		var res_lbl = Label.new()
+		res_lbl.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+		res_lbl.text = "【%s】%d/%d" % [data.ITEM_CONFIG.get(cost_item, {}).get("name", cost_item), cost_have, cost_need]
+		if cost_have < cost_need:
+			res_lbl.add_theme_color_override("font_color", Color(0.9, 0.3, 0.3))
+		vb.add_child(res_lbl)
+		var up_box = HBoxContainer.new()
+		up_box.alignment = BoxContainer.ALIGNMENT_CENTER
+		vb.add_child(up_box)
+		var up_btn = Button.new()
+		up_btn.custom_minimum_size = Vector2(130, 48)
+		up_btn.pressed.connect(func():
+			var lv = data.token_system.get_level(current_hero_id)
+			data.token_system.upgrade(current_hero_id, _token_batch)
+			if data.token_system.get_level(current_hero_id) > lv:
+				_show_token_panel()   # 重建刷新面板（勾选状态存类变量，不会丢）
+				update_hero_panel()   # 资质变化，门客面板对账
+				c.update_all_ui()
+				c.update_bag_list()
+		)
+		up_box.add_child(up_btn)
+		var batch_check = CheckBox.new()
+		batch_check.text = "十连"
+		batch_check.button_pressed = _token_batch   # 【新增】恢复上次勾选状态
+		batch_check.toggled.connect(func(pressed):
+			_token_batch = pressed   # 【新增】记录勾选变化
+			up_btn.text = data.token_system.get_upgrade_btn_text(current_hero_id, _token_batch)
+			# 【改】十连时资源行消耗×10（不足变红，取消勾选还原）
+			var need10 = int(t_cfg.get("cost_per_level", 600)) * (10 if pressed else 1)
+			res_lbl.text = "【%s】%d/%d" % [data.ITEM_CONFIG.get(cost_item, {}).get("name", cost_item), cost_have, need10]
+			if cost_have < need10:
+				res_lbl.add_theme_color_override("font_color", Color(0.9, 0.3, 0.3))
+			else:
+				res_lbl.remove_theme_color_override("font_color")
+		)
+		up_box.add_child(batch_check)
 		up_btn.text = data.token_system.get_upgrade_btn_text(current_hero_id, _token_batch)
-	)
-	up_box.add_child(batch_check)
-	up_btn.text = data.token_system.get_upgrade_btn_text(current_hero_id, _token_batch)
+	else:
+		var partner_name = data.heroes[shared_partner].name if data.heroes.has(shared_partner) else shared_partner
+		var share_lbl = Label.new()
+		share_lbl.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+		share_lbl.text = "共享%s信物等级" % partner_name
+		share_lbl.add_theme_color_override("font_color", Color(0.9, 0.8, 0.4))
+		vb.add_child(share_lbl)
 	
 	# ── 羁绊绑定区：每格显示 未解锁(灰)/未绑定/已绑定，按解锁等级排序展示 ──
 	var binds = data.token_system.get_binds(current_hero_id)

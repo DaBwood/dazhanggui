@@ -49,6 +49,8 @@ static func get_total_aptitude(g, hero_id: String) -> int:
 	# 【新增】信物资质：信物主人=技能等级×每级资质+绑定门客总资质×1%/个；被绑定门客=主人等级×每级资质
 	total += g.token_system.get_owner_aptitude(hero_id)
 	total += g.token_system.get_bound_aptitude(hero_id)
+	# 【批次④】信物伴生技能资质：Σ 已解锁技能 等级×星级
+	total += g.token_system.get_token_skill_aptitude(hero_id)
 	# 【新增】风姿资质：醉墨挥毫等级×每级资质（无上限）
 	total += g.fengzi_system.get_aptitude(hero_id)
 	# 【新增】藏品基础资质（每级+每星，含特殊效果资质每星）

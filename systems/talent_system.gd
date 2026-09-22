@@ -430,6 +430,15 @@ func get_war_points_pct(hero_id: String) -> float:
 		if str(e.get("kind", "")) == "war_points_pct":
 			return float(e.get("pct", 0))
 	return 0.0
+# token_shared（hero_page 信物面板调用）：返回共享配对门客 id；无共享天赋返回 ""
+func get_token_shared_partner(hero_id: String) -> String:
+	for e in _active_talent_effects(hero_id):
+		if str(e.get("kind", "")) == "token_shared":
+			for p in e.get("pair", []):
+				if str(p) != hero_id:
+					return str(p)
+	return ""
+
 # ============ 独有天赋配置查询（hero_talents.json） ============
 # 门客天赋配置（无天赋门客返回空字典）
 func get_hero_talent_cfg(hero_id: String) -> Dictionary:
