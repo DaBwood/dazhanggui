@@ -2620,8 +2620,13 @@ func _fill_unique_talent_tab(vb):
 				var row = Label.new()
 				row.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 				row.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
-				row.add_theme_color_override("font_color", Color("#7ee787"))
-				row.text = "【%s】%s" % [str(t.get("name", "")), str(t.get("desc", ""))]
+				# 【收口】未实装活动向效果当前档灰显"后续版本开放"，不显示数值文案
+				if ts.is_unwired_talent_kind(str(t.get("kind", ""))):
+					row.add_theme_color_override("font_color", Color("#888888"))
+					row.text = "后续版本开放"
+				else:
+					row.add_theme_color_override("font_color", Color("#7ee787"))
+					row.text = "【%s】%s" % [str(t.get("name", "")), str(t.get("desc", ""))]
 				list.add_child(row)
 		else:
 			# 未达档（挂起档/未来晋升档）统一灰显；实装口径以逐门客晋升玩法上线为准

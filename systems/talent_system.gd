@@ -439,6 +439,14 @@ func get_token_shared_partner(hero_id: String) -> String:
 					return str(p)
 	return ""
 
+# 未实装效果类型清单（批次④收口）：活动向 8 种实装前，天赋页当前档灰显"后续版本开放"
+const UNWIRED_TALENT_KINDS: Array = ["friend_activity_talent_pct", "hero_activity_income_pct",
+	"apprentice_quality_prob_pct", "banquet_popularity_pct", "activity_stat_pct", "activity_stat_flat",
+	"zhaoshang_extra", "escort_free"]
+
+func is_unwired_talent_kind(kind: String) -> bool:
+	return UNWIRED_TALENT_KINDS.has(kind)
+
 # ============ 独有天赋配置查询（hero_talents.json） ============
 # 门客天赋配置（无天赋门客返回空字典）
 func get_hero_talent_cfg(hero_id: String) -> Dictionary:
