@@ -1152,6 +1152,14 @@ func _render_skill_detail(list: VBoxContainer, item: Dictionary) -> void:
 			own_lbl.add_theme_font_size_override("font_size", 13)
 			own_lbl.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
 			right.add_child(own_lbl)
+		# 【新增】可选"?"说明钮（光环.极档：升级钮上方，点击显示各门客对应技能等级需求）
+		if item.has("on_hint"):
+			var hbtn := Button.new()
+			hbtn.text = "？"
+			hbtn.custom_minimum_size = Vector2(84, 20)
+			hbtn.add_theme_font_size_override("font_size", 12)
+			hbtn.pressed.connect(item["on_hint"])
+			right.add_child(hbtn)
 		# 升级按钮：升级 / 升级10次（bulk 语义=最多10级）
 		var btn_row := HBoxContainer.new()
 		btn_row.add_theme_constant_override("separation", 8)
@@ -1341,8 +1349,8 @@ func _on_cos_skill_upgrade(cos_id: String, mode: String):
 	c.update_bag_list()
 
 # 【第35节】填充「光环」页：光环类格式=【类】门客资质+X，上限=min(100, 服装总等级×10)
-# 【改】光环页签（批次①重构）：服装光环段保留 + 系列光环段追加同页；
-# 无服装光环不再 early-return——改显示提示后继续渲染系列段
+# 【改】光环页签（批次②重构）：服装光环+系列光环全部并入卡片按钮排，上排技能按钮+下栏固定升级区；
+# 人数档/flat 为只读卡片（无升级交互）；不再单独渲染系列段
 func _fill_halo_tab(list):
 	var cs = data.costume_system
 	var my_cat = data.heroes[current_hero_id].get("category", "")
@@ -1362,73 +1370,107 @@ func _fill_halo_tab(list):
 		items.append({"name": cfg.get("name", cos_id), "stars": per, "is_max": is_max, "info": info,
 			"own_name": "玉璜", "own": [cs.get_halo_cost(lv + 1), int(data.items.get("yu_huang", 0))],
 			"on_single": _on_halo_upgrade.bind(cos_id, "single"), "on_bulk": _on_halo_upgrade.bind(cos_id, "bulk")})
+	# 系列光环：全部技能并入卡片（与服装光环同排同详情区）
+	var ts = data.talent_system
+	var acfg = ts.get_hero_aura_cfg(current_hero_id)
+	if not acfg.is_empty():
+		for skill in acfg.get("skills", []):
+			items.append(_build_aura_card(skill))
 	if items.is_empty():
-		# 【改】原 early-return 改提示后继续：系列段仍要渲染
 		var lbl = Label.new()
 		lbl.text = "暂未解锁光环（解锁服装后获得同名光环技能）"
 		lbl.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 		list.add_child(lbl)
 	else:
 		_render_skill_tab(list, items, "halo")
-	# ── 系列光环段（追加；非系列门客自动跳过）──
-	_fill_series_aura_segment(list)
 
-# 【新增】系列光环段：hero_auras.json 驱动；四模式分派显示；升级链路批次②接入（批次①先渲染只读）
-func _fill_series_aura_segment(list):
-	var ts = data.talent_system
-	var acfg = ts.get_hero_aura_cfg(current_hero_id)
-	if acfg.is_empty(): return
-	var series_key = str(acfg.get("series", ""))
-	var scfg = ts.get_aura_series_cfg(series_key)
-	var recruited = ts.get_series_recruited_count(series_key)
-	# 段头：系列名 + 招募进度
-	var head = Label.new()
-	head.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
-	head.add_theme_color_override("font_color", Color("#ffd700"))
-	head.text = "—— %s · 系列光环 ——" % str(scfg.get("label", series_key))
-	list.add_child(head)
-	var hint = Label.new()
-	hint.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
-	hint.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
-	hint.add_theme_color_override("font_color", Color("#a89ec7"))
-	hint.text = "已招募 %d 名系列门客" % recruited
-	list.add_child(hint)
-	for skill in acfg.get("skills", []):
-		_render_aura_skill_row(list, skill)
-
-# 【新增】系列光环技能行：名称+等级/上限+当前效果值；人数档/flat/.极 为实时档（无升级钮），item 档批次②接升级
-func _render_aura_skill_row(list, skill: Dictionary):
+# 【新增】系列光环卡片条目（接 _render_skill_tab 协议）：
+# item 档=消耗+升级/十连；.极档=总和需求+"？"钮+手动逐级升级；人数档/flat=只读卡片（no_action，无右侧交互）
+func _build_aura_card(skill: Dictionary) -> Dictionary:
 	var ts = data.talent_system
 	var mode: String = str(skill.get("mode", "item"))
 	var sname: String = str(skill.get("name", ""))
 	var lv = ts.get_aura_level(current_hero_id, skill)
-	var per = int((skill.get("effect") or {}).get("per", 0))
-	var max_disp = skill.get("max_level", 1)
-	if str(max_disp) == "series_count":
-		max_disp = ts.get_series_recruited_count(str(ts.get_hero_aura_cfg(current_hero_id).get("series", "")))
-	var row = Label.new()
-	row.horizontal_alignment = HORIZONTAL_ALIGNMENT_LEFT
-	row.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
-	# 当前效果值（玩家文案只显示实际数值）
+	var effect: Dictionary = skill.get("effect", {})
+	if effect == null: effect = {}
+	var per = int(effect.get("per", 0))
+	var max_lv = int(skill.get("max_level", 1))
+	var series_key = str(ts.get_hero_aura_cfg(current_hero_id).get("series", ""))
 	var eff: String = ""
-	match str((skill.get("effect") or {}).get("kind", "")):
+	match str(effect.get("kind", "")):
 		"self_pct":
 			eff = "自身赚钱+%d%%" % (per * lv)
 		"career_pct":
 			eff = "同职业门客赚钱+%d%%" % (per * lv)
 		"series_aptitude":
 			eff = "全系列资质+%d" % (per * lv)
-	var state: String = ""
-	if mode == "series_count":
-		state = "（已招募 %d 名系列门客）" % ts.get_series_recruited_count(str(ts.get_hero_aura_cfg(current_hero_id).get("series", "")))
-	elif mode == "series_total_level":
-		state = "（等级取决于同系列其他门客技能总等级）"
-	elif mode == "flat":
-		state = "（固定效果，不可升级）"
-	elif lv >= int(max_disp):
-		state = "（已满级）"
-	row.text = "【%s】Lv.%d/%s  %s%s" % [sname, lv, str(max_disp), eff, state]
-	list.add_child(row)
+	var card := {"name": sname, "stars": per, "is_max": false, "info": "", "no_action": false,
+		"on_single": Callable(), "on_bulk": Callable()}
+	match mode:
+		"series_count":
+			# 人数档：等级=已招募系列门客数（实时），只读
+			max_lv = ts.get_series_recruited_count(series_key)
+			card["info"] = "【%s】  Lv.%d/%d\n%s（已招募 %d 名系列门客）" % [sname, lv, max_lv, eff, max_lv]
+			card["no_action"] = true
+		"flat":
+			card["info"] = "【%s】  Lv.%d/%d\n%s\n（固定效果，不可升级）" % [sname, lv, max_lv, eff]
+			card["no_action"] = true
+		"item":
+			card["info"] = "【%s】  Lv.%d/%d\n%s" % [sname, lv, max_lv, eff]
+			card["is_max"] = lv >= max_lv
+			var check = ts.get_aura_upgrade_check(current_hero_id, skill)
+			var iname = str(data.ITEM_CONFIG.get(str(check.get("item_id", "")), {}).get("name", ""))
+			card["own_name"] = iname
+			card["own"] = [int(check.get("cost", 0)), int(data.items.get(str(check.get("item_id", "")), 0))]
+			card["on_single"] = _on_aura_upgrade.bind(sname, "single")
+			card["on_bulk"] = _on_aura_upgrade.bind(sname, "bulk")
+		"series_total_level":
+			# .极档：等级存 hero_aura_levels，手动逐级升；右侧=对应技能等级总和 现有/下级需求 +"？"钮
+			card["info"] = "【%s】  Lv.%d/%d\n%s" % [sname, lv, max_lv, eff]
+			var p = ts.get_aura_extreme_progress(current_hero_id, skill)
+			card["own_name"] = "对应技能等级总和"
+			card["own"] = [p.total, maxi(p.next_need, 0)]
+			card["on_hint"] = _on_aura_extreme_hint.bind(sname)
+			card["is_max"] = p.next_need < 0
+			card["on_single"] = _on_aura_upgrade.bind(sname, "single")
+			card["on_bulk"] = _on_aura_upgrade.bind(sname, "bulk")
+	return card
+
+# 【新增】.极档"？"说明弹窗：各特级厨师对应技能等级明细 + 总和/下级需求（固定尺寸面板，防过长）
+func _on_aura_extreme_hint(skill_name: String):
+	var lines = data.talent_system.get_aura_extreme_detail(current_hero_id, skill_name)
+	if lines.is_empty(): return
+	if c.has_node("AuraHintPanel"):
+		var old = c.get_node("AuraHintPanel")
+		c.remove_child(old)
+		old.queue_free()
+	var popup = c._create_base_popup("【%s】升级需求" % skill_name, Vector2(380, 300))
+	popup.name = "AuraHintPanel"
+	popup.z_index = 30
+	c.add_child(popup)
+	var vb = popup.get_child(0)
+	for ln in lines:
+		var l = Label.new()
+		l.text = ln
+		l.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+		l.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+		vb.add_child(l)
+	c._add_ok_button(vb, func():
+		if c.has_node("AuraHintPanel"):
+			var old2 = c.get_node("AuraHintPanel")
+			c.remove_child(old2)
+			old2.queue_free()
+	, "关闭")
+
+# 【新增】系列光环升级回调：扣道具/写 hero_aura_levels → 原地重建光环页 + 全局对账
+func _on_aura_upgrade(skill_name: String, mode: String):
+	var res = data.talent_system.upgrade_aura(current_hero_id, skill_name, mode)
+	if not res.get("ok", false):
+		c._show_stage_hint(res.get("msg", "无法升级"))
+		return
+	update_hero_panel()   # 光环页 SkillList 原地重建（等级行即时刷新）
+	c.update_all_ui()     # 全局对账（光环效果批次③接线后此处产生真实 diff）
+	c.update_bag_list()
 
 # 【服装系统】光环升级回调（同类门客资质都变化，需全局对账）
 func _on_halo_upgrade(cos_id: String, mode: String):

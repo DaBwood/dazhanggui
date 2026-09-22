@@ -191,6 +191,94 @@ func apply_skill_cap_delta(delta: int):
 			if names.has(sk.name):
 				sk.max_level = int(sk.max_level) + delta
 
+# ============ 系列光环：升级链路（批次②） ============
+# 解锁链判定：前置技能（unlock 字段同名技能）须满级；无前置=true
+func is_aura_unlocked(hero_id: String, skill: Dictionary) -> bool:
+	var unlock = str(skill.get("unlock", ""))
+	if unlock == "": return true
+	for sk in get_hero_aura_cfg(hero_id).get("skills", []):
+		if str(sk.get("name", "")) == unlock:
+			return get_aura_level(hero_id, sk) >= int(sk.get("max_level", 1))
+	return false
+
+# 升级条件检查（不扣道具）：返回 {ok, reasons[], cost, item_id}
+# cost(k)=base+step*floor((k-1)/step_every)，k=目标等级（当前 lv→lv+1 即 k=lv+1 → floor(lv/step_every)）
+func get_aura_upgrade_check(hero_id: String, skill: Dictionary) -> Dictionary:
+	if str(skill.get("mode", "item")) != "item":
+		return {"ok": false, "reasons": ["该档位不可手动升级"]}
+	var lv = get_aura_level(hero_id, skill)
+	if lv >= int(skill.get("max_level", 1)):
+		return {"ok": false, "reasons": ["已满级"]}
+	var reasons = []
+	var acfg = get_hero_aura_cfg(hero_id)
+	var unlock = str(skill.get("unlock", ""))
+	if not is_aura_unlocked(hero_id, skill):
+		reasons.append("需【%s】满级" % unlock)
+	var cost_cfg: Dictionary = skill.get("cost", {})
+	var step_every = maxi(int(cost_cfg.get("step_every", 1)), 1)
+	var cost = int(cost_cfg.get("base", 0)) + int(cost_cfg.get("step", 0)) * floori(float(lv) / float(step_every))
+	var item_id = str(acfg.get("item_id", ""))
+	if int(g.items.get(item_id, 0)) < cost:
+		var iname = str(g.ITEM_CONFIG.get(item_id, {}).get("name", item_id))
+		reasons.append("%s不足 %d/%d" % [iname, int(g.items.get(item_id, 0)), cost])
+	return {"ok": reasons.is_empty(), "reasons": reasons, "cost": cost, "item_id": item_id}
+
+# 光环升级：mode=single 升1级 / bulk 十连升10次（不足升剩余，循环内逐级校验解锁链+消耗）
+# 返回 {ok, msg, times, level}；times=0 时 msg=未满足原因（UI 红字提示）
+func upgrade_aura(hero_id: String, skill_name: String, mode: String = "single") -> Dictionary:
+	if not g.heroes.has(hero_id): return {"ok": false, "msg": "门客不存在"}
+	var skill = null
+	for sk in get_hero_aura_cfg(hero_id).get("skills", []):
+		if str(sk.get("name", "")) == skill_name:
+			skill = sk
+			break
+	if skill == null: return {"ok": false, "msg": "光环技能不存在"}
+	var smode = str(skill.get("mode", ""))
+	# .极档（手动升级）：门槛=同系列对应普通技能等级总和≥下级阈值；不满足返回提示文案（UI 红字）
+	if smode == "series_total_level":
+		if not is_aura_unlocked(hero_id, skill):
+			return {"ok": false, "msg": "需【%s】满级" % str(skill.get("unlock", ""))}
+		var p0 = get_aura_extreme_progress(hero_id, skill)
+		if p0.next_need < 0:
+			return {"ok": false, "msg": "已满级"}
+		var max_times2 = 10 if mode == "bulk" else 1
+		var times2 = 0
+		if not g.hero_aura_levels.has(hero_id): g.hero_aura_levels[hero_id] = {}
+		for i2 in range(max_times2):
+			var lv2 = int(g.hero_aura_levels[hero_id].get(skill_name, 0))
+			var p2 = get_aura_extreme_progress(hero_id, skill)
+			if p2.total < p2.next_need: break
+			g.hero_aura_levels[hero_id][skill_name] = lv2 + 1
+			times2 += 1
+		if times2 == 0:
+			return {"ok": false, "msg": "同系列对应技能等级总和 %d/%d，未达下级需求" % [p0.total, p0.next_need]}
+		return {"ok": true, "times": times2, "level": int(g.hero_aura_levels[hero_id].get(skill_name, 0))}
+	if smode != "item": return {"ok": false, "msg": "该档位不可手动升级"}
+	var max_times = 10 if mode == "bulk" else 1
+	var times = 0
+	if not g.hero_aura_levels.has(hero_id):
+		g.hero_aura_levels[hero_id] = {}
+	var lv_map: Dictionary = g.hero_aura_levels[hero_id]
+	var item_id = str(get_hero_aura_cfg(hero_id).get("item_id", ""))
+	var cost_cfg: Dictionary = skill.get("cost", {})
+	var base = int(cost_cfg.get("base", 0))
+	var step = int(cost_cfg.get("step", 0))
+	var step_every = maxi(int(cost_cfg.get("step_every", 1)), 1)
+	var max_lv = int(skill.get("max_level", 1))
+	for i in range(max_times):
+		var lv = int(lv_map.get(skill_name, 0))
+		if lv >= max_lv: break
+		if not is_aura_unlocked(hero_id, skill): break
+		var cost = base + step * floori(float(lv) / float(step_every))
+		if int(g.items.get(item_id, 0)) < cost: break
+		g.items[item_id] = int(g.items.get(item_id, 0)) - cost
+		lv_map[skill_name] = lv + 1
+		times += 1
+	if times == 0:
+		var check = get_aura_upgrade_check(hero_id, skill)
+		return {"ok": false, "msg": "；".join(check.get("reasons", ["无法升级"]))}
+	return {"ok": true, "times": times, "level": int(lv_map.get(skill_name, 0))}
+
 # ============ 星级文本（门客面板标题用） ============
 # 0星返回空串；>0 返回 ★×N（例：三星="★★★"）
 func get_star_text(hero_id: String) -> String:
@@ -239,27 +327,52 @@ func get_aura_level(hero_id: String, skill: Dictionary) -> int:
 		"flat":
 			return int(skill.get("max_level", 1))
 		"series_total_level":
-			return get_aura_extreme_level(hero_id, skill)
+			# 【改】.极档=手动升级（2026-09-22 拍板）：等级存 hero_aura_levels，门槛=同系列对应普通技能等级总和查阈值
+			return int(g.hero_aura_levels.get(hero_id, {}).get(str(skill.get("name", "")), 0))
 		_:
 			return int(g.hero_aura_levels.get(hero_id, {}).get(str(skill.get("name", "")), 0))
 
-# .极档：同系列其他门客"对应普通技能"（去掉.极后缀同名 item 技能）等级总和 → 满足阈值个数即档位（max_level 封顶）
-func get_aura_extreme_level(hero_id: String, skill: Dictionary) -> int:
+# .极档进度：同系列其他门客"对应普通技能"（去.极同名 item 技能）等级明细+总和+下级需求（手动升级门槛）
+# 无等级上限（2026-09-22 拍板）：需求=thresholds[min(当前等级, 表末位)]，升穿表后沿用最后一档，实际闸门=其他门客技能等级
+func get_aura_extreme_progress(hero_id: String, skill: Dictionary) -> Dictionary:
 	var thresholds: Array = skill.get("thresholds", [])
-	if thresholds.is_empty(): return 0
-	var series_key = str(get_hero_aura_cfg(hero_id).get("series", ""))
+	# 【改】.极档无等级上限（2026-09-22 拍板）：能升多少纯看其他门客对应技能等级；
+	# 需求=thresholds[min(当前等级, 表末位)]——升穿阈值表后沿用最后一档（其他门客技能各有自身上限，实际封顶）
 	var base_name = str(skill.get("name", "")).trim_suffix(".极")
+	var series_key = str(get_hero_aura_cfg(hero_id).get("series", ""))
+	var siblings: Array = []
 	var total = 0
 	var hero_auras: Dictionary = _extra("hero_auras").get("hero_auras", {})
 	for hid in g.heroes.keys():
 		if hid == hero_id: continue
 		if str(hero_auras.get(hid, {}).get("series", "")) != series_key: continue
 		var lv_map: Dictionary = g.hero_aura_levels.get(hid, {})
+		var lv = 0
 		for sk in hero_auras[hid].get("skills", []):
-			# 同名（去.极）的 item 技能才算"对应普通技能"；.极 之间不互算
 			if sk.get("mode", "") == "item" and str(sk.get("name", "")) == base_name:
-				total += int(lv_map.get(base_name, 0))
-	var level = 0
-	for th in thresholds:
-		if total >= int(th): level += 1
-	return mini(level, int(skill.get("max_level", thresholds.size())))
+				lv = int(lv_map.get(base_name, 0))
+				break
+		siblings.append({"id": hid, "name": str(g._hero_configs.get(hid, {}).get("name", hid)), "level": lv})
+		total += lv
+	var stored = int(g.hero_aura_levels.get(hero_id, {}).get(str(skill.get("name", "")), 0))
+	var next_need = -1
+	if not thresholds.is_empty():
+		next_need = int(thresholds[mini(stored, thresholds.size() - 1)])
+	return {"total": total, "siblings": siblings, "next_need": next_need, "max_level": -1, "stored": stored}
+
+# .极档"?"说明文本：各门客对应技能等级明细 + 总和/下级需求
+func get_aura_extreme_detail(hero_id: String, skill_name: String) -> Array:
+	for sk in get_hero_aura_cfg(hero_id).get("skills", []):
+		if str(sk.get("name", "")) == skill_name:
+			var p = get_aura_extreme_progress(hero_id, sk)
+			var lines2: Array = ["【%s】各门客对应技能等级：" % skill_name, ""]
+			for sb in p.siblings:
+				lines2.append("%s：Lv.%d" % [sb.name, sb.level])
+			lines2.append("")
+			if p.next_need < 0:
+				lines2.append("已升至满级 Lv.%d" % p.stored)
+			else:
+				var state: String = "可升级" if p.total >= p.next_need else "未达成"
+				lines2.append("对应技能等级总和 %d / 下级需求 %d（%s）" % [p.total, p.next_need, state])
+			return lines2
+	return []

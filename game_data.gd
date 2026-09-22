@@ -928,6 +928,14 @@ func claim_daily_reward() -> int:
 
 # ==================== 存档 ====================
 # 保存游戏：核心字段 + 各子系统字段合并成同一张扁平表（键集合与旧版完全一致，老存档兼容）
+func _read_file_text(path: String) -> String:
+	var f = FileAccess.open(path, FileAccess.READ)
+	if not f: return ""
+	var t: String = f.get_as_text()
+	f.close()
+	return t
+
+
 func save_game():
 	@warning_ignore("narrowing_conversion")
 	last_logout_time = Time.get_unix_time_from_system()
@@ -948,12 +956,24 @@ func save_game():
 	# 各子系统把自己的字段合并进来（新系统加存档字段=清单登记一行+改它自己的 get_save_data）
 	for sys in _system_instances:
 		save_data.merge(sys.get_save_data(), true)
-	var file = FileAccess.open(save_path, FileAccess.WRITE)
+	# 【改】原子写（防报错闪退截断存档，2026-09-22）：先写 .tmp → 旧档备份 .bak → rename 覆盖正式档。
+	# 任一步骤被强杀：正式档要么完整要么保持旧版，且旧版同时留在 .bak 可手工恢复
+	var save_text = JSON.stringify(save_data)
+	var tmp_path = save_path + ".tmp"
+	var file = FileAccess.open(tmp_path, FileAccess.WRITE)
 	if file:
-		var save_text = JSON.stringify(save_data)
 		file.store_string(save_text)
 		file.close()
-		game_saved.emit(save_text)   # 【新增】通知网络层自动上传云存档
+		if FileAccess.file_exists(save_path):
+			var old_txt = _read_file_text(save_path)
+			if old_txt != "":
+				var bak_f = FileAccess.open(save_path + ".bak", FileAccess.WRITE)
+				if bak_f:
+					bak_f.store_string(old_txt)
+					bak_f.close()
+		var dir = DirAccess.open("user://")
+		if dir and dir.rename(tmp_path.trim_prefix("user://"), save_path.trim_prefix("user://")) == OK:
+			game_saved.emit(save_text)   # 【新增】通知网络层自动上传云存档（rename 成功才算写完）
 
 
 # 读取存档：先加载配置，核心字段由本中枢读取，其余各子系统从同一张扁平表认领自己的字段
@@ -973,13 +993,28 @@ func load_game():
 		# 【新增】无存档=新游戏：品质直接是新四档语义，迁移标记置真（防首存→再读误触发旧档+1迁移）
 		quality_four_tiers = true
 		return
-	var file = FileAccess.open(save_path, FileAccess.READ)
-	if not file: return
+	# 【改】读档保底链（防闪退截断，2026-09-22）：正式档损坏 → 有 .bak 自动恢复并重试一次 →
+	# 仍失败则 rename 成 .corrupt 留证（否则新档流程几秒内的自动存档会把它彻底覆盖）
+	var text: String = _read_file_text(save_path)
+	if text == "": return
 	var json = JSON.new()
-	if json.parse(file.get_as_text()) != OK:
-		file.close(); return
+	if json.parse(text) != OK:
+		push_error("存档解析失败（多为闪退截断）: " + json.get_error_message() + " @行" + str(json.get_error_line()) + "，尝试从 .bak 恢复")
+		var bak_path = save_path + ".bak"
+		if FileAccess.file_exists(bak_path):
+			text = _read_file_text(bak_path)
+			var fix_f = FileAccess.open(save_path, FileAccess.WRITE)
+			if fix_f:
+				fix_f.store_string(text)
+				fix_f.close()
+			json = JSON.new()
+		if json.parse(text) != OK:
+			push_error("从 .bak 恢复仍失败，坏档留证 " + save_path + ".corrupt（不自动覆盖）")
+			var dir2 = DirAccess.open("user://")
+			if dir2:
+				dir2.rename(save_path.trim_prefix("user://"), save_path.trim_prefix("user://") + ".corrupt")
+			return
 	var data = json.get_data()
-	file.close()
 
 	# ===== 核心字段（货币/声望/身份/时间戳） =====
 	if data.has("money"): money = data.money
