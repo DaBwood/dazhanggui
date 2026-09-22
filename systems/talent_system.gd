@@ -3,8 +3,10 @@
 # 精进：消耗门客帖(hero_token)提升星级，需满足 门客等级 / N个门客达到M星(含本人) 条件
 # 加成：固定赚钱/百分比赚钱为【替换制】——只取当前星级配置值，不累加
 # 技能：每星级解锁一个技能（追加进 aptitude_skills：初始0级/上限200/每级资质=资质丹消耗）
-# 独有天赋页：配置表未做好，本轮留空占位
-# 纯逻辑模块：状态经 g 共享中枢；配置在 res://data/talent.json
+# 独有天赋页：hero_talents.json（品质天赋三档，2026-09-21 定稿实装）
+# 系列光环：hero_auras.json（7系列47门客，等级存 hero_aura_levels；人数档/flat/.极 实时计算不落盘）
+# 两张分表由本系统成组自加载（仿 miaoyin 先例；孤儿扫描走 game_data.CONFIG_SPECIAL_LOADERS 登记）
+# 纯逻辑模块：状态经 g 共享中枢；talent.json 由 SYSTEM_LIST 直挂 _talent_configs
 # ============================================================
 class_name TalentSystem
 extends RefCounted
@@ -15,15 +17,47 @@ var g   # GameData 中枢引用（不标类型避免循环引用）
 func _init(p_g):
 	g = p_g
 
+# ============ 分表懒加载（hero_talents/hero_auras，仿 miaoyin 成组自加载先例） ============
+const EXTRA_CFG_PATHS := {
+	"hero_talents": "res://data/hero_talents.json",
+	"hero_auras": "res://data/hero_auras.json",
+}
+var _extra_cfg: Dictionary = {}
+
+func _extra(section: String) -> Dictionary:
+	if not _extra_cfg.has(section):
+		_extra_cfg[section] = _read_json(str(EXTRA_CFG_PATHS.get(section, "")))
+	return _extra_cfg[section]
+
+func _read_json(path: String) -> Dictionary:
+	if path == "":
+		return {}
+	var f = FileAccess.open(path, FileAccess.READ)
+	if f == null:
+		return {}
+	var txt: String = f.get_as_text()
+	f.close()
+	var j = JSON.new()
+	if j.parse(txt) != OK:
+		return {}
+	var d = j.get_data()
+	if d is Dictionary:
+		return d
+	return {}
+
 # ============ 存档：本系统拥有的字段 ============
 # 天赋存档：{hero_id: {"star": 星级}}
 func get_save_data() -> Dictionary:
-	return {"hero_talents": g.hero_talents}
+	# 【新增】hero_aura_levels：系列光环 item 模式等级（人数档/flat/.极 实时计算不落盘）
+	return {"hero_talents": g.hero_talents, "hero_aura_levels": g.hero_aura_levels}
 
 func load_save_data(s: Dictionary):
 	# 类型防御：旧档/异常档缺字段或为 null 时保持初始空表
 	if s.has("hero_talents") and s.hero_talents is Dictionary:
 		g.hero_talents = s.hero_talents.duplicate(true)
+	# 【新增】系列光环等级（旧档缺字段保持空表，get_aura_level 读取式默认 0）
+	if s.has("hero_aura_levels") and s.hero_aura_levels is Dictionary:
+		g.hero_aura_levels = s.hero_aura_levels.duplicate(true)
 	# 【新增】读档后按星级幂等同步一遍解锁技能
 	# （防中间态：星级已精进、技能没同步上；重复调用安全）
 	for hero_id in g.hero_talents.keys():
@@ -165,3 +199,67 @@ func get_star_text(hero_id: String) -> String:
 	for i in range(star):
 		txt += "★"
 	return txt
+
+# ============ 独有天赋配置查询（hero_talents.json） ============
+# 门客天赋配置（无天赋门客返回空字典）
+func get_hero_talent_cfg(hero_id: String) -> Dictionary:
+	return _extra("hero_talents").get("heroes", {}).get(hero_id, {})
+
+func get_talent_settings() -> Dictionary:
+	return _extra("hero_talents").get("settings", {})
+
+# 当前生效品质档：门客 quality（1卓越/2传奇/3无双）→ tier 键；优秀(0)=无天赋档返回空串
+func get_current_tier(hero_id: String) -> String:
+	if not g.heroes.has(hero_id): return ""
+	return {1: "epic", 2: "legend", 3: "wushuang"}.get(int(g.heroes[hero_id].get("quality", 0)), "")
+
+# ============ 系列光环（hero_auras.json） ============
+func get_hero_aura_cfg(hero_id: String) -> Dictionary:
+	return _extra("hero_auras").get("hero_auras", {}).get(hero_id, {})
+
+func get_aura_series_cfg(series_key: String) -> Dictionary:
+	return _extra("hero_auras").get("series", {}).get(series_key, {})
+
+# 已招募系列门客数（人数档等级实时来源；不按等级递归，只看是否拥有）
+func get_series_recruited_count(series_key: String) -> int:
+	var count = 0
+	var hero_auras: Dictionary = _extra("hero_auras").get("hero_auras", {})
+	for hid in g.heroes.keys():
+		if str(hero_auras.get(hid, {}).get("series", "")) == series_key:
+			count += 1
+	return count
+
+# 光环技能当前等级：四模式分派——
+# series_count=已招募系列门客数（实时）；flat=固定满级；series_total_level(.极)=同系列他人普通技能总和查阈值（实时）；
+# item=读存档 hero_aura_levels（升级链路批次②接入，默认 0）
+func get_aura_level(hero_id: String, skill: Dictionary) -> int:
+	match str(skill.get("mode", "item")):
+		"series_count":
+			return get_series_recruited_count(str(get_hero_aura_cfg(hero_id).get("series", "")))
+		"flat":
+			return int(skill.get("max_level", 1))
+		"series_total_level":
+			return get_aura_extreme_level(hero_id, skill)
+		_:
+			return int(g.hero_aura_levels.get(hero_id, {}).get(str(skill.get("name", "")), 0))
+
+# .极档：同系列其他门客"对应普通技能"（去掉.极后缀同名 item 技能）等级总和 → 满足阈值个数即档位（max_level 封顶）
+func get_aura_extreme_level(hero_id: String, skill: Dictionary) -> int:
+	var thresholds: Array = skill.get("thresholds", [])
+	if thresholds.is_empty(): return 0
+	var series_key = str(get_hero_aura_cfg(hero_id).get("series", ""))
+	var base_name = str(skill.get("name", "")).trim_suffix(".极")
+	var total = 0
+	var hero_auras: Dictionary = _extra("hero_auras").get("hero_auras", {})
+	for hid in g.heroes.keys():
+		if hid == hero_id: continue
+		if str(hero_auras.get(hid, {}).get("series", "")) != series_key: continue
+		var lv_map: Dictionary = g.hero_aura_levels.get(hid, {})
+		for sk in hero_auras[hid].get("skills", []):
+			# 同名（去.极）的 item 技能才算"对应普通技能"；.极 之间不互算
+			if sk.get("mode", "") == "item" and str(sk.get("name", "")) == base_name:
+				total += int(lv_map.get(base_name, 0))
+	var level = 0
+	for th in thresholds:
+		if total >= int(th): level += 1
+	return mini(level, int(skill.get("max_level", thresholds.size())))

@@ -703,7 +703,7 @@ func _on_trade_assign(trade_id: String):
 	for hid in hero_ids:
 		var s := str(hid)
 		var cb = CheckBox.new()
-		cb.text = "%s ｜ 赚速 %s" % [str(data.heroes.get(s, {}).get("name", s)), c.format_number(float(HeroData.get_income(data, s)))]
+		cb.text = "%s ｜ 赚钱 %s" % [str(data.heroes.get(s, {}).get("name", s)), c.format_number(float(HeroData.get_income(data, s)))]
 		cb.button_pressed = cur_heroes.has(s)
 		cb.set_meta("hid", s)
 		lst.add_child(cb)

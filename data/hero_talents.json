@@ -1,0 +1,3183 @@
+{
+ "_comment": "门客品质天赋配置（2026-09-20 由《门客天赋.xlsx》转录，用户口径：天赋分卓越/传奇/无双三档，为门客天生品质，无晋升机制；born_tier=最高有天赋档；三档天赋同时生效。效果种类(kind)消费端见设计方案。desc=原始文案，UI 显示用。activities 键见 settings.activities，implemented=false 的效果按惯例显示『后续版本开放』不接线。",
+ "settings": {
+  "tiers": [
+   "epic",
+   "legend",
+   "wushuang"
+  ],
+  "tier_labels": {
+   "epic": "卓越",
+   "legend": "传奇",
+   "wushuang": "无双"
+  },
+  "activities": {
+   "war": {
+    "label": "商战",
+    "implemented": true
+   },
+   "quechang": {
+    "label": "榷场",
+    "implemented": false
+   },
+   "shangbang": {
+    "label": "商帮",
+    "implemented": false
+   },
+   "huashigang": {
+    "label": "花石纲争霸",
+    "implemented": false
+   },
+   "guild_war": {
+    "label": "商会据点战",
+    "implemented": false
+   },
+   "yuanye": {
+    "label": "元夜闹东京",
+    "implemented": false
+   },
+   "dunhuang": {
+    "label": "敦煌石窟",
+    "implemented": false
+   },
+   "zhaoshang": {
+    "label": "招商",
+    "implemented": false
+   },
+   "yabiao": {
+    "label": "押镖",
+    "implemented": false
+   },
+   "banquet": {
+    "label": "宴会",
+    "implemented": false,
+    "note": "酒肆现仅有接待客人二选一经验事件，无宴会/人气玩法（2026-09-21 接入预演核实）"
+   },
+   "qinshihuang": {
+    "label": "秦始皇陵",
+    "implemented": false
+   },
+   "haidao": {
+    "label": "海盗之乱",
+    "implemented": false
+   },
+   "tongbing": {
+    "label": "统兵演武",
+    "implemented": false
+   },
+   "shanhai": {
+    "label": "山海伏兽",
+    "implemented": false
+   },
+   "nuhai": {
+    "label": "怒海斩魁",
+    "implemented": false
+   },
+   "wuxiong": {
+    "label": "五雄争霸",
+    "implemented": false
+   },
+   "zhulu": {
+    "label": "逐鹿隋唐",
+    "implemented": false
+   },
+   "chuhan": {
+    "label": "楚汉争霸",
+    "implemented": false
+   },
+   "linjie": {
+    "label": "临街迎春",
+    "implemented": false
+   },
+   "yanyun": {
+    "label": "燕云宏图",
+    "implemented": false
+   },
+   "haiwang": {
+    "label": "海王餐厅",
+    "implemented": false
+   },
+   "bianxue": {
+    "label": "辩学大赛",
+    "implemented": false
+   }
+  },
+  "born_tier_rule": "天赋档即品质档。仅一档=天生该品质且不可晋升；多档=可晋升（卓越→传奇→无双），当前品质体现对应档天赋：同名天赋取当前档参数（替换制），不同名天赋累积生效。born_tier=最低有天赋档（出生品质），max_tier=最高档（晋升上限），can_promote=档数>1。示例：杨戬三档齐=天生卓越可晋升两次；观星师仅传奇档=天生传奇；上古神话六人仅无双档=天生无双。",
+  "deferred_kinds": {
+   "apprentice_quality_prob_pct": "门生玩法未实现（魔星降世暂挂，显示后续版本开放）"
+  },
+  "quality_map": {
+   "rule": "门客品质四档（2026-09-21 拍板，一次性补历史欠账）：0=优秀(蓝,无天赋20人) 1=卓越(紫) 2=传奇(橙) 3=无双(红)；born_tier=epic→1, legend→2, wushuang→3, none→0(优秀)；多档门客出生取低档，晋升上调；heroes.json 108人全写quality，李白/白月初 tiers 的 quality 1/2→2/3",
+   "colors": {
+    "0": "#3498db",
+    "1": "#9b59b6",
+    "2": "#e67e22",
+    "3": "#e74c3c"
+   }
+  },
+  "suspended_rule": "挂起规则（2026-09-21 拍板）：可晋升门客的高档天赋先挂起（suspended_tiers），不生效不显示明细，待该门客专属晋升机制逐个实装后移除挂起并接线；李白/白月初晋升已存在，不在挂起之列。"
+ },
+ "heroes": {
+  "tian_shiren": {
+   "name": "田诗人",
+   "series": "",
+   "tiers": {
+    "epic": [
+     {
+      "name": "一本万利",
+      "kind": "career_activity_pct",
+      "pct": 5,
+      "activities": [
+       "war",
+       "quechang",
+       "shangbang",
+       "huashigang"
+      ],
+      "desc": "商战，榷场，商帮，花石纲争霸等活动出战时，同职业门客赚钱+5%"
+     }
+    ]
+   },
+   "born_tier": "epic",
+   "max_tier": "epic",
+   "can_promote": false
+  },
+  "zhuang_gengfu": {
+   "name": "庄更夫",
+   "series": "",
+   "tiers": {
+    "epic": [
+     {
+      "name": "一本万利",
+      "kind": "career_activity_pct",
+      "pct": 5,
+      "activities": [
+       "war",
+       "quechang",
+       "shangbang",
+       "huashigang"
+      ]
+     }
+    ]
+   },
+   "born_tier": "epic",
+   "max_tier": "epic",
+   "can_promote": false
+  },
+  "jia_jiguan": {
+   "name": "贾机关",
+   "series": "",
+   "tiers": {
+    "epic": [
+     {
+      "name": "一本万利",
+      "kind": "career_activity_pct",
+      "pct": 5,
+      "activities": [
+       "war",
+       "quechang",
+       "shangbang",
+       "huashigang"
+      ]
+     }
+    ]
+   },
+   "born_tier": "epic",
+   "max_tier": "epic",
+   "can_promote": false
+  },
+  "li_jianchi": {
+   "name": "李剑痴",
+   "series": "",
+   "tiers": {
+    "epic": [
+     {
+      "name": "一本万利",
+      "kind": "career_activity_pct",
+      "pct": 5,
+      "activities": [
+       "war",
+       "quechang",
+       "shangbang",
+       "huashigang"
+      ]
+     }
+    ]
+   },
+   "born_tier": "epic",
+   "max_tier": "epic",
+   "can_promote": false
+  },
+  "qin_jianxian": {
+   "name": "秦剑仙",
+   "series": "",
+   "tiers": {
+    "epic": [
+     {
+      "name": "一本万利",
+      "kind": "career_activity_pct",
+      "pct": 5,
+      "activities": [
+       "war",
+       "quechang",
+       "shangbang",
+       "huashigang"
+      ]
+     }
+    ]
+   },
+   "born_tier": "epic",
+   "max_tier": "epic",
+   "can_promote": false
+  },
+  "yao_wuzuo": {
+   "name": "姚仵作",
+   "series": "",
+   "tiers": {
+    "epic": [
+     {
+      "name": "一本万利",
+      "kind": "career_activity_pct",
+      "pct": 5,
+      "activities": [
+       "war",
+       "quechang",
+       "shangbang",
+       "huashigang"
+      ]
+     }
+    ]
+   },
+   "born_tier": "epic",
+   "max_tier": "epic",
+   "can_promote": false
+  },
+  "yun_youren": {
+   "name": "云游人",
+   "series": "",
+   "tiers": {
+    "epic": [
+     {
+      "name": "一本万利",
+      "kind": "career_activity_pct",
+      "pct": 5,
+      "activities": [
+       "war",
+       "quechang",
+       "shangbang",
+       "huashigang"
+      ]
+     }
+    ]
+   },
+   "born_tier": "epic",
+   "max_tier": "epic",
+   "can_promote": false
+  },
+  "liu_silang": {
+   "name": "刘四郎",
+   "series": "",
+   "tiers": {
+    "epic": [
+     {
+      "name": "一本万利",
+      "kind": "career_activity_pct",
+      "pct": 5,
+      "activities": [
+       "war",
+       "quechang",
+       "shangbang",
+       "huashigang"
+      ]
+     }
+    ]
+   },
+   "born_tier": "epic",
+   "max_tier": "epic",
+   "can_promote": false
+  },
+  "yan_xiaoer": {
+   "name": "严小二",
+   "series": "",
+   "tiers": {
+    "epic": [
+     {
+      "name": "一本万利",
+      "kind": "career_activity_pct",
+      "pct": 5,
+      "activities": [
+       "war",
+       "quechang",
+       "shangbang",
+       "huashigang"
+      ]
+     }
+    ]
+   },
+   "born_tier": "epic",
+   "max_tier": "epic",
+   "can_promote": false
+  },
+  "xing_huwei": {
+   "name": "邢护卫",
+   "series": "",
+   "tiers": {
+    "epic": [
+     {
+      "name": "一本万利",
+      "kind": "career_activity_pct",
+      "pct": 5,
+      "activities": [
+       "war",
+       "quechang",
+       "shangbang",
+       "huashigang"
+      ]
+     }
+    ]
+   },
+   "born_tier": "epic",
+   "max_tier": "epic",
+   "can_promote": false
+  },
+  "shen_suanzi": {
+   "name": "神算子",
+   "series": "",
+   "tiers": {
+    "epic": [
+     {
+      "name": "一本万利",
+      "kind": "career_activity_pct",
+      "pct": 5,
+      "activities": [
+       "war",
+       "quechang",
+       "shangbang",
+       "huashigang"
+      ]
+     }
+    ]
+   },
+   "born_tier": "epic",
+   "max_tier": "epic",
+   "can_promote": false
+  },
+  "zhao_liehu": {
+   "name": "赵猎户",
+   "series": "",
+   "tiers": {
+    "epic": [
+     {
+      "name": "一本万利",
+      "kind": "career_activity_pct",
+      "pct": 5,
+      "activities": [
+       "war",
+       "quechang",
+       "shangbang",
+       "huashigang"
+      ]
+     }
+    ]
+   },
+   "born_tier": "epic",
+   "max_tier": "epic",
+   "can_promote": false
+  },
+  "cao_tiejiang": {
+   "name": "曹铁匠",
+   "series": "",
+   "tiers": {
+    "epic": [
+     {
+      "name": "一本万利",
+      "kind": "career_activity_pct",
+      "pct": 5,
+      "activities": [
+       "war",
+       "quechang",
+       "shangbang",
+       "huashigang"
+      ]
+     }
+    ]
+   },
+   "born_tier": "epic",
+   "max_tier": "epic",
+   "can_promote": false
+  },
+  "qian_caizhu": {
+   "name": "钱财主",
+   "series": "",
+   "tiers": {
+    "epic": [
+     {
+      "name": "一本万利",
+      "kind": "career_activity_pct",
+      "pct": 5,
+      "activities": [
+       "war",
+       "quechang",
+       "shangbang",
+       "huashigang"
+      ]
+     }
+    ]
+   },
+   "born_tier": "epic",
+   "max_tier": "epic",
+   "can_promote": false
+  },
+  "wu_biaoshi": {
+   "name": "武镖师",
+   "series": "",
+   "tiers": {
+    "epic": [
+     {
+      "name": "一本万利",
+      "kind": "career_activity_pct",
+      "pct": 5,
+      "activities": [
+       "war",
+       "quechang",
+       "shangbang",
+       "huashigang"
+      ]
+     }
+    ]
+   },
+   "born_tier": "epic",
+   "max_tier": "epic",
+   "can_promote": false
+  },
+  "pi_yingjiang": {
+   "name": "皮影匠人",
+   "series": "",
+   "tiers": {
+    "epic": [
+     {
+      "name": "一本万利",
+      "kind": "career_activity_pct",
+      "pct": 5,
+      "activities": [
+       "war",
+       "quechang",
+       "shangbang",
+       "huashigang"
+      ]
+     }
+    ]
+   },
+   "born_tier": "epic",
+   "max_tier": "epic",
+   "can_promote": false
+  },
+  "xie_lu": {
+   "name": "解鲁",
+   "series": "特级厨师",
+   "tiers": {
+    "epic": [
+     {
+      "name": "一本万利",
+      "kind": "career_activity_pct",
+      "pct": 5,
+      "activities": [
+       "war",
+       "quechang",
+       "shangbang",
+       "huashigang"
+      ]
+     }
+    ],
+    "legend": [
+     {
+      "name": "五福聚财",
+      "kind": "career_activity_pct",
+      "pct": 10,
+      "activities": [
+       "war",
+       "quechang",
+       "shangbang",
+       "huashigang"
+      ],
+      "desc": "商战，榷场，商帮，花石纲争霸等活动出战时，同职业门客赚钱+10%"
+     },
+     {
+      "name": "借花献佛",
+      "kind": "friend_chat_bond_pct",
+      "pct": 10,
+      "desc": "跟同职业挚友谈心获得缘分+10%"
+     }
+    ]
+   },
+   "born_tier": "epic",
+   "max_tier": "legend",
+   "can_promote": true,
+   "suspended_tiers": [
+    "legend"
+   ]
+  },
+  "hu_lu_xianren": {
+   "name": "葫芦仙人",
+   "series": "",
+   "tiers": {
+    "epic": [
+     {
+      "name": "一本万利",
+      "kind": "career_activity_pct",
+      "pct": 5,
+      "activities": [
+       "war",
+       "quechang",
+       "shangbang",
+       "huashigang"
+      ]
+     }
+    ],
+    "legend": [
+     {
+      "name": "五福聚财",
+      "kind": "career_activity_pct",
+      "pct": 10,
+      "activities": [
+       "war",
+       "quechang",
+       "shangbang",
+       "huashigang"
+      ]
+     },
+     {
+      "name": "葫蝶之缘",
+      "kind": "friend_activity_talent_pct",
+      "activity": "quechang",
+      "pct": 10,
+      "desc": "榷场挚友出战才华+10%"
+     }
+    ],
+    "wushuang": [
+     {
+      "name": "十面来财",
+      "kind": "career_activity_pct",
+      "pct": 20,
+      "activities": [
+       "war",
+       "quechang",
+       "shangbang",
+       "huashigang"
+      ],
+      "desc": "商战，榷场，商帮，花石纲争霸等活动出战时，同职业门客赚钱+20%"
+     },
+     {
+      "name": "招财之道",
+      "kind": "career_pct",
+      "pct": 5,
+      "desc": "同职业门客赚钱+5%"
+     },
+     {
+      "name": "葫蝶之缘",
+      "kind": "friend_activity_talent_pct",
+      "activity": "quechang",
+      "pct": 10
+     },
+     {
+      "name": "葫芦仙人",
+      "kind": "hero_activity_income_pct",
+      "activity": "quechang",
+      "pct": 10,
+      "desc": "榷场门客出战赚钱+10%"
+     }
+    ]
+   },
+   "born_tier": "epic",
+   "max_tier": "wushuang",
+   "can_promote": true,
+   "suspended_tiers": [
+    "legend",
+    "wushuang"
+   ]
+  },
+  "si_lang": {
+   "name": "四郎",
+   "series": "特级厨师",
+   "tiers": {
+    "epic": [
+     {
+      "name": "一本万利",
+      "kind": "career_activity_pct",
+      "pct": 5,
+      "activities": [
+       "war",
+       "quechang",
+       "shangbang",
+       "huashigang"
+      ]
+     }
+    ],
+    "legend": [
+     {
+      "name": "八方来运",
+      "kind": "career_activity_pct",
+      "pct": 15,
+      "activities": [
+       "war",
+       "quechang",
+       "shangbang",
+       "huashigang"
+      ],
+      "desc": "商战，榷场，商帮，花石纲争霸等活动出战时，同职业门客赚钱+15%"
+     },
+     {
+      "name": "借花献佛",
+      "kind": "friend_chat_bond_pct",
+      "pct": 10
+     }
+    ]
+   },
+   "born_tier": "epic",
+   "max_tier": "legend",
+   "can_promote": true,
+   "suspended_tiers": [
+    "legend"
+   ]
+  },
+  "yang_jian": {
+   "name": "杨戬",
+   "series": "",
+   "tiers": {
+    "epic": [
+     {
+      "name": "一本万利",
+      "kind": "career_activity_pct",
+      "pct": 5,
+      "activities": [
+       "war",
+       "quechang",
+       "shangbang",
+       "huashigang"
+      ]
+     }
+    ],
+    "legend": [
+     {
+      "name": "五福聚财",
+      "kind": "career_activity_pct",
+      "pct": 10,
+      "activities": [
+       "war",
+       "quechang",
+       "shangbang",
+       "huashigang"
+      ]
+     }
+    ],
+    "wushuang": [
+     {
+      "name": "十面来财",
+      "kind": "career_activity_pct",
+      "pct": 20,
+      "activities": [
+       "war",
+       "quechang",
+       "shangbang",
+       "huashigang"
+      ]
+     },
+     {
+      "name": "招财之道",
+      "kind": "career_pct",
+      "pct": 5
+     },
+     {
+      "name": "神威天光",
+      "kind": "friend_activity_talent_pct",
+      "activity": "quechang",
+      "pct": 10,
+      "desc": "榷场出战挚友才华+10%"
+     }
+    ]
+   },
+   "born_tier": "epic",
+   "max_tier": "wushuang",
+   "can_promote": true,
+   "suspended_tiers": [
+    "legend",
+    "wushuang"
+   ]
+  },
+  "xiao_yuer": {
+   "name": "小鱼儿",
+   "series": "",
+   "tiers": {
+    "epic": [
+     {
+      "name": "一本万利",
+      "kind": "career_activity_pct",
+      "pct": 5,
+      "activities": [
+       "war",
+       "quechang",
+       "shangbang",
+       "huashigang"
+      ]
+     }
+    ],
+    "legend": [
+     {
+      "name": "五福聚财",
+      "kind": "career_activity_pct",
+      "pct": 10,
+      "activities": [
+       "war",
+       "quechang",
+       "shangbang",
+       "huashigang"
+      ]
+     }
+    ],
+    "wushuang": [
+     {
+      "name": "十面来财",
+      "kind": "career_activity_pct",
+      "pct": 20,
+      "activities": [
+       "war",
+       "quechang",
+       "shangbang",
+       "huashigang"
+      ]
+     },
+     {
+      "name": "招财之道",
+      "kind": "career_pct",
+      "pct": 5
+     },
+     {
+      "name": "魔星降世",
+      "kind": "apprentice_quality_prob_pct",
+      "pct": 10,
+      "desc": "门生达到传奇以上概率+10%"
+     }
+    ]
+   },
+   "born_tier": "epic",
+   "max_tier": "wushuang",
+   "can_promote": true,
+   "suspended_tiers": [
+    "legend",
+    "wushuang"
+   ]
+  },
+  "li_bai": {
+   "name": "李白",
+   "series": "",
+   "tiers": {
+    "epic": [
+     {
+      "name": "一本万利",
+      "kind": "career_activity_pct",
+      "pct": 5,
+      "activities": [
+       "war",
+       "quechang",
+       "shangbang",
+       "huashigang"
+      ]
+     }
+    ],
+    "legend": [
+     {
+      "name": "五福聚财",
+      "kind": "career_activity_pct",
+      "pct": 10,
+      "activities": [
+       "war",
+       "quechang",
+       "shangbang",
+       "huashigang"
+      ]
+     }
+    ],
+    "wushuang": [
+     {
+      "name": "十面来财",
+      "kind": "career_activity_pct",
+      "pct": 20,
+      "activities": [
+       "war",
+       "quechang",
+       "shangbang",
+       "huashigang"
+      ]
+     },
+     {
+      "name": "招财之道",
+      "kind": "career_pct",
+      "pct": 5
+     },
+     {
+      "name": "噬金虫",
+      "kind": "worm_skill_cap",
+      "cap": 4,
+      "desc": "所有同职业门客虫师技能等级上限+4"
+     }
+    ]
+   },
+   "born_tier": "epic",
+   "max_tier": "wushuang",
+   "can_promote": true,
+   "suspended_tiers": []
+  },
+  "mei_changsu": {
+   "name": "梅长苏",
+   "series": "",
+   "tiers": {
+    "epic": [
+     {
+      "name": "一本万利",
+      "kind": "career_activity_pct",
+      "pct": 5,
+      "activities": [
+       "war",
+       "quechang",
+       "shangbang",
+       "huashigang"
+      ]
+     }
+    ],
+    "legend": [
+     {
+      "name": "五福聚财",
+      "kind": "career_activity_pct",
+      "pct": 10,
+      "activities": [
+       "war",
+       "quechang",
+       "shangbang",
+       "huashigang"
+      ]
+     }
+    ],
+    "wushuang": [
+     {
+      "name": "十面来财",
+      "kind": "career_activity_pct",
+      "pct": 20,
+      "activities": [
+       "war",
+       "quechang",
+       "shangbang",
+       "huashigang"
+      ]
+     },
+     {
+      "name": "招财之道",
+      "kind": "career_pct",
+      "pct": 5
+     },
+     {
+      "name": "天生奇才",
+      "kind": "worm_skill_cap",
+      "cap": 4,
+      "desc": "所有同职业门客虫师技能等级上限+4"
+     }
+    ]
+   },
+   "born_tier": "epic",
+   "max_tier": "wushuang",
+   "can_promote": true,
+   "suspended_tiers": [
+    "legend",
+    "wushuang"
+   ]
+  },
+  "zhang_qiling": {
+   "name": "张起灵",
+   "series": "",
+   "tiers": {
+    "epic": [
+     {
+      "name": "一本万利",
+      "kind": "career_activity_pct",
+      "pct": 5,
+      "activities": [
+       "war",
+       "quechang",
+       "shangbang",
+       "huashigang"
+      ]
+     },
+     {
+      "name": "乘胜追击",
+      "kind": "war_points_pct",
+      "pct": 25,
+      "desc": "商战出战该门客时，获得积分+25%"
+     }
+    ],
+    "legend": [
+     {
+      "name": "五福聚财",
+      "kind": "career_activity_pct",
+      "pct": 10,
+      "activities": [
+       "war",
+       "quechang",
+       "shangbang",
+       "huashigang"
+      ]
+     },
+     {
+      "name": "乘胜追击",
+      "kind": "war_points_pct",
+      "pct": 25
+     }
+    ],
+    "wushuang": [
+     {
+      "name": "十面来财",
+      "kind": "career_activity_pct",
+      "pct": 20,
+      "activities": [
+       "war",
+       "quechang",
+       "shangbang",
+       "huashigang"
+      ]
+     },
+     {
+      "name": "招财之道",
+      "kind": "career_pct",
+      "pct": 5
+     },
+     {
+      "name": "乘胜追击",
+      "kind": "war_points_pct",
+      "pct": 25
+     },
+     {
+      "name": "拔刀御敌",
+      "kind": "worm_skill_cap",
+      "cap": 4,
+      "desc": "所有同职业门客虫师技能等级上限+4"
+     }
+    ]
+   },
+   "born_tier": "epic",
+   "max_tier": "wushuang",
+   "can_promote": true,
+   "suspended_tiers": [
+    "legend",
+    "wushuang"
+   ]
+  },
+  "wang_zhaojun": {
+   "name": "王昭君",
+   "series": "",
+   "tiers": {
+    "epic": [
+     {
+      "name": "一本万利",
+      "kind": "career_activity_pct",
+      "pct": 5,
+      "activities": [
+       "war",
+       "quechang",
+       "shangbang",
+       "huashigang"
+      ]
+     },
+     {
+      "name": "宁胡和议",
+      "kind": "copy_max_level",
+      "cap": 500,
+      "desc": "复制最高等级门客的等级(最高500级)"
+     }
+    ],
+    "legend": [
+     {
+      "name": "五福聚财",
+      "kind": "career_activity_pct",
+      "pct": 10,
+      "activities": [
+       "war",
+       "quechang",
+       "shangbang",
+       "huashigang"
+      ]
+     },
+     {
+      "name": "宁胡和议",
+      "kind": "copy_max_level",
+      "cap": 700,
+      "desc": "复制最高等级门客的等级(最高700级)"
+     }
+    ],
+    "wushuang": [
+     {
+      "name": "十面来财",
+      "kind": "career_activity_pct",
+      "pct": 20,
+      "activities": [
+       "war",
+       "quechang",
+       "shangbang",
+       "huashigang"
+      ]
+     },
+     {
+      "name": "招财之道",
+      "kind": "career_pct",
+      "pct": 5
+     },
+     {
+      "name": "宁胡和议",
+      "kind": "copy_max_level",
+      "cap": 1200,
+      "desc": "复制最高等级门客的等级(最高1200级)"
+     },
+     {
+      "name": "破茧蝴蝶",
+      "kind": "worm_skill_cap",
+      "cap": 4,
+      "desc": "所有同职业门客虫师技能等级上限+4"
+     }
+    ]
+   },
+   "born_tier": "epic",
+   "max_tier": "wushuang",
+   "can_promote": true,
+   "suspended_tiers": [
+    "legend",
+    "wushuang"
+   ]
+  },
+  "bai_yuechu": {
+   "name": "白月初",
+   "series": "",
+   "tiers": {
+    "epic": [
+     {
+      "name": "一本万利",
+      "kind": "career_activity_pct",
+      "pct": 5,
+      "activities": [
+       "war",
+       "quechang",
+       "shangbang",
+       "huashigang"
+      ]
+     }
+    ],
+    "legend": [
+     {
+      "name": "五福聚财",
+      "kind": "career_activity_pct",
+      "pct": 10,
+      "activities": [
+       "war",
+       "quechang",
+       "shangbang",
+       "huashigang"
+      ]
+     }
+    ],
+    "wushuang": [
+     {
+      "name": "十面来财",
+      "kind": "career_activity_pct",
+      "pct": 20,
+      "activities": [
+       "war",
+       "quechang",
+       "shangbang",
+       "huashigang"
+      ]
+     },
+     {
+      "name": "招财之道",
+      "kind": "career_pct",
+      "pct": 5
+     },
+     {
+      "name": "纯爱天篇",
+      "kind": "worm_skill_cap",
+      "cap": 4,
+      "desc": "所有同职业门客虫师技能等级上限+4"
+     },
+     {
+      "name": "回梦术",
+      "kind": "beast_level_cap",
+      "cap": 10,
+      "desc": "所有珍兽等级上限+10"
+     }
+    ]
+   },
+   "born_tier": "epic",
+   "max_tier": "wushuang",
+   "can_promote": true,
+   "suspended_tiers": []
+  },
+  "liu_maoxing": {
+   "name": "刘昴星",
+   "series": "特级厨师",
+   "tiers": {
+    "epic": [
+     {
+      "name": "一本万利",
+      "kind": "career_activity_pct",
+      "pct": 5,
+      "activities": [
+       "war",
+       "quechang",
+       "shangbang",
+       "huashigang"
+      ]
+     },
+     {
+      "name": "厨心共鸣",
+      "kind": "token_shared",
+      "pair": [
+       "liu_maoxing",
+       "lan_feihong"
+      ],
+      "desc": "刘昴星信物跟兰飞鸿信物共享等级"
+     }
+    ],
+    "legend": [
+     {
+      "name": "五福聚财",
+      "kind": "career_activity_pct",
+      "pct": 10,
+      "activities": [
+       "war",
+       "quechang",
+       "shangbang",
+       "huashigang"
+      ]
+     },
+     {
+      "name": "厨心共鸣",
+      "kind": "token_shared",
+      "pair": [
+       "liu_maoxing",
+       "lan_feihong"
+      ]
+     }
+    ],
+    "wushuang": [
+     {
+      "name": "十面来财",
+      "kind": "career_activity_pct",
+      "pct": 20,
+      "activities": [
+       "war",
+       "quechang",
+       "shangbang",
+       "huashigang"
+      ]
+     },
+     {
+      "name": "招财之道",
+      "kind": "career_pct",
+      "pct": 5
+     },
+     {
+      "name": "厨心共鸣",
+      "kind": "token_shared",
+      "pair": [
+       "liu_maoxing",
+       "lan_feihong"
+      ]
+     },
+     {
+      "name": "天才阿昴",
+      "kind": "beast_level_cap",
+      "cap": 10,
+      "desc": "所有珍兽等级上限+10"
+     },
+     {
+      "name": "八珍玉食",
+      "kind": "series_pct",
+      "series": "teji_chushi",
+      "pct": 10,
+      "desc": "所有特级厨师赚钱+10%"
+     }
+    ]
+   },
+   "born_tier": "epic",
+   "max_tier": "wushuang",
+   "can_promote": true,
+   "suspended_tiers": [
+    "legend",
+    "wushuang"
+   ]
+  },
+  "hua_mulan": {
+   "name": "花木兰",
+   "series": "",
+   "tiers": {
+    "epic": [
+     {
+      "name": "一本万利",
+      "kind": "career_activity_pct",
+      "pct": 5,
+      "activities": [
+       "war",
+       "quechang",
+       "shangbang",
+       "huashigang"
+      ]
+     },
+     {
+      "name": "替父从军",
+      "kind": "copy_max_level",
+      "cap": 500,
+      "desc": "复制最高等级门客的等级(最高500级)"
+     }
+    ],
+    "legend": [
+     {
+      "name": "八方来运",
+      "kind": "career_activity_pct",
+      "pct": 15,
+      "activities": [
+       "war",
+       "quechang",
+       "shangbang",
+       "huashigang"
+      ]
+     },
+     {
+      "name": "替父从军",
+      "kind": "copy_max_level",
+      "cap": 700,
+      "desc": "复制最高等级门客的等级(最高700级)"
+     }
+    ],
+    "wushuang": [
+     {
+      "name": "十面来财",
+      "kind": "career_activity_pct",
+      "pct": 20,
+      "activities": [
+       "war",
+       "quechang",
+       "shangbang",
+       "huashigang"
+      ]
+     },
+     {
+      "name": "招财之道",
+      "kind": "career_pct",
+      "pct": 5
+     },
+     {
+      "name": "替父从军",
+      "kind": "copy_max_level",
+      "cap": 1200,
+      "desc": "复制最高等级门客的等级(最高1200级)"
+     },
+     {
+      "name": "双兔傍地",
+      "kind": "worm_skill_cap",
+      "cap": 4,
+      "desc": "所有同职业门客虫师技能等级上限+4"
+     }
+    ]
+   },
+   "born_tier": "epic",
+   "max_tier": "wushuang",
+   "can_promote": true,
+   "suspended_tiers": [
+    "legend",
+    "wushuang"
+   ]
+  },
+  "lan_feihong": {
+   "name": "兰飞鸿",
+   "series": "特级厨师",
+   "tiers": {
+    "epic": [
+     {
+      "name": "一本万利",
+      "kind": "career_activity_pct",
+      "pct": 5,
+      "activities": [
+       "war",
+       "quechang",
+       "shangbang",
+       "huashigang"
+      ]
+     }
+    ],
+    "legend": [
+     {
+      "name": "五福聚财",
+      "kind": "career_activity_pct",
+      "pct": 10,
+      "activities": [
+       "war",
+       "quechang",
+       "shangbang",
+       "huashigang"
+      ]
+     }
+    ],
+    "wushuang": [
+     {
+      "name": "十面来财",
+      "kind": "career_activity_pct",
+      "pct": 20,
+      "activities": [
+       "war",
+       "quechang",
+       "shangbang",
+       "huashigang"
+      ]
+     },
+     {
+      "name": "招财之道",
+      "kind": "career_pct",
+      "pct": 5
+     },
+     {
+      "name": "天才阿飞",
+      "kind": "beast_level_cap",
+      "cap": 10,
+      "desc": "所有珍兽等级上限+10"
+     },
+     {
+      "name": "饕餮大餐",
+      "kind": "series_pct",
+      "series": "teji_chushi",
+      "pct": 10,
+      "desc": "所有特级厨师赚钱+10%"
+     }
+    ]
+   },
+   "born_tier": "epic",
+   "max_tier": "wushuang",
+   "can_promote": true,
+   "suspended_tiers": [
+    "legend",
+    "wushuang"
+   ]
+  },
+  "leng_erpi": {
+   "name": "冷二皮",
+   "series": "",
+   "tiers": {
+    "legend": [
+     {
+      "name": "五福聚财",
+      "kind": "career_activity_pct",
+      "pct": 10,
+      "activities": [
+       "war",
+       "quechang",
+       "shangbang",
+       "huashigang"
+      ]
+     },
+     {
+      "name": "借花献佛",
+      "kind": "friend_chat_bond_pct",
+      "pct": 10
+     }
+    ]
+   },
+   "born_tier": "legend",
+   "max_tier": "legend",
+   "can_promote": false
+  },
+  "ya_jiu": {
+   "name": "牙九",
+   "series": "",
+   "tiers": {
+    "legend": [
+     {
+      "name": "五福聚财",
+      "kind": "career_activity_pct",
+      "pct": 10,
+      "activities": [
+       "war",
+       "quechang",
+       "shangbang",
+       "huashigang"
+      ]
+     },
+     {
+      "name": "言传身教",
+      "kind": "apprentice_income_pct",
+      "pct": 10,
+      "desc": "所有徒弟赚速+10%"
+     }
+    ]
+   },
+   "born_tier": "legend",
+   "max_tier": "legend",
+   "can_promote": false
+  },
+  "luo_caifeng": {
+   "name": "罗裁缝",
+   "series": "",
+   "tiers": {
+    "legend": [
+     {
+      "name": "五福聚财",
+      "kind": "career_activity_pct",
+      "pct": 10,
+      "activities": [
+       "war",
+       "quechang",
+       "shangbang",
+       "huashigang"
+      ]
+     },
+     {
+      "name": "借花献佛",
+      "kind": "friend_chat_bond_pct",
+      "pct": 10
+     }
+    ]
+   },
+   "born_tier": "legend",
+   "max_tier": "legend",
+   "can_promote": false
+  },
+  "ding_xiren": {
+   "name": "丁戏人",
+   "series": "",
+   "tiers": {
+    "legend": [
+     {
+      "name": "五福聚财",
+      "kind": "career_activity_pct",
+      "pct": 10,
+      "activities": [
+       "war",
+       "quechang",
+       "shangbang",
+       "huashigang"
+      ]
+     },
+     {
+      "name": "借花献佛",
+      "kind": "friend_chat_bond_pct",
+      "pct": 10
+     }
+    ]
+   },
+   "born_tier": "legend",
+   "max_tier": "legend",
+   "can_promote": false
+  },
+  "fang_huotou": {
+   "name": "方火头",
+   "series": "",
+   "tiers": {
+    "legend": [
+     {
+      "name": "五福聚财",
+      "kind": "career_activity_pct",
+      "pct": 10,
+      "activities": [
+       "war",
+       "quechang",
+       "shangbang",
+       "huashigang"
+      ]
+     },
+     {
+      "name": "借花献佛",
+      "kind": "friend_chat_bond_pct",
+      "pct": 10
+     }
+    ]
+   },
+   "born_tier": "legend",
+   "max_tier": "legend",
+   "can_promote": false
+  },
+  "yan_xiansheng": {
+   "name": "严先生",
+   "series": "",
+   "tiers": {
+    "legend": [
+     {
+      "name": "五福聚财",
+      "kind": "career_activity_pct",
+      "pct": 10,
+      "activities": [
+       "war",
+       "quechang",
+       "shangbang",
+       "huashigang"
+      ]
+     },
+     {
+      "name": "为人师表",
+      "kind": "apprentice_income_pct",
+      "pct": 5,
+      "desc": "徒弟赚速+5%"
+     }
+    ]
+   },
+   "born_tier": "legend",
+   "max_tier": "legend",
+   "can_promote": false
+  },
+  "feng_mier": {
+   "name": "冯蜜儿",
+   "series": "",
+   "tiers": {
+    "legend": [
+     {
+      "name": "五福聚财",
+      "kind": "career_activity_pct",
+      "pct": 10,
+      "activities": [
+       "war",
+       "quechang",
+       "shangbang",
+       "huashigang"
+      ]
+     },
+     {
+      "name": "传道授业",
+      "kind": "apprentice_learn_pct",
+      "pct": 10,
+      "desc": "同类徒弟每次培养获得见识+10%"
+     }
+    ]
+   },
+   "born_tier": "legend",
+   "max_tier": "legend",
+   "can_promote": false
+  },
+  "li_shenshou": {
+   "name": "李神手",
+   "series": "",
+   "tiers": {
+    "legend": [
+     {
+      "name": "五福聚财",
+      "kind": "career_activity_pct",
+      "pct": 10,
+      "activities": [
+       "war",
+       "quechang",
+       "shangbang",
+       "huashigang"
+      ]
+     },
+     {
+      "name": "借花献佛",
+      "kind": "friend_chat_bond_pct",
+      "pct": 10
+     }
+    ]
+   },
+   "born_tier": "legend",
+   "max_tier": "legend",
+   "can_promote": false
+  },
+  "zhen_tufu": {
+   "name": "镇屠夫",
+   "series": "",
+   "tiers": {
+    "legend": [
+     {
+      "name": "五福聚财",
+      "kind": "career_activity_pct",
+      "pct": 10,
+      "activities": [
+       "war",
+       "quechang",
+       "shangbang",
+       "huashigang"
+      ]
+     },
+     {
+      "name": "借花献佛",
+      "kind": "friend_chat_bond_pct",
+      "pct": 10
+     }
+    ]
+   },
+   "born_tier": "legend",
+   "max_tier": "legend",
+   "can_promote": false
+  },
+  "hong_laoxie": {
+   "name": "洪老邪",
+   "series": "",
+   "tiers": {
+    "legend": [
+     {
+      "name": "五福聚财",
+      "kind": "career_activity_pct",
+      "pct": 10,
+      "activities": [
+       "war",
+       "quechang",
+       "shangbang",
+       "huashigang"
+      ]
+     },
+     {
+      "name": "传道授业",
+      "kind": "apprentice_learn_pct",
+      "pct": 10
+     }
+    ]
+   },
+   "born_tier": "legend",
+   "max_tier": "legend",
+   "can_promote": false
+  },
+  "wu_daozi": {
+   "name": "吴道子",
+   "series": "开山鼻祖",
+   "tiers": {
+    "legend": [
+     {
+      "name": "五福聚财",
+      "kind": "career_activity_pct",
+      "pct": 10,
+      "activities": [
+       "war",
+       "quechang",
+       "shangbang",
+       "huashigang"
+      ]
+     },
+     {
+      "name": "借花献佛",
+      "kind": "friend_chat_bond_pct",
+      "pct": 10
+     }
+    ]
+   },
+   "born_tier": "legend",
+   "max_tier": "legend",
+   "can_promote": false
+  },
+  "sun_bin": {
+   "name": "孙膑",
+   "series": "开山鼻祖",
+   "tiers": {
+    "legend": [
+     {
+      "name": "五福聚财",
+      "kind": "career_activity_pct",
+      "pct": 10,
+      "activities": [
+       "war",
+       "quechang",
+       "shangbang",
+       "huashigang"
+      ]
+     },
+     {
+      "name": "乘胜追击",
+      "kind": "war_points_pct",
+      "pct": 25,
+      "desc": "商战时该门客出战的小队商战积分+25%"
+     }
+    ]
+   },
+   "born_tier": "legend",
+   "max_tier": "legend",
+   "can_promote": false
+  },
+  "lu_ban": {
+   "name": "鲁班",
+   "series": "开山鼻祖",
+   "tiers": {
+    "legend": [
+     {
+      "name": "五福聚财",
+      "kind": "career_activity_pct",
+      "pct": 10,
+      "activities": [
+       "war",
+       "quechang",
+       "shangbang",
+       "huashigang"
+      ]
+     },
+     {
+      "name": "传道授业",
+      "kind": "apprentice_learn_pct",
+      "pct": 10
+     }
+    ]
+   },
+   "born_tier": "legend",
+   "max_tier": "legend",
+   "can_promote": false
+  },
+  "du_kang": {
+   "name": "杜康",
+   "series": "开山鼻祖",
+   "tiers": {
+    "legend": [
+     {
+      "name": "五福聚财",
+      "kind": "career_activity_pct",
+      "pct": 10,
+      "activities": [
+       "war",
+       "quechang",
+       "shangbang",
+       "huashigang"
+      ]
+     },
+     {
+      "name": "对酒当歌",
+      "kind": "banquet_popularity_pct",
+      "pct": 10,
+      "desc": "宴会结束人气+10%"
+     }
+    ]
+   },
+   "born_tier": "legend",
+   "max_tier": "legend",
+   "can_promote": false
+  },
+  "ou_yezi": {
+   "name": "欧冶子",
+   "series": "开山鼻祖",
+   "tiers": {
+    "legend": [
+     {
+      "name": "五福聚财",
+      "kind": "career_activity_pct",
+      "pct": 10,
+      "activities": [
+       "war",
+       "quechang",
+       "shangbang",
+       "huashigang"
+      ]
+     },
+     {
+      "name": "借花献佛",
+      "kind": "friend_chat_bond_pct",
+      "pct": 10
+     }
+    ]
+   },
+   "born_tier": "legend",
+   "max_tier": "legend",
+   "can_promote": false
+  },
+  "gao_jianli": {
+   "name": "高渐离",
+   "series": "一代宗匠",
+   "tiers": {
+    "legend": [
+     {
+      "name": "五福聚财",
+      "kind": "career_activity_pct",
+      "pct": 10,
+      "activities": [
+       "war",
+       "quechang",
+       "shangbang",
+       "huashigang"
+      ]
+     },
+     {
+      "name": "借花献佛",
+      "kind": "friend_chat_bond_pct",
+      "pct": 10
+     }
+    ]
+   },
+   "born_tier": "legend",
+   "max_tier": "legend",
+   "can_promote": false
+  },
+  "su_wu": {
+   "name": "苏武",
+   "series": "一代宗匠",
+   "tiers": {
+    "legend": [
+     {
+      "name": "五福聚财",
+      "kind": "career_activity_pct",
+      "pct": 10,
+      "activities": [
+       "war",
+       "quechang",
+       "shangbang",
+       "huashigang"
+      ]
+     },
+     {
+      "name": "传道授业",
+      "kind": "apprentice_learn_pct",
+      "pct": 10
+     }
+    ]
+   },
+   "born_tier": "legend",
+   "max_tier": "legend",
+   "can_promote": false
+  },
+  "bi_sheng": {
+   "name": "毕昇",
+   "series": "一代宗匠",
+   "tiers": {
+    "legend": [
+     {
+      "name": "五福聚财",
+      "kind": "career_activity_pct",
+      "pct": 10,
+      "activities": [
+       "war",
+       "quechang",
+       "shangbang",
+       "huashigang"
+      ]
+     },
+     {
+      "name": "借花献佛",
+      "kind": "friend_chat_bond_pct",
+      "pct": 10
+     }
+    ]
+   },
+   "born_tier": "legend",
+   "max_tier": "legend",
+   "can_promote": false
+  },
+  "zong_ze": {
+   "name": "宗泽",
+   "series": "一代宗匠",
+   "tiers": {
+    "legend": [
+     {
+      "name": "五福聚财",
+      "kind": "career_activity_pct",
+      "pct": 10,
+      "activities": [
+       "war",
+       "quechang",
+       "shangbang",
+       "huashigang"
+      ]
+     },
+     {
+      "name": "传道授业",
+      "kind": "apprentice_learn_pct",
+      "pct": 10
+     }
+    ]
+   },
+   "born_tier": "legend",
+   "max_tier": "legend",
+   "can_promote": false
+  },
+  "zhang_sanfeng": {
+   "name": "张三丰",
+   "series": "一代宗匠",
+   "tiers": {
+    "legend": [
+     {
+      "name": "五福聚财",
+      "kind": "career_activity_pct",
+      "pct": 10,
+      "activities": [
+       "war",
+       "quechang",
+       "shangbang",
+       "huashigang"
+      ]
+     },
+     {
+      "name": "传道授业",
+      "kind": "apprentice_learn_pct",
+      "pct": 10
+     }
+    ]
+   },
+   "born_tier": "legend",
+   "max_tier": "legend",
+   "can_promote": false
+  },
+  "shen_wansan": {
+   "name": "沈万三",
+   "series": "",
+   "tiers": {
+    "legend": [
+     {
+      "name": "五福聚财",
+      "kind": "career_activity_pct",
+      "pct": 10,
+      "activities": [
+       "war",
+       "quechang",
+       "shangbang",
+       "huashigang"
+      ]
+     },
+     {
+      "name": "招财进宝",
+      "kind": "shop_level_cap",
+      "cap": 2,
+      "desc": "所有商铺等级上限+2"
+     }
+    ]
+   },
+   "born_tier": "legend",
+   "max_tier": "legend",
+   "can_promote": false
+  },
+  "shi_gandang": {
+   "name": "石敢当",
+   "series": "奇人异士",
+   "tiers": {
+    "legend": [
+     {
+      "name": "五福聚财",
+      "kind": "career_activity_pct",
+      "pct": 10,
+      "activities": [
+       "war",
+       "quechang",
+       "shangbang",
+       "huashigang"
+      ]
+     },
+     {
+      "name": "巧夺天工",
+      "kind": "hero_activity_income_pct",
+      "activity": "guild_war",
+      "pct": 5,
+      "desc": "商会据点战中，我方门客赚钱+5%"
+     }
+    ]
+   },
+   "born_tier": "legend",
+   "max_tier": "legend",
+   "can_promote": false
+  },
+  "guanxingshi": {
+   "name": "观星师",
+   "series": "",
+   "tiers": {
+    "legend": [
+     {
+      "name": "八方来运",
+      "kind": "career_activity_pct",
+      "pct": 15,
+      "activities": [
+       "war",
+       "quechang",
+       "shangbang",
+       "huashigang"
+      ]
+     },
+     {
+      "name": "招财之道",
+      "kind": "career_pct",
+      "pct": 5
+     }
+    ]
+   },
+   "born_tier": "legend",
+   "max_tier": "legend",
+   "can_promote": false
+  },
+  "song_huizong": {
+   "name": "宋徽宗",
+   "series": "一世枭雄",
+   "tiers": {
+    "legend": [
+     {
+      "name": "八方来运",
+      "kind": "career_activity_pct",
+      "pct": 15,
+      "activities": [
+       "war",
+       "quechang",
+       "shangbang",
+       "huashigang"
+      ]
+     },
+     {
+      "name": "权势压制",
+      "kind": "hero_activity_income_pct",
+      "activity": "yuanye",
+      "pct": 4,
+      "desc": "元夜闹东京活动中，我方门客赚钱+4%"
+     }
+    ]
+   },
+   "born_tier": "legend",
+   "max_tier": "legend",
+   "can_promote": false
+  },
+  "cai_jing": {
+   "name": "蔡京",
+   "series": "一世枭雄",
+   "tiers": {
+    "legend": [
+     {
+      "name": "八方来运",
+      "kind": "career_activity_pct",
+      "pct": 15,
+      "activities": [
+       "war",
+       "quechang",
+       "shangbang",
+       "huashigang"
+      ]
+     },
+     {
+      "name": "权势压制",
+      "kind": "hero_activity_income_pct",
+      "activity": "yuanye",
+      "pct": 4
+     }
+    ]
+   },
+   "born_tier": "legend",
+   "max_tier": "legend",
+   "can_promote": false
+  },
+  "dunhuang_jiangshen": {
+   "name": "敦煌匠神",
+   "series": "奇人异士",
+   "tiers": {
+    "legend": [
+     {
+      "name": "五福聚财",
+      "kind": "career_activity_pct",
+      "pct": 10,
+      "activities": [
+       "war",
+       "quechang",
+       "shangbang",
+       "huashigang"
+      ]
+     },
+     {
+      "name": "如有神助",
+      "kind": "activity_stat_pct",
+      "activity": "dunhuang",
+      "stat": "hp",
+      "pct": 5,
+      "desc": "敦煌石窟活动中，我方血量+5%"
+     },
+     {
+      "name": "神来之笔",
+      "kind": "activity_stat_pct",
+      "activity": "dunhuang",
+      "stat": "atk",
+      "pct": 5,
+      "desc": "敦煌石窟活动中，我方攻击+5%"
+     }
+    ]
+   },
+   "born_tier": "legend",
+   "max_tier": "legend",
+   "can_promote": false
+  },
+  "baixi_shengdao": {
+   "name": "百戏圣刀",
+   "series": "奇人异士",
+   "tiers": {
+    "legend": [
+     {
+      "name": "八方来运",
+      "kind": "career_activity_pct",
+      "pct": 15,
+      "activities": [
+       "war",
+       "quechang",
+       "shangbang",
+       "huashigang"
+      ]
+     },
+     {
+      "name": "借花献佛",
+      "kind": "friend_chat_bond_pct",
+      "pct": 10
+     }
+    ]
+   },
+   "born_tier": "legend",
+   "max_tier": "legend",
+   "can_promote": false
+  },
+  "song_jiang": {
+   "name": "宋江",
+   "series": "一世枭雄",
+   "tiers": {
+    "legend": [
+     {
+      "name": "八方来运",
+      "kind": "career_activity_pct",
+      "pct": 15,
+      "activities": [
+       "war",
+       "quechang",
+       "shangbang",
+       "huashigang"
+      ]
+     },
+     {
+      "name": "替天行道",
+      "kind": "hero_activity_income_pct",
+      "activity": "yuanye",
+      "pct": 10,
+      "cond": "vs_boss",
+      "desc": "元夜闹东京活动中，我方对阵头目时赚钱+10%"
+     }
+    ]
+   },
+   "born_tier": "legend",
+   "max_tier": "legend",
+   "can_promote": false
+  },
+  "huo_yanwang": {
+   "name": "活阎王",
+   "series": "一世枭雄",
+   "tiers": {
+    "legend": [
+     {
+      "name": "八方来运",
+      "kind": "career_activity_pct",
+      "pct": 15,
+      "activities": [
+       "war",
+       "quechang",
+       "shangbang",
+       "huashigang"
+      ]
+     },
+     {
+      "name": "借花献佛",
+      "kind": "friend_chat_bond_pct",
+      "pct": 10
+     }
+    ]
+   },
+   "born_tier": "legend",
+   "max_tier": "legend",
+   "can_promote": false
+  },
+  "lei_en": {
+   "name": "雷恩",
+   "series": "特级厨师",
+   "tiers": {
+    "legend": [
+     {
+      "name": "五福聚财",
+      "kind": "career_activity_pct",
+      "pct": 10,
+      "activities": [
+       "war",
+       "quechang",
+       "shangbang",
+       "huashigang"
+      ]
+     },
+     {
+      "name": "北斗七星",
+      "kind": "zhaoshang_extra",
+      "count": 1,
+      "cond": "join",
+      "desc": "招商可额外参与1场"
+     },
+     {
+      "name": "天狼刃",
+      "kind": "zhaoshang_extra",
+      "count": 1,
+      "cond": "project",
+      "desc": "招商可额外立项1场"
+     }
+    ]
+   },
+   "born_tier": "legend",
+   "max_tier": "legend",
+   "can_promote": false
+  },
+  "xiang_en": {
+   "name": "向恩",
+   "series": "特级厨师",
+   "tiers": {
+    "legend": [
+     {
+      "name": "五福聚财",
+      "kind": "career_activity_pct",
+      "pct": 10,
+      "activities": [
+       "war",
+       "quechang",
+       "shangbang",
+       "huashigang"
+      ]
+     },
+     {
+      "name": "味觉封印",
+      "kind": "escort_free",
+      "count": 1,
+      "desc": "押镖每周挚友额外免费一次"
+     }
+    ]
+   },
+   "born_tier": "legend",
+   "max_tier": "legend",
+   "can_promote": false
+  },
+  "zhou_yu": {
+   "name": "周瑜",
+   "series": "特级厨师",
+   "tiers": {
+    "legend": [
+     {
+      "name": "五福聚财",
+      "kind": "career_activity_pct",
+      "pct": 10,
+      "activities": [
+       "war",
+       "quechang",
+       "shangbang",
+       "huashigang"
+      ]
+     },
+     {
+      "name": "十全厨艺",
+      "kind": "banquet_popularity_pct",
+      "pct": 10,
+      "desc": "宴会结束人气额外+10%"
+     }
+    ]
+   },
+   "born_tier": "legend",
+   "max_tier": "legend",
+   "can_promote": false
+  },
+  "qin_shihuang": {
+   "name": "秦始皇",
+   "series": "一世枭雄",
+   "tiers": {
+    "legend": [
+     {
+      "name": "八方来运",
+      "kind": "career_activity_pct",
+      "pct": 15,
+      "activities": [
+       "war",
+       "quechang",
+       "shangbang",
+       "huashigang"
+      ]
+     },
+     {
+      "name": "功盖三皇",
+      "kind": "activity_stat_pct",
+      "activity": "qinshihuang",
+      "stat": "hp",
+      "pct": 5,
+      "desc": "秦始皇陵活动中，我方血量+5%"
+     },
+     {
+      "name": "德超五帝",
+      "kind": "activity_stat_pct",
+      "activity": "qinshihuang",
+      "stat": "atk",
+      "pct": 5,
+      "desc": "秦始皇陵活动中，我方攻击力+5%"
+     }
+    ]
+   },
+   "born_tier": "legend",
+   "max_tier": "legend",
+   "can_promote": false
+  },
+  "gun_haijiao": {
+   "name": "滚海蛟",
+   "series": "奇人异士",
+   "tiers": {
+    "legend": [
+     {
+      "name": "五福聚财",
+      "kind": "career_activity_pct",
+      "pct": 10,
+      "activities": [
+       "war",
+       "quechang",
+       "shangbang",
+       "huashigang"
+      ]
+     },
+     {
+      "name": "海上霸主",
+      "kind": "activity_stat_flat",
+      "activity": "haidao",
+      "stat": "atk",
+      "value": 15,
+      "desc": "海上争霸活动海盗之乱所有职业攻击+15"
+     }
+    ]
+   },
+   "born_tier": "legend",
+   "max_tier": "legend",
+   "can_promote": false
+  },
+  "lv_bu": {
+   "name": "吕布",
+   "series": "一世枭雄",
+   "tiers": {
+    "legend": [
+     {
+      "name": "五福聚财",
+      "kind": "career_activity_pct",
+      "pct": 10,
+      "activities": [
+       "war",
+       "quechang",
+       "shangbang",
+       "huashigang"
+      ]
+     },
+     {
+      "name": "统帅三军",
+      "kind": "activity_stat_flat",
+      "activity": "tongbing",
+      "stat": "troops",
+      "value": 1500,
+      "desc": "统兵演武活动中队伍带兵上限+1500"
+     }
+    ]
+   },
+   "born_tier": "legend",
+   "max_tier": "legend",
+   "can_promote": false
+  },
+  "ne_zha": {
+   "name": "哪吒",
+   "series": "奇人异士",
+   "tiers": {
+    "legend": [
+     {
+      "name": "五福聚财",
+      "kind": "career_activity_pct",
+      "pct": 10,
+      "activities": [
+       "war",
+       "quechang",
+       "shangbang",
+       "huashigang"
+      ]
+     },
+     {
+      "name": "混天绫舞",
+      "kind": "apprentice_learn_pct",
+      "pct": 5,
+      "desc": "徒弟每次培养见识获得+5%"
+     }
+    ]
+   },
+   "born_tier": "legend",
+   "max_tier": "legend",
+   "can_promote": false
+  },
+  "sun_wu": {
+   "name": "孙武",
+   "series": "一世枭雄",
+   "tiers": {
+    "legend": [
+     {
+      "name": "八方来运",
+      "kind": "career_activity_pct",
+      "pct": 15,
+      "activities": [
+       "war",
+       "quechang",
+       "shangbang",
+       "huashigang"
+      ]
+     },
+     {
+      "name": "兵圣",
+      "kind": "activity_stat_pct",
+      "activity": "wuxiong",
+      "stat": "power",
+      "pct": 5,
+      "desc": "五雄争霸活动中最终战力+5%"
+     }
+    ]
+   },
+   "born_tier": "legend",
+   "max_tier": "legend",
+   "can_promote": false
+  },
+  "qin_qiong_yuchi_gong": {
+   "name": "秦琼尉迟恭",
+   "series": "一世枭雄",
+   "tiers": {
+    "legend": [
+     {
+      "name": "八方来运",
+      "kind": "career_activity_pct",
+      "pct": 15,
+      "activities": [
+       "war",
+       "quechang",
+       "shangbang",
+       "huashigang"
+      ]
+     },
+     {
+      "name": "陷阵双雄",
+      "kind": "activity_stat_flat",
+      "activity": "zhulu",
+      "stat": "troops",
+      "value": 2600,
+      "desc": "逐鹿隋唐活动中带兵上限+2600"
+     }
+    ]
+   },
+   "born_tier": "legend",
+   "max_tier": "legend",
+   "can_promote": false
+  },
+  "ao_wu": {
+   "name": "敖武",
+   "series": "奇人异士",
+   "tiers": {
+    "legend": [
+     {
+      "name": "八方来运",
+      "kind": "career_activity_pct",
+      "pct": 15,
+      "activities": [
+       "war",
+       "quechang",
+       "shangbang",
+       "huashigang"
+      ]
+     },
+     {
+      "name": "林中之狼",
+      "kind": "activity_stat_pct",
+      "activity": "shanhai",
+      "stat": "power",
+      "pct": 5,
+      "desc": "山海伏兽活动中战力+5%"
+     }
+    ]
+   },
+   "born_tier": "legend",
+   "max_tier": "legend",
+   "can_promote": false
+  },
+  "xiao_wu": {
+   "name": "小舞",
+   "series": "",
+   "tiers": {
+    "legend": [
+     {
+      "name": "八方来运",
+      "kind": "career_activity_pct",
+      "pct": 15,
+      "activities": [
+       "war",
+       "quechang",
+       "shangbang",
+       "huashigang"
+      ]
+     },
+     {
+      "name": "招财之道",
+      "kind": "career_pct",
+      "pct": 5
+     }
+    ],
+    "wushuang": [
+     {
+      "name": "十面来财",
+      "kind": "career_activity_pct",
+      "pct": 20,
+      "activities": [
+       "war",
+       "quechang",
+       "shangbang",
+       "huashigang"
+      ]
+     },
+     {
+      "name": "招财之道",
+      "kind": "career_pct",
+      "pct": 5
+     },
+     {
+      "name": "星斗恩宠",
+      "kind": "worm_skill_cap",
+      "cap": 4,
+      "desc": "所有同职业门客虫师技能等级上限+4"
+     },
+     {
+      "name": "魂兽亲和",
+      "kind": "beast_level_cap",
+      "cap": 10,
+      "desc": "所有珍兽等级上限+10"
+     }
+    ]
+   },
+   "born_tier": "legend",
+   "max_tier": "wushuang",
+   "can_promote": true,
+   "suspended_tiers": [
+    "legend",
+    "wushuang"
+   ]
+  },
+  "xiao_qi": {
+   "name": "小柒",
+   "series": "",
+   "tiers": {
+    "legend": [
+     {
+      "name": "八方来运",
+      "kind": "career_activity_pct",
+      "pct": 15,
+      "activities": [
+       "war",
+       "quechang",
+       "shangbang",
+       "huashigang"
+      ]
+     },
+     {
+      "name": "招财之道",
+      "kind": "career_pct",
+      "pct": 5
+     }
+    ],
+    "wushuang": [
+     {
+      "name": "十面来财",
+      "kind": "career_activity_pct",
+      "pct": 20,
+      "activities": [
+       "war",
+       "quechang",
+       "shangbang",
+       "huashigang"
+      ]
+     },
+     {
+      "name": "招财之道",
+      "kind": "career_pct",
+      "pct": 5
+     },
+     {
+      "name": "才情横溢",
+      "kind": "worm_skill_cap",
+      "cap": 4,
+      "desc": "所有同职业门客虫师技能等级上限+4"
+     },
+     {
+      "name": "传世墨宝",
+      "kind": "activity_stat_pct",
+      "activity": "bianxue",
+      "stat": "all_aptitude",
+      "pct": 10,
+      "desc": "辩学大赛时全天资+10%"
+     }
+    ]
+   },
+   "born_tier": "legend",
+   "max_tier": "wushuang",
+   "can_promote": true,
+   "suspended_tiers": [
+    "legend",
+    "wushuang"
+   ]
+  },
+  "xiang_yu": {
+   "name": "项羽",
+   "series": "一世枭雄",
+   "tiers": {
+    "legend": [
+     {
+      "name": "八方来运",
+      "kind": "career_activity_pct",
+      "pct": 15,
+      "activities": [
+       "war",
+       "quechang",
+       "shangbang",
+       "huashigang"
+      ]
+     },
+     {
+      "name": "霸王举鼎",
+      "kind": "activity_stat_flat",
+      "activity": "chuhan",
+      "stat": "troops",
+      "value": 1600,
+      "desc": "楚汉争霸带兵上限+1600"
+     }
+    ]
+   },
+   "born_tier": "legend",
+   "max_tier": "legend",
+   "can_promote": false
+  },
+  "zheng_he": {
+   "name": "郑和",
+   "series": "奇人异士",
+   "tiers": {
+    "legend": [
+     {
+      "name": "八方来运",
+      "kind": "career_activity_pct",
+      "pct": 15,
+      "activities": [
+       "war",
+       "quechang",
+       "shangbang",
+       "huashigang"
+      ]
+     },
+     {
+      "name": "胸中兵甲",
+      "kind": "activity_stat_pct",
+      "activity": "nuhai",
+      "stat": "ship",
+      "pct": 5,
+      "desc": "怒海斩魁活动中战船属性+5%"
+     }
+    ]
+   },
+   "born_tier": "legend",
+   "max_tier": "legend",
+   "can_promote": false
+  },
+  "xiao_ba": {
+   "name": "小八",
+   "series": "",
+   "tiers": {
+    "legend": [
+     {
+      "name": "八方来运",
+      "kind": "career_activity_pct",
+      "pct": 15,
+      "activities": [
+       "war",
+       "quechang",
+       "shangbang",
+       "huashigang"
+      ]
+     },
+     {
+      "name": "招财之道",
+      "kind": "career_pct",
+      "pct": 5
+     }
+    ],
+    "wushuang": [
+     {
+      "name": "十面来财",
+      "kind": "career_activity_pct",
+      "pct": 20,
+      "activities": [
+       "war",
+       "quechang",
+       "shangbang",
+       "huashigang"
+      ]
+     },
+     {
+      "name": "招财之道",
+      "kind": "career_pct",
+      "pct": 5
+     },
+     {
+      "name": "点石成金",
+      "kind": "worm_skill_cap",
+      "cap": 4,
+      "desc": "所有同职业门客虫师技能等级上限+4"
+     }
+    ]
+   },
+   "born_tier": "legend",
+   "max_tier": "wushuang",
+   "can_promote": true,
+   "suspended_tiers": [
+    "legend",
+    "wushuang"
+   ]
+  },
+  "long_xiang": {
+   "name": "龙骧",
+   "series": "奇人异士",
+   "tiers": {
+    "legend": [
+     {
+      "name": "八方来运",
+      "kind": "career_activity_pct",
+      "pct": 15,
+      "activities": [
+       "war",
+       "quechang",
+       "shangbang",
+       "huashigang"
+      ]
+     },
+     {
+      "name": "舞龙腾飞",
+      "kind": "activity_stat_pct",
+      "activity": "linjie",
+      "stat": "power",
+      "pct": 5,
+      "desc": "临街迎春活动中战力+5%"
+     }
+    ]
+   },
+   "born_tier": "legend",
+   "max_tier": "legend",
+   "can_promote": false
+  },
+  "song_taizu": {
+   "name": "宋太祖",
+   "series": "一世枭雄",
+   "tiers": {
+    "legend": [
+     {
+      "name": "八方来运",
+      "kind": "career_activity_pct",
+      "pct": 15,
+      "activities": [
+       "war",
+       "quechang",
+       "shangbang",
+       "huashigang"
+      ]
+     },
+     {
+      "name": "武德丰沛",
+      "kind": "activity_stat_flat",
+      "activity": "yanyun",
+      "stat": "troops",
+      "value": 1600,
+      "desc": "燕云宏图活动中带兵上限+1600"
+     }
+    ]
+   },
+   "born_tier": "legend",
+   "max_tier": "legend",
+   "can_promote": false
+  },
+  "luo_haiwang": {
+   "name": "罗海王",
+   "series": "奇人异士",
+   "tiers": {
+    "legend": [
+     {
+      "name": "八方来运",
+      "kind": "career_activity_pct",
+      "pct": 15,
+      "activities": [
+       "war",
+       "quechang",
+       "shangbang",
+       "huashigang"
+      ]
+     },
+     {
+      "name": "乾坤定味",
+      "kind": "activity_stat_pct",
+      "activity": "haiwang",
+      "stat": "power",
+      "pct": 5,
+      "desc": "海王餐厅中实力+5%"
+     }
+    ]
+   },
+   "born_tier": "legend",
+   "max_tier": "legend",
+   "can_promote": false
+  },
+  "ma_xianglan": {
+   "name": "马湘兰",
+   "series": "秦淮五艳",
+   "tiers": {
+    "legend": [
+     {
+      "name": "八方来运",
+      "kind": "career_activity_pct",
+      "pct": 15,
+      "activities": [
+       "war",
+       "quechang",
+       "shangbang",
+       "huashigang"
+      ]
+     },
+     {
+      "name": "招财之道",
+      "kind": "career_pct",
+      "pct": 5
+     }
+    ]
+   },
+   "born_tier": "legend",
+   "max_tier": "legend",
+   "can_promote": false
+  },
+  "li_xiangjun": {
+   "name": "李香君",
+   "series": "秦淮五艳",
+   "tiers": {
+    "legend": [
+     {
+      "name": "八方来运",
+      "kind": "career_activity_pct",
+      "pct": 15,
+      "activities": [
+       "war",
+       "quechang",
+       "shangbang",
+       "huashigang"
+      ]
+     },
+     {
+      "name": "招财之道",
+      "kind": "career_pct",
+      "pct": 5
+     }
+    ]
+   },
+   "born_tier": "legend",
+   "max_tier": "legend",
+   "can_promote": false
+  },
+  "dong_xiaowan": {
+   "name": "董小宛",
+   "series": "秦淮五艳",
+   "tiers": {
+    "legend": [
+     {
+      "name": "八方来运",
+      "kind": "career_activity_pct",
+      "pct": 15,
+      "activities": [
+       "war",
+       "quechang",
+       "shangbang",
+       "huashigang"
+      ]
+     },
+     {
+      "name": "招财之道",
+      "kind": "career_pct",
+      "pct": 5
+     }
+    ]
+   },
+   "born_tier": "legend",
+   "max_tier": "legend",
+   "can_promote": false
+  },
+  "bian_yujing": {
+   "name": "卞玉京",
+   "series": "秦淮五艳",
+   "tiers": {
+    "legend": [
+     {
+      "name": "八方来运",
+      "kind": "career_activity_pct",
+      "pct": 15,
+      "activities": [
+       "war",
+       "quechang",
+       "shangbang",
+       "huashigang"
+      ]
+     },
+     {
+      "name": "招财之道",
+      "kind": "career_pct",
+      "pct": 5
+     }
+    ]
+   },
+   "born_tier": "legend",
+   "max_tier": "legend",
+   "can_promote": false
+  },
+  "kou_baimen": {
+   "name": "寇白门",
+   "series": "秦淮五艳",
+   "tiers": {
+    "legend": [
+     {
+      "name": "八方来运",
+      "kind": "career_activity_pct",
+      "pct": 15,
+      "activities": [
+       "war",
+       "quechang",
+       "shangbang",
+       "huashigang"
+      ]
+     },
+     {
+      "name": "招财之道",
+      "kind": "career_pct",
+      "pct": 5
+     }
+    ]
+   },
+   "born_tier": "legend",
+   "max_tier": "legend",
+   "can_promote": false
+  },
+  "jisi_fuhao": {
+   "name": "祭师妇好",
+   "series": "",
+   "tiers": {
+    "legend": [
+     {
+      "name": "八方来运",
+      "kind": "career_activity_pct",
+      "pct": 15,
+      "activities": [
+       "war",
+       "quechang",
+       "shangbang",
+       "huashigang"
+      ]
+     },
+     {
+      "name": "招财之道",
+      "kind": "career_pct",
+      "pct": 5
+     },
+     {
+      "name": "后母辛",
+      "kind": "hero_activity_income_pct",
+      "activity": "guild_war",
+      "pct": 10,
+      "desc": "商会据点战中我方门客赚钱+10%"
+     }
+    ]
+   },
+   "born_tier": "legend",
+   "max_tier": "legend",
+   "can_promote": false
+  },
+  "haotian_shangdi": {
+   "name": "昊天上帝",
+   "series": "上古神话",
+   "tiers": {
+    "wushuang": [
+     {
+      "name": "十面来财",
+      "kind": "career_activity_pct",
+      "pct": 20,
+      "activities": [
+       "war",
+       "quechang",
+       "shangbang",
+       "huashigang"
+      ]
+     },
+     {
+      "name": "进宝",
+      "kind": "all_hero_pct",
+      "pct": 5,
+      "desc": "所有门客赚钱+5%"
+     },
+     {
+      "name": "天道主宰",
+      "kind": "beast_level_cap",
+      "cap": 10,
+      "desc": "所有珍兽等级上限+10"
+     }
+    ]
+   },
+   "born_tier": "wushuang",
+   "max_tier": "wushuang",
+   "can_promote": false
+  },
+  "fuxi": {
+   "name": "伏羲",
+   "series": "上古神话",
+   "tiers": {
+    "wushuang": [
+     {
+      "name": "十面来财",
+      "kind": "career_activity_pct",
+      "pct": 20,
+      "activities": [
+       "war",
+       "quechang",
+       "shangbang",
+       "huashigang"
+      ]
+     },
+     {
+      "name": "进宝",
+      "kind": "all_hero_pct",
+      "pct": 5
+     },
+     {
+      "name": "结绳记事",
+      "kind": "beast_level_cap",
+      "cap": 10,
+      "desc": "所有珍兽等级上限+10"
+     }
+    ]
+   },
+   "born_tier": "wushuang",
+   "max_tier": "wushuang",
+   "can_promote": false
+  },
+  "dayu": {
+   "name": "大禹",
+   "series": "上古神话",
+   "tiers": {
+    "wushuang": [
+     {
+      "name": "十面来财",
+      "kind": "career_activity_pct",
+      "pct": 20,
+      "activities": [
+       "war",
+       "quechang",
+       "shangbang",
+       "huashigang"
+      ]
+     },
+     {
+      "name": "招财之道",
+      "kind": "career_pct",
+      "pct": 5
+     },
+     {
+      "name": "三过家门而不入",
+      "kind": "beast_level_cap",
+      "cap": 10,
+      "desc": "所有珍兽等级上限+10"
+     },
+     {
+      "name": "借花献佛",
+      "kind": "friend_chat_bond_pct",
+      "pct": 10
+     }
+    ]
+   },
+   "born_tier": "wushuang",
+   "max_tier": "wushuang",
+   "can_promote": false
+  },
+  "houyi": {
+   "name": "后羿",
+   "series": "上古神话",
+   "tiers": {
+    "wushuang": [
+     {
+      "name": "十面来财",
+      "kind": "career_activity_pct",
+      "pct": 20,
+      "activities": [
+       "war",
+       "quechang",
+       "shangbang",
+       "huashigang"
+      ]
+     },
+     {
+      "name": "进宝",
+      "kind": "all_hero_pct",
+      "pct": 5
+     },
+     {
+      "name": "羿射九日",
+      "kind": "beast_level_cap",
+      "cap": 10,
+      "desc": "所有珍兽等级上限+10"
+     }
+    ]
+   },
+   "born_tier": "wushuang",
+   "max_tier": "wushuang",
+   "can_promote": false
+  },
+  "chiyou": {
+   "name": "蚩尤",
+   "series": "上古神话",
+   "tiers": {
+    "wushuang": [
+     {
+      "name": "十面来财",
+      "kind": "career_activity_pct",
+      "pct": 20,
+      "activities": [
+       "war",
+       "quechang",
+       "shangbang",
+       "huashigang"
+      ]
+     },
+     {
+      "name": "进宝",
+      "kind": "all_hero_pct",
+      "pct": 5
+     },
+     {
+      "name": "百兵之主",
+      "kind": "beast_level_cap",
+      "cap": 10,
+      "desc": "所有珍兽等级上限+10"
+     }
+    ]
+   },
+   "born_tier": "wushuang",
+   "max_tier": "wushuang",
+   "can_promote": false
+  },
+  "donghuang_taiyi": {
+   "name": "东皇太一",
+   "series": "上古神话",
+   "tiers": {
+    "wushuang": [
+     {
+      "name": "十面来财",
+      "kind": "career_activity_pct",
+      "pct": 20,
+      "activities": [
+       "war",
+       "quechang",
+       "shangbang",
+       "huashigang"
+      ]
+     },
+     {
+      "name": "进宝",
+      "kind": "all_hero_pct",
+      "pct": 5
+     },
+     {
+      "name": "万物所出",
+      "kind": "beast_level_cap",
+      "cap": 10,
+      "desc": "所有珍兽等级上限+10"
+     }
+    ]
+   },
+   "born_tier": "wushuang",
+   "max_tier": "wushuang",
+   "can_promote": false
+  }
+ }
+}

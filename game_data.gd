@@ -596,6 +596,8 @@ var _fengzi_configs: Dictionary = {}   # 【新增】风姿配置（fengzi.json�
 
 var talent_system   # 【新增】天赋系统
 var hero_talents: Dictionary = {}   # 【新增】天赋存档 {hero_id: {"star": 星级}}
+var hero_aura_levels: Dictionary = {}   # 【新增】系列光环存档 {hero_id: {技能名: 等级}}（批次①；series_count/flat/.极 档实时计算不落盘）
+var quality_four_tiers: bool = false   # 【新增】品质四档迁移一次性标记：旧档 quality(0卓越/1传奇/2无双) 整体+1 的判据，随核心字段落盘
 @warning_ignore("unused_private_class_variable")   # 【新增】批次D：配置走 SYSTEM_LIST 动态注册（set 赋值/get 或跨文件读取），分析器扫不到属误报，非真未使用
 var _talent_configs: Dictionary = {}   # 【新增】天赋配置（talent.json）
 var hero_contracts: Dictionary = {}   # 【新增】苦情契约存档 {hero_id: {"level": int, "friends": [挚友id,...]}}
@@ -712,6 +714,8 @@ const CONFIG_SPECIAL_LOADERS := {
 	"miaoyin_medal.json": "miaoyin_system 内部子配置表（构造内成组自加载）",
 	"miaoyin_audition.json": "miaoyin_system 内部子配置表（构造内成组自加载）",
 	"miaoyin_satisfaction.json": "miaoyin_system 内部子配置表（构造内成组自加载）",
+	"hero_talents.json": "talent_system 构造内成组自加载（品质天赋+系列光环配置，批次①）",
+	"hero_auras.json": "talent_system 构造内成组自加载（品质天赋+系列光环配置，批次①）",
 }
 
 # 【新增】全部系统实例（_init 由 SYSTEM_LIST 循环填充；save/load 共用此一份，杜绝双清单漂移）
@@ -933,6 +937,7 @@ func save_game():
 		"reputation": reputation,
 		"player_name": player_name,
 		"save_id": save_id,
+		"quality_four_tiers": quality_four_tiers,
 		"identity_level": identity_level,
 		"identity_rewards_claimed": identity_rewards_claimed,
 		"last_daily_reward_time": last_daily_reward_time,
@@ -964,7 +969,10 @@ func load_game():
 	if player_name == "":
 		player_name = SURNAMES[randi() % SURNAMES.size()] + NAME_PARTS[randi() % NAME_PARTS.size()]
 
-	if not FileAccess.file_exists(save_path): return
+	if not FileAccess.file_exists(save_path):
+		# 【新增】无存档=新游戏：品质直接是新四档语义，迁移标记置真（防首存→再读误触发旧档+1迁移）
+		quality_four_tiers = true
+		return
 	var file = FileAccess.open(save_path, FileAccess.READ)
 	if not file: return
 	var json = JSON.new()
@@ -985,6 +993,9 @@ func load_game():
 	if data.has("last_logout_time"): last_logout_time = data.last_logout_time
 	if data.has("save_id") and str(data.save_id) != "":
 		save_id = str(data.save_id)
+	# 【新增】品质四档迁移标记：老档缺字段=false（触发 hero_system 旧档 quality+1 迁移），新档=true 直接采用
+	if data.has("quality_four_tiers"):
+		quality_four_tiers = bool(data.quality_four_tiers)
 	
 	# ===== 各子系统认领自己的字段（含旧存档兼容逻辑） =====
 	# 【改】读档循环走 _system_instances（顺序=清单顺序，drugshop 先于 talent 由清单保证）

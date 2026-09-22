@@ -26,7 +26,8 @@
 				"base_percent": 0.05,
 				"percent_per_level": 0.03
 			}
-		]
+		],
+		"quality": 0
 	},
 	"zheng_guonong": {
 		"name": "郑果农",
@@ -55,7 +56,8 @@
 				"base_percent": 0.05,
 				"percent_per_level": 0.03
 			}
-		]
+		],
+		"quality": 0
 	},
 	"liang_waiqi": {
 		"name": "梁歪七",
@@ -84,7 +86,8 @@
 				"base_percent": 0.05,
 				"percent_per_level": 0.03
 			}
-		]
+		],
+		"quality": 0
 	},
 	"zhu_huolang": {
 		"name": "祝货郎",
@@ -113,7 +116,8 @@
 				"base_percent": 0.05,
 				"percent_per_level": 0.03
 			}
-		]
+		],
+		"quality": 0
 	},
 	"kang_chashi": {
 		"name": "康茶师",
@@ -142,7 +146,8 @@
 				"base_percent": 0.05,
 				"percent_per_level": 0.03
 			}
-		]
+		],
+		"quality": 0
 	},
 	"cai_yufu": {
 		"name": "蔡渔夫",
@@ -171,7 +176,8 @@
 				"base_percent": 0.05,
 				"percent_per_level": 0.03
 			}
-		]
+		],
+		"quality": 0
 	},
 	"liu_xizi": {
 		"name": "刘戏子",
@@ -200,7 +206,8 @@
 				"base_percent": 0.05,
 				"percent_per_level": 0.03
 			}
-		]
+		],
+		"quality": 0
 	},
 	"zheng_chuzi": {
 		"name": "郑厨子",
@@ -229,7 +236,8 @@
 				"base_percent": 0.05,
 				"percent_per_level": 0.03
 			}
-		]
+		],
+		"quality": 0
 	},
 	"he_yashi": {
 		"name": "何雅士",
@@ -258,7 +266,8 @@
 				"base_percent": 0.05,
 				"percent_per_level": 0.03
 			}
-		]
+		],
+		"quality": 0
 	},
 	"liu_bukuai": {
 		"name": "柳捕快",
@@ -287,7 +296,8 @@
 				"base_percent": 0.05,
 				"percent_per_level": 0.03
 			}
-		]
+		],
+		"quality": 0
 	},
 	"luo_sunshan": {
 		"name": "洛孙山",
@@ -316,7 +326,8 @@
 				"base_percent": 0.05,
 				"percent_per_level": 0.03
 			}
-		]
+		],
+		"quality": 0
 	},
 	"li_gushi": {
 		"name": "黎蛊师",
@@ -345,7 +356,8 @@
 				"base_percent": 0.05,
 				"percent_per_level": 0.03
 			}
-		]
+		],
+		"quality": 0
 	},
 	"wu_shiren": {
 		"name": "武石仁",
@@ -374,7 +386,8 @@
 				"base_percent": 0.05,
 				"percent_per_level": 0.03
 			}
-		]
+		],
+		"quality": 0
 	},
 	"wan_jinya": {
 		"name": "万金牙",
@@ -403,7 +416,8 @@
 				"base_percent": 0.05,
 				"percent_per_level": 0.03
 			}
-		]
+		],
+		"quality": 0
 	},
 	"niu_fushi": {
 		"name": "牛符师",
@@ -432,7 +446,8 @@
 				"base_percent": 0.05,
 				"percent_per_level": 0.03
 			}
-		]
+		],
+		"quality": 0
 	},
 	"tang_hulu": {
 		"name": "唐葫芦",
@@ -461,7 +476,8 @@
 				"base_percent": 0.05,
 				"percent_per_level": 0.03
 			}
-		]
+		],
+		"quality": 0
 	},
 	"zhu_daliang": {
 		"name": "朱大亮",
@@ -490,7 +506,8 @@
 				"base_percent": 0.05,
 				"percent_per_level": 0.03
 			}
-		]
+		],
+		"quality": 0
 	},
 	"jia_houzi": {
 		"name": "贾猴子",
@@ -519,7 +536,8 @@
 				"base_percent": 0.05,
 				"percent_per_level": 0.03
 			}
-		]
+		],
+		"quality": 0
 	},
 	"hu_qigai": {
 		"name": "胡乞丐",
@@ -548,7 +566,8 @@
 				"base_percent": 0.05,
 				"percent_per_level": 0.03
 			}
-		]
+		],
+		"quality": 0
 	},
 	"zhang_laobo": {
 		"name": "张老伯",
@@ -577,7 +596,8 @@
 				"base_percent": 0.05,
 				"percent_per_level": 0.03
 			}
-		]
+		],
+		"quality": 0
 	},
 	"zhao_liehu": {
 		"name": "赵猎户",
@@ -606,7 +626,8 @@
 				"base_percent": 0.05,
 				"percent_per_level": 0.03
 			}
-		]
+		],
+		"quality": 1
 	},
 	"jia_jiguan": {
 		"name": "贾机关",
@@ -635,7 +656,8 @@
 				"base_percent": 0.05,
 				"percent_per_level": 0.03
 			}
-		]
+		],
+		"quality": 1
 	},
 	"liu_silang": {
 		"name": "刘四郎",
@@ -664,7 +686,8 @@
 				"base_percent": 0.05,
 				"percent_per_level": 0.03
 			}
-		]
+		],
+		"quality": 1
 	},
 	"yun_youren": {
 		"name": "云游人",
@@ -693,7 +716,8 @@
 				"base_percent": 0.05,
 				"percent_per_level": 0.03
 			}
-		]
+		],
+		"quality": 1
 	},
 	"zhuang_gengfu": {
 		"name": "庄更夫",
@@ -722,7 +746,8 @@
 				"base_percent": 0.05,
 				"percent_per_level": 0.03
 			}
-		]
+		],
+		"quality": 1
 	},
 	"qin_jianxian": {
 		"name": "秦剑仙",
@@ -752,7 +777,8 @@
 				"base_percent": 0.05,
 				"percent_per_level": 0.03
 			}
-		]
+		],
+		"quality": 1
 	},
 	"li_jianchi": {
 		"name": "李剑痴",
@@ -778,7 +804,8 @@
 				"base_percent": 0.05,
 				"percent_per_level": 0.03
 			}
-		]
+		],
+		"quality": 1
 	},
 	"cao_tiejiang": {
 		"name": "曹铁匠",
@@ -808,7 +835,8 @@
 				"base_percent": 0.05,
 				"percent_per_level": 0.03
 			}
-		]
+		],
+		"quality": 1
 	},
 	"xing_huwei": {
 		"name": "邢护卫",
@@ -838,7 +866,8 @@
 				"base_percent": 0.05,
 				"percent_per_level": 0.03
 			}
-		]
+		],
+		"quality": 1
 	},
 	"yan_xiaoer": {
 		"name": "严小二",
@@ -868,7 +897,8 @@
 				"base_percent": 0.05,
 				"percent_per_level": 0.03
 			}
-		]
+		],
+		"quality": 1
 	},
 	"qian_caizhu": {
 		"name": "钱财主",
@@ -898,7 +928,8 @@
 				"base_percent": 0.05,
 				"percent_per_level": 0.03
 			}
-		]
+		],
+		"quality": 1
 	},
 	"wu_biaoshi": {
 		"name": "武镖师",
@@ -928,7 +959,8 @@
 				"base_percent": 0.05,
 				"percent_per_level": 0.03
 			}
-		]
+		],
+		"quality": 1
 	},
 	"yao_wuzuo": {
 		"name": "姚仵作",
@@ -957,7 +989,8 @@
 				"base_percent": 0.05,
 				"percent_per_level": 0.03
 			}
-		]
+		],
+		"quality": 1
 	},
 	"pi_yingjiang": {
 		"name": "皮影匠人",
@@ -986,7 +1019,8 @@
 				"base_percent": 0.05,
 				"percent_per_level": 0.03
 			}
-		]
+		],
+		"quality": 1
 	},
 	"tian_shiren": {
 		"name": "田诗人",
@@ -1015,7 +1049,8 @@
 				"base_percent": 0.05,
 				"percent_per_level": 0.03
 			}
-		]
+		],
+		"quality": 1
 	},
 	"si_lang": {
 		"name": "四郎",
@@ -1048,7 +1083,8 @@
 				"base_percent": 0.05,
 				"percent_per_level": 0.03
 			}
-		]
+		],
+		"quality": 1
 	},
 	"yan_xiansheng": {
 		"name": "严先生",
@@ -1080,7 +1116,8 @@
 				"base_percent": 0.05,
 				"percent_per_level": 0.03
 			}
-		]
+		],
+		"quality": 2
 	},
 	"feng_mier": {
 		"name": "冯蜜儿",
@@ -1113,7 +1150,8 @@
 				"base_percent": 0.05,
 				"percent_per_level": 0.03
 			}
-		]
+		],
+		"quality": 2
 	},
 	"li_shenshou": {
 		"name": "李神手",
@@ -1146,7 +1184,8 @@
 				"base_percent": 0.05,
 				"percent_per_level": 0.03
 			}
-		]
+		],
+		"quality": 2
 	},
 	"zhen_tufu": {
 		"name": "镇屠夫",
@@ -1180,7 +1219,8 @@
 				"base_percent": 0.05,
 				"percent_per_level": 0.03
 			}
-		]
+		],
+		"quality": 2
 	},
 	"hong_laoxie": {
 		"name": "洪老邪",
@@ -1213,7 +1253,8 @@
 				"base_percent": 0.05,
 				"percent_per_level": 0.03
 			}
-		]
+		],
+		"quality": 2
 	},
 	"wu_daozi": {
 		"name": "吴道子",
@@ -1246,7 +1287,8 @@
 				"base_percent": 0.05,
 				"percent_per_level": 0.03
 			}
-		]
+		],
+		"quality": 2
 	},
 	"sun_bin": {
 		"name": "孙膑",
@@ -1278,7 +1320,8 @@
 				"base_percent": 0.05,
 				"percent_per_level": 0.03
 			}
-		]
+		],
+		"quality": 2
 	},
 	"lu_ban": {
 		"name": "鲁班",
@@ -1312,7 +1355,8 @@
 				"base_percent": 0.05,
 				"percent_per_level": 0.03
 			}
-		]
+		],
+		"quality": 2
 	},
 	"du_kang": {
 		"name": "杜康",
@@ -1344,7 +1388,8 @@
 				"base_percent": 0.05,
 				"percent_per_level": 0.03
 			}
-		]
+		],
+		"quality": 2
 	},
 	"ou_yezi": {
 		"name": "欧冶子",
@@ -1378,7 +1423,8 @@
 				"base_percent": 0.05,
 				"percent_per_level": 0.03
 			}
-		]
+		],
+		"quality": 2
 	},
 	"gao_jianli": {
 		"name": "高渐离",
@@ -1411,7 +1457,8 @@
 				"base_percent": 0.05,
 				"percent_per_level": 0.03
 			}
-		]
+		],
+		"quality": 2
 	},
 	"su_wu": {
 		"name": "苏武",
@@ -1443,7 +1490,8 @@
 				"base_percent": 0.05,
 				"percent_per_level": 0.03
 			}
-		]
+		],
+		"quality": 2
 	},
 	"bi_sheng": {
 		"name": "毕昇",
@@ -1475,7 +1523,8 @@
 				"base_percent": 0.05,
 				"percent_per_level": 0.03
 			}
-		]
+		],
+		"quality": 2
 	},
 	"zong_ze": {
 		"name": "宗泽",
@@ -1510,7 +1559,8 @@
 				"base_percent": 0.05,
 				"percent_per_level": 0.03
 			}
-		]
+		],
+		"quality": 2
 	},
 	"zhang_sanfeng": {
 		"name": "张三丰",
@@ -1544,7 +1594,8 @@
 				"base_percent": 0.05,
 				"percent_per_level": 0.03
 			}
-		]
+		],
+		"quality": 2
 	},
 	"shen_wansan": {
 		"name": "沈万三",
@@ -1578,7 +1629,8 @@
 				"base_percent": 0.05,
 				"percent_per_level": 0.03
 			}
-		]
+		],
+		"quality": 2
 	},
 	"shi_gandang": {
 		"name": "石敢当",
@@ -1617,7 +1669,8 @@
 				"base_percent": 0.05,
 				"percent_per_level": 0.03
 			}
-		]
+		],
+		"quality": 2
 	},
 	"song_huizong": {
 		"name": "宋徽宗",
@@ -1657,7 +1710,8 @@
 				"base_percent": 0.05,
 				"percent_per_level": 0.03
 			}
-		]
+		],
+		"quality": 2
 	},
 	"cai_jing": {
 		"name": "蔡京",
@@ -1696,7 +1750,8 @@
 				"base_percent": 0.05,
 				"percent_per_level": 0.03
 			}
-		]
+		],
+		"quality": 2
 	},
 	"dunhuang_jiangshen": {
 		"name": "敦煌匠神",
@@ -1734,7 +1789,8 @@
 				"base_percent": 0.05,
 				"percent_per_level": 0.03
 			}
-		]
+		],
+		"quality": 2
 	},
 	"baixi_shengdao": {
 		"name": "百戏圣刀",
@@ -1772,7 +1828,8 @@
 				"base_percent": 0.05,
 				"percent_per_level": 0.03
 			}
-		]
+		],
+		"quality": 2
 	},
 	"song_jiang": {
 		"name": "宋江",
@@ -1808,7 +1865,8 @@
 				"base_percent": 0.05,
 				"percent_per_level": 0.03
 			}
-		]
+		],
+		"quality": 2
 	},
 	"huo_yanwang": {
 		"name": "活阎王",
@@ -1846,7 +1904,8 @@
 				"base_percent": 0.05,
 				"percent_per_level": 0.03
 			}
-		]
+		],
+		"quality": 2
 	},
 	"lei_en": {
 		"name": "雷恩",
@@ -1891,7 +1950,8 @@
 				"base_percent": 0.05,
 				"percent_per_level": 0.03
 			}
-		]
+		],
+		"quality": 2
 	},
 	"xiang_en": {
 		"name": "向恩",
@@ -1935,7 +1995,8 @@
 				"base_percent": 0.05,
 				"percent_per_level": 0.03
 			}
-		]
+		],
+		"quality": 2
 	},
 	"zhou_yu": {
 		"name": "周瑜",
@@ -1979,7 +2040,8 @@
 				"base_percent": 0.05,
 				"percent_per_level": 0.03
 			}
-		]
+		],
+		"quality": 2
 	},
 	"qin_shihuang": {
 		"name": "秦始皇",
@@ -2042,7 +2104,8 @@
 				"base_percent": 0.05,
 				"percent_per_level": 0.03
 			}
-		]
+		],
+		"quality": 2
 	},
 	"gun_haijiao": {
 		"name": "滚海蛟",
@@ -2078,7 +2141,8 @@
 				"base_percent": 0.05,
 				"percent_per_level": 0.03
 			}
-		]
+		],
+		"quality": 2
 	},
 	"lv_bu": {
 		"name": "吕布",
@@ -2117,7 +2181,8 @@
 				"base_percent": 0.05,
 				"percent_per_level": 0.03
 			}
-		]
+		],
+		"quality": 2
 	},
 	"ne_zha": {
 		"name": "哪吒",
@@ -2157,7 +2222,8 @@
 				"base_percent": 0.05,
 				"percent_per_level": 0.03
 			}
-		]
+		],
+		"quality": 2
 	},
 	"sun_wu": {
 		"name": "孙武",
@@ -2196,7 +2262,8 @@
 				"base_percent": 0.05,
 				"percent_per_level": 0.03
 			}
-		]
+		],
+		"quality": 2
 	},
 	"qin_qiong_yuchi_gong": {
 		"name": "秦琼尉迟恭",
@@ -2236,7 +2303,8 @@
 				"base_percent": 0.05,
 				"percent_per_level": 0.03
 			}
-		]
+		],
+		"quality": 2
 	},
 	"ao_wu": {
 		"name": "敖武",
@@ -2276,7 +2344,8 @@
 				"base_percent": 0.05,
 				"percent_per_level": 0.03
 			}
-		]
+		],
+		"quality": 2
 	},
 	"xiao_wu": {
 		"name": "小舞",
@@ -2322,7 +2391,8 @@
 				"base_percent": 0.05,
 				"percent_per_level": 0.03
 			}
-		]
+		],
+		"quality": 2
 	},
 	"xiao_qi": {
 		"name": "小柒",
@@ -2375,7 +2445,8 @@
 				"base_percent": 0.05,
 				"percent_per_level": 0.03
 			}
-		]
+		],
+		"quality": 2
 	},
 	"xiang_yu": {
 		"name": "项羽",
@@ -2414,7 +2485,8 @@
 				"base_percent": 0.05,
 				"percent_per_level": 0.03
 			}
-		]
+		],
+		"quality": 2
 	},
 	"zheng_he": {
 		"name": "郑和",
@@ -2453,7 +2525,8 @@
 				"base_percent": 0.05,
 				"percent_per_level": 0.03
 			}
-		]
+		],
+		"quality": 2
 	},
 	"xiao_ba": {
 		"name": "小八",
@@ -2501,7 +2574,8 @@
 				"base_percent": 0.05,
 				"percent_per_level": 0.03
 			}
-		]
+		],
+		"quality": 2
 	},
 	"long_xiang": {
 		"name": "龙骧",
@@ -2540,7 +2614,8 @@
 				"base_percent": 0.05,
 				"percent_per_level": 0.03
 			}
-		]
+		],
+		"quality": 2
 	},
 	"song_taizu": {
 		"name": "宋太祖",
@@ -2578,7 +2653,8 @@
 				"base_percent": 0.05,
 				"percent_per_level": 0.03
 			}
-		]
+		],
+		"quality": 2
 	},
 	"luo_haiwang": {
 		"name": "罗海王",
@@ -2616,7 +2692,8 @@
 				"base_percent": 0.05,
 				"percent_per_level": 0.03
 			}
-		]
+		],
+		"quality": 2
 	},
 	"ma_xianglan": {
 		"name": "马湘兰",
@@ -2663,7 +2740,8 @@
 				"base_percent": 0.05,
 				"percent_per_level": 0.03
 			}
-		]
+		],
+		"quality": 2
 	},
 	"li_xiangjun": {
 		"name": "李香君",
@@ -2711,7 +2789,8 @@
 				"base_percent": 0.05,
 				"percent_per_level": 0.03
 			}
-		]
+		],
+		"quality": 2
 	},
 	"dong_xiaowan": {
 		"name": "董小宛",
@@ -2758,7 +2837,8 @@
 				"base_percent": 0.05,
 				"percent_per_level": 0.03
 			}
-		]
+		],
+		"quality": 2
 	},
 	"bian_yujing": {
 		"name": "卞玉京",
@@ -2805,7 +2885,8 @@
 				"base_percent": 0.05,
 				"percent_per_level": 0.03
 			}
-		]
+		],
+		"quality": 2
 	},
 	"kou_baimen": {
 		"name": "寇白门",
@@ -2853,7 +2934,8 @@
 				"base_percent": 0.05,
 				"percent_per_level": 0.03
 			}
-		]
+		],
+		"quality": 2
 	},
 	"hu_lu_xianren": {
 		"name": "葫芦仙人",
@@ -2889,7 +2971,8 @@
 				"base_percent": 0.05,
 				"percent_per_level": 0.03
 			}
-		]
+		],
+		"quality": 1
 	},
 	"xie_lu": {
 		"name": "解鲁",
@@ -2922,7 +3005,8 @@
 				"base_percent": 0.05,
 				"percent_per_level": 0.03
 			}
-		]
+		],
+		"quality": 1
 	},
 	"yang_jian": {
 		"name": "杨戬",
@@ -2958,7 +3042,8 @@
 				"base_percent": 0.05,
 				"percent_per_level": 0.03
 			}
-		]
+		],
+		"quality": 1
 	},
 	"xiao_yuer": {
 		"name": "小鱼儿",
@@ -2993,7 +3078,8 @@
 				"base_percent": 0.05,
 				"percent_per_level": 0.03
 			}
-		]
+		],
+		"quality": 1
 	},
 	"mei_changsu": {
 		"name": "梅长苏",
@@ -3028,7 +3114,8 @@
 				"base_percent": 0.05,
 				"percent_per_level": 0.03
 			}
-		]
+		],
+		"quality": 1
 	},
 	"zhang_qiling": {
 		"name": "张起灵",
@@ -3063,7 +3150,8 @@
 				"base_percent": 0.05,
 				"percent_per_level": 0.03
 			}
-		]
+		],
+		"quality": 1
 	},
 	"bai_yuechu": {
 		"name": "白月初",
@@ -3072,7 +3160,7 @@
 		"extra_income": 0,
 		"breakthrough_count": 1,
 		"initial_aptitude": 66,
-		"quality": 0,
+		"quality": 1,
 		"promotion": {
 			"name": "续缘",
 			"skill_name": "仙缘梦绕",
@@ -3082,12 +3170,59 @@
 			"cost_amount": 600,
 			"aptitude_per_level": 6,
 			"tiers": [
-				{"threshold": 5, "quality": 1, "initial_aptitude": 99, "new_skills": [{"name": "前世回忆", "aptitude_per_level": 3}]},
-				{"threshold": 15, "new_skills": [{"name": "缘定三生", "aptitude_per_level": 3}]},
-				{"threshold": 30, "new_skills": [{"name": "相守如初", "aptitude_per_level": 3}]},
-				{"threshold": 45, "new_skills": [{"name": "续写缘章", "aptitude_per_level": 3}]},
-				{"threshold": 60, "new_skills": [{"name": "星辰签缘", "aptitude_per_level": 4}]},
-				{"threshold": 80, "quality": 2, "initial_aptitude": 333, "new_skills": []}
+				{
+					"threshold": 5,
+					"quality": 2,
+					"initial_aptitude": 99,
+					"new_skills": [
+						{
+							"name": "前世回忆",
+							"aptitude_per_level": 3
+						}
+					]
+				},
+				{
+					"threshold": 15,
+					"new_skills": [
+						{
+							"name": "缘定三生",
+							"aptitude_per_level": 3
+						}
+					]
+				},
+				{
+					"threshold": 30,
+					"new_skills": [
+						{
+							"name": "相守如初",
+							"aptitude_per_level": 3
+						}
+					]
+				},
+				{
+					"threshold": 45,
+					"new_skills": [
+						{
+							"name": "续写缘章",
+							"aptitude_per_level": 3
+						}
+					]
+				},
+				{
+					"threshold": 60,
+					"new_skills": [
+						{
+							"name": "星辰签缘",
+							"aptitude_per_level": 4
+						}
+					]
+				},
+				{
+					"threshold": 80,
+					"quality": 3,
+					"initial_aptitude": 333,
+					"new_skills": []
+				}
 			]
 		},
 		"assigned_shop": "",
@@ -3152,7 +3287,8 @@
 				"base_percent": 0.05,
 				"percent_per_level": 0.03
 			}
-		]
+		],
+		"quality": 1
 	},
 	"hua_mulan": {
 		"name": "花木兰",
@@ -3187,7 +3323,8 @@
 				"base_percent": 0.05,
 				"percent_per_level": 0.03
 			}
-		]
+		],
+		"quality": 1
 	},
 	"wang_zhaojun": {
 		"name": "王昭君",
@@ -3229,7 +3366,8 @@
 				"base_percent": 0.05,
 				"percent_per_level": 0.03
 			}
-		]
+		],
+		"quality": 1
 	},
 	"lan_feihong": {
 		"name": "兰飞鸿",
@@ -3264,7 +3402,8 @@
 				"base_percent": 0.05,
 				"percent_per_level": 0.03
 			}
-		]
+		],
+		"quality": 1
 	},
 	"li_bai": {
 		"name": "李白",
@@ -3273,7 +3412,7 @@
 		"extra_income": 0,
 		"breakthrough_count": 1,
 		"initial_aptitude": 66,
-		"quality": 0,
+		"quality": 1,
 		"fu_shi_level": 0,
 		"assigned_shop": "",
 		"bound_heroes": [
@@ -3297,7 +3436,7 @@
 			"tiers": [
 				{
 					"threshold": 5,
-					"quality": 1,
+					"quality": 2,
 					"initial_aptitude": 99,
 					"new_skills": [
 						{
@@ -3344,7 +3483,7 @@
 				},
 				{
 					"threshold": 80,
-					"quality": 2,
+					"quality": 3,
 					"initial_aptitude": 333,
 					"new_skills": []
 				}
@@ -3395,7 +3534,8 @@
 				"base_percent": 0.05,
 				"percent_per_level": 0.03
 			}
-		]
+		],
+		"quality": 1
 	},
 	"luo_caifeng": {
 		"name": "罗裁缝",
@@ -3429,7 +3569,8 @@
 				"base_percent": 0.05,
 				"percent_per_level": 0.03
 			}
-		]
+		],
+		"quality": 2
 	},
 	"ding_xiren": {
 		"name": "丁戏人",
@@ -3468,7 +3609,8 @@
 				"base_percent": 0.05,
 				"percent_per_level": 0.03
 			}
-		]
+		],
+		"quality": 2
 	},
 	"fang_huotou": {
 		"name": "方火头",
@@ -3507,7 +3649,8 @@
 				"base_percent": 0.05,
 				"percent_per_level": 0.03
 			}
-		]
+		],
+		"quality": 2
 	},
 	"leng_erpi": {
 		"name": "冷二皮",
@@ -3546,7 +3689,8 @@
 				"base_percent": 0.05,
 				"percent_per_level": 0.03
 			}
-		]
+		],
+		"quality": 2
 	},
 	"ya_jiu": {
 		"name": "牙九",
@@ -3590,7 +3734,8 @@
 				"base_percent": 0.05,
 				"percent_per_level": 0.03
 			}
-		]
+		],
+		"quality": 2
 	},
 	"guanxingshi": {
 		"name": "观星师",
@@ -3640,7 +3785,8 @@
 				"base_percent": 0.05,
 				"percent_per_level": 0.03
 			}
-		]
+		],
+		"quality": 2
 	},
 	"jisi_fuhao": {
 		"name": "祭师妇好",
@@ -3695,7 +3841,8 @@
 				"base_percent": 0.05,
 				"percent_per_level": 0.03
 			}
-		]
+		],
+		"quality": 2
 	},
 	"dayu": {
 		"name": "大禹",
@@ -3757,7 +3904,8 @@
 				"base_percent": 0.05,
 				"percent_per_level": 0.03
 			}
-		]
+		],
+		"quality": 3
 	},
 	"fuxi": {
 		"name": "伏羲",
@@ -3825,7 +3973,8 @@
 				"base_percent": 0.05,
 				"percent_per_level": 0.03
 			}
-		]
+		],
+		"quality": 3
 	},
 	"houyi": {
 		"name": "后羿",
@@ -3899,7 +4048,8 @@
 				"base_percent": 0.05,
 				"percent_per_level": 0.03
 			}
-		]
+		],
+		"quality": 3
 	},
 	"chiyou": {
 		"name": "蚩尤",
@@ -3979,7 +4129,8 @@
 				"base_percent": 0.05,
 				"percent_per_level": 0.03
 			}
-		]
+		],
+		"quality": 3
 	},
 	"donghuang_taiyi": {
 		"name": "东皇太一",
@@ -4059,7 +4210,8 @@
 				"base_percent": 0.05,
 				"percent_per_level": 0.03
 			}
-		]
+		],
+		"quality": 3
 	},
 	"haotian_shangdi": {
 		"name": "昊天上帝",
@@ -4138,6 +4290,7 @@
 				"base_percent": 0.05,
 				"percent_per_level": 0.03
 			}
-		]
+		],
+		"quality": 3
 	}
 }

@@ -62,14 +62,14 @@ static func get_total_aptitude(g, hero_id: String) -> int:
 	
 	return total
 
-# 门客品质名
+# 【改】门客品质名：四档（2026-09-21 拍板：0=优秀/1=卓越/2=传奇/3=无双；旧三档 0=卓越/1=传奇/2=无双 已由读档迁移整体+1）
 static func get_quality_name(quality: int) -> String:
-	var names = {0: "", 1: "传奇", 2: "无双"}
+	var names = {0: "优秀", 1: "卓越", 2: "传奇", 3: "无双"}
 	return names.get(quality, "")
 
-# 【新增】门客品质颜色：普通(=卓越)紫/传奇橙/无双红；后续在前面加"优秀"蓝档时同步扩充
+# 【改】门客品质颜色：优秀蓝/卓越紫/传奇橙/无双红（与全仓品质色规范一致）
 static func get_quality_color(quality: int) -> String:
-	var colors = {0: "#9b59b6", 1: "#e67e22", 2: "#e74c3c"}
+	var colors = {0: "#3498db", 1: "#9b59b6", 2: "#e67e22", 3: "#e74c3c"}
 	return colors.get(quality, "#f2f2f2")
 
 # ============ 赚速（唯一入口，外部一律调这里） ============

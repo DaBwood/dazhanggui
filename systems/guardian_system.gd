@@ -25,7 +25,8 @@ func _load_config():
 # 【新增】初始化门客守护灵（仅无双门客，防重复）
 func init_guardian(hero_id: String):
 	if not g.heroes.has(hero_id): return
-	if g.heroes[hero_id].get("quality", 0) != 2: return
+	# 【改】品质四档改造：无双档 2→3（2026-09-21 拍板）
+	if g.heroes[hero_id].get("quality", 0) != 3: return
 	if g.guardian_spirits.has(hero_id): return
 	var skills = []
 	for phase in PHASES:
@@ -277,6 +278,7 @@ func load_save_data(data: Dictionary):
 	# 读取方(119/125/178行)全部 get 默认，无双门客补初始化循环保留（新门客获取也靠它）
 	# 旧档兼容：为所有无双门客补初始化（已存在的不覆盖）
 	for hero_id in g.heroes.keys():
-		if g.heroes[hero_id].get("quality", 0) == 2:
+		# 【改】品质四档改造：无双档 2→3
+		if g.heroes[hero_id].get("quality", 0) == 3:
 			if not g.guardian_spirits.has(hero_id):
 				init_guardian(hero_id)

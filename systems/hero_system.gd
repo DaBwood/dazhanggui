@@ -53,6 +53,25 @@ func load_save_data(s: Dictionary):
 	if s.has("heroes"):
 		# 只覆盖存档里有的门客（保留老进度）；存档没有的新门客保持初始值
 		g.heroes = s.heroes.duplicate(true)
+		# 【新增】品质四档改造·旧档迁移（2026-09-21 拍板）：旧档 quality 语义 0=卓越/1=传奇/2=无双，
+		# 新档 0=优秀/1=卓越/2=传奇/3=无双——旧档已写的 quality 整体+1（李白/白月初旧值0→新值1 卓越）；
+		# 未写 quality 的（绝大多数门客）按 heroes.json 配置 born 值补齐（含上古神话6人=3 连带解锁守护灵）。
+		# 迁移一次性：由中枢 quality_four_tiers 标记判定，迁移后置真，新档不再重复+1。
+		if not g.quality_four_tiers:
+			for hid in g.heroes.keys():
+				var hh = g.heroes[hid]
+				if hh.has("quality"):
+					hh.quality = int(hh.quality) + 1
+				# 晋升档位 quality 同步+1：旧档 promotion.tiers 存的是旧三档值（1传奇/2无双），
+				# 不迁的话下次晋升升级会按旧值回写 hero.quality（传奇被写回成卓越）
+				if hh.has("promotion") and hh.promotion.get("tiers", []) is Array:
+					for tier in hh.promotion.tiers:
+						if tier.has("quality"):
+							tier.quality = int(tier.quality) + 1
+			g.quality_four_tiers = true
+		for hid in g.heroes.keys():
+			if not g.heroes[hid].has("quality"):
+				g.heroes[hid].quality = int(g._hero_configs.get(hid, {}).get("quality", 0))
 	# 【新增】存档迁移：旧档门客的 base_income 字段改名为 extra_income
 	# （该字段实为"额外赚速池"，与基础赚速公式无关；旧档已攒数值原样保留，含旧版升级攒入的部分）
 	for hero in g.heroes.values():

@@ -1,0 +1,3402 @@
+{
+	"_comment": "门客系列光环配置（同 xlsx 转录）。cost 公式：升级第k级消耗=base+step*floor((k-1)/step_every)。mode：series_count=等级自动=已招募同系列门客数（max_level=series_count 表示满级随人数浮动）；item=消耗 hero_items 指定道具；series_total_level=刘昴星.极专属，等级=同系列其他门客对应普通技能等级总和查 thresholds 表；flat=固定效果不可升级。effect.kind：self_pct=自身赚钱+per%/级，career_pct=同职业门客赚钱+per%/级，series_aptitude=全系列门客资质+per/级。消耗道具名需在 items.json 占位登记（开发批处理）。",
+	"settings": {
+		"cost_formula": "cost(k)=base+step*floor((k-1)/step_every)"
+	},
+	"series": {
+		"teji_chushi": {
+			"label": "特级厨师",
+			"skills": [
+				{
+					"name": "特级厨师",
+					"mode": "series_count",
+					"effect": {
+						"kind": "self_pct",
+						"per": 5
+					},
+					"max_level": 7
+				},
+				{
+					"name": "中华一番",
+					"mode": "item",
+					"effect": {
+						"kind": "self_pct",
+						"per": 5
+					},
+					"max_level": 20,
+					"cost": {
+						"base": 5,
+						"step": 5,
+						"step_every": 1
+					},
+					"unlock": ""
+				},
+				{
+					"name": "玉盘珍馐",
+					"mode": "item",
+					"effect": {
+						"kind": "career_pct",
+						"per": 3
+					},
+					"max_level": 20,
+					"cost": {
+						"base": 50,
+						"step": 5,
+						"step_every": 1
+					},
+					"unlock": "中华一番"
+				},
+				{
+					"name": "身临其境",
+					"mode": "item",
+					"effect": {
+						"kind": "series_aptitude",
+						"per": 5
+					},
+					"max_level": 200,
+					"cost": {
+						"base": 10,
+						"step": 1,
+						"step_every": 2
+					},
+					"unlock": "中华一番"
+				}
+			],
+			"hero_items": {
+				"解鲁": "鎏金棍",
+				"四郎": "包子",
+				"兰飞鸿": "墨麟菜刀",
+				"雷恩": "紫宸铜壶",
+				"向恩": "北斗钢刀",
+				"周瑜": "盘龙壶"
+			},
+			"special": {
+				"刘昴星": {
+					"mode": "series_total_level",
+					"skills": [
+						"中华一番.极",
+						"玉盘珍馐.极",
+						"身临其境.极"
+					],
+					"thresholds": [
+						1,
+						2,
+						3,
+						4,
+						5,
+						7,
+						9,
+						11,
+						13,
+						15,
+						18,
+						21,
+						24,
+						27,
+						30
+					]
+				}
+			}
+		},
+		"kaishan_bizu": {
+			"label": "开山鼻祖",
+			"skills": [
+				{
+					"name": "开山鼻祖",
+					"mode": "series_count",
+					"effect": {
+						"kind": "self_pct",
+						"per": 5
+					},
+					"max_level": 5
+				},
+				{
+					"name": "登峰造极",
+					"mode": "item",
+					"effect": {
+						"kind": "self_pct",
+						"per": 5
+					},
+					"max_level": 20,
+					"cost": {
+						"base": 5,
+						"step": 5,
+						"step_every": 1
+					}
+				},
+				{
+					"name": "超群绝伦",
+					"mode": "item",
+					"effect": {
+						"kind": "career_pct",
+						"per": 2
+					},
+					"max_level": 20,
+					"cost": {
+						"base": 50,
+						"step": 5,
+						"step_every": 1
+					},
+					"unlock": "登峰造极"
+				},
+				{
+					"name": "穷极思变",
+					"mode": "item",
+					"effect": {
+						"kind": "series_aptitude",
+						"per": 2
+					},
+					"max_level": 200,
+					"cost": {
+						"base": 10,
+						"step": 1,
+						"step_every": 2
+					},
+					"unlock": "登峰造极"
+				}
+			],
+			"hero_items": {
+				"*": "开山印"
+			}
+		},
+		"yidai_zongjiang": {
+			"label": "一代宗匠",
+			"skills": [
+				{
+					"name": "一代宗匠",
+					"mode": "series_count",
+					"effect": {
+						"kind": "self_pct",
+						"per": 5
+					},
+					"max_level": 5
+				},
+				{
+					"name": "独具匠心",
+					"mode": "item",
+					"effect": {
+						"kind": "self_pct",
+						"per": 5
+					},
+					"max_level": 20,
+					"cost": {
+						"base": 5,
+						"step": 5,
+						"step_every": 1
+					}
+				},
+				{
+					"name": "妙手天成",
+					"mode": "item",
+					"effect": {
+						"kind": "career_pct",
+						"per": 2
+					},
+					"max_level": 20,
+					"cost": {
+						"base": 50,
+						"step": 5,
+						"step_every": 1
+					},
+					"unlock": "独具匠心"
+				},
+				{
+					"name": "匠心共济",
+					"mode": "item",
+					"effect": {
+						"kind": "series_aptitude",
+						"per": 2
+					},
+					"max_level": 200,
+					"cost": {
+						"base": 10,
+						"step": 1,
+						"step_every": 2
+					},
+					"unlock": "独具匠心"
+				}
+			],
+			"hero_items": {
+				"*": "宗匠印"
+			}
+		},
+		"yishi_xiaoxiong": {
+			"label": "一世枭雄",
+			"skills": [
+				{
+					"name": "枭雄本色",
+					"mode": "item",
+					"effect": {
+						"kind": "series_aptitude",
+						"per": 1
+					},
+					"max_level": 200,
+					"cost": {
+						"base": 10,
+						"step": 0,
+						"step_every": 1
+					}
+				},
+				{
+					"name": "一世枭雄",
+					"mode": "series_count",
+					"effect": {
+						"kind": "self_pct",
+						"per": 5
+					},
+					"max_level": "series_count"
+				},
+				{
+					"name": "道君皇帝",
+					"mode": "item",
+					"effect": {
+						"kind": "self_pct",
+						"per": 5
+					},
+					"max_level": 20,
+					"cost": {
+						"base": 5,
+						"step": 5,
+						"step_every": 1
+					}
+				},
+				{
+					"name": "权倾朝野",
+					"mode": "item",
+					"effect": {
+						"kind": "career_pct",
+						"per": 5
+					},
+					"max_level": 20,
+					"cost": {
+						"base": 100,
+						"step": 10,
+						"step_every": 1
+					},
+					"unlock": "道君皇帝"
+				},
+				{
+					"name": "操弄权术",
+					"mode": "item",
+					"effect": {
+						"kind": "series_aptitude",
+						"per": 5
+					},
+					"max_level": 200,
+					"cost": {
+						"base": 10,
+						"step": 1,
+						"step_every": 2
+					},
+					"unlock": "道君皇帝"
+				}
+			],
+			"hero_items": {
+				"宋徽宗": "宣和七玺",
+				"蔡京": "权相之冠",
+				"宋江": "天魁令旗",
+				"活阎王": "冤魂斗",
+				"秦始皇": "泰阿剑",
+				"吕布": "方天画戟",
+				"孙武": "虎符军令",
+				"秦琼尉迟恭": "隋唐话本",
+				"项羽": "霸王枪",
+				"宋太祖": "黄龙锦缎"
+			}
+		},
+		"qiren_yishi": {
+			"label": "奇人异士",
+			"skills": [
+				{
+					"name": "市井奇人",
+					"mode": "item",
+					"effect": {
+						"kind": "series_aptitude",
+						"per": 1
+					},
+					"max_level": 200,
+					"cost": {
+						"base": 10,
+						"step": 0,
+						"step_every": 1
+					}
+				},
+				{
+					"name": "奇人异士",
+					"mode": "series_count",
+					"effect": {
+						"kind": "self_pct",
+						"per": 5
+					},
+					"max_level": "series_count"
+				},
+				{
+					"name": "@third",
+					"mode": "item",
+					"effect": {
+						"kind": "self_pct",
+						"per": 5
+					},
+					"max_level": 20,
+					"cost": {
+						"base": 5,
+						"step": 5,
+						"step_every": 1
+					}
+				},
+				{
+					"name": "闻名天下",
+					"mode": "item",
+					"effect": {
+						"kind": "career_pct",
+						"per": 5
+					},
+					"max_level": 20,
+					"cost": {
+						"base": 100,
+						"step": 10,
+						"step_every": 1
+					},
+					"unlock": "@third"
+				},
+				{
+					"name": "旷世奇才",
+					"mode": "item",
+					"effect": {
+						"kind": "series_aptitude",
+						"per": 5
+					},
+					"max_level": 200,
+					"cost": {
+						"base": 10,
+						"step": 1,
+						"step_every": 2
+					},
+					"unlock": "@third"
+				}
+			],
+			"hero_items": {
+				"石敢当": "天工錾锤",
+				"敦煌匠神": "丹青盘",
+				"百戏圣刀": "七圣面具",
+				"滚海蛟": "藏宝图",
+				"哪吒": "火尖枪",
+				"敖武": "狩猎骨刃",
+				"郑和": "成祖敕令",
+				"龙骧": "舞龙绣球",
+				"罗海王": "龙骨刀"
+			},
+			"third_skill_name": {
+				"石敢当": "能工巧匠",
+				"敦煌匠神": "神乎其技",
+				"百戏圣刀": "百戏圣刀",
+				"滚海蛟": "波翻浪涌",
+				"哪吒": "乾坤一掷",
+				"敖武": "狼群之力",
+				"郑和": "捭阖纵横",
+				"龙骧": "舞龙纳福",
+				"罗海王": "潮鸣鼎沸"
+			}
+		},
+		"qinhuai_wuyan": {
+			"label": "秦淮五艳",
+			"skills": [
+				{
+					"name": "秦淮五艳",
+					"mode": "series_count",
+					"effect": {
+						"kind": "self_pct",
+						"per": 10
+					},
+					"max_level": 5
+				},
+				{
+					"name": "勾栏美人",
+					"mode": "item",
+					"effect": {
+						"kind": "self_pct",
+						"per": 5
+					},
+					"max_level": 20,
+					"cost": {
+						"base": 5,
+						"step": 5,
+						"step_every": 1
+					}
+				},
+				{
+					"name": "绝代风华",
+					"mode": "item",
+					"effect": {
+						"kind": "career_pct",
+						"per": 5
+					},
+					"max_level": 20,
+					"cost": {
+						"base": 100,
+						"step": 10,
+						"step_every": 1
+					},
+					"unlock": "勾栏美人"
+				},
+				{
+					"name": "群芳荟萃",
+					"mode": "item",
+					"effect": {
+						"kind": "series_aptitude",
+						"per": 5
+					},
+					"max_level": 200,
+					"cost": {
+						"base": 10,
+						"step": 1,
+						"step_every": 2
+					},
+					"unlock": "勾栏美人"
+				}
+			],
+			"hero_items": {
+				"马湘兰": "攀竹缀玉",
+				"李香君": "落花缀玉",
+				"董小宛": "织梦缀玉",
+				"卞玉京": "莺歌缀玉",
+				"寇白门": "流云缀玉"
+			}
+		},
+		"shanggu_shenhua": {
+			"label": "上古神话",
+			"skills": [
+				{
+					"name": "上古神话",
+					"mode": "series_count",
+					"effect": {
+						"kind": "self_pct",
+						"per": 20
+					},
+					"max_level": 7
+				},
+				{
+					"name": "举世无双",
+					"mode": "flat",
+					"effect": {
+						"kind": "self_pct",
+						"per": 5
+					},
+					"max_level": 1
+				}
+			],
+			"hero_items": {}
+		}
+	},
+	"hero_auras": {
+		"xie_lu": {
+			"series": "teji_chushi",
+			"item": "鎏金棍",
+			"skills": [
+				{
+					"name": "特级厨师",
+					"mode": "series_count",
+					"effect": {
+						"kind": "self_pct",
+						"per": 5
+					},
+					"max_level": 7
+				},
+				{
+					"name": "中华一番",
+					"mode": "item",
+					"effect": {
+						"kind": "self_pct",
+						"per": 5
+					},
+					"max_level": 20,
+					"cost": {
+						"base": 5,
+						"step": 5,
+						"step_every": 1
+					},
+					"unlock": ""
+				},
+				{
+					"name": "玉盘珍馐",
+					"mode": "item",
+					"effect": {
+						"kind": "career_pct",
+						"per": 3
+					},
+					"max_level": 20,
+					"cost": {
+						"base": 50,
+						"step": 5,
+						"step_every": 1
+					},
+					"unlock": "中华一番"
+				},
+				{
+					"name": "身临其境",
+					"mode": "item",
+					"effect": {
+						"kind": "series_aptitude",
+						"per": 5
+					},
+					"max_level": 200,
+					"cost": {
+						"base": 10,
+						"step": 1,
+						"step_every": 2
+					},
+					"unlock": "中华一番"
+				}
+			],
+			"item_id": "prop_aura_liujin_gun"
+		},
+		"si_lang": {
+			"series": "teji_chushi",
+			"item": "包子",
+			"skills": [
+				{
+					"name": "特级厨师",
+					"mode": "series_count",
+					"effect": {
+						"kind": "self_pct",
+						"per": 5
+					},
+					"max_level": 7
+				},
+				{
+					"name": "中华一番",
+					"mode": "item",
+					"effect": {
+						"kind": "self_pct",
+						"per": 5
+					},
+					"max_level": 20,
+					"cost": {
+						"base": 5,
+						"step": 5,
+						"step_every": 1
+					},
+					"unlock": ""
+				},
+				{
+					"name": "玉盘珍馐",
+					"mode": "item",
+					"effect": {
+						"kind": "career_pct",
+						"per": 3
+					},
+					"max_level": 20,
+					"cost": {
+						"base": 50,
+						"step": 5,
+						"step_every": 1
+					},
+					"unlock": "中华一番"
+				},
+				{
+					"name": "身临其境",
+					"mode": "item",
+					"effect": {
+						"kind": "series_aptitude",
+						"per": 5
+					},
+					"max_level": 200,
+					"cost": {
+						"base": 10,
+						"step": 1,
+						"step_every": 2
+					},
+					"unlock": "中华一番"
+				}
+			],
+			"item_id": "prop_aura_baozi"
+		},
+		"liu_maoxing": {
+			"series": "teji_chushi",
+			"item": "",
+			"skills": [
+				{
+					"name": "特级厨师",
+					"mode": "series_count",
+					"effect": {
+						"kind": "self_pct",
+						"per": 5
+					},
+					"max_level": 7
+				},
+				{
+					"name": "中华一番.极",
+					"mode": "series_total_level",
+					"effect": {
+						"kind": "self_pct",
+						"per": 5
+					},
+					"max_level": 15,
+					"thresholds": [
+						1,
+						2,
+						3,
+						4,
+						5,
+						7,
+						9,
+						11,
+						13,
+						15,
+						18,
+						21,
+						24,
+						27,
+						30
+					]
+				},
+				{
+					"name": "玉盘珍馐.极",
+					"mode": "series_total_level",
+					"effect": {
+						"kind": "career_pct",
+						"per": 3
+					},
+					"max_level": 15,
+					"thresholds": [
+						1,
+						2,
+						3,
+						4,
+						5,
+						7,
+						9,
+						11,
+						13,
+						15,
+						18,
+						21,
+						24,
+						27,
+						30
+					]
+				},
+				{
+					"name": "身临其境.极",
+					"mode": "series_total_level",
+					"effect": {
+						"kind": "series_aptitude",
+						"per": 5
+					},
+					"max_level": 150,
+					"thresholds": [
+						1,
+						2,
+						3,
+						4,
+						5,
+						7,
+						9,
+						11,
+						13,
+						15,
+						18,
+						21,
+						24,
+						27,
+						30
+					]
+				}
+			]
+		},
+		"lan_feihong": {
+			"series": "teji_chushi",
+			"item": "墨麟菜刀",
+			"skills": [
+				{
+					"name": "特级厨师",
+					"mode": "series_count",
+					"effect": {
+						"kind": "self_pct",
+						"per": 5
+					},
+					"max_level": 7
+				},
+				{
+					"name": "中华一番",
+					"mode": "item",
+					"effect": {
+						"kind": "self_pct",
+						"per": 5
+					},
+					"max_level": 20,
+					"cost": {
+						"base": 5,
+						"step": 5,
+						"step_every": 1
+					},
+					"unlock": ""
+				},
+				{
+					"name": "玉盘珍馐",
+					"mode": "item",
+					"effect": {
+						"kind": "career_pct",
+						"per": 3
+					},
+					"max_level": 20,
+					"cost": {
+						"base": 50,
+						"step": 5,
+						"step_every": 1
+					},
+					"unlock": "中华一番"
+				},
+				{
+					"name": "身临其境",
+					"mode": "item",
+					"effect": {
+						"kind": "series_aptitude",
+						"per": 5
+					},
+					"max_level": 200,
+					"cost": {
+						"base": 10,
+						"step": 1,
+						"step_every": 2
+					},
+					"unlock": "中华一番"
+				}
+			],
+			"item_id": "prop_aura_molin_caidao"
+		},
+		"wu_daozi": {
+			"series": "kaishan_bizu",
+			"item": "开山印",
+			"skills": [
+				{
+					"name": "开山鼻祖",
+					"mode": "series_count",
+					"effect": {
+						"kind": "self_pct",
+						"per": 5
+					},
+					"max_level": 5
+				},
+				{
+					"name": "登峰造极",
+					"mode": "item",
+					"effect": {
+						"kind": "self_pct",
+						"per": 5
+					},
+					"max_level": 20,
+					"cost": {
+						"base": 5,
+						"step": 5,
+						"step_every": 1
+					}
+				},
+				{
+					"name": "超群绝伦",
+					"mode": "item",
+					"effect": {
+						"kind": "career_pct",
+						"per": 2
+					},
+					"max_level": 20,
+					"cost": {
+						"base": 50,
+						"step": 5,
+						"step_every": 1
+					},
+					"unlock": "登峰造极"
+				},
+				{
+					"name": "穷极思变",
+					"mode": "item",
+					"effect": {
+						"kind": "series_aptitude",
+						"per": 2
+					},
+					"max_level": 200,
+					"cost": {
+						"base": 10,
+						"step": 1,
+						"step_every": 2
+					},
+					"unlock": "登峰造极"
+				}
+			],
+			"item_id": "kaishan_ling"
+		},
+		"sun_bin": {
+			"series": "kaishan_bizu",
+			"item": "开山印",
+			"skills": [
+				{
+					"name": "开山鼻祖",
+					"mode": "series_count",
+					"effect": {
+						"kind": "self_pct",
+						"per": 5
+					},
+					"max_level": 5
+				},
+				{
+					"name": "登峰造极",
+					"mode": "item",
+					"effect": {
+						"kind": "self_pct",
+						"per": 5
+					},
+					"max_level": 20,
+					"cost": {
+						"base": 5,
+						"step": 5,
+						"step_every": 1
+					}
+				},
+				{
+					"name": "超群绝伦",
+					"mode": "item",
+					"effect": {
+						"kind": "career_pct",
+						"per": 2
+					},
+					"max_level": 20,
+					"cost": {
+						"base": 50,
+						"step": 5,
+						"step_every": 1
+					},
+					"unlock": "登峰造极"
+				},
+				{
+					"name": "穷极思变",
+					"mode": "item",
+					"effect": {
+						"kind": "series_aptitude",
+						"per": 2
+					},
+					"max_level": 200,
+					"cost": {
+						"base": 10,
+						"step": 1,
+						"step_every": 2
+					},
+					"unlock": "登峰造极"
+				}
+			],
+			"item_id": "kaishan_ling"
+		},
+		"lu_ban": {
+			"series": "kaishan_bizu",
+			"item": "开山印",
+			"skills": [
+				{
+					"name": "开山鼻祖",
+					"mode": "series_count",
+					"effect": {
+						"kind": "self_pct",
+						"per": 5
+					},
+					"max_level": 5
+				},
+				{
+					"name": "登峰造极",
+					"mode": "item",
+					"effect": {
+						"kind": "self_pct",
+						"per": 5
+					},
+					"max_level": 20,
+					"cost": {
+						"base": 5,
+						"step": 5,
+						"step_every": 1
+					}
+				},
+				{
+					"name": "超群绝伦",
+					"mode": "item",
+					"effect": {
+						"kind": "career_pct",
+						"per": 2
+					},
+					"max_level": 20,
+					"cost": {
+						"base": 50,
+						"step": 5,
+						"step_every": 1
+					},
+					"unlock": "登峰造极"
+				},
+				{
+					"name": "穷极思变",
+					"mode": "item",
+					"effect": {
+						"kind": "series_aptitude",
+						"per": 2
+					},
+					"max_level": 200,
+					"cost": {
+						"base": 10,
+						"step": 1,
+						"step_every": 2
+					},
+					"unlock": "登峰造极"
+				}
+			],
+			"item_id": "kaishan_ling"
+		},
+		"du_kang": {
+			"series": "kaishan_bizu",
+			"item": "开山印",
+			"skills": [
+				{
+					"name": "开山鼻祖",
+					"mode": "series_count",
+					"effect": {
+						"kind": "self_pct",
+						"per": 5
+					},
+					"max_level": 5
+				},
+				{
+					"name": "登峰造极",
+					"mode": "item",
+					"effect": {
+						"kind": "self_pct",
+						"per": 5
+					},
+					"max_level": 20,
+					"cost": {
+						"base": 5,
+						"step": 5,
+						"step_every": 1
+					}
+				},
+				{
+					"name": "超群绝伦",
+					"mode": "item",
+					"effect": {
+						"kind": "career_pct",
+						"per": 2
+					},
+					"max_level": 20,
+					"cost": {
+						"base": 50,
+						"step": 5,
+						"step_every": 1
+					},
+					"unlock": "登峰造极"
+				},
+				{
+					"name": "穷极思变",
+					"mode": "item",
+					"effect": {
+						"kind": "series_aptitude",
+						"per": 2
+					},
+					"max_level": 200,
+					"cost": {
+						"base": 10,
+						"step": 1,
+						"step_every": 2
+					},
+					"unlock": "登峰造极"
+				}
+			],
+			"item_id": "kaishan_ling"
+		},
+		"ou_yezi": {
+			"series": "kaishan_bizu",
+			"item": "开山印",
+			"skills": [
+				{
+					"name": "开山鼻祖",
+					"mode": "series_count",
+					"effect": {
+						"kind": "self_pct",
+						"per": 5
+					},
+					"max_level": 5
+				},
+				{
+					"name": "登峰造极",
+					"mode": "item",
+					"effect": {
+						"kind": "self_pct",
+						"per": 5
+					},
+					"max_level": 20,
+					"cost": {
+						"base": 5,
+						"step": 5,
+						"step_every": 1
+					}
+				},
+				{
+					"name": "超群绝伦",
+					"mode": "item",
+					"effect": {
+						"kind": "career_pct",
+						"per": 2
+					},
+					"max_level": 20,
+					"cost": {
+						"base": 50,
+						"step": 5,
+						"step_every": 1
+					},
+					"unlock": "登峰造极"
+				},
+				{
+					"name": "穷极思变",
+					"mode": "item",
+					"effect": {
+						"kind": "series_aptitude",
+						"per": 2
+					},
+					"max_level": 200,
+					"cost": {
+						"base": 10,
+						"step": 1,
+						"step_every": 2
+					},
+					"unlock": "登峰造极"
+				}
+			],
+			"item_id": "kaishan_ling"
+		},
+		"gao_jianli": {
+			"series": "yidai_zongjiang",
+			"item": "宗匠印",
+			"skills": [
+				{
+					"name": "一代宗匠",
+					"mode": "series_count",
+					"effect": {
+						"kind": "self_pct",
+						"per": 5
+					},
+					"max_level": 5
+				},
+				{
+					"name": "独具匠心",
+					"mode": "item",
+					"effect": {
+						"kind": "self_pct",
+						"per": 5
+					},
+					"max_level": 20,
+					"cost": {
+						"base": 5,
+						"step": 5,
+						"step_every": 1
+					}
+				},
+				{
+					"name": "妙手天成",
+					"mode": "item",
+					"effect": {
+						"kind": "career_pct",
+						"per": 2
+					},
+					"max_level": 20,
+					"cost": {
+						"base": 50,
+						"step": 5,
+						"step_every": 1
+					},
+					"unlock": "独具匠心"
+				},
+				{
+					"name": "匠心共济",
+					"mode": "item",
+					"effect": {
+						"kind": "series_aptitude",
+						"per": 2
+					},
+					"max_level": 200,
+					"cost": {
+						"base": 10,
+						"step": 1,
+						"step_every": 2
+					},
+					"unlock": "独具匠心"
+				}
+			],
+			"item_id": "zongjiang_ling"
+		},
+		"su_wu": {
+			"series": "yidai_zongjiang",
+			"item": "宗匠印",
+			"skills": [
+				{
+					"name": "一代宗匠",
+					"mode": "series_count",
+					"effect": {
+						"kind": "self_pct",
+						"per": 5
+					},
+					"max_level": 5
+				},
+				{
+					"name": "独具匠心",
+					"mode": "item",
+					"effect": {
+						"kind": "self_pct",
+						"per": 5
+					},
+					"max_level": 20,
+					"cost": {
+						"base": 5,
+						"step": 5,
+						"step_every": 1
+					}
+				},
+				{
+					"name": "妙手天成",
+					"mode": "item",
+					"effect": {
+						"kind": "career_pct",
+						"per": 2
+					},
+					"max_level": 20,
+					"cost": {
+						"base": 50,
+						"step": 5,
+						"step_every": 1
+					},
+					"unlock": "独具匠心"
+				},
+				{
+					"name": "匠心共济",
+					"mode": "item",
+					"effect": {
+						"kind": "series_aptitude",
+						"per": 2
+					},
+					"max_level": 200,
+					"cost": {
+						"base": 10,
+						"step": 1,
+						"step_every": 2
+					},
+					"unlock": "独具匠心"
+				}
+			],
+			"item_id": "zongjiang_ling"
+		},
+		"bi_sheng": {
+			"series": "yidai_zongjiang",
+			"item": "宗匠印",
+			"skills": [
+				{
+					"name": "一代宗匠",
+					"mode": "series_count",
+					"effect": {
+						"kind": "self_pct",
+						"per": 5
+					},
+					"max_level": 5
+				},
+				{
+					"name": "独具匠心",
+					"mode": "item",
+					"effect": {
+						"kind": "self_pct",
+						"per": 5
+					},
+					"max_level": 20,
+					"cost": {
+						"base": 5,
+						"step": 5,
+						"step_every": 1
+					}
+				},
+				{
+					"name": "妙手天成",
+					"mode": "item",
+					"effect": {
+						"kind": "career_pct",
+						"per": 2
+					},
+					"max_level": 20,
+					"cost": {
+						"base": 50,
+						"step": 5,
+						"step_every": 1
+					},
+					"unlock": "独具匠心"
+				},
+				{
+					"name": "匠心共济",
+					"mode": "item",
+					"effect": {
+						"kind": "series_aptitude",
+						"per": 2
+					},
+					"max_level": 200,
+					"cost": {
+						"base": 10,
+						"step": 1,
+						"step_every": 2
+					},
+					"unlock": "独具匠心"
+				}
+			],
+			"item_id": "zongjiang_ling"
+		},
+		"zong_ze": {
+			"series": "yidai_zongjiang",
+			"item": "宗匠印",
+			"skills": [
+				{
+					"name": "一代宗匠",
+					"mode": "series_count",
+					"effect": {
+						"kind": "self_pct",
+						"per": 5
+					},
+					"max_level": 5
+				},
+				{
+					"name": "独具匠心",
+					"mode": "item",
+					"effect": {
+						"kind": "self_pct",
+						"per": 5
+					},
+					"max_level": 20,
+					"cost": {
+						"base": 5,
+						"step": 5,
+						"step_every": 1
+					}
+				},
+				{
+					"name": "妙手天成",
+					"mode": "item",
+					"effect": {
+						"kind": "career_pct",
+						"per": 2
+					},
+					"max_level": 20,
+					"cost": {
+						"base": 50,
+						"step": 5,
+						"step_every": 1
+					},
+					"unlock": "独具匠心"
+				},
+				{
+					"name": "匠心共济",
+					"mode": "item",
+					"effect": {
+						"kind": "series_aptitude",
+						"per": 2
+					},
+					"max_level": 200,
+					"cost": {
+						"base": 10,
+						"step": 1,
+						"step_every": 2
+					},
+					"unlock": "独具匠心"
+				}
+			],
+			"item_id": "zongjiang_ling"
+		},
+		"zhang_sanfeng": {
+			"series": "yidai_zongjiang",
+			"item": "宗匠印",
+			"skills": [
+				{
+					"name": "一代宗匠",
+					"mode": "series_count",
+					"effect": {
+						"kind": "self_pct",
+						"per": 5
+					},
+					"max_level": 5
+				},
+				{
+					"name": "独具匠心",
+					"mode": "item",
+					"effect": {
+						"kind": "self_pct",
+						"per": 5
+					},
+					"max_level": 20,
+					"cost": {
+						"base": 5,
+						"step": 5,
+						"step_every": 1
+					}
+				},
+				{
+					"name": "妙手天成",
+					"mode": "item",
+					"effect": {
+						"kind": "career_pct",
+						"per": 2
+					},
+					"max_level": 20,
+					"cost": {
+						"base": 50,
+						"step": 5,
+						"step_every": 1
+					},
+					"unlock": "独具匠心"
+				},
+				{
+					"name": "匠心共济",
+					"mode": "item",
+					"effect": {
+						"kind": "series_aptitude",
+						"per": 2
+					},
+					"max_level": 200,
+					"cost": {
+						"base": 10,
+						"step": 1,
+						"step_every": 2
+					},
+					"unlock": "独具匠心"
+				}
+			],
+			"item_id": "zongjiang_ling"
+		},
+		"shi_gandang": {
+			"series": "qiren_yishi",
+			"item": "天工錾锤",
+			"skills": [
+				{
+					"name": "市井奇人",
+					"mode": "item",
+					"effect": {
+						"kind": "series_aptitude",
+						"per": 1
+					},
+					"max_level": 200,
+					"cost": {
+						"base": 10,
+						"step": 0,
+						"step_every": 1
+					}
+				},
+				{
+					"name": "奇人异士",
+					"mode": "series_count",
+					"effect": {
+						"kind": "self_pct",
+						"per": 5
+					},
+					"max_level": "series_count"
+				},
+				{
+					"name": "能工巧匠",
+					"mode": "item",
+					"effect": {
+						"kind": "self_pct",
+						"per": 5
+					},
+					"max_level": 20,
+					"cost": {
+						"base": 5,
+						"step": 5,
+						"step_every": 1
+					}
+				},
+				{
+					"name": "闻名天下",
+					"mode": "item",
+					"effect": {
+						"kind": "career_pct",
+						"per": 5
+					},
+					"max_level": 20,
+					"cost": {
+						"base": 100,
+						"step": 10,
+						"step_every": 1
+					},
+					"unlock": "@third"
+				},
+				{
+					"name": "旷世奇才",
+					"mode": "item",
+					"effect": {
+						"kind": "series_aptitude",
+						"per": 5
+					},
+					"max_level": 200,
+					"cost": {
+						"base": 10,
+						"step": 1,
+						"step_every": 2
+					},
+					"unlock": "@third"
+				}
+			],
+			"item_id": "tiangong_zanchui"
+		},
+		"song_huizong": {
+			"series": "yishi_xiaoxiong",
+			"item": "宣和七玺",
+			"skills": [
+				{
+					"name": "枭雄本色",
+					"mode": "item",
+					"effect": {
+						"kind": "series_aptitude",
+						"per": 1
+					},
+					"max_level": 200,
+					"cost": {
+						"base": 10,
+						"step": 0,
+						"step_every": 1
+					}
+				},
+				{
+					"name": "一世枭雄",
+					"mode": "series_count",
+					"effect": {
+						"kind": "self_pct",
+						"per": 5
+					},
+					"max_level": "series_count"
+				},
+				{
+					"name": "道君皇帝",
+					"mode": "item",
+					"effect": {
+						"kind": "self_pct",
+						"per": 5
+					},
+					"max_level": 20,
+					"cost": {
+						"base": 5,
+						"step": 5,
+						"step_every": 1
+					}
+				},
+				{
+					"name": "权倾朝野",
+					"mode": "item",
+					"effect": {
+						"kind": "career_pct",
+						"per": 5
+					},
+					"max_level": 20,
+					"cost": {
+						"base": 100,
+						"step": 10,
+						"step_every": 1
+					},
+					"unlock": "道君皇帝"
+				},
+				{
+					"name": "操弄权术",
+					"mode": "item",
+					"effect": {
+						"kind": "series_aptitude",
+						"per": 5
+					},
+					"max_level": 200,
+					"cost": {
+						"base": 10,
+						"step": 1,
+						"step_every": 2
+					},
+					"unlock": "道君皇帝"
+				}
+			],
+			"item_id": "xuanhe_qixi"
+		},
+		"cai_jing": {
+			"series": "yishi_xiaoxiong",
+			"item": "权相之冠",
+			"skills": [
+				{
+					"name": "枭雄本色",
+					"mode": "item",
+					"effect": {
+						"kind": "series_aptitude",
+						"per": 1
+					},
+					"max_level": 200,
+					"cost": {
+						"base": 10,
+						"step": 0,
+						"step_every": 1
+					}
+				},
+				{
+					"name": "一世枭雄",
+					"mode": "series_count",
+					"effect": {
+						"kind": "self_pct",
+						"per": 5
+					},
+					"max_level": "series_count"
+				},
+				{
+					"name": "道君皇帝",
+					"mode": "item",
+					"effect": {
+						"kind": "self_pct",
+						"per": 5
+					},
+					"max_level": 20,
+					"cost": {
+						"base": 5,
+						"step": 5,
+						"step_every": 1
+					}
+				},
+				{
+					"name": "权倾朝野",
+					"mode": "item",
+					"effect": {
+						"kind": "career_pct",
+						"per": 5
+					},
+					"max_level": 20,
+					"cost": {
+						"base": 100,
+						"step": 10,
+						"step_every": 1
+					},
+					"unlock": "道君皇帝"
+				},
+				{
+					"name": "操弄权术",
+					"mode": "item",
+					"effect": {
+						"kind": "series_aptitude",
+						"per": 5
+					},
+					"max_level": 200,
+					"cost": {
+						"base": 10,
+						"step": 1,
+						"step_every": 2
+					},
+					"unlock": "道君皇帝"
+				}
+			],
+			"item_id": "quanxiang_guan"
+		},
+		"dunhuang_jiangshen": {
+			"series": "qiren_yishi",
+			"item": "丹青盘",
+			"skills": [
+				{
+					"name": "市井奇人",
+					"mode": "item",
+					"effect": {
+						"kind": "series_aptitude",
+						"per": 1
+					},
+					"max_level": 200,
+					"cost": {
+						"base": 10,
+						"step": 0,
+						"step_every": 1
+					}
+				},
+				{
+					"name": "奇人异士",
+					"mode": "series_count",
+					"effect": {
+						"kind": "self_pct",
+						"per": 5
+					},
+					"max_level": "series_count"
+				},
+				{
+					"name": "神乎其技",
+					"mode": "item",
+					"effect": {
+						"kind": "self_pct",
+						"per": 5
+					},
+					"max_level": 20,
+					"cost": {
+						"base": 5,
+						"step": 5,
+						"step_every": 1
+					}
+				},
+				{
+					"name": "闻名天下",
+					"mode": "item",
+					"effect": {
+						"kind": "career_pct",
+						"per": 5
+					},
+					"max_level": 20,
+					"cost": {
+						"base": 100,
+						"step": 10,
+						"step_every": 1
+					},
+					"unlock": "@third"
+				},
+				{
+					"name": "旷世奇才",
+					"mode": "item",
+					"effect": {
+						"kind": "series_aptitude",
+						"per": 5
+					},
+					"max_level": 200,
+					"cost": {
+						"base": 10,
+						"step": 1,
+						"step_every": 2
+					},
+					"unlock": "@third"
+				}
+			],
+			"item_id": "danqing_pan"
+		},
+		"baixi_shengdao": {
+			"series": "qiren_yishi",
+			"item": "七圣面具",
+			"skills": [
+				{
+					"name": "市井奇人",
+					"mode": "item",
+					"effect": {
+						"kind": "series_aptitude",
+						"per": 1
+					},
+					"max_level": 200,
+					"cost": {
+						"base": 10,
+						"step": 0,
+						"step_every": 1
+					}
+				},
+				{
+					"name": "奇人异士",
+					"mode": "series_count",
+					"effect": {
+						"kind": "self_pct",
+						"per": 5
+					},
+					"max_level": "series_count"
+				},
+				{
+					"name": "百戏圣刀",
+					"mode": "item",
+					"effect": {
+						"kind": "self_pct",
+						"per": 5
+					},
+					"max_level": 20,
+					"cost": {
+						"base": 5,
+						"step": 5,
+						"step_every": 1
+					}
+				},
+				{
+					"name": "闻名天下",
+					"mode": "item",
+					"effect": {
+						"kind": "career_pct",
+						"per": 5
+					},
+					"max_level": 20,
+					"cost": {
+						"base": 100,
+						"step": 10,
+						"step_every": 1
+					},
+					"unlock": "@third"
+				},
+				{
+					"name": "旷世奇才",
+					"mode": "item",
+					"effect": {
+						"kind": "series_aptitude",
+						"per": 5
+					},
+					"max_level": 200,
+					"cost": {
+						"base": 10,
+						"step": 1,
+						"step_every": 2
+					},
+					"unlock": "@third"
+				}
+			],
+			"item_id": "qisheng_mianju"
+		},
+		"song_jiang": {
+			"series": "yishi_xiaoxiong",
+			"item": "天魁令旗",
+			"skills": [
+				{
+					"name": "枭雄本色",
+					"mode": "item",
+					"effect": {
+						"kind": "series_aptitude",
+						"per": 1
+					},
+					"max_level": 200,
+					"cost": {
+						"base": 10,
+						"step": 0,
+						"step_every": 1
+					}
+				},
+				{
+					"name": "一世枭雄",
+					"mode": "series_count",
+					"effect": {
+						"kind": "self_pct",
+						"per": 5
+					},
+					"max_level": "series_count"
+				},
+				{
+					"name": "道君皇帝",
+					"mode": "item",
+					"effect": {
+						"kind": "self_pct",
+						"per": 5
+					},
+					"max_level": 20,
+					"cost": {
+						"base": 5,
+						"step": 5,
+						"step_every": 1
+					}
+				},
+				{
+					"name": "权倾朝野",
+					"mode": "item",
+					"effect": {
+						"kind": "career_pct",
+						"per": 5
+					},
+					"max_level": 20,
+					"cost": {
+						"base": 100,
+						"step": 10,
+						"step_every": 1
+					},
+					"unlock": "道君皇帝"
+				},
+				{
+					"name": "操弄权术",
+					"mode": "item",
+					"effect": {
+						"kind": "series_aptitude",
+						"per": 5
+					},
+					"max_level": 200,
+					"cost": {
+						"base": 10,
+						"step": 1,
+						"step_every": 2
+					},
+					"unlock": "道君皇帝"
+				}
+			],
+			"item_id": "tiankui_lingqi"
+		},
+		"huo_yanwang": {
+			"series": "yishi_xiaoxiong",
+			"item": "冤魂斗",
+			"skills": [
+				{
+					"name": "枭雄本色",
+					"mode": "item",
+					"effect": {
+						"kind": "series_aptitude",
+						"per": 1
+					},
+					"max_level": 200,
+					"cost": {
+						"base": 10,
+						"step": 0,
+						"step_every": 1
+					}
+				},
+				{
+					"name": "一世枭雄",
+					"mode": "series_count",
+					"effect": {
+						"kind": "self_pct",
+						"per": 5
+					},
+					"max_level": "series_count"
+				},
+				{
+					"name": "道君皇帝",
+					"mode": "item",
+					"effect": {
+						"kind": "self_pct",
+						"per": 5
+					},
+					"max_level": 20,
+					"cost": {
+						"base": 5,
+						"step": 5,
+						"step_every": 1
+					}
+				},
+				{
+					"name": "权倾朝野",
+					"mode": "item",
+					"effect": {
+						"kind": "career_pct",
+						"per": 5
+					},
+					"max_level": 20,
+					"cost": {
+						"base": 100,
+						"step": 10,
+						"step_every": 1
+					},
+					"unlock": "道君皇帝"
+				},
+				{
+					"name": "操弄权术",
+					"mode": "item",
+					"effect": {
+						"kind": "series_aptitude",
+						"per": 5
+					},
+					"max_level": 200,
+					"cost": {
+						"base": 10,
+						"step": 1,
+						"step_every": 2
+					},
+					"unlock": "道君皇帝"
+				}
+			],
+			"item_id": "yuanhun_dou"
+		},
+		"lei_en": {
+			"series": "teji_chushi",
+			"item": "紫宸铜壶",
+			"skills": [
+				{
+					"name": "特级厨师",
+					"mode": "series_count",
+					"effect": {
+						"kind": "self_pct",
+						"per": 5
+					},
+					"max_level": 7
+				},
+				{
+					"name": "中华一番",
+					"mode": "item",
+					"effect": {
+						"kind": "self_pct",
+						"per": 5
+					},
+					"max_level": 20,
+					"cost": {
+						"base": 5,
+						"step": 5,
+						"step_every": 1
+					},
+					"unlock": ""
+				},
+				{
+					"name": "玉盘珍馐",
+					"mode": "item",
+					"effect": {
+						"kind": "career_pct",
+						"per": 3
+					},
+					"max_level": 20,
+					"cost": {
+						"base": 50,
+						"step": 5,
+						"step_every": 1
+					},
+					"unlock": "中华一番"
+				},
+				{
+					"name": "身临其境",
+					"mode": "item",
+					"effect": {
+						"kind": "series_aptitude",
+						"per": 5
+					},
+					"max_level": 200,
+					"cost": {
+						"base": 10,
+						"step": 1,
+						"step_every": 2
+					},
+					"unlock": "中华一番"
+				}
+			],
+			"item_id": "prop_aura_zichen_tonghu"
+		},
+		"xiang_en": {
+			"series": "teji_chushi",
+			"item": "北斗钢刀",
+			"skills": [
+				{
+					"name": "特级厨师",
+					"mode": "series_count",
+					"effect": {
+						"kind": "self_pct",
+						"per": 5
+					},
+					"max_level": 7
+				},
+				{
+					"name": "中华一番",
+					"mode": "item",
+					"effect": {
+						"kind": "self_pct",
+						"per": 5
+					},
+					"max_level": 20,
+					"cost": {
+						"base": 5,
+						"step": 5,
+						"step_every": 1
+					},
+					"unlock": ""
+				},
+				{
+					"name": "玉盘珍馐",
+					"mode": "item",
+					"effect": {
+						"kind": "career_pct",
+						"per": 3
+					},
+					"max_level": 20,
+					"cost": {
+						"base": 50,
+						"step": 5,
+						"step_every": 1
+					},
+					"unlock": "中华一番"
+				},
+				{
+					"name": "身临其境",
+					"mode": "item",
+					"effect": {
+						"kind": "series_aptitude",
+						"per": 5
+					},
+					"max_level": 200,
+					"cost": {
+						"base": 10,
+						"step": 1,
+						"step_every": 2
+					},
+					"unlock": "中华一番"
+				}
+			],
+			"item_id": "prop_aura_beidou_gangdao"
+		},
+		"zhou_yu": {
+			"series": "teji_chushi",
+			"item": "盘龙壶",
+			"skills": [
+				{
+					"name": "特级厨师",
+					"mode": "series_count",
+					"effect": {
+						"kind": "self_pct",
+						"per": 5
+					},
+					"max_level": 7
+				},
+				{
+					"name": "中华一番",
+					"mode": "item",
+					"effect": {
+						"kind": "self_pct",
+						"per": 5
+					},
+					"max_level": 20,
+					"cost": {
+						"base": 5,
+						"step": 5,
+						"step_every": 1
+					},
+					"unlock": ""
+				},
+				{
+					"name": "玉盘珍馐",
+					"mode": "item",
+					"effect": {
+						"kind": "career_pct",
+						"per": 3
+					},
+					"max_level": 20,
+					"cost": {
+						"base": 50,
+						"step": 5,
+						"step_every": 1
+					},
+					"unlock": "中华一番"
+				},
+				{
+					"name": "身临其境",
+					"mode": "item",
+					"effect": {
+						"kind": "series_aptitude",
+						"per": 5
+					},
+					"max_level": 200,
+					"cost": {
+						"base": 10,
+						"step": 1,
+						"step_every": 2
+					},
+					"unlock": "中华一番"
+				}
+			],
+			"item_id": "prop_aura_panlong_hu"
+		},
+		"qin_shihuang": {
+			"series": "yishi_xiaoxiong",
+			"item": "泰阿剑",
+			"skills": [
+				{
+					"name": "枭雄本色",
+					"mode": "item",
+					"effect": {
+						"kind": "series_aptitude",
+						"per": 1
+					},
+					"max_level": 200,
+					"cost": {
+						"base": 10,
+						"step": 0,
+						"step_every": 1
+					}
+				},
+				{
+					"name": "一世枭雄",
+					"mode": "series_count",
+					"effect": {
+						"kind": "self_pct",
+						"per": 5
+					},
+					"max_level": "series_count"
+				},
+				{
+					"name": "道君皇帝",
+					"mode": "item",
+					"effect": {
+						"kind": "self_pct",
+						"per": 5
+					},
+					"max_level": 20,
+					"cost": {
+						"base": 5,
+						"step": 5,
+						"step_every": 1
+					}
+				},
+				{
+					"name": "权倾朝野",
+					"mode": "item",
+					"effect": {
+						"kind": "career_pct",
+						"per": 5
+					},
+					"max_level": 20,
+					"cost": {
+						"base": 100,
+						"step": 10,
+						"step_every": 1
+					},
+					"unlock": "道君皇帝"
+				},
+				{
+					"name": "操弄权术",
+					"mode": "item",
+					"effect": {
+						"kind": "series_aptitude",
+						"per": 5
+					},
+					"max_level": 200,
+					"cost": {
+						"base": 10,
+						"step": 1,
+						"step_every": 2
+					},
+					"unlock": "道君皇帝"
+				}
+			],
+			"item_id": "taia_jian"
+		},
+		"gun_haijiao": {
+			"series": "qiren_yishi",
+			"item": "藏宝图",
+			"skills": [
+				{
+					"name": "市井奇人",
+					"mode": "item",
+					"effect": {
+						"kind": "series_aptitude",
+						"per": 1
+					},
+					"max_level": 200,
+					"cost": {
+						"base": 10,
+						"step": 0,
+						"step_every": 1
+					}
+				},
+				{
+					"name": "奇人异士",
+					"mode": "series_count",
+					"effect": {
+						"kind": "self_pct",
+						"per": 5
+					},
+					"max_level": "series_count"
+				},
+				{
+					"name": "波翻浪涌",
+					"mode": "item",
+					"effect": {
+						"kind": "self_pct",
+						"per": 5
+					},
+					"max_level": 20,
+					"cost": {
+						"base": 5,
+						"step": 5,
+						"step_every": 1
+					}
+				},
+				{
+					"name": "闻名天下",
+					"mode": "item",
+					"effect": {
+						"kind": "career_pct",
+						"per": 5
+					},
+					"max_level": 20,
+					"cost": {
+						"base": 100,
+						"step": 10,
+						"step_every": 1
+					},
+					"unlock": "@third"
+				},
+				{
+					"name": "旷世奇才",
+					"mode": "item",
+					"effect": {
+						"kind": "series_aptitude",
+						"per": 5
+					},
+					"max_level": 200,
+					"cost": {
+						"base": 10,
+						"step": 1,
+						"step_every": 2
+					},
+					"unlock": "@third"
+				}
+			],
+			"item_id": "cangbao_tu"
+		},
+		"lv_bu": {
+			"series": "yishi_xiaoxiong",
+			"item": "方天画戟",
+			"skills": [
+				{
+					"name": "枭雄本色",
+					"mode": "item",
+					"effect": {
+						"kind": "series_aptitude",
+						"per": 1
+					},
+					"max_level": 200,
+					"cost": {
+						"base": 10,
+						"step": 0,
+						"step_every": 1
+					}
+				},
+				{
+					"name": "一世枭雄",
+					"mode": "series_count",
+					"effect": {
+						"kind": "self_pct",
+						"per": 5
+					},
+					"max_level": "series_count"
+				},
+				{
+					"name": "道君皇帝",
+					"mode": "item",
+					"effect": {
+						"kind": "self_pct",
+						"per": 5
+					},
+					"max_level": 20,
+					"cost": {
+						"base": 5,
+						"step": 5,
+						"step_every": 1
+					}
+				},
+				{
+					"name": "权倾朝野",
+					"mode": "item",
+					"effect": {
+						"kind": "career_pct",
+						"per": 5
+					},
+					"max_level": 20,
+					"cost": {
+						"base": 100,
+						"step": 10,
+						"step_every": 1
+					},
+					"unlock": "道君皇帝"
+				},
+				{
+					"name": "操弄权术",
+					"mode": "item",
+					"effect": {
+						"kind": "series_aptitude",
+						"per": 5
+					},
+					"max_level": 200,
+					"cost": {
+						"base": 10,
+						"step": 1,
+						"step_every": 2
+					},
+					"unlock": "道君皇帝"
+				}
+			],
+			"item_id": "fangtian_huaji"
+		},
+		"ne_zha": {
+			"series": "qiren_yishi",
+			"item": "火尖枪",
+			"skills": [
+				{
+					"name": "市井奇人",
+					"mode": "item",
+					"effect": {
+						"kind": "series_aptitude",
+						"per": 1
+					},
+					"max_level": 200,
+					"cost": {
+						"base": 10,
+						"step": 0,
+						"step_every": 1
+					}
+				},
+				{
+					"name": "奇人异士",
+					"mode": "series_count",
+					"effect": {
+						"kind": "self_pct",
+						"per": 5
+					},
+					"max_level": "series_count"
+				},
+				{
+					"name": "乾坤一掷",
+					"mode": "item",
+					"effect": {
+						"kind": "self_pct",
+						"per": 5
+					},
+					"max_level": 20,
+					"cost": {
+						"base": 5,
+						"step": 5,
+						"step_every": 1
+					}
+				},
+				{
+					"name": "闻名天下",
+					"mode": "item",
+					"effect": {
+						"kind": "career_pct",
+						"per": 5
+					},
+					"max_level": 20,
+					"cost": {
+						"base": 100,
+						"step": 10,
+						"step_every": 1
+					},
+					"unlock": "@third"
+				},
+				{
+					"name": "旷世奇才",
+					"mode": "item",
+					"effect": {
+						"kind": "series_aptitude",
+						"per": 5
+					},
+					"max_level": 200,
+					"cost": {
+						"base": 10,
+						"step": 1,
+						"step_every": 2
+					},
+					"unlock": "@third"
+				}
+			],
+			"item_id": "huojian_qiang"
+		},
+		"sun_wu": {
+			"series": "yishi_xiaoxiong",
+			"item": "虎符军令",
+			"skills": [
+				{
+					"name": "枭雄本色",
+					"mode": "item",
+					"effect": {
+						"kind": "series_aptitude",
+						"per": 1
+					},
+					"max_level": 200,
+					"cost": {
+						"base": 10,
+						"step": 0,
+						"step_every": 1
+					}
+				},
+				{
+					"name": "一世枭雄",
+					"mode": "series_count",
+					"effect": {
+						"kind": "self_pct",
+						"per": 5
+					},
+					"max_level": "series_count"
+				},
+				{
+					"name": "道君皇帝",
+					"mode": "item",
+					"effect": {
+						"kind": "self_pct",
+						"per": 5
+					},
+					"max_level": 20,
+					"cost": {
+						"base": 5,
+						"step": 5,
+						"step_every": 1
+					}
+				},
+				{
+					"name": "权倾朝野",
+					"mode": "item",
+					"effect": {
+						"kind": "career_pct",
+						"per": 5
+					},
+					"max_level": 20,
+					"cost": {
+						"base": 100,
+						"step": 10,
+						"step_every": 1
+					},
+					"unlock": "道君皇帝"
+				},
+				{
+					"name": "操弄权术",
+					"mode": "item",
+					"effect": {
+						"kind": "series_aptitude",
+						"per": 5
+					},
+					"max_level": 200,
+					"cost": {
+						"base": 10,
+						"step": 1,
+						"step_every": 2
+					},
+					"unlock": "道君皇帝"
+				}
+			],
+			"item_id": "hufu_junling"
+		},
+		"qin_qiong_yuchi_gong": {
+			"series": "yishi_xiaoxiong",
+			"item": "隋唐话本",
+			"skills": [
+				{
+					"name": "枭雄本色",
+					"mode": "item",
+					"effect": {
+						"kind": "series_aptitude",
+						"per": 1
+					},
+					"max_level": 200,
+					"cost": {
+						"base": 10,
+						"step": 0,
+						"step_every": 1
+					}
+				},
+				{
+					"name": "一世枭雄",
+					"mode": "series_count",
+					"effect": {
+						"kind": "self_pct",
+						"per": 5
+					},
+					"max_level": "series_count"
+				},
+				{
+					"name": "道君皇帝",
+					"mode": "item",
+					"effect": {
+						"kind": "self_pct",
+						"per": 5
+					},
+					"max_level": 20,
+					"cost": {
+						"base": 5,
+						"step": 5,
+						"step_every": 1
+					}
+				},
+				{
+					"name": "权倾朝野",
+					"mode": "item",
+					"effect": {
+						"kind": "career_pct",
+						"per": 5
+					},
+					"max_level": 20,
+					"cost": {
+						"base": 100,
+						"step": 10,
+						"step_every": 1
+					},
+					"unlock": "道君皇帝"
+				},
+				{
+					"name": "操弄权术",
+					"mode": "item",
+					"effect": {
+						"kind": "series_aptitude",
+						"per": 5
+					},
+					"max_level": 200,
+					"cost": {
+						"base": 10,
+						"step": 1,
+						"step_every": 2
+					},
+					"unlock": "道君皇帝"
+				}
+			],
+			"item_id": "suitang_huaben"
+		},
+		"ao_wu": {
+			"series": "qiren_yishi",
+			"item": "狩猎骨刃",
+			"skills": [
+				{
+					"name": "市井奇人",
+					"mode": "item",
+					"effect": {
+						"kind": "series_aptitude",
+						"per": 1
+					},
+					"max_level": 200,
+					"cost": {
+						"base": 10,
+						"step": 0,
+						"step_every": 1
+					}
+				},
+				{
+					"name": "奇人异士",
+					"mode": "series_count",
+					"effect": {
+						"kind": "self_pct",
+						"per": 5
+					},
+					"max_level": "series_count"
+				},
+				{
+					"name": "狼群之力",
+					"mode": "item",
+					"effect": {
+						"kind": "self_pct",
+						"per": 5
+					},
+					"max_level": 20,
+					"cost": {
+						"base": 5,
+						"step": 5,
+						"step_every": 1
+					}
+				},
+				{
+					"name": "闻名天下",
+					"mode": "item",
+					"effect": {
+						"kind": "career_pct",
+						"per": 5
+					},
+					"max_level": 20,
+					"cost": {
+						"base": 100,
+						"step": 10,
+						"step_every": 1
+					},
+					"unlock": "@third"
+				},
+				{
+					"name": "旷世奇才",
+					"mode": "item",
+					"effect": {
+						"kind": "series_aptitude",
+						"per": 5
+					},
+					"max_level": 200,
+					"cost": {
+						"base": 10,
+						"step": 1,
+						"step_every": 2
+					},
+					"unlock": "@third"
+				}
+			],
+			"item_id": "shoulie_guren"
+		},
+		"xiang_yu": {
+			"series": "yishi_xiaoxiong",
+			"item": "霸王枪",
+			"skills": [
+				{
+					"name": "枭雄本色",
+					"mode": "item",
+					"effect": {
+						"kind": "series_aptitude",
+						"per": 1
+					},
+					"max_level": 200,
+					"cost": {
+						"base": 10,
+						"step": 0,
+						"step_every": 1
+					}
+				},
+				{
+					"name": "一世枭雄",
+					"mode": "series_count",
+					"effect": {
+						"kind": "self_pct",
+						"per": 5
+					},
+					"max_level": "series_count"
+				},
+				{
+					"name": "道君皇帝",
+					"mode": "item",
+					"effect": {
+						"kind": "self_pct",
+						"per": 5
+					},
+					"max_level": 20,
+					"cost": {
+						"base": 5,
+						"step": 5,
+						"step_every": 1
+					}
+				},
+				{
+					"name": "权倾朝野",
+					"mode": "item",
+					"effect": {
+						"kind": "career_pct",
+						"per": 5
+					},
+					"max_level": 20,
+					"cost": {
+						"base": 100,
+						"step": 10,
+						"step_every": 1
+					},
+					"unlock": "道君皇帝"
+				},
+				{
+					"name": "操弄权术",
+					"mode": "item",
+					"effect": {
+						"kind": "series_aptitude",
+						"per": 5
+					},
+					"max_level": 200,
+					"cost": {
+						"base": 10,
+						"step": 1,
+						"step_every": 2
+					},
+					"unlock": "道君皇帝"
+				}
+			],
+			"item_id": "bawang_qiang"
+		},
+		"zheng_he": {
+			"series": "qiren_yishi",
+			"item": "成祖敕令",
+			"skills": [
+				{
+					"name": "市井奇人",
+					"mode": "item",
+					"effect": {
+						"kind": "series_aptitude",
+						"per": 1
+					},
+					"max_level": 200,
+					"cost": {
+						"base": 10,
+						"step": 0,
+						"step_every": 1
+					}
+				},
+				{
+					"name": "奇人异士",
+					"mode": "series_count",
+					"effect": {
+						"kind": "self_pct",
+						"per": 5
+					},
+					"max_level": "series_count"
+				},
+				{
+					"name": "捭阖纵横",
+					"mode": "item",
+					"effect": {
+						"kind": "self_pct",
+						"per": 5
+					},
+					"max_level": 20,
+					"cost": {
+						"base": 5,
+						"step": 5,
+						"step_every": 1
+					}
+				},
+				{
+					"name": "闻名天下",
+					"mode": "item",
+					"effect": {
+						"kind": "career_pct",
+						"per": 5
+					},
+					"max_level": 20,
+					"cost": {
+						"base": 100,
+						"step": 10,
+						"step_every": 1
+					},
+					"unlock": "@third"
+				},
+				{
+					"name": "旷世奇才",
+					"mode": "item",
+					"effect": {
+						"kind": "series_aptitude",
+						"per": 5
+					},
+					"max_level": 200,
+					"cost": {
+						"base": 10,
+						"step": 1,
+						"step_every": 2
+					},
+					"unlock": "@third"
+				}
+			],
+			"item_id": "chengzu_chiling"
+		},
+		"long_xiang": {
+			"series": "qiren_yishi",
+			"item": "舞龙绣球",
+			"skills": [
+				{
+					"name": "市井奇人",
+					"mode": "item",
+					"effect": {
+						"kind": "series_aptitude",
+						"per": 1
+					},
+					"max_level": 200,
+					"cost": {
+						"base": 10,
+						"step": 0,
+						"step_every": 1
+					}
+				},
+				{
+					"name": "奇人异士",
+					"mode": "series_count",
+					"effect": {
+						"kind": "self_pct",
+						"per": 5
+					},
+					"max_level": "series_count"
+				},
+				{
+					"name": "舞龙纳福",
+					"mode": "item",
+					"effect": {
+						"kind": "self_pct",
+						"per": 5
+					},
+					"max_level": 20,
+					"cost": {
+						"base": 5,
+						"step": 5,
+						"step_every": 1
+					}
+				},
+				{
+					"name": "闻名天下",
+					"mode": "item",
+					"effect": {
+						"kind": "career_pct",
+						"per": 5
+					},
+					"max_level": 20,
+					"cost": {
+						"base": 100,
+						"step": 10,
+						"step_every": 1
+					},
+					"unlock": "@third"
+				},
+				{
+					"name": "旷世奇才",
+					"mode": "item",
+					"effect": {
+						"kind": "series_aptitude",
+						"per": 5
+					},
+					"max_level": 200,
+					"cost": {
+						"base": 10,
+						"step": 1,
+						"step_every": 2
+					},
+					"unlock": "@third"
+				}
+			],
+			"item_id": "wulong_xiuqiu"
+		},
+		"song_taizu": {
+			"series": "yishi_xiaoxiong",
+			"item": "黄龙锦缎",
+			"skills": [
+				{
+					"name": "枭雄本色",
+					"mode": "item",
+					"effect": {
+						"kind": "series_aptitude",
+						"per": 1
+					},
+					"max_level": 200,
+					"cost": {
+						"base": 10,
+						"step": 0,
+						"step_every": 1
+					}
+				},
+				{
+					"name": "一世枭雄",
+					"mode": "series_count",
+					"effect": {
+						"kind": "self_pct",
+						"per": 5
+					},
+					"max_level": "series_count"
+				},
+				{
+					"name": "道君皇帝",
+					"mode": "item",
+					"effect": {
+						"kind": "self_pct",
+						"per": 5
+					},
+					"max_level": 20,
+					"cost": {
+						"base": 5,
+						"step": 5,
+						"step_every": 1
+					}
+				},
+				{
+					"name": "权倾朝野",
+					"mode": "item",
+					"effect": {
+						"kind": "career_pct",
+						"per": 5
+					},
+					"max_level": 20,
+					"cost": {
+						"base": 100,
+						"step": 10,
+						"step_every": 1
+					},
+					"unlock": "道君皇帝"
+				},
+				{
+					"name": "操弄权术",
+					"mode": "item",
+					"effect": {
+						"kind": "series_aptitude",
+						"per": 5
+					},
+					"max_level": 200,
+					"cost": {
+						"base": 10,
+						"step": 1,
+						"step_every": 2
+					},
+					"unlock": "道君皇帝"
+				}
+			],
+			"item_id": "huanglong_jinduan"
+		},
+		"luo_haiwang": {
+			"series": "qiren_yishi",
+			"item": "鱼骨刀",
+			"skills": [
+				{
+					"name": "市井奇人",
+					"mode": "item",
+					"effect": {
+						"kind": "series_aptitude",
+						"per": 1
+					},
+					"max_level": 200,
+					"cost": {
+						"base": 10,
+						"step": 0,
+						"step_every": 1
+					}
+				},
+				{
+					"name": "奇人异士",
+					"mode": "series_count",
+					"effect": {
+						"kind": "self_pct",
+						"per": 5
+					},
+					"max_level": "series_count"
+				},
+				{
+					"name": "潮鸣鼎沸",
+					"mode": "item",
+					"effect": {
+						"kind": "self_pct",
+						"per": 5
+					},
+					"max_level": 20,
+					"cost": {
+						"base": 5,
+						"step": 5,
+						"step_every": 1
+					}
+				},
+				{
+					"name": "闻名天下",
+					"mode": "item",
+					"effect": {
+						"kind": "career_pct",
+						"per": 5
+					},
+					"max_level": 20,
+					"cost": {
+						"base": 100,
+						"step": 10,
+						"step_every": 1
+					},
+					"unlock": "@third"
+				},
+				{
+					"name": "旷世奇才",
+					"mode": "item",
+					"effect": {
+						"kind": "series_aptitude",
+						"per": 5
+					},
+					"max_level": 200,
+					"cost": {
+						"base": 10,
+						"step": 1,
+						"step_every": 2
+					},
+					"unlock": "@third"
+				}
+			],
+			"item_id": "yugu_dao"
+		},
+		"ma_xianglan": {
+			"series": "qinhuai_wuyan",
+			"item": "攀竹缀玉",
+			"skills": [
+				{
+					"name": "秦淮五艳",
+					"mode": "series_count",
+					"effect": {
+						"kind": "self_pct",
+						"per": 10
+					},
+					"max_level": 5
+				},
+				{
+					"name": "勾栏美人",
+					"mode": "item",
+					"effect": {
+						"kind": "self_pct",
+						"per": 5
+					},
+					"max_level": 20,
+					"cost": {
+						"base": 5,
+						"step": 5,
+						"step_every": 1
+					}
+				},
+				{
+					"name": "绝代风华",
+					"mode": "item",
+					"effect": {
+						"kind": "career_pct",
+						"per": 5
+					},
+					"max_level": 20,
+					"cost": {
+						"base": 100,
+						"step": 10,
+						"step_every": 1
+					},
+					"unlock": "勾栏美人"
+				},
+				{
+					"name": "群芳荟萃",
+					"mode": "item",
+					"effect": {
+						"kind": "series_aptitude",
+						"per": 5
+					},
+					"max_level": 200,
+					"cost": {
+						"base": 10,
+						"step": 1,
+						"step_every": 2
+					},
+					"unlock": "勾栏美人"
+				}
+			],
+			"item_id": "panzhu_zhuiyu"
+		},
+		"li_xiangjun": {
+			"series": "qinhuai_wuyan",
+			"item": "落花缀玉",
+			"skills": [
+				{
+					"name": "秦淮五艳",
+					"mode": "series_count",
+					"effect": {
+						"kind": "self_pct",
+						"per": 10
+					},
+					"max_level": 5
+				},
+				{
+					"name": "勾栏美人",
+					"mode": "item",
+					"effect": {
+						"kind": "self_pct",
+						"per": 5
+					},
+					"max_level": 20,
+					"cost": {
+						"base": 5,
+						"step": 5,
+						"step_every": 1
+					}
+				},
+				{
+					"name": "绝代风华",
+					"mode": "item",
+					"effect": {
+						"kind": "career_pct",
+						"per": 5
+					},
+					"max_level": 20,
+					"cost": {
+						"base": 100,
+						"step": 10,
+						"step_every": 1
+					},
+					"unlock": "勾栏美人"
+				},
+				{
+					"name": "群芳荟萃",
+					"mode": "item",
+					"effect": {
+						"kind": "series_aptitude",
+						"per": 5
+					},
+					"max_level": 200,
+					"cost": {
+						"base": 10,
+						"step": 1,
+						"step_every": 2
+					},
+					"unlock": "勾栏美人"
+				}
+			],
+			"item_id": "luohua_zhuiyu"
+		},
+		"dong_xiaowan": {
+			"series": "qinhuai_wuyan",
+			"item": "织梦缀玉",
+			"skills": [
+				{
+					"name": "秦淮五艳",
+					"mode": "series_count",
+					"effect": {
+						"kind": "self_pct",
+						"per": 10
+					},
+					"max_level": 5
+				},
+				{
+					"name": "勾栏美人",
+					"mode": "item",
+					"effect": {
+						"kind": "self_pct",
+						"per": 5
+					},
+					"max_level": 20,
+					"cost": {
+						"base": 5,
+						"step": 5,
+						"step_every": 1
+					}
+				},
+				{
+					"name": "绝代风华",
+					"mode": "item",
+					"effect": {
+						"kind": "career_pct",
+						"per": 5
+					},
+					"max_level": 20,
+					"cost": {
+						"base": 100,
+						"step": 10,
+						"step_every": 1
+					},
+					"unlock": "勾栏美人"
+				},
+				{
+					"name": "群芳荟萃",
+					"mode": "item",
+					"effect": {
+						"kind": "series_aptitude",
+						"per": 5
+					},
+					"max_level": 200,
+					"cost": {
+						"base": 10,
+						"step": 1,
+						"step_every": 2
+					},
+					"unlock": "勾栏美人"
+				}
+			],
+			"item_id": "zhimeng_zhuiyu"
+		},
+		"bian_yujing": {
+			"series": "qinhuai_wuyan",
+			"item": "莺歌缀玉",
+			"skills": [
+				{
+					"name": "秦淮五艳",
+					"mode": "series_count",
+					"effect": {
+						"kind": "self_pct",
+						"per": 10
+					},
+					"max_level": 5
+				},
+				{
+					"name": "勾栏美人",
+					"mode": "item",
+					"effect": {
+						"kind": "self_pct",
+						"per": 5
+					},
+					"max_level": 20,
+					"cost": {
+						"base": 5,
+						"step": 5,
+						"step_every": 1
+					}
+				},
+				{
+					"name": "绝代风华",
+					"mode": "item",
+					"effect": {
+						"kind": "career_pct",
+						"per": 5
+					},
+					"max_level": 20,
+					"cost": {
+						"base": 100,
+						"step": 10,
+						"step_every": 1
+					},
+					"unlock": "勾栏美人"
+				},
+				{
+					"name": "群芳荟萃",
+					"mode": "item",
+					"effect": {
+						"kind": "series_aptitude",
+						"per": 5
+					},
+					"max_level": 200,
+					"cost": {
+						"base": 10,
+						"step": 1,
+						"step_every": 2
+					},
+					"unlock": "勾栏美人"
+				}
+			],
+			"item_id": "yingge_zhuiyu"
+		},
+		"kou_baimen": {
+			"series": "qinhuai_wuyan",
+			"item": "流云缀玉",
+			"skills": [
+				{
+					"name": "秦淮五艳",
+					"mode": "series_count",
+					"effect": {
+						"kind": "self_pct",
+						"per": 10
+					},
+					"max_level": 5
+				},
+				{
+					"name": "勾栏美人",
+					"mode": "item",
+					"effect": {
+						"kind": "self_pct",
+						"per": 5
+					},
+					"max_level": 20,
+					"cost": {
+						"base": 5,
+						"step": 5,
+						"step_every": 1
+					}
+				},
+				{
+					"name": "绝代风华",
+					"mode": "item",
+					"effect": {
+						"kind": "career_pct",
+						"per": 5
+					},
+					"max_level": 20,
+					"cost": {
+						"base": 100,
+						"step": 10,
+						"step_every": 1
+					},
+					"unlock": "勾栏美人"
+				},
+				{
+					"name": "群芳荟萃",
+					"mode": "item",
+					"effect": {
+						"kind": "series_aptitude",
+						"per": 5
+					},
+					"max_level": 200,
+					"cost": {
+						"base": 10,
+						"step": 1,
+						"step_every": 2
+					},
+					"unlock": "勾栏美人"
+				}
+			],
+			"item_id": "liuyun_zhuiyu"
+		},
+		"haotian_shangdi": {
+			"series": "shanggu_shenhua",
+			"item": "",
+			"skills": [
+				{
+					"name": "上古神话",
+					"mode": "series_count",
+					"effect": {
+						"kind": "self_pct",
+						"per": 20
+					},
+					"max_level": 6
+				},
+				{
+					"name": "举世无双",
+					"mode": "flat",
+					"effect": {
+						"kind": "self_pct",
+						"per": 5
+					},
+					"max_level": 1
+				}
+			]
+		},
+		"fuxi": {
+			"series": "shanggu_shenhua",
+			"item": "",
+			"skills": [
+				{
+					"name": "上古神话",
+					"mode": "series_count",
+					"effect": {
+						"kind": "self_pct",
+						"per": 20
+					},
+					"max_level": 7
+				},
+				{
+					"name": "举世无双",
+					"mode": "flat",
+					"effect": {
+						"kind": "self_pct",
+						"per": 5
+					},
+					"max_level": 1
+				}
+			]
+		},
+		"dayu": {
+			"series": "shanggu_shenhua",
+			"item": "",
+			"skills": [
+				{
+					"name": "上古神话",
+					"mode": "series_count",
+					"effect": {
+						"kind": "self_pct",
+						"per": 20
+					},
+					"max_level": 7
+				},
+				{
+					"name": "举世无双",
+					"mode": "flat",
+					"effect": {
+						"kind": "self_pct",
+						"per": 5
+					},
+					"max_level": 1
+				}
+			]
+		},
+		"houyi": {
+			"series": "shanggu_shenhua",
+			"item": "",
+			"skills": [
+				{
+					"name": "上古神话",
+					"mode": "series_count",
+					"effect": {
+						"kind": "self_pct",
+						"per": 20
+					},
+					"max_level": 7
+				},
+				{
+					"name": "举世无双",
+					"mode": "flat",
+					"effect": {
+						"kind": "self_pct",
+						"per": 5
+					},
+					"max_level": 1
+				}
+			]
+		},
+		"chiyou": {
+			"series": "shanggu_shenhua",
+			"item": "",
+			"skills": [
+				{
+					"name": "上古神话",
+					"mode": "series_count",
+					"effect": {
+						"kind": "self_pct",
+						"per": 20
+					},
+					"max_level": 7
+				},
+				{
+					"name": "举世无双",
+					"mode": "flat",
+					"effect": {
+						"kind": "self_pct",
+						"per": 5
+					},
+					"max_level": 1
+				}
+			]
+		},
+		"donghuang_taiyi": {
+			"series": "shanggu_shenhua",
+			"item": "",
+			"skills": [
+				{
+					"name": "上古神话",
+					"mode": "series_count",
+					"effect": {
+						"kind": "self_pct",
+						"per": 20
+					},
+					"max_level": 7
+				},
+				{
+					"name": "举世无双",
+					"mode": "flat",
+					"effect": {
+						"kind": "self_pct",
+						"per": 5
+					},
+					"max_level": 1
+				}
+			]
+		}
+	}
+}

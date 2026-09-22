@@ -264,8 +264,9 @@ func update_hero_panel():
 	var h = data.heroes[current_hero_id]
 	var income = data.get_hero_income(current_hero_id)
 	var total_aptitude = HeroData.get_total_aptitude(data, current_hero_id)   # 面板资质 = 总资质（含珍兽），与赚速同口径
+	# 【改】品质四档全显示徽标（含优秀蓝档；条件 quality>0 → has("quality")）
 	var quality_tag = ""
-	if h.has("quality") and h.quality > 0:
+	if h.has("quality"):
 		quality_tag = "[%s]" % HeroData.get_quality_name(h.quality)
 	
 	if c.has_node("HeroPanel/HeroName"):
@@ -273,7 +274,8 @@ func update_hero_panel():
 		var star_txt = data.talent_system.get_star_text(current_hero_id)
 		c.get_node("HeroPanel/HeroName").text = "【%s】%s %s Lv.%d%s" % [h.name, h.category, quality_tag, h.level, (" " + star_txt) if star_txt != "" else ""]
 	if c.has_node("HeroPanel/HeroIncome"):
-		c.get_node("HeroPanel/HeroIncome").text = "赚速：%s/秒  资质：%d" % [c.format_number(income), total_aptitude]
+		# 【改】口径对齐：门客个体=赚钱（全局汇总才叫赚速）
+		c.get_node("HeroPanel/HeroIncome").text = "赚钱：%s/秒  资质：%d" % [c.format_number(income), total_aptitude]
 	
 	# 清理旧布局（如果有）
 	if c.has_node("HeroPanel/BeastInfoBox"):
@@ -404,7 +406,8 @@ func update_hero_panel():
 	# 信号重连（先断后连，防切换门客串数据）
 	for conn in guardian_btn.pressed.get_connections():
 		guardian_btn.pressed.disconnect(conn.callable)
-	var is_wushuang = h.get("quality", 0) == 2
+	# 【改】品质四档改造：无双档 2→3
+	var is_wushuang = h.get("quality", 0) == 3
 	guardian_btn.visible = is_wushuang
 	if is_wushuang:
 		# 确保守护灵已初始化（旧档兼容）
@@ -1213,7 +1216,8 @@ func _fill_skill_tab(list):
 		})
 
 	# 守护灵技能（仅无双门客，阶段注满才显示；同样吃资质丹→抵扣勾选框对）
-	if h.get("quality", 0) == 2:
+	# 【改】品质四档改造：无双档 2→3
+	if h.get("quality", 0) == 3:
 		data.guardian_system.init_guardian(current_hero_id)
 		var gs = data.guardian_system.get_guardian(current_hero_id)
 		if not gs.is_empty():
@@ -1337,6 +1341,8 @@ func _on_cos_skill_upgrade(cos_id: String, mode: String):
 	c.update_bag_list()
 
 # 【第35节】填充「光环」页：光环类格式=【类】门客资质+X，上限=min(100, 服装总等级×10)
+# 【改】光环页签（批次①重构）：服装光环段保留 + 系列光环段追加同页；
+# 无服装光环不再 early-return——改显示提示后继续渲染系列段
 func _fill_halo_tab(list):
 	var cs = data.costume_system
 	var my_cat = data.heroes[current_hero_id].get("category", "")
@@ -1357,12 +1363,72 @@ func _fill_halo_tab(list):
 			"own_name": "玉璜", "own": [cs.get_halo_cost(lv + 1), int(data.items.get("yu_huang", 0))],
 			"on_single": _on_halo_upgrade.bind(cos_id, "single"), "on_bulk": _on_halo_upgrade.bind(cos_id, "bulk")})
 	if items.is_empty():
+		# 【改】原 early-return 改提示后继续：系列段仍要渲染
 		var lbl = Label.new()
 		lbl.text = "暂未解锁光环（解锁服装后获得同名光环技能）"
 		lbl.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 		list.add_child(lbl)
-		return
-	_render_skill_tab(list, items, "halo")
+	else:
+		_render_skill_tab(list, items, "halo")
+	# ── 系列光环段（追加；非系列门客自动跳过）──
+	_fill_series_aura_segment(list)
+
+# 【新增】系列光环段：hero_auras.json 驱动；四模式分派显示；升级链路批次②接入（批次①先渲染只读）
+func _fill_series_aura_segment(list):
+	var ts = data.talent_system
+	var acfg = ts.get_hero_aura_cfg(current_hero_id)
+	if acfg.is_empty(): return
+	var series_key = str(acfg.get("series", ""))
+	var scfg = ts.get_aura_series_cfg(series_key)
+	var recruited = ts.get_series_recruited_count(series_key)
+	# 段头：系列名 + 招募进度
+	var head = Label.new()
+	head.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	head.add_theme_color_override("font_color", Color("#ffd700"))
+	head.text = "—— %s · 系列光环 ——" % str(scfg.get("label", series_key))
+	list.add_child(head)
+	var hint = Label.new()
+	hint.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	hint.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+	hint.add_theme_color_override("font_color", Color("#a89ec7"))
+	hint.text = "已招募 %d 名系列门客" % recruited
+	list.add_child(hint)
+	for skill in acfg.get("skills", []):
+		_render_aura_skill_row(list, skill)
+
+# 【新增】系列光环技能行：名称+等级/上限+当前效果值；人数档/flat/.极 为实时档（无升级钮），item 档批次②接升级
+func _render_aura_skill_row(list, skill: Dictionary):
+	var ts = data.talent_system
+	var mode: String = str(skill.get("mode", "item"))
+	var sname: String = str(skill.get("name", ""))
+	var lv = ts.get_aura_level(current_hero_id, skill)
+	var per = int((skill.get("effect") or {}).get("per", 0))
+	var max_disp = skill.get("max_level", 1)
+	if str(max_disp) == "series_count":
+		max_disp = ts.get_series_recruited_count(str(ts.get_hero_aura_cfg(current_hero_id).get("series", "")))
+	var row = Label.new()
+	row.horizontal_alignment = HORIZONTAL_ALIGNMENT_LEFT
+	row.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+	# 当前效果值（玩家文案只显示实际数值）
+	var eff: String = ""
+	match str((skill.get("effect") or {}).get("kind", "")):
+		"self_pct":
+			eff = "自身赚钱+%d%%" % (per * lv)
+		"career_pct":
+			eff = "同职业门客赚钱+%d%%" % (per * lv)
+		"series_aptitude":
+			eff = "全系列资质+%d" % (per * lv)
+	var state: String = ""
+	if mode == "series_count":
+		state = "（已招募 %d 名系列门客）" % ts.get_series_recruited_count(str(ts.get_hero_aura_cfg(current_hero_id).get("series", "")))
+	elif mode == "series_total_level":
+		state = "（等级取决于同系列其他门客技能总等级）"
+	elif mode == "flat":
+		state = "（固定效果，不可升级）"
+	elif lv >= int(max_disp):
+		state = "（已满级）"
+	row.text = "【%s】Lv.%d/%s  %s%s" % [sname, lv, str(max_disp), eff, state]
+	list.add_child(row)
 
 # 【服装系统】光环升级回调（同类门客资质都变化，需全局对账）
 func _on_halo_upgrade(cos_id: String, mode: String):
@@ -2292,7 +2358,7 @@ func _on_talent_tab_clicked(tab_id: String):
 		old.queue_free()
 	_show_talent_panel(tab_id)
 
-# 【新增】天赋面板：顶部=精进区（公共，不随标签切换，同时加成天赋与技能）；下部标签页【天赋】/【技能】
+# 【改】天赋面板（批次①）：顶部=精进区（公共）；下部标签页【独有天赋】/【精进技能】
 # 重建刷新模式沿用信物/风姿面板惯例（remove_child+queue_free 防同名冲突）
 func _show_talent_panel(tab_id: String = "skill"):
 	if current_hero_id == "" or not data.heroes.has(current_hero_id): return
@@ -2316,7 +2382,8 @@ func _show_talent_panel(tab_id: String = "skill"):
 	tab_box.alignment = BoxContainer.ALIGNMENT_CENTER
 	tab_box.add_theme_constant_override("separation", 16)
 	vb.add_child(tab_box)
-	for t in [["talent", "天赋"], ["skill", "技能"]]:
+	# 【改】页签重命名（批次①）：原"天赋"占位页=独有天赋，"技能"页=精进技能
+	for t in [["talent", "独有天赋"], ["skill", "精进技能"]]:
 		var tbtn = Button.new()
 		tbtn.text = t[1]
 		tbtn.custom_minimum_size = Vector2(140, 36)
@@ -2326,13 +2393,8 @@ func _show_talent_panel(tab_id: String = "skill"):
 		tab_box.add_child(tbtn)
 	
 	if tab_id == "talent":
-		# ── 独有天赋页：配置表未做好，占位 ──
-		var tip = Label.new()
-		tip.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
-		tip.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
-		tip.add_theme_color_override("font_color", Color("#888888"))
-		tip.text = "独有天赋敬请期待"
-		vb.add_child(tip)
+		# ── 独有天赋页：品质天赋三段式（批次①实装）──
+		_fill_unique_talent_tab(vb)
 	else:
 		_fill_talent_skill_tab(vb)
 	
@@ -2411,6 +2473,55 @@ func _fill_talent_refine_area(vb):
 		full_lbl.add_theme_color_override("font_color", Color("#ffd700"))
 		full_lbl.text = "已精进至满星（%d星）" % max_star
 		vb.add_child(full_lbl)
+
+# 【新增】独有天赋页（批次①）：按 卓越→传奇→无双 三段列出；当前品质档显示实际效果（绿字），
+# 其余档灰显"晋升后开放"；无天赋门客显示"该门客没有天赋"；玩家文案只显示当前实际数值
+func _fill_unique_talent_tab(vb):
+	var ts = data.talent_system
+	var cfg = ts.get_hero_talent_cfg(current_hero_id)
+	if cfg.is_empty():
+		var tip = Label.new()
+		tip.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+		tip.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+		tip.add_theme_color_override("font_color", Color("#888888"))
+		tip.text = "该门客没有天赋"
+		vb.add_child(tip)
+		return
+	var labels: Dictionary = ts.get_talent_settings().get("tier_labels", {"epic": "卓越", "legend": "传奇", "wushuang": "无双"})
+	var cur_tier = ts.get_current_tier(current_hero_id)
+	var tiers: Dictionary = cfg.get("tiers", {})
+	var scroll = ScrollContainer.new()
+	scroll.custom_minimum_size = Vector2(420, 300)
+	vb.add_child(scroll)
+	var list = VBoxContainer.new()
+	list.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	list.add_theme_constant_override("separation", 6)
+	scroll.add_child(list)
+	for tier in ["epic", "legend", "wushuang"]:
+		if not tiers.has(tier): continue
+		# 段头：品质色徽标
+		var head = Label.new()
+		head.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+		var tier_q: int = {"epic": 1, "legend": 2, "wushuang": 3}.get(tier, 0)
+		head.add_theme_color_override("font_color", Color(HeroData.get_quality_color(tier_q)))
+		head.text = "—— %s ——" % str(labels.get(tier, tier))
+		list.add_child(head)
+		if tier == cur_tier:
+			for t in tiers[tier]:
+				var row = Label.new()
+				row.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+				row.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+				row.add_theme_color_override("font_color", Color("#7ee787"))
+				row.text = "【%s】%s" % [str(t.get("name", "")), str(t.get("desc", ""))]
+				list.add_child(row)
+		else:
+			# 未达档（挂起档/未来晋升档）统一灰显；实装口径以逐门客晋升玩法上线为准
+			var lock = Label.new()
+			lock.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+			lock.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+			lock.add_theme_color_override("font_color", Color("#888888"))
+			lock.text = "晋升后开放"
+			list.add_child(lock)
 
 # 【新增】天赋【技能】页内容：解锁技能列表 + 规则说明（精进区在面板顶部公共区）
 func _fill_talent_skill_tab(vb):

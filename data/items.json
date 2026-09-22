@@ -1223,12 +1223,59 @@
 			"name": "稻谷",
 			"desc": "酒坊玩法：稻谷酒坊的酿酒材料（材料库存以酒坊内为准，可在酒坊【采买】购得）"
 		},
-		"yyf_wudao": {"name": "舞蹈之花", "desc": "妙音坊缘分物，后续用于芳华技能"},
-		"yyf_shengyue": {"name": "声乐之花", "desc": "妙音坊缘分物，后续用于芳华技能"},
-		"yyf_yueqi": {"name": "乐器之花", "desc": "妙音坊缘分物，后续用于芳华技能"},
-		"yyf_chuangzuo": {"name": "创作之花", "desc": "妙音坊缘分物，后续用于芳华技能"},
-		"yyf_yitai": {"name": "仪态之花", "desc": "妙音坊缘分物，后续用于芳华技能"},
-		"miaoyin_jiasu_ka": {"name": "妙音坊加速卡", "desc": "立即获得60分钟的妙音坊粉丝应援收益和新秀训练产出", "use": {"type": "quantity", "btn": "使用", "title": "使用妙音坊加速卡"}}
+		"yyf_wudao": {
+			"name": "舞蹈之花",
+			"desc": "妙音坊缘分物，后续用于芳华技能"
+		},
+		"yyf_shengyue": {
+			"name": "声乐之花",
+			"desc": "妙音坊缘分物，后续用于芳华技能"
+		},
+		"yyf_yueqi": {
+			"name": "乐器之花",
+			"desc": "妙音坊缘分物，后续用于芳华技能"
+		},
+		"yyf_chuangzuo": {
+			"name": "创作之花",
+			"desc": "妙音坊缘分物，后续用于芳华技能"
+		},
+		"yyf_yitai": {
+			"name": "仪态之花",
+			"desc": "妙音坊缘分物，后续用于芳华技能"
+		},
+		"miaoyin_jiasu_ka": {
+			"name": "妙音坊加速卡",
+			"desc": "立即获得60分钟的妙音坊粉丝应援收益和新秀训练产出",
+			"use": {
+				"type": "quantity",
+				"btn": "使用",
+				"title": "使用妙音坊加速卡"
+			}
+		},
+		"prop_aura_liujin_gun": {
+			"name": "鎏金棍",
+			"desc": "光环养成道具（获取途径后续版本开放）"
+		},
+		"prop_aura_molin_caidao": {
+			"name": "墨麟菜刀",
+			"desc": "光环养成道具（获取途径后续版本开放）"
+		},
+		"prop_aura_baozi": {
+			"name": "包子",
+			"desc": "光环养成道具（获取途径后续版本开放）"
+		},
+		"prop_aura_beidou_gangdao": {
+			"name": "北斗钢刀",
+			"desc": "光环养成道具（获取途径后续版本开放）"
+		},
+		"prop_aura_zichen_tonghu": {
+			"name": "紫宸铜壶",
+			"desc": "光环养成道具（获取途径后续版本开放）"
+		},
+		"prop_aura_panlong_hu": {
+			"name": "盘龙壶",
+			"desc": "光环养成道具（获取途径后续版本开放）"
+		}
 	},
 	"initial": {
 		"shop_blueprint": 999,
@@ -1341,6 +1388,12 @@
 		"yyf_yueqi": 0,
 		"yyf_chuangzuo": 0,
 		"yyf_yitai": 0,
-		"miaoyin_jiasu_ka": 0
+		"miaoyin_jiasu_ka": 0,
+		"prop_aura_liujin_gun": 0,
+		"prop_aura_molin_caidao": 0,
+		"prop_aura_baozi": 0,
+		"prop_aura_beidou_gangdao": 0,
+		"prop_aura_zichen_tonghu": 0,
+		"prop_aura_panlong_hu": 0
 	}
 }
