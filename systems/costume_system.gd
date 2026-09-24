@@ -16,10 +16,12 @@ func _init(p_g):
 
 # ============ 存档（状态随门客/挚友字典，本系统无独立数据） ============
 func get_save_data() -> Dictionary:
-	return {}
+	return {"cos_pending": _cos_pending}   # 【改】2026-09-24 待领池落盘（原空字典占位）
 
-func load_save_data(_d: Dictionary):
-	pass
+func load_save_data(d: Dictionary):
+	var p: Dictionary = d.get("cos_pending", {})
+	if p == null: p = {}
+	_cos_pending = p
 
 # ============ 配置访问 ============
 # 服装总配置
@@ -133,9 +135,14 @@ func upgrade_hero_cos_extra(hero_id: String, cos_id: String) -> Dictionary:
 
 # 【服装盒子】加库存（不自动解锁；解锁走 unlock_hero_cos 消耗1库存）。与 exchange 落库逻辑一致
 func gain_hero_cos_stock(hero_id: String, cos_id: String, n: int = 1) -> Dictionary:
-	if not g.heroes.has(hero_id): return {"ok": false, "msg": "门客不存在"}
 	var cos_cfg = _get_hero_cos_cfg(hero_id, cos_id)
 	if cos_cfg.is_empty(): return {"ok": false, "msg": "服装不存在"}
+	# 【改】2026-09-24 服装盒子不要求先拥有门客：未拥有时进待领池，招募时 merge_pending_cos 合并
+	if not g.heroes.has(hero_id):
+		if not _cos_pending.has(hero_id): _cos_pending[hero_id] = {}
+		var pd: Dictionary = _cos_pending[hero_id]
+		pd[cos_id] = int(pd.get(cos_id, 0)) + n
+		return {"ok": true, "stock": pd[cos_id], "pending": true}
 	# 与 exchange_hero_costume 落库一致：状态存在 g.heroes[hero_id]["costumes"][cos_id]
 	if not g.heroes[hero_id].has("costumes"):
 		g.heroes[hero_id]["costumes"] = {}
@@ -146,11 +153,43 @@ func gain_hero_cos_stock(hero_id: String, cos_id: String, n: int = 1) -> Diction
 	st["stock"] = int(st.get("stock", 0)) + n
 	return {"ok": true, "stock": st["stock"]}
 
+# ============ 服装盒子待领池（2026-09-24） ============
+# 服装盒子不要求先拥有门客：未拥有时库存进待领池，hero_system.unlock_hero 招募时合并
+# 存档字段 cos_pending = {hero_id: {cos_id: 库存}}
+var _cos_pending: Dictionary = {}
+
+# 已解锁服装按品质计数（杨戬晋升无双条件：4素装+1华服）
+func get_unlocked_cos_count_by_q(hero_id: String, cos_quality: String) -> int:
+	if not g.heroes.has(hero_id): return 0
+	var cos_dict: Dictionary = g.heroes[hero_id].get("costumes", {})
+	var n := 0
+	for cos_id in cos_dict.keys():
+		var st = cos_dict[cos_id]
+		if st is Dictionary and st.has("base"):
+			var cfg = _get_hero_cos_cfg(hero_id, cos_id)
+			if str(cfg.get("quality", "")) == cos_quality:
+				n += 1
+	return n
+
+# 招募合并待领库存（跨系统入口：服装状态住本系统域，hero_system 招募时调用）
+func merge_pending_cos(hero_id: String) -> void:
+	if not g.heroes.has(hero_id): return
+	if not _cos_pending.has(hero_id): return
+	if not g.heroes[hero_id].has("costumes"):
+		g.heroes[hero_id]["costumes"] = {}
+	var cos_dict = g.heroes[hero_id]["costumes"]
+	for cos_id in _cos_pending[hero_id].keys():
+		if not cos_dict.has(cos_id): cos_dict[cos_id] = {}
+		cos_dict[cos_id]["stock"] = int(cos_dict[cos_id].get("stock", 0)) + int(_cos_pending[hero_id][cos_id])
+	_cos_pending.erase(hero_id)
+
+
 # 【服装盒子】全服服装清单（含所属门客，供盒子选择弹窗用）
 func get_all_cos_entries() -> Array:
 	var out: Array = []
 	for hero_id in _cfgs().get("hero_costumes", {}):
-		var hero_name: String = g.heroes.get(hero_id, {}).get("name", hero_id)
+				# 【修】2026-09-24 名字查配置全量表（g.heroes 仅含已招募门客，未招募会兜底成 ID）
+		var hero_name: String = g._hero_configs.get(hero_id, {}).get("name", hero_id)
 		for cfg in _cfgs()["hero_costumes"][hero_id]:
 			out.append({"hero_id": hero_id, "hero_name": hero_name,
 				"cos_id": cfg.get("id", ""), "name": cfg.get("name", ""), "quality": cfg.get("quality", "")})

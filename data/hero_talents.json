@@ -644,10 +644,7 @@
    "born_tier": "epic",
    "max_tier": "wushuang",
    "can_promote": true,
-   "suspended_tiers": [
-    "legend",
-    "wushuang"
-   ]
+   "suspended_tiers": []
   },
   "si_lang": {
    "name": "四郎",
@@ -762,10 +759,7 @@
    "born_tier": "epic",
    "max_tier": "wushuang",
    "can_promote": true,
-   "suspended_tiers": [
-    "legend",
-    "wushuang"
-   ]
+   "suspended_tiers": []
   },
   "xiao_yuer": {
    "name": "小鱼儿",
@@ -833,10 +827,7 @@
    "born_tier": "epic",
    "max_tier": "wushuang",
    "can_promote": true,
-   "suspended_tiers": [
-    "legend",
-    "wushuang"
-   ]
+   "suspended_tiers": []
   },
   "li_bai": {
    "name": "李白",
@@ -970,10 +961,7 @@
    "born_tier": "epic",
    "max_tier": "wushuang",
    "can_promote": true,
-   "suspended_tiers": [
-    "legend",
-    "wushuang"
-   ]
+   "suspended_tiers": []
   },
   "zhang_qiling": {
    "name": "张起灵",
@@ -1058,10 +1046,7 @@
    "born_tier": "epic",
    "max_tier": "wushuang",
    "can_promote": true,
-   "suspended_tiers": [
-    "legend",
-    "wushuang"
-   ]
+   "suspended_tiers": []
   },
   "wang_zhaojun": {
    "name": "王昭君",
@@ -1320,10 +1305,7 @@
    "born_tier": "epic",
    "max_tier": "wushuang",
    "can_promote": true,
-   "suspended_tiers": [
-    "legend",
-    "wushuang"
-   ]
+   "suspended_tiers": []
   },
   "hua_mulan": {
    "name": "花木兰",
@@ -1482,10 +1464,7 @@
    "born_tier": "epic",
    "max_tier": "wushuang",
    "can_promote": true,
-   "suspended_tiers": [
-    "legend",
-    "wushuang"
-   ]
+   "suspended_tiers": []
   },
   "leng_erpi": {
    "name": "冷二皮",

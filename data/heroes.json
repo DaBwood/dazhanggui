@@ -5,7 +5,6 @@
 		"level": 1,
 		"extra_income": 0,
 		"breakthrough_count": 1,
-		"initial_aptitude": 66,
 		"assigned_shop": "",
 		"bound_heroes": [
 			"li_shishi"
@@ -35,7 +34,6 @@
 		"level": 1,
 		"extra_income": 0,
 		"breakthrough_count": 1,
-		"initial_aptitude": 66,
 		"assigned_shop": "",
 		"bound_heroes": [
 			"xiu_niang"
@@ -65,7 +63,6 @@
 		"level": 1,
 		"extra_income": 0,
 		"breakthrough_count": 1,
-		"initial_aptitude": 66,
 		"assigned_shop": "",
 		"bound_heroes": [
 			"jian_wuzhe"
@@ -95,7 +92,6 @@
 		"level": 1,
 		"extra_income": 0,
 		"breakthrough_count": 1,
-		"initial_aptitude": 66,
 		"assigned_shop": "",
 		"bound_heroes": [
 			"mai_san_nv"
@@ -125,7 +121,6 @@
 		"level": 1,
 		"extra_income": 0,
 		"breakthrough_count": 1,
-		"initial_aptitude": 66,
 		"assigned_shop": "",
 		"bound_heroes": [
 			"zhen_xian_nv"
@@ -155,7 +150,6 @@
 		"level": 1,
 		"extra_income": 0,
 		"breakthrough_count": 1,
-		"initial_aptitude": 66,
 		"assigned_shop": "",
 		"bound_heroes": [
 			"cu_ju_nv"
@@ -185,7 +179,6 @@
 		"level": 1,
 		"extra_income": 0,
 		"breakthrough_count": 1,
-		"initial_aptitude": 66,
 		"assigned_shop": "",
 		"bound_heroes": [
 			"xi_zi"
@@ -215,7 +208,6 @@
 		"level": 1,
 		"extra_income": 0,
 		"breakthrough_count": 1,
-		"initial_aptitude": 66,
 		"assigned_shop": "",
 		"bound_heroes": [
 			"jing_an"
@@ -245,7 +237,6 @@
 		"level": 1,
 		"extra_income": 0,
 		"breakthrough_count": 1,
-		"initial_aptitude": 66,
 		"assigned_shop": "",
 		"bound_heroes": [
 			"wu_nv"
@@ -275,7 +266,6 @@
 		"level": 1,
 		"extra_income": 0,
 		"breakthrough_count": 1,
-		"initial_aptitude": 66,
 		"assigned_shop": "",
 		"bound_heroes": [
 			"shu_xiang_nv"
@@ -305,7 +295,6 @@
 		"level": 1,
 		"extra_income": 0,
 		"breakthrough_count": 1,
-		"initial_aptitude": 66,
 		"assigned_shop": "",
 		"bound_heroes": [
 			"dou_fu_nv"
@@ -335,7 +324,6 @@
 		"level": 1,
 		"extra_income": 0,
 		"breakthrough_count": 1,
-		"initial_aptitude": 66,
 		"assigned_shop": "",
 		"bound_heroes": [
 			"xiu_niang"
@@ -365,7 +353,6 @@
 		"level": 1,
 		"extra_income": 0,
 		"breakthrough_count": 1,
-		"initial_aptitude": 66,
 		"assigned_shop": "",
 		"bound_heroes": [
 			"xi_zi"
@@ -395,7 +382,6 @@
 		"level": 1,
 		"extra_income": 0,
 		"breakthrough_count": 1,
-		"initial_aptitude": 66,
 		"assigned_shop": "",
 		"bound_heroes": [
 			"shu_xiang_nv"
@@ -425,7 +411,6 @@
 		"level": 1,
 		"extra_income": 0,
 		"breakthrough_count": 1,
-		"initial_aptitude": 66,
 		"assigned_shop": "",
 		"bound_heroes": [
 			"zhen_xian_nv"
@@ -455,7 +440,6 @@
 		"level": 1,
 		"extra_income": 0,
 		"breakthrough_count": 1,
-		"initial_aptitude": 66,
 		"assigned_shop": "",
 		"bound_heroes": [
 			"dou_fu_nv"
@@ -485,7 +469,6 @@
 		"level": 1,
 		"extra_income": 0,
 		"breakthrough_count": 1,
-		"initial_aptitude": 66,
 		"assigned_shop": "",
 		"bound_heroes": [
 			"meng_qier"
@@ -515,7 +498,6 @@
 		"level": 1,
 		"extra_income": 0,
 		"breakthrough_count": 1,
-		"initial_aptitude": 66,
 		"assigned_shop": "",
 		"bound_heroes": [
 			"xiao_shijie"
@@ -545,7 +527,6 @@
 		"level": 1,
 		"extra_income": 0,
 		"breakthrough_count": 1,
-		"initial_aptitude": 66,
 		"assigned_shop": "",
 		"bound_heroes": [
 			"ya_huan"
@@ -575,7 +556,6 @@
 		"level": 1,
 		"extra_income": 0,
 		"breakthrough_count": 1,
-		"initial_aptitude": 66,
 		"assigned_shop": "",
 		"bound_heroes": [
 			"mai_san_nv"
@@ -608,7 +588,6 @@
 		],
 		"extra_income": 0,
 		"breakthrough_count": 1,
-		"initial_aptitude": 66,
 		"assigned_shop": "",
 		"aptitude_skills": [
 			{
@@ -638,7 +617,6 @@
 		],
 		"extra_income": 0,
 		"breakthrough_count": 1,
-		"initial_aptitude": 66,
 		"assigned_shop": "",
 		"aptitude_skills": [
 			{
@@ -668,7 +646,6 @@
 		],
 		"extra_income": 0,
 		"breakthrough_count": 1,
-		"initial_aptitude": 66,
 		"assigned_shop": "",
 		"aptitude_skills": [
 			{
@@ -698,7 +675,6 @@
 		],
 		"extra_income": 0,
 		"breakthrough_count": 1,
-		"initial_aptitude": 66,
 		"assigned_shop": "",
 		"aptitude_skills": [
 			{
@@ -728,7 +704,6 @@
 		],
 		"extra_income": 0,
 		"breakthrough_count": 1,
-		"initial_aptitude": 66,
 		"assigned_shop": "",
 		"aptitude_skills": [
 			{
@@ -759,7 +734,6 @@
 		],
 		"extra_income": 0,
 		"breakthrough_count": 1,
-		"initial_aptitude": 66,
 		"assigned_shop": "",
 		"aptitude_skills": [
 			{
@@ -786,7 +760,6 @@
 		"level": 1,
 		"extra_income": 0,
 		"breakthrough_count": 1,
-		"initial_aptitude": 66,
 		"assigned_shop": "",
 		"aptitude_skills": [
 			{
@@ -817,7 +790,6 @@
 		],
 		"extra_income": 0,
 		"breakthrough_count": 1,
-		"initial_aptitude": 66,
 		"assigned_shop": "",
 		"aptitude_skills": [
 			{
@@ -848,7 +820,6 @@
 		],
 		"extra_income": 0,
 		"breakthrough_count": 1,
-		"initial_aptitude": 66,
 		"assigned_shop": "",
 		"aptitude_skills": [
 			{
@@ -879,7 +850,6 @@
 		],
 		"extra_income": 0,
 		"breakthrough_count": 1,
-		"initial_aptitude": 66,
 		"assigned_shop": "",
 		"aptitude_skills": [
 			{
@@ -910,7 +880,6 @@
 		],
 		"extra_income": 0,
 		"breakthrough_count": 1,
-		"initial_aptitude": 66,
 		"assigned_shop": "",
 		"aptitude_skills": [
 			{
@@ -941,7 +910,6 @@
 		],
 		"extra_income": 0,
 		"breakthrough_count": 1,
-		"initial_aptitude": 66,
 		"assigned_shop": "",
 		"aptitude_skills": [
 			{
@@ -971,7 +939,6 @@
 		],
 		"extra_income": 0,
 		"breakthrough_count": 1,
-		"initial_aptitude": 66,
 		"assigned_shop": "",
 		"aptitude_skills": [
 			{
@@ -1001,7 +968,6 @@
 		],
 		"extra_income": 0,
 		"breakthrough_count": 1,
-		"initial_aptitude": 66,
 		"assigned_shop": "",
 		"aptitude_skills": [
 			{
@@ -1031,7 +997,6 @@
 		],
 		"extra_income": 0,
 		"breakthrough_count": 1,
-		"initial_aptitude": 66,
 		"assigned_shop": "",
 		"aptitude_skills": [
 			{
@@ -1058,7 +1023,6 @@
 		"level": 1,
 		"extra_income": 0,
 		"breakthrough_count": 1,
-		"initial_aptitude": 66,
 		"assigned_shop": "",
 		"bound_heroes": [
 			"hua_wuque",
@@ -1084,7 +1048,16 @@
 				"percent_per_level": 0.03
 			}
 		],
-		"quality": 1
+		"quality": 1,
+		"simple_promotion": {
+			"name": "晋升",
+			"target_quality": 2,
+			"costume_need": 1,
+			"skills": [
+				{"name": "赛场辅助", "aptitude_per_level": 3, "max_level": 200},
+				{"name": "小鬼头", "aptitude_per_level": 3, "max_level": 200}
+			]
+		}
 	},
 	"yan_xiansheng": {
 		"name": "严先生",
@@ -1092,7 +1065,6 @@
 		"level": 1,
 		"extra_income": 0,
 		"breakthrough_count": 1,
-		"initial_aptitude": 99,
 		"assigned_shop": "",
 		"bound_heroes": [
 			"jiang_men_nvzi",
@@ -1125,7 +1097,6 @@
 		"level": 1,
 		"extra_income": 0,
 		"breakthrough_count": 1,
-		"initial_aptitude": 99,
 		"assigned_shop": "",
 		"bound_heroes": [
 			"yuan_xiao_guniang",
@@ -1159,7 +1130,6 @@
 		"level": 1,
 		"extra_income": 0,
 		"breakthrough_count": 1,
-		"initial_aptitude": 99,
 		"assigned_shop": "",
 		"bound_heroes": [
 			"qi_shi",
@@ -1193,7 +1163,6 @@
 		"level": 1,
 		"extra_income": 0,
 		"breakthrough_count": 1,
-		"initial_aptitude": 99,
 		"assigned_shop": "",
 		"bound_heroes": [
 			"lang_zi",
@@ -1228,7 +1197,6 @@
 		"level": 1,
 		"extra_income": 0,
 		"breakthrough_count": 1,
-		"initial_aptitude": 99,
 		"assigned_shop": "",
 		"bound_heroes": [
 			"xiao_qigai",
@@ -1262,7 +1230,6 @@
 		"level": 1,
 		"extra_income": 0,
 		"breakthrough_count": 1,
-		"initial_aptitude": 99,
 		"assigned_shop": "",
 		"bound_heroes": [
 			"jun_zhu",
@@ -1296,7 +1263,6 @@
 		"level": 1,
 		"extra_income": 0,
 		"breakthrough_count": 1,
-		"initial_aptitude": 99,
 		"assigned_shop": "",
 		"bound_heroes": [
 			"xun_ying_shaonv",
@@ -1329,7 +1295,6 @@
 		"level": 1,
 		"extra_income": 0,
 		"breakthrough_count": 1,
-		"initial_aptitude": 99,
 		"assigned_shop": "",
 		"bound_heroes": [
 			"hua_yi_shi",
@@ -1364,7 +1329,6 @@
 		"level": 1,
 		"extra_income": 0,
 		"breakthrough_count": 1,
-		"initial_aptitude": 99,
 		"assigned_shop": "",
 		"bound_heroes": [
 			"ma_ma",
@@ -1397,7 +1361,6 @@
 		"level": 1,
 		"extra_income": 0,
 		"breakthrough_count": 1,
-		"initial_aptitude": 99,
 		"assigned_shop": "",
 		"bound_heroes": [
 			"yi_shi",
@@ -1432,7 +1395,6 @@
 		"level": 1,
 		"extra_income": 0,
 		"breakthrough_count": 1,
-		"initial_aptitude": 99,
 		"assigned_shop": "",
 		"bound_heroes": [
 			"hua_yi_shi",
@@ -1466,7 +1428,6 @@
 		"level": 1,
 		"extra_income": 0,
 		"breakthrough_count": 1,
-		"initial_aptitude": 99,
 		"assigned_shop": "",
 		"bound_heroes": [
 			"cao_yuan_nvhai",
@@ -1499,7 +1460,6 @@
 		"level": 1,
 		"extra_income": 0,
 		"breakthrough_count": 1,
-		"initial_aptitude": 99,
 		"assigned_shop": "",
 		"bound_heroes": [
 			"jun_zhu",
@@ -1532,7 +1492,6 @@
 		"level": 1,
 		"extra_income": 0,
 		"breakthrough_count": 1,
-		"initial_aptitude": 99,
 		"assigned_shop": "",
 		"bound_heroes": [
 			"xun_ying_shaonv",
@@ -1568,7 +1527,6 @@
 		"level": 1,
 		"extra_income": 0,
 		"breakthrough_count": 1,
-		"initial_aptitude": 99,
 		"assigned_shop": "",
 		"bound_heroes": [
 			"bu_kuai",
@@ -1603,7 +1561,6 @@
 		"level": 1,
 		"extra_income": 0,
 		"breakthrough_count": 1,
-		"initial_aptitude": 99,
 		"assigned_shop": "",
 		"bound_heroes": [
 			"meng_qier",
@@ -1638,7 +1595,6 @@
 		"level": 1,
 		"extra_income": 0,
 		"breakthrough_count": 1,
-		"initial_aptitude": 99,
 		"assigned_shop": "",
 		"bound_heroes": [
 			"li_xiangjun_friend",
@@ -1678,7 +1634,6 @@
 		"level": 1,
 		"extra_income": 0,
 		"breakthrough_count": 1,
-		"initial_aptitude": 99,
 		"assigned_shop": "",
 		"bound_heroes": [
 			"kou_baimen_friend",
@@ -1719,7 +1674,6 @@
 		"level": 1,
 		"extra_income": 0,
 		"breakthrough_count": 1,
-		"initial_aptitude": 99,
 		"assigned_shop": "",
 		"bound_heroes": [
 			"ma_xianglan_friend",
@@ -1759,7 +1713,6 @@
 		"level": 1,
 		"extra_income": 0,
 		"breakthrough_count": 1,
-		"initial_aptitude": 99,
 		"assigned_shop": "",
 		"bound_heroes": [
 			"yi_shi",
@@ -1798,7 +1751,6 @@
 		"level": 1,
 		"extra_income": 0,
 		"breakthrough_count": 1,
-		"initial_aptitude": 99,
 		"assigned_shop": "",
 		"bound_heroes": [
 			"ma_xianglan_friend",
@@ -1837,7 +1789,6 @@
 		"level": 1,
 		"extra_income": 0,
 		"breakthrough_count": 1,
-		"initial_aptitude": 99,
 		"assigned_shop": "",
 		"bound_heroes": [
 			"li_xiangjun_friend",
@@ -1874,7 +1825,6 @@
 		"level": 1,
 		"extra_income": 0,
 		"breakthrough_count": 1,
-		"initial_aptitude": 99,
 		"assigned_shop": "",
 		"bound_heroes": [
 			"bian_yujing_friend",
@@ -1913,7 +1863,6 @@
 		"level": 1,
 		"extra_income": 0,
 		"breakthrough_count": 1,
-		"initial_aptitude": 99,
 		"assigned_shop": "",
 		"bound_heroes": [
 			"ling_ye_mao_nv",
@@ -1959,7 +1908,6 @@
 		"level": 1,
 		"extra_income": 0,
 		"breakthrough_count": 1,
-		"initial_aptitude": 99,
 		"assigned_shop": "",
 		"bound_heroes": [
 			"hua_yi_shi",
@@ -2004,7 +1952,6 @@
 		"level": 1,
 		"extra_income": 0,
 		"breakthrough_count": 1,
-		"initial_aptitude": 99,
 		"assigned_shop": "",
 		"bound_heroes": [
 			"bu_kuai",
@@ -2049,7 +1996,6 @@
 		"level": 1,
 		"extra_income": 0,
 		"breakthrough_count": 1,
-		"initial_aptitude": 99,
 		"assigned_shop": "",
 		"bound_heroes": [
 			"xinniang",
@@ -2113,7 +2059,6 @@
 		"level": 1,
 		"extra_income": 0,
 		"breakthrough_count": 1,
-		"initial_aptitude": 99,
 		"assigned_shop": "",
 		"bound_heroes": [
 			"bu_kuai",
@@ -2150,7 +2095,6 @@
 		"level": 1,
 		"extra_income": 0,
 		"breakthrough_count": 1,
-		"initial_aptitude": 99,
 		"assigned_shop": "",
 		"bound_heroes": [
 			"xun_ma_shi",
@@ -2190,7 +2134,6 @@
 		"level": 1,
 		"extra_income": 0,
 		"breakthrough_count": 1,
-		"initial_aptitude": 99,
 		"assigned_shop": "",
 		"bound_heroes": [
 			"hua_yi_shi",
@@ -2231,7 +2174,6 @@
 		"level": 1,
 		"extra_income": 0,
 		"breakthrough_count": 1,
-		"initial_aptitude": 99,
 		"assigned_shop": "",
 		"bound_heroes": [
 			"yu_ge",
@@ -2271,7 +2213,6 @@
 		"level": 1,
 		"extra_income": 0,
 		"breakthrough_count": 1,
-		"initial_aptitude": 99,
 		"assigned_shop": "",
 		"bound_heroes": [
 			"qi_ling",
@@ -2312,7 +2253,6 @@
 		"level": 1,
 		"extra_income": 0,
 		"breakthrough_count": 1,
-		"initial_aptitude": 99,
 		"assigned_shop": "",
 		"bound_heroes": [
 			"wu_xie",
@@ -2353,7 +2293,6 @@
 		"level": 1,
 		"extra_income": 0,
 		"breakthrough_count": 1,
-		"initial_aptitude": 99,
 		"assigned_shop": "",
 		"bound_heroes": [
 			"xiao_wu_friend",
@@ -2400,7 +2339,6 @@
 		"level": 1,
 		"extra_income": 0,
 		"breakthrough_count": 1,
-		"initial_aptitude": 99,
 		"assigned_shop": "",
 		"bound_heroes": [
 			"luo",
@@ -2454,7 +2392,6 @@
 		"level": 1,
 		"extra_income": 0,
 		"breakthrough_count": 1,
-		"initial_aptitude": 99,
 		"assigned_shop": "",
 		"bound_heroes": [
 			"yu_ji",
@@ -2494,7 +2431,6 @@
 		"level": 1,
 		"extra_income": 0,
 		"breakthrough_count": 1,
-		"initial_aptitude": 99,
 		"assigned_shop": "",
 		"bound_heroes": [
 			"qing_ning",
@@ -2534,7 +2470,6 @@
 		"level": 1,
 		"extra_income": 0,
 		"breakthrough_count": 1,
-		"initial_aptitude": 99,
 		"assigned_shop": "",
 		"bound_heroes": [
 			"tan_you",
@@ -2583,7 +2518,6 @@
 		"level": 1,
 		"extra_income": 0,
 		"breakthrough_count": 1,
-		"initial_aptitude": 99,
 		"assigned_shop": "",
 		"bound_heroes": [
 			"he_xi",
@@ -2623,7 +2557,6 @@
 		"level": 1,
 		"extra_income": 0,
 		"breakthrough_count": 1,
-		"initial_aptitude": 99,
 		"assigned_shop": "",
 		"bound_heroes": [
 			"gu_guo_gongzhu",
@@ -2662,7 +2595,6 @@
 		"level": 1,
 		"extra_income": 0,
 		"breakthrough_count": 1,
-		"initial_aptitude": 99,
 		"assigned_shop": "",
 		"bound_heroes": [
 			"shi_bo_shi",
@@ -2701,7 +2633,6 @@
 		"level": 1,
 		"extra_income": 0,
 		"breakthrough_count": 1,
-		"initial_aptitude": 99,
 		"assigned_shop": "",
 		"bound_heroes": [
 			"ma_xianglan_friend",
@@ -2749,7 +2680,6 @@
 		"level": 1,
 		"extra_income": 0,
 		"breakthrough_count": 1,
-		"initial_aptitude": 99,
 		"assigned_shop": "",
 		"bound_heroes": [
 			"li_xiangjun_friend",
@@ -2798,7 +2728,6 @@
 		"level": 1,
 		"extra_income": 0,
 		"breakthrough_count": 1,
-		"initial_aptitude": 99,
 		"assigned_shop": "",
 		"bound_heroes": [
 			"dong_xiaowan_friend",
@@ -2846,7 +2775,6 @@
 		"level": 1,
 		"extra_income": 0,
 		"breakthrough_count": 1,
-		"initial_aptitude": 99,
 		"assigned_shop": "",
 		"bound_heroes": [
 			"bian_yujing_friend",
@@ -2894,7 +2822,6 @@
 		"level": 1,
 		"extra_income": 0,
 		"breakthrough_count": 1,
-		"initial_aptitude": 99,
 		"assigned_shop": "",
 		"bound_heroes": [
 			"kou_baimen_friend",
@@ -2943,8 +2870,16 @@
 		"level": 1,
 		"extra_income": 0,
 		"breakthrough_count": 1,
-		"initial_aptitude": 66,
 		"assigned_shop": "",
+		"simple_promotion": {
+			"name": "晋升",
+			"stages": [
+				{"quality": 2, "condition": {"type": "costume_any", "count": 2},
+					"skills": [{"name": "转世续缘", "aptitude_per_level": 3, "max_level": 200}]},
+				{"quality": 3, "condition": {"type": "costume_any", "count": 7},
+					"skills": [{"name": "青藤七子", "aptitude_per_level": 4, "max_level": 200}]}
+			]
+		},
 		"bound_heroes": [
 			"xiao_shimei",
 			"xiao_hudie",
@@ -2980,7 +2915,6 @@
 		"level": 1,
 		"extra_income": 0,
 		"breakthrough_count": 1,
-		"initial_aptitude": 66,
 		"assigned_shop": "",
 		"bound_heroes": [
 			"lang_zi",
@@ -3006,7 +2940,16 @@
 				"percent_per_level": 0.03
 			}
 		],
-		"quality": 1
+		"quality": 1,
+		"simple_promotion": {
+			"name": "晋升",
+			"target_quality": 2,
+			"costume_need": 1,
+			"skills": [
+				{"name": "钢棍解鲁", "aptitude_per_level": 3, "max_level": 200},
+				{"name": "面点之王", "aptitude_per_level": 3, "max_level": 200}
+			]
+		}
 	},
 	"yang_jian": {
 		"name": "杨戬",
@@ -3014,8 +2957,19 @@
 		"level": 1,
 		"extra_income": 0,
 		"breakthrough_count": 1,
-		"initial_aptitude": 66,
 		"assigned_shop": "",
+		"simple_promotion": {
+			"name": "晋升",
+			"stages": [
+				{"quality": 2, "condition": {"type": "costume_any", "count": 1},
+					"skills": [{"name": "天狗食日", "aptitude_per_level": 3, "max_level": 200}]},
+				{"quality": 3, "condition": {"type": "costume_mix", "suzhuang": 4, "huafu": 1},
+					"skills": [
+						{"name": "三尖两刃", "aptitude_per_level": 3, "max_level": 200},
+						{"name": "九转归元", "aptitude_per_level": 4, "max_level": 200}
+					]}
+			]
+		},
 		"bound_heroes": [
 			"miao_jiang_shengnv",
 			"li_xiangjun_friend",
@@ -3051,8 +3005,20 @@
 		"level": 1,
 		"extra_income": 0,
 		"breakthrough_count": 1,
-		"initial_aptitude": 66,
 		"assigned_shop": "",
+		"simple_promotion": {
+			"name": "晋升",
+			"stages": [
+				{"quality": 2, "condition": {"type": "costume_any", "count": 1},
+					"skills": [{"name": "恶人出谷", "aptitude_per_level": 3, "max_level": 200}]},
+				{"quality": 3, "condition": {"type": "costume_mix", "suzhuang": 4, "huafu": 1},
+					"skills": [
+						{"name": "易容之术", "aptitude_per_level": 3, "max_level": 200},
+						{"name": "武林绝学", "aptitude_per_level": 3, "max_level": 200},
+						{"name": "无争刀", "aptitude_per_level": 3, "max_level": 200}
+					]}
+			]
+		},
 		"bound_heroes": [
 			"ma_xianglan_friend",
 			"cai_shi_guan",
@@ -3087,8 +3053,24 @@
 		"level": 1,
 		"extra_income": 0,
 		"breakthrough_count": 1,
-		"initial_aptitude": 66,
 		"assigned_shop": "",
+		"promotion": {
+			"name": "辅政",
+			"skill_name": "麒麟之才",
+			"level": 0,
+			"max_level": 500,
+			"cost_item": "yu_ban_zhi",
+			"cost_amount": 600,
+			"aptitude_per_level": 6,
+			"tiers": [
+				{"threshold": 5, "quality": 2, "new_skills": [{"name": "雪夜薄甲", "aptitude_per_level": 3}]},
+				{"threshold": 15, "new_skills": [{"name": "覆灭六部", "aptitude_per_level": 3}]},
+				{"threshold": 30, "new_skills": [{"name": "平反逆案", "aptitude_per_level": 3}]},
+				{"threshold": 45, "new_skills": [{"name": "开创新朝", "aptitude_per_level": 3}]},
+				{"threshold": 60, "new_skills": [{"name": "再敌大渝", "aptitude_per_level": 4}]},
+				{"threshold": 80, "quality": 3, "new_skills": []}
+			]
+		},
 		"bound_heroes": [
 			"ni_huang_junzhu",
 			"shou_gong_shaonv",
@@ -3123,8 +3105,24 @@
 		"level": 1,
 		"extra_income": 0,
 		"breakthrough_count": 1,
-		"initial_aptitude": 66,
 		"assigned_shop": "",
+		"promotion": {
+			"name": "摸金",
+			"skill_name": "分金定穴",
+			"level": 0,
+			"max_level": 500,
+			"cost_item": "liu_jiao_tong_ling",
+			"cost_amount": 600,
+			"aptitude_per_level": 6,
+			"tiers": [
+				{"threshold": 5, "quality": 2, "new_skills": [{"name": "发丘天指", "aptitude_per_level": 3}]},
+				{"threshold": 15, "new_skills": [{"name": "易容千面", "aptitude_per_level": 3}]},
+				{"threshold": 30, "new_skills": [{"name": "驱鬼逐邪", "aptitude_per_level": 3}]},
+				{"threshold": 45, "new_skills": [{"name": "巡守八方", "aptitude_per_level": 3}]},
+				{"threshold": 60, "new_skills": [{"name": "憾龙倒斗", "aptitude_per_level": 4}]},
+				{"threshold": 80, "quality": 3, "new_skills": []}
+			]
+		},
 		"bound_heroes": [
 			"wu_xie",
 			"xiao_shimei",
@@ -3159,7 +3157,6 @@
 		"level": 1,
 		"extra_income": 0,
 		"breakthrough_count": 1,
-		"initial_aptitude": 66,
 		"quality": 1,
 		"promotion": {
 			"name": "续缘",
@@ -3173,7 +3170,6 @@
 				{
 					"threshold": 5,
 					"quality": 2,
-					"initial_aptitude": 99,
 					"new_skills": [
 						{
 							"name": "前世回忆",
@@ -3220,7 +3216,6 @@
 				{
 					"threshold": 80,
 					"quality": 3,
-					"initial_aptitude": 333,
 					"new_skills": []
 				}
 			]
@@ -3260,7 +3255,6 @@
 		"level": 1,
 		"extra_income": 0,
 		"breakthrough_count": 1,
-		"initial_aptitude": 66,
 		"assigned_shop": "",
 		"bound_heroes": [
 			"zhou_meili",
@@ -3271,6 +3265,23 @@
 			"wan_wan",
 			"ying_chun"
 		],
+		"promotion": {
+			"name": "厨艺",
+			"skill_name": "第一厨师",
+			"level": 0,
+			"max_level": 500,
+			"cost_item": "chu_shen_mi_ji",
+			"cost_amount": 600,
+			"aptitude_per_level": 6,
+			"tiers": [
+				{"threshold": 5, "quality": 2, "new_skills": [{"name": "彩虹粥", "aptitude_per_level": 3}]},
+				{"threshold": 15, "new_skills": [{"name": "凤凰水晶", "aptitude_per_level": 3}]},
+				{"threshold": 30, "new_skills": [{"name": "升龙饺子", "aptitude_per_level": 3}]},
+				{"threshold": 45, "new_skills": [{"name": "锅巴料理", "aptitude_per_level": 3}]},
+				{"threshold": 60, "new_skills": [{"name": "黄金蛋炒饭", "aptitude_per_level": 4}]},
+				{"threshold": 80, "quality": 3, "new_skills": []}
+			]
+		},
 		"aptitude_skills": [
 			{
 				"name": "非凡资质",
@@ -3296,7 +3307,6 @@
 		"level": 1,
 		"extra_income": 0,
 		"breakthrough_count": 1,
-		"initial_aptitude": 66,
 		"assigned_shop": "",
 		"bound_heroes": [
 			"hua_mulan_friend",
@@ -3316,12 +3326,12 @@
 			"cost_amount": 600,
 			"aptitude_per_level": 6,
 			"tiers": [
-				{"threshold": 5, "quality": 2, "initial_aptitude": 99, "new_skills": [{"name": "秣马备戎行", "aptitude_per_level": 3}]},
+				{"threshold": 5, "quality": 2, "new_skills": [{"name": "秣马备戎行", "aptitude_per_level": 3}]},
 				{"threshold": 15, "new_skills": [{"name": "慷慨携干将", "aptitude_per_level": 3}]},
 				{"threshold": 30, "new_skills": [{"name": "金钺拜将军", "aptitude_per_level": 3}]},
 				{"threshold": 45, "new_skills": [{"name": "夜袭燕支虏", "aptitude_per_level": 3}]},
 				{"threshold": 60, "new_skills": [{"name": "铁骑绕龙城", "aptitude_per_level": 4}]},
-				{"threshold": 80, "quality": 3, "initial_aptitude": 333, "new_skills": []}
+				{"threshold": 80, "quality": 3, "new_skills": []}
 			]
 		},
 		"jinlan": {
@@ -3357,7 +3367,6 @@
 		"level": 1,
 		"extra_income": 0,
 		"breakthrough_count": 1,
-		"initial_aptitude": 66,
 		"assigned_shop": "",
 		"bound_heroes": [
 			"shen_meizhuang",
@@ -3378,12 +3387,12 @@
 			"cost_amount": 600,
 			"aptitude_per_level": 6,
 			"tiers": [
-				{"threshold": 5, "quality": 2, "initial_aptitude": 99, "new_skills": [{"name": "惊弦落雁", "aptitude_per_level": 3}]},
+				{"threshold": 5, "quality": 2, "new_skills": [{"name": "惊弦落雁", "aptitude_per_level": 3}]},
 				{"threshold": 15, "new_skills": [{"name": "献哈达", "aptitude_per_level": 3}]},
 				{"threshold": 30, "new_skills": [{"name": "织梭传艺", "aptitude_per_level": 3}]},
 				{"threshold": 45, "new_skills": [{"name": "昭节映金", "aptitude_per_level": 3}]},
 				{"threshold": 60, "new_skills": [{"name": "胡旋汉风", "aptitude_per_level": 4}]},
-				{"threshold": 80, "quality": 3, "initial_aptitude": 333, "new_skills": []}
+				{"threshold": 80, "quality": 3, "new_skills": []}
 			]
 		},
 		"aptitude_skills": [
@@ -3417,8 +3426,21 @@
 		"level": 1,
 		"extra_income": 0,
 		"breakthrough_count": 1,
-		"initial_aptitude": 66,
 		"assigned_shop": "",
+		"simple_promotion": {
+			"name": "晋升",
+			"stages": [
+				{"quality": 2, "cost_item": "prop_aura_molin_caidao", "cost_amount": 15,
+					"skills": [{"name": "龙厨师", "aptitude_per_level": 3, "max_level": 200}]},
+				{"quality": 3, "cost_item": "prop_aura_molin_caidao", "cost_amount": 85,
+					"skills": [
+						{"name": "龙须面", "aptitude_per_level": 3, "max_level": 200},
+						{"name": "满汉宴", "aptitude_per_level": 3, "max_level": 200},
+						{"name": "莲香面", "aptitude_per_level": 4, "max_level": 200},
+						{"name": "迦楼罗", "aptitude_per_level": 4, "max_level": 200}
+					]}
+			]
+		},
 		"bound_heroes": [
 			"xun_ying_shaonv",
 			"tang_pingguo",
@@ -3453,7 +3475,6 @@
 		"level": 1,
 		"extra_income": 0,
 		"breakthrough_count": 1,
-		"initial_aptitude": 66,
 		"quality": 1,
 		"fu_shi_level": 0,
 		"assigned_shop": "",
@@ -3479,7 +3500,6 @@
 				{
 					"threshold": 5,
 					"quality": 2,
-					"initial_aptitude": 99,
 					"new_skills": [
 						{
 							"name": "月下独酌",
@@ -3526,7 +3546,6 @@
 				{
 					"threshold": 80,
 					"quality": 3,
-					"initial_aptitude": 333,
 					"new_skills": []
 				}
 			]
@@ -3555,7 +3574,6 @@
 		"level": 1,
 		"extra_income": 0,
 		"breakthrough_count": 1,
-		"initial_aptitude": 66,
 		"assigned_shop": "",
 		"bound_heroes": [
 			"xiao_shimei"
@@ -3585,7 +3603,6 @@
 		"level": 1,
 		"extra_income": 0,
 		"breakthrough_count": 1,
-		"initial_aptitude": 99,
 		"assigned_shop": "",
 		"bound_heroes": [
 			"yuan_xiao_guniang",
@@ -3620,7 +3637,6 @@
 		"level": 1,
 		"extra_income": 0,
 		"breakthrough_count": 1,
-		"initial_aptitude": 99,
 		"assigned_shop": "",
 		"bound_heroes": [
 			"xiyu_nvzi",
@@ -3660,7 +3676,6 @@
 		"level": 1,
 		"extra_income": 0,
 		"breakthrough_count": 1,
-		"initial_aptitude": 99,
 		"assigned_shop": "",
 		"bound_heroes": [
 			"xiao_qigai",
@@ -3700,7 +3715,6 @@
 		"level": 1,
 		"extra_income": 0,
 		"breakthrough_count": 1,
-		"initial_aptitude": 99,
 		"assigned_shop": "",
 		"bound_heroes": [
 			"yi_shi",
@@ -3740,7 +3754,6 @@
 		"level": 1,
 		"extra_income": 0,
 		"breakthrough_count": 1,
-		"initial_aptitude": 99,
 		"assigned_shop": "",
 		"bound_heroes": [
 			"jing_an",
@@ -3785,7 +3798,6 @@
 		"level": 1,
 		"extra_income": 0,
 		"breakthrough_count": 1,
-		"initial_aptitude": 99,
 		"assigned_shop": "",
 		"bound_heroes": [
 			"xiao_shimei",
@@ -3836,7 +3848,6 @@
 		"level": 1,
 		"extra_income": 0,
 		"breakthrough_count": 1,
-		"initial_aptitude": 99,
 		"assigned_shop": "",
 		"bound_heroes": [
 			"miao_jiang_shengnv",
@@ -3892,7 +3903,6 @@
 		"level": 1,
 		"extra_income": 0,
 		"breakthrough_count": 1,
-		"initial_aptitude": 333,
 		"assigned_shop": "",
 		"bound_heroes": [
 			"xun_ying_shaonv",
@@ -3955,7 +3965,6 @@
 		"level": 1,
 		"extra_income": 0,
 		"breakthrough_count": 1,
-		"initial_aptitude": 333,
 		"assigned_shop": "",
 		"bound_heroes": [
 			"tushanshi",
@@ -4024,7 +4033,6 @@
 		"level": 1,
 		"extra_income": 0,
 		"breakthrough_count": 1,
-		"initial_aptitude": 333,
 		"assigned_shop": "",
 		"bound_heroes": [
 			"change",
@@ -4099,7 +4107,6 @@
 		"level": 1,
 		"extra_income": 0,
 		"breakthrough_count": 1,
-		"initial_aptitude": 333,
 		"assigned_shop": "",
 		"bound_heroes": [
 			"jingwei",
@@ -4180,7 +4187,6 @@
 		"level": 1,
 		"extra_income": 0,
 		"breakthrough_count": 1,
-		"initial_aptitude": 333,
 		"assigned_shop": "",
 		"bound_heroes": [
 			"nvwa",
@@ -4261,7 +4267,6 @@
 		"level": 1,
 		"extra_income": 0,
 		"breakthrough_count": 1,
-		"initial_aptitude": 333,
 		"assigned_shop": "",
 		"bound_heroes": [
 			"xiwangmu",

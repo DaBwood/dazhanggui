@@ -9,12 +9,20 @@ extends RefCounted
 
 # ============ 资质 ============
 
+# 品质→初始资质表（2026-09-24 用户拍板：初始资质由品质决定，优秀33/卓越66/传奇99/无双333）
+const INITIAL_APTITUDE_BY_QUALITY = {0: 33, 1: 66, 2: 99, 3: 333}
+
+# 初始资质唯一入口：一切按当前品质取表，存档里的 initial_aptitude 字段已废弃（不再读）
+static func get_initial_aptitude(quality: int) -> int:
+	return INITIAL_APTITUDE_BY_QUALITY.get(clampi(quality, 0, 3), 66)
+
 # 门客总资质 = 初始资质 + 资质技能 + 晋升 + 珍兽资质 + 宅院门客卷二
 # 【改】签名带 g，珍兽资质并入（原只算门客自身）；以后新资质来源加在这里
 static func get_total_aptitude(g, hero_id: String) -> int:
 	if not g.heroes.has(hero_id): return 0
 	var hero = g.heroes[hero_id]
-	var total = hero.get("initial_aptitude", 66)
+	# 【改】2026-09-24 初始资质由品质决定（表驱动，晋升升品质自动涨），不再读存档旧值
+	var total = get_initial_aptitude(int(hero.get("quality", 0)))
 	for skill in hero.aptitude_skills:
 		total += skill.level * skill.aptitude_per_level
 	if hero.has("promotion"):

@@ -78,8 +78,15 @@ func load_save_data(s: Dictionary):
 				if not g.heroes[hid].has("simple_promotion"):
 					g.heroes[hid]["simple_promotion"] = g._hero_configs[hid]["simple_promotion"]
 				var sp_cfg: Dictionary = g.heroes[hid]["simple_promotion"]
-				if int(g.heroes[hid].get("quality", 0)) >= int(sp_cfg.get("target_quality", 2)):
-					_grant_simple_promotion_skills(g.heroes[hid], sp_cfg)
+				# 【改】2026-09-24 stages 道具分档：按已达档位补发各档技能（按名查重幂等）
+				if sp_cfg.get("stages", []).is_empty():
+					if int(g.heroes[hid].get("quality", 0)) >= int(sp_cfg.get("target_quality", 2)):
+						_grant_simple_promotion_skills(g.heroes[hid], sp_cfg)
+				else:
+					var cur_q: int = int(g.heroes[hid].get("quality", 0))
+					for st in sp_cfg["stages"]:
+						if cur_q >= int(st.get("quality", 2)):
+							_grant_simple_promotion_skills(g.heroes[hid], st)
 			# 【新增】赋诗晋升（2026-09-24）：promotion 块解锁时拷贝，旧档缺键回灌（王昭君落雁等；
 			# level 从 0 开始，已达阈值档位品质由 quality 存量迁移保障，幂等）
 			if g._hero_configs.get(hid, {}).has("promotion") and not g.heroes[hid].has("promotion"):
@@ -117,6 +124,8 @@ func unlock_hero(hero_id: String) -> bool:
 	var cfg = g.get_hero_config(hero_id)
 	if cfg.is_empty(): return false
 	g.heroes[hero_id] = cfg
+	# 【新增】2026-09-24 合并服装盒子待领库存（整份覆盖会清掉未拥有期间攒的库存）
+	g.costume_system.merge_pending_cos(hero_id)
 	return true
 
 #门客升级
@@ -244,8 +253,7 @@ func _check_promotion(hero: Dictionary):
 		if lv >= tier.threshold:
 			if tier.has("quality"):
 				hero.quality = tier.quality
-			if tier.has("initial_aptitude"):
-				hero.initial_aptitude = tier.initial_aptitude
+			# 【删】2026-09-24 初始资质改由品质表决定（hero_data.get_initial_aptitude），tier 不再写
 			if tier.has("new_skills"):
 				for new_skill in tier.new_skills:
 					var has_it = false
@@ -268,6 +276,30 @@ func _check_promotion(hero: Dictionary):
 func get_simple_promotion_cfg(hero_id: String) -> Dictionary:
 	return g._hero_configs.get(hero_id, {}).get("simple_promotion", {})
 
+# 当前应晋档位：stages 形式（兰飞鸿道具分档）取第一个品质高于当前品质的阶段；legacy 服装形式返回整档
+func get_simple_promote_stage(hero_id: String) -> Dictionary:
+	var sp: Dictionary = get_simple_promotion_cfg(hero_id)
+	var stages: Array = sp.get("stages", [])
+	if stages.is_empty(): return sp
+	var q: int = int(g.heroes.get(hero_id, {}).get("quality", 0))
+	for st in stages:
+		if q < int(st.get("quality", 2)):
+			return st
+	return {}
+
+# 档位条件是否满足：cost_item=道具消耗；condition.type=costume_any 任意已解锁服装数 / costume_mix 素装+华服组合（杨戬）
+func simple_stage_met(hero_id: String, stage: Dictionary) -> bool:
+	if stage.has("cost_item"):
+		return int(g.items.get(stage.get("cost_item", ""), 0)) >= int(stage.get("cost_amount", 0))
+	var cond: Dictionary = stage.get("condition", {})
+	match str(cond.get("type", "")):
+		"costume_any":
+			return get_unlocked_costume_count(hero_id) >= int(cond.get("count", 1))
+		"costume_mix":
+			return g.costume_system.get_unlocked_cos_count_by_q(hero_id, "素装") >= int(cond.get("suzhuang", 0)) \
+				and g.costume_system.get_unlocked_cos_count_by_q(hero_id, "华服") >= int(cond.get("huafu", 0))
+	return false
+
 # 已解锁服装数（与 costume_system.is_hero_cos_unlocked 同口径：任一件有 base 字段即算解锁；来源不限）
 func get_unlocked_costume_count(hero_id: String) -> int:
 	if not g.heroes.has(hero_id): return 0
@@ -282,6 +314,10 @@ func get_unlocked_costume_count(hero_id: String) -> int:
 func can_simple_promote(hero_id: String) -> bool:
 	var sp = get_simple_promotion_cfg(hero_id)
 	if sp.is_empty() or not g.heroes.has(hero_id): return false
+	# 【改】2026-09-24 stages 分档（道具/服装条件混合，杨戬：任意1件服装→4素装+1华服）；legacy 服装形式走原判断
+	if not sp.get("stages", []).is_empty():
+		var stage: Dictionary = get_simple_promote_stage(hero_id)
+		return not stage.is_empty() and simple_stage_met(hero_id, stage)
 	if int(g.heroes[hero_id].get("quality", 0)) >= int(sp.get("target_quality", 2)): return false
 	return get_unlocked_costume_count(hero_id) >= int(sp.get("costume_need", 1))
 
@@ -290,6 +326,16 @@ func do_simple_promote(hero_id: String) -> Dictionary:
 		return {"ok": false, "reason": "晋升条件未满足"}
 	var sp = get_simple_promotion_cfg(hero_id)
 	var h = g.heroes[hero_id]
+	# 【改】2026-09-24 道具分档：扣当前档消耗后升品质（无赠送技能，"没有其他花里胡哨"）
+	if not sp.get("stages", []).is_empty():
+		var stage: Dictionary = get_simple_promote_stage(hero_id)
+		# 道具条件才扣消耗；服装类条件（杨戬）只校验不消耗
+		if stage.has("cost_item"):
+			var item_id: String = stage.get("cost_item", "")
+			g.items[item_id] = int(g.items.get(item_id, 0)) - int(stage.get("cost_amount", 0))
+		h.quality = int(stage.get("quality", 2))
+		_grant_simple_promotion_skills(h, stage)   # 【新增】2026-09-24 该档解锁技能（按名查重幂等）
+		return {"ok": true, "quality": h.quality}
 	h.quality = int(sp.get("target_quality", 2))
 	_grant_simple_promotion_skills(h, sp)
 	return {"ok": true, "quality": h.quality}

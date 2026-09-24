@@ -468,7 +468,13 @@ func update_hero_panel():
 		for conn in promo_btn.pressed.get_connections():
 			promo_btn.pressed.disconnect(conn.callable)
 		var sp_cfg: Dictionary = h.get("simple_promotion", {})
-		var simple_ready: bool = not sp_cfg.is_empty() and int(h.get("quality", 0)) < int(sp_cfg.get("target_quality", 2))
+		# 【改】2026-09-24 stages 道具分档（兰飞鸿）：还有未晋档位才显示；legacy 服装形式维持原判断
+		var simple_ready: bool = false
+		if not sp_cfg.is_empty():
+			if sp_cfg.has("stages"):
+				simple_ready = not data.hero_system.get_simple_promote_stage(current_hero_id).is_empty()
+			else:
+				simple_ready = int(h.get("quality", 0)) < int(sp_cfg.get("target_quality", 2))
 		if simple_ready or h.has("promotion"):
 			var promo_name: String = str(sp_cfg.get("name", "晋升")) if simple_ready else str(h.promotion.get("name", "晋升"))
 			promo_btn.text = promo_name   # 【改】2026-09-24 按钮名=晋升玩法名（赋诗/落雁/军旅），去"赋诗晋升"特判
@@ -913,7 +919,7 @@ func _on_promo_btn_clicked():
 	var contract_btn = Button.new()
 	contract_btn.custom_minimum_size = Vector2(64, 30)
 	if current_hero_id == data.token_system.CONTRACT_HERO:
-		contract_btn.text = "【契约】苦情契约"
+		contract_btn.text = "契约"   # 【改】2026-09-24 只显示"契约"
 	else:
 		contract_btn.visible = false
 	contract_btn.pressed.connect(func():
@@ -957,20 +963,81 @@ func _on_promo_btn_clicked():
 # 【新增】服装一键晋升（解鲁/四郎）：点击直接升品质+送技能；晋升后本按钮由 update_hero_panel 按品质自动隐藏
 # 条件未满足点击：弹数据驱动提示"收集N款服装晋升X"（2026-09-24 用户拍板）
 func _on_simple_promote_clicked():
-	var res = data.hero_system.do_simple_promote(current_hero_id)
-	if res.get("ok", false):
-		update_hero_panel()   # 品质/天赋档/技能变化，门客面板对账
-		c.update_all_ui()
-		return
+	# 【改】2026-09-24 简单晋升也开面板（解鲁/四郎/兰飞鸿/杨戬）：展示各档条件+解锁技能，面板内执行晋升
+	_show_simple_promo_panel()
+
+# 【新增】简单晋升面板（解鲁/四郎/兰飞鸿/杨戬）：只显示下一档条件+解锁技能，面板内执行晋升
+func _simple_cond_text(hero_id: String, stage: Dictionary) -> String:
+	if stage.has("cost_item"):
+		var iid: String = stage.get("cost_item", "")
+		var iname: String = data.ITEM_CONFIG.get(iid, {}).get("name", iid)
+		return "%s×%d（拥有%d）" % [iname, int(stage.get("cost_amount", 0)), int(data.items.get(iid, 0))]
+	var cond: Dictionary = stage.get("condition", {})
+	match str(cond.get("type", "")):
+		"costume_any":
+			return "集齐任意%d件已解锁服装（已解锁%d件）" % [int(cond.get("count", 1)), data.hero_system.get_unlocked_costume_count(hero_id)]
+		"costume_mix":
+			return "集齐素装×%d+华服×%d（已解锁 素装%d/华服%d）" % [
+				int(cond.get("suzhuang", 0)), int(cond.get("huafu", 0)),
+				data.costume_system.get_unlocked_cos_count_by_q(hero_id, "素装"),
+				data.costume_system.get_unlocked_cos_count_by_q(hero_id, "华服")]
+	return "无条件"
+
+func _show_simple_promo_panel():
+	if not data.heroes.has(current_hero_id): return
+	var h: Dictionary = data.heroes[current_hero_id]
 	var sp_cfg: Dictionary = data.hero_system.get_simple_promotion_cfg(current_hero_id)
+	if sp_cfg.is_empty(): return
+	# 档位归一：stages 形式原样；legacy 服装形式（解鲁/四郎）合成单档
+	var stages: Array = sp_cfg.get("stages", [])
+	if stages.is_empty():
+		stages = [{"quality": int(sp_cfg.get("target_quality", 2)),
+			"condition": {"type": "costume_any", "count": int(sp_cfg.get("costume_need", 1))},
+			"skills": sp_cfg.get("skills", [])}]
+	# 【改】2026-09-24 用户拍板：只显示下一个品质档（已解锁档不再显示）
+	var cur_q: int = int(h.get("quality", 0))
 	var q_names: Dictionary = {0: "优秀", 1: "卓越", 2: "传奇", 3: "无双"}
-	var qn: String = q_names.get(int(sp_cfg.get("target_quality", 2)), "传奇")
-	c._show_stage_hint("收集%d款服装晋升%s" % [int(sp_cfg.get("costume_need", 1)), qn])
+	var popup = c._create_base_popup("晋升", Vector2(460, 320))
+	popup.name = "SimplePromoPanel"
+	popup.z_index = 30
+	c.add_child(popup)
+	var vb = popup.get_child(0)
+	for st in stages:
+		if cur_q >= int(st.get("quality", 2)): continue
+		var cond_lbl = Label.new()
+		cond_lbl.add_theme_font_size_override("font_size", 15)
+		cond_lbl.text = "晋升%s：%s" % [q_names.get(int(st.get("quality", 2)), "传奇"), _simple_cond_text(current_hero_id, st)]
+		vb.add_child(cond_lbl)
+		for sk in st.get("skills", []):
+			var sk_lbl = Label.new()
+			sk_lbl.add_theme_font_size_override("font_size", 14)
+			sk_lbl.text = "　解锁【%s】每级+%d资质" % [sk.get("name", ""), int(sk.get("aptitude_per_level", 3))]
+			vb.add_child(sk_lbl)
+		break   # 只显示下一档
+	# 晋升钮：放大独占一行（置灰=条件未满足）
+	var go_btn = Button.new()
+	go_btn.text = "晋升"
+	go_btn.custom_minimum_size = Vector2(240, 52)
+	go_btn.add_theme_font_size_override("font_size", 20)
+	go_btn.size_flags_horizontal = Control.SIZE_SHRINK_CENTER
+	go_btn.disabled = not data.hero_system.can_simple_promote(current_hero_id)
+	go_btn.pressed.connect(func():
+		var res: Dictionary = data.hero_system.do_simple_promote(current_hero_id)
+		if res.get("ok", false):
+			update_hero_panel()   # 品质/技能变化，门客面板对账
+			c.update_all_ui()
+			if is_instance_valid(popup): popup.queue_free()
+			_show_simple_promo_panel()   # 重建显示下一档
+	)
+	vb.add_child(go_btn)
+	# 关闭钮：单独小钮放晋升钮下面
+	var close_btn = Button.new()
+	close_btn.text = "关闭"
+	close_btn.custom_minimum_size = Vector2(100, 34)
+	close_btn.size_flags_horizontal = Control.SIZE_SHRINK_CENTER
+	close_btn.pressed.connect(func(): popup.queue_free())
+	vb.add_child(close_btn)
 
-
-# 【新增】复制档（王昭君/花木兰等）当前档复制天赋信息：名字 + 精进后实际数值文案（2026-09-24 升级位天赋钮用）
-
-# 【新增】金兰面板（花木兰，2026-09-24）：金兰门客选择/解除 + 三光环手动升级
 func _show_jinlan_panel():
 	var hs = data.hero_system
 	var popup = c._create_base_popup("金兰", Vector2(560, 560))
@@ -1230,17 +1297,21 @@ func update_hero_list():
 # 【新增】门客网格按赚速降序重排：已解锁按实时赚速从高到低，未解锁VIP门客保持原相对顺序排在最后
 # 赚速会随升级/今日新菜等变化，所以在 update_hero_list 每次刷新时调用，保证顺序始终最新
 func _sort_hero_grid(grid):
-	var unlocked = []   # 已解锁：[cell, 实时赚速]
+	var unlocked = []   # 已解锁：[cell, 品质, 实时赚速]
 	var locked = []     # 未解锁VIP门客：保持原相对顺序
 	for cell in grid.get_children():
 		if not cell is Button: continue
 		# 与 update_hero_list 相同的 id 解析方式：去掉 _hero_locked / _hero 后缀
 		var hero_id = cell.name.replace("_hero_locked", "").replace("_hero", "")
 		if data.heroes.has(hero_id):
-			unlocked.append([cell, data.get_hero_income(hero_id)])
+			var h: Dictionary = data.heroes[hero_id]
+			unlocked.append([cell, int(h.get("quality", 0)), data.get_hero_income(hero_id)])
 		else:
 			locked.append(cell)
-	unlocked.sort_custom(func(a, b): return a[1] > b[1])   # 赚速降序
+	# 【改】2026-09-24 排序口径：品质降序优先，同品质按实时赚速降序
+	unlocked.sort_custom(func(a, b):
+		if a[1] != b[1]: return a[1] > b[1]
+		return a[2] > b[2])
 	# 用 move_child 原位重排：先排已解锁，未解锁依次排到末尾（不销毁重建，保留卡片信号连接）
 	var idx = 0
 	for pair in unlocked:

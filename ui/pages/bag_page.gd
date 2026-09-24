@@ -680,12 +680,15 @@ func _on_cos_box_selected(e: Dictionary):
 	var res = data.costume_system.gain_hero_cos_stock(e["hero_id"], e["cos_id"], 1)
 	c._safe_close("CosBoxSelector")
 	if res.get("ok", false):
-		c._show_stage_hint("【%s】%s 库存+1（共%d，请到%s服装页解锁）" % [e["quality"], e["name"], res["stock"], e["hero_name"]])
+		# 【改】2026-09-24 未拥有门客→待领池提示（招募后自动到账）
+		if res.get("pending", false):
+			c._show_stage_hint("【%s】%s 已存入待领池，招募%s后自动到账" % [e["quality"], e["name"], e["hero_name"]])
+		else:
+			c._show_stage_hint("【%s】%s 库存+1（共%d，请到%s服装页解锁）" % [e["quality"], e["name"], res["stock"], e["hero_name"]])
 	else:
 		c._show_stage_hint(res.get("msg", "获取失败"))
 	c.update_all_ui()
 	update_bag_list()
-
 func _on_hero_box_selected(hero_id: String):
 	if data.items.get("hero_box", 0) < 1:
 		c._safe_close("HeroBoxSelector")
