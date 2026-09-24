@@ -2956,9 +2956,12 @@
    "born_tier": "legend",
    "max_tier": "wushuang",
    "can_promote": true,
-   "suspended_tiers": [
-    "legend",
-    "wushuang"
+   "suspended_tiers": [],
+   "master_auras": [
+    {"id": "tong_sou_wu_qi", "name": "童叟无欺", "type": "aptitude", "per": 10, "target": "self_master", "cost_item": "linglong_hebao", "cost_base": 10, "cost_step": 1},
+    {"id": "shi_jing_zhi_xue", "name": "市井之学", "type": "income_pct", "per": 5.0, "target": "self_master", "cost_item": "linglong_hebao", "cost_base": 20, "cost_step": 10},
+    {"id": "guang_jie_liang_yuan", "name": "广结良缘", "type": "income_pct", "per": 2.5, "target": "master_career", "cap_by_promo": true},
+    {"id": "ri_jin_dou_jin", "name": "日进斗金", "type": "income_pct", "per": 5.0, "target": "self", "cap_by_promo": true}
    ]
   },
   "long_xiang": {

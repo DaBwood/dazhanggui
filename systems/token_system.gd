@@ -210,13 +210,41 @@ func get_owner_aptitude(hero_id: String) -> int:
 
 # 门客作为"被绑定者"获得的资质 = 主人的信物等级 × 每级资质
 func get_bound_aptitude(hero_id: String) -> int:
+	var total := 0
 	for owner_id in g.hero_tokens.keys():
 		if not has_token(owner_id): continue
 		var cfg = get_token_cfg(owner_id)
 		if cfg.is_empty(): continue
 		if get_binds(owner_id).has(hero_id):
-			return get_level(owner_id) * int(cfg.get("aptitude_per_level", 3))
-	return 0
+			total += get_level(owner_id) * int(cfg.get("aptitude_per_level", 3))
+			# 【新增】2026-09-24 倾心共赢（小八信物被动）：无双后为绑定门客提供主人自身资质百分比
+			total += get_share_passive_bonus(owner_id, hero_id)
+	return total
+
+# 倾心共赢：无双品质生效；百分比=base+每10级+per_10，封顶 cap；底数扣除绑定门客回传（规则2）；投桃报李接口预留（规则3）
+func get_share_passive_bonus(owner_id: String, _hero_id: String) -> int:
+	var cfg: Dictionary = get_token_cfg(owner_id)
+	var sp: Dictionary = cfg.get("share_passive", {})
+	if sp.is_empty(): return 0
+	if int(g.heroes.get(owner_id, {}).get("quality", 0)) < 3: return 0
+	var lv := get_level(owner_id)
+	var pct: float = min(float(sp.get("cap_pct", 30)), float(sp.get("base_pct", 5)) + floor((lv - 1) / 10.0) * float(sp.get("per_10_levels", 1)))
+	if pct <= 0: return 0
+	if _share_guard: return 0   # 防相互绑定递归（与 get_owner_aptitude 同规）
+	_share_guard = true
+	# 底数 = 主人总资质 - 绑定门客回传部分（小柒投桃报李预留扣减，做她信物时落地规则3）
+	var base: int = HeroData.get_total_aptitude(g, owner_id) - get_owner_aptitude(owner_id)
+	_share_guard = false
+	return max(0, int(base * pct / 100.0))
+
+# 倾心共赢当前百分比（信物面板展示用；未达无双/无配置返回 0）
+func get_share_passive_pct(owner_id: String) -> float:
+	var cfg: Dictionary = get_token_cfg(owner_id)
+	var sp: Dictionary = cfg.get("share_passive", {})
+	if sp.is_empty(): return 0
+	if int(g.heroes.get(owner_id, {}).get("quality", 0)) < 3: return 0
+	var lv := get_level(owner_id)
+	return min(float(sp.get("cap_pct", 30)), float(sp.get("base_pct", 5)) + floor((lv - 1) / 10.0) * float(sp.get("per_10_levels", 1)))
 
 # 门客作为"被绑定者"获得的赚钱百分比（固定 bind_income_pct）
 func get_bound_income_pct(hero_id: String) -> float:

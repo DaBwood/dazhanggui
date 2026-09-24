@@ -23,6 +23,8 @@ static func get_total_aptitude(g, hero_id: String) -> int:
 	var hero = g.heroes[hero_id]
 	# 【改】2026-09-24 初始资质由品质决定（表驱动，晋升升品质自动涨），不再读存档旧值
 	var total = get_initial_aptitude(int(hero.get("quality", 0)))
+	# 【新增】2026-09-24 师徒光环（小八）：童叟无欺资质加成（自身与师傅各一份）
+	total += g.hero_system.get_master_aura_aptitude(hero_id)
 	for skill in hero.aptitude_skills:
 		total += skill.level * skill.aptitude_per_level
 	if hero.has("promotion"):
@@ -187,6 +189,8 @@ static func get_percent_bonus(g, hero_id: String) -> float:
 	# 【新增】金兰（花木兰）：巾帼英风/同袍同泽（自身侧）+ 风姿赚钱100%/同袍同泽（金兰门客伙伴侧）
 	bonus += g.hero_system.get_jinlan_self_income_pct(hero_id)
 	bonus += g.hero_system.get_jinlan_partner_income_pct(hero_id)
+	# 【新增】2026-09-24 师徒光环（小八）：市井之学/广结良缘/日进斗金 赚钱%
+	bonus += g.hero_system.get_master_aura_income_pct(hero_id)
 
 	return bonus
 

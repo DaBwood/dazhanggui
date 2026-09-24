@@ -356,6 +356,105 @@ func _grant_simple_promotion_skills(h: Dictionary, sp: Dictionary):
 				"aptitude_per_level": int(sk.get("aptitude_per_level", 3)),
 			})
 
+# ============ 师徒光环（小八专属，2026-09-24 用户拍板） ============
+# 光环配置在 hero_talents 对应门客条目的 "master_auras"；等级存英雄字典 "master_aura_levels"（初始1级，读档回灌默认）
+# 拜师：master_hero_id 存英雄字典，限已拥有门客、可更换；广结良缘按师傅职业实时切换
+
+func get_master_hero_id(hero_id: String) -> String:
+	return str(g.heroes.get(hero_id, {}).get("master_hero_id", ""))
+
+# 设定/更换师傅（限已拥有、不能拜自己；传空串=解除）
+func set_master_hero_id(hero_id: String, master_id: String) -> Dictionary:
+	if not g.heroes.has(hero_id): return {"ok": false, "msg": "门客不存在"}
+	if master_id == "":
+		g.heroes[hero_id]["master_hero_id"] = ""
+		return {"ok": true, "master": ""}
+	if master_id == hero_id: return {"ok": false, "msg": "不能拜自己为师"}
+	if not g.heroes.has(master_id): return {"ok": false, "msg": "师傅必须选择已拥有的门客"}
+	g.heroes[hero_id]["master_hero_id"] = master_id
+	return {"ok": true, "master": master_id}
+
+func get_master_aura_cfgs(hero_id: String) -> Array:
+	return g.talent_system.get_hero_talent_cfg(hero_id).get("master_auras", [])
+
+func _get_master_aura_cfg(hero_id: String, aura_id: String) -> Dictionary:
+	for a in get_master_aura_cfgs(hero_id):
+		if a.get("id", "") == aura_id: return a
+	return {}
+
+# 光环等级表（读档自适应回灌，默认全 1 级）
+func _get_master_aura_levels(hero_id: String) -> Dictionary:
+	if not g.heroes[hero_id].has("master_aura_levels"):
+		var d := {}
+		for a in get_master_aura_cfgs(hero_id):
+			d[a.get("id", "")] = 1
+		g.heroes[hero_id]["master_aura_levels"] = d
+	return g.heroes[hero_id]["master_aura_levels"]
+
+func get_master_aura_level(hero_id: String, aura_id: String) -> int:
+	return int(_get_master_aura_levels(hero_id).get(aura_id, 1))
+
+# 等级上限：cap_by_promo=财商通达（晋升技能）每10级可升1级，初始1级 → 上限=技能等级÷10+1；道具消耗型不设数值上限
+func get_master_aura_cap(hero_id: String, aura_cfg: Dictionary) -> int:
+	if aura_cfg.get("cap_by_promo", false):
+		var promo_lv := 0
+		if g.heroes[hero_id].has("promotion"):
+			promo_lv = int(g.heroes[hero_id]["promotion"].get("level", 0))
+		return int(promo_lv / 10.0) + 1
+	return 9999
+
+# 下级消耗（道具型）：cost_base + (当前级-1) × cost_step
+func get_master_aura_cost(hero_id: String, aura_cfg: Dictionary) -> int:
+	return int(aura_cfg.get("cost_base", 0)) + (get_master_aura_level(hero_id, aura_cfg.get("id", "")) - 1) * int(aura_cfg.get("cost_step", 0))
+
+# 升级光环 times 级：校验上限与道具，消耗按级递增逐段累加
+func upgrade_master_aura(hero_id: String, aura_id: String, times: int = 1) -> Dictionary:
+	var aura := _get_master_aura_cfg(hero_id, aura_id)
+	if aura.is_empty(): return {"ok": false, "msg": "光环不存在"}
+	var lv := get_master_aura_level(hero_id, aura_id)
+	var cap := get_master_aura_cap(hero_id, aura)
+	if lv >= cap: return {"ok": false, "msg": "已达等级上限"}
+	times = mini(times, cap - lv)
+	var total_cost := 0
+	for i in range(times):
+		total_cost += int(aura.get("cost_base", 0)) + (lv + i - 1) * int(aura.get("cost_step", 0))
+	if aura.has("cost_item"):
+		var item_id := str(aura.get("cost_item", ""))
+		if int(g.items.get(item_id, 0)) < total_cost:
+			return {"ok": false, "msg": "道具不足"}
+		g.items[item_id] = int(g.items.get(item_id, 0)) - total_cost
+	_get_master_aura_levels(hero_id)[aura_id] = lv + times
+	return {"ok": true, "level": lv + times}
+
+# 师徒光环·资质加成：童叟无欺——小八本人与师傅各吃一份（HeroData.get_total_aptitude 追加）
+func get_master_aura_aptitude(hero_id: String) -> int:
+	var total := 0
+	for hid in g.heroes.keys():
+		var aura := _get_master_aura_cfg(hid, "tong_sou_wu_qi")
+		if aura.is_empty(): continue
+		var n: int = int(aura.get("per", 0)) * get_master_aura_level(hid, "tong_sou_wu_qi")
+		if hid == hero_id or get_master_hero_id(hid) == hero_id:
+			total += n
+	return total
+
+# 师徒光环·赚钱%：市井之学（自身与师傅）/ 广结良缘（师傅同职业门客）/ 日进斗金（自身）（get_percent_bonus 追加）
+func get_master_aura_income_pct(hero_id: String) -> float:
+	var total := 0.0
+	var hero_cat := str(g.heroes.get(hero_id, {}).get("category", ""))
+	for hid in g.heroes.keys():
+		var master_id := get_master_hero_id(hid)
+		var sj := _get_master_aura_cfg(hid, "shi_jing_zhi_xue")
+		if not sj.is_empty() and (hid == hero_id or master_id == hero_id):
+			total += float(sj.get("per", 0)) * get_master_aura_level(hid, "shi_jing_zhi_xue")
+		var gj := _get_master_aura_cfg(hid, "guang_jie_liang_yuan")
+		if not gj.is_empty() and master_id != "" and g.heroes.has(master_id):
+			if hero_cat != "" and hero_cat == str(g.heroes[master_id].get("category", "")):
+				total += float(gj.get("per", 0)) * get_master_aura_level(hid, "guang_jie_liang_yuan")
+		var rj := _get_master_aura_cfg(hid, "ri_jin_dou_jin")
+		if not rj.is_empty() and hid == hero_id:
+			total += float(rj.get("per", 0)) * get_master_aura_level(hid, "ri_jin_dou_jin")
+	return total
+
 # ============ 金兰（花木兰专属，2026-09-24 用户拍板） ============
 # 花木兰晋升无双后可选一名已拥有门客（非自身，可重复选/随时解除更换）为金兰门客；
 # 金兰门客获得花木兰 100% 风姿属性 = 风姿等级资质 + 技能栏风姿技能资质 + 风姿赚钱%

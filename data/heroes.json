@@ -2471,6 +2471,23 @@
 		"extra_income": 0,
 		"breakthrough_count": 1,
 		"assigned_shop": "",
+		"promotion": {
+			"name": "通财",
+			"skill_name": "财商通达",
+			"level": 0,
+			"max_level": 500,
+			"cost_item": "qian_kun_suan_pan",
+			"cost_amount": 600,
+			"aptitude_per_level": 6,
+			"tiers": [
+				{"threshold": 5, "new_skills": [{"name": "薄利多销", "aptitude_per_level": 3}]},
+				{"threshold": 15, "new_skills": [{"name": "坐地分金", "aptitude_per_level": 3}]},
+				{"threshold": 30, "new_skills": [{"name": "货比三家", "aptitude_per_level": 3}]},
+				{"threshold": 45, "new_skills": [{"name": "一本万利", "aptitude_per_level": 3}]},
+				{"threshold": 60, "new_skills": [{"name": "奇货可居", "aptitude_per_level": 4}]},
+				{"threshold": 80, "quality": 3, "new_skills": []}
+			]
+		},
 		"bound_heroes": [
 			"tan_you",
 			"xing_lan",

@@ -915,6 +915,15 @@ func _on_promo_btn_clicked():
 		jinlan_btn.disabled = true
 	top_bar.add_child(jinlan_btn)
 
+	# 【新增】2026-09-24 拜师按钮：师徒光环门客（小八）晋升面板顶栏显示，点击选师傅
+	if data.hero_system.get_master_aura_cfgs(current_hero_id).size() > 0:
+		var master_btn = Button.new()
+		master_btn.text = "拜师"
+		master_btn.custom_minimum_size = Vector2(64, 30)
+		master_btn.add_theme_font_size_override("font_size", 13)
+		master_btn.pressed.connect(_on_master_btn_clicked)
+		top_bar.add_child(master_btn)
+
 	# 【新增】苦情契约按钮：仅白月初显示（与风姿同位置，两者不会同时出现）
 	var contract_btn = Button.new()
 	contract_btn.custom_minimum_size = Vector2(64, 30)
@@ -965,6 +974,58 @@ func _on_promo_btn_clicked():
 func _on_simple_promote_clicked():
 	# 【改】2026-09-24 简单晋升也开面板（解鲁/四郎/兰飞鸿/杨戬）：展示各档条件+解锁技能，面板内执行晋升
 	_show_simple_promo_panel()
+
+# 【新增】2026-09-24 拜师：选择已拥有门客作为师傅（可更换；广结良缘按师傅职业实时切换）
+func _on_master_btn_clicked():
+	_show_master_selector()
+
+func _show_master_selector():
+	if not data.heroes.has(current_hero_id): return
+	c._safe_close("MasterSelector")
+	var cur_master: String = data.hero_system.get_master_hero_id(current_hero_id)
+	var title := "选择师傅"
+	if cur_master != "" and data.heroes.has(cur_master):
+		title = "选择师傅（当前：%s）" % str(data.heroes[cur_master].get("name", cur_master))
+	var popup = c._create_base_popup(title, Vector2(360, 380))
+	popup.name = "MasterSelector"
+	popup.z_index = 30
+	c.add_child(popup)
+	var vb = popup.get_child(0)
+	# 已拥有门客列表（排除自己），按品质→赚速排序，与门客页排序口径一致
+	var ids: Array = data.heroes.keys()
+	ids.sort_custom(func(a, b):
+		var ha: Dictionary = data.heroes[a]
+		var hb: Dictionary = data.heroes[b]
+		if int(ha.get("quality", 0)) != int(hb.get("quality", 0)):
+			return int(ha.get("quality", 0)) > int(hb.get("quality", 0))
+		return data.get_hero_income(a) > data.get_hero_income(b))
+	for hid in ids:
+		if hid == current_hero_id: continue
+		var h: Dictionary = data.heroes[hid]
+		var b := Button.new()
+		b.text = "%s（%s）" % [str(h.get("name", hid)), _quality_name(int(h.get("quality", 0)))]
+		if hid == cur_master:
+			b.text = "【师傅】" + b.text
+		b.alignment = HORIZONTAL_ALIGNMENT_LEFT
+		b.pressed.connect(func():
+			var res: Dictionary = data.hero_system.set_master_hero_id(current_hero_id, hid)
+			c._safe_close("MasterSelector")
+			if res.get("ok", false):
+				c._show_stage_hint("已拜师 %s" % str(data.heroes[hid].get("name", hid)))
+			else:
+				c._show_stage_hint(res.get("msg", "拜师失败"))
+			update_hero_panel()   # 师傅变化影响师徒光环效果显示
+			c.update_all_ui()
+		)
+		vb.add_child(b)
+	var close_b := Button.new()
+	close_b.text = "取消"
+	close_b.pressed.connect(func(): c._safe_close("MasterSelector"))
+	vb.add_child(close_b)
+
+# 品质名（拜师选择器等小处复用）
+func _quality_name(q: int) -> String:
+	return {0: "优秀", 1: "卓越", 2: "传奇", 3: "无双"}.get(q, "优秀")
 
 # 【新增】简单晋升面板（解鲁/四郎/兰飞鸿/杨戬）：只显示下一档条件+解锁技能，面板内执行晋升
 func _simple_cond_text(hero_id: String, stage: Dictionary) -> String:
@@ -1565,18 +1626,26 @@ func _render_skill_detail(list: VBoxContainer, item: Dictionary) -> void:
 		var btn_row := HBoxContainer.new()
 		btn_row.add_theme_constant_override("separation", 8)
 		right.add_child(btn_row)
-		# 【修】4.x bind 参数追加在调用参数后，链式 bind 顺序不可控；
-		#       条目构建时预绑定 on_single/on_bulk（单 bind 顺序稳定），按钮直连
-		var up1 := Button.new()
-		up1.text = "升级"
-		up1.custom_minimum_size = Vector2(84, 34)
-		up1.pressed.connect(item["on_single"])
-		btn_row.add_child(up1)
-		var up10 := Button.new()
-		up10.text = "升级10次"
-		up10.custom_minimum_size = Vector2(84, 34)
-		up10.pressed.connect(item["on_bulk"])
-		btn_row.add_child(up10)
+		# 【新增】2026-09-24 免费门槛卡（师徒光环广结良缘/日进斗金）：无消耗，仅单个升级钮
+		if item.get("free_action", false):
+			var up_free := Button.new()
+			up_free.text = "升级"
+			up_free.custom_minimum_size = Vector2(84, 34)
+			up_free.pressed.connect(item["on_single"])
+			btn_row.add_child(up_free)
+		else:
+			# 【修】4.x bind 参数追加在调用参数后，链式 bind 顺序不可控；
+			#       条目构建时预绑定 on_single/on_bulk（单 bind 顺序稳定），按钮直连
+			var up1 := Button.new()
+			up1.text = "升级"
+			up1.custom_minimum_size = Vector2(84, 34)
+			up1.pressed.connect(item["on_single"])
+			btn_row.add_child(up1)
+			var up10 := Button.new()
+			up10.text = "升级10次"
+			up10.custom_minimum_size = Vector2(84, 34)
+			up10.pressed.connect(item["on_bulk"])
+			btn_row.add_child(up10)
 	# 已满级红章：盖在详情区上
 	if is_max:
 		var stamp := Label.new()
@@ -1804,6 +1873,9 @@ func _fill_halo_tab(list):
 	if not acfg.is_empty():
 		for skill in acfg.get("skills", []):
 			items.append(_build_aura_card(skill))
+	# 【新增】2026-09-24 师徒光环（小八）：四张卡追加在服装/系列光环之后
+	for aura in data.hero_system.get_master_aura_cfgs(current_hero_id):
+		items.append(_build_master_aura_card(aura))
 	if items.is_empty():
 		var lbl = Label.new()
 		lbl.text = "暂未解锁光环（解锁服装后获得同名光环技能）"
@@ -1811,6 +1883,47 @@ func _fill_halo_tab(list):
 		list.add_child(lbl)
 	else:
 		_render_skill_tab(list, items, "halo")
+
+# 【新增】2026-09-24 师徒光环卡片（小八）：道具消耗型走 own 消耗协议；门槛型走 free_action 无消耗升级
+func _build_master_aura_card(aura: Dictionary) -> Dictionary:
+	var aid: String = aura.get("id", "")
+	var lv: int = data.hero_system.get_master_aura_level(current_hero_id, aid)
+	var cap: int = data.hero_system.get_master_aura_cap(current_hero_id, aura)
+	var per: float = float(aura.get("per", 0))
+	var is_apt: bool = aura.get("type", "") == "aptitude"
+	var unit: String = ("资质+%d" % int(per)) if is_apt else ("赚钱+%.1f%%" % per)
+	var scope := "自身"
+	if aura.get("target", "") == "self_master": scope = "自身与师傅"
+	elif aura.get("target", "") == "master_career": scope = "师傅职业门客"
+	var cap_txt: String = str(cap) if cap < 9000 else "—"
+	var info: String = "【%s】 Lv.%d/%s\n%s（%s）" % [aura.get("name", ""), lv, cap_txt, unit, scope]
+	var card := {"name": aura.get("name", ""), "stars": int(per), "is_max": lv >= cap, "info": info}
+	if aura.has("cost_item"):
+		var cost: int = data.hero_system.get_master_aura_cost(current_hero_id, aura)
+		var iid: String = aura.get("cost_item", "")
+		var iname: String = data.ITEM_CONFIG.get(iid, {}).get("name", iid)
+		card["own_name"] = iname
+		card["own"] = [cost, int(data.items.get(iid, 0))]
+		card["on_single"] = func(): _on_master_aura_up(aid, 1)
+		card["on_bulk"] = func(): _on_master_aura_up(aid, 10)
+	else:
+		# 门槛型（财商通达每10级可升1级）：无道具消耗，free_action 分支渲染单个升级钮
+		info += "\n财商通达每10级可升1级"
+		card["info"] = info
+		card["free_action"] = true
+		card["on_single"] = func(): _on_master_aura_up(aid, 1)
+	return card
+
+func _on_master_aura_up(aura_id: String, times: int):
+	var res: Dictionary = data.hero_system.upgrade_master_aura(current_hero_id, aura_id, times)
+	c._show_stage_hint("【%s】升至 %d 级" % [_aura_name(aura_id), res.get("level", 0)] if res.get("ok", false) else res.get("msg", "升级失败"))
+	update_hero_panel()   # 光环变化影响资质/赚钱，整面板对账
+	c.update_all_ui()
+
+func _aura_name(aura_id: String) -> String:
+	for a in data.hero_system.get_master_aura_cfgs(current_hero_id):
+		if a.get("id", "") == aura_id: return str(a.get("name", aura_id))
+	return aura_id
 
 # 【新增】系列光环卡片条目（接 _render_skill_tab 协议）：
 # item 档=消耗+升级/十连；.极档=总和需求+"？"钮+手动逐级升级；人数档/flat=只读卡片（no_action，无右侧交互）
@@ -2406,6 +2519,19 @@ func _show_token_panel():
 		int(t_cfg.get("aptitude_per_level", 3)), data.heroes[current_hero_id].name
 	]
 	vb.add_child(skill_lbl)
+
+	# 【新增】2026-09-24 倾心共赢（小八信物被动）：动态显示当前百分比/生效状态
+	if t_cfg.has("share_passive"):
+		var share_lbl = Label.new()
+		share_lbl.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+		share_lbl.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+		var sp_cfg: Dictionary = t_cfg.get("share_passive", {})
+		var pct: float = data.token_system.get_share_passive_pct(current_hero_id)
+		if pct > 0:
+			share_lbl.text = "【%s】为绑定门客提供自身资质 %d%%（上限%d%%）" % [sp_cfg.get("name", "倾心共赢"), int(pct), int(sp_cfg.get("cap_pct", 30))]
+		else:
+			share_lbl.text = "【%s】晋升无双后生效：为绑定门客提供自身资质（上限%d%%）" % [sp_cfg.get("name", "倾心共赢"), int(sp_cfg.get("cap_pct", 30))]
+		vb.add_child(share_lbl)
 
 	# ── 伴生技能（全信物通用三件套，2026-09-24 用户拍板：信物页展示解锁条件/上限；技能页只显示已解锁）──
 	var tsk_lbl = Label.new()
