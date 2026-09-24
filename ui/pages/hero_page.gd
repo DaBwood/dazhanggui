@@ -471,7 +471,7 @@ func update_hero_panel():
 		var simple_ready: bool = not sp_cfg.is_empty() and int(h.get("quality", 0)) < int(sp_cfg.get("target_quality", 2))
 		if simple_ready or h.has("promotion"):
 			var promo_name: String = str(sp_cfg.get("name", "晋升")) if simple_ready else str(h.promotion.get("name", "晋升"))
-			promo_btn.text = "赋诗晋升" if promo_name == "赋诗" else promo_name
+			promo_btn.text = promo_name   # 【改】2026-09-24 按钮名=晋升玩法名（赋诗/落雁/军旅），去"赋诗晋升"特判
 			promo_btn.visible = true
 			# 红点：服装一键晋升条件满足才亮（● Label 节点查重复用，防 update_hero_panel 高频重入叠点）；赋诗分支维持原无红点
 			var dot: Label = null
@@ -814,25 +814,44 @@ func _on_promo_btn_clicked():
 	popup.z_index = 30
 	c.add_child(popup)
 	var vb = popup.get_child(0)
+	# 【改】2026-09-24 风姿/金兰改为小按钮置顶右上角（与升级区同排，靠右对齐）
+	var top_bar = HBoxContainer.new()
+	top_bar.alignment = BoxContainer.ALIGNMENT_END
+	top_bar.add_theme_constant_override("separation", 6)
+	vb.add_child(top_bar)
 	
-	# ── 技能信息：等级+总资质 /（下级资质）/ 消耗+拥有 ──
+	# ── 升级区（2026-09-24 改：模仿金兰光环卡布局——左列等级信息，右列消耗+晋升/十次按钮）──
+	var up_row = HBoxContainer.new()
+	up_row.add_theme_constant_override("separation", 16)
+	vb.add_child(up_row)
+	var up_left = VBoxContainer.new()
+	up_left.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	up_left.alignment = BoxContainer.ALIGNMENT_CENTER   # 【改】与右列垂直居中对齐
+	up_left.add_theme_constant_override("separation", 2)
 	var info_lbl = Label.new()
-	info_lbl.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	info_lbl.horizontal_alignment = HORIZONTAL_ALIGNMENT_LEFT
 	info_lbl.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
-	# 【改】技能名参数化（李白=天生我材，白月初=仙缘梦绕）；2026-09-24 消耗显示改信物同款"道具 拥有/消耗"格式
-	info_lbl.text = "%s %d级 +%d资质\n（下级+%d资质）\n%s %d/%d" % [
+	# 【改】技能名参数化（李白=天生我材，白月初=仙缘梦绕）
+	info_lbl.text = "%s %d级 +%d资质\n（下级+%d资质）" % [
 		skill_name, int(promo.level), int(promo.level) * int(promo.aptitude_per_level),
-		int(promo.aptitude_per_level),
-		item_name,
-		data.items.get(promo.cost_item, 0),
-		int(promo.cost_amount)
+		int(promo.aptitude_per_level)
 	]
-	vb.add_child(info_lbl)
-	
-	# ── 升级区：晋升按钮 + 十次勾选（勾选状态存类变量 _promo_batch，升级/重建不清）──
+	up_left.add_child(info_lbl)
+	up_row.add_child(up_left)
+	var up_right = VBoxContainer.new()
+	up_right.alignment = BoxContainer.ALIGNMENT_CENTER   # 【改】与左列垂直居中对齐
+	up_right.add_theme_constant_override("separation", 2)
+	var cost_lbl = Label.new()
+	cost_lbl.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	var promo_have: int = data.items.get(promo.cost_item, 0)
+	var promo_need: int = int(promo.cost_amount)
+	cost_lbl.text = "%s %d/%d" % [item_name, promo_have, promo_need]
+	cost_lbl.add_theme_color_override("font_color", _cost_color(promo_have, promo_need))   # 【改】2026-09-24 够升级绿/不够红
+	up_right.add_child(cost_lbl)
 	var up_box = HBoxContainer.new()
 	up_box.alignment = BoxContainer.ALIGNMENT_CENTER
-	vb.add_child(up_box)
+	up_right.add_child(up_box)
+	up_row.add_child(up_right)
 	var up_btn = Button.new()
 	up_btn.custom_minimum_size = Vector2(130, 48)
 	up_btn.pressed.connect(func():
@@ -863,36 +882,36 @@ func _on_promo_btn_clicked():
 	
 	# 风姿按钮（无双解锁风姿的门客显示，点击切到风姿面板）
 	var fengzi_btn = Button.new()
-	fengzi_btn.custom_minimum_size = Vector2(140, 36)
+	fengzi_btn.custom_minimum_size = Vector2(64, 30)
 	if data.fengzi_system.has_fengzi(current_hero_id):
-		fengzi_btn.text = "【风姿】%s" % data.fengzi_system.get_fengzi_cfg(current_hero_id).get("fengzi_name", "风姿")
+		fengzi_btn.text = "风姿"
 	else:
 		fengzi_btn.visible = false
 	fengzi_btn.pressed.connect(func():
 		if is_instance_valid(popup): popup.queue_free()   # 先关晋升面板再开风姿面板，避免弹窗堆叠
 		_show_fengzi_panel()
 	)
-	vb.add_child(fengzi_btn)
+	top_bar.add_child(fengzi_btn)
 
 	# 【新增】金兰按钮（花木兰，2026-09-24）：风姿按钮下方；晋升无双后解锁，未满灰显
 	var jinlan_btn = Button.new()
-	jinlan_btn.custom_minimum_size = Vector2(140, 36)
+	jinlan_btn.custom_minimum_size = Vector2(64, 30)
 	if data.hero_system.get_jinlan_cfg(current_hero_id).is_empty():
 		jinlan_btn.visible = false
 	elif data.hero_system.is_jinlan_unlocked(current_hero_id):
-		jinlan_btn.text = "【金兰】同袍"
+		jinlan_btn.text = "金兰"
 		jinlan_btn.pressed.connect(func():
 			if is_instance_valid(popup): popup.queue_free()
 			_show_jinlan_panel()
 		)
 	else:
-		jinlan_btn.text = "【金兰】晋升无双后解锁"
+		jinlan_btn.text = "金兰"
 		jinlan_btn.disabled = true
-	vb.add_child(jinlan_btn)
+	top_bar.add_child(jinlan_btn)
 
 	# 【新增】苦情契约按钮：仅白月初显示（与风姿同位置，两者不会同时出现）
 	var contract_btn = Button.new()
-	contract_btn.custom_minimum_size = Vector2(140, 36)
+	contract_btn.custom_minimum_size = Vector2(64, 30)
 	if current_hero_id == data.token_system.CONTRACT_HERO:
 		contract_btn.text = "【契约】苦情契约"
 	else:
@@ -901,7 +920,7 @@ func _on_promo_btn_clicked():
 		if is_instance_valid(popup): popup.queue_free()
 		_show_contract_panel()
 	)
-	vb.add_child(contract_btn)
+	top_bar.add_child(contract_btn)
 	
 	# ── 晋升解锁列表：不写初始资质变化，统一"X级晋升XX，解锁技能【XX】"，已解锁金色、未解锁灰色 ──
 	var scroll = ScrollContainer.new()
@@ -985,7 +1004,7 @@ func _show_jinlan_panel():
 		right_lbl.text = "%s\n资质: +%d\n赚钱: +%d%%" % [
 			str(data.heroes[partner_id].get("name", partner_id)),
 			hs.get_jinlan_partner_aptitude(partner_id),
-			int(hs.get_jinlan_partner_income_pct(partner_id) * 100)
+			int(hs.get_jinlan_partner_income_pct(partner_id) * 100)   # getter 返回小数，显示转%
 		]
 	else:
 		right_lbl.add_theme_color_override("font_color", Color("#888888"))
@@ -1022,7 +1041,7 @@ func _show_jinlan_panel():
 	halo_lbl.add_theme_color_override("font_color", Color("#d4af37"))
 	halo_lbl.text = "金兰光环"
 	vb.add_child(halo_lbl)
-	var fz_lv: int = int(data.heroes[current_hero_id].get("fengzi", {}).get("level", 0))
+	var fz_lv: int = data.fengzi_system.get_level(current_hero_id)   # 【修】风姿等级走 fengzi_system getter
 	var cap: int = hs.get_jinlan_cap(current_hero_id)
 	var per4: int = max(1, int(hs.get_jinlan_cfg(current_hero_id).get("fengzi_per_level", 4)))
 	for sk in hs.get_jinlan_cfg(current_hero_id).get("skills", []):
@@ -1073,8 +1092,11 @@ func _show_jinlan_panel():
 		vb.add_child(card)
 	
 	var close_btn = Button.new()
-	close_btn.text = "关闭"
-	close_btn.pressed.connect(func(): popup.queue_free())
+	close_btn.text = "返回"   # 【改】2026-09-24 返回晋升页面
+	close_btn.pressed.connect(func():
+		popup.queue_free()
+		_on_promo_btn_clicked()
+	)
 	vb.add_child(close_btn)
 
 # 【新增】金兰门客选择弹窗（已拥有门客列表，排除自身，可重复选/无冷却——2026-09-24 用户拍板）
@@ -1107,7 +1129,7 @@ func _show_jinlan_pick_popup():
 		)
 		list.add_child(pb)
 	var close_btn = Button.new()
-	close_btn.text = "关闭"
+	close_btn.text = "返回"   # 返回金兰面板
 	close_btn.pressed.connect(func():
 		popup.queue_free()
 		_show_jinlan_panel()
@@ -1412,7 +1434,7 @@ func _render_skill_detail(list: VBoxContainer, item: Dictionary) -> void:
 			var pill_stock: int = int(data.items.get("aptitude_pill", 0))
 			var pool_stock: int = int(data.hero_system.get_baiye(current_hero_id))
 			var chk_pill := CheckBox.new()
-			chk_pill.text = "资质丹(%d/%d)" % [per_level, pill_stock]
+			chk_pill.text = "资质丹"   # 【改】数字拆独立 Label 后同排显示（2026-09-24）
 			chk_pill.button_pressed = not _use_baiye
 			chk_pill.add_theme_font_size_override("font_size", 12)
 			chk_pill.toggled.connect(func(pressed):
@@ -1422,9 +1444,8 @@ func _render_skill_detail(list: VBoxContainer, item: Dictionary) -> void:
 				elif _use_baiye:   # 互斥：不允许全不选
 					chk_pill.button_pressed = true
 			)
-			chk_col.add_child(chk_pill)
 			var chk_baiye := CheckBox.new()
-			chk_baiye.text = "百业经验(%d/%d)" % [per_level * data.hero_system.get_baiye_per_pill(), pool_stock]
+			chk_baiye.text = "百业经验"
 			chk_baiye.button_pressed = _use_baiye
 			chk_baiye.add_theme_font_size_override("font_size", 12)
 			chk_baiye.toggled.connect(func(pressed):
@@ -1434,11 +1455,30 @@ func _render_skill_detail(list: VBoxContainer, item: Dictionary) -> void:
 				elif not _use_baiye:
 					chk_baiye.button_pressed = true
 			)
-			chk_col.add_child(chk_baiye)
+			# 【改】2026-09-24 勾选框与消耗数字同排：名字随选中变色，数字保持 _cost_color 红绿色
+			var pill_row := HBoxContainer.new()
+			pill_row.add_theme_constant_override("separation", 2)
+			var pill_num_lbl := Label.new()
+			pill_num_lbl.text = "(%d/%d)" % [per_level, pill_stock]
+			pill_num_lbl.add_theme_color_override("font_color", _cost_color(pill_stock, per_level))
+			pill_num_lbl.add_theme_font_size_override("font_size", 12)
+			pill_row.add_child(chk_pill)
+			pill_row.add_child(pill_num_lbl)
+			chk_col.add_child(pill_row)
+			var baiye_row := HBoxContainer.new()
+			baiye_row.add_theme_constant_override("separation", 2)
+			var baiye_num_lbl := Label.new()
+			baiye_num_lbl.text = "(%d/%d)" % [per_level * data.hero_system.get_baiye_per_pill(), pool_stock]
+			baiye_num_lbl.add_theme_color_override("font_color", _cost_color(pool_stock, per_level * data.hero_system.get_baiye_per_pill()))
+			baiye_num_lbl.add_theme_font_size_override("font_size", 12)
+			baiye_row.add_child(chk_baiye)
+			baiye_row.add_child(baiye_num_lbl)
+			chk_col.add_child(baiye_row)
 		elif item.has("own"):
 			var own: Array = item["own"]
 			var own_lbl := Label.new()
 			own_lbl.text = "%s %d/%d" % [item["own_name"], own[0], own[1]]
+			own_lbl.add_theme_color_override("font_color", _cost_color(int(own[1]), int(own[0])))   # 【改】够升级绿/不够红（own=[消耗,库存]）
 			own_lbl.add_theme_font_size_override("font_size", 13)
 			own_lbl.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
 			right.add_child(own_lbl)
@@ -1494,6 +1534,11 @@ func _render_skill_tab(list: VBoxContainer, items: Array, tab_id: String) -> voi
 	_sel_idx[tab_id] = sel
 	_render_skill_buttons(list, items, sel, tab_id)
 	_render_skill_detail(list, items[sel])
+
+# 【新增】消耗数字着色通用件（2026-09-24 用户拍板）：够升级绿 #7ee787 / 不够红 #ff6666
+# 风姿/晋升/技能栏（资质丹·百业经验·副业货币·算盘·筹算值·伙伴币）所有"消耗/库存"文本共用
+func _cost_color(have: int, need: int) -> Color:
+	return Color("#7ee787") if have >= need else Color("#ff6666")
 
 # 【第35节】填充「技能」页：资质技能 + 守护灵技能，统一按钮排+详情区（资质类格式：资质+X（下级+Y））
 func _fill_skill_tab(list):
@@ -2633,11 +2678,11 @@ func _show_fengzi_panel():
 		var old = c.get_node("FengziPanel")
 		c.remove_child(old)
 		old.queue_free()
-	
+
 	var f_cfg = data.fengzi_system.get_fengzi_cfg(current_hero_id)
 	if f_cfg.is_empty(): return
 	data.fengzi_system.sync_skills(current_hero_id)   # 打开前幂等同步一次技能/上限
-	
+
 	var popup = c._create_base_popup("【风姿】%s" % f_cfg.get("fengzi_name", "风姿"), Vector2(460, 620))
 	popup.name = "FengziPanel"
 	popup.z_index = 30
@@ -2648,25 +2693,56 @@ func _show_fengzi_panel():
 	var every = int(f_cfg.get("skill_unlock_every", 5))
 	var skills: Array = f_cfg.get("skills", [])
 	var unlock_all = skills.size() * every   # 全部解锁等级（8技能×5级=40）
-	
-	# ── 风姿信息（等级/效果/消耗/当前赚钱加成）──
+	var per_level = int(f_cfg.get("aptitude_per_level", 6))
+
+		# ── 升级区（2026-09-24 拍板：等级行与资质行并列一行——等级+问号 | 资质/赚钱信息 | 消耗+按钮）──
+	var up_row = HBoxContainer.new()
+	up_row.add_theme_constant_override("separation", 14)
+	up_row.alignment = BoxContainer.ALIGNMENT_CENTER
+	vb.add_child(up_row)
+	var up_left = VBoxContainer.new()
+	up_left.size_flags_horizontal = Control.SIZE_EXPAND_FILL   # 【改】2026-09-24 拉伸并把内容顶到右侧，与消耗列贴齐
+	up_left.alignment = BoxContainer.ALIGNMENT_CENTER
+	up_left.add_theme_constant_override("separation", 2)
+	var lv_row = HBoxContainer.new()
+	lv_row.size_flags_horizontal = Control.SIZE_EXPAND_FILL   # 【改】等级行占满并右对齐
+	lv_row.add_theme_constant_override("separation", 6)
+	lv_row.alignment = BoxContainer.ALIGNMENT_END
+	var lv_lbl = Label.new()
+	lv_lbl.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	lv_lbl.text = "【%s】Lv.%d（无上限）" % [f_cfg.get("fengzi_name", "风姿"), lv]
+	lv_row.add_child(lv_lbl)
+	var q_btn = Button.new()
+	q_btn.text = "?"
+	q_btn.custom_minimum_size = Vector2(28, 28)
+	q_btn.pressed.connect(func(): _show_fengzi_hint(f_cfg, every, unlock_all))
+	lv_row.add_child(q_btn)
+	up_left.add_child(lv_row)
 	var info_lbl = Label.new()
-	info_lbl.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
-	info_lbl.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
-	info_lbl.text = "【%s】Lv.%d（无上限）\n每级+%d资质（%s）  当前赚钱+%d%%\n每级消耗%d【%s】  拥有：%d" % [
-		f_cfg.get("fengzi_name", "风姿"), lv,
-		int(f_cfg.get("aptitude_per_level", 6)), h.name,
-		int(data.fengzi_system.get_income_pct(current_hero_id) * 100),
-		int(f_cfg.get("cost_per_level", 600)),
-		data.ITEM_CONFIG.get(f_cfg.get("cost_item", ""), {}).get("name", f_cfg.get("cost_item", "")),
-		data.items.get(f_cfg.get("cost_item", ""), 0)
+	info_lbl.horizontal_alignment = HORIZONTAL_ALIGNMENT_RIGHT   # 【改】与等级行同右对齐
+	info_lbl.text = "资质+%d（下级+%d）  当前赚钱+%d%%" % [
+		lv * per_level, (lv + 1) * per_level,
+		int(data.fengzi_system.get_income_pct(current_hero_id) * 100)
 	]
-	vb.add_child(info_lbl)
-	
-	# ── 升级区（十连勾选记忆在类变量 _fengzi_batch，升级/重建不清）──
+	up_left.add_child(info_lbl)
+	up_row.add_child(up_left)
+	var up_right = VBoxContainer.new()
+	up_right.alignment = BoxContainer.ALIGNMENT_CENTER   # 【改】2026-09-24 与左列垂直居中对齐
+	up_right.add_theme_constant_override("separation", 2)
+	var cost_lbl = Label.new()
+	cost_lbl.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	var fz_have: int = data.items.get(f_cfg.get("cost_item", ""), 0)
+	var fz_need: int = int(f_cfg.get("cost_per_level", 600))
+	cost_lbl.text = "%s %d/%d" % [
+		data.ITEM_CONFIG.get(f_cfg.get("cost_item", ""), {}).get("name", f_cfg.get("cost_item", "")),
+		fz_have, fz_need
+	]
+	cost_lbl.add_theme_color_override("font_color", _cost_color(fz_have, fz_need))   # 【改】2026-09-24 够升级绿/不够红
+	up_right.add_child(cost_lbl)
 	var up_box = HBoxContainer.new()
 	up_box.alignment = BoxContainer.ALIGNMENT_CENTER
-	vb.add_child(up_box)
+	up_right.add_child(up_box)
+	up_row.add_child(up_right)
 	var up_btn = Button.new()
 	up_btn.custom_minimum_size = Vector2(130, 48)
 	up_btn.pressed.connect(func():
@@ -2683,13 +2759,11 @@ func _show_fengzi_panel():
 	batch_check.text = "十连"
 	batch_check.button_pressed = _fengzi_batch   # 【新增】恢复上次勾选状态
 	batch_check.toggled.connect(func(pressed):
-		_fengzi_batch = pressed   # 【新增】记录勾选变化
-		# 勾选切换时刷新按钮上的消耗数字（单级↔十连总价）
-		up_btn.text = data.fengzi_system.get_upgrade_btn_text(current_hero_id, _fengzi_batch)
+		_fengzi_batch = pressed   # 【新增】记录勾选变化（钮内不显示消耗，无需刷新文案）
 	)
 	up_box.add_child(batch_check)
-	up_btn.text = data.fengzi_system.get_upgrade_btn_text(current_hero_id, _fengzi_batch)
-	
+	up_btn.text = "升级"   # 【改】2026-09-24 消耗数字在上行，钮内不重复
+
 	# ── 风姿技能列表：解锁状态 / 当前等级与上限（上限含风姿加成）──
 	var scroll = ScrollContainer.new()
 	scroll.custom_minimum_size = Vector2(420, 240)
@@ -2721,8 +2795,21 @@ func _show_fengzi_panel():
 			if int(found.max_level) > int(f_cfg.get("skill_max_level", 200)):
 				row.add_theme_color_override("font_color", Color("#ffd700"))
 		list.add_child(row)
-	
-	# ── 规则说明（读配置，不写死数值）──
+
+	c._add_ok_button(vb, func():
+		if c.has_node("FengziPanel"):
+			var old = c.get_node("FengziPanel")
+			c.remove_child(old)
+			old.queue_free()
+		# 【改】2026-09-24 返回晋升页面，不直接关闭
+		_on_promo_btn_clicked()
+	, "返回")
+
+# 【新增】风姿规则说明弹窗（问号钮，2026-09-24 拍板：读配置不写死数值）
+func _show_fengzi_hint(f_cfg: Dictionary, every: int, unlock_all: int):
+	var popup = c._create_base_popup("说明", Vector2(420, 200))
+	c.add_child(popup)
+	var vb = popup.get_child(0)
 	var hint_lbl = Label.new()
 	hint_lbl.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	hint_lbl.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
@@ -2732,16 +2819,11 @@ func _show_fengzi_panel():
 		unlock_all, int(f_cfg.get("cap_bonus_every", 5)), int(f_cfg.get("cap_bonus_amount", 10))
 	]
 	vb.add_child(hint_lbl)
-	
-	c._add_ok_button(vb, func():
-		if c.has_node("FengziPanel"):
-			var old = c.get_node("FengziPanel")
-			c.remove_child(old)
-			old.queue_free()
-	, "关闭")
+	var close_btn = Button.new()
+	close_btn.text = "关闭"
+	close_btn.pressed.connect(func(): popup.queue_free())
+	vb.add_child(close_btn)
 
-
-# 【新增】天赋按钮点击：打开天赋面板（2026-09-24 用户拍板：默认【独有天赋】页）
 func _on_talent_btn_clicked():
 	_show_talent_panel("talent")
 

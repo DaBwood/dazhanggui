@@ -333,7 +333,8 @@ func get_jinlan_state(hero_id: String) -> Dictionary:
 func get_jinlan_cap(hero_id: String) -> int:
 	var cfg = get_jinlan_cfg(hero_id)
 	if cfg.is_empty() or not g.heroes.has(hero_id): return 0
-	var lv = int(g.heroes[hero_id].get("fengzi", {}).get("level", 0))
+	# 【修】风姿等级存 g.hero_fengzi[hero_id].level（fengzi_system 私有），必须走其 getter
+	var lv = g.fengzi_system.get_level(hero_id)
 	return int(lv / max(1, int(cfg.get("fengzi_per_level", 4))))
 
 func is_jinlan_unlocked(hero_id: String) -> bool:
@@ -389,8 +390,8 @@ func get_jinlan_self_income_pct(hero_id: String) -> float:
 	var pct := 0.0
 	for sk in cfg.get("skills", []):
 		var lv = int(st.get("levels", {}).get(sk.get("name", ""), 0))
-		pct += lv * float(sk.get("self_income_pct", 0))
-		pct += lv * float(sk.get("both_income_pct", 0))
+		pct += lv * float(sk.get("self_income_pct", 0)) / 100.0
+		pct += lv * float(sk.get("both_income_pct", 0)) / 100.0
 	return pct
 
 # 自身侧资质：金兰义
@@ -407,10 +408,11 @@ func get_jinlan_self_aptitude(hero_id: String) -> int:
 func get_jinlan_partner_income_pct(partner_id: String) -> float:
 	var owner = get_jinlan_owner(partner_id)
 	if owner == "": return 0.0
+	# 【修】percent_bonus 全口径为小数（0.02=2%，风姿 income_pct 本身就是小数）——光环配置值（2=2%）须 /100
 	var pct := float(get_fengzi_attr(owner).get("income_pct", 0.0))
 	var st = get_jinlan_state(owner)
 	for sk in get_jinlan_cfg(owner).get("skills", []):
-		pct += int(st.get("levels", {}).get(sk.get("name", ""), 0)) * float(sk.get("both_income_pct", 0))
+		pct += int(st.get("levels", {}).get(sk.get("name", ""), 0)) * float(sk.get("both_income_pct", 0)) / 100.0
 	return pct
 
 # 伙伴侧资质：花木兰风姿资质 100% + 金兰义
