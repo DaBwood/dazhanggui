@@ -14,6 +14,20 @@
 			"cap_bonus_every": 5,
 			"cap_bonus_amount": 10,
 			"income_pct_per_unlock": 0.05
+		},
+"wang_zhaojun": {
+			"fengzi_name": "朔漠弹弦",
+			"unlock_quality": 2,
+			"cost_item": "hu_qin_pi_pa",
+			"cost_per_level": 600,
+			"aptitude_per_level": 6,
+			"skills": ["神采奕奕", "玉树临风", "顾盼生辉", "轩然霞举", "气凌彭泽", "龙章凤姿", "风华绝代", "天人之姿"],
+			"skill_unlock_every": 5,
+			"skill_aptitude_per_level": 2,
+			"skill_max_level": 200,
+			"cap_bonus_every": 5,
+			"cap_bonus_amount": 10,
+			"income_pct_per_unlock": 0.05
 		}
 	}
 }

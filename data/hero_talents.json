@@ -1146,10 +1146,7 @@
    "born_tier": "epic",
    "max_tier": "wushuang",
    "can_promote": true,
-   "suspended_tiers": [
-    "legend",
-    "wushuang"
-   ]
+   "suspended_tiers": []
   },
   "bai_yuechu": {
    "name": "白月初",

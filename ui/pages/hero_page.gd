@@ -279,6 +279,8 @@ func update_hero_panel():
 		if copy_lv > 0:
 			show_lv = maxi(show_lv, copy_lv)
 		c.get_node("HeroPanel/HeroName").text = "【%s】%s %s Lv.%d%s" % [h.name, h.category, quality_tag, show_lv, (" " + star_txt) if star_txt != "" else ""]
+		# 【改】2026-09-24 门客名按品质着色（原为固定金色）：优秀蓝/卓越紫/传奇橙/无双红，与列表卡/图鉴同款
+		c.get_node("HeroPanel/HeroName").add_theme_color_override("font_color", Color(HeroData.get_quality_color(int(h.get("quality", 0)))))
 	if c.has_node("HeroPanel/HeroIncome"):
 		# 【改】口径对齐：门客个体=赚钱（全局汇总才叫赚速）
 		c.get_node("HeroPanel/HeroIncome").text = "赚钱：%s/秒  资质：%d" % [c.format_number(income), total_aptitude]
@@ -909,11 +911,17 @@ func _on_promo_btn_clicked():
 
 
 # 【新增】服装一键晋升（解鲁/四郎）：点击直接升品质+送技能；晋升后本按钮由 update_hero_panel 按品质自动隐藏
+# 条件未满足点击：弹数据驱动提示"收集N款服装晋升X"（2026-09-24 用户拍板）
 func _on_simple_promote_clicked():
-	if not data.hero_system.do_simple_promote(current_hero_id).get("ok", false):
+	var res = data.hero_system.do_simple_promote(current_hero_id)
+	if res.get("ok", false):
+		update_hero_panel()   # 品质/天赋档/技能变化，门客面板对账
+		c.update_all_ui()
 		return
-	update_hero_panel()   # 品质/天赋档/技能变化，门客面板对账
-	c.update_all_ui()
+	var sp_cfg: Dictionary = data.hero_system.get_simple_promotion_cfg(current_hero_id)
+	var q_names: Dictionary = {0: "优秀", 1: "卓越", 2: "传奇", 3: "无双"}
+	var qn: String = q_names.get(int(sp_cfg.get("target_quality", 2)), "传奇")
+	c._show_stage_hint("收集%d款服装晋升%s" % [int(sp_cfg.get("costume_need", 1)), qn])
 
 func open_hero_detail(hero_id: String):
 	open_hero_panel(hero_id)

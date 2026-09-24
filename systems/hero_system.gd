@@ -80,6 +80,10 @@ func load_save_data(s: Dictionary):
 				var sp_cfg: Dictionary = g.heroes[hid]["simple_promotion"]
 				if int(g.heroes[hid].get("quality", 0)) >= int(sp_cfg.get("target_quality", 2)):
 					_grant_simple_promotion_skills(g.heroes[hid], sp_cfg)
+			# 【新增】赋诗晋升（2026-09-24）：promotion 块解锁时拷贝，旧档缺键回灌（王昭君落雁等；
+			# level 从 0 开始，已达阈值档位品质由 quality 存量迁移保障，幂等）
+			if g._hero_configs.get(hid, {}).has("promotion") and not g.heroes[hid].has("promotion"):
+				g.heroes[hid]["promotion"] = g._hero_configs[hid]["promotion"]
 	# 【新增】存档迁移：旧档门客的 base_income 字段改名为 extra_income
 	# （该字段实为"额外赚速池"，与基础赚速公式无关；旧档已攒数值原样保留，含旧版升级攒入的部分）
 	for hero in g.heroes.values():
