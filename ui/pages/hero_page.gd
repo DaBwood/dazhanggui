@@ -20,6 +20,7 @@ var _cuzhi_last_use_jinghua: bool = false   # 【促织装备】上次升级用�
 var _guardian_batch: bool = false   # 【新增】守护灵注灵十连勾选状态（面板生命周期内保持）
 var _promo_batch: bool = false   # 【新增】赋诗十连勾选状态（面板生命周期内保持）
 var _token_batch: bool = false   # 【新增】信物十连勾选状态（面板生命周期内保持）
+var _talent_tab: String = "talent"   # 【新增】天赋面板当前页签（类变量记忆：重建刷新/精进后不跳页）
 var _fengzi_batch: bool = false   # 【新增】风姿十连勾选状态（面板生命周期内保持）
 # 【第35节】吃资质丹的技能统一抵扣勾选：true=百业经验（300×每级丹数/级），false=资质丹；四个页签共享记忆
 var _use_baiye: bool = false
@@ -459,15 +460,42 @@ func update_hero_panel():
 			token_btn.visible = false
 	
 	# 【v3新增】赋诗/晋升按钮（右列上方）：有晋升内容的门客才显示，点击弹窗升级
+	# 【改】2026-09-24 服装一键晋升（simple_promotion，解鲁/四郎）：集齐任一已解锁服装→红点，点击直接晋升，晋升后按钮消失
 	var promo_btn = c.get_node("HeroPanel").get_node_or_null("PromoBtn")
 	if promo_btn:
 		for conn in promo_btn.pressed.get_connections():
 			promo_btn.pressed.disconnect(conn.callable)
-		if h.has("promotion"):
-			var promo = h.promotion
-			promo_btn.text = promo.get("name", "晋升")
+		var sp_cfg: Dictionary = h.get("simple_promotion", {})
+		var simple_ready: bool = not sp_cfg.is_empty() and int(h.get("quality", 0)) < int(sp_cfg.get("target_quality", 2))
+		if simple_ready or h.has("promotion"):
+			var promo_name: String = str(sp_cfg.get("name", "晋升")) if simple_ready else str(h.promotion.get("name", "晋升"))
+			promo_btn.text = "赋诗晋升" if promo_name == "赋诗" else promo_name
 			promo_btn.visible = true
-			promo_btn.pressed.connect(_on_promo_btn_clicked)
+			# 红点：服装一键晋升条件满足才亮（● Label 节点查重复用，防 update_hero_panel 高频重入叠点）；赋诗分支维持原无红点
+			var dot: Label = null
+			for ch2 in promo_btn.get_children():
+				if ch2 is Label and str(ch2.text) == "●":
+					dot = ch2 as Label   # 【修】Node→Label 显式收窄（静态类型安全）
+			if dot == null:
+				dot = Label.new()
+				dot.text = "●"
+				promo_btn.add_child(dot)
+			dot.visible = data.hero_system.can_simple_promote(current_hero_id) if simple_ready else false
+			dot.anchor_left = 1.0
+			dot.anchor_right = 1.0
+			dot.anchor_top = 0.0
+			dot.anchor_bottom = 0.0
+			dot.offset_left = -18
+			dot.offset_right = -2
+			dot.offset_top = 2
+			dot.offset_bottom = 18
+			dot.add_theme_color_override("font_color", Color("#e74c3c"))
+			dot.add_theme_font_size_override("font_size", 14)
+			dot.mouse_filter = Control.MOUSE_FILTER_IGNORE
+			if simple_ready:
+				promo_btn.pressed.connect(_on_simple_promote_clicked)
+			else:
+				promo_btn.pressed.connect(_on_promo_btn_clicked)
 		else:
 			# 无晋升内容：留空（上方区域预留门客立绘位）
 			promo_btn.visible = false
@@ -878,6 +906,14 @@ func _on_promo_btn_clicked():
 		list.add_child(row)
 	
 	c._add_ok_button(vb, func(): popup.queue_free(), "关闭")
+
+
+# 【新增】服装一键晋升（解鲁/四郎）：点击直接升品质+送技能；晋升后本按钮由 update_hero_panel 按品质自动隐藏
+func _on_simple_promote_clicked():
+	if not data.hero_system.do_simple_promote(current_hero_id).get("ok", false):
+		return
+	update_hero_panel()   # 品质/天赋档/技能变化，门客面板对账
+	c.update_all_ui()
 
 func open_hero_detail(hero_id: String):
 	open_hero_panel(hero_id)
@@ -2455,12 +2491,13 @@ func _show_fengzi_panel():
 	, "关闭")
 
 
-# 【新增】天赋按钮点击：打开天赋面板（默认【技能】页）
+# 【新增】天赋按钮点击：打开天赋面板（2026-09-24 用户拍板：默认【独有天赋】页）
 func _on_talent_btn_clicked():
-	_show_talent_panel("skill")
+	_show_talent_panel("talent")
 
 # 【新增】天赋面板标签切换：关掉当前面板按新标签重建（按钮经 bind 传参，避开 GDScript 闭包捕获循环变量坑）
 func _on_talent_tab_clicked(tab_id: String):
+	_talent_tab = tab_id   # 【新增】页签类变量记忆（重建刷新不跳页）
 	if c.has_node("TalentPanel"):
 		var old = c.get_node("TalentPanel")
 		c.remove_child(old)
@@ -2469,7 +2506,8 @@ func _on_talent_tab_clicked(tab_id: String):
 
 # 【改】天赋面板（批次①）：顶部=精进区（公共）；下部标签页【独有天赋】/【精进技能】
 # 重建刷新模式沿用信物/风姿面板惯例（remove_child+queue_free 防同名冲突）
-func _show_talent_panel(tab_id: String = "skill"):
+func _show_talent_panel(tab_id: String = "talent"):
+	_talent_tab = tab_id   # 【新增】重建前先记忆页签（精进刷新沿用当前页）
 	if current_hero_id == "" or not data.heroes.has(current_hero_id): return
 	if c.has_node("TalentPanel"):
 		var old = c.get_node("TalentPanel")
@@ -2514,48 +2552,31 @@ func _show_talent_panel(tab_id: String = "skill"):
 			old2.queue_free()
 	, "关闭")
 
-# 【新增】天赋精进区（面板顶部公共区）：当前星级/替换制加成/下一星要求与精进按钮
+# 【改】天赋精进区（2026-09-24 用户拍板精简）：当前星级生效值一行 + 精进按钮；未满足仅红字原因
 func _fill_talent_refine_area(vb):
-	var h = data.heroes[current_hero_id]
 	var ts = data.talent_system
 	var star = ts.get_star(current_hero_id)
 	var max_star = ts.get_max_star()
 	var item_name = data.ITEM_CONFIG.get(ts.get_cost_item(), {}).get("name", ts.get_cost_item())
-	
-	# ── 当前星级信息：替换制加成（当前星级生效值，不累加）──
+
+	# ── 当前星级生效值（替换制一行带过）──
 	var info_lbl = Label.new()
 	info_lbl.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	info_lbl.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
 	if star > 0:
 		var cur = ts.get_star_cfg(star)
-		info_lbl.text = "【鬼斧神工】%d星（共%d星）\n固定赚钱 +%s/秒（替换制）  百分比赚钱 +%d%%（替换制）" % [
+		info_lbl.text = "【鬼斧神工】%d星/%d星 · 固定赚钱+%s/秒 · 百分比赚钱+%d%%（替换制）" % [
 			star, max_star,
 			c.format_number(int(cur.get("flat_income", 0))),
 			int(float(cur.get("income_pct", 0.0)) * 100)
 		]
 	else:
-		info_lbl.text = "【鬼斧神工】未精进（0星）\n精进获得固定赚钱+百分比赚钱（按当前星级替换，不累加）"
+		info_lbl.text = "【鬼斧神工】未精进（0星）"
 	vb.add_child(info_lbl)
-	
-	# ── 下一星要求 + 未满足红字 + 精进按钮（无十连：限制下基本不可能连升）──
+
+	# ── 精进按钮（消耗在按钮上；未满足只红字原因，要求明细不再罗列——2026-09-24 用户拍板精简）──
 	if star < max_star:
-		var next = star + 1
-		var cfg = ts.get_star_cfg(next)
 		var check = ts.get_refine_check(current_hero_id)
-		var req_lbl = Label.new()
-		req_lbl.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
-		req_lbl.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
-		# 组合要求文案：门客等级 / N个门客M星（含本人） / 消耗门客帖
-		var req_parts = ["门客达到%d级（当前%d）" % [int(cfg.get("require_level", 0)), int(h.level)]]
-		var need_star = int(cfg.get("require_heroes_star", 0))
-		var need_count = int(cfg.get("require_heroes_count", 0))
-		if need_count > 0:
-			req_parts.append("%d个门客达到%d星·含本人（当前%d）" % [need_count, need_star, ts.get_heroes_at_least_star(need_star)])
-		req_parts.append("消耗%d【%s】（拥有%d）" % [int(cfg.get("cost", 0)), item_name, int(data.items.get(ts.get_cost_item(), 0))])
-		req_lbl.text = "精进%d星要求：%s" % [next, "；".join(req_parts)]
-		if not check.ok:
-			req_lbl.add_theme_color_override("font_color", Color("#888888"))
-		vb.add_child(req_lbl)
 		if not check.ok:
 			var reason_lbl = Label.new()
 			reason_lbl.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
@@ -2563,14 +2584,15 @@ func _fill_talent_refine_area(vb):
 			reason_lbl.add_theme_color_override("font_color", Color("#ff6666"))
 			reason_lbl.text = "未满足：" + "；".join(check.reasons)
 			vb.add_child(reason_lbl)
+		var cfg = ts.get_star_cfg(star + 1)
 		var refine_btn = Button.new()
 		refine_btn.custom_minimum_size = Vector2(130, 48)
-		refine_btn.text = "精进\n%d【%s】" % [int(cfg.get("cost", 0)), item_name]
+		refine_btn.text = "精进%d星\n%d【%s】" % [star + 1, int(cfg.get("cost", 0)), item_name]
 		refine_btn.disabled = not check.ok
 		refine_btn.pressed.connect(func():
 			var res = ts.refine(current_hero_id)
 			if res.get("ok", false):
-				_show_talent_panel("skill")   # 重建刷新
+				_show_talent_panel(_talent_tab)   # 原地页签重建刷新
 				update_hero_panel()           # 星级/赚速变化，门客面板对账
 				c.update_all_ui()
 				c.update_bag_list()
@@ -2583,12 +2605,13 @@ func _fill_talent_refine_area(vb):
 		full_lbl.text = "已精进至满星（%d星）" % max_star
 		vb.add_child(full_lbl)
 
-# 【新增】独有天赋页（批次①）：按 卓越→传奇→无双 三段列出；当前品质档显示实际效果（绿字），
-# 其余档灰显"晋升后开放"；无天赋门客显示"该门客没有天赋"；玩家文案只显示当前实际数值
+# 【改】独有天赋页（2026-09-24 用户拍板精简）：只显示当前品质档效果，其余档不再展示；
+# 未实装活动向效果维持灰显"后续版本开放"（口径不变）；玩家只看精进后当前实际数值（批次⑤渲染）
 func _fill_unique_talent_tab(vb):
 	var ts = data.talent_system
 	var cfg = ts.get_hero_talent_cfg(current_hero_id)
-	if cfg.is_empty():
+	var cur_tier = ts.get_current_tier(current_hero_id)
+	if cfg.is_empty() or cur_tier == "" or not cfg.get("tiers", {}).has(cur_tier):
 		var tip = Label.new()
 		tip.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 		tip.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
@@ -2596,46 +2619,25 @@ func _fill_unique_talent_tab(vb):
 		tip.text = "该门客没有天赋"
 		vb.add_child(tip)
 		return
-	var labels: Dictionary = ts.get_talent_settings().get("tier_labels", {"epic": "卓越", "legend": "传奇", "wushuang": "无双"})
-	var cur_tier = ts.get_current_tier(current_hero_id)
-	var tiers: Dictionary = cfg.get("tiers", {})
 	var scroll = ScrollContainer.new()
-	scroll.custom_minimum_size = Vector2(420, 300)
+	scroll.custom_minimum_size = Vector2(420, 260)
 	vb.add_child(scroll)
 	var list = VBoxContainer.new()
 	list.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	list.add_theme_constant_override("separation", 6)
 	scroll.add_child(list)
-	for tier in ["epic", "legend", "wushuang"]:
-		if not tiers.has(tier): continue
-		# 段头：品质色徽标
-		var head = Label.new()
-		head.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
-		var tier_q: int = {"epic": 1, "legend": 2, "wushuang": 3}.get(tier, 0)
-		head.add_theme_color_override("font_color", Color(HeroData.get_quality_color(tier_q)))
-		head.text = "—— %s ——" % str(labels.get(tier, tier))
-		list.add_child(head)
-		if tier == cur_tier:
-			for t in tiers[tier]:
-				var row = Label.new()
-				row.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
-				row.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
-				# 【收口】未实装活动向效果当前档灰显"后续版本开放"，不显示数值文案
-				if ts.is_unwired_talent_kind(str(t.get("kind", ""))):
-					row.add_theme_color_override("font_color", Color("#888888"))
-					row.text = "后续版本开放"
-				else:
-					row.add_theme_color_override("font_color", Color("#7ee787"))
-					row.text = "【%s】%s" % [str(t.get("name", "")), str(t.get("desc", ""))]
-				list.add_child(row)
+	for t in cfg.get("tiers", {}).get(cur_tier, []):
+		var row = Label.new()
+		row.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+		row.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+		# 未实装活动向效果灰显"后续版本开放"，不显示数值文案（批次④收口口径不变）
+		if ts.is_unwired_talent_kind(str(t.get("kind", ""))):
+			row.add_theme_color_override("font_color", Color("#888888"))
+			row.text = "【%s】后续版本开放" % str(t.get("name", ""))
 		else:
-			# 未达档（挂起档/未来晋升档）统一灰显；实装口径以逐门客晋升玩法上线为准
-			var lock = Label.new()
-			lock.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
-			lock.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
-			lock.add_theme_color_override("font_color", Color("#888888"))
-			lock.text = "晋升后开放"
-			list.add_child(lock)
+			row.add_theme_color_override("font_color", Color("#7ee787"))
+			row.text = "【%s】%s" % [str(t.get("name", "")), ts.get_effect_desc(t, current_hero_id)]
+		list.add_child(row)
 
 # 【新增】天赋【技能】页内容：解锁技能列表 + 规则说明（精进区在面板顶部公共区）
 func _fill_talent_skill_tab(vb):
@@ -2683,5 +2685,5 @@ func _fill_talent_skill_tab(vb):
 	hint_lbl.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	hint_lbl.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
 	hint_lbl.add_theme_color_override("font_color", Color("#a89ec7"))
-	hint_lbl.text = "固定赚钱与百分比赚钱按当前星级替换（不累加）\n解锁技能在门客面板【技能】页消耗资质丹升级"
+	hint_lbl.text = "按当前星级替换（不累加）；解锁技能在门客【技能】页用资质丹升级"
 	vb.add_child(hint_lbl)

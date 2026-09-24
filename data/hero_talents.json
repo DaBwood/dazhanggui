@@ -115,6 +115,19 @@
     "3": "#e74c3c"
    }
   },
+  "refine_growth": {
+   "_comment": "天赋精进成长（批次⑤，2026-09-24 拍板）：实际值=基础值+增量×精进等级，精进等级=鬼斧神工当前星级(0~7)。A/B组按kind统一增量；D组定制增量写效果条目inc字段；copy_max_level/token_shared不可精进不入表。0星=基础值，旧档无感兼容。",
+   "career_pct": 1,
+   "all_hero_pct": 2.5,
+   "series_pct": 2,
+   "war_points_pct": 15,
+   "friend_chat_bond_pct": 4,
+   "apprentice_income_pct": 2,
+   "apprentice_learn_pct": 4,
+   "beast_level_cap": 1,
+   "worm_skill_cap": 2,
+   "shop_level_cap": 1
+  },
   "suspended_rule": "挂起规则（2026-09-21 拍板）：可晋升门客的高档天赋先挂起（suspended_tiers），不生效不显示明细，待该门客专属晋升机制逐个实装后移除挂起并接线；李白/白月初晋升已存在，不在挂起之列。"
  },
  "heroes": {
@@ -127,6 +140,7 @@
       "name": "一本万利",
       "kind": "career_activity_pct",
       "pct": 5,
+      "inc": 2,
       "activities": [
        "war",
        "quechang",
@@ -150,6 +164,7 @@
       "name": "一本万利",
       "kind": "career_activity_pct",
       "pct": 5,
+      "inc": 2,
       "activities": [
        "war",
        "quechang",
@@ -173,6 +188,7 @@
       "name": "一本万利",
       "kind": "career_activity_pct",
       "pct": 5,
+      "inc": 2,
       "activities": [
        "war",
        "quechang",
@@ -196,6 +212,7 @@
       "name": "一本万利",
       "kind": "career_activity_pct",
       "pct": 5,
+      "inc": 2,
       "activities": [
        "war",
        "quechang",
@@ -219,6 +236,7 @@
       "name": "一本万利",
       "kind": "career_activity_pct",
       "pct": 5,
+      "inc": 2,
       "activities": [
        "war",
        "quechang",
@@ -242,6 +260,7 @@
       "name": "一本万利",
       "kind": "career_activity_pct",
       "pct": 5,
+      "inc": 2,
       "activities": [
        "war",
        "quechang",
@@ -265,6 +284,7 @@
       "name": "一本万利",
       "kind": "career_activity_pct",
       "pct": 5,
+      "inc": 2,
       "activities": [
        "war",
        "quechang",
@@ -288,6 +308,7 @@
       "name": "一本万利",
       "kind": "career_activity_pct",
       "pct": 5,
+      "inc": 2,
       "activities": [
        "war",
        "quechang",
@@ -311,6 +332,7 @@
       "name": "一本万利",
       "kind": "career_activity_pct",
       "pct": 5,
+      "inc": 2,
       "activities": [
        "war",
        "quechang",
@@ -334,6 +356,7 @@
       "name": "一本万利",
       "kind": "career_activity_pct",
       "pct": 5,
+      "inc": 2,
       "activities": [
        "war",
        "quechang",
@@ -357,6 +380,7 @@
       "name": "一本万利",
       "kind": "career_activity_pct",
       "pct": 5,
+      "inc": 2,
       "activities": [
        "war",
        "quechang",
@@ -380,6 +404,7 @@
       "name": "一本万利",
       "kind": "career_activity_pct",
       "pct": 5,
+      "inc": 2,
       "activities": [
        "war",
        "quechang",
@@ -403,6 +428,7 @@
       "name": "一本万利",
       "kind": "career_activity_pct",
       "pct": 5,
+      "inc": 2,
       "activities": [
        "war",
        "quechang",
@@ -426,6 +452,7 @@
       "name": "一本万利",
       "kind": "career_activity_pct",
       "pct": 5,
+      "inc": 2,
       "activities": [
        "war",
        "quechang",
@@ -449,6 +476,7 @@
       "name": "一本万利",
       "kind": "career_activity_pct",
       "pct": 5,
+      "inc": 2,
       "activities": [
        "war",
        "quechang",
@@ -472,6 +500,7 @@
       "name": "一本万利",
       "kind": "career_activity_pct",
       "pct": 5,
+      "inc": 2,
       "activities": [
        "war",
        "quechang",
@@ -495,6 +524,7 @@
       "name": "一本万利",
       "kind": "career_activity_pct",
       "pct": 5,
+      "inc": 2,
       "activities": [
        "war",
        "quechang",
@@ -509,6 +539,7 @@
       "name": "五福聚财",
       "kind": "career_activity_pct",
       "pct": 10,
+      "inc": 2,
       "activities": [
        "war",
        "quechang",
@@ -528,9 +559,7 @@
    "born_tier": "epic",
    "max_tier": "legend",
    "can_promote": true,
-   "suspended_tiers": [
-    "legend"
-   ]
+   "suspended_tiers": []
   },
   "hu_lu_xianren": {
    "name": "葫芦仙人",
@@ -541,6 +570,7 @@
       "name": "一本万利",
       "kind": "career_activity_pct",
       "pct": 5,
+      "inc": 2,
       "activities": [
        "war",
        "quechang",
@@ -555,6 +585,7 @@
       "name": "五福聚财",
       "kind": "career_activity_pct",
       "pct": 10,
+      "inc": 2,
       "activities": [
        "war",
        "quechang",
@@ -568,6 +599,7 @@
       "kind": "friend_activity_talent_pct",
       "activity": "quechang",
       "pct": 10,
+      "inc": 4,
       "desc": "榷场挚友出战才华+10%"
      }
     ],
@@ -576,6 +608,7 @@
       "name": "十面来财",
       "kind": "career_activity_pct",
       "pct": 20,
+      "inc": 2,
       "activities": [
        "war",
        "quechang",
@@ -595,6 +628,7 @@
       "kind": "friend_activity_talent_pct",
       "activity": "quechang",
       "pct": 10,
+      "inc": 4,
       "desc": "榷场挚友出战才华+10%"
      },
      {
@@ -602,6 +636,7 @@
       "kind": "hero_activity_income_pct",
       "activity": "quechang",
       "pct": 10,
+      "inc": 10,
       "desc": "榷场门客出战赚钱+10%"
      }
     ]
@@ -623,6 +658,7 @@
       "name": "一本万利",
       "kind": "career_activity_pct",
       "pct": 5,
+      "inc": 2,
       "activities": [
        "war",
        "quechang",
@@ -637,6 +673,7 @@
       "name": "八方来运",
       "kind": "career_activity_pct",
       "pct": 15,
+      "inc": 2,
       "activities": [
        "war",
        "quechang",
@@ -656,9 +693,7 @@
    "born_tier": "epic",
    "max_tier": "legend",
    "can_promote": true,
-   "suspended_tiers": [
-    "legend"
-   ]
+   "suspended_tiers": []
   },
   "yang_jian": {
    "name": "杨戬",
@@ -669,6 +704,7 @@
       "name": "一本万利",
       "kind": "career_activity_pct",
       "pct": 5,
+      "inc": 2,
       "activities": [
        "war",
        "quechang",
@@ -683,6 +719,7 @@
       "name": "五福聚财",
       "kind": "career_activity_pct",
       "pct": 10,
+      "inc": 2,
       "activities": [
        "war",
        "quechang",
@@ -697,6 +734,7 @@
       "name": "十面来财",
       "kind": "career_activity_pct",
       "pct": 20,
+      "inc": 2,
       "activities": [
        "war",
        "quechang",
@@ -716,6 +754,7 @@
       "kind": "friend_activity_talent_pct",
       "activity": "quechang",
       "pct": 10,
+      "inc": 4,
       "desc": "榷场出战挚友才华+10%"
      }
     ]
@@ -737,6 +776,7 @@
       "name": "一本万利",
       "kind": "career_activity_pct",
       "pct": 5,
+      "inc": 2,
       "activities": [
        "war",
        "quechang",
@@ -751,6 +791,7 @@
       "name": "五福聚财",
       "kind": "career_activity_pct",
       "pct": 10,
+      "inc": 2,
       "activities": [
        "war",
        "quechang",
@@ -765,6 +806,7 @@
       "name": "十面来财",
       "kind": "career_activity_pct",
       "pct": 20,
+      "inc": 2,
       "activities": [
        "war",
        "quechang",
@@ -783,6 +825,7 @@
       "name": "魔星降世",
       "kind": "apprentice_quality_prob_pct",
       "pct": 10,
+      "inc": 2,
       "desc": "门生达到传奇以上概率+10%"
      }
     ]
@@ -804,6 +847,7 @@
       "name": "一本万利",
       "kind": "career_activity_pct",
       "pct": 5,
+      "inc": 2,
       "activities": [
        "war",
        "quechang",
@@ -818,6 +862,7 @@
       "name": "五福聚财",
       "kind": "career_activity_pct",
       "pct": 10,
+      "inc": 2,
       "activities": [
        "war",
        "quechang",
@@ -832,6 +877,7 @@
       "name": "十面来财",
       "kind": "career_activity_pct",
       "pct": 20,
+      "inc": 2,
       "activities": [
        "war",
        "quechang",
@@ -868,6 +914,7 @@
       "name": "一本万利",
       "kind": "career_activity_pct",
       "pct": 5,
+      "inc": 2,
       "activities": [
        "war",
        "quechang",
@@ -882,6 +929,7 @@
       "name": "五福聚财",
       "kind": "career_activity_pct",
       "pct": 10,
+      "inc": 2,
       "activities": [
        "war",
        "quechang",
@@ -896,6 +944,7 @@
       "name": "十面来财",
       "kind": "career_activity_pct",
       "pct": 20,
+      "inc": 2,
       "activities": [
        "war",
        "quechang",
@@ -935,6 +984,7 @@
       "name": "一本万利",
       "kind": "career_activity_pct",
       "pct": 5,
+      "inc": 2,
       "activities": [
        "war",
        "quechang",
@@ -955,6 +1005,7 @@
       "name": "五福聚财",
       "kind": "career_activity_pct",
       "pct": 10,
+      "inc": 2,
       "activities": [
        "war",
        "quechang",
@@ -975,6 +1026,7 @@
       "name": "十面来财",
       "kind": "career_activity_pct",
       "pct": 20,
+      "inc": 2,
       "activities": [
        "war",
        "quechang",
@@ -1020,6 +1072,7 @@
       "name": "一本万利",
       "kind": "career_activity_pct",
       "pct": 5,
+      "inc": 2,
       "activities": [
        "war",
        "quechang",
@@ -1040,6 +1093,7 @@
       "name": "五福聚财",
       "kind": "career_activity_pct",
       "pct": 10,
+      "inc": 2,
       "activities": [
        "war",
        "quechang",
@@ -1060,6 +1114,7 @@
       "name": "十面来财",
       "kind": "career_activity_pct",
       "pct": 20,
+      "inc": 2,
       "activities": [
        "war",
        "quechang",
@@ -1105,6 +1160,7 @@
       "name": "一本万利",
       "kind": "career_activity_pct",
       "pct": 5,
+      "inc": 2,
       "activities": [
        "war",
        "quechang",
@@ -1119,6 +1175,7 @@
       "name": "五福聚财",
       "kind": "career_activity_pct",
       "pct": 10,
+      "inc": 2,
       "activities": [
        "war",
        "quechang",
@@ -1133,6 +1190,7 @@
       "name": "十面来财",
       "kind": "career_activity_pct",
       "pct": 20,
+      "inc": 2,
       "activities": [
        "war",
        "quechang",
@@ -1175,6 +1233,7 @@
       "name": "一本万利",
       "kind": "career_activity_pct",
       "pct": 5,
+      "inc": 2,
       "activities": [
        "war",
        "quechang",
@@ -1198,6 +1257,7 @@
       "name": "五福聚财",
       "kind": "career_activity_pct",
       "pct": 10,
+      "inc": 2,
       "activities": [
        "war",
        "quechang",
@@ -1221,6 +1281,7 @@
       "name": "十面来财",
       "kind": "career_activity_pct",
       "pct": 20,
+      "inc": 2,
       "activities": [
        "war",
        "quechang",
@@ -1276,6 +1337,7 @@
       "name": "一本万利",
       "kind": "career_activity_pct",
       "pct": 5,
+      "inc": 2,
       "activities": [
        "war",
        "quechang",
@@ -1296,6 +1358,7 @@
       "name": "八方来运",
       "kind": "career_activity_pct",
       "pct": 15,
+      "inc": 2,
       "activities": [
        "war",
        "quechang",
@@ -1316,6 +1379,7 @@
       "name": "十面来财",
       "kind": "career_activity_pct",
       "pct": 20,
+      "inc": 2,
       "activities": [
        "war",
        "quechang",
@@ -1361,6 +1425,7 @@
       "name": "一本万利",
       "kind": "career_activity_pct",
       "pct": 5,
+      "inc": 2,
       "activities": [
        "war",
        "quechang",
@@ -1375,6 +1440,7 @@
       "name": "五福聚财",
       "kind": "career_activity_pct",
       "pct": 10,
+      "inc": 2,
       "activities": [
        "war",
        "quechang",
@@ -1389,6 +1455,7 @@
       "name": "十面来财",
       "kind": "career_activity_pct",
       "pct": 20,
+      "inc": 2,
       "activities": [
        "war",
        "quechang",
@@ -1435,6 +1502,7 @@
       "name": "五福聚财",
       "kind": "career_activity_pct",
       "pct": 10,
+      "inc": 2,
       "activities": [
        "war",
        "quechang",
@@ -1464,6 +1532,7 @@
       "name": "五福聚财",
       "kind": "career_activity_pct",
       "pct": 10,
+      "inc": 2,
       "activities": [
        "war",
        "quechang",
@@ -1493,6 +1562,7 @@
       "name": "五福聚财",
       "kind": "career_activity_pct",
       "pct": 10,
+      "inc": 2,
       "activities": [
        "war",
        "quechang",
@@ -1522,6 +1592,7 @@
       "name": "五福聚财",
       "kind": "career_activity_pct",
       "pct": 10,
+      "inc": 2,
       "activities": [
        "war",
        "quechang",
@@ -1551,6 +1622,7 @@
       "name": "五福聚财",
       "kind": "career_activity_pct",
       "pct": 10,
+      "inc": 2,
       "activities": [
        "war",
        "quechang",
@@ -1580,6 +1652,7 @@
       "name": "五福聚财",
       "kind": "career_activity_pct",
       "pct": 10,
+      "inc": 2,
       "activities": [
        "war",
        "quechang",
@@ -1609,6 +1682,7 @@
       "name": "五福聚财",
       "kind": "career_activity_pct",
       "pct": 10,
+      "inc": 2,
       "activities": [
        "war",
        "quechang",
@@ -1638,6 +1712,7 @@
       "name": "五福聚财",
       "kind": "career_activity_pct",
       "pct": 10,
+      "inc": 2,
       "activities": [
        "war",
        "quechang",
@@ -1667,6 +1742,7 @@
       "name": "五福聚财",
       "kind": "career_activity_pct",
       "pct": 10,
+      "inc": 2,
       "activities": [
        "war",
        "quechang",
@@ -1696,6 +1772,7 @@
       "name": "五福聚财",
       "kind": "career_activity_pct",
       "pct": 10,
+      "inc": 2,
       "activities": [
        "war",
        "quechang",
@@ -1725,6 +1802,7 @@
       "name": "五福聚财",
       "kind": "career_activity_pct",
       "pct": 10,
+      "inc": 2,
       "activities": [
        "war",
        "quechang",
@@ -1754,6 +1832,7 @@
       "name": "五福聚财",
       "kind": "career_activity_pct",
       "pct": 10,
+      "inc": 2,
       "activities": [
        "war",
        "quechang",
@@ -1783,6 +1862,7 @@
       "name": "五福聚财",
       "kind": "career_activity_pct",
       "pct": 10,
+      "inc": 2,
       "activities": [
        "war",
        "quechang",
@@ -1812,6 +1892,7 @@
       "name": "五福聚财",
       "kind": "career_activity_pct",
       "pct": 10,
+      "inc": 2,
       "activities": [
        "war",
        "quechang",
@@ -1824,6 +1905,7 @@
       "name": "对酒当歌",
       "kind": "banquet_popularity_pct",
       "pct": 10,
+      "inc": 4,
       "desc": "宴会结束人气+10%"
      }
     ]
@@ -1841,6 +1923,7 @@
       "name": "五福聚财",
       "kind": "career_activity_pct",
       "pct": 10,
+      "inc": 2,
       "activities": [
        "war",
        "quechang",
@@ -1870,6 +1953,7 @@
       "name": "五福聚财",
       "kind": "career_activity_pct",
       "pct": 10,
+      "inc": 2,
       "activities": [
        "war",
        "quechang",
@@ -1899,6 +1983,7 @@
       "name": "五福聚财",
       "kind": "career_activity_pct",
       "pct": 10,
+      "inc": 2,
       "activities": [
        "war",
        "quechang",
@@ -1928,6 +2013,7 @@
       "name": "五福聚财",
       "kind": "career_activity_pct",
       "pct": 10,
+      "inc": 2,
       "activities": [
        "war",
        "quechang",
@@ -1957,6 +2043,7 @@
       "name": "五福聚财",
       "kind": "career_activity_pct",
       "pct": 10,
+      "inc": 2,
       "activities": [
        "war",
        "quechang",
@@ -1986,6 +2073,7 @@
       "name": "五福聚财",
       "kind": "career_activity_pct",
       "pct": 10,
+      "inc": 2,
       "activities": [
        "war",
        "quechang",
@@ -2015,6 +2103,7 @@
       "name": "五福聚财",
       "kind": "career_activity_pct",
       "pct": 10,
+      "inc": 2,
       "activities": [
        "war",
        "quechang",
@@ -2044,6 +2133,7 @@
       "name": "五福聚财",
       "kind": "career_activity_pct",
       "pct": 10,
+      "inc": 2,
       "activities": [
        "war",
        "quechang",
@@ -2057,6 +2147,7 @@
       "kind": "hero_activity_income_pct",
       "activity": "guild_war",
       "pct": 5,
+      "inc": 5,
       "desc": "商会据点战中，我方门客赚钱+5%"
      }
     ]
@@ -2074,6 +2165,7 @@
       "name": "八方来运",
       "kind": "career_activity_pct",
       "pct": 15,
+      "inc": 2,
       "activities": [
        "war",
        "quechang",
@@ -2103,6 +2195,7 @@
       "name": "八方来运",
       "kind": "career_activity_pct",
       "pct": 15,
+      "inc": 2,
       "activities": [
        "war",
        "quechang",
@@ -2116,6 +2209,7 @@
       "kind": "hero_activity_income_pct",
       "activity": "yuanye",
       "pct": 4,
+      "inc": 4,
       "desc": "元夜闹东京活动中，我方门客赚钱+4%"
      }
     ]
@@ -2133,6 +2227,7 @@
       "name": "八方来运",
       "kind": "career_activity_pct",
       "pct": 15,
+      "inc": 2,
       "activities": [
        "war",
        "quechang",
@@ -2146,6 +2241,7 @@
       "kind": "hero_activity_income_pct",
       "activity": "yuanye",
       "pct": 4,
+      "inc": 4,
       "desc": "元夜闹东京活动中，我方门客赚钱+4%"
      }
     ]
@@ -2163,6 +2259,7 @@
       "name": "五福聚财",
       "kind": "career_activity_pct",
       "pct": 10,
+      "inc": 2,
       "activities": [
        "war",
        "quechang",
@@ -2177,6 +2274,7 @@
       "activity": "dunhuang",
       "stat": "hp",
       "pct": 5,
+      "inc": 5,
       "desc": "敦煌石窟活动中，我方血量+5%"
      },
      {
@@ -2185,6 +2283,7 @@
       "activity": "dunhuang",
       "stat": "atk",
       "pct": 5,
+      "inc": 5,
       "desc": "敦煌石窟活动中，我方攻击+5%"
      }
     ]
@@ -2202,6 +2301,7 @@
       "name": "八方来运",
       "kind": "career_activity_pct",
       "pct": 15,
+      "inc": 2,
       "activities": [
        "war",
        "quechang",
@@ -2231,6 +2331,7 @@
       "name": "八方来运",
       "kind": "career_activity_pct",
       "pct": 15,
+      "inc": 2,
       "activities": [
        "war",
        "quechang",
@@ -2244,6 +2345,7 @@
       "kind": "hero_activity_income_pct",
       "activity": "yuanye",
       "pct": 10,
+      "inc": 10,
       "cond": "vs_boss",
       "desc": "元夜闹东京活动中，我方对阵头目时赚钱+10%"
      }
@@ -2262,6 +2364,7 @@
       "name": "八方来运",
       "kind": "career_activity_pct",
       "pct": 15,
+      "inc": 2,
       "activities": [
        "war",
        "quechang",
@@ -2291,6 +2394,7 @@
       "name": "五福聚财",
       "kind": "career_activity_pct",
       "pct": 10,
+      "inc": 2,
       "activities": [
        "war",
        "quechang",
@@ -2303,6 +2407,7 @@
       "name": "北斗七星",
       "kind": "zhaoshang_extra",
       "count": 1,
+      "inc": 1,
       "cond": "join",
       "desc": "招商可额外参与1场"
      },
@@ -2310,6 +2415,7 @@
       "name": "天狼刃",
       "kind": "zhaoshang_extra",
       "count": 1,
+      "inc": 1,
       "cond": "project",
       "desc": "招商可额外立项1场"
      }
@@ -2328,6 +2434,7 @@
       "name": "五福聚财",
       "kind": "career_activity_pct",
       "pct": 10,
+      "inc": 2,
       "activities": [
        "war",
        "quechang",
@@ -2340,7 +2447,8 @@
       "name": "味觉封印",
       "kind": "escort_free",
       "count": 1,
-      "desc": "押镖每周挚友额外免费一次"
+      "inc": 1,
+      "desc": "押镖每周挚友额外免费1次"
      }
     ]
    },
@@ -2357,6 +2465,7 @@
       "name": "五福聚财",
       "kind": "career_activity_pct",
       "pct": 10,
+      "inc": 2,
       "activities": [
        "war",
        "quechang",
@@ -2369,6 +2478,7 @@
       "name": "十全厨艺",
       "kind": "banquet_popularity_pct",
       "pct": 10,
+      "inc": 4,
       "desc": "宴会结束人气额外+10%"
      }
     ]
@@ -2386,6 +2496,7 @@
       "name": "八方来运",
       "kind": "career_activity_pct",
       "pct": 15,
+      "inc": 2,
       "activities": [
        "war",
        "quechang",
@@ -2400,6 +2511,7 @@
       "activity": "qinshihuang",
       "stat": "hp",
       "pct": 5,
+      "inc": 5,
       "desc": "秦始皇陵活动中，我方血量+5%"
      },
      {
@@ -2408,6 +2520,7 @@
       "activity": "qinshihuang",
       "stat": "atk",
       "pct": 5,
+      "inc": 5,
       "desc": "秦始皇陵活动中，我方攻击力+5%"
      }
     ]
@@ -2425,6 +2538,7 @@
       "name": "五福聚财",
       "kind": "career_activity_pct",
       "pct": 10,
+      "inc": 2,
       "activities": [
        "war",
        "quechang",
@@ -2439,6 +2553,7 @@
       "activity": "haidao",
       "stat": "atk",
       "value": 15,
+      "inc": 15,
       "desc": "海上争霸活动海盗之乱所有职业攻击+15"
      }
     ]
@@ -2456,6 +2571,7 @@
       "name": "五福聚财",
       "kind": "career_activity_pct",
       "pct": 10,
+      "inc": 2,
       "activities": [
        "war",
        "quechang",
@@ -2469,8 +2585,9 @@
       "kind": "activity_stat_flat",
       "activity": "tongbing",
       "stat": "troops",
-      "value": 1500,
-      "desc": "统兵演武活动中队伍带兵上限+1500"
+      "value": 1600,
+      "inc": 800,
+      "desc": "统兵演武活动中队伍带兵上限+1600"
      }
     ]
    },
@@ -2487,6 +2604,7 @@
       "name": "五福聚财",
       "kind": "career_activity_pct",
       "pct": 10,
+      "inc": 2,
       "activities": [
        "war",
        "quechang",
@@ -2516,6 +2634,7 @@
       "name": "八方来运",
       "kind": "career_activity_pct",
       "pct": 15,
+      "inc": 2,
       "activities": [
        "war",
        "quechang",
@@ -2530,6 +2649,7 @@
       "activity": "wuxiong",
       "stat": "power",
       "pct": 5,
+      "inc": 5,
       "desc": "五雄争霸活动中最终战力+5%"
      }
     ]
@@ -2547,6 +2667,7 @@
       "name": "八方来运",
       "kind": "career_activity_pct",
       "pct": 15,
+      "inc": 2,
       "activities": [
        "war",
        "quechang",
@@ -2561,6 +2682,7 @@
       "activity": "zhulu",
       "stat": "troops",
       "value": 2600,
+      "inc": 1300,
       "desc": "逐鹿隋唐活动中带兵上限+2600"
      }
     ]
@@ -2578,6 +2700,7 @@
       "name": "八方来运",
       "kind": "career_activity_pct",
       "pct": 15,
+      "inc": 2,
       "activities": [
        "war",
        "quechang",
@@ -2592,6 +2715,7 @@
       "activity": "shanhai",
       "stat": "power",
       "pct": 5,
+      "inc": 5,
       "desc": "山海伏兽活动中战力+5%"
      }
     ]
@@ -2609,6 +2733,7 @@
       "name": "八方来运",
       "kind": "career_activity_pct",
       "pct": 15,
+      "inc": 2,
       "activities": [
        "war",
        "quechang",
@@ -2629,6 +2754,7 @@
       "name": "十面来财",
       "kind": "career_activity_pct",
       "pct": 20,
+      "inc": 2,
       "activities": [
        "war",
        "quechang",
@@ -2674,6 +2800,7 @@
       "name": "八方来运",
       "kind": "career_activity_pct",
       "pct": 15,
+      "inc": 2,
       "activities": [
        "war",
        "quechang",
@@ -2694,6 +2821,7 @@
       "name": "十面来财",
       "kind": "career_activity_pct",
       "pct": 20,
+      "inc": 2,
       "activities": [
        "war",
        "quechang",
@@ -2720,6 +2848,7 @@
       "activity": "bianxue",
       "stat": "all_aptitude",
       "pct": 10,
+      "inc": 10,
       "desc": "辩学大赛时全天资+10%"
      }
     ]
@@ -2741,6 +2870,7 @@
       "name": "八方来运",
       "kind": "career_activity_pct",
       "pct": 15,
+      "inc": 2,
       "activities": [
        "war",
        "quechang",
@@ -2755,6 +2885,7 @@
       "activity": "chuhan",
       "stat": "troops",
       "value": 1600,
+      "inc": 800,
       "desc": "楚汉争霸带兵上限+1600"
      }
     ]
@@ -2772,6 +2903,7 @@
       "name": "八方来运",
       "kind": "career_activity_pct",
       "pct": 15,
+      "inc": 2,
       "activities": [
        "war",
        "quechang",
@@ -2786,6 +2918,7 @@
       "activity": "nuhai",
       "stat": "ship",
       "pct": 5,
+      "inc": 5,
       "desc": "怒海斩魁活动中战船属性+5%"
      }
     ]
@@ -2803,6 +2936,7 @@
       "name": "八方来运",
       "kind": "career_activity_pct",
       "pct": 15,
+      "inc": 2,
       "activities": [
        "war",
        "quechang",
@@ -2823,6 +2957,7 @@
       "name": "十面来财",
       "kind": "career_activity_pct",
       "pct": 20,
+      "inc": 2,
       "activities": [
        "war",
        "quechang",
@@ -2862,6 +2997,7 @@
       "name": "八方来运",
       "kind": "career_activity_pct",
       "pct": 15,
+      "inc": 2,
       "activities": [
        "war",
        "quechang",
@@ -2876,6 +3012,7 @@
       "activity": "linjie",
       "stat": "power",
       "pct": 5,
+      "inc": 5,
       "desc": "临街迎春活动中战力+5%"
      }
     ]
@@ -2893,6 +3030,7 @@
       "name": "八方来运",
       "kind": "career_activity_pct",
       "pct": 15,
+      "inc": 2,
       "activities": [
        "war",
        "quechang",
@@ -2907,6 +3045,7 @@
       "activity": "yanyun",
       "stat": "troops",
       "value": 1600,
+      "inc": 800,
       "desc": "燕云宏图活动中带兵上限+1600"
      }
     ]
@@ -2924,6 +3063,7 @@
       "name": "八方来运",
       "kind": "career_activity_pct",
       "pct": 15,
+      "inc": 2,
       "activities": [
        "war",
        "quechang",
@@ -2938,6 +3078,7 @@
       "activity": "haiwang",
       "stat": "power",
       "pct": 5,
+      "inc": 5,
       "desc": "海王餐厅中实力+5%"
      }
     ]
@@ -2955,6 +3096,7 @@
       "name": "八方来运",
       "kind": "career_activity_pct",
       "pct": 15,
+      "inc": 2,
       "activities": [
        "war",
        "quechang",
@@ -2984,6 +3126,7 @@
       "name": "八方来运",
       "kind": "career_activity_pct",
       "pct": 15,
+      "inc": 2,
       "activities": [
        "war",
        "quechang",
@@ -3013,6 +3156,7 @@
       "name": "八方来运",
       "kind": "career_activity_pct",
       "pct": 15,
+      "inc": 2,
       "activities": [
        "war",
        "quechang",
@@ -3042,6 +3186,7 @@
       "name": "八方来运",
       "kind": "career_activity_pct",
       "pct": 15,
+      "inc": 2,
       "activities": [
        "war",
        "quechang",
@@ -3071,6 +3216,7 @@
       "name": "八方来运",
       "kind": "career_activity_pct",
       "pct": 15,
+      "inc": 2,
       "activities": [
        "war",
        "quechang",
@@ -3100,6 +3246,7 @@
       "name": "八方来运",
       "kind": "career_activity_pct",
       "pct": 15,
+      "inc": 2,
       "activities": [
        "war",
        "quechang",
@@ -3119,6 +3266,7 @@
       "kind": "hero_activity_income_pct",
       "activity": "guild_war",
       "pct": 10,
+      "inc": 10,
       "desc": "商会据点战中我方门客赚钱+10%"
      }
     ]
@@ -3136,6 +3284,7 @@
       "name": "十面来财",
       "kind": "career_activity_pct",
       "pct": 20,
+      "inc": 2,
       "activities": [
        "war",
        "quechang",
@@ -3171,6 +3320,7 @@
       "name": "十面来财",
       "kind": "career_activity_pct",
       "pct": 20,
+      "inc": 2,
       "activities": [
        "war",
        "quechang",
@@ -3206,6 +3356,7 @@
       "name": "十面来财",
       "kind": "career_activity_pct",
       "pct": 20,
+      "inc": 2,
       "activities": [
        "war",
        "quechang",
@@ -3247,6 +3398,7 @@
       "name": "十面来财",
       "kind": "career_activity_pct",
       "pct": 20,
+      "inc": 2,
       "activities": [
        "war",
        "quechang",
@@ -3282,6 +3434,7 @@
       "name": "十面来财",
       "kind": "career_activity_pct",
       "pct": 20,
+      "inc": 2,
       "activities": [
        "war",
        "quechang",
@@ -3317,6 +3470,7 @@
       "name": "十面来财",
       "kind": "career_activity_pct",
       "pct": 20,
+      "inc": 2,
       "activities": [
        "war",
        "quechang",

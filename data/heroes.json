@@ -1067,6 +1067,15 @@
 			"bi_bi_dong",
 			"zhou_meili"
 		],
+		"simple_promotion": {
+			"name": "晋升",
+			"target_quality": 2,
+			"costume_need": 1,
+			"skills": [
+				{"name": "赛场辅助", "aptitude_per_level": 3, "max_level": 200},
+				{"name": "小鬼头", "aptitude_per_level": 3, "max_level": 200}
+			]
+		},
 		"aptitude_skills": [
 			{
 				"name": "非凡资质",
@@ -2989,6 +2998,15 @@
 			"wang_zhaojun_friend",
 			"yun_zhi"
 		],
+		"simple_promotion": {
+			"name": "晋升",
+			"target_quality": 2,
+			"costume_need": 1,
+			"skills": [
+				{"name": "钢棍解鲁", "aptitude_per_level": 3, "max_level": 200},
+				{"name": "面点之王", "aptitude_per_level": 3, "max_level": 200}
+			]
+		},
 		"aptitude_skills": [
 			{
 				"name": "非凡资质",

@@ -72,6 +72,14 @@ func load_save_data(s: Dictionary):
 		for hid in g.heroes.keys():
 			if not g.heroes[hid].has("quality"):
 				g.heroes[hid].quality = int(g._hero_configs.get(hid, {}).get("quality", 0))
+			# 【新增】服装一键晋升（2026-09-24）：simple_promotion 解锁时拷贝，旧档缺键回灌；
+			# 已达目标品质但缺赠送技能的老档补发（幂等，防配置调整或异常中断漏发）
+			if g._hero_configs.get(hid, {}).has("simple_promotion"):
+				if not g.heroes[hid].has("simple_promotion"):
+					g.heroes[hid]["simple_promotion"] = g._hero_configs[hid]["simple_promotion"]
+				var sp_cfg: Dictionary = g.heroes[hid]["simple_promotion"]
+				if int(g.heroes[hid].get("quality", 0)) >= int(sp_cfg.get("target_quality", 2)):
+					_grant_simple_promotion_skills(g.heroes[hid], sp_cfg)
 	# 【新增】存档迁移：旧档门客的 base_income 字段改名为 extra_income
 	# （该字段实为"额外赚速池"，与基础赚速公式无关；旧档已攒数值原样保留，含旧版升级攒入的部分）
 	for hero in g.heroes.values():
@@ -248,3 +256,52 @@ func _check_promotion(hero: Dictionary):
 							"max_level": 200,
 							"aptitude_per_level": new_skill.aptitude_per_level
 						})
+
+# ============ 服装一键晋升（解鲁/四郎，2026-09-24 用户拍板） ============
+# 轻量晋升：升级钮上方"晋升"按钮，集齐任一已解锁服装→亮红点，点击直接升目标品质+送技能，晋升后按钮消失
+# 配置 = heroes.json "simple_promotion"：{name, target_quality, costume_need, skills:[{name, aptitude_per_level, max_level}]}
+# 数据驱动：后续小舞/小柒/小八（传奇→无双）照搬配置改 target_quality 即可；与赋诗道具晋升（promotion 块）互斥不共存
+func get_simple_promotion_cfg(hero_id: String) -> Dictionary:
+	return g._hero_configs.get(hero_id, {}).get("simple_promotion", {})
+
+# 已解锁服装数（与 costume_system.is_hero_cos_unlocked 同口径：任一件有 base 字段即算解锁；来源不限）
+func get_unlocked_costume_count(hero_id: String) -> int:
+	if not g.heroes.has(hero_id): return 0
+	var cos_dict: Dictionary = g.heroes[hero_id].get("costumes", {})
+	var n := 0
+	for cos_id in cos_dict.keys():
+		var st = cos_dict[cos_id]
+		if st is Dictionary and st.has("base"):
+			n += 1
+	return n
+
+func can_simple_promote(hero_id: String) -> bool:
+	var sp = get_simple_promotion_cfg(hero_id)
+	if sp.is_empty() or not g.heroes.has(hero_id): return false
+	if int(g.heroes[hero_id].get("quality", 0)) >= int(sp.get("target_quality", 2)): return false
+	return get_unlocked_costume_count(hero_id) >= int(sp.get("costume_need", 1))
+
+func do_simple_promote(hero_id: String) -> Dictionary:
+	if not can_simple_promote(hero_id):
+		return {"ok": false, "reason": "晋升条件未满足"}
+	var sp = get_simple_promotion_cfg(hero_id)
+	var h = g.heroes[hero_id]
+	h.quality = int(sp.get("target_quality", 2))
+	_grant_simple_promotion_skills(h, sp)
+	return {"ok": true, "quality": h.quality}
+
+# 赠送技能按名查重幂等发放（晋升时刻与读档补发共用，防重复领取）
+func _grant_simple_promotion_skills(h: Dictionary, sp: Dictionary):
+	for sk in sp.get("skills", []):
+		var has_it := false
+		for old in h.aptitude_skills:
+			if old.name == str(sk.get("name", "")):
+				has_it = true
+				break
+		if not has_it:
+			h.aptitude_skills.append({
+				"name": sk.get("name", ""),
+				"level": 0,
+				"max_level": int(sk.get("max_level", 200)),
+				"aptitude_per_level": int(sk.get("aptitude_per_level", 3)),
+			})

@@ -3,7 +3,7 @@
 # 精进：消耗门客帖(hero_token)提升星级，需满足 门客等级 / N个门客达到M星(含本人) 条件
 # 加成：固定赚钱/百分比赚钱为【替换制】——只取当前星级配置值，不累加
 # 技能：每星级解锁一个技能（追加进 aptitude_skills：初始0级/上限200/每级资质=资质丹消耗）
-# 独有天赋页：hero_talents.json（品质天赋三档，2026-09-21 定稿实装）
+# 独有天赋页：hero_talents.json（品质天赋三档，2026-09-21 定稿实装；批次⑤：效果数值随精进星级成长）
 # 系列光环：hero_auras.json（7系列47门客，等级存 hero_aura_levels；人数档/flat/.极 实时计算不落盘）
 # 两张分表由本系统成组自加载（仿 miaoyin 先例；孤儿扫描走 game_data.CONFIG_SPECIAL_LOADERS 登记）
 # 纯逻辑模块：状态经 g 共享中枢；talent.json 由 SYSTEM_LIST 直挂 _talent_configs
@@ -310,12 +310,12 @@ func get_hero_talent_pct(hero_id: String) -> float:
 			match str(e.get("kind", "")):
 				"career_pct":
 					if str(g.heroes[hid].get("category", "")) == cat:
-						total += float(e.get("pct", 0))
+						total += get_effect_value(e, hid)
 				"all_hero_pct":
-					total += float(e.get("pct", 0))
+					total += get_effect_value(e, hid)
 				"series_pct":
 					if str(get_hero_aura_cfg(hero_id).get("series", "")) == str(e.get("series", "")):
-						total += float(e.get("pct", 0))
+						total += get_effect_value(e, hid)
 	return total
 
 # 系列光环赚钱百分比（hero_data get_percent_bonus 调用）：
@@ -367,7 +367,7 @@ func get_worm_skill_cap_bonus(hero_cat: String) -> int:
 		if str(g.heroes[hid].get("category", "")) != hero_cat: continue
 		for e in _active_talent_effects(hid):
 			if str(e.get("kind", "")) == "worm_skill_cap":
-				total += int(e.get("cap", 0))
+				total += int(get_effect_value(e, hid))
 	return total
 
 # 珍兽等级上限加成（beast get_beast_max_level 调用）：全体拥有门客的 cap 求和
@@ -376,7 +376,7 @@ func get_beast_level_cap_bonus() -> int:
 	for hid in g.heroes.keys():
 		for e in _active_talent_effects(hid):
 			if str(e.get("kind", "")) == "beast_level_cap":
-				total += int(e.get("cap", 0))
+				total += int(get_effect_value(e, hid))
 	return total
 
 # 商铺等级上限加成（shop_system 调用）：全体拥有门客的 cap 求和（沈万三·招财进宝）
@@ -385,7 +385,7 @@ func get_shop_level_cap_bonus() -> int:
 	for hid in g.heroes.keys():
 		for e in _active_talent_effects(hid):
 			if str(e.get("kind", "")) == "shop_level_cap":
-				total += int(e.get("cap", 0))
+				total += int(get_effect_value(e, hid))
 	return total
 
 # 徒弟赚速百分比（apprentice 收入乘区）：全体拥有门客的 pct 求和（10=10%，调用方 /100）
@@ -394,7 +394,7 @@ func get_apprentice_income_pct() -> float:
 	for hid in g.heroes.keys():
 		for e in _active_talent_effects(hid):
 			if str(e.get("kind", "")) == "apprentice_income_pct":
-				total += float(e.get("pct", 0))
+				total += get_effect_value(e, hid)
 	return total
 
 # 培养见识（阅历）百分比（apprentice train 发放处乘区）：全体拥有门客的 pct 求和（10=10%）
@@ -403,7 +403,7 @@ func get_apprentice_learn_pct() -> float:
 	for hid in g.heroes.keys():
 		for e in _active_talent_effects(hid):
 			if str(e.get("kind", "")) == "apprentice_learn_pct":
-				total += float(e.get("pct", 0))
+				total += get_effect_value(e, hid)
 	return total
 
 # 谈心缘分百分比（friend chat 乘区）：谈心挚友职业与门客职业相同即 +%（无绑定，可叠；10=10%）
@@ -413,7 +413,7 @@ func get_friend_chat_bond_pct(friend_category: String) -> float:
 		if str(g.heroes[hid].get("category", "")) != friend_category: continue
 		for e in _active_talent_effects(hid):
 			if str(e.get("kind", "")) == "friend_chat_bond_pct":
-				total += float(e.get("pct", 0))
+				total += get_effect_value(e, hid)
 	return total
 
 # 活动出战同职业加成（war 战力路径）：该门客带 career_activity_pct 且活动命中时返回 pct，否则 0（5=5%）
@@ -421,14 +421,14 @@ func get_career_activity_pct(hero_id: String, activity: String) -> float:
 	for e in _active_talent_effects(hero_id):
 		if str(e.get("kind", "")) == "career_activity_pct":
 			if e.get("activities", []).has(activity):
-				return float(e.get("pct", 0))
+				return get_effect_value(e, hero_id)
 	return 0.0
 
 # 商战积分加成（war settle 乘区）：该门客 war_points_pct（25=25%）
 func get_war_points_pct(hero_id: String) -> float:
 	for e in _active_talent_effects(hero_id):
 		if str(e.get("kind", "")) == "war_points_pct":
-			return float(e.get("pct", 0))
+			return get_effect_value(e, hero_id)
 	return 0.0
 # token_shared（hero_page 信物面板调用）：返回共享配对门客 id；无共享天赋返回 ""
 func get_token_shared_partner(hero_id: String) -> String:
@@ -446,6 +446,62 @@ const UNWIRED_TALENT_KINDS: Array = ["friend_activity_talent_pct", "hero_activit
 
 func is_unwired_talent_kind(kind: String) -> bool:
 	return UNWIRED_TALENT_KINDS.has(kind)
+
+# ============ 天赋精进成长（批次⑤，2026-09-24 拍板：设计口径=精进方案设计之初即存在） ============
+# 精进等级 = 鬼斧神工当前星级（沿用已有精进入口/门客帖/等级门槛，星级上限 7 天然封顶）
+# 实际值 = 基础值 + 增量 × 精进等级；0 星 = 基础值（旧档无感兼容，读取仅防御 clamp 0~7）
+# 增量来源：A/B 组按 kind 统一表 settings.refine_growth；D 组定制增量写效果条目 inc 字段；
+# copy_max_level / token_shared 不可精进（不入表、无 inc，始终取基础值）
+# 效果数值字段名表（kind → 基础值所在字段；未收录 kind = 不可精进或无数值）
+const _EFFECT_VALUE_FIELD := {
+	"career_pct": "pct", "all_hero_pct": "pct", "series_pct": "pct", "war_points_pct": "pct",
+	"friend_chat_bond_pct": "pct", "apprentice_income_pct": "pct", "apprentice_learn_pct": "pct",
+	"beast_level_cap": "cap", "worm_skill_cap": "cap", "shop_level_cap": "cap",
+	"career_activity_pct": "pct", "activity_stat_pct": "pct", "activity_stat_flat": "value",
+	"hero_activity_income_pct": "pct", "friend_activity_talent_pct": "pct", "banquet_popularity_pct": "pct",
+	"zhaoshang_extra": "count", "escort_free": "count", "apprentice_quality_prob_pct": "pct",
+}
+
+# 精进等级（读取仅防御 clamp 0~7，拍板：不做旧档兼容专项）
+func get_refine_level(hero_id: String) -> int:
+	return clampi(get_star(hero_id), 0, 7)
+
+# 某 kind 的统一增量（A/B 组读 settings.refine_growth；无则 0）
+func get_refine_growth(kind: String) -> float:
+	return float(get_talent_settings().get("refine_growth", {}).get(kind, 0))
+
+# 数字显示：整数值去小数点（JSON float 防 "15.0"，光环页等级 int 化同款教训）
+func _fmt_growth_num(v: float) -> String:
+	return str(int(v)) if v == floorf(v) else str(v)
+
+# 单个效果的当前实际数值（读取式源点：批次③已接线 getter 统一经此取值，预览/实发同口径）
+# 增量 = 条目 inc 字段（D 组定制）优先，缺省回退 kind 统一表（A/B 组）；不可精进 kind 增量=0
+func get_effect_value(effect: Dictionary, hero_id: String) -> float:
+	var field: String = _EFFECT_VALUE_FIELD.get(str(effect.get("kind", "")), "")
+	if field == "":
+		return 0.0
+	var base: float = float(effect.get(field, 0))
+	var inc: float = float(effect.get("inc", get_refine_growth(str(effect.get("kind", "")))))
+	return base + inc * float(get_refine_level(hero_id))
+
+# 独有天赋显示文案：desc 为设计期基础值文案，显示时把基础数值渲染为当前实际值
+# （拍板 2026-09-24：玩家只看当前实际数值；基础数值定位失败退回原文，防御不炸）
+func get_effect_desc(effect: Dictionary, hero_id: String) -> String:
+	var kind: String = str(effect.get("kind", ""))
+	var desc: String = str(effect.get("desc", ""))
+	var field: String = _EFFECT_VALUE_FIELD.get(kind, "")
+	if field == "":
+		return desc
+	var base: float = float(effect.get(field, 0))
+	var inc: float = float(effect.get("inc", get_refine_growth(kind)))
+	if inc <= 0.0 or get_refine_level(hero_id) <= 0:
+		return desc
+	var base_str: String = _fmt_growth_num(base)
+	var at: int = desc.find(base_str)
+	if at < 0:
+		return desc
+	# 【修】Godot4 String.replace 无 count 参数，首处替换用 find+substr 拼接实现
+	return desc.substr(0, at) + _fmt_growth_num(base + inc * float(get_refine_level(hero_id))) + desc.substr(at + base_str.length())
 
 # ============ 独有天赋配置查询（hero_talents.json） ============
 # 门客天赋配置（无天赋门客返回空字典）
