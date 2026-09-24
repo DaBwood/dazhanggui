@@ -445,14 +445,15 @@ func get_master_aura_income_pct(hero_id: String) -> float:
 		var master_id := get_master_hero_id(hid)
 		var sj := _get_master_aura_cfg(hid, "shi_jing_zhi_xue")
 		if not sj.is_empty() and (hid == hero_id or master_id == hero_id):
-			total += float(sj.get("per", 0)) * get_master_aura_level(hid, "shi_jing_zhi_xue")
+			# 【修】2026-09-24：配置 per=百分数口径（5=5%），percent_bonus 是小数口径（0.05=5%），须 /100（教训⑫；金兰已修，此处对齐）
+			total += float(sj.get("per", 0)) * get_master_aura_level(hid, "shi_jing_zhi_xue") / 100.0
 		var gj := _get_master_aura_cfg(hid, "guang_jie_liang_yuan")
 		if not gj.is_empty() and master_id != "" and g.heroes.has(master_id):
 			if hero_cat != "" and hero_cat == str(g.heroes[master_id].get("category", "")):
-				total += float(gj.get("per", 0)) * get_master_aura_level(hid, "guang_jie_liang_yuan")
+				total += float(gj.get("per", 0)) * get_master_aura_level(hid, "guang_jie_liang_yuan") / 100.0
 		var rj := _get_master_aura_cfg(hid, "ri_jin_dou_jin")
 		if not rj.is_empty() and hid == hero_id:
-			total += float(rj.get("per", 0)) * get_master_aura_level(hid, "ri_jin_dou_jin")
+			total += float(rj.get("per", 0)) * get_master_aura_level(hid, "ri_jin_dou_jin") / 100.0
 	return total
 
 # ============ 金兰（花木兰专属，2026-09-24 用户拍板） ============
@@ -569,3 +570,74 @@ func get_jinlan_partner_aptitude(partner_id: String) -> int:
 	for sk in get_jinlan_cfg(owner).get("skills", []):
 		apt += int(st.get("levels", {}).get(sk.get("name", ""), 0)) * int(sk.get("both_aptitude", 0))
 	return apt
+
+# ============ 双人光环（小舞专属，2026-09-24 用户拍板） ============
+# 落日起誓（赚钱+5%/级，圣魂草 20+10×(k-1)）/ 三五组合（资质+10/级，圣魂草 10+(k-1)）：
+# 配置 = hero_talents.json 该门客条目 "pair_auras"：{id, name, type, per, partner, cost_item, cost_base, cost_step}
+# 等级存配置主（小舞）英雄字典 "pair_aura_levels"（懒初始化全 1 级，旧档读档即回灌，无需迁移）；
+# 效果对配置主与 partner（杨戬）双方都生效；激活条件=拥有小舞；无等级上限；杨戬面板不显示光环卡（只进数值）
+
+func get_pair_aura_cfgs(hero_id: String) -> Array:
+	return g.talent_system.get_hero_talent_cfg(hero_id).get("pair_auras", [])
+
+func _get_pair_aura_cfg(hero_id: String, aura_id: String) -> Dictionary:
+	for a in get_pair_aura_cfgs(hero_id):
+		if a.get("id", "") == aura_id: return a
+	return {}
+
+# 光环等级表（读档自适应回灌，默认全 1 级 = 初始一级）
+func _get_pair_aura_levels(hero_id: String) -> Dictionary:
+	if not g.heroes[hero_id].has("pair_aura_levels"):
+		var d := {}
+		for a in get_pair_aura_cfgs(hero_id):
+			d[a.get("id", "")] = 1
+		g.heroes[hero_id]["pair_aura_levels"] = d
+	return g.heroes[hero_id]["pair_aura_levels"]
+
+func get_pair_aura_level(hero_id: String, aura_id: String) -> int:
+	return int(_get_pair_aura_levels(hero_id).get(aura_id, 1))
+
+# 下级消耗：cost_base + (当前级-1) × cost_step
+func get_pair_aura_cost(hero_id: String, aura_id: String) -> int:
+	var aura := _get_pair_aura_cfg(hero_id, aura_id)
+	return int(aura.get("cost_base", 0)) + (get_pair_aura_level(hero_id, aura_id) - 1) * int(aura.get("cost_step", 0))
+
+# 升级光环 times 级（无上限）：逐级扣道具，不足升剩余（十连语义统一）；一级都升不动才报错
+func upgrade_pair_aura(hero_id: String, aura_id: String, times: int = 1) -> Dictionary:
+	var aura := _get_pair_aura_cfg(hero_id, aura_id)
+	if aura.is_empty(): return {"ok": false, "msg": "光环不存在"}
+	var lv := get_pair_aura_level(hero_id, aura_id)
+	var item_id := str(aura.get("cost_item", ""))
+	var upgraded := 0
+	for i in range(maxi(1, times)):
+		var cost: int = int(aura.get("cost_base", 0)) + (lv + upgraded - 1) * int(aura.get("cost_step", 0))
+		if item_id != "" and int(g.items.get(item_id, 0)) < cost: break
+		if item_id != "":
+			g.items[item_id] = int(g.items.get(item_id, 0)) - cost
+		upgraded += 1
+	if upgraded <= 0:
+		return {"ok": false, "msg": "道具不足"}
+	_get_pair_aura_levels(hero_id)[aura_id] = lv + upgraded
+	return {"ok": true, "level": lv + upgraded}
+
+# 双人光环·资质：三五组合 per=10/级 → 配置主与 partner 各吃一份（HeroData.get_total_aptitude 追加）
+func get_pair_aura_aptitude(hero_id: String) -> int:
+	var total := 0
+	for hid in g.heroes.keys():
+		for a in get_pair_aura_cfgs(hid):
+			if a.get("type", "") != "aptitude": continue
+			var n: int = int(a.get("per", 0)) * get_pair_aura_level(hid, a.get("id", ""))
+			if hid == hero_id or str(a.get("partner", "")) == hero_id:
+				total += n
+	return total
+
+# 双人光环·赚钱%：落日起誓 per=5%/级（配置百分数口径，/100 转小数，percent_bonus 小数口径）
+func get_pair_aura_income_pct(hero_id: String) -> float:
+	var total := 0.0
+	for hid in g.heroes.keys():
+		for a in get_pair_aura_cfgs(hid):
+			if a.get("type", "") != "income_pct": continue
+			var n: float = float(a.get("per", 0)) * get_pair_aura_level(hid, a.get("id", "")) / 100.0
+			if hid == hero_id or str(a.get("partner", "")) == hero_id:
+				total += n
+	return total

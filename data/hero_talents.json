@@ -2759,9 +2759,28 @@
    "born_tier": "legend",
    "max_tier": "wushuang",
    "can_promote": true,
-   "suspended_tiers": [
-    "legend",
-    "wushuang"
+   "suspended_tiers": [],
+   "pair_auras": [
+    {
+     "id": "luo_ri_qi_shi",
+     "name": "落日起誓",
+     "type": "income_pct",
+     "per": 5,
+     "partner": "yang_jian",
+     "cost_item": "sheng_hun_cao",
+     "cost_base": 20,
+     "cost_step": 10
+    },
+    {
+     "id": "san_wu_zu_he",
+     "name": "三五组合",
+     "type": "aptitude",
+     "per": 10,
+     "partner": "yang_jian",
+     "cost_item": "sheng_hun_cao",
+     "cost_base": 10,
+     "cost_step": 1
+    }
    ]
   },
   "xiao_qi": {

@@ -25,6 +25,8 @@ static func get_total_aptitude(g, hero_id: String) -> int:
 	var total = get_initial_aptitude(int(hero.get("quality", 0)))
 	# 【新增】2026-09-24 师徒光环（小八）：童叟无欺资质加成（自身与师傅各一份）
 	total += g.hero_system.get_master_aura_aptitude(hero_id)
+	# 【新增】2026-09-24 双人光环（小舞）：三五组合 资质加成（小舞与杨戬各一份）
+	total += g.hero_system.get_pair_aura_aptitude(hero_id)
 	for skill in hero.aptitude_skills:
 		total += skill.level * skill.aptitude_per_level
 	if hero.has("promotion"):
@@ -191,6 +193,8 @@ static func get_percent_bonus(g, hero_id: String) -> float:
 	bonus += g.hero_system.get_jinlan_partner_income_pct(hero_id)
 	# 【新增】2026-09-24 师徒光环（小八）：市井之学/广结良缘/日进斗金 赚钱%
 	bonus += g.hero_system.get_master_aura_income_pct(hero_id)
+	# 【新增】2026-09-24 双人光环（小舞）：落日起誓 赚钱%（小舞与杨戬各一份）
+	bonus += g.hero_system.get_pair_aura_income_pct(hero_id)
 
 	return bonus
 

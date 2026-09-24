@@ -2331,6 +2331,67 @@
 				"percent_per_level": 0.03
 			}
 		],
+		"promotion": {
+			"name": "修炼",
+			"skill_name": "魅兔真身",
+			"level": 0,
+			"max_level": 500,
+			"cost_item": "shui_jing_xue_long_shen",
+			"cost_amount": 600,
+			"aptitude_per_level": 6,
+			"tiers": [
+				{
+					"threshold": 5,
+					"new_skills": [
+						{
+							"name": "腰弓",
+							"aptitude_per_level": 3
+						}
+					]
+				},
+				{
+					"threshold": 15,
+					"new_skills": [
+						{
+							"name": "魅惑",
+							"aptitude_per_level": 3
+						}
+					]
+				},
+				{
+					"threshold": 30,
+					"new_skills": [
+						{
+							"name": "瞬移",
+							"aptitude_per_level": 3
+						}
+					]
+				},
+				{
+					"threshold": 45,
+					"new_skills": [
+						{
+							"name": "虚无",
+							"aptitude_per_level": 3
+						}
+					]
+				},
+				{
+					"threshold": 60,
+					"new_skills": [
+						{
+							"name": "幻化分身",
+							"aptitude_per_level": 4
+						}
+					]
+				},
+				{
+					"threshold": 80,
+					"quality": 3,
+					"new_skills": []
+				}
+			]
+		},
 		"quality": 2
 	},
 	"xiao_qi": {

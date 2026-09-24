@@ -1876,6 +1876,10 @@ func _fill_halo_tab(list):
 	# 【新增】2026-09-24 师徒光环（小八）：四张卡追加在服装/系列光环之后
 	for aura in data.hero_system.get_master_aura_cfgs(current_hero_id):
 		items.append(_build_master_aura_card(aura))
+	# 【新增】2026-09-24 双人光环（小舞）：两张卡追加在师徒光环之后；
+	# 仅配置主（小舞）面板显示；效果对 partner（杨戬）同生生效，杨戬面板不加卡
+	for aura in data.hero_system.get_pair_aura_cfgs(current_hero_id):
+		items.append(_build_pair_aura_card(aura))
 	if items.is_empty():
 		var lbl = Label.new()
 		lbl.text = "暂未解锁光环（解锁服装后获得同名光环技能）"
@@ -1891,7 +1895,12 @@ func _build_master_aura_card(aura: Dictionary) -> Dictionary:
 	var cap: int = data.hero_system.get_master_aura_cap(current_hero_id, aura)
 	var per: float = float(aura.get("per", 0))
 	var is_apt: bool = aura.get("type", "") == "aptitude"
-	var unit: String = ("资质+%d" % int(per)) if is_apt else ("赚钱+%.1f%%" % per)
+	# 【改】2026-09-24 按卡片规范显示"当前总数值（下级+下级数值）"，原静态每级值不随等级涨（用户实测抓包）
+	var unit: String
+	if is_apt:
+		unit = "资质+%d（下级+%d）" % [int(per) * lv, int(per) * (lv + 1)]
+	else:
+		unit = "赚钱+%.1f%%（下级+%.1f%%）" % [per * lv, per * (lv + 1)]
 	var scope := "自身"
 	if aura.get("target", "") == "self_master": scope = "自身与师傅"
 	elif aura.get("target", "") == "master_career": scope = "师傅职业门客"
@@ -1922,6 +1931,41 @@ func _on_master_aura_up(aura_id: String, times: int):
 
 func _aura_name(aura_id: String) -> String:
 	for a in data.hero_system.get_master_aura_cfgs(current_hero_id):
+		if a.get("id", "") == aura_id: return str(a.get("name", aura_id))
+	return aura_id
+
+# 【新增】2026-09-24 双人光环卡片（小舞）：道具消耗型，走 own 消耗协议（升级/十连）；无上限显示 "—"
+func _build_pair_aura_card(aura: Dictionary) -> Dictionary:
+	var aid: String = aura.get("id", "")
+	var lv: int = data.hero_system.get_pair_aura_level(current_hero_id, aid)
+	var per: float = float(aura.get("per", 0))
+	var is_apt: bool = aura.get("type", "") == "aptitude"
+	# 【改】2026-09-24 按卡片规范显示"当前总数值（下级+下级数值）"（同师徒光环卡修复）
+	var unit: String
+	if is_apt:
+		unit = "资质+%d（下级+%d）" % [int(per) * lv, int(per) * (lv + 1)]
+	else:
+		unit = "赚钱+%.1f%%（下级+%.1f%%）" % [per * lv, per * (lv + 1)]
+	var partner_id: String = str(aura.get("partner", ""))
+	var partner_name: String = data.get_hero_config(partner_id).get("name", partner_id)
+	var info: String = "【%s】 Lv.%d/—\n%s（自身与%s）" % [aura.get("name", ""), lv, unit, partner_name]
+	var cost: int = data.hero_system.get_pair_aura_cost(current_hero_id, aid)
+	var iid: String = aura.get("cost_item", "")
+	var iname: String = data.ITEM_CONFIG.get(iid, {}).get("name", iid)
+	var card := {"name": aura.get("name", ""), "stars": int(per), "is_max": false, "info": info,
+		"own_name": iname, "own": [cost, int(data.items.get(iid, 0))],
+		"on_single": func(): _on_pair_aura_up(aid, 1),
+		"on_bulk": func(): _on_pair_aura_up(aid, 10)}
+	return card
+
+func _on_pair_aura_up(aura_id: String, times: int):
+	var res: Dictionary = data.hero_system.upgrade_pair_aura(current_hero_id, aura_id, times)
+	c._show_stage_hint("【%s】升至 %d 级" % [_pair_aura_name(aura_id), res.get("level", 0)] if res.get("ok", false) else res.get("msg", "升级失败"))
+	update_hero_panel()   # 光环变化影响资质/赚钱，整面板对账
+	c.update_all_ui()
+
+func _pair_aura_name(aura_id: String) -> String:
+	for a in data.hero_system.get_pair_aura_cfgs(current_hero_id):
 		if a.get("id", "") == aura_id: return str(a.get("name", aura_id))
 	return aura_id
 
