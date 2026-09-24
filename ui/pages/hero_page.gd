@@ -514,9 +514,17 @@ func update_hero_panel():
 	# 【新增】copy_max_level 持有者：真实等级不用手动升（等级随全门客最高复制），整个升级区隐藏
 	# （突破按钮一并隐藏：突破要求真实等级到节点 50+突破×50，复制档升不了级永远点不亮，留死按钮更糟）
 	var is_copy_holder = data.talent_system.get_copy_level(current_hero_id) > 0
-	level_box.visible = not is_copy_holder
+	# 【改】复制档（王昭君宁胡和议/花木兰替父从军等）：升级位改天赋名按钮，点击弹天赋详情（2026-09-24 用户拍板）
+	level_box.visible = true
 	if is_copy_holder:
-		pass
+		batch_check.visible = false
+		var ct: Dictionary = _get_copy_talent_info(current_hero_id)
+		lv_btn.text = ct.get("name", "天赋详情")
+		lv_btn.visible = true
+		lv_btn.disabled = false
+		for conn in lv_btn.pressed.get_connections():
+			lv_btn.pressed.disconnect(conn.callable)
+		lv_btn.pressed.connect(_on_copy_talent_btn_clicked)
 	elif need_bt:
 		# 到达突破节点：按钮显示 突破+风雅颂数量，隐藏勾选框
 		lv_btn.text = "突破\n%d" % bt_cost
@@ -811,12 +819,13 @@ func _on_promo_btn_clicked():
 	var info_lbl = Label.new()
 	info_lbl.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	info_lbl.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
-	# 【改】技能名参数化（李白=天生我材，白月初=仙缘梦绕）
-	info_lbl.text = "%s %d级 +%d资质\n（下级+%d资质）\n每级消耗%d【%s】  拥有：%d" % [
+	# 【改】技能名参数化（李白=天生我材，白月初=仙缘梦绕）；2026-09-24 消耗显示改信物同款"道具 拥有/消耗"格式
+	info_lbl.text = "%s %d级 +%d资质\n（下级+%d资质）\n%s %d/%d" % [
 		skill_name, int(promo.level), int(promo.level) * int(promo.aptitude_per_level),
 		int(promo.aptitude_per_level),
-		int(promo.cost_amount), item_name,
-		data.items.get(promo.cost_item, 0)
+		item_name,
+		data.items.get(promo.cost_item, 0),
+		int(promo.cost_amount)
 	]
 	vb.add_child(info_lbl)
 	
@@ -922,6 +931,38 @@ func _on_simple_promote_clicked():
 	var q_names: Dictionary = {0: "优秀", 1: "卓越", 2: "传奇", 3: "无双"}
 	var qn: String = q_names.get(int(sp_cfg.get("target_quality", 2)), "传奇")
 	c._show_stage_hint("收集%d款服装晋升%s" % [int(sp_cfg.get("costume_need", 1)), qn])
+
+
+# 【新增】复制档（王昭君/花木兰等）当前档复制天赋信息：名字 + 精进后实际数值文案（2026-09-24 升级位天赋钮用）
+func _get_copy_talent_info(hero_id: String) -> Dictionary:
+	var ts = data.talent_system
+	var cfg = ts.get_hero_talent_cfg(hero_id)
+	var cur_tier = ts.get_current_tier(hero_id)
+	if cfg.is_empty() or cur_tier == "":
+		return {}
+	for t in cfg.get("tiers", {}).get(cur_tier, []):
+		if str(t.get("kind", "")) == "copy_max_level":
+			return {"name": str(t.get("name", "")), "desc": ts.get_effect_desc(t, hero_id)}
+	return {}
+
+# 【新增】复制档天赋详情弹窗：升级位天赋名按钮点击（2026-09-24 用户拍板）
+func _on_copy_talent_btn_clicked():
+	var ct = _get_copy_talent_info(current_hero_id)
+	if ct.is_empty():
+		return
+	var popup = c._create_base_popup(ct.get("name", "天赋"), Vector2(460, 260))
+	c.add_child(popup)   # 【修】panel 需自行入树（helper 只挂遮罩），否则只有遮罩无窗体
+	var vb = popup.get_child(0)   # 【修】内容挂到面板自带的内容容器（PanelContainer 只排布首个子节点）
+	var desc_lbl = Label.new()
+	desc_lbl.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	desc_lbl.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+	desc_lbl.add_theme_color_override("font_color", Color("#7ee787"))
+	desc_lbl.text = ct.get("desc", "")
+	vb.add_child(desc_lbl)
+	var close_btn = Button.new()
+	close_btn.text = "关闭"
+	close_btn.pressed.connect(func(): popup.queue_free())
+	vb.add_child(close_btn)
 
 func open_hero_detail(hero_id: String):
 	open_hero_panel(hero_id)
@@ -1315,11 +1356,14 @@ func _fill_skill_tab(list):
 				})
 	# 【批次④】信物伴生技能（全信物通用；星级=每级资质；未解锁纯展示）
 	for d in data.token_system.get_token_skills(current_hero_id):
+		# 【改】2026-09-24 拍板：技能栏只显示已解锁伴生技能；锁定状态只在信物页展示
+		if int(d["token_lv"]) < int(d["unlock"]):
+			continue
 		var t_name: String = str(d["name"])
 		var t_star: int = int(d["star"])
 		var t_lv: int = int(d["level"])
 		var t_cap: int = int(d["cap"])
-		var is_lock: bool = int(d["token_lv"]) < int(d["unlock"])
+		var is_lock: bool = false
 		var t_info: String
 		if is_lock:
 			t_info = "【%s】\n信物达到%d级解锁（当前信物Lv.%d）" % [t_name, int(d["unlock"]), int(d["token_lv"])]
@@ -2066,7 +2110,25 @@ func _show_token_panel():
 		int(t_cfg.get("aptitude_per_level", 3)), data.heroes[current_hero_id].name
 	]
 	vb.add_child(skill_lbl)
-	
+
+	# ── 伴生技能（全信物通用三件套，2026-09-24 用户拍板：信物页展示解锁条件/上限；技能页只显示已解锁）──
+	var tsk_lbl = Label.new()
+	tsk_lbl.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	tsk_lbl.add_theme_color_override("font_color", Color("#d4af37"))
+	tsk_lbl.text = "伴生技能"
+	vb.add_child(tsk_lbl)
+	for d in data.token_system.get_token_skills(current_hero_id):
+		var trow = Label.new()
+		trow.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+		trow.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+		if int(d["token_lv"]) < int(d["unlock"]):
+			trow.add_theme_color_override("font_color", Color("#888888"))
+			trow.text = "【%s】信物%d级解锁（每级资质+%d，上限%d）" % [d["name"], int(d["unlock"]), int(d["star"]), int(d["cap"])]
+		else:
+			trow.add_theme_color_override("font_color", Color("#7ee787"))
+			trow.text = "【%s】Lv.%d/%d 资质+%d" % [d["name"], int(d["level"]), int(d["cap"]), int(d["level"]) * int(d["star"])]
+		vb.add_child(trow)
+
 	# ── 升级区（十连勾选记忆在类变量 _token_batch，升级/重建不清）──
 	# 【改】资源行=【道具名】拥有/消耗（不足整体变红）；token_shared 共享方（刘昴星）无升级区，改显金色共享标注
 	var shared_partner: String = data.talent_system.get_token_shared_partner(current_hero_id)
