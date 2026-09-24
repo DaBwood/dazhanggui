@@ -30,6 +30,9 @@ func get_save_data() -> Dictionary:
 func load_save_data(s: Dictionary):
 	if s.has("beasts"):
 		g.beasts = s.beasts
+		# 【修】2026-09-24 绑定兽（魅影兔）读档回灌：SYSTEM_LIST 加载顺序 hero→beast，
+		# hero 加载时的发放会被上面 g.beasts=s.beasts 整份覆盖，必须覆盖后重新幂等补发
+		sync_all_bound_beasts()
 		# 【删】批次E（重构顺手清）：refresh_count/光环二/光环三/觉醒字段的旧档补齐循环已删——
 		# 捕获创建（_make_skill/实例构造）自带全字段，光环/觉醒读取方均 get 默认，测试期存档全为新格式
 	if s.has("beast_fruit"):
@@ -64,8 +67,12 @@ func get_beast_aptitude(beast_id: String, instance_index: int = 0) -> int:
 	var cfg = get_beast_config(beast_id)
 	var instance = get_beast_instance(beast_id, instance_index)
 	if instance == null: return 0
+	var lv = get_beast_level(beast_id, instance_index)   # 【改】有效等级（自动满级兽取当前上限）
+	var stage = get_beast_stage_cfg(beast_id)
+	if not stage.is_empty():
+		# 【新增】多形态兽（魅影兔）：资质=形态基础+（有效等级-1）×形态每级成长
+		return int(stage.get("aptitude", 0)) + (lv - 1) * int(stage.get("aptitude_per_level", 8))
 	var base = cfg.get("aptitude", 0)
-	var lv = instance.get("level", 1)
 	return base + (lv - 1) * 8
 
 func get_beast_skill_bonus(beast_id: String, instance_index: int = 0) -> float:
@@ -85,7 +92,8 @@ func get_beast_aura_bonus(beast_id: String, instance_index: int = 0) -> float:
 func _get_special_beast_count() -> int:
 	var count = 0
 	for bid in g.beasts.keys():
-		if get_beast_config(bid).get("max_count", 1) == 1:
+		# 【修】2026-09-24：无光环兽（如绑定兽魅影兔 auras:[]）只配 max_count=1 也会被数进去、抬高全体系列光环一，排除
+		if get_beast_config(bid).get("max_count", 1) == 1 and get_beast_config(bid).get("auras", []).size() > 0:
 			count += 1
 	return count
 
@@ -133,6 +141,7 @@ func add_beast(beast_id: String) -> bool:
 	return true
 
 func upgrade_beast(beast_id: String, instance_index: int = 0) -> bool:
+	if get_beast_config(beast_id).get("auto_max_level", false): return false   # 【新增】自动满级兽（魅影兔）不可手动升级
 	var instance = get_beast_instance(beast_id, instance_index)
 	if instance == null: return false
 	if instance.level >= get_beast_max_level(beast_id, instance_index): return false   # 【改】上限=200+光环三等级（原写死200）
@@ -260,6 +269,13 @@ func refresh_beast_skill(beast_id: String, instance_index: int, skill_index: int
 func equip_beast(hero_id: String, beast_id: String, instance_index: int) -> bool:
 	if not g.heroes.has(hero_id): return false
 	if not g.beasts.has(beast_id): return false
+	# 【新增】绑定兽（魅影兔）双向锁死：不可换绑到其他门客；其专属门客（小舞）也不可再装备其他珍兽
+	var new_cfg = get_beast_config(beast_id)
+	if new_cfg.get("locked", false) and str(new_cfg.get("bound_hero", "")) != hero_id:
+		return false
+	for bid2 in g._beast_configs.keys():
+		if str(g._beast_configs[bid2].get("bound_hero", "")) == hero_id and g.beasts.has(bid2):
+			return false
 	
 	# 【新增】先卸下当前门客的旧珍兽，并清空 beasts 中的标记
 	var old_beast_id = g.heroes[hero_id].get("equipped_beast", "")
@@ -289,6 +305,8 @@ func unequip_beast(hero_id: String) -> bool:
 	# 【新增】同步清空 beasts 中旧实例的 equipped_hero
 	var old_beast_id = g.heroes[hero_id].get("equipped_beast", "")
 	var old_idx = g.heroes[hero_id].get("equipped_beast_index", 0)
+	if old_beast_id != "" and get_beast_config(old_beast_id).get("locked", false):
+		return false   # 【新增】绑定兽（魅影兔）不可卸下
 	if old_beast_id != "":
 		var old_inst = get_beast_instance(old_beast_id, old_idx)
 		if old_inst != null:
@@ -398,3 +416,70 @@ func upgrade_aura(beast_id: String, instance_index: int, which: int) -> Dictiona
 	if which == 2: inst["aura2_lv"] = lv + 1
 	else: inst["aura3_lv"] = lv + 1
 	return {"ok": true, "lv": lv + 1}
+
+# ============ 绑定珍兽（魅影兔，2026-09-24 用户拍板） ============
+# 小舞门客解锁时自带：无双品质、无需升级自动满级（等级永远=当前珍兽上限，上限涨它跟着涨）、
+# 初始 8 个 25% 技能（可继续觉醒）；魅兔真身 30 级→十万年（+2 技能）、80 级→百万年（+2 技能）；
+# 双向锁死：不可换绑、不可卸下、小舞不可再装备其他珍兽、无其他获取渠道（不在任何兑换/活动表）
+# 配置 = beasts.json "locked/bound_hero/auto_max_level/stages[{name,need_promo,aptitude,aptitude_per_level,skill_count}]"
+
+# 有效等级：自动满级兽恒等于当前珍兽等级上限；普通兽读实例等级
+func get_beast_level(beast_id: String, instance_index: int = 0) -> int:
+	var inst = get_beast_instance(beast_id, instance_index)
+	if inst == null: return 1
+	if get_beast_config(beast_id).get("auto_max_level", false):
+		return get_beast_max_level(beast_id, instance_index)
+	return int(inst.get("level", 1))
+
+# 当前形态：取 need_promo<=专属门客晋升技能等级的最后一个形态（无多形态配置返回 {}）
+func get_beast_stage_cfg(beast_id: String) -> Dictionary:
+	var cfg = get_beast_config(beast_id)
+	var stages: Array = cfg.get("stages", [])
+	if stages.is_empty(): return {}
+	var promo_lv := 0
+	var hero_id := str(cfg.get("bound_hero", ""))
+	if hero_id != "" and g.heroes.has(hero_id):
+		promo_lv = int(g.heroes[hero_id].get("promotion", {}).get("level", 0))
+	var cur: Dictionary = stages[0]
+	for st in stages:
+		if promo_lv >= int(st.get("need_promo", 0)):
+			cur = st
+	return cur
+
+# 显示名：多形态兽显示形态名（万年·魅影兔/十万年·魅影兔/百万年·魅影兔）
+func get_beast_display_name(beast_id: String) -> String:
+	var stage = get_beast_stage_cfg(beast_id)
+	if not stage.is_empty(): return str(stage.get("name", ""))
+	return str(get_beast_config(beast_id).get("name", beast_id))
+
+# 发放+同步：专属门客在麾下→缺则补发并自动装备；技能数对齐当前形态（25% 技能只增不减，幂等）
+func sync_bound_beast(hero_id: String) -> void:
+	if not g.heroes.has(hero_id): return
+	for bid in g._beast_configs.keys():
+		var bcfg = g._beast_configs[bid]
+		if str(bcfg.get("bound_hero", "")) != hero_id: continue
+		if not g.beasts.has(bid):
+			var stage0: Dictionary = bcfg.get("stages", [{}])[0]
+			var init_skills := []
+			for i in range(int(stage0.get("skill_count", bcfg.get("skill_count", 0)))):
+				init_skills.append({"percent": 0.25, "refresh_count": 0, "awakened": false})   # 初始技能即满值 25%
+			g.beasts[bid] = {"level": 1, "equipped_hero": hero_id, "skills": init_skills,
+				"aura2_lv": 1, "aura3_lv": 1, "awaken_count": 0, "awaken_limit_bonus": 0}
+			g.heroes[hero_id].equipped_beast = bid
+			g.heroes[hero_id].equipped_beast_index = 0
+		var inst = get_beast_instance(bid, 0)
+		if inst == null: continue
+		var stage = get_beast_stage_cfg(bid)
+		var want := int(stage.get("skill_count", bcfg.get("skill_count", 0)))
+		var skills: Array = inst.get("skills", [])
+		while skills.size() < want:
+			skills.append({"percent": 0.25, "refresh_count": 0, "awakened": false})
+		inst.skills = skills
+		# 【新增】2026-09-24 魂盘整套替换：按形态 hunli_bones 重建魂体（满级/满技能/锁死，幂等）
+		var hbones: Array = stage.get("hunli_bones", [])
+		if not hbones.is_empty():
+			g.soulpower_system.sync_ling_tu_hunli(bid, hbones)
+
+func sync_all_bound_beasts() -> void:
+	for hid in g.heroes.keys():
+		sync_bound_beast(hid)

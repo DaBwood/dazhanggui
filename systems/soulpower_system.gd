@@ -57,6 +57,12 @@ func _quality_cfg(quality: String) -> Dictionary:
 func _skill_cfg(skill_id: String) -> Dictionary:
 	return g._soulpower_configs.get("skills", {}).get(skill_id, {})
 
+# 【新增】2026-09-24 六骨六套：品级技能表按槽位键控（头/躯干/四肢各一套）；兼容旧数组结构
+func get_quality_slot_skills(quality: String, slot: String) -> Array:
+	var sk = _quality_cfg(quality).get("skills", [])
+	if sk is Array: return sk
+	return sk.get(slot, [])
+
 # ============ 魂骨生成（魂骨盒子自选部位+品级） ============
 # 生成一块魂骨入仓库：1阶、全部技能0级（技能吃淬骨精尘手动升级）
 func gen_bone(slot: String, quality: String) -> Dictionary:
@@ -66,7 +72,7 @@ func gen_bone(slot: String, quality: String) -> Dictionary:
 	if qcfg.is_empty():
 		return {}
 	var skills = {}
-	for entry in qcfg.get("skills", []):
+	for entry in get_quality_slot_skills(quality, slot):   # 【改】2026-09-24 六骨六套：按部位取技能表
 		skills[entry.get("id", "")] = 0   # 技能初始0级
 	g.soul_bone_seq += 1
 	var uid = "sb%d" % g.soul_bone_seq
@@ -94,6 +100,8 @@ func get_body_level(beast_id: String, instance_index: int = 0) -> int:
 
 # 魂体升级：每级60龙芝草、+6资质，上限200级；times=连升次数，材料不足即停
 func upgrade_body(beast_id: String, instance_index: int, times: int = 1) -> Dictionary:
+	if _is_locked_beast(beast_id):
+		return {"ok": false, "reason": "绑定兽魂体已满级，不可培养"}   # 【新增】灵兔魂体固定满级
 	var body = _get_body(beast_id, instance_index)
 	if body.is_empty():
 		return {"ok": false, "reason": "珍兽不存在"}
@@ -120,6 +128,8 @@ func upgrade_body(beast_id: String, instance_index: int, times: int = 1) -> Dict
 
 # 解锁槽位：免费无损，但不可回锁（填满有共鸣加成，全解开会让填满变难——已二次确认）
 func unlock_slot(beast_id: String, instance_index: int, slot: String) -> Dictionary:
+	if _is_locked_beast(beast_id):
+		return {"ok": false, "reason": "绑定兽魂盘由形态托管"}   # 【新增】
 	if not get_slots().has(slot):
 		return {"ok": false, "reason": "槽位无效"}
 	var body = _get_body(beast_id, instance_index)
@@ -130,6 +140,16 @@ func unlock_slot(beast_id: String, instance_index: int, slot: String) -> Diction
 	return {"ok": true}
 
 # ============ 装备 / 卸下 ============
+# 【新增】2026-09-24 灵兔/神兔骨解析：魂体 bones 槽位值可能是仓库 uid（String），
+# 也可能是灵兔内嵌骨记录（Dictionary，locked=true，不进 g.soul_bones）
+func resolve_bone(v) -> Dictionary:
+	if v is Dictionary: return v
+	return g.soul_bones.get(str(v), {})
+
+# 【新增】绑定兽（魅影兔）判定：其魂体由 sync_ling_tu_hunli 整套托管，一切操作禁止
+func _is_locked_beast(beast_id: String) -> bool:
+	return bool(g._beast_configs.get(beast_id, {}).get("locked", false))
+
 # 魂骨是否已装在某只珍兽魂体上（扫全部珍兽实例）
 func is_equipped(uid: String) -> bool:
 	for bid in g.beasts.keys():
@@ -143,6 +163,8 @@ func is_equipped(uid: String) -> bool:
 
 # 装备魂骨到魂体：槽位须已解锁；该槽已有魂骨时自动无损换下（旧骨回仓库）
 func equip_bone(beast_id: String, instance_index: int, uid: String) -> Dictionary:
+	if _is_locked_beast(beast_id):
+		return {"ok": false, "reason": "绑定兽魂盘不可更换"}   # 【新增】
 	var bone = g.soul_bones.get(uid, {})
 	if bone.is_empty():
 		return {"ok": false, "reason": "魂骨不存在"}
@@ -159,6 +181,8 @@ func equip_bone(beast_id: String, instance_index: int, uid: String) -> Dictionar
 
 # 卸下魂骨（无损，魂骨回仓库）
 func unequip_bone(beast_id: String, instance_index: int, slot: String) -> Dictionary:
+	if _is_locked_beast(beast_id):
+		return {"ok": false, "reason": "绑定兽魂盘不可卸下"}   # 【新增】
 	_get_body(beast_id, instance_index).get("bones", {}).erase(slot)
 	return {"ok": true}
 
@@ -201,7 +225,7 @@ func get_skill_upgrade_cost(uid: String, skill_id: String) -> int:
 	if int(bone.get("skills", {}).get(skill_id, 0)) >= max_lv:
 		return 0
 	var star = 1
-	for entry in _quality_cfg(bone.get("quality", "")).get("skills", []):
+	for entry in get_quality_slot_skills(bone.get("quality", ""), bone.get("slot", "")):   # 【改】六骨六套：星数按部位表
 		if entry.get("id", "") == skill_id:
 			star = int(entry.get("star", 1))
 	return star * int(_skill_cfg(skill_id).get("cost_per_star", 3))
@@ -224,8 +248,20 @@ func upgrade_bone_skill(uid: String, skill_id: String) -> Dictionary:
 	return {"ok": true, "level": bone["skills"][skill_id]}
 
 # 技能每级效果数值（entry 可带 value_per_level 覆盖 星数×per_star——百万年幻影突袭按表写死22500）
-func get_skill_per_level_value(quality: String, skill_id: String) -> float:
-	for entry in _quality_cfg(quality).get("skills", []):
+func get_skill_per_level_value(quality: String, skill_id: String, slot: String = "") -> float:
+	# 【改】2026-09-24 六骨六套：带 slot 按部位表查；缺省全槽扫第一个匹配（兼容旧调用）
+	var entries: Array = get_quality_slot_skills(quality, slot) if slot != "" else []
+	if entries.is_empty():
+		var all = _quality_cfg(quality).get("skills", [])
+		if all is Array:
+			entries = all
+		else:
+			for sl in all.keys():
+				for e in all[sl]:
+					if e.get("id", "") == skill_id:
+						entries = [e]
+						break
+	for entry in entries:
 		if entry.get("id", "") == skill_id:
 			if entry.has("value_per_level"):
 				return float(entry.get("value_per_level", 0))
@@ -257,7 +293,7 @@ func get_resonance(beast_id: String, instance_index: int = 0) -> Dictionary:
 	var filled = 0
 	var marks = 0
 	for slot in bones.keys():
-		var bone = g.soul_bones.get(bones[slot], {})
+		var bone: Dictionary = resolve_bone(bones[slot])   # 【改】兼容灵兔内嵌骨
 		if bone.is_empty():
 			continue
 		filled += 1
@@ -276,21 +312,39 @@ func get_body_bonus(beast_id: String, instance_index: int = 0) -> Dictionary:
 		return res
 	res.apt += int(body.get("level", 1)) * int(_settings().get("body_apt_per_level", 6))
 	for slot in body.get("bones", {}).keys():
-		var bone = g.soul_bones.get(body["bones"][slot], {})
+		var bone: Dictionary = resolve_bone(body["bones"][slot])   # 【改】兼容灵兔内嵌骨
 		if bone.is_empty():
 			continue
 		var qcfg = _quality_cfg(bone.get("quality", ""))
 		var tier = int(bone.get("tier", 1))
 		res.apt += tier * int(qcfg.get("apt_per_tier", 0))
 		res.percent += tier * float(qcfg.get("income_pct_per_tier", 0.0))
-		for entry in qcfg.get("skills", []):
+		if bone.get("locked", false) and bone.has("stars"):
+			# 【新增】灵兔内嵌骨：技能/星级来自骨记录自身（ling_tu_bones 配置同步时写入，全满级）
+			var sks: Dictionary = bone.get("skills", {})
+			for sid in sks.keys():
+				var slv2: int = int(sks[sid])
+				if slv2 <= 0: continue
+				var val2: float = int(bone["stars"].get(sid, 1)) * float(_skill_cfg(sid).get("per_star", 0)) * slv2
+				var ty2: String = _skill_cfg(sid).get("type", "")
+				if ty2 == "income":
+					res.income += int(val2)
+				elif ty2 == "income_pct":
+					res.percent += val2
+				else:
+					res.apt += int(val2)
+			continue
+		for entry in get_quality_slot_skills(bone.get("quality", ""), slot):   # 【改】2026-09-24 六骨六套：按部位取技能表
 			var sid: String = entry.get("id", "")
 			var slv = int(bone.get("skills", {}).get(sid, 0))
 			if slv <= 0:
 				continue
-			var val = get_skill_per_level_value(bone.get("quality", ""), sid) * slv
-			if _skill_cfg(sid).get("type", "") == "income":
+			var val = get_skill_per_level_value(bone.get("quality", ""), sid, slot) * slv
+			var sk_ty: String = _skill_cfg(sid).get("type", "")
+			if sk_ty == "income":
 				res.income += int(val)
+			elif sk_ty == "income_pct":
+				res.percent += val   # 【新增】百分比赚钱技能（灵兔绝·系；现通用表未用，预留同口径）
 			else:
 				res.apt += int(val)
 	var rz = get_resonance(beast_id, instance_index)
@@ -321,3 +375,30 @@ func get_hero_hunli_percent(hero_id: String) -> float:
 	var bid: String = h.get("equipped_beast", "")
 	if bid == "": return 0.0
 	return float(get_body_bonus(bid, int(h.get("equipped_beast_index", 0))).percent)
+
+# ============ 灵兔/神兔魂盘（魅影兔专属，2026-09-24 用户拍板） ============
+# 配置 = soulpower.json "ling_tu_bones"（部位/品级引用通用表/专属技能组合）；
+# beasts.json 魅影兔各形态 "hunli_bones" 给骨 id 列表（2/4/6 根），beast_system.sync_bound_beast 调用本函数：
+# 整套替换魂体（等级=满级 body_max_level、槽位按骨配置开、技能全满级 skill_max_level、1 阶、locked）
+# 骨数值（资质/阶、赚钱%/阶）复用通用 qualities 表：万年30/0%、十万年0/5%、百万年0/16%（2026-09-24 起生效）
+func sync_ling_tu_hunli(beast_id: String, bone_ids: Array) -> void:
+	var inst = g.beast_system.get_beast_instance(beast_id, 0)
+	if inst == null: return
+	var max_lv := int(_settings().get("skill_max_level", 50))
+	var body_max := int(_settings().get("body_max_level", 200))
+	var nb := {}
+	var un := []
+	for lb in bone_ids:
+		var ltb: Dictionary = g._soulpower_configs.get("ling_tu_bones", {}).get(lb, {})
+		var slt := str(ltb.get("slot", ""))
+		if slt == "": continue
+		var sk := {}
+		var stars := {}
+		for se in ltb.get("skills", []):
+			var sid := str(se.get("id", ""))
+			sk[sid] = max_lv
+			stars[sid] = int(se.get("star", 1))
+		nb[slt] = {"quality": str(ltb.get("quality", "")), "tier": 1, "locked": true,
+			"lt_name": str(ltb.get("name", "")), "skills": sk, "stars": stars}
+		un.append(slt)
+	inst["hunli"] = {"level": body_max, "unlocked": un, "bones": nb}

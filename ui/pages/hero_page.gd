@@ -354,9 +354,8 @@ func update_hero_panel():
 		beast_btn.pressed.disconnect(conn.callable)
 	
 	if beast_id != "":
-		var b_cfg = data.get_beast_config(beast_id)
-		var b_inst = data.get_beast_instance(beast_id, beast_idx)
-		beast_btn.text = "【%s】Lv.%d" % [b_cfg.name, b_inst.level]
+		# 【改】2026-09-24 绑定兽（魅影兔）显示形态名+有效等级（自动满级兽=当前珍兽上限）
+		beast_btn.text = "【%s】Lv.%d" % [data.beast_system.get_beast_display_name(beast_id), data.beast_system.get_beast_level(beast_id, beast_idx)]
 		beast_btn.pressed.connect(_on_hero_beast_btn_clicked.bind(beast_id, beast_idx))
 	else:
 		beast_btn.text = "珍兽"
@@ -643,6 +642,10 @@ func _on_hero_beast_btn_clicked(beast_id: String, beast_idx: int):
 		c.update_all_ui()
 	)
 	vbox.add_child(unequip_btn)
+	# 【新增】2026-09-24 绑定兽（魅影兔）：隐藏替换/卸下按钮，只留培养（用户拍板）
+	if data.get_beast_config(beast_id).get("locked", false):
+		replace_btn.visible = false
+		unequip_btn.visible = false
 	
 	var cancel_btn = Button.new()
 	cancel_btn.text = "取消"
@@ -685,8 +688,16 @@ func _show_beast_selector_for_hero():
 				btn.disabled = true
 			elif equipped_hero != "" and data.heroes.has(equipped_hero):
 				status = " [%s已装备]" % data.heroes[equipped_hero].name
+			# 【新增】2026-09-24 绑定兽双向锁死：非小舞门客不可选魅影兔；小舞已带绑定兽不可再选其他兽
+			if cfg.get("locked", false) and str(cfg.get("bound_hero", "")) != current_hero_id:
+				status = " [小舞专属]"
+				btn.disabled = true
+			elif data.heroes[current_hero_id].get("equipped_beast", "") != "" and data.get_beast_config(data.heroes[current_hero_id].get("equipped_beast", "")).get("locked", false):
+				status = " [专属绑定]"
+				btn.disabled = true
 			
-			btn.text = "【%s】Lv.%d 资质+%d 加成+%.0f%%%s" % [cfg.name, instance.level, apt, bonus * 100, status]
+			# 【改】2026-09-24 绑定兽显示形态名+有效等级
+			btn.text = "【%s】Lv.%d 资质+%d 加成+%.0f%%%s" % [data.beast_system.get_beast_display_name(beast_id), data.beast_system.get_beast_level(beast_id, i), apt, bonus * 100, status]
 			
 			if not btn.disabled:
 				btn.pressed.connect(_on_equip_beast_to_hero.bind(beast_id, i))

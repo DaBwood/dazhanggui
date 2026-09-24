@@ -59,78 +59,133 @@
 	  "type": "apt",
 	  "per_star": 1,
 	  "cost_per_star": 10
-	}
+	},
+	"jing_ye_man": { "name": "精·野蛮横扫", "type": "income", "per_star": 4500, "cost_per_star": 3 },
+	"jing_huan_ying": { "name": "精·幻影突袭", "type": "income", "per_star": 4500, "cost_per_star": 3 },
+	"feng_bao": { "name": "风暴之眼", "type": "apt", "per_star": 1, "cost_per_star": 10 },
+	"han_xi": { "name": "寒息", "type": "apt", "per_star": 1, "cost_per_star": 10 },
+	"kuang_ye": { "name": "狂野生长", "type": "apt", "per_star": 1, "cost_per_star": 10 },
+	"lei_ting": { "name": "雷霆之怒", "type": "apt", "per_star": 1, "cost_per_star": 10 },
+	"jing_en_ze": { "name": "精·神兽恩泽", "type": "income_pct", "per_star": 0.00025, "cost_per_star": 3 },
+	"jing_xue_mai": { "name": "精·血脉律动", "type": "income_pct", "per_star": 0.00025, "cost_per_star": 3 },
+	"jing_xiong_bao": { "name": "精·凶暴掠夺", "type": "income_pct", "per_star": 0.00025, "cost_per_star": 3 },
+	"jue_en_ze": { "name": "绝·神兽恩泽", "type": "income_pct", "per_star": 0.0004, "cost_per_star": 3 },
+	"jue_jing_shen": { "name": "绝·精神冲击", "type": "income_pct", "per_star": 0.0004, "cost_per_star": 3 },
+	"jue_xiong_bao": { "name": "绝·凶暴掠夺", "type": "income_pct", "per_star": 0.0004, "cost_per_star": 3 },
+	"jue_heng_du": { "name": "绝·横渡虚空", "type": "income_pct", "per_star": 0.0004, "cost_per_star": 3 },
+	"jue_xue_mai": { "name": "绝·血脉律动", "type": "income_pct", "per_star": 0.0004, "cost_per_star": 3 },
+	"jue_feng_bao": { "name": "绝·风暴之眼", "type": "apt", "per_star": 0.6, "cost_per_star": 10 },
+	"jue_han_xi": { "name": "绝·寒息", "type": "apt", "per_star": 0.6, "cost_per_star": 10 },
+	"jue_kuang_ye": { "name": "绝·狂野生长", "type": "apt", "per_star": 0.6, "cost_per_star": 10 },
+	"jue_lei_ting": { "name": "绝·雷霆之怒", "type": "apt", "per_star": 0.6, "cost_per_star": 10 },
+	"jue_sha_chen": { "name": "绝·沙尘瀑布", "type": "apt", "per_star": 0.6, "cost_per_star": 10 }
   },
   "qualities": {
 	"百年": {
-	  "color": "#4da6ff",
+	  "color": "#2ecc40",
 	  "apt_per_tier": 5,
 	  "core_item": "jinghe_bainian",
 	  "core_cost": 13,
 	  "mark": 1,
 	  "income_pct_per_tier": 0,
 	  "recycle_dust": 120,
-	  "skills": [
-		{ "id": "ye_man", "star": 1 }
-	  ]
+	  "skills": {
+		"tou": [{ "id": "ye_man", "star": 1 }, { "id": "huan_ying", "star": 1 }, { "id": "sha_chen", "star": 1 }],
+		"qu_gan": [{ "id": "ye_man", "star": 1 }, { "id": "huan_ying", "star": 1 }, { "id": "sha_chen", "star": 1 }],
+		"zuo_tui": [{ "id": "ye_man", "star": 1 }, { "id": "huan_ying", "star": 1 }, { "id": "sha_chen", "star": 1 }],
+		"you_tui": [{ "id": "ye_man", "star": 1 }, { "id": "huan_ying", "star": 1 }, { "id": "sha_chen", "star": 1 }],
+		"zuo_bi": [{ "id": "ye_man", "star": 1 }, { "id": "huan_ying", "star": 1 }, { "id": "sha_chen", "star": 1 }],
+		"you_bi": [{ "id": "ye_man", "star": 1 }, { "id": "huan_ying", "star": 1 }, { "id": "sha_chen", "star": 1 }]
+	  }
 	},
 	"千年": {
-	  "color": "#bf80ff",
+	  "color": "#1e90ff",
 	  "apt_per_tier": 10,
 	  "core_item": "jinghe_qiannian",
 	  "core_cost": 5,
 	  "mark": 4,
 	  "income_pct_per_tier": 0,
 	  "recycle_dust": 540,
-	  "skills": [
-		{ "id": "ye_man", "star": 1 },
-		{ "id": "huan_ying", "star": 1 }
-	  ]
+	  "skills": {
+		"tou": [{ "id": "ye_man", "star": 2 }, { "id": "huan_ying", "star": 2 }, { "id": "di_mai", "star": 2 }],
+		"qu_gan": [{ "id": "ye_man", "star": 2 }, { "id": "huan_ying", "star": 2 }, { "id": "di_mai", "star": 2 }],
+		"zuo_tui": [{ "id": "ye_man", "star": 2 }, { "id": "huan_ying", "star": 2 }, { "id": "di_mai", "star": 2 }],
+		"you_tui": [{ "id": "ye_man", "star": 2 }, { "id": "huan_ying", "star": 2 }, { "id": "di_mai", "star": 2 }],
+		"zuo_bi": [{ "id": "ye_man", "star": 2 }, { "id": "huan_ying", "star": 2 }, { "id": "di_mai", "star": 2 }],
+		"you_bi": [{ "id": "ye_man", "star": 2 }, { "id": "huan_ying", "star": 2 }, { "id": "di_mai", "star": 2 }]
+	  }
 	},
 	"万年": {
-	  "color": "#ffa500",
+	  "color": "#8a2be2",
 	  "apt_per_tier": 30,
 	  "core_item": "jinghe_wannian",
 	  "core_cost": 4,
 	  "mark": 5,
 	  "income_pct_per_tier": 0,
 	  "recycle_dust": 1760,
-	  "skills": [
-		{ "id": "ye_man", "star": 2 },
-		{ "id": "huan_ying", "star": 2 },
-		{ "id": "sha_chen", "star": 1 }
-	  ]
+	  "skills": {
+		"tou": [{ "id": "jing_ye_man", "star": 2 }, { "id": "jing_huan_ying", "star": 2 }, { "id": "feng_bao", "star": 1 }],
+		"qu_gan": [{ "id": "jing_ye_man", "star": 2 }, { "id": "jing_huan_ying", "star": 2 }, { "id": "han_xi", "star": 1 }],
+		"zuo_tui": [{ "id": "jing_ye_man", "star": 2 }, { "id": "jing_huan_ying", "star": 2 }, { "id": "kuang_ye", "star": 1 }],
+		"you_tui": [{ "id": "jing_ye_man", "star": 2 }, { "id": "jing_huan_ying", "star": 2 }, { "id": "lei_ting", "star": 1 }],
+		"zuo_bi": [{ "id": "jing_ye_man", "star": 2 }, { "id": "jing_huan_ying", "star": 2 }, { "id": "sha_chen", "star": 1 }],
+		"you_bi": [{ "id": "jing_ye_man", "star": 2 }, { "id": "jing_huan_ying", "star": 2 }, { "id": "feng_bao", "star": 1 }]
+	  }
 	},
 	"十万年": {
-	  "color": "#ff4d4d",
-	  "apt_per_tier": 80,
+	  "color": "#ff8c00",
+	  "apt_per_tier": 0,
 	  "core_item": "jinghe_shiwannian",
 	  "core_cost": 2,
 	  "mark": 6,
-	  "income_pct_per_tier": 0,
+	  "income_pct_per_tier": 0.05,
 	  "recycle_dust": 4220,
-	  "skills": [
-		{ "id": "ye_man", "star": 4 },
-		{ "id": "huan_ying", "star": 3 },
-		{ "id": "sha_chen", "star": 3 },
-		{ "id": "di_mai", "star": 2 }
-	  ]
+	  "skills": {
+		"tou": [{ "id": "jing_en_ze", "star": 4 }, { "id": "feng_bao", "star": 1 }, { "id": "han_xi", "star": 1 }],
+		"qu_gan": [{ "id": "jing_en_ze", "star": 4 }, { "id": "feng_bao", "star": 1 }, { "id": "sha_chen", "star": 1 }],
+		"zuo_tui": [{ "id": "jing_xue_mai", "star": 4 }, { "id": "feng_bao", "star": 1 }, { "id": "sha_chen", "star": 1 }],
+		"you_tui": [{ "id": "jing_xiong_bao", "star": 4 }, { "id": "kuang_ye", "star": 1 }, { "id": "lei_ting", "star": 1 }],
+		"zuo_bi": [{ "id": "jing_xue_mai", "star": 4 }, { "id": "kuang_ye", "star": 1 }, { "id": "han_xi", "star": 1 }],
+		"you_bi": [{ "id": "jing_xiong_bao", "star": 4 }, { "id": "lei_ting", "star": 1 }, { "id": "sha_chen", "star": 1 }]
+	  }
 	},
 	"百万年": {
-	  "color": "#ffd700",
-	  "apt_per_tier": 200,
+	  "color": "#e60012",
+	  "apt_per_tier": 0,
 	  "core_item": "jinghe_baiwannian",
 	  "core_cost": 1,
 	  "mark": 7,
-	  "income_pct_per_tier": 0.1,
+	  "income_pct_per_tier": 0.16,
 	  "recycle_dust": 8640,
-	  "skills": [
-		{ "id": "ye_man", "star": 5 },
-		{ "id": "huan_ying", "star": 5, "value_per_level": 22500 },
-		{ "id": "sha_chen", "star": 5 },
-		{ "id": "di_mai", "star": 5 },
-		{ "id": "bu_qu", "star": 5 }
-	  ]
+	  "skills": {
+		"tou": [{ "id": "jue_en_ze", "star": 5 }, { "id": "jue_jing_shen", "star": 5 }, { "id": "jue_xiong_bao", "star": 5 }, { "id": "jue_heng_du", "star": 5 }, { "id": "jue_xue_mai", "star": 5 }],
+		"qu_gan": [{ "id": "jue_feng_bao", "star": 5 }, { "id": "jue_han_xi", "star": 5 }, { "id": "jue_kuang_ye", "star": 5 }, { "id": "jue_lei_ting", "star": 5 }, { "id": "jue_sha_chen", "star": 5 }],
+		"zuo_tui": [{ "id": "jue_xue_mai", "star": 5 }, { "id": "jue_han_xi", "star": 5 }, { "id": "jue_kuang_ye", "star": 5 }, { "id": "jue_lei_ting", "star": 5 }, { "id": "jue_sha_chen", "star": 5 }],
+		"you_tui": [{ "id": "jue_jing_shen", "star": 5 }, { "id": "jue_xiong_bao", "star": 5 }, { "id": "jue_heng_du", "star": 5 }, { "id": "jue_han_xi", "star": 5 }, { "id": "jue_kuang_ye", "star": 5 }],
+		"zuo_bi": [{ "id": "jue_en_ze", "star": 5 }, { "id": "jue_xue_mai", "star": 5 }, { "id": "jue_han_xi", "star": 5 }, { "id": "jue_kuang_ye", "star": 5 }, { "id": "jue_lei_ting", "star": 5 }],
+		"you_bi": [{ "id": "jue_en_ze", "star": 5 }, { "id": "jue_jing_shen", "star": 5 }, { "id": "jue_xiong_bao", "star": 5 }, { "id": "jue_heng_du", "star": 5 }, { "id": "jue_feng_bao", "star": 5 }]
+	  }
 	}
+  },
+  "ling_tu_bones": {
+	"lt_wan_tou": { "name": "灵兔·万年头骨", "quality": "万年", "slot": "tou", "skills": [{"id": "jing_ye_man", "star": 2}, {"id": "jing_huan_ying", "star": 2}, {"id": "feng_bao", "star": 1}] },
+	"lt_wan_qu_gan": { "name": "灵兔·万年躯干骨", "quality": "万年", "slot": "qu_gan", "skills": [{"id": "jing_ye_man", "star": 2}, {"id": "jing_huan_ying", "star": 2}, {"id": "han_xi", "star": 1}] },
+	"lt_wan_zuo_tui": { "name": "灵兔·万年左腿骨", "quality": "万年", "slot": "zuo_tui", "skills": [{"id": "jing_ye_man", "star": 2}, {"id": "jing_huan_ying", "star": 2}, {"id": "kuang_ye", "star": 1}] },
+	"lt_wan_you_tui": { "name": "灵兔·万年右腿骨", "quality": "万年", "slot": "you_tui", "skills": [{"id": "jing_ye_man", "star": 2}, {"id": "jing_huan_ying", "star": 2}, {"id": "lei_ting", "star": 1}] },
+	"lt_wan_zuo_bi": { "name": "灵兔·万年左臂骨", "quality": "万年", "slot": "zuo_bi", "skills": [{"id": "jing_ye_man", "star": 2}, {"id": "jing_huan_ying", "star": 2}, {"id": "sha_chen", "star": 1}] },
+	"lt_wan_you_bi": { "name": "灵兔·万年右臂骨", "quality": "万年", "slot": "you_bi", "skills": [{"id": "jing_ye_man", "star": 2}, {"id": "jing_huan_ying", "star": 2}, {"id": "feng_bao", "star": 1}] },
+	"lt_sw_tou": { "name": "灵兔·十万年头骨", "quality": "十万年", "slot": "tou", "skills": [{"id": "jing_en_ze", "star": 4}, {"id": "feng_bao", "star": 1}, {"id": "han_xi", "star": 1}] },
+	"lt_sw_qu_gan": { "name": "灵兔·十万年躯干骨", "quality": "十万年", "slot": "qu_gan", "skills": [{"id": "jing_en_ze", "star": 4}, {"id": "feng_bao", "star": 1}, {"id": "sha_chen", "star": 1}] },
+	"lt_sw_zuo_tui": { "name": "灵兔·十万年左腿骨", "quality": "十万年", "slot": "zuo_tui", "skills": [{"id": "jing_xue_mai", "star": 4}, {"id": "feng_bao", "star": 1}, {"id": "sha_chen", "star": 1}] },
+	"lt_sw_you_tui": { "name": "灵兔·十万年右腿骨", "quality": "十万年", "slot": "you_tui", "skills": [{"id": "jing_xiong_bao", "star": 4}, {"id": "kuang_ye", "star": 1}, {"id": "lei_ting", "star": 1}] },
+	"lt_sw_zuo_bi": { "name": "灵兔·十万年左臂骨", "quality": "十万年", "slot": "zuo_bi", "skills": [{"id": "jing_xue_mai", "star": 4}, {"id": "kuang_ye", "star": 1}, {"id": "han_xi", "star": 1}] },
+	"lt_sw_you_bi": { "name": "灵兔·十万年右臂骨", "quality": "十万年", "slot": "you_bi", "skills": [{"id": "jing_xiong_bao", "star": 4}, {"id": "lei_ting", "star": 1}, {"id": "sha_chen", "star": 1}] },
+	"lt_bw_tou": { "name": "神兔·百万年头骨", "quality": "百万年", "slot": "tou", "skills": [{"id": "jue_en_ze", "star": 5}, {"id": "jue_jing_shen", "star": 5}, {"id": "jue_xiong_bao", "star": 5}, {"id": "jue_heng_du", "star": 5}, {"id": "jue_xue_mai", "star": 5}] },
+	"lt_bw_qu_gan": { "name": "神兔·百万年躯干骨", "quality": "百万年", "slot": "qu_gan", "skills": [{"id": "jue_feng_bao", "star": 5}, {"id": "jue_han_xi", "star": 5}, {"id": "jue_kuang_ye", "star": 5}, {"id": "jue_lei_ting", "star": 5}, {"id": "jue_sha_chen", "star": 5}] },
+	"lt_bw_zuo_tui": { "name": "神兔·百万年左腿骨", "quality": "百万年", "slot": "zuo_tui", "skills": [{"id": "jue_xue_mai", "star": 5}, {"id": "jue_han_xi", "star": 5}, {"id": "jue_kuang_ye", "star": 5}, {"id": "jue_lei_ting", "star": 5}, {"id": "jue_sha_chen", "star": 5}] },
+	"lt_bw_zuo_bi": { "name": "神兔·百万年左臂骨", "quality": "百万年", "slot": "zuo_bi", "skills": [{"id": "jue_en_ze", "star": 5}, {"id": "jue_xue_mai", "star": 5}, {"id": "jue_han_xi", "star": 5}, {"id": "jue_kuang_ye", "star": 5}, {"id": "jue_lei_ting", "star": 5}] },
+	"lt_bw_you_tui": { "name": "神兔·百万年右腿骨", "quality": "百万年", "slot": "you_tui", "skills": [{"id": "jue_jing_shen", "star": 5}, {"id": "jue_xiong_bao", "star": 5}, {"id": "jue_heng_du", "star": 5}, {"id": "jue_han_xi", "star": 5}, {"id": "jue_kuang_ye", "star": 5}] },
+	"lt_bw_you_bi": { "name": "神兔·百万年右臂骨", "quality": "百万年", "slot": "you_bi", "skills": [{"id": "jue_en_ze", "star": 5}, {"id": "jue_jing_shen", "star": 5}, {"id": "jue_xiong_bao", "star": 5}, {"id": "jue_heng_du", "star": 5}, {"id": "jue_feng_bao", "star": 5}] },
+	"_comment": "灵兔/神兔专属魂骨（魅影兔魂盘内嵌，不进仓库）：数值复用通用 qualities 表，仅技能组合专属"
   }
 }

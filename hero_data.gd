@@ -160,7 +160,7 @@ static func get_percent_bonus(g, hero_id: String) -> float:
 	bonus += g.get_hero_costume_series_pct(hero_id)  
 	# 【新增】兽魂赚速%（装备珍兽魂盘的激发格，按魂盘等级3/5/10/15/20%每格）
 	bonus += g.get_hero_soul_percent(hero_id)
-	# 【新增】魂力赚钱%（装备珍兽的百万年魂骨 阶×10%）
+	# 【新增】魂力赚钱%（魂骨 阶×品级 income_pct_per_tier：十万年5%/阶、百万年16%/阶，2026-09-24 起；灵兔骨技能百分比同口径）
 	bonus += g.get_hero_hunli_percent(hero_id)
 	#促织庙百分比加成
 	bonus += g.cuzhi_system.get_temple_bonus(hero_id)

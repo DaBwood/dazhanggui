@@ -273,5 +273,43 @@
 		],
 		"exchange_item": "xing_shu_lin",
 		"max_count": 1
+	},
+	"mei_ying_tu": {
+		"name": "魅影兔",
+		"quality": "无双",
+		"aptitude": 40,
+		"skill_count": 8,
+		"auras": [],
+		"exchange_item": "",
+		"max_count": 1,
+		"locked": true,
+		"bound_hero": "xiao_wu",
+		"auto_max_level": true,
+		"stages": [
+			{
+				"name": "万年·魅影兔",
+				"need_promo": 0,
+				"aptitude": 40,
+				"aptitude_per_level": 6,
+				"skill_count": 8,
+				"hunli_bones": ["lt_wan_tou", "lt_wan_qu_gan"]
+			},
+			{
+				"name": "十万年·魅影兔",
+				"need_promo": 30,
+				"aptitude": 60,
+				"aptitude_per_level": 7,
+				"skill_count": 10,
+				"hunli_bones": ["lt_sw_tou", "lt_sw_qu_gan", "lt_sw_zuo_tui", "lt_sw_you_tui"]
+			},
+			{
+				"name": "百万年·魅影兔",
+				"need_promo": 80,
+				"aptitude": 80,
+				"aptitude_per_level": 8,
+				"skill_count": 12,
+				"hunli_bones": ["lt_bw_tou", "lt_bw_qu_gan", "lt_bw_zuo_tui", "lt_bw_you_tui", "lt_bw_zuo_bi", "lt_bw_you_bi"]
+			}
+		]
 	}
 }

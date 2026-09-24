@@ -168,10 +168,12 @@ func update_beast_page():
 				hero_name = data.heroes[hid].name
 			
 			var name_lbl = cell.find_child("BeastNameLabel", true, false)
-			if name_lbl: name_lbl.text = "【%s】" % cfg.name
+			# 【改】2026-09-24 绑定兽（魅影兔）显示形态名（万年/十万年/百万年·魅影兔）
+			if name_lbl: name_lbl.text = "【%s】" % data.beast_system.get_beast_display_name(beast_id)
 			
 			var info_lbl = cell.find_child("BeastInfoLabel", true, false)
-			if info_lbl: info_lbl.text = "Lv.%d  |  %s" % [instance.level, cfg.quality]
+			# 【改】2026-09-24 等级改读有效等级（自动满级兽=当前珍兽上限，随上限自动涨）
+			if info_lbl: info_lbl.text = "Lv.%d  |  %s" % [data.beast_system.get_beast_level(beast_id, i), cfg.quality]
 			
 			var apt_lbl = cell.find_child("BeastAptLabel", true, false)
 			if apt_lbl: apt_lbl.text = "资质：%d" % apt
@@ -405,11 +407,13 @@ func _update_beast_detail(beast_id: String, instance_index: int):
 	var skill_bonus = data.get_beast_skill_bonus(beast_id, instance_index)
 	
 	quality_lbl.text = "品质：%s" % cfg.quality
-	apt_lbl.text = "等级：%d  资质：%d" % [instance.level, apt]   # 【改】等级资质一行；资质只显示当前值（去算式）
+	var b_lv: int = data.beast_system.get_beast_level(beast_id, instance_index)   # 【改】2026-09-24 有效等级（自动满级兽=当前上限）
+	apt_lbl.text = "等级：%d  资质：%d" % [b_lv, apt]   # 【改】等级资质一行；资质只显示当前值（去算式）
 	
 	var max_lv = data.beast_system.get_beast_max_level(beast_id, instance_index)   # 【改】上限含光环三加成（原写死200）
-	up_btn.text = ("升级\n珍兽果%d/80" % int(data.items.get("beast_fruit", 0))) if instance.level < max_lv else "已满级"   # 【改】读道具轨+显示消耗
-	up_btn.disabled = instance.level >= max_lv or int(data.items.get("beast_fruit", 0)) < 80   # 【改】
+	var auto_full: bool = cfg.get("auto_max_level", false)   # 【新增】2026-09-24 自动满级兽（魅影兔）不可手动升级
+	up_btn.text = "已满级（自动）" if auto_full else (("升级\n珍兽果%d/80" % int(data.items.get("beast_fruit", 0))) if b_lv < max_lv else "已满级")   # 【改】读道具轨+显示消耗
+	up_btn.disabled = auto_full or b_lv >= max_lv or int(data.items.get("beast_fruit", 0)) < 80   # 【改】
 	
 	# 【改】光环区重填（一光环一行，带数值与升级按钮；原"光环：a|b|c"单标签逻辑删除）
 	_fill_aura_box(vbox.get_node("BeastAuraBox"), beast_id, instance_index)
@@ -478,6 +482,10 @@ func _update_beast_detail(beast_id: String, instance_index: int):
 		equip_btn.text = "卸下"
 	else:
 		equip_btn.text = "装备"
+	# 【改】2026-09-24 绑定兽（魅影兔）不可卸下：直接隐藏卸下/装备钮（用户拍板不显示）；
+	# 系统层 unequip_beast 守卫仍在，双保险
+	if cfg.get("locked", false):
+		equip_btn.visible = false
 
 func _on_beast_upgrade(beast_id: String, instance_index: int):
 	if data.upgrade_beast(beast_id, instance_index):
@@ -562,8 +570,15 @@ func _show_hero_equip_selector(beast_id: String, instance_index: int):
 			status = " [已装备]"
 			btn.disabled = true
 		elif equipped_beast != "":
-			var b_cfg = data.get_beast_config(equipped_beast)
-			status = " [%s]" % b_cfg.name
+			# 【改】2026-09-24 绑定兽（魅影兔）显示形态名
+			status = " [%s]" % data.beast_system.get_beast_display_name(equipped_beast)
+		# 【新增】2026-09-24 绑定兽双向锁死：非其专属门客不可选；专属门客（小舞）已带绑定兽不可再装此兽
+		if data.get_beast_config(beast_id).get("locked", false) and str(data.get_beast_config(beast_id).get("bound_hero", "")) != hero_id:
+			status = " [小舞专属]"
+			btn.disabled = true
+		elif equipped_beast != "" and data.get_beast_config(equipped_beast).get("locked", false):
+			status = " [专属绑定]"
+			btn.disabled = true
 		
 		btn.text = "【%s】%s Lv.%d | %s/秒%s" % [h.name, h.category, h.level, c.format_number(income), status]
 		

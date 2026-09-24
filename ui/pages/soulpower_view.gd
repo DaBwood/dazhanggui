@@ -131,6 +131,10 @@ func _fill_body(body):
 	up10_btn.disabled = lv >= max_lv or int(data.items.get("long_zhi_cao", 0)) < lv_cost
 	up10_btn.pressed.connect(_on_upgrade_body.bind(10))
 	body_row.add_child(up10_btn)
+	# 【新增】2026-09-24 绑定兽（魅影兔）魂体固定满级：隐藏升级/十连钮（纯展示）
+	if data.get_beast_config(_beast_id).get("locked", false):
+		up_btn.visible = false
+		up10_btn.visible = false
 
 	# 共鸣行：已装数/基础资质/印记倍率 + 详情按钮
 	var rz = sp.get_resonance(_beast_id, _beast_index)
@@ -221,39 +225,45 @@ func _make_slot_btn(slot: String, body_data: Dictionary) -> Button:
 	sb.set_corner_radius_all(6)
 	sb.set_border_width_all(2)
 	var unlocked: Array = body_data.get("unlocked", [])
-	var uid: String = body_data.get("bones", {}).get(slot, "")
+	var uid = body_data.get("bones", {}).get(slot, "")   # 【改】2026-09-24 灵兔内嵌骨为 Dictionary，不再强转 String
 	if not unlocked.has(slot):
 		sb.bg_color = Color("#16131f")
 		sb.border_color = Color("#333333")
 		btn.text = "%s\n锁·点击解锁" % sp.get_slot_name(slot)
 		btn.add_theme_color_override("font_color", Color("#777777"))
-	elif uid == "":
+	elif str(uid) == "":
 		sb.bg_color = Color("#242038")
 		sb.border_color = Color("#4a4460")
 		btn.text = "%s\n（空·点击装配）" % sp.get_slot_name(slot)
 		btn.add_theme_color_override("font_color", Color("#aaaaaa"))
 	else:
-		var bone: Dictionary = data.soul_bones.get(uid, {})
+		var bone: Dictionary = sp.resolve_bone(uid)   # 【改】resolve 兼容内嵌骨/仓库 uid
 		var q: String = bone.get("quality", "")
 		sb.bg_color = Color("#242038")
 		sb.border_color = _quality_color(q)
-		btn.text = "%s·%s\n%d阶" % [q, sp.get_slot_name(slot), int(bone.get("tier", 1))]
+		if bone.get("locked", false):
+			# 【新增】灵兔骨显示专属名（灵兔·万年头骨/神兔·百万年头骨）
+			btn.text = "%s\n%d阶" % [str(bone.get("lt_name", q)), int(bone.get("tier", 1))]
+		else:
+			btn.text = "%s·%s\n%d阶" % [q, sp.get_slot_name(slot), int(bone.get("tier", 1))]
 		btn.add_theme_color_override("font_color", _quality_color(q))
 	btn.add_theme_stylebox_override("normal", sb)
 	btn.add_theme_font_size_override("font_size", 15)
 	btn.pressed.connect(_on_slot_tapped.bind(slot))
 	return btn
-
-# 点槽位：锁定→解锁确认；空→选骨装配；已装→魂骨详情
 func _on_slot_tapped(slot: String):
 	var sp = data.soulpower_system
 	var body_data = sp._get_body(_beast_id, _beast_index)
 	if not body_data.get("unlocked", []).has(slot):
 		_show_unlock_confirm(slot)
 		return
-	var uid: String = body_data.get("bones", {}).get(slot, "")
-	if uid != "":
-		_show_bone_popup(uid)
+	var uv = body_data.get("bones", {}).get(slot, "")
+	if str(uv) != "":
+		var lt_rec: Dictionary = sp.resolve_bone(uv)
+		if lt_rec.get("locked", false):
+			_show_bone_popup("", slot, lt_rec)   # 【改】灵兔内嵌骨直传记录
+		else:
+			_show_bone_popup(str(uv))
 	else:
 		_show_pick_popup(slot)
 
@@ -328,23 +338,41 @@ func _show_pick_popup(slot: String):
 		empty.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
 		empty.add_theme_color_override("font_color", Color("#888888"))
 		list.add_child(empty)
-	c._add_ok_button(vb, func(): popup.queue_free(), "关闭")
+	c._add_ok_button(vb, func(): _close_node("HunliPickPopup"), "关闭")   # 【修】2026-09-24 恢复：上一轮替换误挂 _close_bone_popup，点了清的是魂骨弹窗
 	c.add_child(popup)
 
 # ============ 魂骨详情弹窗 ============
 # 点魂骨（槽上或仓库）：品级/阶/升阶 + 技能列表/升级 + 装备/卸下/回收；操作后重建本弹窗
-func _show_bone_popup(uid: String):
-	_close_node("HunliBonePopup")
-	var bone = data.soul_bones.get(uid, {})
+# 【新增】2026-09-24 魂骨弹窗关闭：按名循环清理（面板+遮罩），解决堆叠旧实例"点击有特效但没反应"
+func _close_bone_popup():
+	while c.get_node_or_null("HunliBonePopup"):
+		var n = c.get_node("HunliBonePopup")
+		c.remove_child(n)
+		n.queue_free()
+	while c.get_node_or_null("HunliBonePopupMask"):
+		var m = c.get_node("HunliBonePopupMask")
+		c.remove_child(m)
+		m.queue_free()
+
+func _show_bone_popup(uid: String, p_slot: String = "", lt: Dictionary = {}):
+	_close_bone_popup()   # 【改】重建前清理旧弹窗（含遮罩），防堆叠
+	var bone: Dictionary = lt if not lt.is_empty() else data.soul_bones.get(uid, {})   # 【改】兼容灵兔内嵌骨
 	if bone.is_empty(): return
+	var is_lt: bool = bone.get("locked", false)   # 【新增】灵兔内嵌骨标记（纯展示）
 	var sp = data.soulpower_system
 	var q: String = bone.get("quality", "")
-	var slot: String = bone.get("slot", "")
+	var slot: String = bone.get("slot", p_slot)
 	var tier = int(bone.get("tier", 1))
 	var max_tier = int(sp._settings().get("bone_max_tier", 20))
 	var qcfg = data._soulpower_configs.get("qualities", {}).get(q, {})
 
-	var popup = c._create_base_popup("%s·%s" % [q, sp.get_slot_name(slot)], Vector2(470, 640))
+	var popup = c._create_base_popup(str(bone.get("lt_name", "%s·%s" % [q, sp.get_slot_name(slot)])), Vector2(470, 640))   # 【改】灵兔骨显示专属名
+	popup.name = "HunliBonePopup"   # 【修】2026-09-24 升阶重建前 _close_node 按名关旧弹窗；无名节点永远关不掉导致堆叠加遮罩、弹窗"关不掉"
+	# 【修】2026-09-24 升级/升阶后 update_all_ui 重建全屏页（z35/档案36）会盖住弹窗（原遮罩25/面板30）→"卡住关不掉"；
+	# 弹窗层级提到遮罩37/面板38（仍低于提示条40/42）
+	popup.z_index = 38
+	popup.get_meta("popup_mask").z_index = 37
+	popup.get_meta("popup_mask").name = "HunliBonePopupMask"
 	popup.name = "HunliBonePopup"
 	popup.z_index = 40   # 压过 HunliPage(35)
 	var vb = popup.get_child(0)
@@ -376,17 +404,27 @@ func _show_bone_popup(uid: String):
 		tier_btn.disabled = int(data.items.get(core_item, 0)) < core_cost
 		tier_btn.pressed.connect(_on_upgrade_tier.bind(uid))
 	tier_row.add_child(tier_btn)
+	if is_lt:
+		tier_btn.visible = false   # 【新增】2026-09-24 灵兔骨 1 阶固定，不显示升阶
 
 	# 技能列表：每技能一行（名称/星数/等级/效果/升级按钮）
 	var max_skill = int(sp._settings().get("skill_max_level", 50))
 	var star_names = ["", "一星", "二星", "三星", "四星", "五星"]
-	for entry in qcfg.get("skills", []):
+	var iter_list: Array = []   # 【改】2026-09-24 灵兔内嵌骨：技能/星级来自骨记录自身（全满级）；普通骨走品级表
+	if is_lt:
+		for sid0 in bone.get("skills", {}).keys():
+			iter_list.append({"id": sid0, "star": int(bone.get("stars", {}).get(sid0, 1))})
+	else:
+		iter_list = sp.get_quality_slot_skills(q, slot)   # 【改】2026-09-24 六骨六套：按槽位取技能表
+	for entry in iter_list:
 		var sid: String = entry.get("id", "")
 		var scfg = data._soulpower_configs.get("skills", {}).get(sid, {})
 		var star = int(entry.get("star", 1))
 		var slv = int(bone.get("skills", {}).get(sid, 0))
-		var per_lv = sp.get_skill_per_level_value(q, sid)
-		var is_income = scfg.get("type", "") == "income"
+		var per_lv: float = float(star) * float(scfg.get("per_star", 0))   # 【改】星级×每星值（等价 get_skill_per_level_value，支持内嵌骨自带星级）
+		var sk_ty: String = scfg.get("type", "")
+		var is_income = sk_ty == "income"
+		var is_pct = sk_ty == "income_pct"
 		var row = HBoxContainer.new()
 		row.alignment = BoxContainer.ALIGNMENT_CENTER
 		row.add_theme_constant_override("separation", 10)
@@ -394,8 +432,8 @@ func _show_bone_popup(uid: String):
 		var lbl = Label.new()
 		lbl.add_theme_font_size_override("font_size", 14)
 		lbl.size_flags_horizontal = Control.SIZE_EXPAND_FILL
-		var eff_txt = ("每级赚速+%s" % c.format_number(int(per_lv))) if is_income else ("每级资质+%d" % int(per_lv))
-		var cur_txt = ("（当前+%s）" % c.format_number(int(per_lv * slv))) if is_income else ("（当前+%d）" % int(per_lv * slv))
+		var eff_txt = ("每级赚速+%s" % c.format_number(int(per_lv))) if is_income else (("每级赚钱+%.2f%%" % (per_lv * 100)) if is_pct else ("每级资质+%d" % int(per_lv)))
+		var cur_txt = ("（当前+%s）" % c.format_number(int(per_lv * slv))) if is_income else (("（当前+%.1f%%）" % (per_lv * slv * 100)) if is_pct else ("（当前+%d）" % int(per_lv * slv)))
 		lbl.text = "%s%s Lv.%d/%d\n%s%s" % [star_names[clampi(star, 1, 5)], scfg.get("name", sid), slv, max_skill, eff_txt, cur_txt if slv > 0 else ""]
 		row.add_child(lbl)
 		var up = Button.new()
@@ -415,8 +453,10 @@ func _show_bone_popup(uid: String):
 	op.alignment = BoxContainer.ALIGNMENT_CENTER
 	op.add_theme_constant_override("separation", 16)
 	vb.add_child(op)
-	var equipped_here: String = sp._get_body(_beast_id, _beast_index).get("bones", {}).get(slot, "")
-	if equipped_here == uid:
+	var equipped_here = sp._get_body(_beast_id, _beast_index).get("bones", {}).get(slot, "")   # 【改】2026-09-24 灵兔内嵌骨为 Dictionary，不能强转 String
+	if is_lt:
+		pass   # 【新增】2026-09-24 灵兔内嵌骨：不可卸下/装备/回收，只留关闭
+	elif equipped_here == uid:
 		var un_btn = Button.new()
 		un_btn.text = "卸下"
 		un_btn.custom_minimum_size = Vector2(110, 40)
@@ -592,7 +632,7 @@ func _show_resonance_popup():
 	rule.text = "装备魂骨按品级给印记：百年1 / 千年4 / 万年5 / 十万年6 / 百万年7\n印记≥4枚起，每多1枚倍率+0.1（4枚×1.0 … 42枚×4.8）\n不足4枚不惩罚，按×1.0计"
 	vb.add_child(rule)
 
-	c._add_ok_button(vb, func(): popup.queue_free(), "关闭")
+	c._add_ok_button(vb, func(): _close_node("HunliResonancePopup"), "关闭")   # 【修】2026-09-24 恢复：误挂 _close_bone_popup
 	c.add_child(popup)
 
 # ============ 魂骨仓库 ============
