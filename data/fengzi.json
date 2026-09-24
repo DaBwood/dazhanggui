@@ -55,7 +55,8 @@
 			"skill_max_level": 200,
 			"cap_bonus_every": 5,
 			"cap_bonus_amount": 10,
-			"income_pct_per_unlock": 0.05,
+			"income_pct_per_unlock": 0.05
+		},
 		"xiao_wu": {
 			"fengzi_name": "修罗出鞘",
 			"unlock_quality": 2,
@@ -78,7 +79,6 @@
 			"cap_bonus_every": 5,
 			"cap_bonus_amount": 10,
 			"income_pct_per_unlock": 0.05
-		}
 		}
 	}
 }
