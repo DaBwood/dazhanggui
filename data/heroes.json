@@ -3307,6 +3307,31 @@
 			"tan_you",
 			"rong"
 		],
+		"promotion": {
+			"name": "军旅",
+			"skill_name": "千征百战",
+			"level": 0,
+			"max_level": 500,
+			"cost_item": "she_lu_gong",
+			"cost_amount": 600,
+			"aptitude_per_level": 6,
+			"tiers": [
+				{"threshold": 5, "quality": 2, "initial_aptitude": 99, "new_skills": [{"name": "秣马备戎行", "aptitude_per_level": 3}]},
+				{"threshold": 15, "new_skills": [{"name": "慷慨携干将", "aptitude_per_level": 3}]},
+				{"threshold": 30, "new_skills": [{"name": "金钺拜将军", "aptitude_per_level": 3}]},
+				{"threshold": 45, "new_skills": [{"name": "夜袭燕支虏", "aptitude_per_level": 3}]},
+				{"threshold": 60, "new_skills": [{"name": "铁骑绕龙城", "aptitude_per_level": 4}]},
+				{"threshold": 80, "quality": 3, "initial_aptitude": 333, "new_skills": []}
+			]
+		},
+		"jinlan": {
+			"fengzi_per_level": 4,
+			"skills": [
+				{"name": "巾帼英风", "desc": "自身赚钱+%d%%", "self_income_pct": 2},
+				{"name": "金兰义", "desc": "自身与金兰门客资质+%d", "both_aptitude": 10},
+				{"name": "同袍同泽", "desc": "自身与金兰门客赚钱+%d%%", "both_income_pct": 2}
+			]
+		},
 		"aptitude_skills": [
 			{
 				"name": "非凡资质",

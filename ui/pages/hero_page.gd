@@ -873,7 +873,23 @@ func _on_promo_btn_clicked():
 		_show_fengzi_panel()
 	)
 	vb.add_child(fengzi_btn)
-	
+
+	# 【新增】金兰按钮（花木兰，2026-09-24）：风姿按钮下方；晋升无双后解锁，未满灰显
+	var jinlan_btn = Button.new()
+	jinlan_btn.custom_minimum_size = Vector2(140, 36)
+	if data.hero_system.get_jinlan_cfg(current_hero_id).is_empty():
+		jinlan_btn.visible = false
+	elif data.hero_system.is_jinlan_unlocked(current_hero_id):
+		jinlan_btn.text = "【金兰】同袍"
+		jinlan_btn.pressed.connect(func():
+			if is_instance_valid(popup): popup.queue_free()
+			_show_jinlan_panel()
+		)
+	else:
+		jinlan_btn.text = "【金兰】晋升无双后解锁"
+		jinlan_btn.disabled = true
+	vb.add_child(jinlan_btn)
+
 	# 【新增】苦情契约按钮：仅白月初显示（与风姿同位置，两者不会同时出现）
 	var contract_btn = Button.new()
 	contract_btn.custom_minimum_size = Vector2(140, 36)
@@ -934,6 +950,170 @@ func _on_simple_promote_clicked():
 
 
 # 【新增】复制档（王昭君/花木兰等）当前档复制天赋信息：名字 + 精进后实际数值文案（2026-09-24 升级位天赋钮用）
+
+# 【新增】金兰面板（花木兰，2026-09-24）：金兰门客选择/解除 + 三光环手动升级
+func _show_jinlan_panel():
+	var hs = data.hero_system
+	var popup = c._create_base_popup("金兰", Vector2(560, 560))
+	c.add_child(popup)
+	var vb = popup.get_child(0)
+	var st = hs.get_jinlan_state(current_hero_id)
+	var partner_id: String = str(st.get("partner", ""))
+
+	# ── 说明行 ──
+	var info_lbl = Label.new()
+	info_lbl.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	info_lbl.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+	info_lbl.add_theme_color_override("font_color", Color("#d4af37"))
+	info_lbl.text = "花木兰的风姿属性100%附加给金兰门客"
+	vb.add_child(info_lbl)
+
+	# ── 金兰双方行：左花木兰（风姿属性值）/ 右金兰门客（实时获得加成，含光环）──
+	var attr: Dictionary = hs.get_fengzi_attr(current_hero_id)
+	var duo = HBoxContainer.new()
+	duo.alignment = BoxContainer.ALIGNMENT_CENTER
+	duo.add_theme_constant_override("separation", 60)
+	vb.add_child(duo)
+	var left_lbl = Label.new()
+	left_lbl.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	left_lbl.text = "花木兰\n风姿资质 +%d\n赚钱 +%d%%" % [int(attr.get("aptitude", 0)), int(float(attr.get("income_pct", 0.0)) * 100)]
+	duo.add_child(left_lbl)
+	var right_lbl = Label.new()
+	right_lbl.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	if partner_id != "" and data.heroes.has(partner_id):
+		right_lbl.add_theme_color_override("font_color", Color("#7ee787"))
+		right_lbl.text = "%s\n资质: +%d\n赚钱: +%d%%" % [
+			str(data.heroes[partner_id].get("name", partner_id)),
+			hs.get_jinlan_partner_aptitude(partner_id),
+			int(hs.get_jinlan_partner_income_pct(partner_id) * 100)
+		]
+	else:
+		right_lbl.add_theme_color_override("font_color", Color("#888888"))
+		right_lbl.text = "金兰门客\n未选择\n "
+	duo.add_child(right_lbl)
+
+	# ── 选择/更换/解除（无冷却，随时可换——2026-09-24 用户拍板）──
+	var op_row = HBoxContainer.new()
+	op_row.alignment = BoxContainer.ALIGNMENT_CENTER
+	op_row.add_theme_constant_override("separation", 20)
+	vb.add_child(op_row)
+	var pick_btn = Button.new()
+	pick_btn.text = "更换门客" if partner_id != "" else "选择门客"
+	pick_btn.pressed.connect(func():
+		if is_instance_valid(popup): popup.queue_free()
+		_show_jinlan_pick_popup()
+	)
+	op_row.add_child(pick_btn)
+	if partner_id != "":
+		var clear_btn = Button.new()
+		clear_btn.text = "解除金兰"
+		clear_btn.pressed.connect(func():
+			hs.clear_jinlan_partner(current_hero_id)
+			if is_instance_valid(popup): popup.queue_free()
+			_show_jinlan_panel()
+			update_hero_panel()
+			c.update_all_ui()
+		)
+		op_row.add_child(clear_btn)
+
+	# ── 金兰光环 ──
+	var halo_lbl = Label.new()
+	halo_lbl.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	halo_lbl.add_theme_color_override("font_color", Color("#d4af37"))
+	halo_lbl.text = "金兰光环"
+	vb.add_child(halo_lbl)
+	var fz_lv: int = int(data.heroes[current_hero_id].get("fengzi", {}).get("level", 0))
+	var cap: int = hs.get_jinlan_cap(current_hero_id)
+	var per4: int = max(1, int(hs.get_jinlan_cfg(current_hero_id).get("fengzi_per_level", 4)))
+	for sk in hs.get_jinlan_cfg(current_hero_id).get("skills", []):
+		var sk_name: String = str(sk.get("name", ""))
+		var lv: int = int(st.get("levels", {}).get(sk_name, 0))
+		var per: int = int(sk.get("self_income_pct", sk.get("both_aptitude", sk.get("both_income_pct", 0))))
+		var desc_t: String = str(sk.get("desc", "+%d"))
+		# 下级预览只写数值：赚钱类 +N%%，资质类 +N（2026-09-24 用户拍板，不重复效果名）
+		var next_val: String = ("+%d%%" % ((lv + 1) * per)) if sk.has("both_aptitude") == false else ("+%d" % ((lv + 1) * per))
+		# 升下级所需风姿等级 = (lv+1) × fengzi_per_level；当前风姿等级 >= 所需→绿，否则红
+		var req: int = (lv + 1) * per4
+		var card = HBoxContainer.new()
+		card.add_theme_constant_override("separation", 16)
+		# 左列两行：第一行技能名称+等级，第二行当前数值+下级数值（左列拉伸把右列顶到最右）
+		var left_v = VBoxContainer.new()
+		left_v.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+		left_v.add_theme_constant_override("separation", 2)
+		var line1 = Label.new()
+		line1.horizontal_alignment = HORIZONTAL_ALIGNMENT_LEFT
+		line1.text = "【%s】%d级" % [sk_name, lv]
+		left_v.add_child(line1)
+		var line2 = Label.new()
+		line2.horizontal_alignment = HORIZONTAL_ALIGNMENT_LEFT
+		line2.add_theme_color_override("font_color", Color("#888888"))
+		line2.text = "%s（下级：%s）" % [desc_t % (lv * per), next_val]
+		left_v.add_child(line2)
+		card.add_child(left_v)
+		var right_v = VBoxContainer.new()
+		right_v.add_theme_constant_override("separation", 2)
+		var rz_lbl = Label.new()
+		rz_lbl.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+		rz_lbl.add_theme_color_override("font_color", Color("#7ee787") if fz_lv >= req else Color("#ff6666"))
+		rz_lbl.text = "【红妆缭乱】%d/%d" % [fz_lv, req]
+		right_v.add_child(rz_lbl)
+		var up_btn = Button.new()
+		up_btn.text = "升级"
+		up_btn.disabled = lv >= cap
+		var captured: String = sk_name
+		up_btn.pressed.connect(func():
+			if hs.upgrade_jinlan_skill(current_hero_id, captured).get("ok", false):
+				if is_instance_valid(popup): popup.queue_free()
+				_show_jinlan_panel()
+				update_hero_panel()
+				c.update_all_ui()
+		)
+		right_v.add_child(up_btn)
+		card.add_child(right_v)
+		vb.add_child(card)
+	
+	var close_btn = Button.new()
+	close_btn.text = "关闭"
+	close_btn.pressed.connect(func(): popup.queue_free())
+	vb.add_child(close_btn)
+
+# 【新增】金兰门客选择弹窗（已拥有门客列表，排除自身，可重复选/无冷却——2026-09-24 用户拍板）
+func _show_jinlan_pick_popup():
+	var hs = data.hero_system
+	var popup = c._create_base_popup("选择金兰门客", Vector2(460, 520))
+	c.add_child(popup)
+	var vb = popup.get_child(0)
+	var st = hs.get_jinlan_state(current_hero_id)
+	var cur: String = str(st.get("partner", ""))
+	var scroll = ScrollContainer.new()
+	scroll.custom_minimum_size = Vector2(400, 360)
+	vb.add_child(scroll)
+	var list = VBoxContainer.new()
+	list.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	list.add_theme_constant_override("separation", 4)
+	scroll.add_child(list)
+	for hid in data.heroes.keys():
+		if hid == current_hero_id: continue
+		var is_cur: bool = cur == hid
+		var pb = Button.new()
+		pb.text = ("● " if is_cur else "") + str(data.heroes[hid].get("name", hid)) + ("（当前）" if is_cur else "")
+		var captured: String = hid
+		pb.pressed.connect(func():
+			if hs.set_jinlan_partner(current_hero_id, captured).get("ok", false):
+				if is_instance_valid(popup): popup.queue_free()
+				_show_jinlan_panel()
+				update_hero_panel()
+				c.update_all_ui()
+		)
+		list.add_child(pb)
+	var close_btn = Button.new()
+	close_btn.text = "关闭"
+	close_btn.pressed.connect(func():
+		popup.queue_free()
+		_show_jinlan_panel()
+	)
+	vb.add_child(close_btn)
+
 func _get_copy_talent_info(hero_id: String) -> Dictionary:
 	var ts = data.talent_system
 	var cfg = ts.get_hero_talent_cfg(hero_id)

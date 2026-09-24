@@ -1408,10 +1408,7 @@
    "born_tier": "epic",
    "max_tier": "wushuang",
    "can_promote": true,
-   "suspended_tiers": [
-    "legend",
-    "wushuang"
-   ]
+   "suspended_tiers": []
   },
   "lan_feihong": {
    "name": "兰飞鸿",

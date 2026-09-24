@@ -53,6 +53,9 @@ static func get_total_aptitude(g, hero_id: String) -> int:
 	total += g.token_system.get_token_skill_aptitude(hero_id)
 	# 【新增】风姿资质：醉墨挥毫等级×每级资质（无上限）
 	total += g.fengzi_system.get_aptitude(hero_id)
+	# 【新增】金兰（花木兰）：金兰义（自身侧）+ 风姿资质100%/金兰义（金兰门客伙伴侧）
+	total += g.hero_system.get_jinlan_self_aptitude(hero_id)
+	total += g.hero_system.get_jinlan_partner_aptitude(hero_id)
 	# 【新增】藏品基础资质（每级+每星，含特殊效果资质每星）
 	total += g.collection_system.get_aptitude_bonus(hero_id)
 	# 【新增】虫师副业技能资质（虫书Lv≥1解锁，副业等级×星级）
@@ -173,6 +176,9 @@ static func get_percent_bonus(g, hero_id: String) -> float:
 	# 【批次③】品质天赋%（同职业/全体/系列）+ 系列光环%（自身/同职业）
 	bonus += g.talent_system.get_hero_talent_pct(hero_id)
 	bonus += g.talent_system.get_aura_pct(hero_id)
+	# 【新增】金兰（花木兰）：巾帼英风/同袍同泽（自身侧）+ 风姿赚钱100%/同袍同泽（金兰门客伙伴侧）
+	bonus += g.hero_system.get_jinlan_self_income_pct(hero_id)
+	bonus += g.hero_system.get_jinlan_partner_income_pct(hero_id)
 
 	return bonus
 

@@ -309,3 +309,116 @@ func _grant_simple_promotion_skills(h: Dictionary, sp: Dictionary):
 				"max_level": int(sk.get("max_level", 200)),
 				"aptitude_per_level": int(sk.get("aptitude_per_level", 3)),
 			})
+
+# ============ 金兰（花木兰专属，2026-09-24 用户拍板） ============
+# 花木兰晋升无双后可选一名已拥有门客（非自身，可重复选/随时解除更换）为金兰门客；
+# 金兰门客获得花木兰 100% 风姿属性 = 风姿等级资质 + 技能栏风姿技能资质 + 风姿赚钱%
+# 三个金兰光环：巾帼英风（自身赚钱+2%/级）/ 金兰义（双方资质+10/级）/ 同袍同泽（双方赚钱+2%/级）
+# 光环上限 = floor(红妆缭乱风姿等级 / fengzi_per_level)，手动升级无道具消耗（风姿等级即成本）
+# 配置 = heroes.json "jinlan"；存档 = 英雄字典 "jinlan" {"partner": id, "levels": {技能名: 级}}（懒初始化）
+func get_jinlan_cfg(hero_id: String) -> Dictionary:
+	return g._hero_configs.get(hero_id, {}).get("jinlan", {})
+
+# 金兰存档状态（懒初始化，旧档无感）
+func get_jinlan_state(hero_id: String) -> Dictionary:
+	if not g.heroes.has(hero_id): return {}
+	var h = g.heroes[hero_id]
+	if not h.has("jinlan"):
+		h["jinlan"] = {"partner": "", "levels": {}}
+		for sk in get_jinlan_cfg(hero_id).get("skills", []):
+			h["jinlan"]["levels"][sk.get("name", "")] = 0
+	return h["jinlan"]
+
+# 光环等级上限 = floor(风姿等级 / fengzi_per_level)
+func get_jinlan_cap(hero_id: String) -> int:
+	var cfg = get_jinlan_cfg(hero_id)
+	if cfg.is_empty() or not g.heroes.has(hero_id): return 0
+	var lv = int(g.heroes[hero_id].get("fengzi", {}).get("level", 0))
+	return int(lv / max(1, int(cfg.get("fengzi_per_level", 4))))
+
+func is_jinlan_unlocked(hero_id: String) -> bool:
+	return not get_jinlan_cfg(hero_id).is_empty() and int(g.heroes.get(hero_id, {}).get("quality", 0)) >= 3
+
+func set_jinlan_partner(hero_id: String, partner_id: String) -> Dictionary:
+	if not is_jinlan_unlocked(hero_id):
+		return {"ok": false, "reason": "晋升无双后解锁"}
+	if partner_id == "" or partner_id == hero_id or not g.heroes.has(partner_id):
+		return {"ok": false, "reason": "不能选择自身或未拥有门客"}
+	get_jinlan_state(hero_id)["partner"] = partner_id
+	return {"ok": true}
+
+func clear_jinlan_partner(hero_id: String):
+	if g.heroes.has(hero_id) and g.heroes[hero_id].has("jinlan"):
+		g.heroes[hero_id]["jinlan"]["partner"] = ""
+
+func upgrade_jinlan_skill(hero_id: String, skill_name: String) -> Dictionary:
+	if not is_jinlan_unlocked(hero_id):
+		return {"ok": false, "reason": "晋升无双后解锁"}
+	var st = get_jinlan_state(hero_id)
+	if not st.get("levels", {}).has(skill_name):
+		return {"ok": false, "reason": "技能不存在"}
+	if int(st["levels"][skill_name]) >= get_jinlan_cap(hero_id):
+		return {"ok": false, "reason": "已达当前上限（提升风姿等级可解锁更高级）"}
+	st["levels"][skill_name] = int(st["levels"][skill_name]) + 1
+	return {"ok": true}
+
+# 花木兰风姿属性合计（金兰 100% 传递用）：风姿等级资质 + 技能栏风姿技能资质 + 风姿赚钱%
+func get_fengzi_attr(hero_id: String) -> Dictionary:
+	var apt: int = g.fengzi_system.get_aptitude(hero_id)
+	var fz_names: Array = g.fengzi_system.get_fengzi_cfg(hero_id).get("skills", [])
+	for sk in g.heroes.get(hero_id, {}).get("aptitude_skills", []):
+		if fz_names.has(str(sk.get("name", ""))):
+			apt += int(sk.get("level", 0)) * int(sk.get("aptitude_per_level", 0))
+	return {"aptitude": apt, "income_pct": g.fengzi_system.get_income_pct(hero_id)}
+
+# 谁把我设为金兰伙伴（反向查找；全游戏仅花木兰有金兰，循环极短）
+func get_jinlan_owner(partner_id: String) -> String:
+	for hid in g.heroes.keys():
+		if hid == partner_id: continue
+		if not is_jinlan_unlocked(hid): continue
+		if str(g.heroes[hid].get("jinlan", {}).get("partner", "")) == partner_id:
+			return hid
+	return ""
+
+# ── 加成挂钩（hero_data 赚钱%/总资质汇总调用，源点读取式）──
+# 自身侧赚钱%：巾帼英风 + 同袍同泽
+func get_jinlan_self_income_pct(hero_id: String) -> float:
+	var cfg = get_jinlan_cfg(hero_id)
+	if cfg.is_empty() or not is_jinlan_unlocked(hero_id): return 0.0
+	var st = get_jinlan_state(hero_id)
+	var pct := 0.0
+	for sk in cfg.get("skills", []):
+		var lv = int(st.get("levels", {}).get(sk.get("name", ""), 0))
+		pct += lv * float(sk.get("self_income_pct", 0))
+		pct += lv * float(sk.get("both_income_pct", 0))
+	return pct
+
+# 自身侧资质：金兰义
+func get_jinlan_self_aptitude(hero_id: String) -> int:
+	var cfg = get_jinlan_cfg(hero_id)
+	if cfg.is_empty() or not is_jinlan_unlocked(hero_id): return 0
+	var st = get_jinlan_state(hero_id)
+	var apt := 0
+	for sk in cfg.get("skills", []):
+		apt += int(st.get("levels", {}).get(sk.get("name", ""), 0)) * int(sk.get("both_aptitude", 0))
+	return apt
+
+# 伙伴侧赚钱%：花木兰风姿赚钱 100% + 同袍同泽
+func get_jinlan_partner_income_pct(partner_id: String) -> float:
+	var owner = get_jinlan_owner(partner_id)
+	if owner == "": return 0.0
+	var pct := float(get_fengzi_attr(owner).get("income_pct", 0.0))
+	var st = get_jinlan_state(owner)
+	for sk in get_jinlan_cfg(owner).get("skills", []):
+		pct += int(st.get("levels", {}).get(sk.get("name", ""), 0)) * float(sk.get("both_income_pct", 0))
+	return pct
+
+# 伙伴侧资质：花木兰风姿资质 100% + 金兰义
+func get_jinlan_partner_aptitude(partner_id: String) -> int:
+	var owner = get_jinlan_owner(partner_id)
+	if owner == "": return 0
+	var apt := int(get_fengzi_attr(owner).get("aptitude", 0))
+	var st = get_jinlan_state(owner)
+	for sk in get_jinlan_cfg(owner).get("skills", []):
+		apt += int(st.get("levels", {}).get(sk.get("name", ""), 0)) * int(sk.get("both_aptitude", 0))
+	return apt
