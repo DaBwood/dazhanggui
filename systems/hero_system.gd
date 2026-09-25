@@ -91,6 +91,8 @@ func load_save_data(s: Dictionary):
 			# level 从 0 开始，已达阈值档位品质由 quality 存量迁移保障，幂等）
 			if g._hero_configs.get(hid, {}).has("promotion") and not g.heroes[hid].has("promotion"):
 				g.heroes[hid]["promotion"] = g._hero_configs[hid]["promotion"]
+			# 【新增】2026-09-25 极·XX之道回灌：品质≥3 门客（天生无双/老档已无双）自动补发（幂等，按名查重）
+			ensure_ji_zhidao(hid)
 		# 【新增】2026-09-24 读档回灌：为已拥有门客补发缺失的绑定珍兽（魅影兔：发放+形态技能同步，幂等）
 		g.beast_system.sync_all_bound_beasts()
 	# 【新增】存档迁移：旧档门客的 base_income 字段改名为 extra_income
@@ -128,6 +130,7 @@ func unlock_hero(hero_id: String) -> bool:
 	g.heroes[hero_id] = cfg
 	# 【新增】2026-09-24 合并服装盒子待领库存（整份覆盖会清掉未拥有期间攒的库存）
 	g.costume_system.merge_pending_cos(hero_id)
+	ensure_ji_zhidao(hero_id)   # 【新增】2026-09-25 极·XX之道：天生无双门客新获时发放（幂等）
 	return true
 
 #门客升级
@@ -272,6 +275,8 @@ func _check_promotion(hero: Dictionary):
 							"max_level": 200,
 							"aptitude_per_level": new_skill.aptitude_per_level
 						})
+	# 【新增】2026-09-25 极·XX之道：晋升升档（含 80 级升无双）自动发放（幂等）
+	_grant_ji_zhidao(hero)
 
 # ============ 服装一键晋升（解鲁/四郎，2026-09-24 用户拍板） ============
 # 轻量晋升：升级钮上方"晋升"按钮，集齐任一已解锁服装→亮红点，点击直接升目标品质+送技能，晋升后按钮消失
@@ -339,9 +344,11 @@ func do_simple_promote(hero_id: String) -> Dictionary:
 			g.items[item_id] = int(g.items.get(item_id, 0)) - int(stage.get("cost_amount", 0))
 		h.quality = int(stage.get("quality", 2))
 		_grant_simple_promotion_skills(h, stage)   # 【新增】2026-09-24 该档解锁技能（按名查重幂等）
+		ensure_ji_zhidao(hero_id)                  # 【新增】2026-09-25 极·XX之道：分档晋升升档自动发放（幂等）
 		return {"ok": true, "quality": h.quality}
 	h.quality = int(sp.get("target_quality", 2))
 	_grant_simple_promotion_skills(h, sp)
+	ensure_ji_zhidao(hero_id)   # 【新增】2026-09-25 极·XX之道：服装晋升升档自动发放（幂等）
 	return {"ok": true, "quality": h.quality}
 
 # 赠送技能按名查重幂等发放（晋升时刻与读档补发共用，防重复领取）
@@ -562,6 +569,35 @@ func get_self_aura_income_pct(hero_id: String) -> float:
 					if hero_cat != "" and hero_cat == str(g.heroes[hid].get("category", "")):
 						total += n
 	return total
+
+# ============ 极·XX之道（2026-09-25 用户拍板：全门客晋升无双自动发放） ============
+# 品质≥3 自动获得资质技能【极·职业之道】：3★（3资质/级）、上限200、升级只吃对应职业之道书×300/级（不吃资质丹）
+# 职业→书：side_skill.json career_books（士→仕途之道 … 侠→侠义之道），技能名="极·"+书道具名；88 门客全自动派生，无手写配置
+# 发放点（幂等，按名查重）：load 回灌（天生无双/老档）/_check_promotion/do_simple_promote/凤临乐宴满级/凤魁转移/unlock_hero
+
+# 核心发放（持英雄字典；品质≥3 且技能未拥有才发，返回是否新发放）
+func _grant_ji_zhidao(hero: Dictionary) -> bool:
+	if int(hero.get("quality", 0)) < 3: return false
+	var book_id: String = g.side_skill_system.get_career_book(str(hero.get("category", "")))
+	if book_id == "": return false
+	var book_name: String = str(g.ITEM_CONFIG.get(book_id, {}).get("name", book_id))
+	var skill_name: String = "极·" + book_name
+	for sk in hero.get("aptitude_skills", []):
+		if str(sk.get("name", "")) == skill_name: return false
+	hero.aptitude_skills.append({
+		"name": skill_name,
+		"level": 0,
+		"max_level": 200,
+		"aptitude_per_level": 3,
+		"cost_item": book_id,
+		"cost_num": 300
+	})
+	return true
+
+# 按 id 发放包装（发放点统一走这里，持字典场景直接调 _grant_ji_zhidao）
+func ensure_ji_zhidao(hero_id: String) -> bool:
+	if not g.heroes.has(hero_id): return false
+	return _grant_ji_zhidao(g.heroes[hero_id])
 
 # ============ 金兰（花木兰专属，2026-09-24 用户拍板） ============
 # 花木兰晋升无双后可选一名已拥有门客（非自身，可重复选/随时解除更换）为金兰门客；
@@ -829,6 +865,7 @@ func _check_fengkui(hero: Dictionary):
 			promo["skills"][sk["name"]] = 0
 	if lv >= int(promo.get("max_level", 80)):
 		hero.quality = 3   # 凤临乐宴满级晋升无双（初始资质由品质表决定自动涨）
+		_grant_ji_zhidao(hero)   # 【新增】2026-09-25 极·XX之道：凤临乐宴满级升无双自动发放（幂等）
 
 func get_fengkui_level(hero_id: String) -> int:
 	return int(g.heroes.get(hero_id, {}).get("fengkui", {}).get("level", 0))
@@ -942,6 +979,7 @@ func transfer_fengkui(to_id: String) -> Dictionary:
 	# ② 品质跟随等级定档，原门客退回传奇
 	g.heroes[to_id].quality = 3 if lv >= 80 else 2
 	g.heroes[from_id].quality = 2
+	ensure_ji_zhidao(to_id)   # 【新增】2026-09-25 极·XX之道：新凤魁定档无双自动发放（幂等）；from_id 降回传奇，已发技能保留不回收
 	# ③ 金凤玲珑信物状态搬迁（等级/绑定/信物技能整体搬；五人只有这一件信物）
 	if g.hero_tokens.has(from_id):
 		g.hero_tokens[to_id] = g.hero_tokens[from_id]

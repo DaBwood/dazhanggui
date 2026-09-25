@@ -749,6 +749,20 @@ func on_aptitude_skill_upgrade(skill_index: int, mode: String = "single"):
 	if skill.level >= skill.max_level:
 		return
 
+	# 【新增】2026-09-25 极·XX之道：技能带 cost_item 只吃对应职业之道书（不吃资质丹/百业经验）
+	if skill.has("cost_item") and str(skill.get("cost_item", "")) != "":
+		var book_id: String = str(skill.get("cost_item", ""))
+		var cost_num: int = int(skill.get("cost_num", 300))
+		var stock: int = int(data.items.get(book_id, 0))
+		var can_up: int = 1 if mode == "single" else min(mini(floori(stock / float(cost_num)), skill.max_level - skill.level), 10)
+		if can_up > 0:
+			data.items[book_id] = stock - can_up * cost_num
+			skill.level += can_up
+			update_hero_panel()
+			c.update_all_ui()
+			c.update_bag_list()
+		return
+
 	var cost_per_level = int(skill.get("aptitude_per_level", 1))  # 每级固定消耗=每级加的资质数
 	var remaining = skill.max_level - skill.level
 	var levels_to_upgrade: int = 1 if mode == "single" else 0
@@ -1743,10 +1757,20 @@ func _fill_skill_tab(list):
 			info += "（已满级）"
 		else:
 			info += "（下级+%d）" % [(skill.level + 1) * per]
-		items.append({
-			"name": skill.name, "stars": per, "is_max": is_max, "info": info,
-			"pill": per, "on_single": on_aptitude_skill_upgrade.bind(i, "single"), "on_bulk": on_aptitude_skill_upgrade.bind(i, "bulk")
-		})
+		if skill.has("cost_item") and str(skill.get("cost_item", "")) != "":
+			# 【新增】2026-09-25 极·XX之道：只吃对应职业之道书，走 own 单货币显示（自动红绿着色；无资质丹/百业经验勾选对）
+			var bid: String = str(skill.get("cost_item", ""))
+			var cnum: int = int(skill.get("cost_num", 300))
+			items.append({
+				"name": skill.name, "stars": per, "is_max": is_max, "info": info,
+				"own": [cnum, int(data.items.get(bid, 0))], "own_name": str(data.ITEM_CONFIG.get(bid, {}).get("name", bid)),
+				"on_single": on_aptitude_skill_upgrade.bind(i, "single"), "on_bulk": on_aptitude_skill_upgrade.bind(i, "bulk")
+			})
+		else:
+			items.append({
+				"name": skill.name, "stars": per, "is_max": is_max, "info": info,
+				"pill": per, "on_single": on_aptitude_skill_upgrade.bind(i, "single"), "on_bulk": on_aptitude_skill_upgrade.bind(i, "bulk")
+			})
 
 	# 守护灵技能（仅无双门客，阶段注满才显示；同样吃资质丹→抵扣勾选框对）
 	# 【改】品质四档改造：无双档 2→3
