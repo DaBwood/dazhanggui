@@ -2445,6 +2445,68 @@
 				"percent_per_level": 0.03
 			}
 		],
+		"promotion": {
+			"name": "灵犀",
+			"skill_name": "灵犀心印",
+			"level": 0,
+			"max_level": 500,
+			"cost_item": "mo_xiang_zhu_jian",
+			"cost_amount": 600,
+			"aptitude_per_level": 6,
+			"tiers": [
+				{
+					"threshold": 5,
+					"new_skills": [
+						{
+							"name": "文海泛舟",
+							"aptitude_per_level": 3
+						}
+					]
+				},
+				{
+					"threshold": 15,
+					"new_skills": [
+						{
+							"name": "笔耕不辍",
+							"aptitude_per_level": 3
+						}
+					]
+				},
+				{
+					"threshold": 30,
+					"new_skills": [
+						{
+							"name": "文脉相承",
+							"aptitude_per_level": 3
+						}
+					]
+				},
+				{
+					"threshold": 45,
+					"new_skills": [
+						{
+							"name": "烛照千古",
+							"aptitude_per_level": 3
+						}
+					]
+				},
+				{
+					"threshold": 60,
+					"new_skills": [
+						{
+							"name": "墨香浸染",
+							"aptitude_per_level": 4
+						}
+					]
+				},
+				{
+					"threshold": 80,
+					"quality": 3,
+					"new_skills": []
+				}
+			]
+		},
+		"tianzi": true,
 		"quality": 2
 	},
 	"xiang_yu": {

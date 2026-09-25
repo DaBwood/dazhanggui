@@ -939,7 +939,8 @@ func _on_promo_btn_clicked():
 	# 【新增】2026-09-24 拜师按钮：师徒光环门客（小八）晋升面板顶栏显示，点击选师傅
 	if data.hero_system.get_master_aura_cfgs(current_hero_id).size() > 0:
 		var master_btn = Button.new()
-		master_btn.text = "拜师"
+		# 【改】2026-09-25 已拜师显示"易师"（可更换师傅），未拜师显示"拜师"（小八/小柒统一）
+		master_btn.text = "易师" if data.hero_system.get_master_hero_id(current_hero_id) != "" else "拜师"
 		master_btn.custom_minimum_size = Vector2(64, 30)
 		master_btn.add_theme_font_size_override("font_size", 13)
 		master_btn.pressed.connect(_on_master_btn_clicked)
@@ -948,6 +949,14 @@ func _on_promo_btn_clicked():
 	# 【新增】苦情契约按钮：仅白月初显示（与风姿同位置，两者不会同时出现）
 	var contract_btn = Button.new()
 	contract_btn.custom_minimum_size = Vector2(64, 30)
+	# 【新增】2026-09-25 天资按钮（heroes.json tianzi 配置驱动，现仅小柒）：与小柒活动玩法相关，本轮次挂起——点击提示后续版本开放
+	if bool(h.get("tianzi", false)):
+		var tianzi_btn = Button.new()
+		tianzi_btn.text = "天资"
+		tianzi_btn.custom_minimum_size = Vector2(64, 30)
+		tianzi_btn.add_theme_font_size_override("font_size", 13)
+		tianzi_btn.pressed.connect(func(): c._show_stage_hint("后续版本开放"))
+		top_bar.add_child(tianzi_btn)
 	if current_hero_id == data.token_system.CONTRACT_HERO:
 		contract_btn.text = "契约"   # 【改】2026-09-24 只显示"契约"
 	else:
@@ -1020,8 +1029,11 @@ func _show_master_selector():
 		if int(ha.get("quality", 0)) != int(hb.get("quality", 0)):
 			return int(ha.get("quality", 0)) > int(hb.get("quality", 0))
 		return data.get_hero_income(a) > data.get_hero_income(b))
+	# 【新增】2026-09-25 拜师池限定（小柒 master_pool="wuyan"）：候选只列秦淮五艳
+	var pool_wuyan: bool = str(data.talent_system.get_hero_talent_cfg(current_hero_id).get("master_pool", "")) == "wuyan"
 	for hid in ids:
 		if hid == current_hero_id: continue
+		if pool_wuyan and not data.hero_system.is_wuyan(hid): continue
 		var h: Dictionary = data.heroes[hid]
 		var b := Button.new()
 		b.text = "%s（%s）" % [str(h.get("name", hid)), _quality_name(int(h.get("quality", 0)))]
@@ -1919,6 +1931,9 @@ func _fill_halo_tab(list):
 	# 仅配置主（小舞）面板显示；效果对 partner（杨戬）同生生效，杨戬面板不加卡
 	for aura in data.hero_system.get_pair_aura_cfgs(current_hero_id):
 		items.append(_build_pair_aura_card(aura))
+	# 【新增】2026-09-25 自带光环（小柒）：三张卡追加在双人光环之后（闸门=五艳对应光环总等级，free_action 无消耗）
+	for aura in data.hero_system.get_self_aura_cfgs(current_hero_id):
+		items.append(_build_self_aura_card(aura))
 	if items.is_empty():
 		var lbl = Label.new()
 		lbl.text = "暂未解锁光环（解锁服装后获得同名光环技能）"
@@ -1996,6 +2011,43 @@ func _build_pair_aura_card(aura: Dictionary) -> Dictionary:
 		"on_single": func(): _on_pair_aura_up(aid, 1),
 		"on_bulk": func(): _on_pair_aura_up(aid, 10)}
 	return card
+
+# 【新增】2026-09-25 自带光环卡片（小柒）：无道具消耗（闸门=五艳对应光环总等级），free_action 单钮分支（卡协议同师徒光环卡）
+func _build_self_aura_card(aura: Dictionary) -> Dictionary:
+	var aid: String = aura.get("id", "")
+	var lv: int = data.hero_system.get_self_aura_level(current_hero_id, aid)
+	var per: float = float(aura.get("per", 0))
+	var is_apt: bool = aura.get("type", "") == "aptitude"
+	# 卡片规范："当前总数值（下级+下级数值）"（同师徒光环卡）
+	var unit: String
+	if is_apt:
+		unit = "资质+%d（下级+%d）" % [int(per) * lv, int(per) * (lv + 1)]
+	else:
+		unit = "赚钱+%.1f%%（下级+%.1f%%）" % [per * lv, per * (lv + 1)]
+	var scope := "自身"
+	if aura.get("target", "") == "career": scope = "同职业门客"
+	elif aura.get("target", "") == "self_wuyan": scope = "小柒与秦淮五艳"
+	var gate: Dictionary = data.hero_system.get_self_aura_gate(current_hero_id, aura)
+	var info: String = "【%s】 Lv.%d\n%s（%s）\n需五艳【%s】总等级 %d/%d" % [
+		aura.get("name", ""), lv, unit, scope,
+		str(aura.get("gate", {}).get("aura", "")), int(gate.get("total", 0)), int(gate.get("need", 0))]
+	# 无等级上限（闸门即上限）：is_max=false 恒显示升级钮，闸门不满足时点击弹失败原因
+	return {"name": aura.get("name", ""), "stars": int(per), "is_max": false, "info": info,
+		"free_action": true, "on_single": func(): _on_self_aura_up(aid)}
+
+func _on_self_aura_up(aura_id: String):
+	var res: Dictionary = data.hero_system.upgrade_self_aura(current_hero_id, aura_id)
+	if res.get("ok", false):
+		c._show_stage_hint("【%s】升至 %d 级" % [_self_aura_name(aura_id), int(res.get("level", 0))])
+	else:
+		c._show_stage_hint(str(res.get("msg", "升级失败")))
+	update_hero_panel()
+	c.update_all_ui()
+
+func _self_aura_name(aura_id: String) -> String:
+	for a in data.hero_system.get_self_aura_cfgs(current_hero_id):
+		if a.get("id", "") == aura_id: return str(a.get("name", aura_id))
+	return aura_id
 
 func _on_pair_aura_up(aura_id: String, times: int):
 	var res: Dictionary = data.hero_system.upgrade_pair_aura(current_hero_id, aura_id, times)
@@ -2610,10 +2662,14 @@ func _show_token_panel():
 		share_lbl.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
 		var sp_cfg: Dictionary = t_cfg.get("share_passive", {})
 		var pct: float = data.token_system.get_share_passive_pct(current_hero_id)
+		# 【新增】2026-09-25 投桃报李（小柒）：绑定门客为秦淮五艳时效果翻倍、独立上限（图六规则2文案）
+		var double_txt: String = ""
+		if sp_cfg.get("wuyan_double", false):
+			double_txt = "，羁绊门客为秦淮五艳时效果翻倍（上限%d%%）" % int(sp_cfg.get("wuyan_cap_pct", 30))
 		if pct > 0:
-			share_lbl.text = "【%s】为绑定门客提供自身资质 %d%%（上限%d%%）" % [sp_cfg.get("name", "倾心共赢"), int(pct), int(sp_cfg.get("cap_pct", 30))]
+			share_lbl.text = "【%s】为绑定门客提供自身资质 %d%%（上限%d%%）%s" % [sp_cfg.get("name", "倾心共赢"), int(pct), int(sp_cfg.get("cap_pct", 30)), double_txt]
 		else:
-			share_lbl.text = "【%s】晋升无双后生效：为绑定门客提供自身资质（上限%d%%）" % [sp_cfg.get("name", "倾心共赢"), int(sp_cfg.get("cap_pct", 30))]
+			share_lbl.text = "【%s】晋升无双后生效：为绑定门客提供自身资质（上限%d%%）%s" % [sp_cfg.get("name", "倾心共赢"), int(sp_cfg.get("cap_pct", 30)), double_txt]
 		vb.add_child(share_lbl)
 
 	# ── 伴生技能（全信物通用三件套，2026-09-24 用户拍板：信物页展示解锁条件/上限；技能页只显示已解锁）──

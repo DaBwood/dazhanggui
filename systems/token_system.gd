@@ -231,6 +231,9 @@ func get_share_passive_bonus(owner_id: String, _hero_id: String) -> int:
 	if int(g.heroes.get(owner_id, {}).get("quality", 0)) < 3: return 0
 	var lv := get_level(owner_id)
 	var pct: float = min(float(sp.get("cap_pct", 30)), float(sp.get("base_pct", 5)) + floor((lv - 1) / 10.0) * float(sp.get("per_10_levels", 1)))
+	# 【新增】2026-09-25 投桃报李（小柒信物被动）：绑定门客为秦淮五艳时效果翻倍、独立上限30%（图六规则2；_hero_id 为当时预留参数，现落地）
+	if sp.get("wuyan_double", false) and _hero_id != "" and g.hero_system.is_wuyan(_hero_id):
+		pct = min(float(sp.get("wuyan_cap_pct", 30)), pct * 2.0)
 	if pct <= 0: return 0
 	if _share_guard: return 0   # 防相互绑定递归（与 get_owner_aptitude 同规）
 	_share_guard = true

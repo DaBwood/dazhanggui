@@ -375,6 +375,9 @@ func set_master_hero_id(hero_id: String, master_id: String) -> Dictionary:
 		return {"ok": true, "master": ""}
 	if master_id == hero_id: return {"ok": false, "msg": "不能拜自己为师"}
 	if not g.heroes.has(master_id): return {"ok": false, "msg": "师傅必须选择已拥有的门客"}
+	# 【新增】2026-09-25 拜师池限定（小柒 master_pool="wuyan"）：只能拜师秦淮五艳
+	if str(g.talent_system.get_hero_talent_cfg(hero_id).get("master_pool", "")) == "wuyan" and not is_wuyan(master_id):
+		return {"ok": false, "msg": "只能拜师秦淮五艳门客"}
 	g.heroes[hero_id]["master_hero_id"] = master_id
 	return {"ok": true, "master": master_id}
 
@@ -407,9 +410,12 @@ func get_master_aura_cap(hero_id: String, aura_cfg: Dictionary) -> int:
 		return int(promo_lv / 10.0) + 1
 	return 9999
 
-# 下级消耗（道具型）：cost_base + (当前级-1) × cost_step
+# 下级消耗（道具型）：cost_base + floor((当前级-1)/step_every) × cost_step
+# 【改】2026-09-25 支持 cost_step_every（师徒同心=每2级消耗+1）；缺省 every=1 即原线性公式，小八行为不变
 func get_master_aura_cost(hero_id: String, aura_cfg: Dictionary) -> int:
-	return int(aura_cfg.get("cost_base", 0)) + (get_master_aura_level(hero_id, aura_cfg.get("id", "")) - 1) * int(aura_cfg.get("cost_step", 0))
+	var lv := get_master_aura_level(hero_id, aura_cfg.get("id", ""))
+	var every := maxi(int(aura_cfg.get("cost_step_every", 1)), 1)
+	return int(aura_cfg.get("cost_base", 0)) + int(floor(float(lv - 1) / float(every))) * int(aura_cfg.get("cost_step", 0))
 
 # 升级光环 times 级：校验上限与道具，消耗按级递增逐段累加
 func upgrade_master_aura(hero_id: String, aura_id: String, times: int = 1) -> Dictionary:
@@ -420,8 +426,9 @@ func upgrade_master_aura(hero_id: String, aura_id: String, times: int = 1) -> Di
 	if lv >= cap: return {"ok": false, "msg": "已达等级上限"}
 	times = mini(times, cap - lv)
 	var total_cost := 0
+	var every_u := maxi(int(aura.get("cost_step_every", 1)), 1)
 	for i in range(times):
-		total_cost += int(aura.get("cost_base", 0)) + (lv + i - 1) * int(aura.get("cost_step", 0))
+		total_cost += int(aura.get("cost_base", 0)) + int(floor(float(lv + i - 1) / float(every_u))) * int(aura.get("cost_step", 0))
 	if aura.has("cost_item"):
 		var item_id := str(aura.get("cost_item", ""))
 		if int(g.items.get(item_id, 0)) < total_cost:
@@ -430,34 +437,130 @@ func upgrade_master_aura(hero_id: String, aura_id: String, times: int = 1) -> Di
 	_get_master_aura_levels(hero_id)[aura_id] = lv + times
 	return {"ok": true, "level": lv + times}
 
-# 师徒光环·资质加成：童叟无欺——小八本人与师傅各吃一份（HeroData.get_total_aptitude 追加）
+# 师徒光环·资质加成：配置驱动遍历（童叟无欺/师徒同心——光环持有者本人与师傅各吃一份，HeroData.get_total_aptitude 追加）
+# 【改】2026-09-25 去硬编码 aura id，按 type/target 走配置（小柒师徒同心同款生效，小八数值口径不变）
 func get_master_aura_aptitude(hero_id: String) -> int:
 	var total := 0
 	for hid in g.heroes.keys():
-		var aura := _get_master_aura_cfg(hid, "tong_sou_wu_qi")
-		if aura.is_empty(): continue
-		var n: int = int(aura.get("per", 0)) * get_master_aura_level(hid, "tong_sou_wu_qi")
-		if hid == hero_id or get_master_hero_id(hid) == hero_id:
-			total += n
+		for aura in get_master_aura_cfgs(hid):
+			if str(aura.get("type", "")) != "aptitude": continue
+			if str(aura.get("target", "self_master")) != "self_master": continue
+			if hid == hero_id or get_master_hero_id(hid) == hero_id:
+				total += int(aura.get("per", 0)) * get_master_aura_level(hid, aura.get("id", ""))
 	return total
 
-# 师徒光环·赚钱%：市井之学（自身与师傅）/ 广结良缘（师傅同职业门客）/ 日进斗金（自身）（get_percent_bonus 追加）
+# 师徒光环·赚钱%（get_percent_bonus 追加）：target=self_master（自身与师傅）/ master_career（师傅同职业门客）/ self（自身）
+# 【改】2026-09-25 去硬编码 aura id，按 target 走配置（师从五艳同款生效，小八数值口径不变）
 func get_master_aura_income_pct(hero_id: String) -> float:
 	var total := 0.0
 	var hero_cat := str(g.heroes.get(hero_id, {}).get("category", ""))
 	for hid in g.heroes.keys():
 		var master_id := get_master_hero_id(hid)
-		var sj := _get_master_aura_cfg(hid, "shi_jing_zhi_xue")
-		if not sj.is_empty() and (hid == hero_id or master_id == hero_id):
-			# 【修】2026-09-24：配置 per=百分数口径（5=5%），percent_bonus 是小数口径（0.05=5%），须 /100（教训⑫；金兰已修，此处对齐）
-			total += float(sj.get("per", 0)) * get_master_aura_level(hid, "shi_jing_zhi_xue") / 100.0
-		var gj := _get_master_aura_cfg(hid, "guang_jie_liang_yuan")
-		if not gj.is_empty() and master_id != "" and g.heroes.has(master_id):
-			if hero_cat != "" and hero_cat == str(g.heroes[master_id].get("category", "")):
-				total += float(gj.get("per", 0)) * get_master_aura_level(hid, "guang_jie_liang_yuan") / 100.0
-		var rj := _get_master_aura_cfg(hid, "ri_jin_dou_jin")
-		if not rj.is_empty() and hid == hero_id:
-			total += float(rj.get("per", 0)) * get_master_aura_level(hid, "ri_jin_dou_jin") / 100.0
+		for aura in get_master_aura_cfgs(hid):
+			if str(aura.get("type", "")) != "income_pct": continue
+			var n: float = float(aura.get("per", 0)) * get_master_aura_level(hid, aura.get("id", "")) / 100.0
+			match str(aura.get("target", "")):
+				"self_master":
+					if hid == hero_id or master_id == hero_id:
+						total += n
+				"master_career":
+					if master_id != "" and g.heroes.has(master_id) and hero_cat != "" \
+						and hero_cat == str(g.heroes[master_id].get("category", "")):
+						total += n
+				"self":
+					if hid == hero_id:
+						total += n
+	return total
+
+# ============ 自带光环（小柒专属，2026-09-25 用户拍板；配置结构同师徒光环） ============
+# 配置在 hero_talents 条目 "self_auras"；等级存英雄字典 "self_aura_levels"（初始1级，读档懒初始化）
+# 无道具消耗：升级闸门 = 秦淮五艳对应系列光环总等级（玉蝶轻舞←勾栏美人 / 花影翩跹←绝代风华 / 云裳羽衣←群芳荟萃）
+# gate 需求公式：mul/sub 型 = 当前级×mul−sub（玉蝶轻舞 ×2−2，1级首升需求0）；add 型 = 当前级+add（花影/云裳 +1）
+# target：self=自身赚钱% / career=同职业门客赚钱%（含本人，同 career_pct 口径） / self_wuyan=小柒与秦淮五艳资质
+
+func get_self_aura_cfgs(hero_id: String) -> Array:
+	return g.talent_system.get_hero_talent_cfg(hero_id).get("self_auras", [])
+
+func _get_self_aura_cfg(hero_id: String, aura_id: String) -> Dictionary:
+	for a in get_self_aura_cfgs(hero_id):
+		if a.get("id", "") == aura_id: return a
+	return {}
+
+# 光环等级表（读档自适应回灌，默认全 1 级）
+func _get_self_aura_levels(hero_id: String) -> Dictionary:
+	if not g.heroes[hero_id].has("self_aura_levels"):
+		var d := {}
+		for a in get_self_aura_cfgs(hero_id):
+			d[a.get("id", "")] = 1
+		g.heroes[hero_id]["self_aura_levels"] = d
+	return g.heroes[hero_id]["self_aura_levels"]
+
+func get_self_aura_level(hero_id: String, aura_id: String) -> int:
+	return int(_get_self_aura_levels(hero_id).get(aura_id, 1))
+
+# 五艳某光环总等级（闸门实际值）：遍历秦淮五艳按光环名累加系列光环等级（未拥有/无该技能跳过）
+func get_self_aura_gate_total(aura_name: String) -> int:
+	var total := 0
+	for hid in get_wuyan_heroes():
+		if not g.heroes.has(hid): continue
+		for sk in g.talent_system.get_hero_aura_cfg(hid).get("skills", []):
+			if str(sk.get("name", "")) == aura_name:
+				total += g.talent_system.get_aura_level(hid, sk)
+	return total
+
+# 升级需求（当前级 k → 升 k+1 需五艳总等级 ≥ f(k)）
+func get_self_aura_need(level: int, gate: Dictionary) -> int:
+	if gate.has("mul"):
+		return level * int(gate.get("mul", 1)) - int(gate.get("sub", 0))
+	return level + int(gate.get("add", 1))
+
+# 闸门状态：{"ok"/"total"/"need"}（光环页签卡片显示进度用）
+func get_self_aura_gate(hero_id: String, aura: Dictionary) -> Dictionary:
+	var lv := get_self_aura_level(hero_id, aura.get("id", ""))
+	var gate: Dictionary = aura.get("gate", {})
+	var need := get_self_aura_need(lv, gate)
+	var total := get_self_aura_gate_total(str(gate.get("aura", "")))
+	return {"ok": total >= need, "total": total, "need": need}
+
+# 升级（无道具消耗，闸门即成本）
+func upgrade_self_aura(hero_id: String, aura_id: String) -> Dictionary:
+	if not g.heroes.has(hero_id): return {"ok": false, "msg": "门客不存在"}
+	var aura := _get_self_aura_cfg(hero_id, aura_id)
+	if aura.is_empty(): return {"ok": false, "msg": "光环不存在"}
+	var st := get_self_aura_gate(hero_id, aura)
+	if not st.get("ok", false):
+		return {"ok": false, "msg": "需五艳【%s】总等级≥%d（当前%d）" % [str(aura.get("gate", {}).get("aura", "")), int(st.get("need", 0)), int(st.get("total", 0))]}
+	var lv := get_self_aura_level(hero_id, aura_id)
+	_get_self_aura_levels(hero_id)[aura_id] = lv + 1
+	return {"ok": true, "level": lv + 1}
+
+# 自带光环·资质加成（云裳羽衣）：光环持有者（小柒）与秦淮五艳各吃一份（HeroData.get_total_aptitude 追加）
+func get_self_aura_aptitude(hero_id: String) -> int:
+	var total := 0
+	for hid in g.heroes.keys():
+		for aura in get_self_aura_cfgs(hid):
+			if str(aura.get("type", "")) != "aptitude": continue
+			if str(aura.get("target", "")) != "self_wuyan": continue
+			var n: int = int(aura.get("per", 0)) * get_self_aura_level(hid, aura.get("id", ""))
+			if hid == hero_id or is_wuyan(hero_id):
+				total += n
+	return total
+
+# 自带光环·赚钱%（玉蝶轻舞=自身 / 花影翩跹=同职业含本人；get_percent_bonus 追加）
+func get_self_aura_income_pct(hero_id: String) -> float:
+	var total := 0.0
+	var hero_cat := str(g.heroes.get(hero_id, {}).get("category", ""))
+	for hid in g.heroes.keys():
+		for aura in get_self_aura_cfgs(hid):
+			if str(aura.get("type", "")) != "income_pct": continue
+			var n: float = float(aura.get("per", 0)) * get_self_aura_level(hid, aura.get("id", "")) / 100.0
+			match str(aura.get("target", "")):
+				"self":
+					if hid == hero_id:
+						total += n
+				"career":
+					if hero_cat != "" and hero_cat == str(g.heroes[hid].get("category", "")):
+						total += n
 	return total
 
 # ============ 金兰（花木兰专属，2026-09-24 用户拍板） ============

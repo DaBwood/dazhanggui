@@ -2848,9 +2848,16 @@
    "born_tier": "legend",
    "max_tier": "wushuang",
    "can_promote": true,
-   "suspended_tiers": [
-    "legend",
-    "wushuang"
+   "suspended_tiers": [],
+   "master_pool": "wuyan",
+   "master_auras": [
+    {"id": "shi_cong_wu_yan", "name": "师从五艳", "type": "income_pct", "per": 5.0, "target": "self_master", "cost_item": "yuye_jinhua", "cost_base": 20, "cost_step": 10},
+    {"id": "shi_tu_tong_xin", "name": "师徒同心", "type": "aptitude", "per": 10, "target": "self_master", "cost_item": "yuye_jinhua", "cost_base": 10, "cost_step": 1, "cost_step_every": 2}
+   ],
+   "self_auras": [
+    {"id": "yu_die_qing_wu", "name": "玉蝶轻舞", "type": "income_pct", "per": 5.0, "target": "self", "gate": {"aura": "勾栏美人", "mul": 2, "sub": 2}},
+    {"id": "hua_ying_pian_xian", "name": "花影翩跹", "type": "income_pct", "per": 2.5, "target": "career", "gate": {"aura": "绝代风华", "add": 1}},
+    {"id": "yun_shang_yu_yi", "name": "云裳羽衣", "type": "aptitude", "per": 5, "target": "self_wuyan", "gate": {"aura": "群芳荟萃", "add": 1}}
    ]
   },
   "xiang_yu": {
