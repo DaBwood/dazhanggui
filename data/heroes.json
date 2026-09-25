@@ -2750,6 +2750,20 @@
 				"percent_per_level": 0.03
 			}
 		],
+		"fengkui": {
+			"name": "凤魁",
+			"skill_name": "凤临乐宴",
+			"level": 0,
+			"max_level": 80,
+			"cost_item": "feng_you_yan_tu",
+			"cost_amount": 600,
+			"aptitude_per_level": 6,
+			"unlock_skills": [
+				{"name": "才貌双全", "stars": 3, "threshold": 30, "max_level": 200},
+				{"name": "拈韵吟诗", "stars": 3, "threshold": 50, "max_level": 200},
+				{"name": "度曲画兰", "stars": 4, "threshold": 80, "max_level": 200}
+			]
+		},
 		"quality": 2
 	},
 	"li_xiangjun": {
@@ -2798,6 +2812,20 @@
 				"percent_per_level": 0.03
 			}
 		],
+		"fengkui": {
+			"name": "凤魁",
+			"skill_name": "凤临乐宴",
+			"level": 0,
+			"max_level": 80,
+			"cost_item": "feng_you_yan_tu",
+			"cost_amount": 600,
+			"aptitude_per_level": 6,
+			"unlock_skills": [
+				{"name": "才貌双全", "stars": 3, "threshold": 30, "max_level": 200},
+				{"name": "拈韵吟诗", "stars": 3, "threshold": 50, "max_level": 200},
+				{"name": "度曲画兰", "stars": 4, "threshold": 80, "max_level": 200}
+			]
+		},
 		"quality": 2
 	},
 	"dong_xiaowan": {
@@ -2845,6 +2873,20 @@
 				"percent_per_level": 0.03
 			}
 		],
+		"fengkui": {
+			"name": "凤魁",
+			"skill_name": "凤临乐宴",
+			"level": 0,
+			"max_level": 80,
+			"cost_item": "feng_you_yan_tu",
+			"cost_amount": 600,
+			"aptitude_per_level": 6,
+			"unlock_skills": [
+				{"name": "才貌双全", "stars": 3, "threshold": 30, "max_level": 200},
+				{"name": "拈韵吟诗", "stars": 3, "threshold": 50, "max_level": 200},
+				{"name": "度曲画兰", "stars": 4, "threshold": 80, "max_level": 200}
+			]
+		},
 		"quality": 2
 	},
 	"bian_yujing": {
@@ -2892,6 +2934,20 @@
 				"percent_per_level": 0.03
 			}
 		],
+		"fengkui": {
+			"name": "凤魁",
+			"skill_name": "凤临乐宴",
+			"level": 0,
+			"max_level": 80,
+			"cost_item": "feng_you_yan_tu",
+			"cost_amount": 600,
+			"aptitude_per_level": 6,
+			"unlock_skills": [
+				{"name": "才貌双全", "stars": 3, "threshold": 30, "max_level": 200},
+				{"name": "拈韵吟诗", "stars": 3, "threshold": 50, "max_level": 200},
+				{"name": "度曲画兰", "stars": 4, "threshold": 80, "max_level": 200}
+			]
+		},
 		"quality": 2
 	},
 	"kou_baimen": {
@@ -2940,6 +2996,20 @@
 				"percent_per_level": 0.03
 			}
 		],
+		"fengkui": {
+			"name": "凤魁",
+			"skill_name": "凤临乐宴",
+			"level": 0,
+			"max_level": 80,
+			"cost_item": "feng_you_yan_tu",
+			"cost_amount": 600,
+			"aptitude_per_level": 6,
+			"unlock_skills": [
+				{"name": "才貌双全", "stars": 3, "threshold": 30, "max_level": 200},
+				{"name": "拈韵吟诗", "stars": 3, "threshold": 50, "max_level": 200},
+				{"name": "度曲画兰", "stars": 4, "threshold": 80, "max_level": 200}
+			]
+		},
 		"quality": 2
 	},
 	"hu_lu_xianren": {

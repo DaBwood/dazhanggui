@@ -31,6 +31,12 @@ static func get_total_aptitude(g, hero_id: String) -> int:
 		total += skill.level * skill.aptitude_per_level
 	if hero.has("promotion"):
 		total += hero.promotion.level * hero.promotion.aptitude_per_level
+	# 【新增】2026-09-25 凤魁（秦淮五艳）：凤临乐宴本体资质（等级×每级资质，仅凤魁计入）
+	total += g.hero_system.get_fengkui_promo_aptitude(hero_id)
+	# 【新增】2026-09-25 凤魁（秦淮五艳）：凤临乐宴解锁技能资质（才貌双全/拈韵吟诗/度曲画兰，仅凤魁计入）
+	total += g.hero_system.get_fengkui_skill_aptitude(hero_id)
+	# 【新增】2026-09-25 凤魁（秦淮五艳）：山河五岳系列服装技能资质（五件集中计入凤魁）
+	total += g.hero_system.get_wuyue_aptitude(hero_id)
 	
 	# 珍兽资质加成（装备珍兽的资质计入总资质）
 	var beast_id = hero.get("equipped_beast", "")

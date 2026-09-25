@@ -281,8 +281,9 @@ func upgrade_halo(hero_id: String, cos_id: String, mode: String = "single") -> D
 func get_hero_costume_aptitude(hero_id: String) -> int:
 	if not g.heroes.has(hero_id): return 0
 	var total = 0
-	# 自身服装技能资质
+	# 自身服装技能资质（山河五岳系列除外：该系列集中到凤魁晋升页签，资质计入凤魁本人，2026-09-25）
 	for cfg in get_hero_costume_cfgs(hero_id):
+		if str(cfg.get("series", "")) == "山河五岳": continue
 		total += get_cos_skill_aptitude(hero_id, cfg.get("id", ""))
 	# 光环资质：同category门客的已解锁光环，每级+1（含自身）
 	# 【改】跳过只有stock没有base的未解锁服装

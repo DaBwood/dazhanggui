@@ -34,6 +34,10 @@ func _cfg() -> Dictionary:
 func _settings() -> Dictionary:
 	return _cfg().get("settings", {})
 
+# 秦淮五艳名单（settings.wuyan_heroes 为唯一事实源，2026-09-25 凤魁批次新增）
+func get_wuyan_heroes() -> Array:
+	return _settings().get("wuyan_heroes", [])
+
 func get_collection(coll_id: String) -> Dictionary:
 	return _cfg().get("collections", {}).get(coll_id, {})
 

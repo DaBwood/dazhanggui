@@ -645,3 +645,202 @@ func get_pair_aura_income_pct(hero_id: String) -> float:
 			if hid == hero_id or str(a.get("partner", "")) == hero_id:
 				total += n
 	return total
+
+# ============ 凤魁（秦淮五艳晋升，2026-09-25） ============
+# 机制：五艳全传奇时各自面板出"凤魁"按钮，确认选定后该门客成为凤魁——
+#   获得金凤玲珑信物（tokens.json fengkui_only，存算分离自动发放）+ 凤魁晋升（凤临乐宴
+#   6资质/级、凤游宴图600/级、上限80，30/50/80 解锁才貌双全3★/拈韵吟诗3★/度曲画兰4★，
+#   80级 quality→3 升无双）；其余四人"凤魁"按钮消失、保持传奇。
+# 状态：heroes.json 五人各有一份 fengkui 配置块（load 回灌进存档），选定只翻 chosen 开关，
+#   技能等级存 fengkui.skills——配置跟人走，凤魁转移时整块搬迁即可（见 transfer_fengkui 留口）。
+
+func get_wuyan_heroes() -> Array:
+	return g.collection_system.get_wuyan_heroes()
+
+func is_wuyan(hero_id: String) -> bool:
+	return get_wuyan_heroes().has(hero_id)
+
+# 当前凤魁门客 id（扫描五人的 fengkui.chosen），未选返回 ""
+func get_fengkui_id() -> String:
+	for hid in get_wuyan_heroes():
+		if g.heroes.has(hid) and g.heroes[hid].get("fengkui", {}).get("chosen", false):
+			return hid
+	return ""
+
+func can_choose_fengkui(hero_id: String) -> bool:
+	if not is_wuyan(hero_id): return false
+	if not g.heroes.has(hero_id): return false
+	if int(g.heroes[hero_id].get("quality", 0)) != 2: return false
+	return get_fengkui_id() == ""
+
+# 凤魁配置块（heroes.json 五人各一份；load 回灌后存档自带，旧档缺键时从配置取兜底）
+func _fengkui_cfg(hero_id: String) -> Dictionary:
+	return g._hero_configs.get(hero_id, {}).get("fengkui", {})
+
+# 选定凤魁：翻 chosen 开关 + 初始化技能等级表（信物由 has_token 存算分离即刻生效）
+func choose_fengkui(hero_id: String) -> Dictionary:
+	if not can_choose_fengkui(hero_id):
+		return {"ok": false, "msg": "当前无法选定凤魁"}
+	var hero = g.heroes[hero_id]
+	if not hero.has("fengkui"):
+		hero["fengkui"] = _fengkui_cfg(hero_id).duplicate(true)
+	hero["fengkui"]["chosen"] = true
+	if not hero["fengkui"].has("skills"):
+		hero["fengkui"]["skills"] = {}
+	_check_fengkui(hero)
+	return {"ok": true}
+
+# 凤魁晋升（凤临乐宴）升级：batch=false 升1级 / true 升10级（照 promotion 模板）
+func upgrade_fengkui(hero_id: String, batch: bool = false) -> int:
+	if hero_id != get_fengkui_id(): return 0
+	var hero = g.heroes[hero_id]
+	var promo = hero.get("fengkui", {})
+	if promo.is_empty(): return 0
+	if int(promo.get("level", 0)) >= int(promo.get("max_level", 80)): return 0
+	var cost = int(promo.get("cost_amount", 600))
+	var max_times = 1
+	if batch:
+		max_times = min(10, int(promo["max_level"]) - int(promo["level"]), int(g.items.get(promo.get("cost_item", ""), 0) / cost))
+	else:
+		if g.items.get(promo.get("cost_item", ""), 0) < cost: return 0
+	if max_times <= 0: return 0
+	var upgraded = 0
+	for i in range(max_times):
+		if int(promo["level"]) >= int(promo["max_level"]): break
+		if g.items.get(promo.get("cost_item", ""), 0) < cost: break
+		g.items[promo["cost_item"]] -= cost
+		promo["level"] = int(promo["level"]) + 1
+		upgraded += 1
+		_check_fengkui(hero)
+	return upgraded
+
+# 阈值校验：30/50/80 登记解锁技能（等级0起），80 级升无双（quality=3）
+func _check_fengkui(hero: Dictionary):
+	if not hero.has("fengkui"): return
+	var promo = hero["fengkui"]
+	var lv = int(promo.get("level", 0))
+	if not promo.has("skills"):
+		promo["skills"] = {}
+	for sk in promo.get("unlock_skills", []):
+		if lv >= int(sk.get("threshold", 0)) and not promo["skills"].has(sk.get("name", "")):
+			promo["skills"][sk["name"]] = 0
+	if lv >= int(promo.get("max_level", 80)):
+		hero.quality = 3   # 凤临乐宴满级晋升无双（初始资质由品质表决定自动涨）
+
+func get_fengkui_level(hero_id: String) -> int:
+	return int(g.heroes.get(hero_id, {}).get("fengkui", {}).get("level", 0))
+
+func _fengkui_skill_cfg(hero_id: String, skill_name: String) -> Dictionary:
+	for sk in g.heroes.get(hero_id, {}).get("fengkui", {}).get("unlock_skills", []):
+		if sk.get("name", "") == skill_name: return sk
+	return {}
+
+func get_fengkui_skill_level(hero_id: String, skill_name: String) -> int:
+	return int(g.heroes.get(hero_id, {}).get("fengkui", {}).get("skills", {}).get(skill_name, -1))
+
+# 凤魁技能升级：每级消耗=星级数颗资质丹，或百业经验抵扣（300/颗，use_baiye 互斥）；
+# 上限200；需凤临乐宴已达对应解锁阈值。mode: single=1级 / bulk=10级（照服装技能模板）
+func upgrade_fengkui_skill(hero_id: String, skill_name: String, mode: String = "single", use_baiye: bool = false) -> Dictionary:
+	if hero_id != get_fengkui_id(): return {"ok": false, "msg": "仅凤魁可升级"}
+	var promo = g.heroes[hero_id].get("fengkui", {})
+	var sk = _fengkui_skill_cfg(hero_id, skill_name)
+	if sk.is_empty(): return {"ok": false, "msg": "技能不存在"}
+	if not promo.get("skills", {}).has(skill_name):
+		return {"ok": false, "msg": "凤临乐宴 %d 级解锁" % int(sk.get("threshold", 0))}
+	var cost = int(sk.get("stars", 1))
+	var max_lv = int(sk.get("max_level", 200))
+	var base = int(promo["skills"][skill_name])
+	if base >= max_lv: return {"ok": false, "msg": "已满级"}
+	var limit: int = 1 if mode == "single" else 10
+	var levels = 0
+	if use_baiye:
+		var per_level: int = cost * get_baiye_per_pill()
+		var affordable: int = floori(get_baiye(hero_id) / float(per_level))
+		levels = min(mini(affordable, max_lv - base), limit)
+		if levels <= 0: return {"ok": false, "msg": "百业经验不足"}
+		if not spend_baiye_for_pills(hero_id, levels * cost):
+			return {"ok": false, "msg": "百业经验不足"}
+		promo["skills"][skill_name] = base + levels
+		return {"ok": true, "levels": levels}
+	var pills = int(g.items.get("aptitude_pill", 0))
+	while base < max_lv and levels < limit:
+		if pills < cost: break
+		pills -= cost
+		base += 1
+		levels += 1
+		if mode == "single": break
+	if levels <= 0: return {"ok": false, "msg": "资质丹不足"}
+	g.items["aptitude_pill"] = pills
+	promo["skills"][skill_name] = base
+	return {"ok": true, "levels": levels}
+
+# 凤临乐宴本体资质（等级×每级资质，仅凤魁计入，hero_data 挂钩）
+func get_fengkui_promo_aptitude(hero_id: String) -> int:
+	if hero_id != get_fengkui_id(): return 0
+	var promo = g.heroes[hero_id].get("fengkui", {})
+	return int(promo.get("level", 0)) * int(promo.get("aptitude_per_level", 6))
+
+# 凤魁技能资质合计（才貌双全/拈韵吟诗/度曲画兰 等级×星级；仅凤魁计入，hero_data 挂钩）
+func get_fengkui_skill_aptitude(hero_id: String) -> int:
+	if hero_id != get_fengkui_id(): return 0
+	var total = 0
+	for sk in g.heroes[hero_id]["fengkui"].get("unlock_skills", []):
+		var lv = int(g.heroes[hero_id]["fengkui"].get("skills", {}).get(sk.get("name", ""), 0))
+		total += lv * int(sk.get("stars", 0))
+	return total
+
+# 山河五岳页签数据：五件门客服装（cos03，属主各一），含解锁/兑换/升级所需状态
+# 返回 [{owner, owner_name, cos_id, name, quality, unlocked, base, stock, pill_cost}]
+func get_wuyue_cos_items() -> Array:
+	var list = []
+	for hid in get_wuyan_heroes():
+		if not g.heroes.has(hid): continue
+		var cos_id = "%s_cos03" % hid
+		var cfg = g.costume_system._get_hero_cos_cfg(hid, cos_id)
+		if cfg.is_empty(): continue
+		var st = g.costume_system.get_hero_cos_state(hid, cos_id)
+		list.append({
+			"owner": hid,
+			"owner_name": g.heroes[hid].get("name", ""),
+			"cos_id": cos_id,
+			"name": cfg.get("name", ""),
+			"quality": cfg.get("quality", ""),
+			"unlocked": st.has("base"),
+			"base": int(st.get("base", 0)),
+			"stock": int(g.heroes[hid].get("costumes", {}).get(cos_id, {}).get("stock", 0)),   # 库存存 hero.costumes[cos_id].stock
+			"pill_cost": g.costume_system.get_cos_skill_cost(cfg.get("quality", "")),
+		})
+	return list
+
+# 山河五岳服装技能资质合计（五件求和，仅凤魁计入，hero_data 挂钩；光环仍归各属主）
+func get_wuyue_aptitude(hero_id: String) -> int:
+	if hero_id != get_fengkui_id(): return 0
+	var total = 0
+	for item in get_wuyue_cos_items():
+		total += g.costume_system.get_cos_skill_aptitude(item["owner"], item["cos_id"])
+	return total
+
+# 凤魁转移：fengkui 块（凤临乐宴等级/解锁技能等级/chosen）+ 金凤玲珑信物状态
+# （g.hero_tokens 含信物等级/绑定门客/信物技能）整体搬迁至目标五艳门客；
+# 品质跟随凤临乐宴等级（满80=无双3，否则传奇2），原门客退回传奇2——原门客不再显示凤魁钮，
+# 信物由 has_token 的 fengkui_only 判定自动消失；山河五岳服装状态留在各属门客不动（资质自动跟随新凤魁）。
+func transfer_fengkui(to_id: String) -> Dictionary:
+	var from_id = get_fengkui_id()
+	if from_id == "": return {"ok": false, "msg": "当前没有凤魁"}
+	if not is_wuyan(to_id) or to_id == from_id: return {"ok": false, "msg": "只能转移给秦淮五艳门客"}
+	if not g.heroes.has(to_id): return {"ok": false, "msg": "门客不存在"}
+	var fk: Dictionary = g.heroes[from_id].get("fengkui", {})
+	if fk.is_empty() or not fk.get("chosen", false): return {"ok": false, "msg": "凤魁状态缺失"}
+	var lv: int = int(fk.get("level", 0))
+	# ① fengkui 块整体搬迁（配置+进度跟人走）
+	g.heroes[to_id]["fengkui"] = fk.duplicate(true)
+	g.heroes[to_id]["fengkui"]["chosen"] = true
+	g.heroes[from_id].erase("fengkui")
+	# ② 品质跟随等级定档，原门客退回传奇
+	g.heroes[to_id].quality = 3 if lv >= 80 else 2
+	g.heroes[from_id].quality = 2
+	# ③ 金凤玲珑信物状态搬迁（等级/绑定/信物技能整体搬；五人只有这一件信物）
+	if g.hero_tokens.has(from_id):
+		g.hero_tokens[to_id] = g.hero_tokens[from_id]
+		g.hero_tokens.erase(from_id)
+	return {"ok": true, "from": from_id, "to": to_id}

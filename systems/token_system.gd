@@ -41,6 +41,8 @@ func get_token_cfg(hero_id: String) -> Dictionary:
 func has_token(hero_id: String) -> bool:
 	var cfg = get_token_cfg(hero_id)
 	if cfg.is_empty() or not g.heroes.has(hero_id): return false
+	# 凤魁专属信物（金凤玲珑）：仅当前凤魁拥有，其余秦淮五艳即使有配置也不发（2026-09-25）
+	if cfg.get("fengkui_only", false) and g.hero_system.get_fengkui_id() != hero_id: return false
 	return int(g.heroes[hero_id].get("quality", 0)) >= int(cfg.get("grant_quality", 1))
 
 # ============ 状态 ============

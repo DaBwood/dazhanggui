@@ -3106,11 +3106,28 @@
       "pct": 5,
       "desc": "同职业门客赚钱+5%"
      }
+    ],
+    "wushuang": [
+     {
+      "name": "游山玩水",
+      "kind": "friend_chat_bond_pct",
+      "pct": 5,
+      "inc": 2,
+      "desc": "跟同职业挚友谈心获得缘分+5%"
+     },
+     {
+      "name": "五方名岳",
+      "kind": "series_pct",
+      "series": "qinhuai_wuyan",
+      "pct": 10,
+      "inc": 5,
+      "desc": "所有秦淮五艳门客赚钱+10%"
+     }
     ]
    },
    "born_tier": "legend",
-   "max_tier": "legend",
-   "can_promote": false
+   "max_tier": "wushuang",
+   "can_promote": true
   },
   "li_xiangjun": {
    "name": "李香君",
@@ -3136,11 +3153,28 @@
       "pct": 5,
       "desc": "同职业门客赚钱+5%"
      }
+    ],
+    "wushuang": [
+     {
+      "name": "游山玩水",
+      "kind": "friend_chat_bond_pct",
+      "pct": 5,
+      "inc": 2,
+      "desc": "跟同职业挚友谈心获得缘分+5%"
+     },
+     {
+      "name": "五方名岳",
+      "kind": "series_pct",
+      "series": "qinhuai_wuyan",
+      "pct": 10,
+      "inc": 5,
+      "desc": "所有秦淮五艳门客赚钱+10%"
+     }
     ]
    },
    "born_tier": "legend",
-   "max_tier": "legend",
-   "can_promote": false
+   "max_tier": "wushuang",
+   "can_promote": true
   },
   "dong_xiaowan": {
    "name": "董小宛",
@@ -3166,11 +3200,28 @@
       "pct": 5,
       "desc": "同职业门客赚钱+5%"
      }
+    ],
+    "wushuang": [
+     {
+      "name": "游山玩水",
+      "kind": "friend_chat_bond_pct",
+      "pct": 5,
+      "inc": 2,
+      "desc": "跟同职业挚友谈心获得缘分+5%"
+     },
+     {
+      "name": "五方名岳",
+      "kind": "series_pct",
+      "series": "qinhuai_wuyan",
+      "pct": 10,
+      "inc": 5,
+      "desc": "所有秦淮五艳门客赚钱+10%"
+     }
     ]
    },
    "born_tier": "legend",
-   "max_tier": "legend",
-   "can_promote": false
+   "max_tier": "wushuang",
+   "can_promote": true
   },
   "bian_yujing": {
    "name": "卞玉京",
@@ -3196,11 +3247,28 @@
       "pct": 5,
       "desc": "同职业门客赚钱+5%"
      }
+    ],
+    "wushuang": [
+     {
+      "name": "游山玩水",
+      "kind": "friend_chat_bond_pct",
+      "pct": 5,
+      "inc": 2,
+      "desc": "跟同职业挚友谈心获得缘分+5%"
+     },
+     {
+      "name": "五方名岳",
+      "kind": "series_pct",
+      "series": "qinhuai_wuyan",
+      "pct": 10,
+      "inc": 5,
+      "desc": "所有秦淮五艳门客赚钱+10%"
+     }
     ]
    },
    "born_tier": "legend",
-   "max_tier": "legend",
-   "can_promote": false
+   "max_tier": "wushuang",
+   "can_promote": true
   },
   "kou_baimen": {
    "name": "寇白门",
@@ -3226,11 +3294,28 @@
       "pct": 5,
       "desc": "同职业门客赚钱+5%"
      }
+    ],
+    "wushuang": [
+     {
+      "name": "游山玩水",
+      "kind": "friend_chat_bond_pct",
+      "pct": 5,
+      "inc": 2,
+      "desc": "跟同职业挚友谈心获得缘分+5%"
+     },
+     {
+      "name": "五方名岳",
+      "kind": "series_pct",
+      "series": "qinhuai_wuyan",
+      "pct": 10,
+      "inc": 5,
+      "desc": "所有秦淮五艳门客赚钱+10%"
+     }
     ]
    },
    "born_tier": "legend",
-   "max_tier": "legend",
-   "can_promote": false
+   "max_tier": "wushuang",
+   "can_promote": true
   },
   "jisi_fuhao": {
    "name": "祭师妇好",

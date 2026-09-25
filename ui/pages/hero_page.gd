@@ -21,9 +21,11 @@ var _guardian_batch: bool = false   # 【新增】守护灵注灵十连勾选状
 var _promo_batch: bool = false   # 【新增】赋诗十连勾选状态（面板生命周期内保持）
 var _token_batch: bool = false   # 【新增】信物十连勾选状态（面板生命周期内保持）
 var _talent_tab: String = "talent"   # 【新增】天赋面板当前页签（类变量记忆：重建刷新/精进后不跳页）
+var _fengkui_tab: String = "skill"   # 【新增】凤魁页面当前页签（skill=凤魁技能/wuyue=山河五岳）
 var _fengzi_batch: bool = false   # 【新增】风姿十连勾选状态（面板生命周期内保持）
 # 【第35节】吃资质丹的技能统一抵扣勾选：true=百业经验（300×每级丹数/级），false=资质丹；四个页签共享记忆
 var _use_baiye: bool = false
+var _cos_chk_syncing: bool = false   # 【新增】2026-09-25 双货币勾选框互设守卫：true 时屏蔽 toggled 重入，防两回调纠偏死循环
 # 【第35节】各页签当前选中技能索引（重建面板不清；满级沉底/技能数变化后自动回退）
 var _sel_idx: Dictionary = {"skill": 0, "shop": 0, "costume": 0, "halo": 0}
 # 【第35节】各页签按钮排滚动位置记忆（点按钮/升级触发重建时不跳回最左）
@@ -474,7 +476,15 @@ func update_hero_panel():
 				simple_ready = not data.hero_system.get_simple_promote_stage(current_hero_id).is_empty()
 			else:
 				simple_ready = int(h.get("quality", 0)) < int(sp_cfg.get("target_quality", 2))
-		if simple_ready or h.has("promotion"):
+		# 【新增】2026-09-25 凤魁（秦淮五艳）：选定前五人各出"凤魁"钮（确认选定）；选定后仅凤魁保留钮→凤魁页面
+		var fk_now: bool = data.hero_system.get_fengkui_id() == current_hero_id
+		var fk_candidate: bool = (not fk_now) and data.hero_system.is_wuyan(current_hero_id) \
+			and int(h.get("quality", 0)) == 2 and data.hero_system.get_fengkui_id() == ""
+		if fk_now or fk_candidate:
+			promo_btn.text = "凤魁"
+			promo_btn.visible = true
+			promo_btn.pressed.connect(_on_fengkui_btn_clicked)
+		elif simple_ready or h.has("promotion"):
 			var promo_name: String = str(sp_cfg.get("name", "晋升")) if simple_ready else str(h.promotion.get("name", "晋升"))
 			promo_btn.text = promo_name   # 【改】2026-09-24 按钮名=晋升玩法名（赋诗/落雁/军旅），去"赋诗晋升"特判
 			promo_btn.visible = true
@@ -1529,6 +1539,11 @@ func _render_skill_buttons(list: VBoxContainer, items: Array, sel: int, tab_id: 
 func _on_skill_btn_clicked(tab_id: String, idx: int):
 	_sel_idx[tab_id] = idx
 	update_hero_panel()
+	# 【修】2026-09-25 凤魁弹窗技能卡点击：update_hero_panel 只重建门客面板层，凤魁弹窗需同步重建（否则点卡片详情区不刷新，未解锁卡看似无反应）
+	if tab_id == "fengkui_skill" and c.has_node("FengkuiPanel"):
+		_show_fengkui_panel("skill")
+	if tab_id == "fengkui_wuyue" and c.has_node("FengkuiPanel"):
+		_show_fengkui_panel("wuyue")
 
 # 详情区：左=信息（技能名/等级/当前加成/下级数值），右=勾选框+升级+升级10次；已满级右侧全藏只盖红章
 func _render_skill_detail(list: VBoxContainer, item: Dictionary) -> void:
@@ -1577,26 +1592,38 @@ func _render_skill_detail(list: VBoxContainer, item: Dictionary) -> void:
 			var pill_stock: int = int(data.items.get("aptitude_pill", 0))
 			var pool_stock: int = int(data.hero_system.get_baiye(current_hero_id))
 			var chk_pill := CheckBox.new()
+			var chk_baiye := CheckBox.new()   # 【修】2026-09-25 声明前置：GDScript lambda 不得引用后声明变量（parse error），原顺序 pill 回调引用 chk_baiye 报错
 			chk_pill.text = "资质丹"   # 【改】数字拆独立 Label 后同排显示（2026-09-24）
 			chk_pill.button_pressed = not _use_baiye
 			chk_pill.add_theme_font_size_override("font_size", 12)
 			chk_pill.toggled.connect(func(pressed):
+				if _cos_chk_syncing: return   # 【修】2026-09-25 同步守卫：互设 button_pressed 会重入对端回调，无守卫则两回调互相纠偏死循环（栈溢出）
 				if pressed:
 					_use_baiye = false
+					_cos_chk_syncing = true
+					chk_baiye.button_pressed = false   # 真互斥：取消兄弟勾选（原实现只靠 update_hero_panel 重建同步，弹窗内不重建会双勾/脱节）
+					_cos_chk_syncing = false
 					update_hero_panel()
 				elif _use_baiye:   # 互斥：不允许全不选
+					_cos_chk_syncing = true
 					chk_pill.button_pressed = true
+					_cos_chk_syncing = false
 			)
-			var chk_baiye := CheckBox.new()
 			chk_baiye.text = "百业经验"
 			chk_baiye.button_pressed = _use_baiye
 			chk_baiye.add_theme_font_size_override("font_size", 12)
 			chk_baiye.toggled.connect(func(pressed):
+				if _cos_chk_syncing: return   # 同步守卫（同上）
 				if pressed:
 					_use_baiye = true
+					_cos_chk_syncing = true
+					chk_pill.button_pressed = false   # 真互斥（同上）
+					_cos_chk_syncing = false
 					update_hero_panel()
 				elif not _use_baiye:
+					_cos_chk_syncing = true
 					chk_baiye.button_pressed = true
+					_cos_chk_syncing = false
 			)
 			# 【改】2026-09-24 勾选框与消耗数字同排：名字随选中变色，数字保持 _cost_color 红绿色
 			var pill_row := HBoxContainer.new()
@@ -1825,6 +1852,7 @@ func _fill_costume_tab(list):
 	var items: Array = []
 	for cfg in cs.get_hero_costume_cfgs(current_hero_id):
 		var cos_id = cfg.get("id", "")
+		if str(cfg.get("series", "")) == "山河五岳": continue   # 【凤魁】山河五岳集中到凤魁晋升页面，门客服装页签不再显示（光环页签保留，2026-09-25）
 		if not cs.is_hero_cos_unlocked(current_hero_id, cos_id): continue
 		var st = cs.get_hero_cos_state(current_hero_id, cos_id)
 		var base = int(st.get("base", 1))
@@ -3271,3 +3299,310 @@ func _fill_talent_skill_tab(vb):
 	hint_lbl.add_theme_color_override("font_color", Color("#a89ec7"))
 	hint_lbl.text = "按当前星级替换（不累加）；解锁技能在门客【技能】页用资质丹升级"
 	vb.add_child(hint_lbl)
+
+# ============ 凤魁（秦淮五艳晋升，2026-09-25） ============
+
+# 凤魁按钮：已是凤魁→打开凤魁页面；未选定（五艳全传奇）→确认弹窗选定
+func _on_fengkui_btn_clicked():
+	if current_hero_id == "" or not data.heroes.has(current_hero_id): return
+	if data.hero_system.get_fengkui_id() == current_hero_id:
+		_show_fengkui_panel(_fengkui_tab)
+		return
+	if not data.hero_system.can_choose_fengkui(current_hero_id): return
+	c._safe_close("FengkuiConfirmPopup")
+	var popup = c._create_base_popup("选定凤魁", Vector2(440, 220))
+	popup.name = "FengkuiConfirmPopup"
+	popup.z_index = 30
+	c.add_child(popup)
+	var vb = popup.get_child(0)
+	var lbl = Label.new()
+	lbl.text = "是否确定选择【%s】作为凤魁？\n（凤魁获得金凤玲珑信物与凤临乐宴晋升，其余五艳保持传奇）" % data.heroes[current_hero_id].get("name", "")
+	lbl.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	lbl.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+	vb.add_child(lbl)
+	var row = HBoxContainer.new()
+	row.alignment = BoxContainer.ALIGNMENT_CENTER
+	row.add_theme_constant_override("separation", 20)
+	vb.add_child(row)
+	var ok = Button.new()
+	ok.text = "确定"
+	ok.custom_minimum_size = Vector2(120, 40)
+	ok.pressed.connect(_on_fengkui_confirmed)
+	row.add_child(ok)
+	var cancel = Button.new()
+	cancel.text = "取消"
+	cancel.custom_minimum_size = Vector2(120, 40)
+	cancel.pressed.connect(func(): c._safe_close("FengkuiConfirmPopup"))
+	row.add_child(cancel)
+
+func _on_fengkui_confirmed():
+	c._safe_close("FengkuiConfirmPopup")
+	var res = data.hero_system.choose_fengkui(current_hero_id)
+	if not res.get("ok", false):
+		c._show_stage_hint(res.get("msg", "选定失败"), 2.0)
+		return
+	c._show_stage_hint("【%s】已成为凤魁！" % data.heroes[current_hero_id].get("name", ""), 2.5)
+	update_hero_panel()
+
+# 凤魁页面：凤魁技能（凤临乐宴+解锁技能）/ 山河五岳（五艳服装集中）两页签
+# 凤魁页面：凤魁技能（凤临乐宴+解锁技能）/ 山河五岳（五艳已解锁服装集中）两页签；
+# 页签置底、样式照面板技能栏（技能/副业/服装/光环），选中金字高亮（2026-09-25 布局改版：照晋升弹窗+页签置底）
+func _show_fengkui_panel(tab_id: String = "skill"):
+	_fengkui_tab = tab_id
+	if data.hero_system.get_fengkui_id() != current_hero_id: return
+	if c.has_node("FengkuiPanel"):
+		var old = c.get_node("FengkuiPanel")
+		c.remove_child(old)
+		old.queue_free()
+	var popup = c._create_base_popup("【凤魁】%s" % data.heroes[current_hero_id].get("name", ""), Vector2(560, 640))
+	popup.name = "FengkuiPanel"
+	popup.z_index = 30
+	c.add_child(popup)
+	var vb = popup.get_child(0)
+	# 转移按钮（置顶右上角，位置同其他晋升页面的风姿按钮 64×30）
+	var fk_top_bar = HBoxContainer.new()
+	fk_top_bar.alignment = BoxContainer.ALIGNMENT_END
+	fk_top_bar.add_theme_constant_override("separation", 6)
+	vb.add_child(fk_top_bar)
+	var transfer_btn = Button.new()
+	transfer_btn.text = "转移"
+	transfer_btn.custom_minimum_size = Vector2(64, 30)
+	transfer_btn.pressed.connect(_on_fengkui_transfer_clicked)
+	fk_top_bar.add_child(transfer_btn)
+	if tab_id == "skill":
+		_fill_fengkui_skill_tab(vb)
+	else:
+		_fill_fengkui_wuyue_tab(vb)
+	# 页签栏置底（照技能栏 TabSkill 格式：110×36、separation 8、meta tab_id 金字高亮）
+	var tab_bar = HBoxContainer.new()
+	tab_bar.alignment = BoxContainer.ALIGNMENT_CENTER
+	tab_bar.add_theme_constant_override("separation", 8)
+	vb.add_child(tab_bar)
+	for t in [["skill", "凤魁技能"], ["wuyue", "山河五岳"]]:
+		var tbtn = Button.new()
+		tbtn.text = t[1]
+		tbtn.custom_minimum_size = Vector2(110, 36)
+		tbtn.set_meta("tab_id", t[0])
+		tbtn.pressed.connect(_on_fengkui_tab_clicked.bind(t[0]))
+		tab_bar.add_child(tbtn)
+	for tab_btn in tab_bar.get_children():
+		if tab_btn.get_meta("tab_id", "") == tab_id:
+			tab_btn.add_theme_color_override("font_color", Color("#ffd700"))
+	c._add_ok_button(vb, func():
+		if c.has_node("FengkuiPanel"):
+			var old2 = c.get_node("FengkuiPanel")
+			c.remove_child(old2)
+			old2.queue_free()
+	, "关闭")
+func _on_fengkui_tab_clicked(tab_id: String):
+	_show_fengkui_panel(tab_id)
+
+# 凤临乐宴升级回调：batch=false 升1级 / true 升10级（凤临十次）
+func _on_fengkui_upgrade(batch: bool):
+	if data.hero_system.upgrade_fengkui(current_hero_id, batch) > 0:
+		_show_fengkui_panel("skill")
+		update_hero_panel()
+
+func _on_fengkui_skill_upgrade(mode: String):
+	var sname = _get_fengkui_sel_skill()
+	if sname == "": return
+	var res = data.hero_system.upgrade_fengkui_skill(current_hero_id, sname, mode, _use_baiye)
+	if not res.get("ok", false):
+		c._show_stage_hint(res.get("msg", "升级失败"), 2.0)
+		return
+	_show_fengkui_panel("skill")
+	update_hero_panel()
+func _fill_fengkui_skill_tab(vb):
+	var promo = data.heroes[current_hero_id].get("fengkui", {})
+	var lv = int(promo.get("level", 0))
+	var max_lv = int(promo.get("max_level", 80))
+	var per = int(promo.get("aptitude_per_level", 6))
+	# 上行：左=凤临乐宴信息，右=消耗+升级钮（赋诗式）
+	var top = HBoxContainer.new()
+	top.add_theme_constant_override("separation", 40)
+	vb.add_child(top)
+	var left = VBoxContainer.new()
+	top.add_child(left)
+	var title = Label.new()
+	title.text = "凤临乐宴  Lv.%d/%d（每级资质+%d）" % [lv, max_lv, per]
+	left.add_child(title)
+	var apt_lbl = Label.new()
+	apt_lbl.text = "资质+%d（下级+%d）" % [lv * per, (lv + 1) * per]
+	left.add_child(apt_lbl)
+	var right = VBoxContainer.new()
+	top.add_child(right)
+	var cost = int(promo.get("cost_amount", 600))
+	var have = int(data.items.get(str(promo.get("cost_item", "")), 0))
+	var cost_lbl = Label.new()
+	cost_lbl.text = "凤游宴图  %d/%d" % [have, cost]
+	cost_lbl.add_theme_color_override("font_color", _cost_color(have, cost))
+	right.add_child(cost_lbl)
+	var btns = HBoxContainer.new()
+	btns.add_theme_constant_override("separation", 8)
+	right.add_child(btns)
+	var up1 = Button.new()
+	up1.text = "升级"
+	up1.pressed.connect(_on_fengkui_upgrade.bind(false))
+	btns.add_child(up1)
+	var up10 = Button.new()
+	up10.text = "凤临十次"
+	up10.pressed.connect(_on_fengkui_upgrade.bind(true))
+	btns.add_child(up10)
+	# 【改】2026-09-25 解锁信息不再逐行展示：点击技能卡片后在技能栏详情区显示（未解锁=纯展示条目"凤临乐宴X级解锁"，解锁后=升级信息），见 _fengkui_skill_items
+	vb.add_child(HSeparator.new())
+	# 解锁技能区：复用技能栏渲染件（_render_skill_tab=满级沉底+卡片行+详情区，tab_id 独立记忆选中）
+	_render_skill_tab(vb, _fengkui_skill_items(), "fengkui_skill")
+
+# 凤魁解锁技能条目构建（供渲染与选中解析共用；未解锁=纯展示条目 no_action）
+func _fengkui_skill_items() -> Array:
+	var items: Array = []
+	var promo = data.heroes[current_hero_id].get("fengkui", {})
+	for sk in promo.get("unlock_skills", []):
+		var sname: String = sk.get("name", "")
+		var stars: int = int(sk.get("stars", 3))
+		if not promo.get("skills", {}).has(sname):
+			# 未解锁：卡片可点看说明，右侧无操作
+			items.append({"name": sname, "stars": stars, "is_max": false, "no_action": true,
+				"info": "【%s】\n凤临乐宴%d级解锁" % [sname, int(sk.get("threshold", 0))]})
+			continue
+		var slv: int = int(promo["skills"][sname])
+		var smax: int = int(sk.get("max_level", 200))
+		var is_max: bool = slv >= smax
+		var info: String = "【%s】  Lv.%d/%d\n资质+%d" % [sname, slv, smax, slv * stars]
+		if is_max:
+			info += "（已满级）"
+		else:
+			info += "（下级+%d）" % [(slv + 1) * stars]
+		items.append({"name": sname, "stars": stars, "is_max": is_max, "info": info,
+			"pill": stars,
+			"on_single": _on_fengkui_skill_upgrade.bind("single"),
+			"on_bulk": _on_fengkui_skill_upgrade.bind("bulk")})
+	return items
+
+# 技能栏当前选中技能名（_sel_idx["fengkui_skill"] 索引回退解析）
+func _get_fengkui_sel_skill() -> String:
+	var items = _fengkui_skill_items()
+	if items.is_empty(): return ""
+	var sel: int = clampi(int(_sel_idx.get("fengkui_skill", 0)), 0, items.size() - 1)
+	return items[sel].get("name", "")
+# 山河五岳页：已解锁的五艳服装集中于此（未解锁不出现，兑换/解锁走服装图鉴页），
+# 布局=复用技能栏渲染件（与门客服装页签同一套：卡片行+双货币详情区），底部资质合计计入凤魁
+func _fill_fengkui_wuyue_tab(vb):
+	var cs = data.costume_system
+	var items: Array = []
+	for it in data.hero_system.get_wuyue_cos_items():
+		if not it.get("unlocked", false): continue
+		var base: int = int(it.get("base", 1))
+		var max_lv: int = int(cs._settings().get("skill_max_level", 200))
+		var per: int = int(it.get("pill_cost", 2))
+		var is_max: bool = base >= max_lv
+		var info: String = "【%s】%s（属主：%s）  Lv.%d/%d\n资质+%d" % [it.get("quality", ""), it.get("name", ""), it.get("owner_name", ""), base, max_lv, base * per]
+		if is_max:
+			info += "（已满级）"
+		else:
+			info += "（下级+%d）" % [(base + 1) * per]
+		items.append({"name": it.get("name", ""), "stars": per, "is_max": is_max, "info": info,
+			"pill": per,
+			"on_single": _on_wuyue_cos_skill.bind(it.get("owner", ""), it.get("cos_id", ""), "single"),
+			"on_bulk": _on_wuyue_cos_skill.bind(it.get("owner", ""), it.get("cos_id", ""), "bulk")})
+	if items.is_empty():
+		var lbl = Label.new()
+		lbl.text = "暂未解锁山河五岳服装（在服装图鉴页兑换解锁）"
+		lbl.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+		vb.add_child(lbl)
+	else:
+		_render_skill_tab(vb, items, "fengkui_wuyue")
+	# 底部：资质合计计入凤魁 + 光环归属说明
+	var total_lbl = Label.new()
+	total_lbl.text = "资质合计：+%d（计入凤魁【%s】）" % [data.hero_system.get_wuyue_aptitude(current_hero_id), data.heroes[current_hero_id].get("name", "")]
+	total_lbl.add_theme_color_override("font_color", Color("#ffd700"))
+	vb.add_child(total_lbl)
+	var note = Label.new()
+	note.text = "服装光环仍在各属门客的光环页签升级生效"
+	note.add_theme_font_size_override("font_size", 12)
+	vb.add_child(note)
+func _on_wuyue_cos_action(owner: String, cos_id: String, action: String):
+	var res: Dictionary = {}
+	match action:
+		"exchange": res = data.costume_system.exchange_hero_costume(owner, cos_id)
+		"unlock": res = data.costume_system.unlock_hero_cos(owner, cos_id)
+		"extra": res = data.costume_system.upgrade_hero_cos_extra(owner, cos_id)
+	if not res.get("ok", false):
+		c._show_stage_hint(res.get("msg", "操作失败"), 2.0)
+		return
+	_show_fengkui_panel("wuyue")
+	update_hero_panel()
+
+func _on_wuyue_cos_skill(owner: String, cos_id: String, mode: String):
+	var res = data.costume_system.upgrade_cos_skill(owner, cos_id, mode, _use_baiye)
+	if not res.get("ok", false):
+		c._show_stage_hint(res.get("msg", "升级失败"), 2.0)
+		return
+	_show_fengkui_panel("wuyue")
+	update_hero_panel()
+
+# ============ 凤魁转移（2026-09-25） ============
+
+# 转移按钮：弹出其余四艳选择列表（hero_system.transfer_fengkui 执行搬迁）
+func _on_fengkui_transfer_clicked():
+	c._safe_close("FengkuiTransferPopup")
+	var popup = c._create_base_popup("凤魁转移", Vector2(380, 320))
+	popup.name = "FengkuiTransferPopup"
+	popup.z_index = 35
+	c.add_child(popup)
+	var vb = popup.get_child(0)
+	var tip = Label.new()
+	tip.text = "选择新的凤魁：\n信物/凤临乐宴等级/解锁技能等级/绑定一并转移，原门客退回传奇"
+	tip.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	tip.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+	vb.add_child(tip)
+	for hid in data.hero_system.get_wuyan_heroes():
+		if hid == current_hero_id or not data.heroes.has(hid): continue
+		var h = data.heroes[hid]
+		var b = Button.new()
+		b.text = "%s（%s）" % [h.get("name", ""), HeroData.get_quality_name(int(h.get("quality", 2)))]
+		b.pressed.connect(_on_fengkui_transfer_target.bind(hid))
+		vb.add_child(b)
+	c._add_ok_button(vb, func(): c._safe_close("FengkuiTransferPopup"), "取消")
+
+func _on_fengkui_transfer_target(hid: String):
+	c._safe_close("FengkuiTransferPopup")
+	c._safe_close("FengkuiTransferConfirm")
+	var popup = c._create_base_popup("确认转移", Vector2(420, 200))
+	popup.name = "FengkuiTransferConfirm"
+	popup.z_index = 36
+	c.add_child(popup)
+	var vb = popup.get_child(0)
+	var lbl = Label.new()
+	lbl.text = "是否确定将凤魁转移给【%s】？\n（信物/凤临乐宴/技能等级/绑定一并转移，原门客退回传奇）" % data.heroes[hid].get("name", "")
+	lbl.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	lbl.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+	vb.add_child(lbl)
+	var row = HBoxContainer.new()
+	row.alignment = BoxContainer.ALIGNMENT_CENTER
+	row.add_theme_constant_override("separation", 20)
+	vb.add_child(row)
+	var ok = Button.new()
+	ok.text = "确定"
+	ok.custom_minimum_size = Vector2(120, 40)
+	ok.pressed.connect(_on_fengkui_transfer_confirmed.bind(hid))
+	row.add_child(ok)
+	var cancel = Button.new()
+	cancel.text = "取消"
+	cancel.custom_minimum_size = Vector2(120, 40)
+	cancel.pressed.connect(func(): c._safe_close("FengkuiTransferConfirm"))
+	row.add_child(cancel)
+
+func _on_fengkui_transfer_confirmed(hid: String):
+	c._safe_close("FengkuiTransferConfirm")
+	var res = data.hero_system.transfer_fengkui(hid)
+	if not res.get("ok", false):
+		c._show_stage_hint(res.get("msg", "转移失败"), 2.0)
+		return
+	c._show_stage_hint("凤魁已转移给【%s】！" % data.heroes[hid].get("name", ""), 2.5)
+	# 原门客不再是凤魁：关闭凤魁页面，面板刷新（凤魁钮/信物随之消失）
+	if c.has_node("FengkuiPanel"):
+		var old = c.get_node("FengkuiPanel")
+		c.remove_child(old)
+		old.queue_free()
+	update_hero_panel()
