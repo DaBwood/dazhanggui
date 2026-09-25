@@ -62,29 +62,32 @@ func _create_base_popup(title_text: String, popup_size: Vector2, _pos: Vector2 =
 	vbox.add_theme_constant_override("separation", 12)
 	panel.add_child(vbox)
 
-	if with_close:
-		# 【新增】UI统一批次①：顶行（左占位+标题+右上✕总关闭钮）——信息/操作弹窗一律右上✕总关闭，
-		#       底部只放动作钮；确认弹窗（取消+确定双钮）调用方传 with_close=false 不带✕。
-		#       ✕ 关闭=queue_free 自身，遮罩经 tree_exiting meta 连带摘除，任何关闭路径不漏
-		var top_row = HBoxContainer.new()
-		top_row.name = "PopupTopRow"
-		vbox.add_child(top_row)
-		var x_spacer = Control.new()   # 左占位：与✕同宽36，标题才能保持在面板正中
-		x_spacer.custom_minimum_size = Vector2(36, 36)
-		x_spacer.mouse_filter = Control.MOUSE_FILTER_IGNORE
-		top_row.add_child(x_spacer)
+	# 【改】UI统一批次①补充：标题回到内容流第一个子节点（随内容整体居中，同旧行为）；
+	#       with_close=true 时空标题也建命名 Label——原地重建类弹窗（厢房/庄园/钓点）按名 PopupTitle 改标题、
+	#       清空重建保留下标0；确认弹窗（with_close=false）不带✕、遮罩点击不关闭（必须点按钮做选择）
+	if with_close or title_text != "":
 		var title = Label.new()
-		title.name = "PopupTitle"   # 命名：原地重建类弹窗（厢房/庄园/钓点）按名改标题，不按索引取
+		title.name = "PopupTitle"
 		title.text = title_text
-		title.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 		title.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 		title.add_theme_font_size_override("font_size", 22)
 		title.add_theme_color_override("font_color", Color("#ffd700"))
-		top_row.add_child(title)
+		vbox.add_child(title)
+	
+
+	if with_close:
+		# 【改】✕ 总关闭钮改悬浮层钉右上角（原 vbox 顶行方案作废：vbox 整体垂直居中，内容少时✕浮在半空）——
+		#       x_layer 作 PanelContainer 第二子节点被拉伸满幅、IGNORE 不挡点击、后绘制压内容之上；
+		#       ✕ 锚定右上角，随面板尺寸/二次居中自动贴角，z 随面板被调用方提升
+		var x_layer = Control.new()
+		x_layer.mouse_filter = Control.MOUSE_FILTER_IGNORE
+		panel.add_child(x_layer)
 		var close_x = Button.new()
 		close_x.name = "PopupCloseX"
 		close_x.text = "✕"
-		close_x.custom_minimum_size = Vector2(36, 36)
+		close_x.set_anchors_preset(Control.PRESET_TOP_RIGHT)
+		close_x.position = Vector2(-44, 8)   # 相对右上角：右留8px、上留8px
+		close_x.size = Vector2(36, 36)
 		close_x.mouse_filter = Control.MOUSE_FILTER_STOP   # 显式STOP：必须吃点击（PASS会把点击让出去）
 		# 无底红字小钮：四态空底板只留字形，不抢弹窗标题视觉
 		var empty_sb = StyleBoxEmpty.new()
@@ -95,15 +98,14 @@ func _create_base_popup(title_text: String, popup_size: Vector2, _pos: Vector2 =
 		close_x.add_theme_color_override("font_pressed_color", Color("#ff4444"))
 		close_x.add_theme_font_size_override("font_size", 20)
 		close_x.pressed.connect(panel.queue_free)   # 关自己：遮罩走 tree_exiting 连带清理，无需按名
-		top_row.add_child(close_x)
-	elif title_text != "":
-		var title = Label.new()
-		title.name = "PopupTitle"
-		title.text = title_text
-		title.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
-		title.add_theme_font_size_override("font_size", 22)
-		title.add_theme_color_override("font_color", Color("#ffd700"))
-		vbox.add_child(title)
+		x_layer.add_child(close_x)
+		# 【新增】遮罩点击关闭（2026-09-25 用户拍板；确认弹窗不启用——必须点【取消/确定】明确选择）
+		mask.gui_input.connect(func(ev):
+			if ev is InputEventMouseButton and ev.pressed and ev.button_index == MOUSE_BUTTON_LEFT:
+				panel.queue_free()
+		)
+		# 【新增】纯信息弹窗自动补底部【确定】（2026-09-25 用户拍板）：等两帧内容建完再扫描
+		panel.ready.connect(_auto_add_ok_button.bind(panel))
 
 	return panel
 
@@ -115,6 +117,30 @@ func _recenter_popup(panel: Control):
 	if not is_instance_valid(panel): return
 	var vs = c.get_viewport_rect().size
 	panel.position = ((vs - panel.size) / 2).max(Vector2(8, 8))  # 钳个最小边距，超大内容也不至于顶出左上
+
+# 【新增】纯信息弹窗自动补底部【确定】（2026-09-25 用户拍板）：等两帧内容建完后扫描内容区，
+# 一个动作钮都没有（纯展示）才在底部补【确定】（=queue_free，与✕/遮罩点击同路径）；
+# 有使用/升级/列表按钮的弹窗不补；CheckBox/CheckButton 勾选框不算动作钮
+func _auto_add_ok_button(panel: PanelContainer):
+	await c.get_tree().process_frame
+	await c.get_tree().process_frame
+	if not is_instance_valid(panel): return
+	var vbox = panel.get_child(0)
+	if _has_action_button(vbox): return
+	var ok_btn = Button.new()
+	ok_btn.text = "确定"
+	ok_btn.custom_minimum_size = Vector2(120, 40)
+	ok_btn.pressed.connect(panel.queue_free)
+	vbox.add_child(ok_btn)
+
+# 【新增】递归扫描弹窗内容区是否已有动作钮（排除纯勾选控件），供自动补【确定】判定
+func _has_action_button(node: Node) -> bool:
+	for child in node.get_children():
+		if child is BaseButton and not (child is CheckBox or child is CheckButton):
+			return true
+		if _has_action_button(child):
+			return true
+	return false
 
 func _add_ok_button(parent: Node, callback: Callable, text: String = "确定") -> Button:
 	var btn = Button.new()

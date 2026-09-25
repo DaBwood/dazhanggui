@@ -186,12 +186,12 @@ func _fill_species_popup(panel: PanelContainer):
 	var land_word = "土地" if is_crop else "血统"
 	
 	var vbox: VBoxContainer = panel.get_child(0)
-	# 【改】UI统一批次①：清空重建保留下标0顶行（右上✕），动态标题改写顶行 PopupTitle、不再自建 Label
+	# 【改】UI统一批次①补充：清空重建保留下标0标题 Label（✕已改悬浮层不占内容流），动态标题改写 PopupTitle、不再自建 Label
 	for child in vbox.get_children():
 		if child == vbox.get_child(0): continue
 		child.queue_free()
 
-	var title: Label = vbox.get_node("PopupTopRow/PopupTitle")
+	var title: Label = vbox.get_node("PopupTitle")
 	title.text = "【%s】产物：%s ｜ 总产量 %.1f/分" % [
 		cfg.get("name", sid), cfg.get("product", ""), data.get_manor_species_rate(sid)]
 	# 【新增】等级十连勾选放在弹窗内：升级按钮在哪，开关就在哪；勾选状态记在 _batch_checked

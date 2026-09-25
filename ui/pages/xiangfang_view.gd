@@ -492,12 +492,12 @@ func _rebuild_popup():
 func _popup_vbox(title: String, size: Vector2) -> VBoxContainer:
 	if _popup_panel != null and is_instance_valid(_popup_panel) and c.get_node_or_null(_popup_node_name) == _popup_panel:
 		var pvbox: VBoxContainer = _popup_panel.get_child(0)
-		# 【改】UI统一批次①：清空重建保留下标0顶行（右上✕），并按新弹窗种类同步顶行标题
+		# 【改】UI统一批次①补充：清空重建保留下标0标题 Label（✕已改悬浮层不占内容流），并按新弹窗种类同步标题
 		for child in pvbox.get_children():
 			if child == pvbox.get_child(0): continue
 			pvbox.remove_child(child)
 			child.queue_free()
-		var ptitle: Label = pvbox.get_node_or_null("PopupTopRow/PopupTitle")
+		var ptitle: Label = pvbox.get_node_or_null("PopupTitle")
 		if ptitle != null:
 			ptitle.text = title
 		return pvbox
