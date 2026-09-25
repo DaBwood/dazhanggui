@@ -651,30 +651,6 @@ func _on_exit_confirmed():
 	else:
 		get_tree().quit()
 
-func print_scene_tree_to_file():
-	var lines = []
-	_collect_node_lines(get_tree().root, 0, lines)
-	var file = FileAccess.open("res://scene_tree.txt", FileAccess.WRITE)
-	if file:
-		file.store_string("\n".join(lines))
-		file.close()
-		# 打印绝对路径，方便直接去找文件
-		print("场景树已导出：", ProjectSettings.globalize_path("user://scene_tree.txt"))
-	else:
-		push_error("场景树导出失败")
-
-func _collect_node_lines(node: Node, depth: int, lines: Array):
-	# 每深一层加两个空格缩进，同时标出节点类型和可见性
-	var indent = ""
-	for i in range(depth):
-		indent += "  "
-	var visible_txt = ""
-	if node is CanvasItem:
-		visible_txt = "  visible=%s" % str(node.visible)
-	lines.append("%s%s (%s)%s" % [indent, node.name, node.get_class(), visible_txt])
-	for child in node.get_children():
-		_collect_node_lines(child, depth + 1, lines)
-
 # 云存档仲裁/对账失败/冲突恢复弹窗/账号面板/登录弹窗（含 Web HTML 表单）→ ui/net_ui.gd（2026-09-19 重构批次A迁出，经 net_ui 调用）
 
 # ==================== 页面方法转发区 ====================

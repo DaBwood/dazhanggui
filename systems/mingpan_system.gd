@@ -219,7 +219,7 @@ func _roll_value(qkey: String, luck_lv: int, is_outer: bool) -> float:
 		return float(int(round(coef * luck_lv * r)))
 	return snappedf(coef * luck_lv * r, 0.0001)
 
-# 产出一个命格（不消耗不算进度；divine/auto_divine 用）
+# 产出一个命格（不消耗不算进度；divine 用）
 func roll_luck() -> Dictionary:
 	var pool: Array = unlocked.duplicate()
 	var pid: String = str(pool[randi() % pool.size()])
@@ -298,23 +298,6 @@ func install_luck(luck: Dictionary) -> void:
 		"q": str(luck.get("q", "")), "lv": int(luck.get("lv", 1)),
 		"heroes": (luck.get("heroes", {}) as Dictionary).duplicate(),
 	}
-
-# 自动卜卦：连抽直到符尽或达上限；新命格总值更高才自动替换。返回汇总
-func auto_divine(max_rolls: int) -> Dictionary:
-	var rolls: int = 0
-	var replaced: int = 0
-	var ups: int = 0
-	while rolls < max_rolls and can_divine():
-		var r: Dictionary = divine()
-		if not r.get("ok", false):
-			break
-		rolls += 1
-		ups += int(r.get("ups", 0))
-		var luck: Dictionary = r.get("luck", {})
-		if luck_money_impact(luck) > 0.0:   # 真实赚速增量为正才自动替换
-			install_luck(luck)
-			replaced += 1
-	return {"rolls": rolls, "replaced": replaced, "ups": ups}
 
 # ============ 展示辅助：等级分布表 / 加成总览 ============
 # 命盘等级 L 的六档等级分布百分比（0~5 偏移）

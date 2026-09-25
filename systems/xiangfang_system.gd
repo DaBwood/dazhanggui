@@ -20,8 +20,7 @@ extends RefCounted
 var g
 
 # ---------- 存档字段（内部持有，随 get_save_data 落盘） ----------
-var furniture: Dictionary = {}   # {fid: {lv, cnt}}（cnt=富余件数；存档格式 fv=2，旧档 fv=1 读档时自动折算）
-var furniture_fmt: int = 2       # 家具存档格式版本：1=旧(total计数+首件自动解锁)，2=富余计数
+var furniture: Dictionary = {}   # {fid: {lv, cnt}}（cnt=富余件数）
 var set_levels: Dictionary = {}  # {sid: 套装等级}（手动解锁/升级制，用户 2026-09-20 拍板；上限=套内最低件等级）
 var medal_lv: int = 1            # 勋章等级 1~15
 var cap_applied_lv: int = 1      # 技能上限已写入天赋系统的勋章等级（读档漏补自愈，防重复/漏写）
@@ -35,7 +34,7 @@ func _init(p_g):
 # ============ 存档：本系统拥有的字段 ============
 func get_save_data() -> Dictionary:
 	return {"xiangfang": {
-		"furniture": furniture, "fv": furniture_fmt, "set_levels": set_levels, "medal": medal_lv,
+		"furniture": furniture, "set_levels": set_levels, "medal": medal_lv,
 		"cap_applied_lv": cap_applied_lv,
 	}}
 
@@ -48,19 +47,8 @@ func load_save_data(s: Dictionary):
 	furniture = d.get("furniture", {})
 	if not (furniture is Dictionary):
 		furniture = {}
-	# 旧版内置 jiajibi 字段迁移：一次性折算进道具轨（防早期测试档丢币）
-	if d.has("jiajibi") and int(d.get("jiajibi", 0)) > 0:
-		_grant_jiajibi(int(d.get("jiajibi", 0)))
-	# 旧档迁移 fv1→fv2：旧 cnt=总获得件数（首件自动解锁不消耗），新 cnt=富余=total-lv（0→1 那件要补扣）
-	furniture_fmt = int(d.get("fv", 1))
-	if furniture_fmt < 2:
-		for fid in furniture.keys():
-			var e0 = furniture[fid]
-			if e0 is Dictionary and int(e0.get("lv", 0)) > 0:
-				e0["cnt"] = maxi(0, int(e0.get("cnt", 0)) - int(e0.get("lv", 0)))
-		furniture_fmt = 2
 	medal_lv = clampi(int(d.get("medal", 1)), 1, get_medal_count())
-	cap_applied_lv = clampi(int(d.get("cap_applied_lv", medal_lv if int(d.get("fv", 1)) >= 2 else 1)), 1, medal_lv)
+	cap_applied_lv = clampi(int(d.get("cap_applied_lv", medal_lv)), 1, medal_lv)   # 【删】批次D：fv 判断随 fv1→fv2 迁移删除
 	_init_state()
 
 # 存档形状兜底：逐件钳等级/件数（空容器也是 Dictionary，读档即自愈，防"空表死锁"同类坑）
@@ -123,9 +111,6 @@ func get_furniture_state(fid: String) -> Dictionary:
 	if e is Dictionary:
 		return {"lv": int(e.get("lv", 0)), "cnt": int(e.get("cnt", 0))}
 	return {"lv": 0, "cnt": 0}
-
-func is_unlocked(fid: String) -> bool:
-	return get_furniture_state(fid)["lv"] > 0
 
 # 发放家具：富余 cnt 增加；不自动解锁（0→1 靠升级消耗 1 件，用户 2026-09-20 拍板）
 func gain_furniture(fid: String, n: int) -> void:

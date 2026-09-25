@@ -3811,18 +3811,6 @@ func _fill_fengkui_wuyue_tab(vb):
 	note.text = "服装光环仍在各属门客的光环页签升级生效"
 	note.add_theme_font_size_override("font_size", 12)
 	vb.add_child(note)
-func _on_wuyue_cos_action(owner: String, cos_id: String, action: String):
-	var res: Dictionary = {}
-	match action:
-		"exchange": res = data.costume_system.exchange_hero_costume(owner, cos_id)
-		"unlock": res = data.costume_system.unlock_hero_cos(owner, cos_id)
-		"extra": res = data.costume_system.upgrade_hero_cos_extra(owner, cos_id)
-	if not res.get("ok", false):
-		c._show_stage_hint(res.get("msg", "操作失败"), 2.0)
-		return
-	_show_fengkui_panel("wuyue")
-	update_hero_panel()
-
 func _on_wuyue_cos_skill(owner: String, cos_id: String, mode: String):
 	var res = data.costume_system.upgrade_cos_skill(owner, cos_id, mode, _use_baiye)
 	if not res.get("ok", false):

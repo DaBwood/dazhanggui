@@ -449,23 +449,12 @@ func gift_friend(friend_id: String, item_id: String) -> bool:
 			return false
 	return true
 
-# 挚友当前美名下标（2026-09-19 改手动晋升制）：读存档 title_index 字段，-1=无美名。
-# 旧档无该字段=首次访问按旧自动规则（_calc_title_index）定格回填，不追溯、不自动涨，
-# 此后只能靠 promote_title() 手动晋升（用户拍板：可晋升时美名标签亮红点提示）。
+# 挚友当前美名下标（2026-09-19 改手动晋升制）：读存档 title_index 字段，缺省/-1=无美名，
+# 只能靠 promote_title() 手动晋升（用户拍板：可晋升时美名标签亮红点提示）。
+# 【删】批次D：旧自动规则懒迁移（_calc_title_index 定格回填）已删——一次性迁移，跑过即死
 func get_friend_title_index(friend_id: String) -> int:
 	if not g.friends.has(friend_id): return -1
-	var f = g.friends[friend_id]
-	if not f.has("title_index"):
-		f["title_index"] = _calc_title_index(f)   # 懒迁移：旧自动档定格为已晋升档
-	return int(f["title_index"])
-
-# 旧自动规则：友好+才华双达标取最高档（仅用于旧档首访回填，新档晋升不走这里）
-func _calc_title_index(f: Dictionary) -> int:
-	var idx = -1
-	for i in range(g.FRIEND_TITLES.size()):
-		if f.friendly >= g.FRIEND_TITLES[i].req and f.talent >= g.FRIEND_TITLES[i].req:
-			idx = i
-	return idx
+	return int(g.friends[friend_id].get("title_index", -1))
 
 # 可晋升的下一档下标（属性双达标 且 未晋升到顶），-1=不可晋升——美名红点判定唯一入口
 func get_promotable_title_index(friend_id: String) -> int:

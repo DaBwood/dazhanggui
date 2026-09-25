@@ -33,9 +33,8 @@ func _init(p_g):
 
 # ============ 存档：本系统拥有的字段 ============
 func get_save_data() -> Dictionary:
-	# mat_migrated=旧档材料迁移标记（防读档重复叠加进物品表）
 	return {"winery": {
-		"mat_migrated": true, "buy_ts": buy_ts, "buys": buys,
+		"buy_ts": buy_ts, "buys": buys,
 		"ws": ws, "jiuyi": jiuyi, "jiuxiang": jiuxiang, "medal_lv": medal_lv,
 		"wines": wines, "bonds": bonds, "invited": invited, "auto_drink": auto_drink}}
 
@@ -47,13 +46,6 @@ func load_save_data(s: Dictionary):
 		_init_state(true)
 		return
 	var d: Dictionary = s.winery
-	# 旧档一次性迁移：winery.materials → g.items（items 先于系统读档，game_data 惯例成立）
-	if d.has("materials") and not bool(d.get("mat_migrated", false)):
-		var old_m: Dictionary = d.get("materials", {})
-		for m in _cfg().get("materials", []):
-			var mid: String = str(m.get("id", ""))
-			if old_m.has(mid):
-				g.items[mid] = int(g.items.get(mid, 0)) + int(old_m[mid])
 	buy_ts = int(d.get("buy_ts", 0))
 	buys = d.get("buys", {})
 	if not (buys is Dictionary):
@@ -106,11 +98,7 @@ func _init_state(fresh: bool):
 			e["lv"] = clampi(int(e.get("lv", 1)), 1, int(_st().get("wine_max_lv", 100)))
 			e["brewed"] = int(e.get("brewed", 0))
 			e["cnt"] = int(e.get("cnt", 0))
-			# spent 记账（2026-09-18 每级瓶数口径新增）；旧档无 spent：按"已酿即已耗"迁移，不多扣不重领
-			if e.has("spent"):
-				e["spent"] = int(e["spent"])
-			else:
-				e["spent"] = int(e["brewed"])
+			e["spent"] = int(e.get("spent", 0))   # spent 记账（2026-09-18 每级瓶数口径）；【删】批次D：旧档"已酿即已耗"迁移分支已删
 
 # ============ 配置快捷读 ============
 func _cfg() -> Dictionary:
@@ -132,13 +120,6 @@ func _is_material(mid: String) -> bool:
 		if str(m.get("id", "")) == mid:
 			return true
 	return false
-
-func get_materials() -> Dictionary:
-	var d := {}
-	for m in _cfg().get("materials", []):
-		var mid: String = str(m.get("id", ""))
-		d[mid] = int(g.items.get(mid, 0))
-	return d
 
 func get_material(mid: String) -> int:
 	return int(g.items.get(mid, 0))
@@ -340,13 +321,6 @@ func brew(mid: String, n: int = 1) -> Dictionary:
 	# 【改】2026-09-19 接入挂标记「藏品对酒香加成」：藏品「玉生烟」酒香产出+2%/星（读取式）
 	var jiuxiang_out := int(output * n * (1.0 + g.collection_system.get_special_pct("c196", 0.02)))
 	return {"ok": true, "n": n, "got": got, "jiuxiang": jiuxiang_out, "jiuyi": output * n}
-
-# 有可酿材料（地图/主页红点用；库存读物品表）
-func has_brewable() -> bool:
-	for m in _cfg().get("materials", []):
-		if int(g.items.get(str(m.get("id", "")), 0)) > 0:
-			return true
-	return false
 
 # ============ 勋章（15 级手动升级；累计酒香只作门槛不消耗，同药铺勋章范式） ============
 func get_medal_lv() -> int:
@@ -621,16 +595,6 @@ func claim_bond(hero_id: String) -> Dictionary:
 		g.items["jiajibi"] = int(g.items.get("jiajibi", 0)) + fur_n
 		got.append("家具币×%d" % fur_n)
 	return {"ok": true, "lv": lv, "rewards": "、".join(got)}
-
-# ============ 红点判定 ============
-# 有任意流程可升（酒艺值够任意一流程下级）
-func has_upgradeable_process() -> bool:
-	for w in _cfg().get("workshops", []):
-		var wid: String = str(w.get("id", ""))
-		for p in w.get("processes", []):
-			if can_upgrade_process(wid, str(p.get("id", ""))).get("ok", false):
-				return true
-	return false
 
 # 有门客可领交情奖励
 func has_claimable_bond() -> bool:

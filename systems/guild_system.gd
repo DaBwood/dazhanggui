@@ -87,9 +87,6 @@ func set_record(record: Dictionary, username: String) -> void:
 	my_user = username
 	_bot_catchup(cache)
 
-func get_record() -> Dictionary:
-	return cache
-
 # 确保人机建设已补结算到今日（幂等）
 func ensure_fresh() -> Dictionary:
 	if cache.is_empty(): return {}

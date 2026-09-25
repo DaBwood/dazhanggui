@@ -523,9 +523,6 @@ func get_current_tier(hero_id: String) -> String:
 func get_hero_aura_cfg(hero_id: String) -> Dictionary:
 	return _extra("hero_auras").get("hero_auras", {}).get(hero_id, {})
 
-func get_aura_series_cfg(series_key: String) -> Dictionary:
-	return _extra("hero_auras").get("series", {}).get(series_key, {})
-
 # 已招募系列门客数（人数档等级实时来源；不按等级递归，只看是否拥有）
 func get_series_recruited_count(series_key: String) -> int:
 	var count = 0

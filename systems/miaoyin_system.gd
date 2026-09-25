@@ -269,12 +269,6 @@ func get_building_cfg(bid: String) -> Dictionary:
 			return b
 	return {}
 
-func get_building_type(bid: String) -> String:
-	return str(get_building_cfg(bid).get("type", ""))
-
-func get_building_unlock_medal(bid: String) -> int:
-	return int(get_building_cfg(bid).get("unlock_medal", 1))
-
 func is_building_unlocked_by_id(bid: String) -> bool:
 	return is_building_unlocked(get_building_cfg(bid))
 

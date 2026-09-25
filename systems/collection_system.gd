@@ -645,10 +645,6 @@ func _owned_special_sum(filter_kind: String, key: String = "", key_val: String =
 		total += float(sp.get("per_star", 0)) * get_star(cid)
 	return total
 
-# 魂石单品（c035农/c043士/c062侠）：每星+2%/格有效魂石（乘进 get_soul_suit_percent 同一出口）
-func get_soul_cell_item_percent(category: String, inspired: int) -> float:
-	return _owned_special_sum("soul_cell_pct", "category", category) / 100.0 * float(inspired)
-
 # 挚友职业缘分单品（c071农/c073工/c079士/c081商）：谈心缘分 额外+%/星
 func get_friend_bond_category_pct(category: String) -> float:
 	return _owned_special_sum("chat_bond_category_pct", "category", category) / 100.0

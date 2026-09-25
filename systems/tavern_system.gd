@@ -300,13 +300,6 @@ func get_facility_income(fcfg: Dictionary) -> int:
 func get_facility_stat(fcfg: Dictionary) -> String:
 	return "friendly" if str(fcfg.get("area", "")) == "餐饮" else "talent"
 
-# 设施羁绊值：友好 = 2+2(L-1)；才华 = 4+4(L-1)
-func get_facility_bond(fcfg: Dictionary) -> int:
-	var lv: int = maxi(1, get_facility_level(str(fcfg.get("id", ""))))
-	if get_facility_stat(fcfg) == "friendly":
-		return int(_st().get("friendly0", 2)) + int(_st().get("friendly_per", 2)) * (lv - 1)
-	return int(_st().get("talent0", 4)) + int(_st().get("talent_per", 4)) * (lv - 1)
-
 # 全设施知名度之和（小喇叭；酒肆升级门槛判定）
 func get_fame_total() -> int:
 	var total := 0
@@ -397,14 +390,6 @@ func upgrade_facility(fid: String) -> Dictionary:
 	_grant_bond(get_facility_cfg(fid))
 	return {"ok": true}
 
-# 项目内可升级设施数（同步升级前预览/红点口径）
-func get_project_upgradable_count(project: String) -> int:
-	var n := 0
-	for f in get_project_facilities(project):
-		if can_upgrade_facility(str(f.get("id", ""))).get("ok", false):
-			n += 1
-	return n
-
 # 同步升级：同项目所有已解锁设施各升一级（逐个校验，银条不足者跳过）
 func upgrade_project(project: String) -> Dictionary:
 	var up := 0
@@ -472,13 +457,7 @@ func spend_caiyi(fid: String, amount: int) -> bool:
 	caiyi[fid] = get_caiyi(fid) - amount
 	return true
 
-func get_caiyi_total() -> int:
-	var total := 0
-	for k in caiyi.keys():
-		total += int(caiyi[k])
-	return total
-
-# 才艺经验入账（内部；当前仅 _serve_one 调用，预留外部途径口子）
+# 才艺经验入账（预留外部途径口子，2026-09-25 批次D盘点时保留）
 func add_caiyi(fid: String, n: int):
 	caiyi[fid] = int(caiyi.get(fid, 0)) + n
 

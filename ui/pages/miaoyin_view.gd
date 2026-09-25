@@ -176,9 +176,6 @@ func _fmt_rate(x: float) -> String:
 		return "%.1f" % x
 	return "0"
 
-func _show_future(name: String):
-	c._show_stage_hint("【%s】后续版本开放" % name)
-
 func _on_plus_pressed():
 	var count: int = int(data.items.get("miaoyin_jiasu_ka", 0))
 	if count <= 0:
@@ -640,15 +637,6 @@ func _show_rookie_popup(fid: String):
 	close_btn.pressed.connect(close_popup)
 	btns.add_child(close_btn)
 
-func _on_train_item(fid: String, sid: String, count: int):
-	var r: Dictionary = _sys().train_rookie(fid, sid, count)
-	if not r.get("ok", false):
-		c._show_stage_hint(str(r.get("msg", "训练失败")))
-		return
-	c._show_stage_hint("训练成功，经验 +%d" % int(r.get("exp", 0)))
-	c.update_all_ui()
-	_refresh()
-
 func _on_sync_profession_rookies():
 	var r: Dictionary = _sys().train_profession_rookies_level_up(_rookie_filter)
 	if not r.get("ok", false):
@@ -664,18 +652,6 @@ func _on_train_level_up(fid: String):
 		c._show_stage_hint(str(r.get("msg", "升级失败")))
 		return
 	c._show_stage_hint("升级成功")
-	c.update_all_ui()
-	_refresh()
-
-func _on_train_sync(fid: String):
-	var r: Dictionary = _sys().train_rookie_until_level_up(fid)
-	if not r.get("ok", false):
-		c._show_stage_hint(str(r.get("msg", "训练失败")))
-		return
-	if r.get("lv_up", false):
-		c._show_stage_hint("升级成功")
-	else:
-		c._show_stage_hint("已消耗材料，但未升级")
 	c.update_all_ui()
 	_refresh()
 

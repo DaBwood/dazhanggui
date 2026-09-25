@@ -175,13 +175,6 @@ const CAIYUAN_NAME := "财源广进"
 func get_chousuan(hero_id: String) -> int:
 	return int(chousuan.get(hero_id, 0))
 
-# 全池合计（钱庄建筑视图显示总产量用）
-func get_chousuan_total() -> int:
-	var t := 0
-	for k in chousuan.keys():
-		t += int(chousuan[k])
-	return t
-
 # 确保门客已拥有「财源广进」：独立店铺技能，结构镜像第一个店铺技能（等级1起步，规则与原技能一致）
 # 懒创建（首次打开副业页/委任选择器/升级时），旧档零迁移
 func ensure_caiyuan_skill(hero_id: String) -> void:

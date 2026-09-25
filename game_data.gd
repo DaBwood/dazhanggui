@@ -464,7 +464,6 @@ var war_tax_level: int = 1            # 税所等级（上限200）
 var war_tax_accum: float = 0.0        # 税所已累积秒数（封顶500分钟）
 var war_tax_last: int = 0             # 上次累积结算时间戳
 var war_squads: Array = []            # 小队编队 [[hero_id×6]...]，空位为""
-var war_last_battle: Dictionary = {}  # {小队序号: "YYYY-MM-DD"} 每队每天1战
 var war_points: float = 0.0           # 商战积分（兑换商店货币）
 var war_tax_yin: float = 0.0          # 商战税引（税所升级货币）
 # ========== 挚友目标计数（第6批新增；逻辑在 systems/goal_system.gd） ==========
@@ -597,7 +596,6 @@ var _fengzi_configs: Dictionary = {}   # 【新增】风姿配置（fengzi.json�
 var talent_system   # 【新增】天赋系统
 var hero_talents: Dictionary = {}   # 【新增】天赋存档 {hero_id: {"star": 星级}}
 var hero_aura_levels: Dictionary = {}   # 【新增】系列光环存档 {hero_id: {技能名: 等级}}（批次①；series_count/flat/.极 档实时计算不落盘）
-var quality_four_tiers: bool = false   # 【新增】品质四档迁移一次性标记：旧档 quality(0卓越/1传奇/2无双) 整体+1 的判据，随核心字段落盘
 @warning_ignore("unused_private_class_variable")   # 【新增】批次D：配置走 SYSTEM_LIST 动态注册（set 赋值/get 或跨文件读取），分析器扫不到属误报，非真未使用
 var _talent_configs: Dictionary = {}   # 【新增】天赋配置（talent.json）
 var hero_contracts: Dictionary = {}   # 【新增】苦情契约存档 {hero_id: {"level": int, "friends": [挚友id,...]}}
@@ -731,6 +729,112 @@ func _validate_registrations() -> void:
 		if cv != "" and (get(cv) == null or get(cv).is_empty()):
 			push_error("[注册校验] 配置为空: " + cv + "（cfg_var 名写错或对应 JSON 缺失/为空）")
 
+
+# ==================== 门客加成源注册（2026-09-25 架构批次A） ====================
+# HeroData 四个消费端（总资质/百分比/固定收入/属性构成面板）共用这一份注册表遍历。
+# 新增加成源 = 在此加一行 register_bonus：聚合器自动计入、构成面板自动多一行，不再改 HeroData。
+# 参数：label=构成面板行名；kind="apt"资质/"pct"百分比(小数制)/"flat"固定收入；
+#       fn=Callable(g, hero_id)->数值；beast=true 标记珍兽系来源（亲和转移的无兽试算时剔除）。
+# 行序 = 构成面板显示顺序（沿用面板上线时行序）。行内注释保留原聚合器的关键口径说明。
+func _register_hero_bonuses() -> void:
+	HeroData.clear_bonus_registry()
+	# ── 资质 apt ──
+	HeroData.register_bonus("基础", "apt", func(g, hid):
+		return HeroData.get_initial_aptitude(int(g.heroes[hid].get("quality", 0))))   # 初始资质由品质决定（表驱动，晋升升品质自动涨）
+	HeroData.register_bonus("技能", "apt", func(g, hid):
+		var t := 0
+		for skill in g.heroes[hid].aptitude_skills:
+			t += int(skill.level) * int(skill.aptitude_per_level)
+		return t)
+	HeroData.register_bonus("晋升", "apt", func(g, hid):
+		var h = g.heroes[hid]
+		return int(h.promotion.level) * int(h.promotion.aptitude_per_level) if h.has("promotion") else 0)
+	var fn_beast_apt = func(g, hid):   # 装备珍兽资质计入总资质
+		var h = g.heroes[hid]
+		var bid: String = str(h.get("equipped_beast", ""))
+		return 0 if bid == "" else int(g.get_beast_aptitude(bid, h.get("equipped_beast_index", 0)))
+	HeroData.register_bonus("珍兽", "apt", fn_beast_apt, true)
+	HeroData.register_bonus("兽魂", "apt", func(g, hid): return int(g.get_hero_soul_aptitude(hid)), true)   # 魂盘激发格词条之和
+	HeroData.register_bonus("魂力", "apt", func(g, hid): return int(g.get_hero_hunli_aptitude(hid)), true)   # 魂体：等级+魂骨+技能+共鸣
+	HeroData.register_bonus("挚友", "apt", func(g, hid):
+		var t := 0
+		for fid in g.friends:
+			if g.friends[fid].get("bound_heroes", []).has(hid):
+				t += int(g.friend_system.get_friend_aptitude_bonus(fid))   # 超群绝伦：每位绑定挚友每级+1
+		return t)
+	HeroData.register_bonus("服装", "apt", func(g, hid): return int(g.get_hero_costume_aptitude(hid)))   # 服装技能资质+同category光环资质
+	HeroData.register_bonus("风姿", "apt", func(g, hid): return int(g.fengzi_system.get_aptitude(hid)))   # 醉墨挥毫等级×每级资质（无上限）
+	HeroData.register_bonus("信物", "apt", func(g, hid):
+		return int(g.token_system.get_owner_aptitude(hid)) + int(g.token_system.get_bound_aptitude(hid)) + int(g.token_system.get_token_skill_aptitude(hid)))   # 主人/被绑/伴生技能
+	HeroData.register_bonus("金兰", "apt", func(g, hid):
+		return int(g.hero_system.get_jinlan_self_aptitude(hid)) + int(g.hero_system.get_jinlan_partner_aptitude(hid)))   # 金兰义自身侧+伙伴侧
+	HeroData.register_bonus("师徒光环", "apt", func(g, hid): return int(g.hero_system.get_master_aura_aptitude(hid)))   # 小八·童叟无欺
+	HeroData.register_bonus("双人光环", "apt", func(g, hid): return int(g.hero_system.get_pair_aura_aptitude(hid)))   # 小舞·三五组合
+	HeroData.register_bonus("自带光环", "apt", func(g, hid): return int(g.hero_system.get_self_aura_aptitude(hid)))   # 小柒·云裳羽衣
+	HeroData.register_bonus("系列光环", "apt", func(g, hid): return int(g.talent_system.get_series_aptitude_bonus(hid)))   # 自身 series_aptitude 技能
+	HeroData.register_bonus("凤魁", "apt", func(g, hid):
+		return int(g.hero_system.get_fengkui_promo_aptitude(hid)) + int(g.hero_system.get_fengkui_skill_aptitude(hid)) + int(g.hero_system.get_wuyue_aptitude(hid)))   # 凤临乐宴本体+解锁技能+五岳服装
+	HeroData.register_bonus("藏品", "apt", func(g, hid): return int(g.collection_system.get_aptitude_bonus(hid)))   # 每级+每星，含特殊效果资质
+	HeroData.register_bonus("家具", "apt", func(g, hid): return int(g.get_hero_xiangfang_furniture_aptitude(hid)))   # 无双/传奇·按职业
+	HeroData.register_bonus("套装", "apt", func(g, hid): return int(g.get_hero_xiangfang_set_aptitude(hid)))   # 潇湘幽竹类·全体
+	HeroData.register_bonus("命盘", "apt", func(g, hid): return int(g.get_hero_mingpan_aptitude(hid)))   # 命格外圈槽
+	HeroData.register_bonus("宅院", "apt", func(g, hid): return int(g.get_courtyard_hero_aptitude_bonus(hid)))   # 门客卷二·按固定门客分组
+	HeroData.register_bonus("渔获", "apt", func(g, hid): return int(g.get_hero_fish_aptitude(hid)))
+	HeroData.register_bonus("促织", "apt", func(g, hid):
+		return int(g.cuzhi_system.get_equip_aptitude_bonus(hid)) + int(g.cuzhi_system.get_hero_side_aptitude(hid)))   # 装备资质+虫师副业技能
+	HeroData.register_bonus("守护灵", "apt", func(g, hid):
+		return int(g.get_hero_guardian_aptitude(hid)) + int(g.get_hero_guardian_avatar_aptitude(hid)))   # 技能资质+幻化固定资质
+	HeroData.register_bonus("副业", "apt", func(g, hid): return int(g.side_skill_system.get_hero_aptitude_bonus(hid)))   # 市井百业/百工百业/物宝天华/庖丁解牛/XX之道
+	# ── 百分比 pct（小数制；品质天赋/系列光环 getter 是百分数口径，/100 烘在 lambda 里）──
+	HeroData.register_bonus("挚友", "pct", func(g, hid):
+		var t := 0.0
+		for fid in g.friends.keys():
+			if hid in g.friends[fid].bound_heroes:
+				t += float(g.get_friend_percent_bonus(fid))
+		return t)
+	var fn_beast_pct = func(g, hid):   # 珍兽%+魂盘格%+魂骨阶×品级%
+		return float(g.get_hero_beast_bonus(hid).percent) + float(g.get_hero_soul_percent(hid)) + float(g.get_hero_hunli_percent(hid))
+	HeroData.register_bonus("珍兽", "pct", fn_beast_pct, true)
+	HeroData.register_bonus("渔获", "pct", func(g, hid): return float(g.get_hero_fish_percent(hid)))   # 无双渔获 阶×5%
+	HeroData.register_bonus("服装", "pct", func(g, hid): return float(g.get_hero_costume_series_pct(hid)))   # 系列服装光环：群体+3%×件数/自身+3%×件数
+	HeroData.register_bonus("促织", "pct", func(g, hid):
+		return float(g.cuzhi_system.get_temple_bonus(hid)) + float(g.cuzhi_system.get_career_peiyu_percent(str(g.heroes[hid].get("category", "")))) + float(g.cuzhi_system.get_hero_worm_percent_bonus(hid)))   # 促织庙+培育阶段%+虫书star5~6
+	HeroData.register_bonus("守护灵", "pct", func(g, hid):
+		return float(g.get_hero_guardian_percent(hid)) + float(g.get_hero_guardian_avatar_percent(hid)) + float(g.get_hero_guardian_career_bonus(hid)))   # 阶段%+幻化%+幻化同类光环
+	HeroData.register_bonus("信物", "pct", func(g, hid): return float(g.token_system.get_bound_income_pct(hid)))   # 羁绊：被绑定门客+10%
+	HeroData.register_bonus("风姿", "pct", func(g, hid): return float(g.fengzi_system.get_income_pct(hid)))   # 已解锁技能数×5%（全解锁封顶）
+	HeroData.register_bonus("天赋", "pct", func(g, hid):
+		return float(g.talent_system.get_income_pct(hid)) + float(g.talent_system.get_hero_talent_pct(hid)) / 100.0)   # 鬼斧神工替换制+品质天赋%(百分数口径/100)
+	HeroData.register_bonus("系列光环", "pct", func(g, hid): return float(g.talent_system.get_aura_pct(hid)) / 100.0)   # 系列光环%(百分数口径/100)
+	HeroData.register_bonus("藏品", "pct", func(g, hid): return float(g.collection_system.get_percent_bonus(hid)))   # 特殊效果百分比
+	HeroData.register_bonus("套装", "pct", func(g, hid): return float(g.get_hero_xiangfang_set_percent(hid)))   # 表值×套装等级
+	HeroData.register_bonus("命盘", "pct", func(g, hid): return float(g.get_hero_mingpan_pct(hid)))   # 命格四象·内圈槽
+	HeroData.register_bonus("金兰", "pct", func(g, hid):
+		return float(g.hero_system.get_jinlan_self_income_pct(hid)) + float(g.hero_system.get_jinlan_partner_income_pct(hid)))   # 巾帼英风/同袍同泽 双侧
+	HeroData.register_bonus("师徒光环", "pct", func(g, hid): return float(g.hero_system.get_master_aura_income_pct(hid)))   # 市井之学/广结良缘/日进斗金
+	HeroData.register_bonus("双人光环", "pct", func(g, hid): return float(g.hero_system.get_pair_aura_income_pct(hid)))   # 落日起誓
+	HeroData.register_bonus("自带光环", "pct", func(g, hid): return float(g.hero_system.get_self_aura_income_pct(hid)))   # 玉蝶轻舞/花影翩跹
+	# ── 固定收入 flat ──
+	HeroData.register_bonus("道具", "flat", func(g, hid): return int(g.heroes[hid].get("extra_income", 0)))
+	HeroData.register_bonus("挚友", "flat", func(g, hid):
+		var t := 0
+		for fid in g.friends.keys():
+			if hid in g.friends[fid].bound_heroes:
+				t += int(g.get_friend_fixed_bonus(fid))
+		return t)
+	HeroData.register_bonus("宅院", "flat", func(g, hid): return int(g.get_courtyard_hero_income_bonus(hid)))   # 门客卷一·每级+5000
+	HeroData.register_bonus("渔获", "flat", func(g, hid): return int(g.get_hero_fish_flat_income(hid)))   # 传奇/普通
+	HeroData.register_bonus("魂力", "flat", func(g, hid): return int(g.get_hero_hunli_income(hid)), true)   # 【修】补挂 beast 标记：此前无兽试算未剔除，珍兽贡献少算魂骨固定收入
+	HeroData.register_bonus("家具", "flat", func(g, hid): return int(g.get_hero_xiangfang_furniture_income(hid)))   # 卓越/优秀/普通·按职业
+	HeroData.register_bonus("促织", "flat", func(g, hid):
+		return int(g.cuzhi_system.get_career_peiyu_flat_income(str(g.heroes[hid].get("category", "")))) + int(g.cuzhi_system.get_hero_worm_flat_bonus(hid)))   # 培育部位固定+虫书star1~4
+	HeroData.register_bonus("天赋", "flat", func(g, hid): return int(g.talent_system.get_flat_income(hid)))   # 鬼斧神工替换制
+	HeroData.register_bonus("契约", "flat", func(g, hid): return int(g.token_system.get_contract_income(hid)))   # 苦情契约·白月初
+	HeroData.register_bonus("藏品", "flat", func(g, hid): return int(g.collection_system.get_flat_income_bonus(hid)))   # 基础效果赚钱类
+	HeroData.register_bonus("客栈", "flat", func(g, hid): return int(g.inn_system.get_career_income_bonus(str(g.heroes[hid].get("category", "")))))   # 同职业 Σ500×烹饪次数
+	HeroData.register_bonus("酒坊", "flat", func(g, hid): return int(g.winery_system.get_career_wine_income(str(g.heroes[hid].get("category", "")))))   # 名酒记·按职业（2026-09-18 拍板）
+	HeroData.register_bonus("亲和", "flat", func(g, hid): return int(g.hero_system.get_qinhe_income_bonus(hid)))   # 沉香光环②·伙伴转化
+
 func _init():
 	# 【改】实例化由 SYSTEM_LIST 清单循环驱动（原 34 行手写，2026-09-18 架构重构批次①）
 	# set() 动态赋值到同名 var 声明；顺序=清单顺序=读档认领顺序（drugshop 先于 talent）
@@ -742,6 +846,8 @@ func _init():
 	# 【改】校验必须在配置加载后跑：加载前配置变量全是声明默认值（裸声明 var 默认 null），
 	# 会误报"配置为空"（2026-09-18 costume_configs 踩过）；此时为空才真=JSON 缺失
 	_validate_registrations()
+	# 【新增】2026-09-25 架构批次A：门客加成源注册表（HeroData 聚合器/构成面板的唯一来源清单）
+	_register_hero_bonuses()
 
 # ==================== 配置加载 ====================
 
@@ -945,7 +1051,6 @@ func save_game():
 		"reputation": reputation,
 		"player_name": player_name,
 		"save_id": save_id,
-		"quality_four_tiers": quality_four_tiers,
 		"identity_level": identity_level,
 		"identity_rewards_claimed": identity_rewards_claimed,
 		"last_daily_reward_time": last_daily_reward_time,
@@ -989,10 +1094,7 @@ func load_game():
 	if player_name == "":
 		player_name = SURNAMES[randi() % SURNAMES.size()] + NAME_PARTS[randi() % NAME_PARTS.size()]
 
-	if not FileAccess.file_exists(save_path):
-		# 【新增】无存档=新游戏：品质直接是新四档语义，迁移标记置真（防首存→再读误触发旧档+1迁移）
-		quality_four_tiers = true
-		return
+	if not FileAccess.file_exists(save_path): return   # 无存档=新游戏；【删】批次D：四档迁移标记随迁移块一并删除
 	# 【改】读档保底链（防闪退截断，2026-09-22）：正式档损坏 → 有 .bak 自动恢复并重试一次 →
 	# 仍失败则 rename 成 .corrupt 留证（否则新档流程几秒内的自动存档会把它彻底覆盖）
 	var text: String = _read_file_text(save_path)
@@ -1028,9 +1130,6 @@ func load_game():
 	if data.has("last_logout_time"): last_logout_time = data.last_logout_time
 	if data.has("save_id") and str(data.save_id) != "":
 		save_id = str(data.save_id)
-	# 【新增】品质四档迁移标记：老档缺字段=false（触发 hero_system 旧档 quality+1 迁移），新档=true 直接采用
-	if data.has("quality_four_tiers"):
-		quality_four_tiers = bool(data.quality_four_tiers)
 	
 	# ===== 各子系统认领自己的字段（含旧存档兼容逻辑） =====
 	# 【改】读档循环走 _system_instances（顺序=清单顺序，drugshop 先于 talent 由清单保证）
@@ -1393,10 +1492,6 @@ func claim_vip_reward(level: int) -> bool:
 func get_manor_species_list(kind: String):
 	return manor_system.get_species_list(kind)
 
-# 品种是否已解锁（身份等级驱动）
-func is_manor_species_unlocked(species_id: String):
-	return manor_system.is_species_unlocked(species_id)
-
 # 某品种已解锁的地/圈数量（0~4）
 func get_manor_unlocked_plots(species_id: String):
 	return manor_system.get_unlocked_plot_count(species_id)
@@ -1502,10 +1597,6 @@ func get_courtyard_shop_staff_income_bonus(shop_id: String):
 func get_courtyard_shop_percent_bonus(shop_id: String):
 	return courtyard_system.get_shop_percent_bonus(shop_id)
 
-# 挚友卷已累计的友好/才华加成（挚友解锁补发用）
-func get_courtyard_friend_stat_bonus(friend_id: String):
-	return courtyard_system.get_friend_stat_bonus(friend_id)
-
 # 挚友解锁时补发宅院挚友卷属性
 func apply_courtyard_friend_unlock_bonus(friend_id: String):
 	return courtyard_system.apply_friend_unlock_bonus(friend_id)
@@ -1539,10 +1630,6 @@ func claim_war_tax():
 # 升级税所（耗商战税引）
 func upgrade_war_tax():
 	return war_system.upgrade_tax()
-
-# 小队数量上限（门客总数÷6）
-func get_war_max_squads():
-	return war_system.get_max_squads()
 
 # 某小队编队数据（6格，空位""）
 func get_war_squad(squad_index: int):
@@ -1598,11 +1685,6 @@ func get_friend_goal_list():
 func is_friend_goal_done(goal: Dictionary):
 	return goal_system.is_goal_done(goal)
 
-# 某目标当前进度值
-func get_friend_goal_progress(goal: Dictionary):
-	return goal_system.get_stat(goal.get("stat", ""))
-
-
 # 挚友显示名（查 friends.json，兜底返回 id）
 func get_goal_friend_name(friend_id: String) -> String:
 	return goal_system.get_friend_name(friend_id)
@@ -1624,10 +1706,6 @@ func get_friend_goal_stat(stat: String) -> int:
 # 抛竿一次（返回 {ok, type:"fish"/"task", ...}）
 func do_fishing():
 	return fishing_system.do_fishing()
-
-# 当前地龙数量（懒结算后）
-func get_fishing_dilong():
-	return fishing_system.get_dilong()
 
 # ===== 【转发】渔获加成 → fishing_system（供 HeroData 聚合调用，第8批新增） =====
 func get_hero_fish_percent(hero_id: String):

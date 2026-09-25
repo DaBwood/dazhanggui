@@ -94,10 +94,6 @@ func _get_body(beast_id: String, instance_index: int = 0) -> Dictionary:
 	if not body.has("bones"): body["bones"] = {}
 	return body
 
-# 魂体等级
-func get_body_level(beast_id: String, instance_index: int = 0) -> int:
-	return int(_get_body(beast_id, instance_index).get("level", 1))
-
 # 魂体升级：每级60龙芝草、+6资质，上限200级；times=连升次数，材料不足即停
 func upgrade_body(beast_id: String, instance_index: int, times: int = 1) -> Dictionary:
 	if _is_locked_beast(beast_id):

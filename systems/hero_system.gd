@@ -25,12 +25,6 @@ func get_baiye(hero_id: String) -> int:
 func add_baiye(hero_id: String, n: int):
 	baiye[hero_id] = get_baiye(hero_id) + n
 
-func get_baiye_total() -> int:
-	var total := 0
-	for k in baiye.keys():
-		total += int(baiye[k])
-	return total
-
 # 兑换价配置暂留 bank.json settings（百业经验由钱庄 tick 产出，产出速率与兑换价同文件）；门客域读取
 func get_baiye_per_pill() -> int:
 	return int(g._bank_configs.get("settings", {}).get("baiye_per_pill", 300))
@@ -53,22 +47,6 @@ func load_save_data(s: Dictionary):
 	if s.has("heroes"):
 		# 只覆盖存档里有的门客（保留老进度）；存档没有的新门客保持初始值
 		g.heroes = s.heroes.duplicate(true)
-		# 【新增】品质四档改造·旧档迁移（2026-09-21 拍板）：旧档 quality 语义 0=卓越/1=传奇/2=无双，
-		# 新档 0=优秀/1=卓越/2=传奇/3=无双——旧档已写的 quality 整体+1（李白/白月初旧值0→新值1 卓越）；
-		# 未写 quality 的（绝大多数门客）按 heroes.json 配置 born 值补齐（含上古神话6人=3 连带解锁守护灵）。
-		# 迁移一次性：由中枢 quality_four_tiers 标记判定，迁移后置真，新档不再重复+1。
-		if not g.quality_four_tiers:
-			for hid in g.heroes.keys():
-				var hh = g.heroes[hid]
-				if hh.has("quality"):
-					hh.quality = int(hh.quality) + 1
-				# 晋升档位 quality 同步+1：旧档 promotion.tiers 存的是旧三档值（1传奇/2无双），
-				# 不迁的话下次晋升升级会按旧值回写 hero.quality（传奇被写回成卓越）
-				if hh.has("promotion") and hh.promotion.get("tiers", []) is Array:
-					for tier in hh.promotion.tiers:
-						if tier.has("quality"):
-							tier.quality = int(tier.quality) + 1
-			g.quality_four_tiers = true
 		for hid in g.heroes.keys():
 			if not g.heroes[hid].has("quality"):
 				g.heroes[hid].quality = int(g._hero_configs.get(hid, {}).get("quality", 0))
@@ -93,23 +71,11 @@ func load_save_data(s: Dictionary):
 				g.heroes[hid]["promotion"] = g._hero_configs[hid]["promotion"]
 			# 【新增】2026-09-25 极·XX之道回灌：品质≥3 门客（天生无双/老档已无双）自动补发（幂等，按名查重）
 			ensure_ji_zhidao(hid)
-			# 【新增】2026-09-25 自带极·XX之道上限 200→300 迁移（锦衣版带（锦衣）后缀，天然排除）
-			for sk0 in g.heroes[hid].get("aptitude_skills", []):
-				if str(sk0.get("name", "")).begins_with("极·") and not str(sk0.get("name", "")).ends_with("（锦衣）"):
-					sk0["max_level"] = 300
 		# 【新增】2026-09-24 读档回灌：为已拥有门客补发缺失的绑定珍兽（魅影兔：发放+形态技能同步，幂等）
 		g.beast_system.sync_all_bound_beasts()
-	# 【新增】存档迁移：旧档门客的 base_income 字段改名为 extra_income
-	# （该字段实为"额外赚速池"，与基础赚速公式无关；旧档已攒数值原样保留，含旧版升级攒入的部分）
-	for hero in g.heroes.values():
-		if hero.has("base_income"):
-			hero["extra_income"] = hero.get("extra_income", 0) + int(hero["base_income"])
-			hero.erase("base_income")
-	# 【新增】百业经验池：新键 hero_baiye；旧档从钱庄段 bank_baiye 收养（2026-09-19 域归位迁移）
+	# 百业经验池（门客域）认领；【删】2026-09-25 批次D：bank_baiye 旧档收养分支已删（一次性迁移，跑过即死）
 	if s.has("hero_baiye") and s.hero_baiye is Dictionary:
 		baiye = s.hero_baiye.duplicate(true)
-	elif s.has("bank_baiye") and s.bank_baiye is Dictionary:
-		baiye = s.bank_baiye.duplicate(true)
 
 # ============ 以下为原 game_data.gd 搬迁函数（逻辑未改，仅成员访问加了 g. 前缀） ============
 
@@ -745,8 +711,7 @@ func get_qinhe_aura_cap(hero_id: String) -> int:
 	var promo_lv := 0
 	if g.heroes.has(hero_id):
 		promo_lv = int(g.heroes[hero_id].get("promotion", {}).get("level", 0))
-	@warning_ignore("integer_division")
-	return maxi(1, 1 + int(maxi(0, promo_lv - 80) / 10))
+	return maxi(1, 1 + int(maxi(0, promo_lv - 80) / 10.0))   # 【改】批次D顺手：/10.0 显式浮点除法消 INTEGER_DIVISION 警告（正数截断=floor，数值不变）
 
 # 转化比例（小数口径）：第k级 = ratio_base × k（配置 0.4=40%）
 func get_qinhe_ratio(hero_id: String) -> float:
@@ -943,16 +908,10 @@ func _check_fengkui(hero: Dictionary):
 		hero.quality = 3   # 凤临乐宴满级晋升无双（初始资质由品质表决定自动涨）
 		_grant_ji_zhidao(hero)   # 【新增】2026-09-25 极·XX之道：凤临乐宴满级升无双自动发放（幂等）
 
-func get_fengkui_level(hero_id: String) -> int:
-	return int(g.heroes.get(hero_id, {}).get("fengkui", {}).get("level", 0))
-
 func _fengkui_skill_cfg(hero_id: String, skill_name: String) -> Dictionary:
 	for sk in g.heroes.get(hero_id, {}).get("fengkui", {}).get("unlock_skills", []):
 		if sk.get("name", "") == skill_name: return sk
 	return {}
-
-func get_fengkui_skill_level(hero_id: String, skill_name: String) -> int:
-	return int(g.heroes.get(hero_id, {}).get("fengkui", {}).get("skills", {}).get(skill_name, -1))
 
 # 凤魁技能升级：每级消耗=星级数颗资质丹，或百业经验抵扣（300/颗，use_baiye 互斥）；
 # 上限200；需凤临乐宴已达对应解锁阈值。mode: single=1级 / bulk=10级（照服装技能模板）

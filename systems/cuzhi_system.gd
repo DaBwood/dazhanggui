@@ -349,10 +349,6 @@ func _add_exp(cid: String, amount: int):
 		caught.level += 1
 		needed = get_levelup_cost(caught.level, q)
 
-# ========== 捕捉 ==========
-func can_catch() -> bool:
-	return g.items.get("cuzhi_cage", 0) > 0
-
 func catch_one() -> Dictionary:
 	g.items["cuzhi_cage"] = g.items.get("cuzhi_cage", 0) - 1
 	g.cuzhi_spent += 1
@@ -383,11 +379,6 @@ func get_cricket_level(cid: String) -> int:
 	if not g.cuzhi_caught.has(cid):
 		return 0
 	return g.cuzhi_caught[cid].level
-
-func get_cricket_exp(cid: String) -> int:
-	if not g.cuzhi_caught.has(cid):
-		return 0
-	return g.cuzhi_caught[cid].exp
 
 # ========== 促织庙 ==========
 func get_temple_level(hero_id: String) -> int:
@@ -534,10 +525,6 @@ func get_phase_cfg(phase_idx: int) -> Dictionary:
 		return phases[phase_idx]
 	return {}
 
-func get_phase_name(phase_idx: int) -> String:
-	var cfg = get_phase_cfg(phase_idx)
-	return cfg.get("name", "未知")
-
 func get_current_phase(cid: String) -> int:
 	_ensure_cricket_dev(cid)
 	return g.cuzhi_caught[cid].get("phase", 0)
@@ -581,12 +568,6 @@ func is_cricket_busy(cid: String) -> bool:
 		if jar.get("cid", "") == cid:
 			return true
 	return false
-
-func get_jar_by_cid_part(cid: String, part: String) -> Dictionary:
-	for jar in g.cuzhi_jars:
-		if jar.get("cid", "") == cid and jar.get("part", "") == part:
-			return jar
-	return {}
 
 func _check_jar_unlock():
 	var total_lv = 0

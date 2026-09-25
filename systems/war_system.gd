@@ -30,7 +30,6 @@ func get_save_data() -> Dictionary:
 		"war_tax_accum": g.war_tax_accum,     # 税所已累积秒数（封顶500分钟）
 		"war_tax_last": g.war_tax_last,       # 上次累积结算时间戳
 		"war_squads": g.war_squads,           # 小队编队（每队6格，空位""）
-		"war_last_battle": g.war_last_battle, # 【legacy】旧版按小队的出战日期（新逻辑不再写入，仅兼容旧档读取）
 		"war_points": g.war_points,           # 商战积分
 		"war_tax_yin": g.war_tax_yin,         # 商战税引
 		"war_hero_battle": hero_battle,       # 【新增】门客级出战记录（按门客的今日限制）
@@ -42,7 +41,6 @@ func load_save_data(s: Dictionary):
 	if s.has("war_tax_accum"): g.war_tax_accum = float(s.war_tax_accum)
 	if s.has("war_tax_last"): g.war_tax_last = int(s.war_tax_last)
 	if s.has("war_squads"): g.war_squads = s.war_squads.duplicate(true)
-	if s.has("war_last_battle"): g.war_last_battle = s.war_last_battle.duplicate(true)
 	if s.has("war_points"): g.war_points = float(s.war_points)
 	if s.has("war_tax_yin"): g.war_tax_yin = float(s.war_tax_yin)
 	# 【新增】门客出战记录（旧档无此字段 = 全员今日未出战，自然兼容）
@@ -132,10 +130,6 @@ func claim_tax() -> Dictionary:
 func get_squad_count() -> int:
 	return g.war_squads.size()
 
-# 【legacy】旧接口保留兼容（game_data 转发层仍在用），语义=当前小队数量
-func get_max_squads() -> int:
-	return get_squad_count()
-
 # 取小队数据（6格，空位为""；首次访问自动补齐）
 func get_squad(squad_index: int) -> Array:
 	var size = int(get_settings().get("squad_size", 6))
@@ -155,21 +149,11 @@ func add_squad() -> Dictionary:
 	g.war_squads.append(sq)
 	return {"ok": true}
 
-# 【新增】删除小队（队内门客自然移出；后续小队编号前移，
-#       legacy 的 war_last_battle 按小队序号记录同步移位，防止语义错乱）
+# 删除小队（队内门客自然移出；后续小队编号前移）
 func remove_squad(squad_index: int) -> Dictionary:
 	if squad_index < 0 or squad_index >= g.war_squads.size():
 		return {"ok": false, "reason": "小队不存在"}
 	g.war_squads.remove_at(squad_index)
-	var shifted := {}
-	for k in g.war_last_battle.keys():
-		var i = int(k)
-		if i < squad_index:
-			shifted[str(i)] = g.war_last_battle[k]
-		elif i > squad_index:
-			shifted[str(i - 1)] = g.war_last_battle[k]
-		# i == squad_index 的记录随小队一并删除
-	g.war_last_battle = shifted
 	return {"ok": true}
 
 # 门客所在小队序号（-1 = 未编队）
@@ -308,7 +292,6 @@ func battle(squad_index: int) -> Dictionary:
 		pts_pct += g.talent_system.get_war_points_pct(hid)
 	var r = _settle(power, pts_pct)
 	_mark_battled(ready)
-	g.war_last_battle[str(squad_index)] = _today()   # legacy 字段同步写一份（无害，兼容旧读档路径）
 	return {"ok": true, "win": r.win, "power": power, "npc_power": r.npc_power, "points": r.points, "yin": r.yin, "kills": r.kills}
 
 # 【新增】快速战斗：所有可出战小队各自动结算一场（今日已出战门客跳过、空队跳过），返回汇总
@@ -343,7 +326,6 @@ func quick_battle() -> Dictionary:
 			pts_pct += g.talent_system.get_war_points_pct(hid)
 		var r = _settle(power, pts_pct)
 		_mark_battled(ready)
-		g.war_last_battle[str(idx)] = _today()   # legacy 字段同步
 		if r.win:
 			wins += 1
 		total_points += r.points

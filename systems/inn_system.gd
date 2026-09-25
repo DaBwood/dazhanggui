@@ -46,25 +46,7 @@ func load_save_data(s: Dictionary):
 	if s.has("inn_jiaozi"): jiaozi = int(s.inn_jiaozi)
 	if s.has("inn_pending") and s.inn_pending is Dictionary: pending = s.inn_pending
 	if s.has("inn_dish_cooks") and s.inn_dish_cooks is Dictionary: dish_cooks = s.inn_dish_cooks
-	# 【新增】2026-09-16 显式等级认领；旧档无此字段时按"累计次数推导"旧公式一次性反推等级并换算剩余次数（赚速不跌）
-	if s.has("inn_dish_levels") and s.inn_dish_levels is Dictionary:
-		dish_levels = s.inn_dish_levels
-	else:
-		_migrate_dish_levels()
-
-# 【新增】旧档迁移：等级改手动前的存量档，dish_cooks 是"历史累计次数"——按旧推导公式反推等级，
-# 并把已消耗次数从累计中扣除（dish_cooks 转为"当前段内剩余次数"口径，与新规则自洽，幂等）
-func _migrate_dish_levels():
-	for key in dish_cooks.keys():
-		var n: int = int(dish_cooks.get(key, 0))
-		var lv := 1
-		var need := 1
-		while n >= need:
-			n -= need
-			lv += 1
-			need = get_dish_need(lv)
-		dish_cooks[key] = n
-		dish_levels[key] = lv
+	if s.has("inn_dish_levels") and s.inn_dish_levels is Dictionary: dish_levels = s.inn_dish_levels   # 【删】批次D：旧档反推迁移已删
 
 # ============ 配置读取（inn.json，代码默认值兜底） ============
 func _st() -> Dictionary:
@@ -106,13 +88,6 @@ func is_cooking() -> bool:
 # 【第37节】门客独立池查询
 func get_cuisine(hero_id: String) -> int:
 	return int(cuisine.get(hero_id, 0))
-
-# 全池合计（客栈建筑视图显示总产量用）
-func get_cuisine_total() -> int:
-	var t := 0
-	for k in cuisine.keys():
-		t += int(cuisine[k])
-	return t
 
 func get_jiaozi() -> int:
 	return jiaozi
