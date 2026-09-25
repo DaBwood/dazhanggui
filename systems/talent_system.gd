@@ -328,6 +328,9 @@ func get_aura_pct(hero_id: String) -> float:
 		if str(g.heroes[hid].get("category", "")) != cat: continue
 		for sk in get_hero_aura_cfg(hid).get("skills", []):
 			var kind = str(sk.get("effect", {}).get("kind", ""))
+			# 【修】2026-09-25：self_pct 只加光环持有者本人（原实现把同职业所有人的"自身"光环也加进来，
+			#       沉香等非系列门客平白吃到+50%，构成面板抓出）；career_pct 同职业共享为设计口径，不动
+			if kind == "self_pct" and hid != hero_id: continue
 			if kind == "self_pct" or kind == "career_pct":
 				total += float(sk.get("effect", {}).get("per", 0)) * get_aura_level(hid, sk)
 	return total

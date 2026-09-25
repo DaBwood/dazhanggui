@@ -745,6 +745,7 @@ func get_qinhe_aura_cap(hero_id: String) -> int:
 	var promo_lv := 0
 	if g.heroes.has(hero_id):
 		promo_lv = int(g.heroes[hero_id].get("promotion", {}).get("level", 0))
+	@warning_ignore("integer_division")
 	return maxi(1, 1 + int(maxi(0, promo_lv - 80) / 10))
 
 # 转化比例（小数口径）：第k级 = ratio_base × k（配置 0.4=40%）

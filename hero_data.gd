@@ -10,6 +10,39 @@ extends RefCounted
 # 【新增】亲和（沉香）无兽计算开关：置真期间珍兽系贡献行全部跳过（见 get_beast_income_contribution）
 static var _beastless_calc := false
 
+# ============ 收入缓存表（2026-09-25 用户拍板"赚速写入式表格"） ============
+# 全门客收入/全局贡献算一次存表，一切读取查表；公式仍只住本文件（get_income 等为唯一计算入口），
+# 缓存只是结果快照。任何养成操作后由 game_controller.update_all_ui 统一置脏（汇流点），
+# 置脏后首次读取时重建（lazy 重建：避开多步操作做到一半的半成品状态被算进表）。
+static var _income_cache: Dictionary = {}     # hero_id -> 门客总赚钱（get_income 快照）
+static var _contrib_cache: Dictionary = {}    # hero_id -> 全局贡献（收入×突破×0.5 快照）
+static var _income_cache_dirty: bool = true   # 初始即脏：进游戏首次读取时建表
+
+# 置脏入口：任何可能改动门客收入的操作后调用（汇流点 update_all_ui 统一调，各系统无需各自接线）
+static func invalidate_income_cache() -> void:
+	_income_cache_dirty = true
+
+# 重建：全量扫荡一次。贡献不重复调 get_global_contribution（它内部会再算一遍 get_income），
+# 拆出 _contribution_from_income 复用同一份收入快照，一次重建每门客只算一遍
+static func _rebuild_income_cache(g) -> void:
+	_income_cache.clear()
+	_contrib_cache.clear()
+	for hero_id in g.heroes.keys():
+		var inc: int = get_income(g, hero_id)
+		_income_cache[hero_id] = inc
+		_contrib_cache[hero_id] = _contribution_from_income(g, hero_id, inc)
+	_income_cache_dirty = false
+
+# 查表读门客赚钱（外部读取一律走这里；表外门客返回 0）
+static func get_income_cached(g, hero_id: String) -> int:
+	if _income_cache_dirty: _rebuild_income_cache(g)
+	return int(_income_cache.get(hero_id, 0))
+
+# 查表读门客全局贡献（shop_system 总赚速用）
+static func get_contribution_cached(g, hero_id: String) -> int:
+	if _income_cache_dirty: _rebuild_income_cache(g)
+	return int(_contrib_cache.get(hero_id, 0))
+
 # ============ 资质 ============
 
 # 品质→初始资质表（2026-09-24 用户拍板：初始资质由品质决定，优秀33/卓越66/传奇99/无双333）
@@ -204,8 +237,10 @@ static func get_percent_bonus(g, hero_id: String) -> float:
 	bonus += g.get_hero_xiangfang_set_percent(hero_id)
 	bonus += g.get_hero_mingpan_pct(hero_id)
 	# 【批次③】品质天赋%（同职业/全体/系列）+ 系列光环%（自身/同职业）
-	bonus += g.talent_system.get_hero_talent_pct(hero_id)
-	bonus += g.talent_system.get_aura_pct(hero_id)
+	# 【修】2026-09-25 口径修复：这两个 getter 返回百分数（5=5%，与 apprentice/war 消费端同款 /100 惯例），
+	#       此前漏除导致 5% 天赋实发+500%（门客属性构成面板实测抓出）
+	bonus += g.talent_system.get_hero_talent_pct(hero_id) / 100.0
+	bonus += g.talent_system.get_aura_pct(hero_id) / 100.0
 	# 【新增】金兰（花木兰）：巾帼英风/同袍同泽（自身侧）+ 风姿赚钱100%/同袍同泽（金兰门客伙伴侧）
 	bonus += g.hero_system.get_jinlan_self_income_pct(hero_id)
 	bonus += g.hero_system.get_jinlan_partner_income_pct(hero_id)
@@ -227,19 +262,25 @@ static func get_income(g, hero_id: String) -> int:
 # （原 hero_system 的 income==0 短路不再保留：0×突破×0.5 恒为0，行为等价）
 static func get_global_contribution(g, hero_id: String) -> int:
 	if not g.heroes.has(hero_id): return 0
-	# 【改】copy_max_level：全局贡献的突破倍率同样取复制值（与 get_base_income 同口径）
+	return _contribution_from_income(g, hero_id, get_income(g, hero_id))
+
+# 【新增】贡献倍率部分（从 get_global_contribution 拆出，缓存重建时复用同一份收入快照）：
+# 收入 × 突破次数（copy_max_level 复制档取复制值，与 get_base_income 同口径）× 0.5
+static func _contribution_from_income(g, hero_id: String, income: int) -> int:
 	var eff_bt = int(g.heroes[hero_id].breakthrough_count)
 	var copy_stats: Dictionary = g.talent_system.get_copy_stats(hero_id)
 	if not copy_stats.is_empty():
 		eff_bt = maxi(eff_bt, int(copy_stats.get("bt", 0)))
-	return int(get_income(g, hero_id) * eff_bt * 0.5)
+	return int(income * eff_bt * 0.5)
 
 # 全门客总赚速（战力）= 所有门客总赚速之和
 # 【新增】从 hero_system.get_heroes_total_income 搬入
+# 【改】走收入缓存表求和（原逐门客实时重算；数值同口径，表脏时先重建）
 static func get_total_income(g) -> int:
+	if _income_cache_dirty: _rebuild_income_cache(g)
 	var total = 0
-	for hero_id in g.heroes.keys():
-		total += get_income(g, hero_id)
+	for hero_id in _income_cache.keys():
+		total += int(_income_cache[hero_id])
 	return total
 
 # 【新增】亲和（沉香）光环②：装备珍兽为门客提升的赚钱
@@ -252,6 +293,114 @@ static func get_beast_income_contribution(g, hero_id: String) -> int:
 	var without_beast := get_income(g, hero_id)
 	_beastless_calc = false
 	return maxi(0, get_income(g, hero_id) - without_beast)
+
+# ============ 门客属性构成表（2026-09-25 用户拍板，门客面板资质行"?"钮的数据源） ============
+# 把 get_total_aptitude / get_percent_bonus / get_extra_income 的逐来源值分项返回（同一批 getter，
+# 不复制公式，显示值与生效值天然同口径）；零值行也返回（测试对账用，玩家同可见）。
+# 行结构：[来源名, 数值]；pct_rows 为小数制（0.02=2%）。等级上限公式与 hero_system 升级处一致（50+突破×50）。
+static func get_attr_breakdown(g, hero_id: String) -> Dictionary:
+	var bd: Dictionary = {"apt_total": 0, "apt_rows": [], "level": 0, "bt": 0, "level_cap": 0,
+		"income_total": 0, "income_base": 0, "flat_rows": [], "pct_rows": []}
+	if not g.heroes.has(hero_id): return bd
+	var hero = g.heroes[hero_id]
+	var cat: String = str(hero.get("category", ""))
+
+	# ── 资质构成（与 get_total_aptitude 逐行对应）──
+	var apt_rows: Array = []
+	apt_rows.append(["基础", get_initial_aptitude(int(hero.get("quality", 0)))])
+	var sk_apt := 0
+	for skill in hero.aptitude_skills:
+		sk_apt += int(skill.level) * int(skill.aptitude_per_level)
+	apt_rows.append(["技能", sk_apt])
+	var promo_apt := 0
+	if hero.has("promotion"):
+		promo_apt = int(hero.promotion.level) * int(hero.promotion.aptitude_per_level)
+	apt_rows.append(["晋升", promo_apt])
+	var beast_apt := 0
+	var beast_id: String = str(hero.get("equipped_beast", ""))
+	if beast_id != "":
+		beast_apt = int(g.get_beast_aptitude(beast_id, hero.get("equipped_beast_index", 0)))
+	apt_rows.append(["珍兽", beast_apt])
+	apt_rows.append(["兽魂", int(g.get_hero_soul_aptitude(hero_id))])
+	apt_rows.append(["魂力", int(g.get_hero_hunli_aptitude(hero_id))])
+	var fd_apt := 0
+	for fid in g.friends:
+		if g.friends[fid].get("bound_heroes", []).has(hero_id):
+			fd_apt += int(g.friend_system.get_friend_aptitude_bonus(fid))
+	apt_rows.append(["挚友", fd_apt])
+	apt_rows.append(["服装", int(g.get_hero_costume_aptitude(hero_id))])
+	apt_rows.append(["风姿", int(g.fengzi_system.get_aptitude(hero_id))])
+	apt_rows.append(["信物", int(g.token_system.get_owner_aptitude(hero_id)) + int(g.token_system.get_bound_aptitude(hero_id)) + int(g.token_system.get_token_skill_aptitude(hero_id))])
+	apt_rows.append(["金兰", int(g.hero_system.get_jinlan_self_aptitude(hero_id)) + int(g.hero_system.get_jinlan_partner_aptitude(hero_id))])
+	apt_rows.append(["师徒光环", int(g.hero_system.get_master_aura_aptitude(hero_id))])
+	apt_rows.append(["双人光环", int(g.hero_system.get_pair_aura_aptitude(hero_id))])
+	apt_rows.append(["自带光环", int(g.hero_system.get_self_aura_aptitude(hero_id))])
+	apt_rows.append(["系列光环", int(g.talent_system.get_series_aptitude_bonus(hero_id))])
+	apt_rows.append(["凤魁", int(g.hero_system.get_fengkui_promo_aptitude(hero_id)) + int(g.hero_system.get_fengkui_skill_aptitude(hero_id)) + int(g.hero_system.get_wuyue_aptitude(hero_id))])
+	apt_rows.append(["藏品", int(g.collection_system.get_aptitude_bonus(hero_id))])
+	apt_rows.append(["家具", int(g.get_hero_xiangfang_furniture_aptitude(hero_id))])
+	apt_rows.append(["套装", int(g.get_hero_xiangfang_set_aptitude(hero_id))])
+	apt_rows.append(["命盘", int(g.get_hero_mingpan_aptitude(hero_id))])
+	apt_rows.append(["宅院", int(g.get_courtyard_hero_aptitude_bonus(hero_id))])
+	apt_rows.append(["渔获", int(g.get_hero_fish_aptitude(hero_id))])
+	apt_rows.append(["促织", int(g.cuzhi_system.get_equip_aptitude_bonus(hero_id)) + int(g.cuzhi_system.get_hero_side_aptitude(hero_id))])
+	apt_rows.append(["守护灵", int(g.get_hero_guardian_aptitude(hero_id)) + int(g.get_hero_guardian_avatar_aptitude(hero_id))])
+	apt_rows.append(["副业", int(g.side_skill_system.get_hero_aptitude_bonus(hero_id))])
+	bd["apt_rows"] = apt_rows
+	bd["apt_total"] = get_total_aptitude(g, hero_id)
+
+	# ── 等级 / 等级上限（上限公式=50+突破×50，与 hero_system 升级处一致）──
+	bd["level"] = int(hero.level)
+	bd["bt"] = int(hero.breakthrough_count)
+	bd["level_cap"] = 50 + int(hero.breakthrough_count) * 50
+
+	# ── 赚钱构成（与 get_percent_bonus / get_extra_income 逐行对应）──
+	bd["income_base"] = get_base_income(g, hero_id)
+	var pct_rows: Array = []
+	var fd_pct := 0.0
+	for fid in g.friends.keys():
+		if hero_id in g.friends[fid].bound_heroes:
+			fd_pct += float(g.get_friend_percent_bonus(fid))
+	pct_rows.append(["挚友", fd_pct])
+	pct_rows.append(["珍兽", float(g.get_hero_beast_bonus(hero_id).percent) + float(g.get_hero_soul_percent(hero_id)) + float(g.get_hero_hunli_percent(hero_id))])
+	pct_rows.append(["渔获", float(g.get_hero_fish_percent(hero_id))])
+	pct_rows.append(["服装", float(g.get_hero_costume_series_pct(hero_id))])
+	pct_rows.append(["促织", float(g.cuzhi_system.get_temple_bonus(hero_id)) + float(g.cuzhi_system.get_career_peiyu_percent(cat)) + float(g.cuzhi_system.get_hero_worm_percent_bonus(hero_id))])
+	pct_rows.append(["守护灵", float(g.get_hero_guardian_percent(hero_id)) + float(g.get_hero_guardian_avatar_percent(hero_id)) + float(g.get_hero_guardian_career_bonus(hero_id))])
+	pct_rows.append(["信物", float(g.token_system.get_bound_income_pct(hero_id))])
+	pct_rows.append(["风姿", float(g.fengzi_system.get_income_pct(hero_id))])
+	pct_rows.append(["天赋", float(g.talent_system.get_income_pct(hero_id)) + float(g.talent_system.get_hero_talent_pct(hero_id)) / 100.0])   # 【修】品质天赋 getter 为百分数口径，/100 对齐实际生效值
+	pct_rows.append(["系列光环", float(g.talent_system.get_aura_pct(hero_id)) / 100.0])   # 【修】系列光环 getter 为百分数口径，/100 对齐实际生效值
+	pct_rows.append(["藏品", float(g.collection_system.get_percent_bonus(hero_id))])
+	pct_rows.append(["套装", float(g.get_hero_xiangfang_set_percent(hero_id))])
+	pct_rows.append(["命盘", float(g.get_hero_mingpan_pct(hero_id))])
+	pct_rows.append(["金兰", float(g.hero_system.get_jinlan_self_income_pct(hero_id)) + float(g.hero_system.get_jinlan_partner_income_pct(hero_id))])
+	pct_rows.append(["师徒光环", float(g.hero_system.get_master_aura_income_pct(hero_id))])
+	pct_rows.append(["双人光环", float(g.hero_system.get_pair_aura_income_pct(hero_id))])
+	pct_rows.append(["自带光环", float(g.hero_system.get_self_aura_income_pct(hero_id))])
+	bd["pct_rows"] = pct_rows
+
+	var flat_rows: Array = []
+	flat_rows.append(["道具", int(hero.get("extra_income", 0))])
+	var fd_flat := 0
+	for fid in g.friends.keys():
+		if hero_id in g.friends[fid].bound_heroes:
+			fd_flat += int(g.get_friend_fixed_bonus(fid))
+	flat_rows.append(["挚友", fd_flat])
+	flat_rows.append(["宅院", int(g.get_courtyard_hero_income_bonus(hero_id))])
+	flat_rows.append(["渔获", int(g.get_hero_fish_flat_income(hero_id))])
+	flat_rows.append(["魂力", int(g.get_hero_hunli_income(hero_id))])
+	flat_rows.append(["家具", int(g.get_hero_xiangfang_furniture_income(hero_id))])
+	flat_rows.append(["促织", int(g.cuzhi_system.get_career_peiyu_flat_income(cat)) + int(g.cuzhi_system.get_hero_worm_flat_bonus(hero_id))])
+	flat_rows.append(["天赋", int(g.talent_system.get_flat_income(hero_id))])
+	flat_rows.append(["契约", int(g.token_system.get_contract_income(hero_id))])
+	flat_rows.append(["藏品", int(g.collection_system.get_flat_income_bonus(hero_id))])
+	flat_rows.append(["客栈", int(g.inn_system.get_career_income_bonus(cat))])
+	flat_rows.append(["酒坊", int(g.winery_system.get_career_wine_income(cat))])
+	flat_rows.append(["亲和", int(g.hero_system.get_qinhe_income_bonus(hero_id))])
+	bd["flat_rows"] = flat_rows
+	bd["income_total"] = get_income(g, hero_id)
+	return bd
 
 # ============ 店铺 ============
 

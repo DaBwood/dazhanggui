@@ -699,11 +699,11 @@ func _on_trade_assign(trade_id: String):
 	lst.add_theme_constant_override("separation", 2)
 	scroll.add_child(lst)
 	var hero_ids: Array = data.heroes.keys()   # 【修】动态类型变量返回值显式标注，:=推断不出
-	hero_ids.sort_custom(func(a, b): return HeroData.get_income(data, str(a)) > HeroData.get_income(data, str(b)))
+	hero_ids.sort_custom(func(a, b): return data.get_hero_income(str(a)) > data.get_hero_income(str(b)))   # 【改】走收入缓存表（原逐个实时重算，排序卡）
 	for hid in hero_ids:
 		var s := str(hid)
 		var cb = CheckBox.new()
-		cb.text = "%s ｜ 赚钱 %s" % [str(data.heroes.get(s, {}).get("name", s)), c.format_number(float(HeroData.get_income(data, s)))]
+		cb.text = "%s ｜ 赚钱 %s" % [str(data.heroes.get(s, {}).get("name", s)), c.format_number(float(data.get_hero_income(s)))]   # 【改】走收入缓存表
 		cb.button_pressed = cur_heroes.has(s)
 		cb.set_meta("hid", s)
 		lst.add_child(cb)

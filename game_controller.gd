@@ -457,6 +457,9 @@ func on_money_plus_clicked():
 	_show_quantity_selector("hour_card", "使用小时卡", _on_item_use_confirmed)
 
 func update_all_ui():
+	# 【新增】收入缓存表置脏（2026-09-25 用户拍板"赚速写入式表格"）：所有养成操作都汇流本函数，
+	# 在此统一置脏，各系统无需各自接线；每秒 on_auto_earn 也经过这里，缓存至多 1 秒即刷新
+	HeroData.invalidate_income_cache()
 	update_money_label()
 	update_entry_buttons()
 	

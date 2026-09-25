@@ -173,12 +173,24 @@ func _ensure_hero_panel_code():
 	panel.add_child(name_lbl)
 
 	# 赚速/资质（名称下方，整行居中）
+	# 【改】改 HBox 行：资质文本后加"?"小钮（门客属性构成弹窗入口，2026-09-25 用户拍板）
+	var income_row = HBoxContainer.new()
+	income_row.name = "HeroIncomeRow"
+	income_row.position = Vector2(0, 50)
+	income_row.size = Vector2(vw.x, 26)
+	income_row.alignment = BoxContainer.ALIGNMENT_CENTER
+	income_row.add_theme_constant_override("separation", 6)
+	panel.add_child(income_row)
 	var income_lbl = Label.new()
 	income_lbl.name = "HeroIncome"
-	income_lbl.position = Vector2(0, 50)
-	income_lbl.size = Vector2(vw.x, 24)
-	income_lbl.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
-	panel.add_child(income_lbl)
+	income_row.add_child(income_lbl)
+	var attr_btn = Button.new()
+	attr_btn.name = "AttrInfoBtn"
+	attr_btn.text = "?"
+	attr_btn.custom_minimum_size = Vector2(26, 24)
+	attr_btn.add_theme_font_size_override("font_size", 14)
+	attr_btn.pressed.connect(_show_attr_breakdown)
+	income_row.add_child(attr_btn)
 
 	# 关闭按钮（右上；代码重建后需重新连接信号）
 	var close_btn = Button.new()
@@ -283,9 +295,9 @@ func update_hero_panel():
 		c.get_node("HeroPanel/HeroName").text = "【%s】%s %s Lv.%d%s" % [h.name, h.category, quality_tag, show_lv, (" " + star_txt) if star_txt != "" else ""]
 		# 【改】2026-09-24 门客名按品质着色（原为固定金色）：优秀蓝/卓越紫/传奇橙/无双红，与列表卡/图鉴同款
 		c.get_node("HeroPanel/HeroName").add_theme_color_override("font_color", Color(HeroData.get_quality_color(int(h.get("quality", 0)))))
-	if c.has_node("HeroPanel/HeroIncome"):
+	if c.has_node("HeroPanel/HeroIncomeRow/HeroIncome"):   # 【改】资质行已改 HBox（带"?"钮），路径同步加层
 		# 【改】口径对齐：门客个体=赚钱（全局汇总才叫赚速）
-		c.get_node("HeroPanel/HeroIncome").text = "赚钱：%s/秒  资质：%d" % [c.format_number(income), total_aptitude]
+		c.get_node("HeroPanel/HeroIncomeRow/HeroIncome").text = "赚钱：%s/秒  资质：%d" % [c.format_number(income), total_aptitude]
 	
 	# 清理旧布局（如果有）
 	if c.has_node("HeroPanel/BeastInfoBox"):
@@ -3884,3 +3896,68 @@ func _on_fengkui_transfer_confirmed(hid: String):
 		c.remove_child(old)
 		old.queue_free()
 	update_hero_panel()
+# ============ 【新增】门客属性构成弹窗（2026-09-25 用户拍板） ============
+# 入口=面板资质行"?"小钮；资质/等级/赚钱三段全来源构成，零值行也显示（主要供测试对账，玩家同可见）。
+# 数据=HeroData.get_attr_breakdown 打开时现场重算（单门客毫秒级，显示打开瞬间精确值，与生效口径同源）。
+func _show_attr_breakdown():
+	if current_hero_id == "" or not data.heroes.has(current_hero_id): return
+	c._safe_close("AttrBreakdownPopup")
+	var bd: Dictionary = HeroData.get_attr_breakdown(data, current_hero_id)
+	var popup = c._create_base_popup("门客属性", Vector2(560, 920))
+	popup.name = "AttrBreakdownPopup"
+	c.add_child(popup)   # 弹窗工厂只创建不挂树，必须自行 add_child
+	var vb = popup.get_child(0)
+	# 长列表自加滚动区（弹窗工厂只给标题+VBox）
+	var scroll = ScrollContainer.new()
+	scroll.custom_minimum_size = Vector2(520, 780)
+	vb.add_child(scroll)
+	var list = VBoxContainer.new()
+	list.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	list.add_theme_constant_override("separation", 6)
+	scroll.add_child(list)
+	# 资质段
+	_bd_section(list, "资质 %d" % int(bd.get("apt_total", 0)))
+	_bd_grid(list, bd.get("apt_rows", []), false)
+	# 等级段（上限公式=50+突破×50，与 hero_system 升级处一致）
+	_bd_section(list, "门客等级 %d" % int(bd.get("level", 0)))
+	_bd_grid(list, [["等级", int(bd.get("level", 0))], ["突破次数", int(bd.get("bt", 0))]], false)
+	_bd_section(list, "等级上限 %d" % int(bd.get("level_cap", 0)))
+	_bd_grid(list, [["基础", 50], ["突破", int(bd.get("bt", 0)) * 50]], false)
+	# 赚钱段：基础（资质×等级×突破）+ 固定组 + 百分比组
+	_bd_section(list, "赚钱 %s/秒" % c.format_number(int(bd.get("income_total", 0))))
+	_bd_grid(list, [["基础", int(bd.get("income_base", 0))]], false)
+	_bd_grid(list, bd.get("flat_rows", []), false)
+	_bd_grid(list, bd.get("pct_rows", []), true)
+	# 关闭钮
+	var close_b = Button.new()
+	close_b.text = "关闭"
+	close_b.pressed.connect(func(): c._safe_close("AttrBreakdownPopup"))
+	vb.add_child(close_b)
+
+# 构成弹窗段标题（金色居中）
+func _bd_section(parent: VBoxContainer, text: String):
+	var lbl = Label.new()
+	lbl.text = text
+	lbl.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	lbl.add_theme_font_size_override("font_size", 17)
+	lbl.add_theme_color_override("font_color", Color("#ffd700"))
+	parent.add_child(lbl)
+
+# 构成弹窗三列行格：rows=[[名, 值]…]；is_pct=true 时值按小数制百分比显示（0.02→+2.0%）
+# 单元格钉死 160 宽（ScrollContainer 不把宽度分给子控件，3×160+缝=504 不超滚动区 520）
+func _bd_grid(parent: VBoxContainer, rows: Array, is_pct: bool):
+	var grid = GridContainer.new()
+	grid.columns = 3
+	grid.add_theme_constant_override("h_separation", 12)
+	grid.add_theme_constant_override("v_separation", 4)
+	parent.add_child(grid)
+	for r in rows:
+		var cell = Label.new()
+		if is_pct:
+			cell.text = "%s +%.1f%%" % [str(r[0]), float(r[1]) * 100.0]
+		else:
+			cell.text = "%s +%s" % [str(r[0]), c.format_number(int(r[1]))]
+		cell.add_theme_font_size_override("font_size", 14)
+		cell.add_theme_color_override("font_color", Color("#e8e4f3"))
+		cell.custom_minimum_size = Vector2(160, 0)
+		grid.add_child(cell)

@@ -1047,10 +1047,10 @@ func unlock_hero(hero_id: String) -> bool:
 	return hero_system.unlock_hero(hero_id)
 
 func get_hero_income(hero_id: String) -> int:
-	return HeroData.get_income(self, hero_id)   # 【改】直转 HeroData（原经 hero_system 中转）
+	return HeroData.get_income_cached(self, hero_id)   # 【改】走收入缓存表（原实时重算；排序/飘字/商战等高频读取全部受益）
 
 func get_hero_contribution(hero_id: String) -> int:
-	return HeroData.get_global_contribution(self, hero_id)   # 【改】直转 HeroData
+	return HeroData.get_contribution_cached(self, hero_id)   # 【改】走收入缓存表（原实时重算）
 
 func get_heroes_total_income() -> int:
 	return HeroData.get_total_income(self)   # 【改】直转 HeroData

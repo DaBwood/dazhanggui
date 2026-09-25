@@ -313,7 +313,7 @@ func _refresh_hero_popup_grid(ctx: Dictionary, grid: GridContainer):
 		ch.queue_free()
 	var career := str(ctx["career"])
 	var ids: Array = data.heroes.keys()
-	ids.sort_custom(func(a, b): return HeroData.get_income(data, str(a)) > HeroData.get_income(data, str(b)))
+	ids.sort_custom(func(a, b): return data.get_hero_income(str(a)) > data.get_hero_income(str(b)))   # 【改】走收入缓存表（原逐个实时重算，排序卡）
 	for hid in ids:
 		var h: Dictionary = data.heroes[hid]
 		if career != "" and str(h.get("category", "")) != career: continue
