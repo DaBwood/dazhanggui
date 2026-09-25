@@ -7,6 +7,9 @@ extends RefCounted
 # g 不标类型以避免循环引用）
 # ============================================================
 
+# 【新增】亲和（沉香）无兽计算开关：置真期间珍兽系贡献行全部跳过（见 get_beast_income_contribution）
+static var _beastless_calc := false
+
 # ============ 资质 ============
 
 # 品质→初始资质表（2026-09-24 用户拍板：初始资质由品质决定，优秀33/卓越66/传奇99/无双333）
@@ -41,8 +44,9 @@ static func get_total_aptitude(g, hero_id: String) -> int:
 	total += g.hero_system.get_wuyue_aptitude(hero_id)
 	
 	# 珍兽资质加成（装备珍兽的资质计入总资质）
+	# 【新增】亲和（沉香）无兽计算时跳过（兽魂/魂力资质同理，随下方守卫一并归零）
 	var beast_id = hero.get("equipped_beast", "")
-	if beast_id != "":
+	if beast_id != "" and not _beastless_calc:
 		total += g.get_beast_aptitude(beast_id, hero.get("equipped_beast_index", 0))
 	# 【新增】宅院门客卷二资质加成（按固定门客分组反查对应卷轴等级）
 	total += g.get_courtyard_hero_aptitude_bonus(hero_id)
@@ -51,7 +55,8 @@ static func get_total_aptitude(g, hero_id: String) -> int:
 	# 【服装系统】服装技能资质 + 同category门客光环资质
 	total += g.get_hero_costume_aptitude(hero_id)   
 	# 【新增】兽魂词条资质（装备珍兽魂盘的激发格词条之和）
-	total += g.get_hero_soul_aptitude(hero_id)
+	if not _beastless_calc:
+		total += g.get_hero_soul_aptitude(hero_id)
 	# 【厢房批次④】家具资质（无双/传奇·按职业）+ 套装资质（潇湘幽竹类·全体）+ 命格资质（外圈槽）
 	total += g.get_hero_xiangfang_furniture_aptitude(hero_id)
 	total += g.get_hero_xiangfang_set_aptitude(hero_id)
@@ -59,7 +64,8 @@ static func get_total_aptitude(g, hero_id: String) -> int:
 	# 【批次③】系列光环资质：自身 series_aptitude 技能 等级×每级资质
 	total += g.talent_system.get_series_aptitude_bonus(hero_id)
 	# 【新增】魂力资质（装备珍兽魂体：等级+魂骨+技能+共鸣）
-	total += g.get_hero_hunli_aptitude(hero_id)
+	if not _beastless_calc:
+		total += g.get_hero_hunli_aptitude(hero_id)
 	# 【新增】促织装备资质加成（无双6/级，极无双7/级）
 	total += g.cuzhi_system.get_equip_aptitude_bonus(hero_id)
 	# 【新增】守护灵技能资质
@@ -148,6 +154,8 @@ static func get_extra_income(g, hero_id: String) -> int:
 	extra += g.inn_system.get_career_income_bonus(hero.get("category", ""))
 	# 【新增】酒坊名酒记固定赚速（绑定职业门客：Σ品质序×10000 + 品质序×5000×(级-1)；2026-09-18 用户拍板按职业接入，读取式）
 	extra += g.winery_system.get_career_wine_income(hero.get("category", ""))
+	# 【新增】亲和（沉香）光环②：伙伴获得沉香珍兽贡献×转化比例（读取式固定赚钱，hero_system 内反查）
+	extra += g.hero_system.get_qinhe_income_bonus(hero_id)
 
 	return extra
 
@@ -160,16 +168,18 @@ static func get_percent_bonus(g, hero_id: String) -> float:
 	for fid in g.friends.keys():
 		if hero_id in g.friends[fid].bound_heroes:
 			bonus += g.get_friend_percent_bonus(fid)
-	var beast = g.get_hero_beast_bonus(hero_id)
+	var beast = {"percent": 0.0} if _beastless_calc else g.get_hero_beast_bonus(hero_id)
 	bonus += beast.percent
 	# 【第8批新增】无双渔获 阶×5%
 	bonus += g.get_hero_fish_percent(hero_id)
 	# 【服装系统】系列服装光环（群体+3%×关联系列件数 / 自身+3%×件数）
 	bonus += g.get_hero_costume_series_pct(hero_id)  
 	# 【新增】兽魂赚速%（装备珍兽魂盘的激发格，按魂盘等级3/5/10/15/20%每格）
-	bonus += g.get_hero_soul_percent(hero_id)
+	if not _beastless_calc:
+		bonus += g.get_hero_soul_percent(hero_id)
 	# 【新增】魂力赚钱%（魂骨 阶×品级 income_pct_per_tier：十万年5%/阶、百万年16%/阶，2026-09-24 起；灵兔骨技能百分比同口径）
-	bonus += g.get_hero_hunli_percent(hero_id)
+	if not _beastless_calc:
+		bonus += g.get_hero_hunli_percent(hero_id)
 	#促织庙百分比加成
 	bonus += g.cuzhi_system.get_temple_bonus(hero_id)
 	# 【促织培育】阶段百分比加成（按职业汇总极无双促织）
@@ -231,6 +241,17 @@ static func get_total_income(g) -> int:
 	for hero_id in g.heroes.keys():
 		total += get_income(g, hero_id)
 	return total
+
+# 【新增】亲和（沉香）光环②：装备珍兽为门客提升的赚钱
+# = 有兽总赚钱 − 无兽总赚钱（含珍兽资质/百分比、兽魂资质/%、魂力资质/固定/% 全部贡献；
+# 这些贡献统一读 equipped_beast，无兽计算置 _beastless_calc 后上述守卫行整体跳过，不用逐项剔除）
+static func get_beast_income_contribution(g, hero_id: String) -> int:
+	if not g.heroes.has(hero_id): return 0
+	if _beastless_calc: return 0   # 重入保护
+	_beastless_calc = true
+	var without_beast := get_income(g, hero_id)
+	_beastless_calc = false
+	return maxi(0, get_income(g, hero_id) - without_beast)
 
 # ============ 店铺 ============
 

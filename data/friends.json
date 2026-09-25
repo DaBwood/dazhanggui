@@ -819,7 +819,8 @@
 	  "li_xiangjun",
 	  "shi_gandang",
 	  "xiao_wu",
-      "song_jiang"
+	  "song_jiang",
+	  "chen_xiang"
 	],
 	"category": "农",
 	"yyf_career": "yyf_shengyue",
@@ -1077,7 +1078,8 @@
 	  "bai_yuechu",
 	  "zong_ze",
 	  "shen_wansan",
-      "baixi_shengdao"
+	  "baixi_shengdao",
+	  "chen_xiang"
 	],
 	"category": "工",
 	"yyf_career": "yyf_yueqi",
@@ -1819,7 +1821,8 @@
 	  "hu_lu_xianren",
 	  "ding_xiren",
 	  "li_shenshou",
-      "zhou_yu"
+	  "zhou_yu",
+	  "chen_xiang"
 	],
 	"category": "侠",
 	"yyf_career": "yyf_wudao",
@@ -1841,7 +1844,8 @@
 	  "hong_laoxie",
 	  "dunhuang_jiangshen",
 	  "ou_yezi",
-      "leng_erpi"
+	  "leng_erpi",
+	  "chen_xiang"
 	],
 	"category": "士",
 	"yyf_career": "yyf_yitai",
@@ -2286,5 +2290,25 @@
 	  "duocai": 0,
 	  "chaoqun": 0
 	}
-  }
+  },
+	"san_shengmu": {
+		"name": "三圣母",
+		"friendly": 100,
+		"talent": 100,
+		"bond": 0,
+		"fixed_skill_level": 0,
+		"percent_skill_level": 0,
+		"bound_heroes": [
+			"yang_jian",
+			"chen_xiang",
+			"xiao_wu",
+			"lu_ban"
+		],
+		"category": "农",
+		"yyf_career": "yyf_shengyue",
+		"caiyi_skills": {
+			"duocai": 0,
+			"chaoqun": 0
+		}
+	}
 }

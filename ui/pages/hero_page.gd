@@ -950,6 +950,22 @@ func _on_promo_btn_clicked():
 		jinlan_btn.disabled = true
 	top_bar.add_child(jinlan_btn)
 
+	# 【新增】亲和按钮（沉香，2026-09-25）：金兰按钮同款位；晋升无双（历练80级）后解锁，未满灰显
+	var qinhe_btn = Button.new()
+	qinhe_btn.custom_minimum_size = Vector2(64, 30)
+	if data.hero_system.get_qinhe_cfg(current_hero_id).is_empty():
+		qinhe_btn.visible = false
+	elif data.hero_system.is_qinhe_unlocked(current_hero_id):
+		qinhe_btn.text = "亲和"
+		qinhe_btn.pressed.connect(func():
+			if is_instance_valid(popup): popup.queue_free()
+			_show_qinhe_panel()
+		)
+	else:
+		qinhe_btn.text = "亲和"
+		qinhe_btn.disabled = true
+	top_bar.add_child(qinhe_btn)
+
 	# 【新增】2026-09-24 拜师按钮：师徒光环门客（小八）晋升面板顶栏显示，点击选师傅
 	if data.hero_system.get_master_aura_cfgs(current_hero_id).size() > 0:
 		var master_btn = Button.new()
@@ -1308,6 +1324,188 @@ func _show_jinlan_pick_popup():
 	close_btn.pressed.connect(func():
 		popup.queue_free()
 		_show_jinlan_panel()
+	)
+	vb.add_child(close_btn)
+
+# 【新增】亲和面板（沉香，2026-09-25）：光环①动物亲和（转化比例）+ 光环②珍兽亲和（转移数值，无独立等级）
+func _show_qinhe_panel():
+	var hs = data.hero_system
+	var popup = c._create_base_popup("亲和", Vector2(560, 560))
+	c.add_child(popup)
+	var vb = popup.get_child(0)
+	var st = hs.get_qinhe_state(current_hero_id)
+	var partner_id: String = str(st.get("partner", ""))
+	var aura_lv: int = int(st.get("aura_level", 1))
+	var cfg: Dictionary = hs.get_qinhe_cfg(current_hero_id)
+	var ratio_base_pct: int = int(float(cfg.get("ratio_base", 0.4)) * 100)
+	var ratio_pct: int = aura_lv * ratio_base_pct
+	var contrib: int = HeroData.get_beast_income_contribution(data, current_hero_id)
+
+	# ── 说明行 ──
+	var info_lbl = Label.new()
+	info_lbl.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	info_lbl.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+	info_lbl.add_theme_color_override("font_color", Color("#d4af37"))
+	info_lbl.text = "沉香装备珍兽提升的赚钱，按转化比例加成给亲和门客"
+	vb.add_child(info_lbl)
+
+	# ── 亲和双方行：左沉香（珍兽贡献/转化比例）/ 右亲和门客（实时获得数值）──
+	var duo = HBoxContainer.new()
+	duo.alignment = BoxContainer.ALIGNMENT_CENTER
+	duo.add_theme_constant_override("separation", 60)
+	vb.add_child(duo)
+	var left_lbl = Label.new()
+	left_lbl.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	left_lbl.text = "沉香\n珍兽贡献 +%s/秒\n转化比例 %d%%" % [c.format_number(contrib), ratio_pct]
+	duo.add_child(left_lbl)
+	var right_lbl = Label.new()
+	right_lbl.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	if partner_id != "" and data.heroes.has(partner_id):
+		right_lbl.add_theme_color_override("font_color", Color("#7ee787"))
+		right_lbl.text = "%s\n赚钱: +%s/秒" % [
+			str(data.heroes[partner_id].get("name", partner_id)),
+			c.format_number(hs.get_qinhe_income_bonus(partner_id))
+		]
+	else:
+		right_lbl.add_theme_color_override("font_color", Color("#888888"))
+		right_lbl.text = "亲和门客\n未选择\n "
+	duo.add_child(right_lbl)
+
+	# ── 选择/更换/解除（无冷却，随时可换——照金兰）──
+	var op_row = HBoxContainer.new()
+	op_row.alignment = BoxContainer.ALIGNMENT_CENTER
+	op_row.add_theme_constant_override("separation", 20)
+	vb.add_child(op_row)
+	var pick_btn = Button.new()
+	pick_btn.text = "更换门客" if partner_id != "" else "选择门客"
+	pick_btn.pressed.connect(func():
+		if is_instance_valid(popup): popup.queue_free()
+		_show_qinhe_pick_popup()
+	)
+	op_row.add_child(pick_btn)
+	if partner_id != "":
+		var clear_btn = Button.new()
+		clear_btn.text = "解除亲和"
+		clear_btn.pressed.connect(func():
+			hs.clear_qinhe_partner(current_hero_id)
+			if is_instance_valid(popup): popup.queue_free()
+			_show_qinhe_panel()
+			update_hero_panel()
+			c.update_all_ui()
+		)
+		op_row.add_child(clear_btn)
+
+	# ── 亲和光环 ──
+	var halo_lbl = Label.new()
+	halo_lbl.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	halo_lbl.add_theme_color_override("font_color", Color("#d4af37"))
+	halo_lbl.text = "亲和光环"
+	vb.add_child(halo_lbl)
+
+	# 光环①动物亲和：只定义转化比例（对沉香自身无独立效果）；无消耗手动升级
+	# 等级上限 = 1 + floor((开山斧决等级-80)/10)；升下一级需开山斧决 80+10×当前等级
+	var cap: int = hs.get_qinhe_aura_cap(current_hero_id)
+	var req: int = 80 + 10 * aura_lv
+	var promo_lv: int = int(data.heroes[current_hero_id].get("promotion", {}).get("level", 0))
+	var card1 = HBoxContainer.new()
+	card1.add_theme_constant_override("separation", 16)
+	var left_v = VBoxContainer.new()
+	left_v.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	left_v.add_theme_constant_override("separation", 2)
+	var line1 = Label.new()
+	line1.horizontal_alignment = HORIZONTAL_ALIGNMENT_LEFT
+	line1.text = "【%s】%d级" % [str(cfg.get("aura_name", "动物亲和")), aura_lv]
+	left_v.add_child(line1)
+	var line2 = Label.new()
+	line2.horizontal_alignment = HORIZONTAL_ALIGNMENT_LEFT
+	line2.add_theme_color_override("font_color", Color("#888888"))
+	line2.text = "转化比例 %d%%（下级：%d%%）" % [ratio_pct, (aura_lv + 1) * ratio_base_pct]
+	left_v.add_child(line2)
+	card1.add_child(left_v)
+	var right_v = VBoxContainer.new()
+	right_v.add_theme_constant_override("separation", 2)
+	var rz_lbl = Label.new()
+	rz_lbl.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	rz_lbl.add_theme_color_override("font_color", Color("#7ee787") if promo_lv >= req else Color("#ff6666"))
+	rz_lbl.text = "【开山斧决】%d/%d" % [promo_lv, req]
+	right_v.add_child(rz_lbl)
+	var up_btn = Button.new()
+	up_btn.text = "升级"
+	up_btn.disabled = aura_lv >= cap
+	up_btn.pressed.connect(func():
+		if hs.upgrade_qinhe_aura(current_hero_id).get("ok", false):
+			if is_instance_valid(popup): popup.queue_free()
+			_show_qinhe_panel()
+			update_hero_panel()
+			c.update_all_ui()
+	)
+	right_v.add_child(up_btn)
+	card1.add_child(right_v)
+	vb.add_child(card1)
+
+	# 光环②珍兽亲和：效果承接光环①比例，自身无等级（两个合起来是一个光环——2026-09-25 用户拍板）
+	var card2 = HBoxContainer.new()
+	card2.add_theme_constant_override("separation", 16)
+	var left2 = VBoxContainer.new()
+	left2.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	left2.add_theme_constant_override("separation", 2)
+	var l21 = Label.new()
+	l21.horizontal_alignment = HORIZONTAL_ALIGNMENT_LEFT
+	l21.text = "【%s】" % str(cfg.get("aura2_name", "珍兽亲和"))
+	left2.add_child(l21)
+	var l22 = Label.new()
+	l22.horizontal_alignment = HORIZONTAL_ALIGNMENT_LEFT
+	l22.add_theme_color_override("font_color", Color("#888888"))
+	if partner_id != "":
+		l22.text = "亲和门客获得珍兽贡献的%d%%（当前 +%s/秒）" % [ratio_pct, c.format_number(hs.get_qinhe_income_bonus(partner_id))]
+	else:
+		l22.text = "选择亲和门客后，其获得珍兽贡献的%d%%" % ratio_pct
+	left2.add_child(l22)
+	card2.add_child(left2)
+	vb.add_child(card2)
+
+	var close_btn = Button.new()
+	close_btn.text = "返回"   # 【改】返回晋升页面
+	close_btn.pressed.connect(func():
+		popup.queue_free()
+		_on_promo_btn_clicked()
+	)
+	vb.add_child(close_btn)
+
+# 【新增】亲和门客选择弹窗（已拥有门客列表，排除自身，可重复选/无冷却——照金兰）
+func _show_qinhe_pick_popup():
+	var hs = data.hero_system
+	var popup = c._create_base_popup("选择亲和门客", Vector2(460, 520))
+	c.add_child(popup)
+	var vb = popup.get_child(0)
+	var st = hs.get_qinhe_state(current_hero_id)
+	var cur: String = str(st.get("partner", ""))
+	var scroll = ScrollContainer.new()
+	scroll.custom_minimum_size = Vector2(400, 360)
+	vb.add_child(scroll)
+	var list = VBoxContainer.new()
+	list.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	list.add_theme_constant_override("separation", 4)
+	scroll.add_child(list)
+	for hid in data.heroes.keys():
+		if hid == current_hero_id: continue
+		var is_cur: bool = cur == hid
+		var pb = Button.new()
+		pb.text = ("● " if is_cur else "") + str(data.heroes[hid].get("name", hid)) + ("（当前）" if is_cur else "")
+		var captured: String = hid
+		pb.pressed.connect(func():
+			if hs.set_qinhe_partner(current_hero_id, captured).get("ok", false):
+				if is_instance_valid(popup): popup.queue_free()
+				_show_qinhe_panel()
+				update_hero_panel()
+				c.update_all_ui()
+		)
+		list.add_child(pb)
+	var close_btn = Button.new()
+	close_btn.text = "返回"   # 返回亲和面板
+	close_btn.pressed.connect(func():
+		popup.queue_free()
+		_show_qinhe_panel()
 	)
 	vb.add_child(close_btn)
 

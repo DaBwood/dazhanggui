@@ -718,6 +718,77 @@ func get_jinlan_partner_aptitude(partner_id: String) -> int:
 		apt += int(st.get("levels", {}).get(sk.get("name", ""), 0)) * int(sk.get("both_aptitude", 0))
 	return apt
 
+# ============ 亲和（沉香专属，2026-09-25 用户拍板） ============
+# 沉香晋升无双（历练80级）后解锁：选一名已拥有门客（非自身，可更换/解除）为亲和门客；
+# 光环①动物亲和：只定义转化比例（初始40%、每级+40%，第k级=40k%），对沉香自身无独立效果；
+# 光环②珍兽亲和：亲和门客获得"沉香装备珍兽提升的赚钱"×转化比例
+#   （珍兽贡献=有兽总赚钱−无兽总赚钱，含珍兽资质/百分比、魂力、兽魂全部贡献，计算在 hero_data）；
+# 光环升级：无道具消耗手动升；等级上限 = 1 + floor((开山斧决等级-80)/10)（斧决500满级→43级=1720%）
+# 配置 = heroes.json "qinhe"；存档 = 英雄字典 "qinhe" {"partner": id, "aura_level": 级}（懒初始化，旧档无感）
+
+func get_qinhe_cfg(hero_id: String) -> Dictionary:
+	return g._hero_configs.get(hero_id, {}).get("qinhe", {})
+
+# 亲和存档状态（懒初始化：解锁即 1 级=初始转化比例 40%）
+func get_qinhe_state(hero_id: String) -> Dictionary:
+	if not g.heroes.has(hero_id): return {}
+	var h = g.heroes[hero_id]
+	if not h.has("qinhe"):
+		h["qinhe"] = {"partner": "", "aura_level": 1}
+	return h["qinhe"]
+
+func is_qinhe_unlocked(hero_id: String) -> bool:
+	return not get_qinhe_cfg(hero_id).is_empty() and int(g.heroes.get(hero_id, {}).get("quality", 0)) >= 3
+
+# 光环等级上限 = 1 + floor((开山斧决等级-80)/10)；斧决未到 80 时上限 1（解锁即 1 级）
+func get_qinhe_aura_cap(hero_id: String) -> int:
+	var promo_lv := 0
+	if g.heroes.has(hero_id):
+		promo_lv = int(g.heroes[hero_id].get("promotion", {}).get("level", 0))
+	return maxi(1, 1 + int(maxi(0, promo_lv - 80) / 10))
+
+# 转化比例（小数口径）：第k级 = ratio_base × k（配置 0.4=40%）
+func get_qinhe_ratio(hero_id: String) -> float:
+	var cfg = get_qinhe_cfg(hero_id)
+	if cfg.is_empty(): return 0.0
+	return float(cfg.get("ratio_base", 0.4)) * float(get_qinhe_state(hero_id).get("aura_level", 1))
+
+func upgrade_qinhe_aura(hero_id: String) -> Dictionary:
+	if not is_qinhe_unlocked(hero_id):
+		return {"ok": false, "reason": "晋升无双后解锁"}
+	var st = get_qinhe_state(hero_id)
+	if int(st.get("aura_level", 1)) >= get_qinhe_aura_cap(hero_id):
+		return {"ok": false, "reason": "已达当前上限（提升开山斧决等级可解锁更高级）"}
+	st["aura_level"] = int(st.get("aura_level", 1)) + 1
+	return {"ok": true}
+
+func set_qinhe_partner(hero_id: String, partner_id: String) -> Dictionary:
+	if not is_qinhe_unlocked(hero_id):
+		return {"ok": false, "reason": "晋升无双后解锁"}
+	if partner_id == "" or partner_id == hero_id or not g.heroes.has(partner_id):
+		return {"ok": false, "reason": "不能选择自身或未拥有门客"}
+	get_qinhe_state(hero_id)["partner"] = partner_id
+	return {"ok": true}
+
+func clear_qinhe_partner(hero_id: String):
+	if g.heroes.has(hero_id) and g.heroes[hero_id].has("qinhe"):
+		g.heroes[hero_id]["qinhe"]["partner"] = ""
+
+# 谁把我设为亲和门客（反向查找；全游戏仅沉香有亲和，循环极短）
+func get_qinhe_owner(partner_id: String) -> String:
+	for hid in g.heroes.keys():
+		if hid == partner_id: continue
+		if not is_qinhe_unlocked(hid): continue
+		if str(g.heroes[hid].get("qinhe", {}).get("partner", "")) == partner_id:
+			return hid
+	return ""
+
+# 伙伴侧固定赚钱：沉香装备珍兽提升的赚钱 × 转化比例（读取式，hero_data.get_extra_income 调用）
+func get_qinhe_income_bonus(partner_id: String) -> int:
+	var owner = get_qinhe_owner(partner_id)
+	if owner == "": return 0
+	return int(HeroData.get_beast_income_contribution(g, owner) * get_qinhe_ratio(owner) + 0.5)
+
 # ============ 双人光环（小舞专属，2026-09-24 用户拍板） ============
 # 落日起誓（赚钱+5%/级，圣魂草 20+10×(k-1)）/ 三五组合（资质+10/级，圣魂草 10+(k-1)）：
 # 配置 = hero_talents.json 该门客条目 "pair_auras"：{id, name, type, per, partner, cost_item, cost_base, cost_step}

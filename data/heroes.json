@@ -4549,5 +4549,105 @@
 			}
 		],
 		"quality": 3
+	},
+	"chen_xiang": {
+		"name": "沉香",
+		"category": "农",
+		"level": 1,
+		"extra_income": 0,
+		"breakthrough_count": 1,
+		"assigned_shop": "",
+		"bound_heroes": [
+			"san_shengmu",
+			"li_xiangjun_friend",
+			"yi_shi",
+			"yao_ying",
+			"ning_yin"
+		],
+		"promotion": {
+			"name": "历练",
+			"skill_name": "开山斧决",
+			"level": 0,
+			"max_level": 500,
+			"cost_item": "kai_shan_fu",
+			"cost_amount": 600,
+			"aptitude_per_level": 6,
+			"tiers": [
+				{
+					"threshold": 5,
+					"quality": 2,
+					"new_skills": [
+						{
+							"name": "习斧初成",
+							"aptitude_per_level": 3
+						}
+					]
+				},
+				{
+					"threshold": 15,
+					"new_skills": [
+						{
+							"name": "挥斧破风",
+							"aptitude_per_level": 3
+						}
+					]
+				},
+				{
+					"threshold": 30,
+					"new_skills": [
+						{
+							"name": "重斧碎石",
+							"aptitude_per_level": 3
+						}
+					]
+				},
+				{
+					"threshold": 45,
+					"new_skills": [
+						{
+							"name": "断云斩岳",
+							"aptitude_per_level": 3
+						}
+					]
+				},
+				{
+					"threshold": 60,
+					"new_skills": [
+						{
+							"name": "神斧撼天",
+							"aptitude_per_level": 4
+						}
+					]
+				},
+				{
+					"threshold": 80,
+					"quality": 3,
+					"new_skills": []
+				}
+			]
+		},
+		"aptitude_skills": [
+			{
+				"name": "非凡资质",
+				"level": 1,
+				"max_level": 200,
+				"aptitude_per_level": 2
+			}
+		],
+		"shop_skills": [
+			{
+				"name": "门客委任",
+				"level": 1,
+				"max_level": 200,
+				"base_percent": 0.05,
+				"percent_per_level": 0.03
+			}
+		],
+		"qinhe": {
+			"aura_name": "动物亲和",
+			"aura2_name": "珍兽亲和",
+			"ratio_base": 0.4
+		},
+		"quality": 1
 	}
 }

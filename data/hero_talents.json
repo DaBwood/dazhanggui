@@ -3583,6 +3583,86 @@
    "born_tier": "wushuang",
    "max_tier": "wushuang",
    "can_promote": false
+  }  ,
+  "chen_xiang": {
+   "name": "沉香",
+   "series": "",
+   "tiers": {
+    "epic": [
+     {
+      "name": "一本万利",
+      "kind": "career_activity_pct",
+      "pct": 5,
+      "inc": 2,
+      "activities": [
+       "war",
+       "quechang",
+       "shangbang",
+       "huashigang"
+      ],
+      "desc": "商战，榷场，商帮，花石纲争霸等活动出战时，同职业门客赚钱+5%"
+     },
+     {
+      "name": "莲影双生",
+      "kind": "copy_max_level",
+      "cap": 500,
+      "desc": "复制最高等级门客的等级(最高500级)"
+     }
+    ],
+    "legend": [
+     {
+      "name": "八方来运",
+      "kind": "career_activity_pct",
+      "pct": 15,
+      "inc": 2,
+      "activities": [
+       "war",
+       "quechang",
+       "shangbang",
+       "huashigang"
+      ],
+      "desc": "商战，榷场，商帮，花石纲争霸等活动出战时，同职业门客赚钱+15%"
+     },
+     {
+      "name": "莲影双生",
+      "kind": "copy_max_level",
+      "cap": 700,
+      "desc": "复制最高等级门客的等级(最高700级)"
+     }
+    ],
+    "wushuang": [
+     {
+      "name": "十面来财",
+      "kind": "career_activity_pct",
+      "pct": 20,
+      "inc": 2,
+      "activities": [
+       "war",
+       "quechang",
+       "shangbang",
+       "huashigang"
+      ],
+      "desc": "商战，榷场，商帮，花石纲争霸等活动出战时，同职业门客赚钱+20%"
+     },
+     {
+      "name": "招财之道",
+      "kind": "career_pct",
+      "pct": 5,
+      "desc": "同职业门客赚钱+5%"
+     },
+     {
+      "name": "莲影双生",
+      "kind": "copy_max_level",
+      "cap": 1200,
+      "desc": "复制最高等级门客的等级(最高1200级)"
+     }
+    ]
+   },
+   "born_tier": "epic",
+   "max_tier": "wushuang",
+   "can_promote": true,
+   "suspended_tiers": []
   }
+
  }
 }
