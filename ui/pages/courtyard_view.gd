@@ -93,7 +93,6 @@ func _fill_technique_popup(panel: PanelContainer):
 	detail_list.add_child(_build_project_block(cfg, "project1"))
 	detail_list.add_child(_build_project_block(cfg, "project2"))
 
-	c._add_ok_button(vbox, func(): c._safe_close("CourtyardTechPopup"), "关闭")
 
 # 按 id 从宅院配置取技艺，避免弹窗刷新时继续持有旧配置字典
 func _get_technique_cfg(tech_id: String) -> Dictionary:

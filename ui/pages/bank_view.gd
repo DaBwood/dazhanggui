@@ -358,7 +358,6 @@ func _show_assign_selector(idx: int):
 		grid.add_child(empty)
 	for hero_id in ids:
 		_add_hero_card(grid, idx, hero_id)
-	c._add_ok_button(vb, func(): close_popup(), "关闭")
 
 func _add_hero_card(grid: GridContainer, counter_idx: int, hero_id: String):
 	var h: Dictionary = data.heroes[hero_id]

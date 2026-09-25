@@ -72,7 +72,7 @@ func _build_home_page(page: Panel):
 	top.add_theme_constant_override("separation", 8)
 	root.add_child(top)
 	var back := Button.new()
-	back.text = "返回"
+	back.text = "< 返回"   # 【改】UI统一批次①：返回文案统一 < 返回
 	back.custom_minimum_size = Vector2(72, 40)
 	back.pressed.connect(hide_xiangfang_view)
 	top.add_child(back)
@@ -188,7 +188,7 @@ func _build_catalog_page(page: Panel):
 	top.add_theme_constant_override("separation", 8)
 	root.add_child(top)
 	var back := Button.new()
-	back.text = "返回"
+	back.text = "< 返回"   # 【改】UI统一批次①：返回文案统一 < 返回
 	back.custom_minimum_size = Vector2(72, 40)
 	back.pressed.connect(func():
 		_tab = "home"
@@ -389,7 +389,7 @@ func _build_workshop_page(page: Panel):
 	top.add_theme_constant_override("separation", 8)
 	root.add_child(top)
 	var back := Button.new()
-	back.text = "返回"
+	back.text = "< 返回"   # 【改】UI统一批次①：返回文案统一 < 返回
 	back.custom_minimum_size = Vector2(72, 40)
 	back.pressed.connect(func():
 		_tab = "home"
@@ -491,10 +491,16 @@ func _rebuild_popup():
 # 取弹窗内容 VBox：已有基座则清空内容原地重建（不新建同名节点，规避自动改名雷）；无则新建
 func _popup_vbox(title: String, size: Vector2) -> VBoxContainer:
 	if _popup_panel != null and is_instance_valid(_popup_panel) and c.get_node_or_null(_popup_node_name) == _popup_panel:
-		for child in _popup_panel.get_child(0).get_children():
-			_popup_panel.get_child(0).remove_child(child)
+		var pvbox: VBoxContainer = _popup_panel.get_child(0)
+		# 【改】UI统一批次①：清空重建保留下标0顶行（右上✕），并按新弹窗种类同步顶行标题
+		for child in pvbox.get_children():
+			if child == pvbox.get_child(0): continue
+			pvbox.remove_child(child)
 			child.queue_free()
-		return _popup_panel.get_child(0)
+		var ptitle: Label = pvbox.get_node_or_null("PopupTopRow/PopupTitle")
+		if ptitle != null:
+			ptitle.text = title
+		return pvbox
 	_close_node(_popup_node_name)
 	_popup_panel = c._create_base_popup(title, size)
 	_popup_panel.name = _popup_node_name
@@ -579,7 +585,6 @@ func _show_furniture_popup(fid: String):
 	up_all_btn.pressed.connect(func(): _on_upgrade(fid, true, up_all_btn))
 	vbox.add_child(up_all_btn)
 
-	c._add_ok_button(vbox, func(): close_popup(), "关闭")
 
 # ---- 回收弹窗：满级富余件数量选择，返家具币 ----
 func _show_recycle_popup(fid: String):
@@ -616,7 +621,6 @@ func _show_recycle_popup(fid: String):
 		_on_recycle(fid, int(pair["spin"].value), rec_btn))
 	vbox.add_child(rec_btn)
 
-	c._add_ok_button(vbox, func(): close_popup(), "关闭")
 
 func _on_recycle(fid: String, n: int, btn: Button):
 	var r: Dictionary = _sys().recycle_furniture(fid, n)
@@ -675,7 +679,6 @@ func _show_fengshui_popup():
 		row_l.add_theme_color_override("font_color", Color("#dddddd"))
 		rows.add_child(row_l)
 
-	c._add_ok_button(vbox, func(): close_popup(), "关闭")
 
 # ---- 勋章弹窗：统一样式（照钓鱼/妙音坊勋章模板，用户 2026-09-20 拍板） ----
 func _show_medal_popup():
@@ -746,7 +749,6 @@ func _show_medal_popup():
 		up_btn.disabled = not _sys().can_upgrade_medal().get("ok", false)
 		up_btn.pressed.connect(_on_medal_upgrade)
 		vb.add_child(up_btn)
-	c._add_ok_button(vbox, func(): close_popup(), "关闭")
 
 func _on_medal_help():
 	c._show_stage_hint("厢房勋章：舒适度达到门槛即可升级（舒适度只作门槛不消耗）；每级全部商铺赚速+100%；技能等级上限效果挂起未接入。")
@@ -832,7 +834,6 @@ func _show_buy_popup(fid: String):
 		_on_buy(fid, int(pair["spin"].value), buy_btn))
 	vbox.add_child(buy_btn)
 
-	c._add_ok_button(vbox, func(): close_popup(), "关闭")
 
 func _on_buy(fid: String, n: int, btn: Button):
 	var r: Dictionary = _sys().buy_furniture(fid, n)
@@ -882,7 +883,7 @@ func _build_mingpan_page(page: Panel):
 	top.add_theme_constant_override("separation", 8)
 	root.add_child(top)
 	var back := Button.new()
-	back.text = "返回"
+	back.text = "< 返回"   # 【改】UI统一批次①：返回文案统一 < 返回
 	back.custom_minimum_size = Vector2(72, 40)
 	back.pressed.connect(func():
 		_tab = "home"
@@ -1065,7 +1066,6 @@ func _show_luck_detail_popup(popup_id: String):
 		empty_l.text = "%s · 空槽" % slot_name
 		empty_l.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 		vbox.add_child(empty_l)
-		c._add_ok_button(vbox, func(): close_popup(), "关闭")
 		return
 	var qcfg: Dictionary = _msys().get_quality_cfg(str(sd.get("q", "")))
 	var head := Label.new()
@@ -1083,7 +1083,6 @@ func _show_luck_detail_popup(popup_id: String):
 		line.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 		line.add_theme_color_override("font_color", Color("#dddddd"))
 		vbox.add_child(line)
-	c._add_ok_button(vbox, func(): close_popup(), "关闭")
 
 # 卜卦一卦
 func _on_divine(btn: Button):
@@ -1286,7 +1285,6 @@ func _show_overview_popup():
 			line.text = "%s　资质 +%d　赚钱 +%.2f%%" % [hero_name, int(t.get("apt", 0.0)), float(t.get("pct", 0.0))]
 			line.add_theme_font_size_override("font_size", 13)
 			rows.add_child(line)
-	c._add_ok_button(vbox, func(): close_popup(), "关闭")
 
 # 升级效果：当前 vs 下级 命格等级区间六档概率对照
 func _show_upeffect_popup():
@@ -1308,7 +1306,6 @@ func _show_upeffect_popup():
 		line.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 		line.add_theme_color_override("font_color", Color("#dddddd") if float(nxt[k]) <= float(cur[k]) else Color("#7ee787"))
 		vbox.add_child(line)
-	c._add_ok_button(vbox, func(): close_popup(), "关闭")
 
 
 # ---- 升级效果弹窗（批次④）：旧→新具体数值，涨绿跌红铁律 ----
@@ -1355,5 +1352,3 @@ func _show_upresult_popup(fid: String):
 		fs_l.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 		fs_l.add_theme_color_override("font_color", Color("#8fd3c7"))
 		vbox.add_child(fs_l)
-
-	c._add_ok_button(vbox, func(): close_popup(), "关闭")

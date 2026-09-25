@@ -672,10 +672,6 @@ func _on_hero_beast_btn_clicked(beast_id: String, beast_idx: int):
 		replace_btn.visible = false
 		unequip_btn.visible = false
 	
-	var cancel_btn = Button.new()
-	cancel_btn.text = "取消"
-	cancel_btn.pressed.connect(func(): c._safe_close("BeastActionPanel"))
-	vbox.add_child(cancel_btn)
 	
 	c.add_child(panel)
 
@@ -735,10 +731,6 @@ func _show_beast_selector_for_hero():
 		empty.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 		list.add_child(empty)
 	
-	var cancel = Button.new()
-	cancel.text = "取消"
-	cancel.pressed.connect(func(): c._safe_close("BeastSelectForHero"))
-	vbox.add_child(cancel)
 	
 	c.add_child(panel)
 
@@ -970,7 +962,6 @@ func _on_fate_btn_clicked(hero_id: String):
 			else:
 				lbl.text = "【%s】未拥有" % cfg.get("name", fid)
 		list.add_child(lbl)
-	c._add_ok_button(vb, func(): popup.queue_free(), "关闭")
 	c.add_child(popup)
 
 # 【v4新增】技能栏标签点击：记录当前标签页并刷新面板
@@ -1534,12 +1525,6 @@ func _on_aura_extreme_hint(skill_name: String):
 		l.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 		l.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
 		vb.add_child(l)
-	c._add_ok_button(vb, func():
-		if c.has_node("AuraHintPanel"):
-			var old2 = c.get_node("AuraHintPanel")
-			c.remove_child(old2)
-			old2.queue_free()
-	, "关闭")
 
 # 【新增】系列光环升级回调：扣道具/写 hero_aura_levels → 原地重建光环页 + 全局对账
 func _on_aura_upgrade(skill_name: String, mode: String):
@@ -1619,10 +1604,6 @@ func _show_cuzhi_selector():
 		empty.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 		list.add_child(empty)
 	
-	var cancel = Button.new()
-	cancel.text = "取消"
-	cancel.pressed.connect(func(): _close_cuzhi_selector())
-	vbox.add_child(cancel)
 	
 	c.add_child(panel)
 
@@ -1748,10 +1729,6 @@ func _show_cuzhi_action_panel(cid: String):
 	)
 	btn_row.add_child(recycle_btn)
 	
-	var close_btn = Button.new()
-	close_btn.text = "关闭"
-	close_btn.pressed.connect(func(): _close_cuzhi_panel())
-	btn_row.add_child(close_btn)
 	
 	c.add_child(panel)
 
@@ -1903,13 +1880,7 @@ func _show_guardian_panel():
 	avatar_btn.pressed.connect(_show_guardian_avatar_popup)
 	vb.add_child(avatar_btn)
 	
-	# 关闭
-	c._add_ok_button(vb, func():
-		if c.has_node("GuardianPanel"):
-			var old = c.get_node("GuardianPanel")
-			c.remove_child(old)
-			old.queue_free()
-	, "关闭")
+	# 【改】UI统一批次①：底部关闭钮移除（右上✕接管）
 
 # 【新增】注灵升级
 func _on_guardian_level_up():
@@ -2017,12 +1988,6 @@ func _show_guardian_avatar_popup():
 		row.add_child(btn)
 		vb.add_child(row)
 	
-	c._add_ok_button(vb, func():
-		if c.has_node("GuardianAvatarPopup"):
-			var old = c.get_node("GuardianAvatarPopup")
-			c.remove_child(old)
-			old.queue_free()
-	, "关闭")
 
 
 func _on_talent_btn_clicked():
@@ -2078,12 +2043,6 @@ func _show_talent_panel(tab_id: String = "talent"):
 	else:
 		_fill_talent_skill_tab(vb)
 	
-	c._add_ok_button(vb, func():
-		if c.has_node("TalentPanel"):
-			var old2 = c.get_node("TalentPanel")
-			c.remove_child(old2)
-			old2.queue_free()
-	, "关闭")
 
 # 【改】天赋精进区（2026-09-24 用户拍板精简）：当前星级生效值一行 + 精进按钮；未满足仅红字原因
 func _fill_talent_refine_area(vb):
@@ -2253,11 +2212,6 @@ func _show_attr_breakdown():
 	_bd_grid(list, [["基础", int(bd.get("income_base", 0))]], false)
 	_bd_grid(list, bd.get("flat_rows", []), false)
 	_bd_grid(list, bd.get("pct_rows", []), true)
-	# 关闭钮
-	var close_b = Button.new()
-	close_b.text = "关闭"
-	close_b.pressed.connect(func(): c._safe_close("AttrBreakdownPopup"))
-	vb.add_child(close_b)
 
 # 构成弹窗段标题（金色居中）
 func _bd_section(parent: VBoxContainer, text: String):

@@ -81,7 +81,7 @@ func _show_lottery_confirm(draw_count: int, ticket_need: int, ticket_have: int):
 	var short = ticket_need - ticket_have
 	var need_yuanbao = short * 50
 	
-	var panel = c._create_base_popup("抽奖券不足", Vector2(420, 240), Vector2(366, 204))
+	var panel = c._create_base_popup("抽奖券不足", Vector2(420, 240), Vector2(366, 204), false)   # 【改】UI统一批次①：确认弹窗不带右上✕
 	panel.name = "LotteryConfirmPanel"
 	
 	var vbox = panel.get_child(0)
@@ -98,14 +98,7 @@ func _show_lottery_confirm(draw_count: int, ticket_need: int, ticket_have: int):
 	btn_box.add_theme_constant_override("separation", 16)
 	vbox.add_child(btn_box)
 	
-	var confirm = Button.new()
-	confirm.text = "确认"
-	confirm.pressed.connect(func():
-		c._safe_close("LotteryConfirmPanel")
-		_do_lottery_draw(draw_count, ticket_need, true)
-	)
-	btn_box.add_child(confirm)
-	
+	# 【改】UI统一批次①：确认弹窗双钮统一【取消】左【确定】右
 	var cancel = Button.new()
 	cancel.text = "取消"
 	cancel.pressed.connect(func():
@@ -115,12 +108,21 @@ func _show_lottery_confirm(draw_count: int, ticket_need: int, ticket_have: int):
 	)
 	btn_box.add_child(cancel)
 	
+	var confirm = Button.new()
+	confirm.text = "确定"
+	confirm.pressed.connect(func():
+		c._safe_close("LotteryConfirmPanel")
+		_do_lottery_draw(draw_count, ticket_need, true)
+	)
+	btn_box.add_child(confirm)
+	
 	c.add_child(panel)
 	c._current_popup = panel
 	c.get_node("Overlay").show()
 
 func _show_lottery_results(results: Array):
 	if c.has_node("LotteryResultPanel"): return
+	# 【改】UI统一批次①：底部【确定】关闭钮移除（右上✕接管）
 	
 	var panel = c._create_base_popup("抽奖结果", Vector2(480, 520), Vector2(336, 64))
 	panel.name = "LotteryResultPanel"
@@ -146,12 +148,13 @@ func _show_lottery_results(results: Array):
 		lbl.text = "【%s】x%d" % [item_name, r.count]
 		list.add_child(lbl)
 	
-	c._add_ok_button(vbox, func():
-		c._safe_close("LotteryResultPanel")
-		c.get_node("Overlay").hide()
-		c._current_popup = null
-	)
 	
 	c.add_child(panel)
 	c._current_popup = panel
 	c.get_node("Overlay").show()
+	# 【新增】UI统一批次①：✕/任意路径关闭结果弹窗时，同步清理遮罩与当前弹窗引用（同 mall/player 钩子惯例，含 Overlay 存在性判断）
+	panel.tree_exiting.connect(func():
+		if c.has_node("Overlay"):
+			c.get_node("Overlay").hide()
+		c._current_popup = null
+	)

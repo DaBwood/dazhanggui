@@ -436,7 +436,6 @@ func _show_skill_popup():
 	body.add_theme_constant_override("separation", 6)
 	vbox.add_child(body)
 
-	c._add_ok_button(vbox, func(): c._safe_close("SkillPopup"), "关闭")
 	c.add_child(panel)
 	_refresh_skill_popup()
 
@@ -477,7 +476,6 @@ func _show_play_popup():
 	poetry_btn.pressed.connect(_on_play_poetry)
 	vbox.add_child(poetry_btn)
 
-	c._add_ok_button(vbox, func(): c._safe_close("PlayPopup"), "关闭")
 	c.add_child(panel)
 
 func _refresh_skill_popup():
@@ -1062,7 +1060,6 @@ func _show_title_popup():
 		tip_lbl.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 		vbox.add_child(tip_lbl)
 
-	c._add_ok_button(vbox, func(): c._safe_close("TitlePopup"), "关闭")
 	c.add_child(panel)
 
 # 【新增】美名手动晋升：成功后重开弹窗刷新+详情同步，失败闪红提示
@@ -1339,7 +1336,7 @@ func _show_energy_pill_prompt():
 	var max_pills = data.items.get("energy_pill", 0)
 	if max_pills <= 0: return
 
-	var panel = c._create_base_popup("精力不足", Vector2(420, 280), Vector2(366, 184))
+	var panel = c._create_base_popup("精力不足", Vector2(420, 280), Vector2(366, 184), false)   # 【改】UI统一批次①：确认弹窗不带右上✕
 	panel.name = "EnergyPillPrompt"
 
 	var vbox = panel.get_child(0)
@@ -1357,17 +1354,18 @@ func _show_energy_pill_prompt():
 	btn_box.add_theme_constant_override("separation", 16)
 	vbox.add_child(btn_box)
 
-	var use_btn = Button.new()
-	use_btn.text = "使用"
-	use_btn.custom_minimum_size = Vector2(80, 36)
-	use_btn.pressed.connect(_on_use_energy_pill.bind(spin))
-	btn_box.add_child(use_btn)
-
+	# 【改】UI统一批次①：确认弹窗双钮统一【取消】左【确定】右
 	var cancel_btn = Button.new()
 	cancel_btn.text = "取消"
 	cancel_btn.custom_minimum_size = Vector2(80, 36)
 	cancel_btn.pressed.connect(func(): c._safe_close("EnergyPillPrompt"))
 	btn_box.add_child(cancel_btn)
+
+	var use_btn = Button.new()
+	use_btn.text = "确定"
+	use_btn.custom_minimum_size = Vector2(80, 36)
+	use_btn.pressed.connect(_on_use_energy_pill.bind(spin))
+	btn_box.add_child(use_btn)
 
 	c.add_child(panel)
 
@@ -1431,7 +1429,6 @@ func _show_chat_result(results: Array):
 		sum_lbl.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 		vbox.add_child(sum_lbl)
 
-	c._add_ok_button(vbox, func(): c._safe_close("ChatResultPanel"))
 
 	c.add_child(panel)
 

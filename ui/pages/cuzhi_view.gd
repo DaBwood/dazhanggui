@@ -149,7 +149,7 @@ func _build_main_view() -> Control:
 		grid.add_child(card)
 
 	var back = Button.new()
-	back.text = "< 返回闯荡"
+	back.text = "< 返回"   # 【改】UI统一批次①：返回文案统一 < 返回
 	back.position = Vector2(20, 20)
 	back.size = Vector2(120, 40)
 	back.pressed.connect(hide_cuzhi_view)
@@ -367,7 +367,6 @@ func _show_cricket_detail(item: Dictionary):
 	desc.add_theme_color_override("font_color", Color("#888888"))
 	vbox.add_child(desc)
 
-	c._add_ok_button(vbox, func(): popup.queue_free(), "关闭")
 
 # ========== 捉促织 ==========
 func _build_catch_view() -> Control:
@@ -500,7 +499,6 @@ func _do_catch(count: int = 1):
 		line.add_theme_color_override("font_color", col)
 		vbox.add_child(line)
 
-	c._add_ok_button(vbox, func(): popup.queue_free(), "确定")
 
 	_refresh_catch()
 
@@ -555,7 +553,6 @@ func _show_guarantee_selector():
 		)
 		grid.add_child(btn)
 
-	c._add_ok_button(vbox, func(): popup.queue_free(), "取消")
 
 # ========== 促织庙 ==========
 func _build_temple_view() -> Control:
@@ -909,7 +906,6 @@ func _show_hero_worm_skills(hero_id: String, h: Dictionary):
 		var row = _make_worm_skill_row(hero_id, idx, skill, cdata)
 		list.add_child(row)
 
-	c._add_ok_button(vbox, func(): popup.queue_free(), "关闭")
 
 func _make_worm_skill_row(hero_id: String, idx: int, skill: Dictionary, cdata: Dictionary) -> Button:
 	var btn = Button.new()
@@ -979,6 +975,8 @@ func _show_worm_skill_upgrade(hero_id: String, idx: int, skill: Dictionary, cdat
 	var popup = c._create_base_popup("%s 虫书升级" % cdata.name, Vector2(440, 380))
 	popup.z_index = 30
 	c.add_child(popup)
+	# 【新增】UI统一批次①：底部【关闭】钮移除（右上✕接管），"关闭后刷新虫技列表"改挂弹窗销毁钩子
+	popup.tree_exiting.connect(_refresh_worm_skill_list)
 
 	var vbox = popup.get_child(0)
 
@@ -1053,11 +1051,6 @@ func _show_worm_skill_upgrade(hero_id: String, idx: int, skill: Dictionary, cdat
 	)
 	vbox.add_child(up_btn)
 
-	c._add_ok_button(vbox, func(): 
-		popup.queue_free()
-		# 【新增】关闭升级弹窗后刷新底层技能列表
-		_refresh_worm_skill_list(),
-		"关闭")
 
 # 【新增】刷新当前打开的技能列表弹窗（升级/关闭后调用）
 func _refresh_worm_skill_list():
@@ -1355,7 +1348,6 @@ func _show_jar_action(jar: Dictionary):
 	)
 	hbox.add_child(auto_btn)
 
-	c._add_ok_button(vbox, func(): popup.queue_free(), "关闭")
 
 func _make_peiyu_cricket_row(item: Dictionary) -> Button:
 	var cid = item.id
@@ -1497,7 +1489,6 @@ func _show_part_selector(cid: String, _cdata: Dictionary):
 		)
 		hbox.add_child(btn)
 
-	c._add_ok_button(vbox, func(): popup.queue_free(), "关闭")
 
 
 # 【新增】打开无双促织盒子选择器（由 bag_page 调用）
@@ -1544,5 +1535,3 @@ func show_wushuang_box_selector():
 				c._show_stage_hint("兑换失败")
 		)
 		grid.add_child(btn)
-
-	c._add_ok_button(vbox, func(): popup.queue_free(), "取消")

@@ -67,7 +67,6 @@ func _fill_equip_popup(popup):
 		# ---- 已装备：养成面板 ----
 		_build_dev_panel(vb, fish_id)
 
-	c._add_ok_button(vb, func(): popup.queue_free(), "关闭")
 	# 恢复滚动位置
 	if scroll:
 		var new_scroll = vb.get_node_or_null("EquipScroll")
@@ -250,7 +249,6 @@ func _on_feed_btn(fish_id: String, skill_index: int):
 	feed_all_btn.pressed.connect(_on_feed_all.bind(fish_id, skill_index))
 	vb.add_child(feed_all_btn)
 
-	c._add_ok_button(vb, func(): popup.queue_free(), "关闭")
 	c.add_child(popup)
 
 # 喂养执行：关材料弹窗，原地刷新主弹窗与门客面板

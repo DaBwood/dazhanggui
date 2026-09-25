@@ -565,8 +565,8 @@ func animate_button(node_path: String):
 func flash_red(node_path: String):
 	ui_helpers.flash_red(node_path)   # 【改】主体迁 ui/ui_helpers.gd（2026-09-19 重构批次B）
 
-func _create_base_popup(title_text: String, popup_size: Vector2, _pos: Vector2 = Vector2.ZERO) -> PanelContainer:   # _pos 已废弃：一律居中（保留参数兼容46处旧调用）
-	return ui_helpers._create_base_popup(title_text, popup_size, _pos)   # 【改】主体迁 ui/ui_helpers.gd（2026-09-19 重构批次B）
+func _create_base_popup(title_text: String, popup_size: Vector2, _pos: Vector2 = Vector2.ZERO, with_close: bool = true) -> PanelContainer:   # 【改】UI统一批次①：透传 with_close（确认弹窗传false不带右上✕）
+	return ui_helpers._create_base_popup(title_text, popup_size, _pos, with_close)   # 【改】主体迁 ui/ui_helpers.gd（2026-09-19 重构批次B）
 
 func _recenter_popup(panel: Control):
 	ui_helpers._recenter_popup(panel)   # 【改】主体迁 ui/ui_helpers.gd（2026-09-19 重构批次B）
@@ -611,7 +611,7 @@ func _on_web_page_hide(_args):
 # 【新增】点退出：二次确认弹窗（说明会自动存档）
 func _on_exit_btn_pressed():
 	_safe_close("ExitConfirmPopup")
-	var popup = _create_base_popup("退出游戏", Vector2(420, 220))
+	var popup = _create_base_popup("退出游戏", Vector2(420, 220), Vector2.ZERO, false)   # 【改】UI统一批次①：确认弹窗不带右上✕
 	popup.name = "ExitConfirmPopup"
 	popup.z_index = 30   # 弹窗层
 	var vb = popup.get_child(0)
@@ -624,16 +624,17 @@ func _on_exit_btn_pressed():
 	row.alignment = BoxContainer.ALIGNMENT_CENTER
 	row.add_theme_constant_override("separation", 20)
 	vb.add_child(row)
-	var ok = Button.new()
-	ok.text = "存档并退出"
-	ok.custom_minimum_size = Vector2(140, 40)
-	ok.pressed.connect(_on_exit_confirmed)
-	row.add_child(ok)
+	# 【改】UI统一批次①：确认弹窗双钮统一【取消】左【确定】右，动作含义写进标题/正文
 	var cancel = Button.new()
 	cancel.text = "取消"
 	cancel.custom_minimum_size = Vector2(120, 40)
 	cancel.pressed.connect(func(): _safe_close("ExitConfirmPopup"))
 	row.add_child(cancel)
+	var ok = Button.new()
+	ok.text = "确定"
+	ok.custom_minimum_size = Vector2(140, 40)
+	ok.pressed.connect(_on_exit_confirmed)
+	row.add_child(ok)
 	add_child(popup)
 
 # 【改】确认退出：先存档。离线模式（无令牌）退出=返回登录门——重载场景后 token 为空必走 net_ui._show_login_gate()，

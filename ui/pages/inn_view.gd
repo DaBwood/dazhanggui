@@ -612,10 +612,6 @@ func _show_dish_popup(pack_id: String, career: String, pack: Dictionary):
 		_on_dish_upgrade(pack_id, career)
 		c._safe_close("DishPopup"))
 	vbox.add_child(up_btn)
-	var cancel := Button.new()
-	cancel.text = "关闭"
-	cancel.pressed.connect(func(): c._safe_close("DishPopup"))
-	vbox.add_child(cancel)
 	c.add_child(panel)
 
 # ==================== 页签三：兑换商店 ====================

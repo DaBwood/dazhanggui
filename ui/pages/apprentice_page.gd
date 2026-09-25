@@ -283,7 +283,6 @@ func _show_graduate_selector(slot: int):
 	lover_btn.pressed.connect(_on_graduate.bind(slot, "lover"))
 	vbox.add_child(lover_btn)
 	
-	c._add_ok_button(vbox, func(): c._safe_close("GraduatePanel"), "取消")
 	c.add_child(panel)
 
 func _on_graduate(slot: int, path: String):
@@ -309,7 +308,7 @@ func _show_vitality_pill_prompt(slot: int):
 	_vitality_target_slot = slot
 	c._safe_close("VitalityPillPrompt")
 	
-	var panel = c._create_base_popup("使用活力丹", Vector2(420, 280), Vector2(366, 184))
+	var panel = c._create_base_popup("使用活力丹", Vector2(420, 280), Vector2(366, 184), false)   # 【改】UI统一批次①：确认弹窗不带右上✕
 	panel.name = "VitalityPillPrompt"
 	var vbox = panel.get_child(0)
 	
@@ -326,17 +325,18 @@ func _show_vitality_pill_prompt(slot: int):
 	btn_box.add_theme_constant_override("separation", 16)
 	vbox.add_child(btn_box)
 	
-	var use_btn = Button.new()
-	use_btn.text = "使用"
-	use_btn.custom_minimum_size = Vector2(80, 36)
-	use_btn.pressed.connect(_on_use_vitality_pill.bind(spin))
-	btn_box.add_child(use_btn)
-	
+	# 【改】UI统一批次①：确认弹窗双钮统一【取消】左【确定】右
 	var cancel_btn = Button.new()
 	cancel_btn.text = "取消"
 	cancel_btn.custom_minimum_size = Vector2(80, 36)
 	cancel_btn.pressed.connect(func(): c._safe_close("VitalityPillPrompt"))
 	btn_box.add_child(cancel_btn)
+	
+	var use_btn = Button.new()
+	use_btn.text = "确定"
+	use_btn.custom_minimum_size = Vector2(80, 36)
+	use_btn.pressed.connect(_on_use_vitality_pill.bind(spin))
+	btn_box.add_child(use_btn)
 	
 	c.add_child(panel)
 

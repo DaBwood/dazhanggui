@@ -335,7 +335,6 @@ func _on_account_btn_pressed():
 		lbl.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 		lbl.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
 		vb.add_child(lbl)
-		c._add_ok_button(vb, func(): c._safe_close("OfflineHintPopup"), "知道了")
 		return
 	_show_account_panel()
 
@@ -377,7 +376,6 @@ func _show_account_panel():
 		c.get_tree().reload_current_scene()   # 重载场景=回到登录门（token已清，不会直接进游戏）
 	)
 	vb.add_child(out_btn)
-	c._add_ok_button(vb, func(): c._safe_close("AccountPanel"), "关闭")
 
 # 【新增】登录/注册弹窗：Web 端走 HTML 原生输入框（手机虚拟键盘引擎bug绕法，见档案踩坑11）；桌面/编辑器用 LineEdit
 func _show_login_popup():

@@ -462,7 +462,6 @@ func _show_facility_popup(fid: String):
 		unlock_btn.disabled = not _sys().can_unlock_facility(fid).get("ok", false)
 		unlock_btn.pressed.connect(func(): _on_facility_unlock(fid))
 		vb.add_child(unlock_btn)
-		c._add_ok_button(vb, func(): _close_node("TavernPopup"))
 		return
 	# 已解锁：三属性 当前→下级
 	var pv := _sys().get_facility_preview(fid)
@@ -496,7 +495,6 @@ func _show_facility_popup(fid: String):
 		up_btn.disabled = not _sys().can_upgrade_facility(fid).get("ok", false)
 		up_btn.pressed.connect(func(): _on_facility_upgrade(fid, str(fcfg.get("project", "")), sync_cb.button_pressed, up_btn))
 		vb.add_child(up_btn)
-	c._add_ok_button(vb, func(): _close_node("TavernPopup"))
 
 func _on_facility_unlock(fid: String):
 	var r := _sys().unlock_facility(fid)
@@ -532,7 +530,7 @@ func _on_add_jiaohao():
 	_close_node("TavernPopup")
 	_popup_kind = ""   # 道具面板不属于信息/设施弹窗，刷新时不重建
 	var give: int = int(data._tavern_configs.get("settings", {}).get("jiaohao_give", 2))
-	var popup: PanelContainer = c._create_base_popup("使用佳酿", Vector2(400, 240))
+	var popup: PanelContainer = c._create_base_popup("使用佳酿", Vector2(400, 240), Vector2.ZERO, false)   # 【改】UI统一批次①：确认弹窗不带右上✕
 	popup.name = "TavernPopup"
 	popup.z_index = 40   # 盖过 TavernPage(z35)，同 inn/bank 弹窗惯例
 	c.add_child(popup)
@@ -562,6 +560,12 @@ func _on_add_jiaohao():
 	btn_row.add_theme_constant_override("separation", 8)
 	btn_row.alignment = BoxContainer.ALIGNMENT_CENTER
 	vb.add_child(btn_row)
+	# 【改】UI统一批次①：确认弹窗双钮统一【取消】左【确定】右
+	var cancel_btn := Button.new()
+	cancel_btn.text = "取消"
+	cancel_btn.custom_minimum_size = Vector2(90, 34)
+	cancel_btn.pressed.connect(func(): _close_node("TavernPopup"))
+	btn_row.add_child(cancel_btn)
 	var ok_btn := Button.new()
 	ok_btn.text = "确定"
 	ok_btn.custom_minimum_size = Vector2(90, 34)
@@ -573,11 +577,6 @@ func _on_add_jiaohao():
 		c._show_stage_hint("叫号 +%d" % (n * give))
 		_refresh())
 	btn_row.add_child(ok_btn)
-	var cancel_btn := Button.new()
-	cancel_btn.text = "取消"
-	cancel_btn.custom_minimum_size = Vector2(90, 34)
-	cancel_btn.pressed.connect(func(): _close_node("TavernPopup"))
-	btn_row.add_child(cancel_btn)
 
 func _on_collect():
 	var r := _sys().collect_jar()
@@ -678,12 +677,11 @@ func _show_info_popup():
 		hint.text = "知名度达标即可免费升级酒肆（升级不消耗资源）"
 		hint.add_theme_color_override("font_color", Color("#9a93b8"))
 		vb.add_child(hint)
-	c._add_ok_button(vb, func(): _close_node("TavernPopup"))
 
 # 改名弹窗：免费，限8个中文字
 func _show_rename_popup():
 	_close_node("TavernPopup")
-	var popup: PanelContainer = c._create_base_popup("修改招牌", Vector2(400, 200))
+	var popup: PanelContainer = c._create_base_popup("修改招牌", Vector2(400, 200), Vector2.ZERO, false)   # 【改】UI统一批次①：确认弹窗不带右上✕
 	popup.name = "TavernPopup"
 	popup.z_index = 40
 	c.add_child(popup)
@@ -697,6 +695,12 @@ func _show_rename_popup():
 	btn_row.alignment = BoxContainer.ALIGNMENT_CENTER
 	btn_row.add_theme_constant_override("separation", 8)
 	vb.add_child(btn_row)
+	# 【改】UI统一批次①：确认弹窗双钮统一【取消】左【确定】右
+	var cancel_btn := Button.new()
+	cancel_btn.text = "取消"
+	cancel_btn.custom_minimum_size = Vector2(90, 34)
+	cancel_btn.pressed.connect(func(): _refresh())   # 取消也回信息弹窗
+	btn_row.add_child(cancel_btn)
 	var ok_btn := Button.new()
 	ok_btn.text = "确定"
 	ok_btn.custom_minimum_size = Vector2(90, 34)
@@ -708,11 +712,6 @@ func _show_rename_popup():
 			return
 		_refresh())
 	btn_row.add_child(ok_btn)
-	var cancel_btn := Button.new()
-	cancel_btn.text = "取消"
-	cancel_btn.custom_minimum_size = Vector2(90, 34)
-	cancel_btn.pressed.connect(func(): _refresh())   # 取消也回信息弹窗
-	btn_row.add_child(cancel_btn)
 
 func _on_level_up():
 	var r := _sys().level_up()

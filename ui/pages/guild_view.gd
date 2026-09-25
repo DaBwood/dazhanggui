@@ -60,7 +60,7 @@ func _build_shell():
 	vb.add_theme_constant_override("separation", 8)
 	_overlay.add_child(vb)
 	var back = Button.new()
-	back.text = "< 返回闯荡"
+	back.text = "< 返回"   # 【改】UI统一批次①：返回文案统一 < 返回
 	back.pressed.connect(close)
 	vb.add_child(back)
 	var header = Label.new()
@@ -174,7 +174,6 @@ func _show_join_popup():
 	join_btn.text = "加入商会"
 	join_btn.pressed.connect(_on_join.bind(id_edit, popup))
 	vb.add_child(join_btn)
-	c._add_ok_button(vb, func(): popup.queue_free(), "取消")
 	c.add_child(popup)
 
 func _on_create(name_edit: LineEdit, popup):
@@ -319,7 +318,6 @@ func _on_council_pick():
 			popup.queue_free()
 			_save_and_render())
 		lst.add_child(b)
-	c._add_ok_button(vb, func(): popup.queue_free(), "取消")
 	c.add_child(popup)
 
 func _on_council_clear():
@@ -488,7 +486,7 @@ func _on_set_vice(username: String):
 	_save_and_render()
 
 func _on_kick(username: String, disp_name: String):
-	var popup = c._create_base_popup("踢出成员", Vector2(400, 220))
+	var popup = c._create_base_popup("踢出成员", Vector2(400, 220), Vector2.ZERO, false)   # 【改】UI统一批次①：确认弹窗不带右上✕
 	popup.name = "GuildKickPopup"
 	var vb = popup.get_child(0)
 	var lbl = Label.new()
@@ -499,8 +497,13 @@ func _on_kick(username: String, disp_name: String):
 	row.alignment = BoxContainer.ALIGNMENT_CENTER
 	row.add_theme_constant_override("separation", 16)
 	vb.add_child(row)
+	# 【改】UI统一批次①：确认弹窗双钮统一【取消】左【确定】右，动作含义写进标题/正文
+	var cancel = Button.new()
+	cancel.text = "取消"
+	cancel.pressed.connect(func(): popup.queue_free())
+	row.add_child(cancel)
 	var ok = Button.new()
-	ok.text = "确认踢出"
+	ok.text = "确定"
 	ok.custom_minimum_size = Vector2(140, 44)
 	ok.pressed.connect(func():
 		var members = data.guild_system.cache.get("members", [])
@@ -512,7 +515,6 @@ func _on_kick(username: String, disp_name: String):
 		popup.queue_free()
 		_save_and_render())
 	row.add_child(ok)
-	c._add_ok_button(vb, func(): popup.queue_free(), "取消")
 	c.add_child(popup)
 
 # 操作后统一：回写服务器 + 重渲染
@@ -679,7 +681,7 @@ func _on_trade_withdraw(trade_id: String):
 func _on_trade_assign(trade_id: String):
 	var gs = data.guild_system
 	var conf = gs.get_trade_conf(trade_id)
-	var popup = c._create_base_popup("委任门客·%s" % str(conf.get("name", trade_id)), Vector2(540, 560))
+	var popup = c._create_base_popup("委任门客·%s" % str(conf.get("name", trade_id)), Vector2(540, 560), Vector2.ZERO, false)   # 【改】UI统一批次①：确认弹窗不带右上✕
 	popup.name = "GuildTradeAssign"
 	var vb: VBoxContainer = popup.get_child(0)
 	var tip = Label.new()
@@ -712,8 +714,14 @@ func _on_trade_assign(trade_id: String):
 	btns.alignment = BoxContainer.ALIGNMENT_CENTER
 	btns.add_theme_constant_override("separation", 12)
 	vb.add_child(btns)
+	# 【改】UI统一批次①：确认弹窗双钮统一【取消】左【确定】右，动作含义写进标题/正文
+	var cancel_btn = Button.new()
+	cancel_btn.text = "取消"
+	cancel_btn.custom_minimum_size = Vector2(120, 40)
+	cancel_btn.pressed.connect(func(): popup.queue_free())
+	btns.add_child(cancel_btn)
 	var ok_btn = Button.new()
-	ok_btn.text = "确认委任"
+	ok_btn.text = "确定"
 	ok_btn.custom_minimum_size = Vector2(120, 40)
 	ok_btn.pressed.connect(func():
 		var picked: Array = []
@@ -731,9 +739,4 @@ func _on_trade_assign(trade_id: String):
 			c._show_stage_hint("已委任 %d 名门客（全队赚速还差 %s 达标）" % [picked.size(), c.format_number(float(conf.get("require", 0)) - float(r.get("total", 0)))])
 		_save_and_render())
 	btns.add_child(ok_btn)
-	var cancel_btn = Button.new()
-	cancel_btn.text = "取消"
-	cancel_btn.custom_minimum_size = Vector2(120, 40)
-	cancel_btn.pressed.connect(func(): popup.queue_free())
-	btns.add_child(cancel_btn)
 	c.add_child(popup)

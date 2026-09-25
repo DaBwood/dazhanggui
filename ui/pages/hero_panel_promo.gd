@@ -219,7 +219,6 @@ func _on_promo_btn_clicked():
 			row.add_theme_color_override("font_color", Color("#888888"))
 		list.add_child(row)
 	
-	c._add_ok_button(vb, func(): popup.queue_free(), "关闭")
 
 
 
@@ -295,13 +294,6 @@ func _show_simple_promo_panel():
 			_show_simple_promo_panel()   # 重建显示下一档
 	)
 	vb.add_child(go_btn)
-	# 关闭钮：单独小钮放晋升钮下面
-	var close_btn = Button.new()
-	close_btn.text = "关闭"
-	close_btn.custom_minimum_size = Vector2(100, 34)
-	close_btn.size_flags_horizontal = Control.SIZE_SHRINK_CENTER
-	close_btn.pressed.connect(func(): popup.queue_free())
-	vb.add_child(close_btn)
 
 
 func _show_jinlan_panel():
@@ -702,10 +694,6 @@ func _show_master_selector():
 			c.update_all_ui()
 		)
 		vb.add_child(b)
-	var close_b := Button.new()
-	close_b.text = "取消"
-	close_b.pressed.connect(func(): c._safe_close("MasterSelector"))
-	vb.add_child(close_b)
 
 
 func _get_copy_talent_info(hero_id: String) -> Dictionary:
@@ -734,10 +722,6 @@ func _on_copy_talent_btn_clicked():
 	desc_lbl.add_theme_color_override("font_color", Color("#7ee787"))
 	desc_lbl.text = ct.get("desc", "")
 	vb.add_child(desc_lbl)
-	var close_btn = Button.new()
-	close_btn.text = "关闭"
-	close_btn.pressed.connect(func(): popup.queue_free())
-	vb.add_child(close_btn)
 
 
 # ============ 凤魁（秦淮五艳晋升，2026-09-25） ============
@@ -750,7 +734,7 @@ func _on_fengkui_btn_clicked():
 		return
 	if not data.hero_system.can_choose_fengkui(hp.current_hero_id): return
 	c._safe_close("FengkuiConfirmPopup")
-	var popup = c._create_base_popup("选定凤魁", Vector2(440, 220))
+	var popup = c._create_base_popup("选定凤魁", Vector2(440, 220), Vector2.ZERO, false)   # 【改】UI统一批次①：确认弹窗不带右上✕
 	popup.name = "FengkuiConfirmPopup"
 	popup.z_index = 30
 	c.add_child(popup)
@@ -764,16 +748,17 @@ func _on_fengkui_btn_clicked():
 	row.alignment = BoxContainer.ALIGNMENT_CENTER
 	row.add_theme_constant_override("separation", 20)
 	vb.add_child(row)
-	var ok = Button.new()
-	ok.text = "确定"
-	ok.custom_minimum_size = Vector2(120, 40)
-	ok.pressed.connect(_on_fengkui_confirmed)
-	row.add_child(ok)
+	# 【改】UI统一批次①：确认弹窗双钮统一【取消】左【确定】右
 	var cancel = Button.new()
 	cancel.text = "取消"
 	cancel.custom_minimum_size = Vector2(120, 40)
 	cancel.pressed.connect(func(): c._safe_close("FengkuiConfirmPopup"))
 	row.add_child(cancel)
+	var ok = Button.new()
+	ok.text = "确定"
+	ok.custom_minimum_size = Vector2(120, 40)
+	ok.pressed.connect(_on_fengkui_confirmed)
+	row.add_child(ok)
 
 
 func _on_fengkui_confirmed():
@@ -830,12 +815,6 @@ func _show_fengkui_panel(tab_id: String = "skill"):
 	for tab_btn in tab_bar.get_children():
 		if tab_btn.get_meta("tab_id", "") == tab_id:
 			tab_btn.add_theme_color_override("font_color", Color("#ffd700"))
-	c._add_ok_button(vb, func():
-		if c.has_node("FengkuiPanel"):
-			var old2 = c.get_node("FengkuiPanel")
-			c.remove_child(old2)
-			old2.queue_free()
-	, "关闭")
 
 func _on_fengkui_tab_clicked(tab_id: String):
 	_show_fengkui_panel(tab_id)
@@ -1002,13 +981,12 @@ func _on_fengkui_transfer_clicked():
 		b.text = "%s（%s）" % [h.get("name", ""), HeroData.get_quality_name(int(h.get("quality", 2)))]
 		b.pressed.connect(_on_fengkui_transfer_target.bind(hid))
 		vb.add_child(b)
-	c._add_ok_button(vb, func(): c._safe_close("FengkuiTransferPopup"), "取消")
 
 
 func _on_fengkui_transfer_target(hid: String):
 	c._safe_close("FengkuiTransferPopup")
 	c._safe_close("FengkuiTransferConfirm")
-	var popup = c._create_base_popup("确认转移", Vector2(420, 200))
+	var popup = c._create_base_popup("确认转移", Vector2(420, 200), Vector2.ZERO, false)   # 【改】UI统一批次①：确认弹窗不带右上✕
 	popup.name = "FengkuiTransferConfirm"
 	popup.z_index = 36
 	c.add_child(popup)
@@ -1022,16 +1000,17 @@ func _on_fengkui_transfer_target(hid: String):
 	row.alignment = BoxContainer.ALIGNMENT_CENTER
 	row.add_theme_constant_override("separation", 20)
 	vb.add_child(row)
-	var ok = Button.new()
-	ok.text = "确定"
-	ok.custom_minimum_size = Vector2(120, 40)
-	ok.pressed.connect(_on_fengkui_transfer_confirmed.bind(hid))
-	row.add_child(ok)
+	# 【改】UI统一批次①：确认弹窗双钮统一【取消】左【确定】右
 	var cancel = Button.new()
 	cancel.text = "取消"
 	cancel.custom_minimum_size = Vector2(120, 40)
 	cancel.pressed.connect(func(): c._safe_close("FengkuiTransferConfirm"))
 	row.add_child(cancel)
+	var ok = Button.new()
+	ok.text = "确定"
+	ok.custom_minimum_size = Vector2(120, 40)
+	ok.pressed.connect(_on_fengkui_transfer_confirmed.bind(hid))
+	row.add_child(ok)
 
 
 func _on_fengkui_transfer_confirmed(hid: String):

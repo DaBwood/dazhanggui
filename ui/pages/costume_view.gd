@@ -44,7 +44,6 @@ func show_hero_costume_popup(hero_id: String):
 	list.name = "CosList"
 	scroll.add_child(list)
 	_fill_hero_costume_list(list, hero_id)
-	c._add_ok_button(vb, func(): popup.queue_free(), "关闭")
 	c.add_child(popup)
 
 # 填充门客服装列表：
@@ -179,7 +178,6 @@ func show_friend_costume_popup(friend_id: String):
 	list.name = "CosList"
 	scroll.add_child(list)
 	_fill_friend_costume_list(list, friend_id)
-	c._add_ok_button(vb, func(): popup.queue_free(), "关闭")
 	c.add_child(popup)
 
 # 填充挚友服装列表：已兑换次数 + 下次兑换收益；挚友服装无技能无光环

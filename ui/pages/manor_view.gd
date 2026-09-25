@@ -41,7 +41,7 @@ func build_manor_view(page, vbox):
 	page.add_child(view)
 	
 	var back_btn = Button.new()
-	back_btn.text = "< 返回闯荡"
+	back_btn.text = "< 返回"   # 【改】UI统一批次①：返回文案统一 < 返回
 	back_btn.pressed.connect(c.hide_view.bind("manor"))
 	view.add_child(back_btn)
 	
@@ -186,16 +186,14 @@ func _fill_species_popup(panel: PanelContainer):
 	var land_word = "土地" if is_crop else "血统"
 	
 	var vbox: VBoxContainer = panel.get_child(0)
+	# 【改】UI统一批次①：清空重建保留下标0顶行（右上✕），动态标题改写顶行 PopupTitle、不再自建 Label
 	for child in vbox.get_children():
+		if child == vbox.get_child(0): continue
 		child.queue_free()
-	
-	var title = Label.new()
+
+	var title: Label = vbox.get_node("PopupTopRow/PopupTitle")
 	title.text = "【%s】产物：%s ｜ 总产量 %.1f/分" % [
 		cfg.get("name", sid), cfg.get("product", ""), data.get_manor_species_rate(sid)]
-	title.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
-	title.add_theme_font_size_override("font_size", 18)
-	title.add_theme_color_override("font_color", Color("#ffd700"))
-	vbox.add_child(title)
 	# 【新增】等级十连勾选放在弹窗内：升级按钮在哪，开关就在哪；勾选状态记在 _batch_checked
 	var batch_check = CheckBox.new()
 	batch_check.text = "等级十连"
@@ -214,7 +212,6 @@ func _fill_species_popup(panel: PanelContainer):
 			lock_lbl.add_theme_color_override("font_color", Color("#888888"))
 			vbox.add_child(lock_lbl)
 	
-	c._add_ok_button(vbox, func(): c._safe_close("ManorSpeciesPopup"), "关闭")
 
 # 按 id 在农场/牧场配置里找品种，供弹窗刷新时使用
 func _get_species_cfg(species_id: String) -> Dictionary:

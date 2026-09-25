@@ -52,7 +52,7 @@ func show_collection_view():
 	vb.add_child(top)
 	# 【新增】进入藏品只显示三个按钮，不再直接铺页签内容
 	var back_btn = Button.new()
-	back_btn.text = "< 返回" if _view == "main" else "< 主页"
+	back_btn.text = "< 返回"   # 【改】UI统一批次①：返回文案统一（原主视图"< 返回"/子视图"< 主页"合并）
 	back_btn.custom_minimum_size = Vector2(90, 44)
 	back_btn.pressed.connect(_on_back)
 	top.add_child(back_btn)
@@ -271,7 +271,6 @@ func _build_medal_card(popup: PanelContainer):
 		max_lbl.text = "已达满级"
 		max_lbl.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 		vb.add_child(max_lbl)
-	c._add_ok_button(box, func(): c._safe_close("CollectionMedalPopup"), "关闭")
 
 func _on_medal_help():
 	c._show_stage_hint("藏品评分：单件=品质基数×等级×星级（普通100/优秀345/卓越1980/传奇13320/无双116650）；总评分=已拥有藏品求和，只作升级门槛不消耗。")
@@ -688,7 +687,6 @@ func _show_detail(cid: String):
 			_show_detail(cid))
 		vbox.add_child(sb)
 
-	c._add_ok_button(vbox, func(): _close_node("CollectionDetailPopup"), "关闭")
 	c.add_child(panel)
 
 # 自选门客选择器（已拥有门客列表）
@@ -720,7 +718,6 @@ func _show_pick_selector(cid: String):
 			_refresh_body()   # 【新增】同步刷新藏宝阁列表
 			_show_detail(cid))
 		list.add_child(b)
-	c._add_ok_button(vbox, func(): _close_node("CollectionPickPopup"), "取消")
 	c.add_child(panel)
 
 # 【改】套装锦盒：道具id suitbox_XX ↔ 套装 s_XX，任选成员藏品碎片；数量由背包详情弹窗带入
@@ -768,7 +765,6 @@ func show_suit_frag_box_selector(item_id: String, p_qty: int = 1):
 			c.update_bag_list())
 		row.add_child(btn)
 		vbox.add_child(row)
-	c._add_ok_button(vbox, func(): popup.queue_free(), "关闭")
 	c.add_child(popup)
 
 # 【新增】套装效果玩家文案：已接入类按"已激活档数×每档值"显示当前实际加成；未接入统一"后续版本开放"
@@ -930,10 +926,9 @@ func _show_results(results: Array):
 			txt = "%s×%d" % [iname, int(e.get("count", 0))]
 		label.text = "🎁 " + txt
 		list.add_child(label)
-	c._add_ok_button(vbox, func():
-		_close_node("CollectionResultPopup")
-		_refresh_body(), "确定")
 	c.add_child(panel)
+	# 【新增】UI统一批次①：底部【确定】关闭钮移除（右上✕接管），"关闭后刷新本体"改挂弹窗销毁钩子
+	panel.tree_exiting.connect(_refresh_body)
 
 # 概率一览弹窗
 func _show_probability():
@@ -956,5 +951,4 @@ func _show_probability():
 		var label = Label.new()
 		label.text = "%s  %.2f%%" % [e.get("label", ""), float(e.get("weight", 0)) * 100.0 / maxi(total, 1)]
 		list.add_child(label)
-	c._add_ok_button(vbox, func(): _close_node("CollectionResultPopup"), "关闭")
 	c.add_child(panel)

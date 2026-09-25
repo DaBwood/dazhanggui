@@ -117,11 +117,6 @@ func open_player_panel():
 	chest_btn.pressed.connect(_on_claim_daily_reward)
 	chest_box.add_child(chest_btn)
 	
-	# 关闭按钮
-	var close_btn = Button.new()
-	close_btn.text = "关闭"
-	close_btn.pressed.connect(_close_player_panel)
-	vbox.add_child(close_btn)
 	
 	# 【新增】账号/退出（原在顶栏，竖屏 600 宽被截断；移入个人面板，点名字进）
 	var sys_row = HBoxContainer.new()
@@ -144,6 +139,12 @@ func open_player_panel():
 	c.add_child(panel)
 	c._current_popup = panel
 	c.get_node("Overlay").show()
+	# 【新增】UI统一批次①：Overlay/_current_popup 清理挂 tree_exiting——右上✕/任意关闭路径都触发（原只在底部【关闭】钮回调里）
+	panel.tree_exiting.connect(func():
+		if c.has_node("Overlay"):
+			c.get_node("Overlay").hide()
+		c._current_popup = null
+	)
 	_update_identity_reward_list()
 
 func _update_identity_reward_list():

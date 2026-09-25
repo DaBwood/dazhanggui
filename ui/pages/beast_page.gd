@@ -509,21 +509,29 @@ func _show_awaken_confirm(beast_id: String, instance_index: int):
 	var bs = data.beast_system
 	var acost = bs.get_awaken_cost(beast_id, instance_index)
 	var have = int(data.items.get("awaken_fruit", 0))
-	var popup = c._create_base_popup("珍兽觉醒", Vector2(400, 240))
+	var popup = c._create_base_popup("珍兽觉醒", Vector2(400, 240), Vector2.ZERO, false)   # 【改】UI统一批次①：确认弹窗不带右上✕
 	popup.name = "BeastAwakenConfirmPopup"
 	var vbox = popup.get_child(0)
 	var info = Label.new()
 	info.text = "本次觉醒消耗：觉醒果×%d\n当前拥有：觉醒果×%d" % [acost, have]
 	info.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	vbox.add_child(info)
+	# 【改】UI统一批次①：确认弹窗双钮统一【取消】左【确定】右，动作含义写进标题/正文
+	var btn_row = HBoxContainer.new()
+	btn_row.alignment = BoxContainer.ALIGNMENT_CENTER
+	btn_row.add_theme_constant_override("separation", 16)
+	vbox.add_child(btn_row)
+	var cancel = Button.new()
+	cancel.text = "取消"
+	cancel.pressed.connect(func(): c._safe_close("BeastAwakenConfirmPopup"))
+	btn_row.add_child(cancel)
 	var ok = Button.new()
-	ok.text = "确认觉醒"
+	ok.text = "确定"
 	ok.disabled = have < acost
 	ok.pressed.connect(func():
 		c._safe_close("BeastAwakenConfirmPopup")
 		_on_beast_awaken(beast_id, instance_index))
-	vbox.add_child(ok)
-	c._add_ok_button(vbox, func(): c._safe_close("BeastAwakenConfirmPopup"), "取消")
+	btn_row.add_child(ok)
 	c.add_child(popup)
 
 func _on_beast_equip_toggle(beast_id: String, instance_index: int):
@@ -586,10 +594,6 @@ func _show_hero_equip_selector(beast_id: String, instance_index: int):
 			btn.pressed.connect(_on_hero_equipped_beast.bind(hero_id, beast_id, instance_index))
 		list.add_child(btn)
 	
-	var cancel = Button.new()
-	cancel.text = "取消"
-	cancel.pressed.connect(func(): c._safe_close("HeroEquipSelector"))
-	vbox.add_child(cancel)
 	
 	c.add_child(panel)
 
@@ -599,6 +603,11 @@ func _show_beast_recycle_panel():
 	_recycle_selected_keys.clear()
 
 	var panel = c._create_base_popup("回收珍兽", Vector2(520, 420))
+	# 【改】UI统一批次①：回收勾选状态清理挂 tree_exiting——右上✕/任意关闭路径都会清（原只在底部【关闭】钮回调里）
+	panel.tree_exiting.connect(func():
+		_recycle_selected_keys.clear()
+		_recycle_confirm_btn = null
+	)
 	panel.name = "BeastRecyclePanel"
 	var vbox = panel.get_child(0)
 
@@ -630,11 +639,6 @@ func _show_beast_recycle_panel():
 	_recycle_confirm_btn.pressed.connect(_on_recycle_selected)
 	bottom.add_child(_recycle_confirm_btn)
 
-	var close_btn = Button.new()
-	close_btn.text = "关闭"
-	close_btn.custom_minimum_size = Vector2(120, 40)
-	close_btn.pressed.connect(_close_beast_recycle_panel)
-	bottom.add_child(close_btn)
 
 	c.add_child(panel)
 
@@ -796,10 +800,6 @@ func _refresh_beast_recycle_panel():
 	if grid:
 		_fill_beast_recycle_cards(grid)
 
-func _close_beast_recycle_panel():
-	_recycle_selected_keys.clear()
-	_recycle_confirm_btn = null
-	c._safe_close("BeastRecyclePanel")
 
 func _on_hero_equipped_beast(hero_id: String, beast_id: String, instance_index: int):
 	data.equip_beast(hero_id, beast_id, instance_index)

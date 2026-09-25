@@ -251,7 +251,6 @@ func _show_travel_all_popup(summary: Dictionary):
 			_add_summary_line(list, "今日新菜：【%s】额外赚速 +%s" % [data.heroes[hid].name, c.format_number(summary.hero_income_gain[hid])])
 	# 收尾：剩余体力（杜康回复的会体现在这里，可能不为0）
 	_add_summary_line(list, "剩余体力：%d/%d" % [summary.stamina_after, data.STAMINA_MAX])
-	c._add_ok_button(vb, func(): popup.queue_free(), "确定")
 	c.add_child(popup)
 
 # 【新增】汇总弹窗内添加一行文本（title=true 为小节标题，金色居中）

@@ -172,7 +172,6 @@ func _show_item_detail_popup(item_id: String):
 
 	var use_cfg = cfg.get("use", {})
 	if use_cfg.is_empty() or count <= 0:
-		c._add_ok_button(vbox, func(): popup.queue_free(), "关闭")
 		c.add_child(popup)
 		return
 
@@ -195,7 +194,6 @@ func _show_item_detail_popup(item_id: String):
 		_on_detail_use(item_id, 1 if qty_spin == null else int(qty_spin.value), popup))
 	vbox.add_child(use_btn)
 
-	c._add_ok_button(vbox, func(): popup.queue_free(), "关闭")
 	c.add_child(popup)
 
 # 【新增】详情弹窗统一使用入口：0提示选数量；按类型分派（直接消耗按N / 二次选择带N / 固定1直开）
@@ -474,10 +472,6 @@ func _show_hero_box_selector():
 		empty.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 		list.add_child(empty)
 	
-	var cancel = Button.new()
-	cancel.text = "取消"
-	cancel.pressed.connect(func(): c._safe_close("HeroBoxSelector"))
-	vbox.add_child(cancel)
 	
 	c.add_child(panel)
 
@@ -514,10 +508,6 @@ func _show_friend_box_selector():
 		empty.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 		list.add_child(empty)
 	
-	var cancel = Button.new()
-	cancel.text = "取消"
-	cancel.pressed.connect(func(): c._safe_close("FriendBoxSelector"))
-	vbox.add_child(cancel)
 	
 	c.add_child(panel)
 
@@ -551,7 +541,6 @@ func _open_soul_boxes(item_id: String, kind: String, n: int):
 		lbl.text = line
 		lbl.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
 		list.add_child(lbl)
-	c._add_ok_button(svbox, func(): popup.queue_free(), "关闭")
 	c.add_child(popup)
 	update_bag_list()
 	c.update_all_ui()
@@ -614,10 +603,6 @@ func _show_item_box_selector(p_qty: int):
 		entries.append({"btn": btn, "text": btn.text})
 	search.text_changed.connect(func(t): _filter_named_buttons(entries, t))
 
-	var cancel = Button.new()
-	cancel.text = "取消"
-	cancel.pressed.connect(func(): c._safe_close("ItemBoxSelector"))
-	vbox.add_child(cancel)
 
 	c.add_child(panel)
 
@@ -665,10 +650,6 @@ func _show_cos_box_selector():
 		list.add_child(btn)
 		entries.append({"btn": btn, "text": btn.text})
 	search.text_changed.connect(func(t): _filter_named_buttons(entries, t))
-	var cancel = Button.new()
-	cancel.text = "取消"
-	cancel.pressed.connect(func(): c._safe_close("CosBoxSelector"))
-	vbox.add_child(cancel)
 	c.add_child(panel)
 
 # 【新增】服装盒子回调：扣1盒，给该服装所属门客加1库存
@@ -728,7 +709,6 @@ func _show_item_gains_popup(title: String, gains: Dictionary):
 		lbl.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 		lbl.text = "【%s】×%d" % [data.ITEM_CONFIG.get(iid, {}).get("name", iid), gains[iid]]
 		list.add_child(lbl)
-	c._add_ok_button(vb, func(): popup.queue_free(), "确定")
 	c.add_child(popup)
 
 # 【改】蛮荒礼盒选择器：带数量（选1种道具 ×100×N）
@@ -752,7 +732,6 @@ func _show_manhuang_box_selector(p_qty: int):
 		btn.pressed.connect(_on_manhuang_box_pick.bind(popup, iid, p_qty))
 		line.add_child(btn)
 		vbox.add_child(line)
-	c._add_ok_button(vbox, func(): popup.queue_free(), "关闭")
 	c.add_child(popup)
 
 # 【改】蛮荒礼盒确认：扣N个礼盒、发100×N个所选道具
@@ -792,7 +771,6 @@ func _show_zixuan_baoyin_selector(p_qty: int, is_fragment: bool):
 		btn.pressed.connect(_on_zixuan_baoyin_pick.bind(popup, src_id, target_id, p_qty))
 		line.add_child(btn)
 		vbox.add_child(line)
-	c._add_ok_button(vbox, func(): popup.queue_free(), "关闭")
 	c.add_child(popup)
 
 # 【新增】2026-09-18 自选宝印确认：扣N个源道具，发N个所选目标
@@ -833,7 +811,6 @@ func _show_hungu_box_selector(p_qty: int):
 			btn.pressed.connect(_on_hungu_box_pick.bind(popup, slot, q, p_qty))
 			row.add_child(btn)
 		vbox.add_child(row)
-	c._add_ok_button(vbox, func(): popup.queue_free(), "关闭")
 	c.add_child(popup)
 
 # 【改】魂骨盒子确认：扣N个盒子，生成N个同部位同品级魂骨
@@ -929,7 +906,6 @@ func _show_compose_popup(recipe: Dictionary):
 		lack.text = "材料不足（现有 %d 个）" % mat_have
 		lack.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 		vbox.add_child(lack)
-		c._add_ok_button(vbox, func(): popup.queue_free(), "关闭")
 		c.add_child(popup)
 		return
 	var pair: Dictionary = c._create_slider_spin_pair(vbox, max_n, 0)
@@ -959,7 +935,6 @@ func _show_compose_popup(recipe: Dictionary):
 		c.update_all_ui()
 		_show_item_gains_popup("合成结果", {out_id: n}))
 	vbox.add_child(ok_btn)
-	c._add_ok_button(vbox, func(): popup.queue_free(), "关闭")
 	c.add_child(popup)
 
 # 珍宝箱：N连开，五种商品随机其一×500入背包（商品使用=随机一名对应职业门客基础赚速+500）

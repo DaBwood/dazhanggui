@@ -36,7 +36,7 @@ func build_fishing_view(page, vbox):
 	page.add_child(view)
 
 	var back_btn = Button.new()
-	back_btn.text = "< 返回闯荡"
+	back_btn.text = "< 返回"   # 【改】UI统一批次①：返回文案统一 < 返回
 	back_btn.pressed.connect(c.hide_view.bind("fishing"))
 	view.add_child(back_btn)
 
@@ -228,7 +228,6 @@ func _show_medal_popup():
 		up_btn.disabled = not fs.can_upgrade_medal().get("ok", false)
 		up_btn.pressed.connect(_on_medal_upgrade)
 		vb.add_child(up_btn)
-	c._add_ok_button(pvb, func(): popup.queue_free(), "关闭")
 
 func _on_medal_help():
 	c._show_stage_hint("钓鱼勋章：普通鱼+5、优秀鱼+10、卓越鱼+30、传奇鱼+60、无双/极.无双鱼+100；累计经验只作门槛不消耗。")
@@ -323,7 +322,6 @@ func _on_fishing():
 		lbl.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 		lbl.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
 		vb.add_child(lbl)
-		c._add_ok_button(vb, func(): popup.queue_free())
 		c.add_child(popup)
 	else:
 		# 钓到渔获/道具
@@ -380,7 +378,6 @@ func _on_fishing_multi():
 		lbl3.text = "（%s，提前停止）" % res.reason
 		lbl3.add_theme_color_override("font_color", Color("#aaaaaa"))
 		list.add_child(lbl3)
-	c._add_ok_button(vb, func(): popup.queue_free())
 	c.add_child(popup)
 	_refresh_info()
 	_refresh_dots()
@@ -402,7 +399,7 @@ func _fill_location_popup(popup):
 	var fs = data.fishing_system
 	var vb = popup.get_child(0)
 	for child in vb.get_children():
-		if child is Label and child.text == "钓点": continue
+		if child == vb.get_child(0): continue   # 【改】UI统一批次①：保留下标0顶行（标题+右上✕），原标题文本判断废弃
 		child.queue_free()
 
 	# 钓点切换行
@@ -482,7 +479,6 @@ func _fill_location_popup(popup):
 		ex_dot.visible = times > 0
 		ex_wrap.add_child(ex_dot)
 	
-	c._add_ok_button(vb, func(): popup.queue_free(), "关闭")
 
 # 【新增】切换钓点：更新选中钓点并原地重填弹窗+刷新主界面信息栏
 func _on_switch_location(popup, lid: String):
@@ -510,7 +506,6 @@ func _on_pack_btn():
 	buy_btn.pressed.connect(_on_buy_pack.bind(popup))
 	vb.add_child(buy_btn)
 
-	c._add_ok_button(vb, func(): popup.queue_free(), "关闭")
 	c.add_child(popup)
 
 # 购买礼包：成功则更新弹窗内元宝显示和主界面信息栏
@@ -551,7 +546,6 @@ func _on_task_btn():
 
 	_fill_task_list(list)
 
-	c._add_ok_button(vb, func(): popup.queue_free(), "关闭")
 	c.add_child(popup)
 
 # 重填任务列表（领取后原地刷新用，不清弹窗）
@@ -633,7 +627,6 @@ func _on_dex_btn():
 
 	_fill_dex_list(list)
 
-	c._add_ok_button(vb, func(): popup.queue_free(), "关闭")
 	c.add_child(popup)
 
 # 重填图鉴列表（领取后原地刷新用，不清弹窗）
@@ -735,7 +728,6 @@ func _on_exchange_btn():
 		btn.pressed.connect(_on_exchange_fish.bind(f.id))
 		row.add_child(btn)
 		list.add_child(row)
-	c._add_ok_button(vb, func(): popup.queue_free(), "关闭")
 	c.add_child(popup)
 
 # 【新增】执行兑换：关自选弹窗，原地重填钓点弹窗（进度扣减/红点更新），结果显示在结果栏，刷新图鉴红点
@@ -782,5 +774,4 @@ func _show_gains_popup(title: String, gains: Dictionary):
 		lbl.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 		lbl.text = "【%s】×%d" % [data.ITEM_CONFIG.get(iid, {}).get("name", iid), int(gains[iid])]
 		list.add_child(lbl)
-	c._add_ok_button(vb, func(): popup.queue_free(), "确定")
 	c.add_child(popup)

@@ -158,7 +158,6 @@ func show_friend_goals_popup():
 		vbox.add_child(label)
 
 	# 关闭按钮：回调里释放整个弹窗
-	c._add_ok_button(vbox, func(): panel.queue_free(), "关闭")
 	c.add_child(panel)
 
 # 进府邸时重建列表（刷新挚友目标进度；原本无动态数据为 pass）

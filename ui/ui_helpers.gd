@@ -25,7 +25,7 @@ func _init(p_c):
 
 # 【新增】全屏遮罩：压暗背景并挡住弹窗期间切换页面/误触后台（z=25 低于弹窗 30、高于页面）；
 #  引用挂在 panel 的 meta 上，由 _safe_close 连带摘除，113 处调用零改动
-func _create_base_popup(title_text: String, popup_size: Vector2, _pos: Vector2 = Vector2.ZERO) -> PanelContainer:   # _pos 已废弃：一律居中（保留参数兼容46处旧调用）
+func _create_base_popup(title_text: String, popup_size: Vector2, _pos: Vector2 = Vector2.ZERO, with_close: bool = true) -> PanelContainer:   # _pos 已废弃：一律居中（保留参数兼容旧调用）；with_close=false=确认弹窗不带右上✕（范式§十一.8）
 	var mask = ColorRect.new()
 	mask.set_anchors_preset(Control.PRESET_FULL_RECT)
 	mask.color = Color(0, 0, 0, 0.55)
@@ -62,8 +62,43 @@ func _create_base_popup(title_text: String, popup_size: Vector2, _pos: Vector2 =
 	vbox.add_theme_constant_override("separation", 12)
 	panel.add_child(vbox)
 
-	if title_text != "":
+	if with_close:
+		# 【新增】UI统一批次①：顶行（左占位+标题+右上✕总关闭钮）——信息/操作弹窗一律右上✕总关闭，
+		#       底部只放动作钮；确认弹窗（取消+确定双钮）调用方传 with_close=false 不带✕。
+		#       ✕ 关闭=queue_free 自身，遮罩经 tree_exiting meta 连带摘除，任何关闭路径不漏
+		var top_row = HBoxContainer.new()
+		top_row.name = "PopupTopRow"
+		vbox.add_child(top_row)
+		var x_spacer = Control.new()   # 左占位：与✕同宽36，标题才能保持在面板正中
+		x_spacer.custom_minimum_size = Vector2(36, 36)
+		x_spacer.mouse_filter = Control.MOUSE_FILTER_IGNORE
+		top_row.add_child(x_spacer)
 		var title = Label.new()
+		title.name = "PopupTitle"   # 命名：原地重建类弹窗（厢房/庄园/钓点）按名改标题，不按索引取
+		title.text = title_text
+		title.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+		title.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+		title.add_theme_font_size_override("font_size", 22)
+		title.add_theme_color_override("font_color", Color("#ffd700"))
+		top_row.add_child(title)
+		var close_x = Button.new()
+		close_x.name = "PopupCloseX"
+		close_x.text = "✕"
+		close_x.custom_minimum_size = Vector2(36, 36)
+		close_x.mouse_filter = Control.MOUSE_FILTER_STOP   # 显式STOP：必须吃点击（PASS会把点击让出去）
+		# 无底红字小钮：四态空底板只留字形，不抢弹窗标题视觉
+		var empty_sb = StyleBoxEmpty.new()
+		for st in ["normal", "hover", "pressed", "focus"]:
+			close_x.add_theme_stylebox_override(st, empty_sb)
+		close_x.add_theme_color_override("font_color", Color("#ff6666"))
+		close_x.add_theme_color_override("font_hover_color", Color("#ff9999"))
+		close_x.add_theme_color_override("font_pressed_color", Color("#ff4444"))
+		close_x.add_theme_font_size_override("font_size", 20)
+		close_x.pressed.connect(panel.queue_free)   # 关自己：遮罩走 tree_exiting 连带清理，无需按名
+		top_row.add_child(close_x)
+	elif title_text != "":
+		var title = Label.new()
+		title.name = "PopupTitle"
 		title.text = title_text
 		title.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 		title.add_theme_font_size_override("font_size", 22)
@@ -251,7 +286,7 @@ func _show_unlock_hint(role_name: String, vip_level: int):
 	label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	vbox.add_child(label)
 
-	_add_ok_button(vbox, func(): panel.queue_free())
+	# 【删】UI统一批次①：底部纯关闭"确定"钮移除，右上✕总关闭接管（范式§十一.8）
 
 	c.add_child(panel)
 
@@ -262,7 +297,7 @@ func _show_quantity_selector(item_id: String, title_text: String, on_confirm: Ca
 	var max_count = c.data.items.get(item_id, 0)
 	if max_count <= 0: return
 
-	var panel = _create_base_popup(title_text, Vector2(420, 260), Vector2(366, 200))
+	var panel = _create_base_popup(title_text, Vector2(420, 260), Vector2(366, 200), false)   # 【改】UI统一批次①：数量选择=确认弹窗，不带右上✕
 	panel.name = "QuantitySelector"
 
 	var vbox = panel.get_child(0)
@@ -280,17 +315,18 @@ func _show_quantity_selector(item_id: String, title_text: String, on_confirm: Ca
 	btn_box.add_theme_constant_override("separation", 12)
 	vbox.add_child(btn_box)
 
-	var confirm_btn = Button.new()
-	confirm_btn.text = "确认"
-	confirm_btn.custom_minimum_size = Vector2(70, 32)
-	confirm_btn.pressed.connect(on_confirm.bind(spin))
-	btn_box.add_child(confirm_btn)
-
+	# 【改】UI统一批次①：确认弹窗双钮定规——【取消】左【确定】右，文案只用 确定/取消（范式§十一.8）
 	var cancel_btn = Button.new()
 	cancel_btn.text = "取消"
 	cancel_btn.custom_minimum_size = Vector2(70, 32)
 	cancel_btn.pressed.connect(_close_quantity_selector)
 	btn_box.add_child(cancel_btn)
+
+	var confirm_btn = Button.new()
+	confirm_btn.text = "确定"
+	confirm_btn.custom_minimum_size = Vector2(70, 32)
+	confirm_btn.pressed.connect(on_confirm.bind(spin))
+	btn_box.add_child(confirm_btn)
 
 	c.add_child(panel)
 

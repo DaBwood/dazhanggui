@@ -525,7 +525,6 @@ func _show_stone_info(uid: String):
 	tip.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
 	tip.text = "颜色与装备门客职业一致的格才激发加成\n按住卡片拖到魂盘，形状落在哪就放哪"
 	vb.add_child(tip)
-	c._add_ok_button(vb, func(): popup.queue_free(), "关闭")
 	c.add_child(popup)
 
 # ============ 重置（二次确认） ============
@@ -533,7 +532,7 @@ func _show_stone_info(uid: String):
 func _on_reset_pressed():
 	_close_node("SoulConfirmPopup")
 	var spent = int(data.soul_system._get_board(_beast_id, _beast_index).get("spent", 0))
-	var popup = c._create_base_popup("重置魂盘", Vector2(420, 240))
+	var popup = c._create_base_popup("重置魂盘", Vector2(420, 240), Vector2.ZERO, false)   # 【改】UI统一批次①：确认弹窗不带右上✕
 	popup.name = "SoulConfirmPopup"
 	popup.z_index = 40   # 压过 SoulPage(35)
 	var vb = popup.get_child(0)
@@ -546,16 +545,17 @@ func _on_reset_pressed():
 	row.alignment = BoxContainer.ALIGNMENT_CENTER
 	row.add_theme_constant_override("separation", 20)
 	vb.add_child(row)
-	var ok = Button.new()
-	ok.text = "确定重置"
-	ok.custom_minimum_size = Vector2(120, 40)
-	ok.pressed.connect(_on_reset_confirmed)
-	row.add_child(ok)
+	# 【改】UI统一批次①：确认弹窗双钮统一【取消】左【确定】右，动作含义写进标题/正文
 	var cancel = Button.new()
 	cancel.text = "取消"
 	cancel.custom_minimum_size = Vector2(120, 40)
 	cancel.pressed.connect(func(): _close_node("SoulConfirmPopup"))
 	row.add_child(cancel)
+	var ok = Button.new()
+	ok.text = "确定"
+	ok.custom_minimum_size = Vector2(120, 40)
+	ok.pressed.connect(_on_reset_confirmed)
+	row.add_child(ok)
 	c.add_child(popup)
 
 # 确认重置：执行并刷新
@@ -652,7 +652,6 @@ func _fill_recast_popup(popup):
 	do_btn.pressed.connect(_on_recast_do)
 	vb.add_child(do_btn)
 
-	c._add_ok_button(vb, func(): popup.queue_free(), "关闭")
 
 # 点选重塑材料：最多2块；选不同品质时清空重选（避免跨品质卡死）
 func _on_recast_pick(uid: String):
@@ -743,7 +742,6 @@ func _show_aura_popup():
 			row_lbl.add_theme_color_override("font_color", Color("#ffd700"))
 		vb.add_child(row_lbl)
 
-	c._add_ok_button(vb, func(): popup.queue_free(), "关闭")
 	c.add_child(popup)
 
 

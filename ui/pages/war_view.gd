@@ -44,7 +44,7 @@ func build_war_view(page, vbox):
 	page.add_child(view)
 	
 	var back_btn = Button.new()
-	back_btn.text = "< 返回闯荡"
+	back_btn.text = "< 返回"   # 【改】UI统一批次①：返回文案统一 < 返回
 	back_btn.pressed.connect(c.hide_view.bind("war"))
 	view.add_child(back_btn)
 	
@@ -209,12 +209,6 @@ func _show_battle_popup():
 	qb.custom_minimum_size = Vector2(220, 52)
 	qb.pressed.connect(_on_quick_battle)
 	bottom.add_child(qb)
-	# 【新增】关闭按钮：弹窗无自带关闭，固定在底部
-	var close_btn = Button.new()
-	close_btn.text = "关闭"
-	close_btn.custom_minimum_size = Vector2(120, 52)
-	close_btn.pressed.connect(func(): popup.queue_free())
-	bottom.add_child(close_btn)
 	c.add_child(popup)
 
 # 重填弹窗小队列表（新增/删除/编队/出战后刷新）
@@ -306,7 +300,7 @@ func _on_add_squad():
 
 # 删除小队：二次确认弹窗（队内门客移出，门客今日出战记录保留）
 func _on_del_squad(idx: int):
-	var popup = c._create_base_popup("删除小队", Vector2(420, 240))
+	var popup = c._create_base_popup("删除小队", Vector2(420, 240), Vector2.ZERO, false)   # 【改】UI统一批次①：确认弹窗不带右上✕
 	popup.name = "WarDelPopup"
 	var vb = popup.get_child(0)
 	var lbl = Label.new()
@@ -317,8 +311,13 @@ func _on_del_squad(idx: int):
 	row.alignment = BoxContainer.ALIGNMENT_CENTER
 	row.add_theme_constant_override("separation", 16)
 	vb.add_child(row)
+	# 【改】UI统一批次①：确认弹窗双钮统一【取消】左【确定】右，动作含义写进标题/正文
+	var cancel = Button.new()
+	cancel.text = "取消"
+	cancel.pressed.connect(func(): popup.queue_free())
+	row.add_child(cancel)
 	var ok = Button.new()
-	ok.text = "确认删除"
+	ok.text = "确定"
 	ok.custom_minimum_size = Vector2(140, 44)
 	ok.pressed.connect(func():
 		var r = data.war_system.remove_squad(idx)
@@ -327,7 +326,6 @@ func _on_del_squad(idx: int):
 		popup.queue_free()
 		_refresh_battle_popup())
 	row.add_child(ok)
-	c._add_ok_button(vb, func(): popup.queue_free(), "取消")
 	c.add_child(popup)
 
 # 点格子：弹门客选择器（别队门客不可选；本队门客可换格）
@@ -361,7 +359,6 @@ func _on_slot(squad_index: int, slot: int):
 		rm.text = "移出该位置"
 		rm.pressed.connect(_on_remove_hero.bind(popup, squad_index, slot))
 		vb.add_child(rm)
-	c._add_ok_button(vb, func(): popup.queue_free(), "关闭")
 	c.add_child(popup)
 
 # 选择器中选中队客（编入本格）
@@ -426,7 +423,6 @@ func _show_quick_result(r):
 	total.add_theme_color_override("font_color", Color("#ffd700"))
 	total.text = "合计：%d胜%d负 ｜ 积分 +%d ｜ 税引 +%d" % [r.wins, r.battles - r.wins, r.points, r.yin]
 	vb.add_child(total)
-	c._add_ok_button(vb, func(): popup.queue_free(), "确定")
 	c.add_child(popup)
 
 # ============ 兑换商店页 ============

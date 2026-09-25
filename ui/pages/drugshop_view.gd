@@ -336,7 +336,6 @@ func _show_medal_popup():
 		btn.disabled = not _sys().can_upgrade_medal().get("ok", false)
 		btn.pressed.connect(_on_medal_upgrade)
 		vb.add_child(btn)
-	c._add_ok_button(pvb, func(): _close_node("DrugshopMedalPopup"))
 
 func _on_medal_help():
 	c._show_stage_hint("药铺勋章：累计药铺经验只作门槛不消耗；全体商铺赚速+100%×等级，并提高精进技能等级上限。")
@@ -364,7 +363,7 @@ func _on_use_sign():
 		return
 	_close_node("DrugshopPopup")
 	var give: int = int(data._drugshop_configs.get("settings", {}).get("sign_give", 3))
-	var popup: PanelContainer = c._create_base_popup("使用药铺招牌", Vector2(400, 240))
+	var popup: PanelContainer = c._create_base_popup("使用药铺招牌", Vector2(400, 240), Vector2.ZERO, false)   # 【改】UI统一批次①：确认弹窗不带右上✕
 	popup.name = "DrugshopPopup"
 	popup.z_index = 40   # 盖过 DrugshopPage(z35)，同 clinic/inn 弹窗惯例
 	c.add_child(popup)   # 弹窗工厂只创建不挂载，必须调用方 add_child（同 clinic/inn 惯例）
@@ -393,6 +392,12 @@ func _on_use_sign():
 	btn_row.add_theme_constant_override("separation", 8)
 	btn_row.alignment = BoxContainer.ALIGNMENT_CENTER
 	vb.add_child(btn_row)
+	# 【改】UI统一批次①：确认弹窗双钮统一【取消】左【确定】右
+	var cancel_btn := Button.new()
+	cancel_btn.text = "取消"
+	cancel_btn.custom_minimum_size = Vector2(90, 34)
+	cancel_btn.pressed.connect(func(): _close_node("DrugshopPopup"))
+	btn_row.add_child(cancel_btn)
 	var ok_btn := Button.new()
 	ok_btn.text = "确定"
 	ok_btn.custom_minimum_size = Vector2(90, 34)
@@ -404,11 +409,6 @@ func _on_use_sign():
 		c._show_stage_hint("病人 +%d" % (n * give))
 		_refresh())
 	btn_row.add_child(ok_btn)
-	var cancel_btn := Button.new()
-	cancel_btn.text = "取消"
-	cancel_btn.custom_minimum_size = Vector2(90, 34)
-	cancel_btn.pressed.connect(func(): _close_node("DrugshopPopup"))
-	btn_row.add_child(cancel_btn)
 
 func _on_collect():
 	var r := _sys().collect_pot()
@@ -503,7 +503,6 @@ func _show_craft_popup(cid: String):
 	btn.disabled = not _sys().can_upgrade_craft(cid).get("ok", false)
 	btn.pressed.connect(func(): _on_craft_upgrade(cid))
 	vb.add_child(btn)
-	c._add_ok_button(vb, func(): _close_node("DrugshopPopup"))
 
 func _on_craft_upgrade(cid: String):
 	var r := _sys().upgrade_craft(cid)
@@ -575,7 +574,6 @@ func _show_recipe_popup(rid: String):
 		unlock_btn.disabled = not _sys().can_unlock_recipe(rid).get("ok", false)
 		unlock_btn.pressed.connect(func(): _on_recipe_unlock(rid))
 		vb.add_child(unlock_btn)
-		c._add_ok_button(vb, func(): _close_node("DrugshopPopup"))
 		return
 	# 功效主治难度 + 配方（仅展示，药材不做库存）
 	var diff := Label.new()
@@ -618,7 +616,6 @@ func _show_recipe_popup(rid: String):
 		up_all_btn.disabled = _sys().get_recipe_prof(rid) < _sys().get_recipe_upgrade_cost(rid)
 		up_all_btn.pressed.connect(func(): _on_recipe_upgrade(rid, true))
 		btn_row.add_child(up_all_btn)
-	c._add_ok_button(vb, func(): _close_node("DrugshopPopup"))
 
 func _on_recipe_unlock(rid: String):
 	var r := _sys().unlock_recipe(rid)

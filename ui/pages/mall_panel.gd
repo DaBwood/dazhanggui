@@ -43,14 +43,16 @@ func on_mall():
 		buy_btn.pressed.connect(_on_buy_mall_pack.bind(pack))
 		row.add_child(buy_btn)
 	
-	var close_btn = Button.new()
-	close_btn.text = "关闭"
-	close_btn.pressed.connect(_close_mall_panel)
-	vbox.add_child(close_btn)
 	
 	c.add_child(panel)
 	c._current_popup = panel
 	c.get_node("Overlay").show()
+	# 【新增】UI统一批次①：Overlay/_current_popup 清理挂 tree_exiting——右上✕/任意关闭路径都触发（原只在底部【关闭】钮回调里）
+	panel.tree_exiting.connect(func():
+		if c.has_node("Overlay"):
+			c.get_node("Overlay").hide()
+		c._current_popup = null
+	)
 
 func _on_buy_mall_pack(pack: Dictionary):
 	if data.buy_mall_pack(pack):
@@ -269,7 +271,6 @@ func _show_daily_gift_success():
 	info.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	vbox.add_child(info)
 	
-	c._add_ok_button(vbox, func(): c._safe_close("DailyGiftSuccess"))
 	
 	c.add_child(panel)
 
@@ -291,7 +292,6 @@ func _show_recharge_success(amount: int):
 	info.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	vbox.add_child(info)
 	
-	c._add_ok_button(vbox, func(): c._safe_close("RechargeSuccessPanel"))
 	
 	c.add_child(panel)
 

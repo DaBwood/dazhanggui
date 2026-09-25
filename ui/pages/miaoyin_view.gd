@@ -57,7 +57,7 @@ func _build(page: Panel):
 	top.add_theme_constant_override("separation", 8)
 	root.add_child(top)
 	var back := Button.new()
-	back.text = "返回"
+	back.text = "< 返回"   # 【改】UI统一批次①：返回文案统一 < 返回
 	back.custom_minimum_size = Vector2(72, 40)
 	back.pressed.connect(hide_miaoyin_view)
 	top.add_child(back)
@@ -228,7 +228,7 @@ func _add_sub_header(root: VBoxContainer, title_text: String):
 	top.add_theme_constant_override("separation", 8)
 	root.add_child(top)
 	var back := Button.new()
-	back.text = "返回"
+	back.text = "< 返回"   # 【改】UI统一批次①：返回文案统一 < 返回
 	back.custom_minimum_size = Vector2(72, 40)
 	back.pressed.connect(_go_home)
 	top.add_child(back)
@@ -364,11 +364,6 @@ func _show_building_popup(bid: String):
 		up10.disabled = not _sys().can_upgrade_facility(bid, i, 10).get("ok", false)
 		up10.pressed.connect(_on_facility_upgrade.bind(bid, i, 10))
 		row.add_child(up10)
-	var close_btn := Button.new()
-	close_btn.text = "关闭"
-	close_btn.custom_minimum_size = Vector2(100, 34)
-	close_btn.pressed.connect(close_popup)
-	vb.add_child(close_btn)
 
 func _on_facility_upgrade(bid: String, fac_idx: int, count: int):
 	var r: Dictionary = _sys().upgrade_facility(bid, fac_idx, count)
@@ -631,11 +626,6 @@ func _show_rookie_popup(fid: String):
 	up_btn.disabled = not _sys().can_rookie_train(fid)
 	up_btn.pressed.connect(_on_train_level_up.bind(fid))
 	btns.add_child(up_btn)
-	var close_btn := Button.new()
-	close_btn.text = "关闭"
-	close_btn.custom_minimum_size = Vector2(74, 34)
-	close_btn.pressed.connect(close_popup)
-	btns.add_child(close_btn)
 
 func _on_sync_profession_rookies():
 	var r: Dictionary = _sys().train_profession_rookies_level_up(_rookie_filter)
@@ -713,11 +703,6 @@ func _show_house_popup(fid: String):
 			go.tooltip_text = str(_sys().can_checkin_rookie(fid, bid).get("msg", ""))
 		go.pressed.connect(_on_checkin.bind(fid, bid))
 		row.add_child(go)
-	var close_btn := Button.new()
-	close_btn.text = "关闭"
-	close_btn.custom_minimum_size = Vector2(100, 34)
-	close_btn.pressed.connect(close_popup)
-	vb.add_child(close_btn)
 
 func _on_checkin(fid: String, bid: String):
 	var r: Dictionary = _sys().checkin_rookie(fid, bid)
@@ -857,11 +842,6 @@ func _show_audition_team_popup(slot: int):
 	clear_btn.custom_minimum_size = Vector2(100, 34)
 	clear_btn.pressed.connect(_on_pick_audition_slot.bind(slot, ""))
 	vb.add_child(clear_btn)
-	var close_btn := Button.new()
-	close_btn.text = "关闭"
-	close_btn.custom_minimum_size = Vector2(100, 34)
-	close_btn.pressed.connect(close_popup)
-	vb.add_child(close_btn)
 
 func _on_pick_audition_slot(slot: int, fid: String):
 	var r: Dictionary = _sys().set_audition_team_slot(slot, fid)
@@ -976,7 +956,6 @@ func _show_medal_popup():
 		up.disabled = not _sys().can_upgrade_medal().get("ok", false)
 		up.pressed.connect(_on_medal_upgrade)
 		cvb.add_child(up)
-	c._add_ok_button(pvb, func(): close_popup())
 
 func _on_medal_help():
 	c._show_stage_hint("妙音坊勋章：繁荣度=应援币总产出/分；全部商铺赚速+100%×等级；升级只校验繁荣度，不消耗繁荣度。")
@@ -998,7 +977,7 @@ func _show_accel_popup():
 	if count <= 0:
 		c._show_stage_hint("没有妙音坊加速卡")
 		return
-	var popup: PanelContainer = c._create_base_popup("使用妙音坊加速卡", Vector2(430, 300))
+	var popup: PanelContainer = c._create_base_popup("使用妙音坊加速卡", Vector2(430, 300), Vector2.ZERO, false)   # 【改】UI统一批次①：确认弹窗不带右上✕
 	popup.name = _popup_node_name
 	popup.z_index = 40
 	c.add_child(popup)
@@ -1018,16 +997,17 @@ func _show_accel_popup():
 	btns.alignment = BoxContainer.ALIGNMENT_CENTER
 	btns.add_theme_constant_override("separation", 12)
 	vb.add_child(btns)
-	var ok := Button.new()
-	ok.text = "使用"
-	ok.custom_minimum_size = Vector2(82, 36)
-	ok.pressed.connect(_on_accel_confirm.bind(spin))
-	btns.add_child(ok)
+	# 【改】UI统一批次①：确认弹窗双钮统一【取消】左【确定】右
 	var cancel := Button.new()
 	cancel.text = "取消"
 	cancel.custom_minimum_size = Vector2(82, 36)
 	cancel.pressed.connect(close_popup)
 	btns.add_child(cancel)
+	var ok := Button.new()
+	ok.text = "确定"
+	ok.custom_minimum_size = Vector2(82, 36)
+	ok.pressed.connect(_on_accel_confirm.bind(spin))
+	btns.add_child(ok)
 
 func _on_accel_confirm(spin: SpinBox):
 	var n: int = int(spin.value)

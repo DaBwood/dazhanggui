@@ -270,7 +270,7 @@ func _on_slot_tapped(slot: String):
 # 解锁二次确认（免费无损，但不可回锁）
 func _show_unlock_confirm(slot: String):
 	_close_node("HunliConfirmPopup")
-	var popup = c._create_base_popup("解锁槽位", Vector2(420, 240))
+	var popup = c._create_base_popup("解锁槽位", Vector2(420, 240), Vector2.ZERO, false)   # 【改】UI统一批次①：确认弹窗不带右上✕
 	popup.name = "HunliConfirmPopup"
 	popup.z_index = 40   # 压过 HunliPage(35)
 	var vb = popup.get_child(0)
@@ -283,16 +283,17 @@ func _show_unlock_confirm(slot: String):
 	row.alignment = BoxContainer.ALIGNMENT_CENTER
 	row.add_theme_constant_override("separation", 20)
 	vb.add_child(row)
-	var ok = Button.new()
-	ok.text = "确定解锁"
-	ok.custom_minimum_size = Vector2(120, 40)
-	ok.pressed.connect(_on_unlock_confirmed.bind(slot))
-	row.add_child(ok)
+	# 【改】UI统一批次①：确认弹窗双钮统一【取消】左【确定】右，动作含义写进标题/正文
 	var cancel = Button.new()
 	cancel.text = "取消"
 	cancel.custom_minimum_size = Vector2(120, 40)
 	cancel.pressed.connect(func(): _close_node("HunliConfirmPopup"))
 	row.add_child(cancel)
+	var ok = Button.new()
+	ok.text = "确定"
+	ok.custom_minimum_size = Vector2(120, 40)
+	ok.pressed.connect(_on_unlock_confirmed.bind(slot))
+	row.add_child(ok)
 	c.add_child(popup)
 
 # 确认解锁：免费，直接解锁并刷新
@@ -338,7 +339,6 @@ func _show_pick_popup(slot: String):
 		empty.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
 		empty.add_theme_color_override("font_color", Color("#888888"))
 		list.add_child(empty)
-	c._add_ok_button(vb, func(): _close_node("HunliPickPopup"), "关闭")   # 【修】2026-09-24 恢复：上一轮替换误挂 _close_bone_popup，点了清的是魂骨弹窗
 	c.add_child(popup)
 
 # ============ 魂骨详情弹窗 ============
@@ -477,11 +477,6 @@ func _show_bone_popup(uid: String, p_slot: String = "", lt: Dictionary = {}):
 		re_btn.custom_minimum_size = Vector2(110, 40)
 		re_btn.pressed.connect(_show_recycle_confirm.bind(uid))
 		op.add_child(re_btn)
-	var close_btn = Button.new()
-	close_btn.text = "关闭"
-	close_btn.custom_minimum_size = Vector2(110, 40)
-	close_btn.pressed.connect(func(): _close_node("HunliBonePopup"))
-	op.add_child(close_btn)
 	c.add_child(popup)
 
 # ============ 操作回调 ============
@@ -539,7 +534,7 @@ func _show_recycle_confirm(uid: String):
 	var qcfg = data._soulpower_configs.get("qualities", {}).get(bone.get("quality", ""), {})
 	var core: String = qcfg.get("core_item", "")
 	var core_name = data.ITEM_CONFIG.get(core, {}).get("name", core)
-	var popup = c._create_base_popup("回收魂骨", Vector2(420, 240))
+	var popup = c._create_base_popup("回收魂骨", Vector2(420, 240), Vector2.ZERO, false)   # 【改】UI统一批次①：确认弹窗不带右上✕
 	popup.name = "HunliConfirmPopup"
 	popup.z_index = 45   # 压过 HunliBonePopup(40)
 	var vb = popup.get_child(0)
@@ -554,16 +549,17 @@ func _show_recycle_confirm(uid: String):
 	row.alignment = BoxContainer.ALIGNMENT_CENTER
 	row.add_theme_constant_override("separation", 20)
 	vb.add_child(row)
-	var ok = Button.new()
-	ok.text = "确定回收"
-	ok.custom_minimum_size = Vector2(120, 40)
-	ok.pressed.connect(_on_recycle_confirmed.bind(uid))
-	row.add_child(ok)
+	# 【改】UI统一批次①：确认弹窗双钮统一【取消】左【确定】右，动作含义写进标题/正文
 	var cancel = Button.new()
 	cancel.text = "取消"
 	cancel.custom_minimum_size = Vector2(120, 40)
 	cancel.pressed.connect(func(): _close_node("HunliConfirmPopup"))
 	row.add_child(cancel)
+	var ok = Button.new()
+	ok.text = "确定"
+	ok.custom_minimum_size = Vector2(120, 40)
+	ok.pressed.connect(_on_recycle_confirmed.bind(uid))
+	row.add_child(ok)
 	c.add_child(popup)
 
 # 确认回收：执行并关掉详情弹窗，刷新主页+背包对账
@@ -632,7 +628,6 @@ func _show_resonance_popup():
 	rule.text = "装备魂骨按品级给印记：百年1 / 千年4 / 万年5 / 十万年6 / 百万年7\n印记≥4枚起，每多1枚倍率+0.1（4枚×1.0 … 42枚×4.8）\n不足4枚不惩罚，按×1.0计"
 	vb.add_child(rule)
 
-	c._add_ok_button(vb, func(): _close_node("HunliResonancePopup"), "关闭")   # 【修】2026-09-24 恢复：误挂 _close_bone_popup
 	c.add_child(popup)
 
 # ============ 魂骨仓库 ============

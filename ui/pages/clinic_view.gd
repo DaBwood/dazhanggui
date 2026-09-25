@@ -232,7 +232,7 @@ func _on_add_patient():
 		return
 	_close_node("ClinicPopup")
 	var give: int = int(data._clinic_configs.get("settings", {}).get("manual_give", 3))
-	var popup: PanelContainer = c._create_base_popup("使用病人手册", Vector2(400, 240))
+	var popup: PanelContainer = c._create_base_popup("使用病人手册", Vector2(400, 240), Vector2.ZERO, false)   # 【改】UI统一批次①：确认弹窗不带右上✕
 	popup.name = "ClinicPopup"
 	popup.z_index = 40   # 盖过 ClinicPage(z35)，同 inn/bank 弹窗惯例
 	c.add_child(popup)
@@ -263,6 +263,12 @@ func _on_add_patient():
 	btn_row.add_theme_constant_override("separation", 8)
 	btn_row.alignment = BoxContainer.ALIGNMENT_CENTER
 	vb.add_child(btn_row)
+	# 【改】UI统一批次①：确认弹窗双钮统一【取消】左【确定】右
+	var cancel_btn := Button.new()
+	cancel_btn.text = "取消"
+	cancel_btn.custom_minimum_size = Vector2(90, 34)
+	cancel_btn.pressed.connect(func(): _close_node("ClinicPopup"))
+	btn_row.add_child(cancel_btn)
 	var ok_btn := Button.new()
 	ok_btn.text = "确定"
 	ok_btn.custom_minimum_size = Vector2(90, 34)
@@ -274,11 +280,6 @@ func _on_add_patient():
 		c._show_stage_hint("病人 +%d" % (n * give))
 		_refresh())
 	btn_row.add_child(ok_btn)
-	var cancel_btn := Button.new()
-	cancel_btn.text = "取消"
-	cancel_btn.custom_minimum_size = Vector2(90, 34)
-	cancel_btn.pressed.connect(func(): _close_node("ClinicPopup"))
-	btn_row.add_child(cancel_btn)
 
 func _on_collect():
 	var r := _sys().collect_jar()
@@ -434,7 +435,6 @@ func _show_dept_popup(dept_id: String):
 		btn.disabled = not _sys().can_unlock_dept(dept_id).get("ok", false)
 		btn.pressed.connect(func(): _on_dept_unlock(dept_id))
 		vb.add_child(btn)
-	c._add_ok_button(vb, func(): _close_node("ClinicPopup"))
 
 func _on_dept_unlock(dept_id: String):
 	var r := _sys().unlock_dept(dept_id)
@@ -520,7 +520,6 @@ func _show_illness_popup(illness_id: String):
 		var lock := Label.new()
 		lock.text = "【%s】科室 Lv.%d 解锁" % [home.get("name", ""), int(ic.get("unlock_level", 1))]
 		vb.add_child(lock)
-		c._add_ok_button(vb, func(): _close_node("ClinicPopup"))
 		return
 	# 经过科室
 	var chain_names := []
@@ -551,7 +550,6 @@ func _show_illness_popup(illness_id: String):
 	btn.disabled = not _sys().can_upgrade_illness(illness_id).get("ok", false)
 	btn.pressed.connect(func(): _on_illness_upgrade(illness_id))
 	vb.add_child(btn)
-	c._add_ok_button(vb, func(): _close_node("ClinicPopup"))
 
 func _on_illness_upgrade(illness_id: String):
 	var r := _sys().upgrade_illness(illness_id)

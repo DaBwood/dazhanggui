@@ -217,7 +217,6 @@ func _show_workshop_popup(wid: String):
 	prob.text = "ⓘ 当前品质概率：" + "　".join(parts)
 	prob.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
 	vb.add_child(prob)
-	c._add_ok_button(vb, func(): close_popup())
 
 func _on_process_upgrade(wid: String, pid: String, sync: bool, btn: Button = null):
 	var r: Dictionary
@@ -275,7 +274,6 @@ func _show_brew_popup():
 		var mid_c: String = mid
 		btn.pressed.connect(func(): _on_brew(mid_c, int(num.value)))
 		row.add_child(btn)
-	c._add_ok_button(vb, func(): close_popup())
 
 func _on_brew(mid: String, n: int):
 	var r := _sys().brew(mid, n)
@@ -316,7 +314,6 @@ func _show_buy_popup():
 		_fill_buy_shop(vb)
 	else:
 		_fill_buy_bag(vb)
-	c._add_ok_button(vb, func(): close_popup())
 
 func _fill_buy_shop(vb: VBoxContainer):
 	var price: int = int(_sys()._st().get("buy_price", 100))
@@ -454,7 +451,6 @@ func _show_medal_popup():
 		btn.disabled = not _sys().can_upgrade_medal().get("ok", false)
 		btn.pressed.connect(func(): _on_medal_upgrade())
 		vb.add_child(btn)
-	c._add_ok_button(pvb, func(): close_popup())
 
 func _on_medal_help():
 	c._show_stage_hint("酒坊勋章：累计酒香只作门槛不消耗；全部商铺赚速+100%×等级。")
@@ -507,7 +503,6 @@ func _show_wines_popup():
 		var wid_c: String = wid4
 		card.pressed.connect(func(): _show_wine_info(wid_c))
 		grid.add_child(card)
-	c._add_ok_button(vb, func(): close_popup())
 
 # ---------- 弹窗：酒详情（三属性 / 升级消耗=累计酿造瓶数） ----------
 func _show_wine_info(wine_id: String):
@@ -567,7 +562,7 @@ func _show_wine_info(wine_id: String):
 	b2.disabled = not _sys().can_upgrade_wine(wine_id).get("ok", false)
 	b2.pressed.connect(func(): _on_wine_upgrade(wine_id, true))
 	row.add_child(b2)
-	c._add_ok_button(vb, func(): _show_wines_popup())
+	c._add_ok_button(vb, func(): _show_wines_popup(), "返回")   # 【改】UI统一批次①：子弹窗返回父窗，文案由原默认"确定"改"返回"
 
 func _on_wine_upgrade(wine_id: String, batch: bool):
 	var r := _sys().upgrade_wine(wine_id, batch)
@@ -673,7 +668,6 @@ func _show_drink_popup():
 		var wid_c2: String = wid5
 		db.pressed.connect(func(): _on_drink(invited, wid_c2))
 		wrow.add_child(db)
-	c._add_ok_button(vb, func(): close_popup())
 
 func _on_drink(hero_id: String, wine_id: String):
 	var r := _sys().drink(hero_id, wine_id, 1)
@@ -715,7 +709,7 @@ func _show_hero_pick_popup():
 			_sys().set_invited(hid_c)
 			_show_drink_popup())
 		body.add_child(btn)
-	c._add_ok_button(vb, func(): _show_drink_popup())
+	c._add_ok_button(vb, func(): _show_drink_popup(), "返回")   # 【改】UI统一批次①：子弹窗返回父窗，文案由原默认"确定"改"返回"
 
 # ---------- 弹窗：酒客故事（全部已拥有门客，五职业筛选；红点=有可领交情奖励） ----------
 func _show_story_popup():
@@ -762,7 +756,6 @@ func _show_story_popup():
 		var hid_c: String = hero_id
 		card.pressed.connect(func(): _show_bond_popup(hid_c))
 		body.add_child(card)
-	c._add_ok_button(vb, func(): close_popup())
 
 # 某档奖励的展示文案（道具名查 ITEM_CONFIG + 声望卡 + 家具币）
 func _bond_reward_text(lv: int) -> String:
@@ -838,7 +831,7 @@ func _show_bond_popup(hero_id: String):
 		big.text = "…（共 %d 档；第 %d 档大奖：门客帖）" % [max_lv, max_lv]
 		big.add_theme_color_override("font_color", Color("#9a93b8"))
 		vb.add_child(big)
-	c._add_ok_button(vb, func(): _show_story_popup())
+	c._add_ok_button(vb, func(): _show_story_popup(), "返回")   # 【改】UI统一批次①：子弹窗返回父窗，文案由原默认"确定"改"返回"
 
 func _on_claim_bond(hero_id: String, _lv: int):
 	# 只许按序领取当前档（can_claim_bond 已校验）；_lv 仅作行标识，实际领取按序推进

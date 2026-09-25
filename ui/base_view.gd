@@ -69,6 +69,11 @@ func close_popup():
 
 # 重建页面；弹窗状态非空则按状态重建弹窗（子类 _rebuild_popup 分发，winery 原 _refresh 惯例下沉）
 func _refresh():
+	# 【改】UI统一批次①：弹窗右上✕直接销毁节点、绕过 close_popup 的状态机复位——
+	#       重建前先校验弹窗节点：节点不在=用户已用✕关闭，复位状态不再重建（同 tavern had_popup 判法）
+	if _popup_kind != "" and c.get_node_or_null(_popup_node_name) == null:
+		_popup_kind = ""
+		_popup_id = ""
 	_close_node(_page_name)
 	show_view()
 	if _popup_kind != "":

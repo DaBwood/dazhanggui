@@ -207,12 +207,6 @@ func _show_token_panel():
 	hint_lbl.add_theme_color_override("font_color", Color("#a89ec7"))
 	vb.add_child(hint_lbl)
 	
-	c._add_ok_button(vb, func():
-		if c.has_node("TokenPanel"):
-			var old = c.get_node("TokenPanel")
-			c.remove_child(old)
-			old.queue_free()
-	, "关闭")
 
 
 # 【新增】苦情契约面板（白月初独有）：契约等级/当前转化赚速/升级（看技能栏资质）/指定挚友列表
@@ -301,12 +295,6 @@ func _show_contract_panel():
 	hint.add_theme_color_override("font_color", Color("#a89ec7"))
 	vb.add_child(hint)
 	
-	c._add_ok_button(vb, func():
-		if c.has_node("ContractPanel"):
-			var old2 = c.get_node("ContractPanel")
-			c.remove_child(old2)
-			old2.queue_free()
-	, "关闭")
 
 
 # 【新增】契约挚友选择器：已拥有且未指定的挚友，按提供赚钱降序，显示具体贡献值
@@ -351,12 +339,6 @@ func _show_contract_friend_selector():
 			c.update_all_ui()
 		)
 		vb.add_child(btn)
-	c._add_ok_button(vb, func():
-		if c.has_node("ContractFriendSelector"):
-			var old = c.get_node("ContractFriendSelector")
-			c.remove_child(old)
-			old.queue_free()
-	, "关闭")
 
 
 # 【新增】羁绊门客选择器：已拥有门客（排除自己与已绑定者），按实时赚速降序
@@ -408,7 +390,6 @@ func _show_token_bind_selector(idx: int):
 		empty.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 		list.add_child(empty)
 	
-	c._add_ok_button(vb, func(): _close_token_bind_selector(), "取消")
 
 
 # 【新增】关闭羁绊选择器（remove_child+queue_free 防同名冲突）
@@ -570,8 +551,4 @@ func _show_fengzi_hint(f_cfg: Dictionary, every: int, unlock_all: int):
 		unlock_all, int(f_cfg.get("cap_bonus_every", 5)), int(f_cfg.get("cap_bonus_amount", 10))
 	]
 	vb.add_child(hint_lbl)
-	var close_btn = Button.new()
-	close_btn.text = "关闭"
-	close_btn.pressed.connect(func(): popup.queue_free())
-	vb.add_child(close_btn)
 

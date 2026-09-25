@@ -198,7 +198,7 @@ func generate_adventure_page():
 	page.add_child(lottery_view)
 	
 	var lot_back_btn = Button.new()
-	lot_back_btn.text = "< 返回闯荡"
+	lot_back_btn.text = "< 返回"   # 【改】UI统一批次①：返回文案统一 < 返回
 	lot_back_btn.pressed.connect(c.hide_view.bind("lottery"))
 	lottery_view.add_child(lot_back_btn)
 	
@@ -257,7 +257,7 @@ func generate_adventure_page():
 	page.add_child(charity_view)
 	
 	var c_back = Button.new()
-	c_back.text = "< 返回闯荡"
+	c_back.text = "< 返回"   # 【改】UI统一批次①：返回文案统一 < 返回
 	c_back.pressed.connect(c.hide_view.bind("charity"))
 	charity_view.add_child(c_back)
 	
@@ -312,7 +312,7 @@ func generate_adventure_page():
 	page.add_child(travel_view)
 	
 	var t_back = Button.new()
-	t_back.text = "< 返回闯荡"
+	t_back.text = "< 返回"   # 【改】UI统一批次①：返回文案统一 < 返回
 	t_back.pressed.connect(c.hide_view.bind("travel"))
 	travel_view.add_child(t_back)
 	
