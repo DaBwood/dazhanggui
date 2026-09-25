@@ -93,6 +93,10 @@ func load_save_data(s: Dictionary):
 				g.heroes[hid]["promotion"] = g._hero_configs[hid]["promotion"]
 			# 【新增】2026-09-25 极·XX之道回灌：品质≥3 门客（天生无双/老档已无双）自动补发（幂等，按名查重）
 			ensure_ji_zhidao(hid)
+			# 【新增】2026-09-25 自带极·XX之道上限 200→300 迁移（锦衣版带（锦衣）后缀，天然排除）
+			for sk0 in g.heroes[hid].get("aptitude_skills", []):
+				if str(sk0.get("name", "")).begins_with("极·") and not str(sk0.get("name", "")).ends_with("（锦衣）"):
+					sk0["max_level"] = 300
 		# 【新增】2026-09-24 读档回灌：为已拥有门客补发缺失的绑定珍兽（魅影兔：发放+形态技能同步，幂等）
 		g.beast_system.sync_all_bound_beasts()
 	# 【新增】存档迁移：旧档门客的 base_income 字段改名为 extra_income
@@ -571,7 +575,7 @@ func get_self_aura_income_pct(hero_id: String) -> float:
 	return total
 
 # ============ 极·XX之道（2026-09-25 用户拍板：全门客晋升无双自动发放） ============
-# 品质≥3 自动获得资质技能【极·职业之道】：3★（3资质/级）、上限200、升级只吃对应职业之道书×300/级（不吃资质丹）
+# 品质≥3 自动获得资质技能【极·职业之道】：3★（3资质/级）、上限300、升级只吃对应职业之道书×300/级（不吃资质丹）
 # 职业→书：side_skill.json career_books（士→仕途之道 … 侠→侠义之道），技能名="极·"+书道具名；88 门客全自动派生，无手写配置
 # 发放点（幂等，按名查重）：load 回灌（天生无双/老档）/_check_promotion/do_simple_promote/凤临乐宴满级/凤魁转移/unlock_hero
 
@@ -587,7 +591,7 @@ func _grant_ji_zhidao(hero: Dictionary) -> bool:
 	hero.aptitude_skills.append({
 		"name": skill_name,
 		"level": 0,
-		"max_level": 200,
+		"max_level": 300,
 		"aptitude_per_level": 3,
 		"cost_item": book_id,
 		"cost_num": 300

@@ -22,6 +22,10 @@ func load_save_data(d: Dictionary):
 	var p: Dictionary = d.get("cos_pending", {})
 	if p == null: p = {}
 	_cos_pending = p
+	# 【新增】2026-09-25 服装版之道技能回灌：老档已解锁华服/锦衣的门客补发技能+重算上限（幂等）
+	for hid0 in g.heroes.keys():
+		refresh_cos_way_skill(hid0, "华服")
+		refresh_cos_way_skill(hid0, "锦衣")
 
 # ============ 配置访问 ============
 # 服装总配置
@@ -118,6 +122,8 @@ func unlock_hero_cos(hero_id: String, cos_id: String) -> Dictionary:
 	st["base"] = 1
 	st["extra"] = bonus
 	st["halo"] = 0
+	# 【新增】2026-09-25 服装版之道技能：华服/锦衣首件解锁时新增（refresh 内部按名查重+上限重算，幂等）
+	refresh_cos_way_skill(hero_id, str(cfg.get("quality", "")))
 	return {"ok": true, "msg": "解锁服装【%s】，额外等级+%d，获得同名光环技能" % [cfg.get("name", cos_id), bonus]}
 
 # 【新增】手动升级服装（消耗库存加额外等级）：消耗1库存，extra+15
@@ -131,6 +137,8 @@ func upgrade_hero_cos_extra(hero_id: String, cos_id: String) -> Dictionary:
 	var bonus = int(_settings().get("dup_bonus", 15))
 	st["stock"] = stock - 1
 	st["extra"] = int(st.get("extra", 0)) + bonus
+	# 【新增】2026-09-25 服装版之道技能：华服/锦衣升级加上限（公式重算，幂等）
+	refresh_cos_way_skill(hero_id, str(_get_hero_cos_cfg(hero_id, cos_id).get("quality", "")))
 	return {"ok": true, "msg": "【%s】额外等级+%d" % [_get_hero_cos_cfg(hero_id, cos_id).get("name", cos_id), bonus]}
 
 # 【服装盒子】加库存（不自动解锁；解锁走 unlock_hero_cos 消耗1库存）。与 exchange 落库逻辑一致
@@ -389,3 +397,64 @@ func exchange_friend_costume(friend_id: String, cos_id: String) -> Dictionary:
 	if copies == 0:
 		return {"ok": true, "msg": "解锁服装【%s】，友好+%d 才华+%d" % [cfg.get("name", cos_id), int(gain[0]), int(gain[1])]}
 	return {"ok": true, "msg": "【%s】友好+%d 才华+%d" % [cfg.get("name", cos_id), int(gain[0]), int(gain[1])]}
+
+# ============ 服装版之道技能（2026-09-25 用户拍板：华服→XX之道（华服）、锦衣→极·XX之道（锦衣）） ============
+# 与自带版同名共存的额外资质技能（方案B后缀命名），进【技能】页签；数值同自带版：华服版 1★（+1资质/级）吃职业道书100/级，锦衣版 3★（+3资质/级）吃书300/级
+# 技能字典带 cost_item/cost_num 走 hero_page 通用书消耗/own 显示分支；上限公式=服装技能同款数值：新解锁+unlock_bonus（华服20/锦衣30）、每次升级+dup_bonus（15），无封顶
+# 发放点：unlock_hero_cos 首件解锁/upgrade_hero_cos_extra 升级（refresh 幂等）；load_save_data 回灌老档
+
+# 某品质服装的解锁件数与升级次数（升级次数=(extra-unlock_bonus)/dup_bonus，extra 由升级函数唯一写入）
+func _cos_way_stats(hero_id: String, quality: String) -> Dictionary:
+	var unlocked := 0
+	var ups := 0
+	var ub: int = int(_settings().get("unlock_bonus", {}).get(quality, 0))
+	var db: int = int(_settings().get("dup_bonus", 15))
+	for cos_id in g.heroes.get(hero_id, {}).get("costumes", {}):
+		var cfg := _get_hero_cos_cfg(hero_id, cos_id)
+		if cfg.is_empty() or str(cfg.get("quality", "")) != quality: continue
+		if not is_hero_cos_unlocked(hero_id, cos_id): continue
+		unlocked += 1
+		ups += floori(float(maxi(int(get_hero_cos_state(hero_id, cos_id).get("extra", 0)) - ub, 0)) / float(db))
+	return {"unlocked": unlocked, "ups": ups}
+
+# 服装版之道技能当前上限（公式值；0=无对应已解锁服装，技能不应存在）
+func get_cos_way_cap(hero_id: String, quality: String) -> int:
+	var s: Dictionary = _cos_way_stats(hero_id, quality)
+	return int(_settings().get("unlock_bonus", {}).get(quality, 0)) * int(s.get("unlocked", 0)) + int(_settings().get("dup_bonus", 15)) * int(s.get("ups", 0))
+
+# 服装版技能模板（quality=华服/锦衣；按职业书派生名字，与自带版同名共存靠（华服）/（锦衣）后缀区分）
+func _cos_way_skill_base(hero_id: String, quality: String) -> Dictionary:
+	var hero: Dictionary = g.heroes.get(hero_id, {})
+	var book_id: String = g.side_skill_system.get_career_book(str(hero.get("category", "")))
+	if book_id == "": return {}
+	var book_name: String = str(g.ITEM_CONFIG.get(book_id, {}).get("name", book_id))
+	var is_ji: bool = quality == "锦衣"
+	return {
+		"name": ("极·" if is_ji else "") + book_name + ("（锦衣）" if is_ji else "（华服）"),
+		"level": 0,
+		"max_level": 0,
+		"aptitude_per_level": 3 if is_ji else 1,
+		"cost_item": book_id,
+		"cost_num": 300 if is_ji else 100,
+		"cos_way": quality
+	}
+
+# 刷新服装版之道技能：上限重算为公式值；首件解锁时新增技能（按名查重，幂等）；公式值≤0 时不创建
+func refresh_cos_way_skill(hero_id: String, quality: String) -> void:
+	if quality != "华服" and quality != "锦衣": return
+	if not g.heroes.has(hero_id): return
+	var base := _cos_way_skill_base(hero_id, quality)
+	if base.is_empty(): return
+	var cap := get_cos_way_cap(hero_id, quality)
+	var hero: Dictionary = g.heroes[hero_id]
+	var found: Dictionary = {}
+	for sk in hero.aptitude_skills:
+		if str(sk.get("name", "")) == base["name"]:
+			found = sk
+			break
+	if found.is_empty():
+		if cap <= 0: return
+		base["max_level"] = cap
+		hero.aptitude_skills.append(base)
+	else:
+		found["max_level"] = cap
