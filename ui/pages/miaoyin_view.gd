@@ -25,6 +25,15 @@ func show_miaoyin_view():
 func hide_miaoyin_view():
 	hide_view()
 
+# 【新增】批次②③④-B3：玩法说明弹窗（MiaoyinRulePopup）是独立节点名，基类只认 _popup_node_name，需显式清理
+func show_view():
+	_close_node("MiaoyinRulePopup")
+	super()
+
+func hide_view():
+	_close_node("MiaoyinRulePopup")
+	super()
+
 func _build(page: Panel):
 	_sys().settle_jar()
 	if _tab == "buildings":
@@ -61,13 +70,24 @@ func _build(page: Panel):
 	back.custom_minimum_size = Vector2(72, 40)
 	back.pressed.connect(hide_miaoyin_view)
 	top.add_child(back)
+	# 【改】批次②③④-B3：弹簧居中标题组，"?"只出现在玩法主标题旁（说明流程/规则）
+	var left_spring := Control.new()
+	left_spring.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	top.add_child(left_spring)
 	var title := Label.new()
 	title.text = "妙音坊"
-	title.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
-	title.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	title.add_theme_font_size_override("font_size", 24)
 	title.add_theme_color_override("font_color", Color("#ffd700"))
 	top.add_child(title)
+	var rule_btn := Button.new()
+	rule_btn.text = "?"
+	rule_btn.custom_minimum_size = Vector2(30, 30)
+	rule_btn.add_theme_font_size_override("font_size", 16)
+	rule_btn.pressed.connect(_show_rule_popup)
+	top.add_child(rule_btn)
+	var right_spring := Control.new()
+	right_spring.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	top.add_child(right_spring)
 	var medal_btn := Button.new()
 	medal_btn.text = "勋章"
 	medal_btn.custom_minimum_size = Vector2(84, 40)
@@ -192,6 +212,27 @@ func _on_claim_pressed():
 	c.update_all_ui()
 	_refresh()
 
+# 【新增】批次②③④-B3：妙音坊玩法说明弹窗（只从主标题旁"?"进入；长说明不进画面）
+func _show_rule_popup():
+	_close_node("MiaoyinRulePopup")
+	var popup: PanelContainer = c._create_base_popup("妙音坊说明", Vector2(380, 320))
+	popup.name = "MiaoyinRulePopup"
+	popup.get_meta("popup_mask").z_index = 39
+	popup.z_index = 40
+	c.add_child(popup)   # 弹窗工厂只创建不挂载，必须调用方 add_child
+	var vb: VBoxContainer = popup.get_child(0)
+	for line in [
+		"收益罐三轨（应援币/应援物/缘分物）随时间累积，领取后入账；加速卡每张=立即获得60分钟三轨收益。",
+		"设施等级独立，建筑等级=设施等级之和；设施升级消耗应援币。",
+		"训练仅吃本职业应援物：材料足够时自动吃到升级，不足不扣。",
+		"入住免费，每职业最多入住%d人，替换会迁出原住客；选秀只能上阵已入住挚友。" % MiaoyinSystem.ROOKIE_PROF_CAP,
+		"勋章：繁荣度=应援币总产出/分，只作门槛不消耗；每级全部商铺赚速+100%。",
+	]:
+		var body := Label.new()
+		body.text = line
+		body.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+		vb.add_child(body)
+
 # ---------- 内部子页切换：主页 / 建筑 / 满意度（新秀=批次③，选秀=批次④，仍占位） ----------
 func _open_building_page():
 	_tab = "buildings"
@@ -301,7 +342,8 @@ func _show_building_popup(bid: String):
 	head.add_theme_font_size_override("font_size", 16)
 	vb.add_child(head)
 	var yyb_lbl := Label.new()
-	yyb_lbl.text = "应援币 %s　设施等级独立，建筑等级=设施等级之和" % c.format_number(int(_sys().yyb))
+	# 【改】批次②③④-B3："设施等级独立…"规则迁入主标题旁"?"玩法说明，画面只留数值
+	yyb_lbl.text = "应援币 %s" % c.format_number(int(_sys().yyb))
 	yyb_lbl.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	yyb_lbl.add_theme_color_override("font_color", Color("#bdb7d8"))
 	vb.add_child(yyb_lbl)
@@ -346,11 +388,12 @@ func _show_building_popup(bid: String):
 		lv_lbl.custom_minimum_size = Vector2(58, 30)
 		row.add_child(lv_lbl)
 		var cost_lbl := Label.new()
-		cost_lbl.text = "%s / %s" % [
-			c.format_number(_sys().get_facility_upgrade_cost(bid, i, 1)),
+		var cost1: int = _sys().get_facility_upgrade_cost(bid, i, 1)
+		cost_lbl.text = "%s / %s" % [c.format_number(cost1),
 			c.format_number(_sys().get_facility_upgrade_cost(bid, i, 10))]
 		cost_lbl.custom_minimum_size = Vector2(116, 30)
-		cost_lbl.add_theme_color_override("font_color", Color("#bdb7d8"))
+		# 【改】批次②③④-B3：费用按 +1 档着色（应援币够绿 #7ee787 / 不够红 #ff6666）
+		cost_lbl.add_theme_color_override("font_color", c._cost_color(int(_sys().yyb), cost1))
 		row.add_child(cost_lbl)
 		var up1 := Button.new()
 		up1.text = "+1"
@@ -412,7 +455,7 @@ func _build_satisfaction_page(page: Panel):
 	var ops: Array = _sys().get_opinion_list()
 	if ops.is_empty():
 		var empty := Label.new()
-		empty.text = "暂无入住挚友，意见簿为空；批次③接入入住后自动生成。"
+		empty.text = "暂无入住挚友，意见簿为空；入住后自动生成。"
 		empty.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 		empty.add_theme_color_override("font_color", Color("#bdb7d8"))
 		rows.add_child(empty)
@@ -583,12 +626,7 @@ func _show_rookie_popup(fid: String):
 	attr_lbl.add_theme_font_size_override("font_size", 13)
 	attr_lbl.add_theme_color_override("font_color", Color("#bdb7d8"))
 	vb.add_child(attr_lbl)
-	var train_tip := Label.new()
-	train_tip.text = "训练：仅吃本职业五档应援物；升一级=材料足够自动吃到升级，不足不扣"
-	train_tip.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
-	train_tip.add_theme_font_size_override("font_size", 12)
-	train_tip.add_theme_color_override("font_color", Color("#bdb7d8"))
-	vb.add_child(train_tip)
+	# 【删】批次②③④-B3：训练规则说明迁入主标题旁"?"玩法说明
 	var scroll := ScrollContainer.new()
 	scroll.custom_minimum_size = Vector2(0, 190)
 	scroll.horizontal_scroll_mode = ScrollContainer.SCROLL_MODE_DISABLED
@@ -658,13 +696,7 @@ func _show_house_popup(fid: String):
 	popup.z_index = 40
 	c.add_child(popup)
 	var vb: VBoxContainer = popup.get_child(0)
-	var tip := Label.new()
-	tip.text = "入住免费；每职业最多入住%d人；替换会把原住客迁出" % MiaoyinSystem.ROOKIE_PROF_CAP
-	tip.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
-	tip.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
-	tip.add_theme_font_size_override("font_size", 12)
-	tip.add_theme_color_override("font_color", Color("#bdb7d8"))
-	vb.add_child(tip)
+	# 【删】批次②③④-B3：入住规则说明迁入主标题旁"?"玩法说明
 	var scroll := ScrollContainer.new()
 	scroll.custom_minimum_size = Vector2(0, 330)
 	scroll.horizontal_scroll_mode = ScrollContainer.SCROLL_MODE_DISABLED
@@ -787,6 +819,8 @@ func _add_gate_row(parent: VBoxContainer, label_text: String, value: int, gate: 
 	var lbl := Label.new()
 	lbl.text = "%s　%s/%s" % [label_text, c.format_number(value), c.format_number(gate)]
 	lbl.custom_minimum_size = Vector2(190, 26)
+	# 【改】批次②③④-B3：属性门"拥有/需要"着色（够绿不够红）
+	lbl.add_theme_color_override("font_color", c._cost_color(value, gate))
 	row.add_child(lbl)
 	var bar := ProgressBar.new()
 	bar.min_value = 0.0
@@ -805,11 +839,7 @@ func _show_audition_team_popup(slot: int):
 	popup.z_index = 40
 	c.add_child(popup)
 	var vb: VBoxContainer = popup.get_child(0)
-	var tip := Label.new()
-	tip.text = "只能选已入住挚友；主属性职业优先养满4人"
-	tip.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
-	tip.add_theme_color_override("font_color", Color("#bdb7d8"))
-	vb.add_child(tip)
+	# 【删】批次②③④-B3：上阵规则说明迁入主标题旁"?"玩法说明
 	var scroll := ScrollContainer.new()
 	scroll.custom_minimum_size = Vector2(0, 350)
 	scroll.horizontal_scroll_mode = ScrollContainer.SCROLL_MODE_DISABLED
@@ -916,7 +946,7 @@ func _show_medal_popup():
 	head.add_theme_color_override("font_color", Color("#e6c07b"))
 	head_row.add_child(head)
 	var help_btn := Button.new()
-	help_btn.text = "?"
+	help_btn.text = "i"   # 【改】批次②③④-B3：面板内补充信息入口统一用"i"（"?"只留玩法主标题旁）
 	help_btn.custom_minimum_size = Vector2(24, 24)
 	help_btn.tooltip_text = "点击查看勋章规则"
 	help_btn.pressed.connect(_on_medal_help)
@@ -937,6 +967,8 @@ func _show_medal_popup():
 		var next_lbl := Label.new()
 		next_lbl.text = "繁荣度 %s / %s" % [c.format_number(_sys().get_prosperity()), c.format_number(need)]
 		next_lbl.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+		# 【改】批次②③④-B3：门槛"拥有/需要"着色（够绿不够红）
+		next_lbl.add_theme_color_override("font_color", c._cost_color(int(_sys().get_prosperity()), need))
 		cvb.add_child(next_lbl)
 		var bar := ProgressBar.new()
 		bar.min_value = 0.0

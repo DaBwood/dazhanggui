@@ -43,6 +43,15 @@ func hide_xiangfang_view():
 	_popup_panel = null
 	hide_view()
 
+# 【新增】批次②③④-B3：玩法说明弹窗（XiangfangRulePopup）是独立节点名，基类只认 _popup_node_name，需显式清理
+func show_view():
+	_close_node("XiangfangRulePopup")
+	super()
+
+func hide_view():
+	_close_node("XiangfangRulePopup")
+	super()
+
 func _build(page: Panel):
 	if _tab == "catalog":
 		_build_catalog_page(page)
@@ -54,6 +63,27 @@ func _build(page: Panel):
 		_build_mingpan_page(page)
 		return
 	_build_home_page(page)
+
+# 【新增】批次②③④-B3：厢房玩法说明弹窗（只从主标题旁"?"进入；长说明不进画面）
+func _show_rule_popup():
+	_close_node("XiangfangRulePopup")
+	var popup: PanelContainer = c._create_base_popup("厢房说明", Vector2(380, 320))
+	popup.name = "XiangfangRulePopup"
+	popup.get_meta("popup_mask").z_index = 39
+	popup.z_index = 40
+	c.add_child(popup)   # 弹窗工厂只创建不挂载，必须调用方 add_child
+	var vb: VBoxContainer = popup.get_child(0)
+	for line in [
+		"家具升级消耗同名家具，并按消耗返还风水符；满级后富余件可回收得家具币。",
+		"套装等级上限=套内最低件等级；一键升级=连升直到材料尽。",
+		"风水=无双家具等级×100，影响卜卦命格品质概率。",
+		"卜卦消耗风水符，新命格与槽内原命格二选一。",
+		"勋章：舒适度只作门槛不消耗；每级全部商铺赚速+100%。",
+	]:
+		var body := Label.new()
+		body.text = line
+		body.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+		vb.add_child(body)
 
 # ==================== 主界面 ====================
 func _build_home_page(page: Panel):
@@ -76,13 +106,24 @@ func _build_home_page(page: Panel):
 	back.custom_minimum_size = Vector2(72, 40)
 	back.pressed.connect(hide_xiangfang_view)
 	top.add_child(back)
+	# 【改】批次②③④-B3：弹簧居中标题组，"?"只出现在玩法主标题旁（说明流程/规则）
+	var left_spring := Control.new()
+	left_spring.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	top.add_child(left_spring)
 	var title := Label.new()
 	title.text = "厢房"
-	title.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
-	title.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	title.add_theme_font_size_override("font_size", 24)
 	title.add_theme_color_override("font_color", Color("#ffd700"))
 	top.add_child(title)
+	var rule_btn := Button.new()
+	rule_btn.text = "?"
+	rule_btn.custom_minimum_size = Vector2(30, 30)
+	rule_btn.add_theme_font_size_override("font_size", 16)
+	rule_btn.pressed.connect(_show_rule_popup)
+	top.add_child(rule_btn)
+	var right_spring := Control.new()
+	right_spring.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	top.add_child(right_spring)
 	var medal_btn := Button.new()
 	medal_btn.text = "勋章"
 	medal_btn.custom_minimum_size = Vector2(72, 40)
@@ -303,8 +344,8 @@ func _build_catalog_page(page: Panel):
 	pv.add_child(eff_l)
 	var prog_l := Label.new()
 	var own: Dictionary = _sys().get_set_owned(_sel_set)
-	prog_l.text = "进度：%d/%d 件（套装等级上限=套内最低件等级 Lv%d）" % [
-		own["owned"], own["total"], _sys().get_set_max_level(_sel_set)]
+	# 【改】批次②③④-B3："套装等级上限=套内最低件等级"规则迁入主标题旁"?"玩法说明
+	prog_l.text = "进度：%d/%d 件" % [own["owned"], own["total"]]
 	prog_l.add_theme_font_size_override("font_size", 11)
 	prog_l.add_theme_color_override("font_color", Color("#aaaaaa"))
 	pv.add_child(prog_l)
@@ -410,7 +451,8 @@ func _build_workshop_page(page: Panel):
 
 	# 说明行
 	var note := Label.new()
-	note.text = "前 5 套装共 %d 件直购（回收满级富余件可得家具币）" % (_sys().get_workshop_items() as Array).size()
+	# 【改】批次②③④-B3："回收满级富余件可得家具币"规则迁入主标题旁"?"玩法说明
+	note.text = "前 5 套装共 %d 件直购" % (_sys().get_workshop_items() as Array).size()
 	note.add_theme_font_size_override("font_size", 11)
 	note.add_theme_color_override("font_color", Color("#888888"))
 	root.add_child(note)
@@ -543,12 +585,14 @@ func _show_furniture_popup(fid: String):
 	if st["lv"] < _sys().get_max_lv():
 		var cost: int = _sys().get_upgrade_cost(fid, st["lv"])
 		var nxt_l := Label.new()
-		nxt_l.text = "下级效果：%s（消耗 %d 件同名家具，返 %d 风水符）" % [
-			_effect_text(fc, st["lv"] + 1), cost, cost * int(q.get("talisman", 0))]
+		nxt_l.text = "下级效果：%s（返 %d 风水符）" % [
+			_effect_text(fc, st["lv"] + 1), cost * int(q.get("talisman", 0))]
 		nxt_l.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 		nxt_l.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
 		nxt_l.add_theme_color_override("font_color", Color("#8fd3c7"))
 		vbox.add_child(nxt_l)
+		# 【新增】批次②③④-B3：升级消耗"拥有/需要"着色（够绿不够红）
+		c._add_have_need_row(vbox, "升级消耗：同名家具 ", int(st["cnt"]), cost)
 	elif st["lv"] >= _sys().get_max_lv():
 		# 满级：富余件回收（回收价=品质工坊价×80%，返家具币道具）
 		var recyc: int = _sys().get_recyclable_count(fid)
@@ -580,7 +624,7 @@ func _show_furniture_popup(fid: String):
 		vbox.add_child(reason_l)
 
 	var up_all_btn := Button.new()
-	up_all_btn.text = "一键升级（连升直到材料尽）"
+	up_all_btn.text = "一键升级"   # 【改】批次②③④-B3："连升直到材料尽"说明迁入主标题旁"?"玩法说明
 	up_all_btn.custom_minimum_size = Vector2(0, 40)
 	up_all_btn.pressed.connect(func(): _on_upgrade(fid, true, up_all_btn))
 	vbox.add_child(up_all_btn)
@@ -647,7 +691,7 @@ func _show_fengshui_popup():
 	vbox.add_child(head_l)
 
 	var note_l := Label.new()
-	note_l.text = "来源：无双家具等级×100（唯一）｜效果：卜卦命格品质概率（命盘批次③开放）"
+	note_l.text = "来源：无双家具等级×100（唯一）｜效果：卜卦命格品质概率"
 	note_l.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	note_l.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
 	note_l.add_theme_font_size_override("font_size", 11)
@@ -707,7 +751,7 @@ func _show_medal_popup():
 	head.add_theme_color_override("font_color", Color("#e6c07b"))
 	head_row.add_child(head)
 	var help_btn := Button.new()
-	help_btn.text = "?"
+	help_btn.text = "i"   # 【改】批次②③④-B3：面板内补充信息入口统一用"i"（"?"只留玩法主标题旁）
 	help_btn.custom_minimum_size = Vector2(24, 24)
 	help_btn.tooltip_text = "点击查看勋章规则"
 	help_btn.pressed.connect(_on_medal_help)
@@ -726,11 +770,8 @@ func _show_medal_popup():
 		vb.add_child(max_lbl)
 	else:
 		var need: int = int(nxt.get("need_comfort", 0))
-		var next_lbl := Label.new()
-		next_lbl.text = "下一级需舒适度 %s（当前 %s）" % [c.format_number(need), c.format_number(_sys().get_total_comfort())]
-		next_lbl.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
-		next_lbl.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
-		vb.add_child(next_lbl)
+		# 【改】批次②③④-B3：门槛"拥有/需要"着色（够绿不够红）
+		c._add_have_need_row(vb, "下一级需舒适度 ", int(_sys().get_total_comfort()), need)
 		var bar := ProgressBar.new()
 		bar.min_value = 0.0
 		bar.max_value = maxf(1.0, float(need))
@@ -959,6 +1000,8 @@ func _build_mingpan_page(page: Panel):
 	root.add_child(ops)
 	var divine_btn := Button.new()
 	divine_btn.text = "卜卦（风水符 %d/%d）" % [_msys().get_talisman_count(), _msys().get_divine_cost()]
+	# 【新增】批次②③④-B3：风水符够绿 #7ee787 / 不够红 #ff6666
+	divine_btn.add_theme_color_override("font_color", c._cost_color(_msys().get_talisman_count(), _msys().get_divine_cost()))
 	divine_btn.custom_minimum_size = Vector2(180, 42)
 	divine_btn.pressed.connect(func(): _on_divine(divine_btn))
 	ops.add_child(divine_btn)
