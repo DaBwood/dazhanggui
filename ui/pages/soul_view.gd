@@ -309,7 +309,8 @@ func _make_cell(cell: int, unlocked: Array, category_now: String) -> SoulCell:
 		style.bg_color = Color("#16131f")
 		lbl.text = "锁\n%d石" % ss.get_unlock_cost(_beast_id, _beast_index)
 		lbl.add_theme_font_size_override("font_size", 14)
-		lbl.add_theme_color_override("font_color", Color("#777777"))
+		# 【改】批次②③④-B5：解锁消耗按五色石拥有着色（够绿/不够红；原固定灰 #777777）
+		lbl.add_theme_color_override("font_color", c._cost_color(int(data.items.get("wuse_shi", 0)), ss.get_unlock_cost(_beast_id, _beast_index)))
 		node.add_theme_stylebox_override("panel", style)
 		return node
 

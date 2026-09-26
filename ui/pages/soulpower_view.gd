@@ -123,6 +123,9 @@ func _fill_body(body):
 	up_btn.text = "升级(%d)" % lv_cost
 	up_btn.custom_minimum_size = Vector2(110, 36)
 	up_btn.disabled = lv >= max_lv or int(data.items.get("long_zhi_cao", 0)) < lv_cost
+	# 【新增】批次②③④-B5：消耗按龙芝草拥有着色（够绿/不够红；font_disabled_color 同步）
+	up_btn.add_theme_color_override("font_color", c._cost_color(int(data.items.get("long_zhi_cao", 0)), lv_cost))
+	up_btn.add_theme_color_override("font_disabled_color", c._cost_color(int(data.items.get("long_zhi_cao", 0)), lv_cost))
 	up_btn.pressed.connect(_on_upgrade_body.bind(1))
 	body_row.add_child(up_btn)
 	var up10_btn = Button.new()
@@ -402,6 +405,9 @@ func _show_bone_popup(uid: String, p_slot: String = "", lt: Dictionary = {}):
 		var core_cost = int(cost_info.get("cost", 1))
 		tier_btn.text = "升阶(%s%d/%d)" % [core_name, int(data.items.get(core_item, 0)), core_cost]
 		tier_btn.disabled = int(data.items.get(core_item, 0)) < core_cost
+		# 【新增】批次②③④-B5：拥有/需要着色（够绿/不够红；font_disabled_color 同步）
+		tier_btn.add_theme_color_override("font_color", c._cost_color(int(data.items.get(core_item, 0)), core_cost))
+		tier_btn.add_theme_color_override("font_disabled_color", c._cost_color(int(data.items.get(core_item, 0)), core_cost))
 		tier_btn.pressed.connect(_on_upgrade_tier.bind(uid))
 	tier_row.add_child(tier_btn)
 	if is_lt:
@@ -445,6 +451,9 @@ func _show_bone_popup(uid: String, p_slot: String = "", lt: Dictionary = {}):
 		else:
 			up.text = "升级(尘%d/%d)" % [int(data.items.get("cui_gu_jing_chen", 0)), cost]
 			up.disabled = int(data.items.get("cui_gu_jing_chen", 0)) < cost
+			# 【新增】批次②③④-B5：拥有/需要着色（够绿/不够红；font_disabled_color 同步）
+			up.add_theme_color_override("font_color", c._cost_color(int(data.items.get("cui_gu_jing_chen", 0)), cost))
+			up.add_theme_color_override("font_disabled_color", c._cost_color(int(data.items.get("cui_gu_jing_chen", 0)), cost))
 			up.pressed.connect(_on_upgrade_skill.bind(uid, sid))
 		row.add_child(up)
 

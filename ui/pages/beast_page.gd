@@ -414,6 +414,10 @@ func _update_beast_detail(beast_id: String, instance_index: int):
 	var auto_full: bool = cfg.get("auto_max_level", false)   # 【新增】2026-09-24 自动满级兽（魅影兔）不可手动升级
 	up_btn.text = "已满级（自动）" if auto_full else (("升级\n珍兽果%d/80" % int(data.items.get("beast_fruit", 0))) if b_lv < max_lv else "已满级")   # 【改】读道具轨+显示消耗
 	up_btn.disabled = auto_full or b_lv >= max_lv or int(data.items.get("beast_fruit", 0)) < 80   # 【改】
+	# 【新增】批次②③④-B5：拥有/需要着色（仅显示消耗数字的可升级态；font_disabled_color 同步保持红绿口径）
+	if not auto_full and b_lv < max_lv:
+		up_btn.add_theme_color_override("font_color", c._cost_color(int(data.items.get("beast_fruit", 0)), 80))
+		up_btn.add_theme_color_override("font_disabled_color", c._cost_color(int(data.items.get("beast_fruit", 0)), 80))
 	
 	# 【改】光环区重填（一光环一行，带数值与升级按钮；原"光环：a|b|c"单标签逻辑删除）
 	_fill_aura_box(vbox.get_node("BeastAuraBox"), beast_id, instance_index)
@@ -492,6 +496,14 @@ func _on_beast_upgrade(beast_id: String, instance_index: int):
 		_update_beast_detail(beast_id, instance_index)
 		update_beast_page()
 		c.update_all_ui()
+	else:
+		# 【新增】批次②③④-B5：升级失败补反馈（原静默；失败=珍兽果不足，见 beast_system.upgrade_beast）
+		c._show_stage_hint("珍兽果不足！")
+		var up_btn = c.get_node_or_null("BeastDetailPanel")
+		if up_btn:
+			var b = up_btn.find_child("BeastUpBtn", true, false)
+			if b:
+				c.flash_red(b.get_path())
 
 # 【新增】珍兽觉醒：成功只刷新界面，不额外弹成功文字
 func _on_beast_awaken(beast_id: String, instance_index: int):
@@ -513,9 +525,15 @@ func _show_awaken_confirm(beast_id: String, instance_index: int):
 	popup.name = "BeastAwakenConfirmPopup"
 	var vbox = popup.get_child(0)
 	var info = Label.new()
-	info.text = "本次觉醒消耗：觉醒果×%d\n当前拥有：觉醒果×%d" % [acost, have]
+	info.text = "本次觉醒消耗：觉醒果×%d" % acost
 	info.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	vbox.add_child(info)
+	# 【改】批次②③④-B5：拥有行拆出单独着色（原两行一个 Label 无法分色；够绿/不够红）
+	var have_lbl = Label.new()
+	have_lbl.text = "当前拥有：觉醒果×%d" % have
+	have_lbl.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	have_lbl.add_theme_color_override("font_color", c._cost_color(have, acost))
+	vbox.add_child(have_lbl)
 	# 【改】UI统一批次①：确认弹窗双钮统一【取消】左【确定】右，动作含义写进标题/正文
 	var btn_row = HBoxContainer.new()
 	btn_row.alignment = BoxContainer.ALIGNMENT_CENTER
@@ -844,6 +862,8 @@ func _show_beast_skill_refresh_panel():
 		var aroma_check = CheckBox.new()
 		aroma_check.name = "AromaCheck"
 		aroma_check.text = "使用奇香果（拥有：%d）" % int(data.items.get("aroma_fruit", 0))
+		# 【新增】批次②③④-B5：勾选框拥有数着色（与 _update_beast_skill_refresh_panel 同口径）
+		aroma_check.add_theme_color_override("font_color", c._cost_color(int(data.items.get("aroma_fruit", 0)), 1))
 		vbox.add_child(aroma_check)
 
 	# 按钮区（刷新；关闭由工厂 ✕ 接管）
@@ -887,13 +907,18 @@ func _update_beast_skill_refresh_panel():
 			var use_aroma = aroma_check != null and aroma_check.button_pressed
 			if use_aroma:
 				status_lbl.text = "奇香果：%d/1" % int(data.items.get("aroma_fruit", 0))
+				# 【新增】批次②③④-B5：拥有/需要着色（够绿/不够红）
+				status_lbl.add_theme_color_override("font_color", c._cost_color(int(data.items.get("aroma_fruit", 0)), 1))
 			else:
 				var cost = 100 * int(pow(2, skill.refresh_count))
 				status_lbl.text = "刷新消耗：%s 铜钱" % c.format_number(cost)
-			status_lbl.remove_theme_color_override("font_color")
+				# 【新增】批次②③④-B5：铜钱够绿/不够红（原分支末尾 remove_theme_color_override 删除，改各分支自着色）
+				status_lbl.add_theme_color_override("font_color", c._cost_color(int(data.money), cost))
 	
 	if aroma_check:
 		aroma_check.text = "使用奇香果（拥有：%d）" % int(data.items.get("aroma_fruit", 0))
+		# 【新增】批次②③④-B5：勾选框拥有数着色（用 1 颗，够绿/不够红）
+		aroma_check.add_theme_color_override("font_color", c._cost_color(int(data.items.get("aroma_fruit", 0)), 1))
 		if skill.percent >= 0.249:
 			aroma_check.visible = false
 	
@@ -935,6 +960,8 @@ func _on_refresh_beast_skill():
 			var refresh_btn = panel2.find_child("BeastSkillRefreshBtn", true, false)
 			if refresh_btn:
 				c.flash_red(refresh_btn.get_path())
+		# 【新增】批次②③④-B5：失败补文字提示（刷新失败=奇香果/铜钱不足，与 beast_system.refresh_beast_skill 口径一致）
+		c._show_stage_hint("奇香果不足！" if use_aroma else "铜钱不足！")
 
 func _close_beast_skill_refresh_panel():
 	# 【改】迁工厂后挂 c 根节点，_safe_close 连带摘遮罩
@@ -1023,6 +1050,9 @@ func _make_aura_btn(beast_id: String, instance_index: int, which: int) -> Button
 		var cost = bs.get_aura_upgrade_cost(beast_id, instance_index, which)
 		btn.text = "升级（%s×%d）" % [iname, cost]
 		btn.disabled = int(data.items.get(item, 0)) < cost
+		# 【新增】批次②③④-B5：消耗按拥有够绿/不够红着色（font_disabled_color 同步）
+		btn.add_theme_color_override("font_color", c._cost_color(int(data.items.get(item, 0)), cost))
+		btn.add_theme_color_override("font_disabled_color", c._cost_color(int(data.items.get(item, 0)), cost))
 		btn.pressed.connect(_on_aura_upgrade.bind(beast_id, instance_index, which))
 	return btn
 

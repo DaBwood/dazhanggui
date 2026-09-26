@@ -466,6 +466,9 @@ func _show_play_popup():
 	scenery_btn.text = "游山玩水（1000元宝，拥有%s）" % c.format_number(data.yuanbao)
 	scenery_btn.custom_minimum_size = Vector2(280, 44)
 	scenery_btn.disabled = data.yuanbao < 1000
+	# 【新增】批次②③④-B5：拥有/需要着色（font_disabled_color 同步，置灰态也保持红绿口径）
+	scenery_btn.add_theme_color_override("font_color", c._cost_color(int(data.yuanbao), 1000))
+	scenery_btn.add_theme_color_override("font_disabled_color", c._cost_color(int(data.yuanbao), 1000))
 	scenery_btn.pressed.connect(_on_play_scenery)
 	vbox.add_child(scenery_btn)
 
@@ -473,6 +476,9 @@ func _show_play_popup():
 	poetry_btn.text = "吟诗作对（玫瑰香水×1，拥有%d）" % data.items.get("rose_perfume", 0)
 	poetry_btn.custom_minimum_size = Vector2(280, 44)
 	poetry_btn.disabled = data.items.get("rose_perfume", 0) < 1
+	# 【新增】批次②③④-B5：拥有/需要着色（同上）
+	poetry_btn.add_theme_color_override("font_color", c._cost_color(int(data.items.get("rose_perfume", 0)), 1))
+	poetry_btn.add_theme_color_override("font_disabled_color", c._cost_color(int(data.items.get("rose_perfume", 0)), 1))
 	poetry_btn.pressed.connect(_on_play_poetry)
 	vbox.add_child(poetry_btn)
 
@@ -648,9 +654,11 @@ func _build_hero_tab(body: VBoxContainer, fid: String):
 		sub_row.add_child(btn)
 
 # 通用技能行（图三版式）：左圆形图标 | 中（名字等级/当前效果/下级效果） | 右（拥有/消耗 + 升级按钮 + 十连勾选）
+# 【改】批次②③④-B5：末尾加 have_val/cost_val（int，默认 -1=不着色），"拥有/需要"行按够绿不够红着色
 func _build_skill_row(parent: Control, icon_char: String, icon_color: Color, title: String,
 		effect_now: String, effect_next: String, have_text: String, cost_text: String,
-		btn_name: String, check_name: String, upgrade_callable: Callable, can_upgrade: bool) -> Button:
+		btn_name: String, check_name: String, upgrade_callable: Callable, can_upgrade: bool,
+		have_val: int = -1, cost_val: int = 0) -> Button:
 	var row = HBoxContainer.new()
 	row.add_theme_constant_override("separation", 8)
 	parent.add_child(row)
@@ -690,6 +698,8 @@ func _build_skill_row(parent: Control, icon_char: String, icon_color: Color, tit
 	row.add_child(right)
 	var cost_lbl = Label.new()
 	cost_lbl.text = "%s / %s" % [have_text, cost_text]
+	if have_val >= 0:   # 【新增】批次②③④-B5：拥有/需要着色（够绿 #7ee787 / 不够红 #ff6666）
+		cost_lbl.add_theme_color_override("font_color", c._cost_color(have_val, cost_val))
 	right.add_child(cost_lbl)
 	var up_row = HBoxContainer.new()
 	up_row.alignment = BoxContainer.ALIGNMENT_END
@@ -720,7 +730,8 @@ func _build_menke_skills(content: VBoxContainer, fid: String):
 		"（下级+%s）" % c.format_number(next_bonus),
 		c.format_number(f.bond), str((lv + 1) * 100),
 		"FixedUpgradeBtn", "FixedBatchCheck",
-		_on_skill_upgrade_in_popup.bind(true), f.bond >= (lv + 1) * 100)
+		_on_skill_upgrade_in_popup.bind(true), f.bond >= (lv + 1) * 100,
+		int(f.bond), (lv + 1) * 100)
 	# 花开富贵
 	var plv = f.percent_skill_level
 	_build_skill_row(content, "贵", Color("#d04040"), "花开富贵%d级" % plv,
@@ -728,7 +739,8 @@ func _build_menke_skills(content: VBoxContainer, fid: String):
 		"（下级+%d%%）" % ((plv + 1) * 5),
 		c.format_number(f.bond), str((plv + 1) * 100),
 		"PercentUpgradeBtn", "PercentBatchCheck",
-		_on_skill_upgrade_in_popup.bind(false), f.bond >= (plv + 1) * 100)
+		_on_skill_upgrade_in_popup.bind(false), f.bond >= (plv + 1) * 100,
+		int(f.bond), (plv + 1) * 100)
 
 # 才艺技能子页签：多才多艺（固定赚钱） + 超群绝伦（资质），消耗酒肆才艺经验
 func _build_caiyi_skills(content: VBoxContainer, fid: String):
@@ -743,7 +755,8 @@ func _build_caiyi_skills(content: VBoxContainer, fid: String):
 		"（下级+%s）" % c.format_number((lv + 1) * gain),
 		c.format_number(pool), c.format_number(cost),
 		"DuoUpgradeBtn", "DuoBatchCheck",
-		_on_caiyi_skill_upgrade.bind("duocai"), pool >= cost)
+		_on_caiyi_skill_upgrade.bind("duocai"), pool >= cost,
+		pool, cost)
 	# 超群绝伦：每级缘分门客资质 +1，单次消耗 5000+15×当前等级 才艺经验
 	var alv = fs.get_caiyi_skill_level(fid, "chaoqun")
 	var again = int(fs.CAIYI_SKILLS["chaoqun"]["value_per_level"])
@@ -753,7 +766,8 @@ func _build_caiyi_skills(content: VBoxContainer, fid: String):
 		"（下级+%d）" % ((alv + 1) * again),
 		c.format_number(pool), c.format_number(acost),
 		"ChaoUpgradeBtn", "ChaoBatchCheck",
-		_on_caiyi_skill_upgrade.bind("chaoqun"), pool >= acost)
+		_on_caiyi_skill_upgrade.bind("chaoqun"), pool >= acost,
+		pool, acost)
 
 # 【新增】才艺技能升级：十连勾选=最多连升10级，才艺经验不足则升剩余级数
 func _on_caiyi_skill_upgrade(skill_key: String):
@@ -923,6 +937,8 @@ func _build_fanghua_detail(content: VBoxContainer, fid: String, idx: int):
 	var cost_txt = str(cost) if st.unlocked else str(st.reason)
 	var cost_lbl := Label.new()
 	cost_lbl.text = "%s / %s" % [c.format_number(have), cost_txt]
+	if st.unlocked:   # 【新增】批次②③④-B5：拥有/需要着色（未解锁时 cost 位是原因文本，不着色）
+		cost_lbl.add_theme_color_override("font_color", c._cost_color(have, cost))
 	right.add_child(cost_lbl)
 	var up_row := HBoxContainer.new()
 	up_row.alignment = BoxContainer.ALIGNMENT_END
@@ -1031,13 +1047,20 @@ func _show_title_popup():
 	if idx < titles.size() - 1:
 		var next_t = titles[idx + 1]
 		var next_lbl = Label.new()
-		next_lbl.text = "下一级【%s】：友好 %s/%s，才华 %s/%s" % [
-			next_t.title,
-			c.format_number(f.friendly), c.format_number(next_t.req),
-			c.format_number(f.talent), c.format_number(next_t.req)
-		]
+		next_lbl.text = "下一级【%s】：" % next_t.title
 		next_lbl.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 		vbox.add_child(next_lbl)
+		# 【改】批次②③④-B5：友好/才华拆两行，各按 够绿/不够红 着色（原一行混排无法分色）
+		var req_f = Label.new()
+		req_f.text = "友好 %s/%s" % [c.format_number(f.friendly), c.format_number(next_t.req)]
+		req_f.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+		req_f.add_theme_color_override("font_color", c._cost_color(int(f.friendly), int(next_t.req)))
+		vbox.add_child(req_f)
+		var req_t = Label.new()
+		req_t.text = "才华 %s/%s" % [c.format_number(f.talent), c.format_number(next_t.req)]
+		req_t.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+		req_t.add_theme_color_override("font_color", c._cost_color(int(f.talent), int(next_t.req)))
+		vbox.add_child(req_t)
 	else:
 		var max_lbl = Label.new()
 		max_lbl.text = "已达最高美名"
@@ -1220,6 +1243,8 @@ func _on_refresh_selected_skill():
 			var refresh_btn = panel2.find_child("DetailRefreshBtn", true, false)
 			if refresh_btn:
 				c.flash_red(refresh_btn.get_path())
+		# 【新增】批次②③④-B5：失败补文字提示（刷新失败=许愿石/铜钱不足，与 friend_system.refresh_friend_shop_skill 口径一致）
+		c._show_stage_hint("许愿石不足！" if use_wish else "铜钱不足！")
 
 func _update_shop_skill_detail():
 	# 【改】详情弹窗已改挂 c 根节点
@@ -1243,15 +1268,20 @@ func _update_shop_skill_detail():
 		else:
 			var use_wish = wish_check != null and wish_check.button_pressed
 			if use_wish:
-				var wish_count = data.items.get("wish_stone", 0)
+				var wish_count = int(data.items.get("wish_stone", 0))
 				status_lbl.text = "许愿石：%d/1" % wish_count
+				# 【新增】批次②③④-B5：拥有/需要着色（够绿/不够红）
+				status_lbl.add_theme_color_override("font_color", c._cost_color(wish_count, 1))
 			else:
 				var cost = 100 * int(pow(2, skill.refresh_count))
 				status_lbl.text = "刷新消耗：%s 铜钱" % c.format_number(cost)
-			status_lbl.remove_theme_color_override("font_color")
+				# 【新增】批次②③④-B5：铜钱够绿/不够红
+				status_lbl.add_theme_color_override("font_color", c._cost_color(int(data.money), cost))
 
 	if wish_check:
 		wish_check.text = "使用许愿石（拥有：%d）" % data.items.get("wish_stone", 0)
+		# 【新增】批次②③④-B5：勾选框拥有数着色（用 1 颗，够绿/不够红）
+		wish_check.add_theme_color_override("font_color", c._cost_color(int(data.items.get("wish_stone", 0)), 1))
 		if skill.bonus >= 0.299:
 			wish_check.visible = false
 
@@ -1547,6 +1577,7 @@ func _on_gift_item_confirmed(spin: SpinBox, item_id: String):
 	if count <= 0: return
 	if current_friend_id == "": return
 	if data.items.get(item_id, 0) < count:
+		c._show_stage_hint("礼物不足！")   # 【新增】批次②③④-B5：防御分支补反馈（原静默 return）
 		return
 
 	for i in range(count):
