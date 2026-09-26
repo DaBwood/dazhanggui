@@ -33,6 +33,15 @@ func show_winery_view():
 func hide_winery_view():
 	hide_view()
 
+# 【新增】批次②③④-B2：玩法说明弹窗（WineryRulePopup）是独立节点名，基类只认 _popup_node_name，需显式清理
+func show_view():
+	_close_node("WineryRulePopup")
+	super()
+
+func hide_view():
+	_close_node("WineryRulePopup")
+	super()
+
 # ---------- 页面构建 ----------
 func _build(page: Panel):
 	var vb := VBoxContainer.new()
@@ -54,6 +63,13 @@ func _build(page: Panel):
 	title.text = "酒坊"
 	title.add_theme_font_size_override("font_size", 24)
 	top.add_child(title)
+	# 【新增】批次②③④-B2：玩法说明入口"?"（只在玩法主标题旁，说明流程/规则/后台计算）
+	var rule_btn := Button.new()
+	rule_btn.text = "?"
+	rule_btn.custom_minimum_size = Vector2(30, 30)
+	rule_btn.add_theme_font_size_override("font_size", 16)
+	rule_btn.pressed.connect(_show_rule_popup)
+	top.add_child(rule_btn)
 	var medal_sp := Control.new()
 	medal_sp.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	top.add_child(medal_sp)
@@ -63,9 +79,9 @@ func _build(page: Panel):
 	medal_btn.pressed.connect(func(): _show_medal_popup())
 	top.add_child(medal_btn)
 	_add_btn_dot(medal_btn, _sys().can_upgrade_medal().get("ok", false))   # 内部红点：勋章可升
-	# 资源行：酒艺值（升流程消耗）/ 累计酒香（勋章进度），数值已可见，操作不弹字（协作规则 28）
+	# 资源行：酒艺值/累计酒香（用途说明迁入主标题旁"?"玩法说明），数值已可见，操作不弹字（协作规则 28）
 	var res := Label.new()
-	res.text = "酒艺值 %s（升级消耗）　累计酒香 %s（勋章进度）" % [
+	res.text = "酒艺值 %s　累计酒香 %s" % [
 		c.format_number(_sys().jiuyi), c.format_number(_sys().get_jiuxiang())]
 	res.add_theme_color_override("font_color", Color("#9a93b8"))
 	res.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
@@ -137,6 +153,25 @@ func _build(page: Panel):
 	b_buy.pressed.connect(func(): _show_buy_popup())
 	bottom.add_child(b_buy)
 
+# 【新增】批次②③④-B2：酒坊玩法说明弹窗（只从主标题旁"?"进入；长说明不进画面）
+func _show_rule_popup():
+	_close_node("WineryRulePopup")
+	var popup: PanelContainer = c._create_base_popup("酒坊说明", Vector2(380, 300))
+	popup.name = "WineryRulePopup"
+	popup.get_meta("popup_mask").z_index = 39
+	popup.z_index = 40
+	c.add_child(popup)   # 弹窗工厂只创建不挂载，必须调用方 add_child
+	var vb: VBoxContainer = popup.get_child(0)
+	for line in [
+		"升级三作坊的五流程消耗酒艺值，提升对应职业商铺赚速。",
+		"酿造消耗材料，产出酒、酒香和酒艺值；材料在【采买】获得，在【酿酒】中消耗。",
+		"累计酒香只作勋章门槛，不消耗；勋章提升全部商铺赚速。",
+	]:
+		var body := Label.new()
+		body.text = line
+		body.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+		vb.add_child(body)
+
 # ---------- 操作后统一刷新：重建页面 + 原位重建弹窗 ----------
 # 【改】页面重建=基类 _refresh（关页→show_view→按状态调本函数）；此处仅做弹窗按状态分发（2026-09-18 批次③）
 func _rebuild_popup():
@@ -177,6 +212,11 @@ func _show_workshop_popup(wid: String):
 		_sys().get_workshop_S(wid), _sys().get_brew_output_jiuxiang(wid), _sys().get_brew_output(wid)]
 	info.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
 	vb.add_child(info)
+	# 【新增】批次②③④-B2：当前酒艺值（五流程升级共用同一消耗池，配合按钮成本看够不够）
+	var have_lbl := Label.new()
+	have_lbl.text = "当前酒艺值：%s" % c.format_number(_sys().jiuyi)
+	have_lbl.add_theme_color_override("font_color", Color("#e6c07b"))
+	vb.add_child(have_lbl)
 	# 同步升级勾选（一键拉平五流程，酒艺值不足自动停）
 	var sync_chk := CheckBox.new()
 	sync_chk.text = "同步升级（一键拉平五流程）"
@@ -203,7 +243,12 @@ func _show_workshop_popup(wid: String):
 			btn.text = "满级"
 			btn.disabled = true
 		else:
-			btn.text = "升级 %s" % c.format_number(_sys().get_process_upgrade_cost(wid, pid))   # 本次消耗直接显示在按钮上
+			var up_cost: int = _sys().get_process_upgrade_cost(wid, pid)
+			btn.text = "升级 %s" % c.format_number(up_cost)   # 本次消耗直接显示在按钮上
+			# 【新增】批次②③④-B2：酒艺值够绿 #7ee787 / 不够红 #ff6666（禁用态同色，消耗即门槛）
+			var cost_col: Color = c._cost_color(int(_sys().jiuyi), up_cost)
+			btn.add_theme_color_override("font_color", cost_col)
+			btn.add_theme_color_override("font_disabled_color", cost_col)
 			btn.disabled = not _sys().can_upgrade_process(wid, pid).get("ok", false)
 			var pid_c: String = pid
 			btn.pressed.connect(func(): _on_process_upgrade(wid, pid_c, sync_chk.button_pressed, btn))
@@ -360,10 +405,7 @@ func _fill_buy_bag(vb: VBoxContainer):
 		var lbl := Label.new()
 		lbl.text = "%s　库存 %d" % [m.get("name", mid), _sys().get_material(mid)]
 		vb.add_child(lbl)
-	var hint := Label.new()
-	hint.text = "（材料在【酿酒】中消耗）"
-	hint.add_theme_color_override("font_color", Color("#9a93b8"))
-	vb.add_child(hint)
+	# 【删】批次②③④-B2："材料在【酿酒】中消耗"提示迁入主标题旁"?"玩法说明
 
 func _on_buy(mid: String, n: int = 1):
 	var r := _sys().buy_material(mid, n)
@@ -410,7 +452,7 @@ func _show_medal_popup():
 	head.add_theme_color_override("font_color", Color("#e6c07b"))
 	head_row.add_child(head)
 	var help_btn := Button.new()
-	help_btn.text = "?"
+	help_btn.text = "i"   # 【改】批次②③④-B2：面板内补充信息入口统一用"i"（"?"只留玩法主标题旁）
 	help_btn.custom_minimum_size = Vector2(24, 24)
 	help_btn.tooltip_text = "点击查看勋章规则"
 	help_btn.pressed.connect(_on_medal_help)
@@ -428,11 +470,8 @@ func _show_medal_popup():
 		max_lbl.add_theme_color_override("font_color", Color("#9a93b8"))
 		vb.add_child(max_lbl)
 	else:
-		var next_lbl := Label.new()
-		next_lbl.text = "下一级需累计酒香 %s（当前 %s）" % [c.format_number(need), c.format_number(_sys().get_jiuxiang())]
-		next_lbl.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
-		next_lbl.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
-		vb.add_child(next_lbl)
+		# 【改】批次②③④-B2：门槛"拥有/需要"着色（够绿不够红）
+		c._add_have_need_row(vb, "下一级需累计酒香 ", int(_sys().get_jiuxiang()), need)
 		var bar := ProgressBar.new()
 		bar.min_value = 0.0
 		bar.max_value = maxf(1.0, float(need))
@@ -541,10 +580,8 @@ func _show_wine_info(wine_id: String):
 	else:
 		up.text = "Lv.%d → 本级还需酿造 %d/%d 瓶" % [
 			_sys().get_wine_lv(wine_id), _sys().get_wine_overplus(wine_id), next_need]
-		if _sys().can_upgrade_wine(wine_id).get("ok", false):
-			up.add_theme_color_override("font_color", Color("#2ecc71"))
-		else:
-			up.add_theme_color_override("font_color", Color("#9a93b8"))
+		# 【改】批次②③④-B2：进度着色统一 _cost_color（够绿 #7ee787 / 不够红 #ff6666）
+		up.add_theme_color_override("font_color", c._cost_color(int(_sys().get_wine_overplus(wine_id)), next_need))
 	up.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
 	vb.add_child(up)
 	var row := HBoxContainer.new()

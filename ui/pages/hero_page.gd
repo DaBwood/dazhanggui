@@ -189,7 +189,7 @@ func _ensure_hero_panel_code():
 	income_row.add_child(income_lbl)
 	var attr_btn = Button.new()
 	attr_btn.name = "AttrInfoBtn"
-	attr_btn.text = "?"
+	attr_btn.text = "i"   # 【改】2026-09-26 用户约定：门客面板补充信息入口用 i，"?"只用于玩法主标题规则说明
 	attr_btn.custom_minimum_size = Vector2(26, 24)
 	attr_btn.add_theme_font_size_override("font_size", 14)
 	attr_btn.pressed.connect(_show_attr_breakdown)
@@ -1169,7 +1169,7 @@ func _render_skill_detail(list: VBoxContainer, item: Dictionary) -> void:
 		# 【新增】可选"?"说明钮（光环.极档：升级钮上方，点击显示各门客对应技能等级需求）
 		if item.has("on_hint"):
 			var hbtn := Button.new()
-			hbtn.text = "？"
+			hbtn.text = "i"   # 【改】2026-09-26 用户约定：门客面板补充信息入口用 i
 			hbtn.custom_minimum_size = Vector2(84, 20)
 			hbtn.add_theme_font_size_override("font_size", 12)
 			hbtn.pressed.connect(item["on_hint"])

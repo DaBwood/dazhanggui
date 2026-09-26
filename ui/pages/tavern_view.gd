@@ -48,12 +48,14 @@ func show_view():
 	_popup_id = ""
 	_close_node(_page_name)
 	_close_node(_popup_node_name)
+	_close_node("TavernRulePopup")   # 【新增】批次②③④-B1修正：规则说明弹窗随页面重开清理
 	_build_page()
 
 # 关闭=进出复位页签（原 hide_tavern_view 语义，同 clinic 惯例）+ 基类清理。
 # 基类比原实现多清 _popup_kind/_popup_id，无观测差异：下次 show 本就会清，页关期间无人读状态
 func hide_view():
 	_tab = "main"   # 下次进入回到主页（同 clinic 进出复位惯例）
+	_close_node("TavernRulePopup")   # 【新增】批次②③④-B1修正：离开酒肆时连带关闭规则说明弹窗
 	super()
 
 # 仅重建页面不关弹窗：连升/连解锁时设施弹窗常驻原位刷新（_refresh 用）；进出酒肆才全关
@@ -165,10 +167,23 @@ func _build(page: Panel):
 	back_btn.custom_minimum_size = Vector2(90, 42)
 	back_btn.pressed.connect(_on_back)
 	top.add_child(back_btn)
+	# 【改】批次②③④-B1修正：标题旁"?"只放规则说明；【酒肆信息】是玩法功能入口，恢复显式按钮
+	var left_spring := Control.new()
+	left_spring.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	top.add_child(left_spring)
 	var title := Label.new()
 	title.text = "酒肆" if _tab == "main" else "酒肆 · %s" % _tab
 	title.add_theme_font_size_override("font_size", 24)
 	top.add_child(title)
+	var rule_btn := Button.new()
+	rule_btn.text = "?"
+	rule_btn.custom_minimum_size = Vector2(30, 30)
+	rule_btn.add_theme_font_size_override("font_size", 16)
+	rule_btn.pressed.connect(_show_rule_popup)
+	top.add_child(rule_btn)
+	var right_spring := Control.new()
+	right_spring.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	top.add_child(right_spring)
 	var info_btn := Button.new()
 	info_btn.text = "酒肆信息"
 	info_btn.custom_minimum_size = Vector2(104, 40)
@@ -448,14 +463,9 @@ func _show_facility_popup(fid: String):
 	vb.add_child(flavor)
 	if not _sys().is_facility_unlocked(fid):
 		# 未解锁：解锁需求（知名度门槛 + 银条开价）
-		var need_fame := Label.new()
-		need_fame.text = "解锁需求：知名度 %s（当前 %s）" % [
-			c.format_number(_sys().get_unlock_fame(fcfg)), c.format_number(_sys().get_fame_total())]
-		vb.add_child(need_fame)
-		var cost := Label.new()
-		cost.text = "开价：银条 %s（拥有 %s）" % [
-			c.format_number(_sys().get_unlock_cost(fcfg)), c.format_number(_sys().get_yintiao())]
-		vb.add_child(cost)
+		# 【改】批次②③④-B1：需求/开价统一“拥有/需要”顺序，数字按可支付性红绿着色
+		c._add_have_need_row(vb, "解锁需求：知名度 ", _sys().get_fame_total(), int(_sys().get_unlock_fame(fcfg)))
+		c._add_have_need_row(vb, "开价：银条 ", _sys().get_yintiao(), int(_sys().get_unlock_cost(fcfg)))
 		var unlock_btn := Button.new()
 		unlock_btn.text = "解锁设施"
 		unlock_btn.custom_minimum_size = Vector2(0, 42)
@@ -481,10 +491,8 @@ func _show_facility_popup(fid: String):
 		maxed.add_theme_color_override("font_color", Color("#9a93b8"))
 		vb.add_child(maxed)
 	else:
-		var cost := Label.new()
-		cost.text = "消耗：银条 %s（拥有 %s）" % [
-			c.format_number(int(pv.get("cost", 0))), c.format_number(_sys().get_yintiao())]
-		vb.add_child(cost)
+		# 【改】批次②③④-B1：升级消耗统一“拥有/需要”顺序，数字按可支付性红绿着色
+		c._add_have_need_row(vb, "消耗：银条 ", _sys().get_yintiao(), int(pv.get("cost", 0)))
 		# 同步升级勾选：勾选后升级按钮=同项目全部已解锁设施各升1级
 		var sync_cb := CheckBox.new()
 		sync_cb.text = "同步升级（同项目全部设施各升1级）"
@@ -601,6 +609,25 @@ func _on_call_all():
 	c._show_stage_hint("已叫号 %d 位客人，接待中…" % int(r.get("count", 0)))
 	_refresh()
 
+# 【新增】批次②③④-B1修正：酒肆规则/后台计算说明弹窗（只放说明，不放玩法操作）
+func _show_rule_popup():
+	_close_node("TavernRulePopup")
+	var popup: PanelContainer = c._create_base_popup("酒肆说明", Vector2(380, 300))
+	popup.name = "TavernRulePopup"
+	popup.get_meta("popup_mask").z_index = 39
+	popup.z_index = 40
+	c.add_child(popup)
+	var vb: VBoxContainer = popup.get_child(0)
+	for line in [
+		"门客百业经验：每位客人随机赠予一名已拥有门客。",
+		"挚友才艺经验：每位客人随机赠予一名已拥有挚友。",
+		"知名度达标即可免费升级酒肆（升级不消耗资源）。",
+	]:
+		var body := Label.new()
+		body.text = line
+		body.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+		vb.add_child(body)
+
 # ---------- 酒肆信息弹窗 ----------
 func _show_info_popup():
 	_popup_kind = "info"
@@ -649,22 +676,21 @@ func _show_info_popup():
 	gain.text = "接待客人收益：银条 %s" % c.format_number(_sys().get_income_per_guest())
 	vb.add_child(gain)
 	var baiye := Label.new()
-	baiye.text = "门客百业经验：%d（每位客人随机赠予一名已拥有门客）" % _sys().get_baiye_per_guest()
-	baiye.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+	baiye.text = "门客百业经验：%d" % _sys().get_baiye_per_guest()   # 【改】批次②③④-B1修正：规则说明移入标题旁"?"弹窗
 	vb.add_child(baiye)
 	var caiyi := Label.new()
-	caiyi.text = "挚友才艺经验：%d（每位客人随机赠予一名已拥有挚友）" % _sys().get_caiyi_per_guest()
-	caiyi.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+	caiyi.text = "挚友才艺经验：%d" % _sys().get_caiyi_per_guest()   # 【改】批次②③④-B1修正：规则说明移入标题旁"?"弹窗
 	vb.add_child(caiyi)
 	# 小喇叭知名度：进度 + 阈值
 	var fame_cur := _sys().get_fame_total()
 	var fame_need := _sys().get_fame_threshold()
-	var fame := Label.new()
 	if _sys().get_level() >= _sys().get_max_level():
+		var fame := Label.new()
 		fame.text = "小喇叭知名度：%s（已满级）" % c.format_number(fame_cur)
+		vb.add_child(fame)
 	else:
-		fame.text = "小喇叭知名度：%s / %s" % [c.format_number(fame_cur), c.format_number(fame_need)]
-	vb.add_child(fame)
+		# 【改】批次②③④-B1：知名度进度同属“拥有/需要”比较，数字按达标状态红绿着色
+		c._add_have_need_row(vb, "小喇叭知名度：", fame_cur, fame_need)
 	var bar := ProgressBar.new()
 	bar.min_value = 0
 	bar.max_value = maxi(1, fame_need)
@@ -672,11 +698,7 @@ func _show_info_popup():
 	bar.custom_minimum_size = Vector2(0, 22)
 	bar.show_percentage = false
 	vb.add_child(bar)
-	if _sys().get_level() < _sys().get_max_level():
-		var hint := Label.new()
-		hint.text = "知名度达标即可免费升级酒肆（升级不消耗资源）"
-		hint.add_theme_color_override("font_color", Color("#9a93b8"))
-		vb.add_child(hint)
+	# 【删】批次②③④-B1修正：免费升级说明移入标题旁"?"弹窗，信息弹窗只留实际进度与升级功能
 
 # 改名弹窗：免费，限8个中文字
 func _show_rename_popup():

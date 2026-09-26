@@ -50,6 +50,17 @@ func show_drugshop_view():
 func hide_drugshop_view():
 	hide_view()
 
+# 【新增】批次②③④-B2：玩法说明弹窗（DrugshopRulePopup）是独立节点名，基类只认 _popup_node_name，需显式清理
+# 注意：勋章弹窗（DrugshopMedalPopup）不能在 show_view 里关——_refresh 重建链依赖它存活；hide 时才连带关闭
+func show_view():
+	_close_node("DrugshopRulePopup")
+	super()
+
+func hide_view():
+	_close_node("DrugshopRulePopup")
+	_close_node("DrugshopMedalPopup")
+	super()
+
 # 【改】后台节拍挂在基类建页后的钩子（原 show_drugshop_view 尾部，2026-09-18 批次④）；
 # Timer 挂在 page 上，随关页 queue_free 自动销毁，hide 无需手动停
 func _after_build(page: Panel):
@@ -124,6 +135,13 @@ func _build(page: Panel):
 	title.text = "药铺" if _tab == "main" else ("药铺 · 打理" if _tab == "craft" else ("药铺 · 本草秘籍" if _tab == "recipe" else "药铺 · 成就"))
 	title.add_theme_font_size_override("font_size", 24)
 	top.add_child(title)
+	# 【新增】批次②③④-B2：玩法说明入口"?"（只在玩法主标题旁，说明流程/规则/后台计算）
+	var rule_btn := Button.new()
+	rule_btn.text = "?"
+	rule_btn.custom_minimum_size = Vector2(30, 30)
+	rule_btn.add_theme_font_size_override("font_size", 16)
+	rule_btn.pressed.connect(_show_rule_popup)
+	top.add_child(rule_btn)
 	# 【改】2026-09-18 勋章统一样式：右上角入口+弹窗（同酒坊模板），替代原主页内嵌勋章卡
 	var medal_sp := Control.new()
 	medal_sp.size_flags_horizontal = Control.SIZE_EXPAND_FILL
@@ -175,6 +193,25 @@ func _refresh():
 	if c.get_node_or_null("DrugshopMedalPopup") != null:
 		_close_node("DrugshopMedalPopup")
 		_show_medal_popup()
+
+# 【新增】批次②③④-B2：药铺玩法说明弹窗（只从主标题旁"?"进入；长说明不进画面）
+func _show_rule_popup():
+	_close_node("DrugshopRulePopup")
+	var popup: PanelContainer = c._create_base_popup("药铺说明", Vector2(380, 300))
+	popup.name = "DrugshopRulePopup"
+	popup.get_meta("popup_mask").z_index = 39
+	popup.z_index = 40
+	c.add_child(popup)   # 弹窗工厂只创建不挂载，必须调用方 add_child
+	var vb: VBoxContainer = popup.get_child(0)
+	for line in [
+		"病人随时间恢复；营业接待后收益先入收益罐，领取后入账。",
+		"一键接待只切换模式：勾选后点【营业】，才把当前病人全部转入结算队列。",
+		"药铺经验只作解锁/勋章门槛，不消耗；工艺升级消耗铜板，药方升级消耗对应熟练度。",
+	]:
+		var body := Label.new()
+		body.text = line
+		body.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+		vb.add_child(body)
 
 # ---------- 主页：收益罐 + 病人行 + 三入口（勋章已改右上角弹窗，2026-09-18 统一样式） ----------
 func _fill_main(body: VBoxContainer):
@@ -294,7 +331,7 @@ func _show_medal_popup():
 	head.add_theme_color_override("font_color", Color("#e6c07b"))
 	head_row.add_child(head)
 	var help_btn := Button.new()
-	help_btn.text = "?"
+	help_btn.text = "i"   # 【改】批次②③④-B2：面板内补充信息入口统一用"i"（"?"只留玩法主标题旁）
 	help_btn.custom_minimum_size = Vector2(24, 24)
 	help_btn.tooltip_text = "点击查看勋章规则"
 	help_btn.pressed.connect(_on_medal_help)
@@ -313,11 +350,8 @@ func _show_medal_popup():
 		vb.add_child(max_lbl)
 	else:
 		var need: int = int(nxt.get("need_exp", 0))
-		var next_lbl := Label.new()
-		next_lbl.text = "下一级【%s】需累计药铺经验 %s（当前 %s）" % [nxt.get("name", ""), c.format_number(need), c.format_number(_sys().exp_total)]
-		next_lbl.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
-		next_lbl.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
-		vb.add_child(next_lbl)
+		# 【改】批次②③④-B2：门槛"拥有/需要"着色（够绿不够红）
+		c._add_have_need_row(vb, "下一级【%s】需累计药铺经验 " % nxt.get("name", ""), int(_sys().exp_total), need)
 		var bar := ProgressBar.new()
 		bar.min_value = 0.0
 		bar.max_value = maxf(1.0, float(need))
@@ -494,10 +528,8 @@ func _show_craft_popup(cid: String):
 		str(cdef.get("per_level", 0)), lv]
 	info.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
 	vb.add_child(info)
-	var cost := Label.new()
-	cost.text = "下级消耗铜板：%s（拥有 %s）" % [
-		c.format_number(_sys().get_craft_cost(cid)), c.format_number(_sys().coins)]
-	vb.add_child(cost)
+	# 【改】批次②③④-B2：成本"拥有/需要"着色（够绿不够红）
+	c._add_have_need_row(vb, "下级消耗：铜板 ", int(_sys().coins), _sys().get_craft_cost(cid))
 	var btn := Button.new()
 	btn.text = "升级"
 	btn.disabled = not _sys().can_upgrade_craft(cid).get("ok", false)
@@ -515,7 +547,8 @@ func _on_craft_upgrade(cid: String):
 # ---------- 子页：本草秘籍（29药方卡片网格） ----------
 func _fill_recipe(body: VBoxContainer):
 	var head := Label.new()
-	head.text = "累计药铺经验 %s（接待得经验，领取收益罐后入账）" % c.format_number(_sys().exp_total)
+	# 【改】批次②③④-B2：括号说明迁入主标题旁"?"玩法说明，画面只留数值
+	head.text = "累计药铺经验 %s" % c.format_number(_sys().exp_total)
 	head.add_theme_color_override("font_color", Color("#9a93b8"))
 	head.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
 	body.add_child(head)
@@ -564,11 +597,8 @@ func _show_recipe_popup(rid: String):
 	var vb: VBoxContainer = popup.get_child(0)
 	if not _sys().is_recipe_unlocked(rid):
 		# 未解锁：显示累计经验门槛 + 手动解锁（不消耗经验）
-		var lock := Label.new()
-		lock.text = "需累计药铺经验 %s（当前 %s）" % [
-			c.format_number(_sys().get_recipe_unlock_need(rid)), c.format_number(_sys().exp_total)]
-		lock.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
-		vb.add_child(lock)
+		# 【改】批次②③④-B2：解锁门槛"拥有/需要"着色（够绿不够红）
+		c._add_have_need_row(vb, "解锁需求：累计药铺经验 ", int(_sys().exp_total), _sys().get_recipe_unlock_need(rid))
 		var unlock_btn := Button.new()
 		unlock_btn.text = "解锁"
 		unlock_btn.disabled = not _sys().can_unlock_recipe(rid).get("ok", false)
@@ -598,9 +628,8 @@ func _show_recipe_popup(rid: String):
 	wallet.add_theme_color_override("font_color", Color("#e6c07b"))
 	vb.add_child(wallet)
 	if lv < max_lv:
-		var cost := Label.new()
-		cost.text = "下级消耗熟练度：%s" % c.format_number(_sys().get_recipe_upgrade_cost(rid))
-		vb.add_child(cost)
+		# 【改】批次②③④-B2：成本"拥有/需要"着色（够绿不够红）
+		c._add_have_need_row(vb, "下级消耗：熟练度 ", int(_sys().get_recipe_prof(rid)), _sys().get_recipe_upgrade_cost(rid))
 		var btn_row := HBoxContainer.new()
 		btn_row.add_theme_constant_override("separation", 8)
 		vb.add_child(btn_row)

@@ -298,6 +298,27 @@ func flash_red(node_path: String):
 		b.remove_meta("flash_orig")
 	)
 
+# 【新增】批次②③④-B1：消耗数字着色公共件（原 hero_page 局部件下沉，全仓“拥有/需要”数字共用）
+# 够=绿 #7ee787，不够=红 #ff6666；页面经 c._cost_color 委托调用
+func _cost_color(have: int, need: int) -> Color:
+	return Color("#7ee787") if have >= need else Color("#ff6666")
+
+# 【新增】批次②③④-B1：拥有/需要行公共件——数字统一“拥有/需要”顺序并按可支付性着色
+# 说明文本保持原样传 prefix，避免各页重复拆 HBox/Label
+func _add_have_need_row(parent: Node, prefix: String, have: int, need: int) -> HBoxContainer:
+	var row := HBoxContainer.new()
+	row.alignment = BoxContainer.ALIGNMENT_CENTER
+	row.add_theme_constant_override("separation", 2)
+	var prefix_lbl := Label.new()
+	prefix_lbl.text = prefix
+	row.add_child(prefix_lbl)
+	var num_lbl := Label.new()
+	num_lbl.text = "%s / %s" % [c.format_number(have), c.format_number(need)]
+	num_lbl.add_theme_color_override("font_color", _cost_color(have, need))
+	row.add_child(num_lbl)
+	parent.add_child(row)
+	return row
+
 # ============ 顶部提示 / 解锁提示 / 数量选择器 ============
 
 func _show_unlock_hint(role_name: String, vip_level: int):

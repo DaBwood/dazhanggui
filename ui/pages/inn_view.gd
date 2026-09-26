@@ -34,6 +34,7 @@ func hide_inn_view():
 # hide 比基类多清三个秒刷引用（原 hide_inn_view 语义，基类无此职责）
 func show_view():
 	_close_node("InnPackPopup")
+	_close_node("InnRulePopup")   # 【新增】批次②③④-B1修正：玩法说明弹窗随页面重开清理
 	super()
 
 func hide_view():
@@ -41,6 +42,7 @@ func hide_view():
 	_jar_lbl = null
 	_jar_btn = null
 	_close_node("InnPackPopup")
+	_close_node("InnRulePopup")   # 【新增】批次②③④-B1修正：离开客栈时连带关闭玩法说明弹窗
 	super()
 
 func _build(page: Panel):
@@ -59,13 +61,24 @@ func _build(page: Panel):
 	back_btn.custom_minimum_size = Vector2(90, 44)
 	back_btn.pressed.connect(hide_inn_view)
 	top.add_child(back_btn)
+	# 【改】批次②③④-B1修正："?"只出现在玩法主标题旁，用于说明流程/规则
+	var left_spring := Control.new()
+	left_spring.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	top.add_child(left_spring)
 	var title := Label.new()
 	title.text = "客栈"
-	title.size_flags_horizontal = Control.SIZE_EXPAND_FILL
-	title.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	title.add_theme_font_size_override("font_size", 22)
 	title.add_theme_color_override("font_color", Color("#ffd700"))
 	top.add_child(title)
+	var rule_btn := Button.new()
+	rule_btn.text = "?"
+	rule_btn.custom_minimum_size = Vector2(30, 30)
+	rule_btn.add_theme_font_size_override("font_size", 16)
+	rule_btn.pressed.connect(_show_rule_popup)
+	top.add_child(rule_btn)
+	var right_spring := Control.new()
+	right_spring.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	top.add_child(right_spring)
 	var pad := Control.new()
 	pad.custom_minimum_size = Vector2(90, 44)
 	top.add_child(pad)
@@ -237,6 +250,20 @@ func _on_start_cook():
 	if data.inn_system.is_cooking(): return
 	_show_hero_popup()
 
+# 【新增】批次②③④-B1修正：客栈玩法说明弹窗（只从主标题旁"?"进入）
+func _show_rule_popup():
+	_close_node("InnRulePopup")
+	var popup: PanelContainer = c._create_base_popup("客栈说明", Vector2(380, 300))
+	popup.name = "InnRulePopup"
+	popup.get_meta("popup_mask").z_index = 39
+	popup.z_index = 40
+	c.add_child(popup)
+	var vb: VBoxContainer = popup.get_child(0)
+	var body := Label.new()
+	body.text = "门客职业决定菜品。\n今日轮班加成职业做菜收益×2。"
+	body.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+	vb.add_child(body)
+
 # ---------- 门客选择弹窗（五职业页签，默认今日加成职业） ----------
 func _show_hero_popup():
 	_close_node("InnHeroPopup")
@@ -247,11 +274,6 @@ func _show_hero_popup():
 	popup.name = "InnHeroPopup"
 	popup.z_index = 40
 	var vb = popup.get_child(0)
-	var sub := Label.new()
-	sub.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
-	sub.add_theme_font_size_override("font_size", 12)
-	sub.text = "门客职业决定菜品；今日轮班加成职业做菜收益×2"
-	vb.add_child(sub)
 	# 状态容器（职业页签切换、门客网格重刷共用）
 	var bonus: Array = sys.get_today_bonus_careers()
 	var ctx := {"career": str(bonus[0]) if bonus.size() >= 1 else "士"}

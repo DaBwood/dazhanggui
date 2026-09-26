@@ -444,7 +444,7 @@ func _show_fengzi_panel():
 	lv_lbl.text = "【%s】Lv.%d（无上限）" % [f_cfg.get("fengzi_name", "风姿"), lv]
 	lv_row.add_child(lv_lbl)
 	var q_btn = Button.new()
-	q_btn.text = "?"
+	q_btn.text = "i"   # 【改】2026-09-26 用户约定：门客面板补充信息入口用 i，"?"只用于玩法主标题规则说明
 	q_btn.custom_minimum_size = Vector2(28, 28)
 	q_btn.pressed.connect(func(): _show_fengzi_hint(f_cfg, every, unlock_all))
 	lv_row.add_child(q_btn)

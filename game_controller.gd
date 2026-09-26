@@ -529,6 +529,13 @@ func animate_button(node_path: String):
 func flash_red(node_path: String):
 	ui_helpers.flash_red(node_path)   # 【改】主体迁 ui/ui_helpers.gd（2026-09-19 重构批次B）
 
+# 【新增】批次②③④-B1：消耗着色/拥有需要行公共件委托（页面统一走 c.xxx）
+func _cost_color(have: int, need: int) -> Color:
+	return ui_helpers._cost_color(have, need)
+
+func _add_have_need_row(parent: Node, prefix: String, have: int, need: int) -> HBoxContainer:
+	return ui_helpers._add_have_need_row(parent, prefix, have, need)
+
 func _create_base_popup(title_text: String, popup_size: Vector2, _pos: Vector2 = Vector2.ZERO, with_close: bool = true) -> PanelContainer:   # 【改】UI统一批次①：透传 with_close（确认弹窗传false不带右上✕）
 	return ui_helpers._create_base_popup(title_text, popup_size, _pos, with_close)   # 【改】主体迁 ui/ui_helpers.gd（2026-09-19 重构批次B）
 

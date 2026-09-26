@@ -36,6 +36,15 @@ func show_clinic_view():
 func hide_clinic_view():
 	hide_view()
 
+# 【新增】批次②③④-B2：玩法说明弹窗（ClinicRulePopup）是独立节点名，基类只认 _popup_node_name，需显式清理
+func show_view():
+	_close_node("ClinicRulePopup")
+	super()
+
+func hide_view():
+	_close_node("ClinicRulePopup")
+	super()
+
 # 【改】批处理定时器挂在基类建页后的钩子（原 show_clinic_view 尾部，2026-09-18 批次⑧）；
 # Timer 挂在 page 上，随关页 queue_free 自动销毁，hide 无需手动停
 func _after_build(page: Panel):
@@ -94,6 +103,13 @@ func _build(page: Panel):
 	title.text = "医馆" if _tab == "main" else ("医馆 · 病人" if _tab == "patient" else ("医馆 · 科室" if _tab == "dept" else "医馆 · 病症"))
 	title.add_theme_font_size_override("font_size", 24)
 	top.add_child(title)
+	# 【新增】批次②③④-B2：玩法说明入口"?"（只在玩法主标题旁，说明流程/规则/后台计算）
+	var rule_btn := Button.new()
+	rule_btn.text = "?"
+	rule_btn.custom_minimum_size = Vector2(30, 30)
+	rule_btn.add_theme_font_size_override("font_size", 16)
+	rule_btn.pressed.connect(_show_rule_popup)
+	top.add_child(rule_btn)
 	# 资源行：医术 / 科室图纸（评分已按病症独立，顶部不再显示全局评分）
 	var res := Label.new()
 	res.text = "医术 %s　图纸 %d" % [
@@ -139,6 +155,25 @@ func _refresh():
 			_show_dept_popup(_popup_id)
 		else:
 			_show_illness_popup(_popup_id)
+
+# 【新增】批次②③④-B2：医馆玩法说明弹窗（只从主标题旁"?"进入；长说明不进画面）
+func _show_rule_popup():
+	_close_node("ClinicRulePopup")
+	var popup: PanelContainer = c._create_base_popup("医馆说明", Vector2(380, 300))
+	popup.name = "ClinicRulePopup"
+	popup.get_meta("popup_mask").z_index = 39
+	popup.z_index = 40
+	c.add_child(popup)   # 弹窗工厂只创建不挂载，必须调用方 add_child
+	var vb: VBoxContainer = popup.get_child(0)
+	for line in [
+		"病人随时间恢复；接诊后进入队列，由后台批处理治疗结算。",
+		"治疗产出医术与评分：医术进收益罐，评分进入对应病症的独立池。",
+		"科室先消耗图纸【新增】再升级；病症升级消耗自身评分池。",
+	]:
+		var body := Label.new()
+		body.text = line
+		body.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+		vb.add_child(body)
 
 # ---------- 主页：接诊队列 + 收益罐 + 三入口 ----------
 func _fill_main(body: VBoxContainer):
@@ -330,7 +365,8 @@ func _fill_patient(body: VBoxContainer):
 			info.text = "加成 +%d%%" % int(float(p.get("bonus", 0)) * 100)
 		else:
 			info.text = "需医术 %s" % c.format_number(int(p.get("need_yishu", 0)))
-			info.add_theme_color_override("font_color", Color("#666080"))
+			# 【改】批次②③④-B2：解锁门槛着色（医术够绿 #7ee787 / 不够红 #ff6666）
+			info.add_theme_color_override("font_color", c._cost_color(int(_sys().yishu), int(p.get("need_yishu", 0))))
 		row.add_child(info)
 		# 【新增】2026-09-16 手动解锁（无消耗）：医术达阈值未解锁的显示【解锁】
 		if not is_unlocked and yishu_ok:
@@ -416,20 +452,16 @@ func _show_dept_popup(dept_id: String):
 		next_lbl.text = next_txt
 		next_lbl.add_theme_color_override("font_color", Color("#9a93b8"))
 		vb.add_child(next_lbl)
+		# 【改】批次②③④-B2：成本"拥有/需要"着色（够绿不够红）
+		c._add_have_need_row(vb, "升级消耗：图纸 ", int(data.items.get("ke_shi_tu_zhi", 0)), _sys().get_dept_upgrade_cost(dept_id))
 		var btn := Button.new()
-		btn.text = "升级（图纸 %d，拥有 %d）" % [_sys().get_dept_upgrade_cost(dept_id), int(data.items.get("ke_shi_tu_zhi", 0))]
+		btn.text = "升级"
 		btn.disabled = not _sys().can_upgrade_dept(dept_id).get("ok", false)
 		btn.pressed.connect(func(): _on_dept_upgrade(dept_id))
 		vb.add_child(btn)
 	else:
-		# 未建科室：新增
-		var info := Label.new()
-		info.text = "消耗科室图纸 ×%d 新增该科室" % _sys().get_dept_unlock_cost(dept_id)
-		vb.add_child(info)
-		var have := Label.new()
-		have.text = "拥有图纸：%d" % int(data.items.get("ke_shi_tu_zhi", 0))
-		have.add_theme_color_override("font_color", Color("#9a93b8"))
-		vb.add_child(have)
+		# 未建科室：新增【改】批次②③④-B2：成本"拥有/需要"着色（够绿不够红）
+		c._add_have_need_row(vb, "新增消耗：图纸 ", int(data.items.get("ke_shi_tu_zhi", 0)), _sys().get_dept_unlock_cost(dept_id))
 		var btn := Button.new()
 		btn.text = "新增科室"
 		btn.disabled = not _sys().can_unlock_dept(dept_id).get("ok", false)
@@ -540,13 +572,11 @@ func _show_illness_popup(illness_id: String):
 		int(_sys().get_illness_pct(illness_id) * 100), home.get("category", ""), _sys().get_illness_level(illness_id)]
 	pct_lbl.add_theme_color_override("font_color", Color("#e6c07b"))
 	vb.add_child(pct_lbl)
-	# 该病症独立评分池
-	var wallet := Label.new()
-	wallet.text = "该病症评分：%s" % c.format_number(_sys().get_illness_score(illness_id))
-	vb.add_child(wallet)
+	# 该病症独立评分池【改】批次②③④-B2：升级消耗"拥有/需要"着色（够绿不够红）
+	c._add_have_need_row(vb, "升级消耗：该病症评分 ", int(_sys().get_illness_score(illness_id)), _sys().get_illness_upgrade_cost(illness_id))
 	# 升级按钮（扣该病症自己的评分池）
 	var btn := Button.new()
-	btn.text = "升级（评分 %d）" % _sys().get_illness_upgrade_cost(illness_id)
+	btn.text = "升级"
 	btn.disabled = not _sys().can_upgrade_illness(illness_id).get("ok", false)
 	btn.pressed.connect(func(): _on_illness_upgrade(illness_id))
 	vb.add_child(btn)
