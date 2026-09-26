@@ -463,9 +463,9 @@ func _show_facility_popup(fid: String):
 	vb.add_child(flavor)
 	if not _sys().is_facility_unlocked(fid):
 		# 未解锁：解锁需求（知名度门槛 + 银条开价）
-		# 【改】批次②③④-B1：需求/开价统一“拥有/需要”顺序，数字按可支付性红绿着色
-		c._add_have_need_row(vb, "解锁需求：知名度 ", _sys().get_fame_total(), int(_sys().get_unlock_fame(fcfg)))
-		c._add_have_need_row(vb, "开价：银条 ", _sys().get_yintiao(), int(_sys().get_unlock_cost(fcfg)))
+		# 【改】批次②③④-B11：设施解锁门槛/开价统一（当前/需求）格式，保留达到/未达到红绿提示
+		c._add_cost_row(vb, "解锁需求：知名度", int(_sys().get_fame_total()), int(_sys().get_unlock_fame(fcfg)))
+		c._add_cost_row(vb, "开价：银条", int(_sys().get_yintiao()), int(_sys().get_unlock_cost(fcfg)))
 		var unlock_btn := Button.new()
 		unlock_btn.text = "解锁设施"
 		unlock_btn.custom_minimum_size = Vector2(0, 42)
@@ -491,8 +491,8 @@ func _show_facility_popup(fid: String):
 		maxed.add_theme_color_override("font_color", Color("#9a93b8"))
 		vb.add_child(maxed)
 	else:
-		# 【改】批次②③④-B1：升级消耗统一“拥有/需要”顺序，数字按可支付性红绿着色
-		c._add_have_need_row(vb, "消耗：银条 ", _sys().get_yintiao(), int(pv.get("cost", 0)))
+		# 【改】批次②③④-B11：升级消耗统一（拥有/消耗）格式，道具名默认色、数字红绿
+		c._add_cost_row(vb, "消耗：银条", int(_sys().get_yintiao()), int(pv.get("cost", 0)))
 		# 同步升级勾选：勾选后升级按钮=同项目全部已解锁设施各升1级
 		var sync_cb := CheckBox.new()
 		sync_cb.text = "同步升级（同项目全部设施各升1级）"
@@ -689,8 +689,8 @@ func _show_info_popup():
 		fame.text = "小喇叭知名度：%s（已满级）" % c.format_number(fame_cur)
 		vb.add_child(fame)
 	else:
-		# 【改】批次②③④-B1：知名度进度同属“拥有/需要”比较，数字按达标状态红绿着色
-		c._add_have_need_row(vb, "小喇叭知名度：", fame_cur, fame_need)
+		# 【改】批次②③④-B11：知名度进度统一（当前/需求）格式，保留达到/未达到红绿提示
+		c._add_cost_row(vb, "小喇叭知名度", int(fame_cur), int(fame_need))
 	var bar := ProgressBar.new()
 	bar.min_value = 0
 	bar.max_value = maxi(1, fame_need)
