@@ -319,6 +319,22 @@ func _add_have_need_row(parent: Node, prefix: String, have: int, need: int) -> H
 	parent.add_child(row)
 	return row
 
+# 【新增】批次②③④-B6：消耗类统一范式（用户 2026-09-26 定调）——消耗物名字不变色，数字固定"（拥有/消耗）"，拥有≥消耗绿色否则红色
+# 数字 Label 固定命名 CostNum：需要原地刷新的场景用 find_child("CostNum", true, false) 定位改文本和着色
+func _add_cost_row(parent: Node, prefix: String, have: int, need: int) -> HBoxContainer:
+	var row := HBoxContainer.new()
+	row.add_theme_constant_override("separation", 0)
+	var prefix_lbl := Label.new()
+	prefix_lbl.text = prefix
+	row.add_child(prefix_lbl)
+	var num_lbl := Label.new()
+	num_lbl.name = "CostNum"
+	num_lbl.text = "（%s/%s）" % [c.format_number(have), c.format_number(need)]
+	num_lbl.add_theme_color_override("font_color", _cost_color(have, need))
+	row.add_child(num_lbl)
+	parent.add_child(row)
+	return row
+
 # ============ 顶部提示 / 解锁提示 / 数量选择器 ============
 
 func _show_unlock_hint(role_name: String, vip_level: int):

@@ -150,32 +150,47 @@ func _get_members_text(project: Dictionary) -> String:
 	return "、".join(names)
 
 # 构建卷一/卷二升级行：等级、当前效果、产物消耗、升级按钮
-func _build_scroll_row(tech: Dictionary, project_key: String, project: Dictionary, volume: String) -> HBoxContainer:
+func _build_scroll_row(tech: Dictionary, project_key: String, project: Dictionary, volume: String) -> PanelContainer:
 	var tech_id = String(tech.get("id", ""))
 	var level = data.get_courtyard_scroll_level(tech_id, project_key, volume)
 	var is_vol1 = volume == "vol1"
 
-	var row = HBoxContainer.new()
-	row.add_theme_constant_override("separation", 8)
+	# 【新增】批次②③④-B6（方案二·用户批准）：卷轴行重构为卡片式两行；返回类型 HBoxContainer→PanelContainer 随之调整
+	var card := PanelContainer.new()
+	var card_sty := StyleBoxFlat.new()
+	card_sty.bg_color = Color("#2a2640")
+	card_sty.set_corner_radius_all(6)
+	card_sty.set_content_margin_all(8)
+	card.add_theme_stylebox_override("panel", card_sty)
 
+	var col := VBoxContainer.new()
+	col.add_theme_constant_override("separation", 4)
+	card.add_child(col)
+
+	var cost = data.get_courtyard_scroll_cost(tech_id, project_key, volume)
+	var product = String(tech.get("product", ""))
+	var vol_name = "卷一" if is_vol1 else "卷二"
+
+	# 上行：效果（占满+自动换行兜底）+ 升级钮
+	var line1 := HBoxContainer.new()
+	line1.add_theme_constant_override("separation", 8)
+	col.add_child(line1)
 	# 【改】卷二解锁限制已作废，两卷都直接显示等级/效果/消耗
 	var info = Label.new()
 	info.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	info.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
-	var cost = data.get_courtyard_scroll_cost(tech_id, project_key, volume)
-	var product = String(tech.get("product", ""))
-	var vol_name = "卷一" if is_vol1 else "卷二"
-	info.text = "%s：Lv%d ｜ %s ｜ 消耗%s×%s（有%s）" % [
-		vol_name, level, _get_scroll_effect_text(project, volume, level),
-		product, c.format_number(cost), c.format_number(data.get_manor_goods_count(product))]
-	row.add_child(info)
-
+	info.text = "%s：Lv%d ｜ %s" % [
+		vol_name, level, _get_scroll_effect_text(project, volume, level)]
+	line1.add_child(info)
 	var btn = Button.new()
 	btn.custom_minimum_size = Vector2(82, 34)
 	btn.text = "升级"
 	btn.pressed.connect(_on_upgrade_scroll.bind(tech_id, project_key, volume))
-	row.add_child(btn)
-	return row
+	line1.add_child(btn)
+
+	# 下行：消耗统一范式（消耗物名字不变色，（拥有/消耗）红绿）
+	c._add_cost_row(col, "消耗：%s" % product, int(data.get_manor_goods_count(product)), int(cost))
+	return card
 
 # 当前卷轴效果文本：只负责显示，实际计算在 CourtyardSystem / HeroData / ShopSystem
 func _get_scroll_effect_text(project: Dictionary, volume: String, level: int) -> String:

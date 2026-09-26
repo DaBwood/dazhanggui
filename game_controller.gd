@@ -535,6 +535,10 @@ func flash_red(node_path: String):
 func _cost_color(have: int, need: int) -> Color:
 	return ui_helpers._cost_color(have, need)
 
+# 【新增】批次②③④-B6：消耗类统一范式委托（名称默认色，（拥有/消耗）红绿）
+func _add_cost_row(parent: Node, prefix: String, have: int, need: int) -> HBoxContainer:
+	return ui_helpers._add_cost_row(parent, prefix, have, need)
+
 func _add_have_need_row(parent: Node, prefix: String, have: int, need: int) -> HBoxContainer:
 	return ui_helpers._add_have_need_row(parent, prefix, have, need)
 

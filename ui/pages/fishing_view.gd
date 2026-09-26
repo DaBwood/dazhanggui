@@ -205,11 +205,9 @@ func _show_medal_popup():
 		vb.add_child(max_lbl)
 	else:
 		var need: int = int(nxt.get("need_exp", 0))
-		var next_lbl := Label.new()
-		next_lbl.text = "下一级需累计钓鱼经验 %s（当前 %s）" % [c.format_number(need), c.format_number(fs.exp_total)]
-		next_lbl.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
-		next_lbl.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
-		vb.add_child(next_lbl)
+		# 【新增】批次②③④-B6（返工·消耗统一范式）：升级门槛行——名字默认色，（当前/门槛）红绿
+		var exp_row: HBoxContainer = c._add_cost_row(vb, "下一级需累计钓鱼经验", int(fs.exp_total), need)
+		exp_row.alignment = BoxContainer.ALIGNMENT_CENTER
 		var bar := ProgressBar.new()
 		bar.min_value = 0.0
 		bar.max_value = maxf(1.0, float(need))
@@ -230,6 +228,7 @@ func _show_medal_popup():
 		vb.add_child(up_btn)
 
 func _on_medal_help():
+	# 【待Kimi】④此处长说明应迁说明入口（勋章规则长文案现走瞬时提示；另勋章"?"挂在弹窗内，按约定应迁玩法主标题）
 	c._show_stage_hint("钓鱼勋章：普通鱼+5、优秀鱼+10、卓越鱼+30、传奇鱼+60、无双/极.无双鱼+100；累计经验只作门槛不消耗。")
 
 func _on_medal_upgrade():
@@ -473,6 +472,9 @@ func _fill_location_popup(popup):
 		else:
 			ex_btn.text = "%s保底：%d/%d（每消耗%d%s兑1只）" % [ex_cfg.get("quality", "无双"), fs.get_exchange_spent(_loc), ex_cost, ex_cost, fs.get_bait_name(_loc)]
 			ex_btn.disabled = true
+			# 【新增】批次②③④-B6：保底进度按 拥有(已消耗)/需要 着色（满进度=绿，带禁用态同值）
+			ex_btn.add_theme_color_override("font_color", c._cost_color(int(fs.get_exchange_spent(_loc)), ex_cost))
+			ex_btn.add_theme_color_override("font_disabled_color", c._cost_color(int(fs.get_exchange_spent(_loc)), ex_cost))
 		ex_wrap.add_child(ex_btn)
 		var ex_dot = _make_red_dot()
 		ex_dot.position = Vector2(444, 2)   # 红点定位在460宽按钮右上角
@@ -497,8 +499,11 @@ func _on_pack_btn():
 	lbl.name = "PackInfo"
 	lbl.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	lbl.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
-	lbl.text = "1988元宝 → 地龙×50 + 赤龙×50\n（赤龙用于天池钓点）\n当前元宝：%d" % int(data.yuanbao)
+	lbl.text = "1988元宝 → 地龙×50 + 赤龙×50\n（赤龙用于天池钓点）"
 	vb.add_child(lbl)
+	# 【新增】批次②③④-B6（返工·消耗统一范式）：元宝消耗行——名字默认色，（拥有/消耗）红绿；CostNum 固定命名供购买后刷新
+	var yuan_row: HBoxContainer = c._add_cost_row(vb, "消耗：元宝", int(data.yuanbao), 1988)
+	yuan_row.alignment = BoxContainer.ALIGNMENT_CENTER
 
 	var buy_btn = Button.new()
 	buy_btn.text = "购买"
@@ -514,9 +519,14 @@ func _on_buy_pack(popup):
 	var vb = popup.get_child(0)
 	var lbl = vb.get_node("PackInfo")
 	if res.get("ok", false):
-		lbl.text = "购买成功！地龙+%d 赤龙+%d\n当前元宝：%d" % [int(res.dilong), int(res.chilong), int(data.yuanbao)]
+		lbl.text = "购买成功！地龙+%d 赤龙+%d" % [int(res.dilong), int(res.chilong)]
 	else:
-		lbl.text = res.get("reason", "购买失败") + "\n当前元宝：%d" % int(data.yuanbao)
+		lbl.text = res.get("reason", "购买失败")
+	# 【新增】批次②③④-B6（返工·消耗统一范式）：购买后刷新元宝消耗行（CostNum 由 _add_cost_row 固定命名）
+	var yuan_num = vb.find_child("CostNum", true, false)
+	if yuan_num:
+		yuan_num.text = "（%s/%s）" % [c.format_number(int(data.yuanbao)), c.format_number(1988)]
+		yuan_num.add_theme_color_override("font_color", c._cost_color(int(data.yuanbao), 1988))
 	_refresh_info()
 
 # ============ 任务弹窗 ============
@@ -526,6 +536,7 @@ func _on_task_btn():
 	popup.name = "FishingTaskPopup"
 	var vb = popup.get_child(0)
 
+	# 【待Kimi】④此处长说明应迁说明入口（任务规则两行说明）
 	var hint = Label.new()
 	hint.text = "任务最多同时持有3个，钓鱼时有几率触发新任务\n（接到交付任务后，对应道具才会出现在鱼池中）"
 	hint.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
@@ -573,15 +584,20 @@ func _build_task_row(t: Dictionary) -> HBoxContainer:
 	var lbl = Label.new()
 	lbl.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	lbl.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
-	# 进度文本：交付类显示仓库库存，计数类显示进度
-	var progress_text = ""
+	# 进度数据：交付类显示仓库库存，计数类显示进度
+	# 【新增】批次②③④-B6：进度拆独立 Label 按 拥有/需要 着色（珍兽食物进度同款）
+	var have_n = 0
+	var need_n = int(cfg.get("need", 1))
 	if cfg.get("type", "") == "deliver":
-		var have = int(data.fishing_storage.get(cfg.get("target", ""), 0))
-		progress_text = "（%d/%d）" % [min(have, int(cfg.get("need", 1))), int(cfg.get("need", 1))]
+		have_n = int(data.fishing_storage.get(cfg.get("target", ""), 0))
 	else:
-		progress_text = "（%d/%d）" % [min(int(t.get("progress", 0)), int(cfg.get("need", 1))), int(cfg.get("need", 1))]
-	lbl.text = cfg.get("desc", "") + progress_text + "\n奖励：" + _rewards_text(cfg.get("rewards", {}))
+		have_n = int(t.get("progress", 0))
+	lbl.text = cfg.get("desc", "") + "\n奖励：" + _rewards_text(cfg.get("rewards", {}))
 	row.add_child(lbl)
+	var prog_lbl = Label.new()
+	prog_lbl.text = "（%d/%d）" % [min(have_n, need_n), need_n]
+	prog_lbl.add_theme_color_override("font_color", c._cost_color(have_n, need_n))
+	row.add_child(prog_lbl)
 
 	var btn = Button.new()
 	btn.text = "交付" if cfg.get("type", "") == "deliver" else "领取"
@@ -595,6 +611,8 @@ func _build_task_row(t: Dictionary) -> HBoxContainer:
 func _on_claim_task(task_id: String):
 	var res: Dictionary = data.fishing_system.claim_task(task_id)
 	if not res.get("ok", false):
+		# 【新增】批次②③④-B6：失败反馈（原因取自系统层：任务不存在/未达成）
+		c._show_stage_hint(str(res.get("reason", "领取失败")))
 		return
 	# 原地刷新任务列表
 	var popup = _find_popup("FishingTaskPopup")
@@ -686,6 +704,8 @@ func _build_dex_row(f: Dictionary) -> HBoxContainer:
 func _on_claim_dex(fish_id: String):
 	var res: Dictionary = data.fishing_system.claim_dex_reward(fish_id)
 	if not res.get("ok", false):
+		# 【新增】批次②③④-B6：失败反馈（原因取自系统层：不可领取）
+		c._show_stage_hint(str(res.get("reason", "领取失败")))
 		return
 	# 原地刷新图鉴列表
 	var popup = _find_popup("FishingDexPopup")
@@ -736,6 +756,8 @@ func _on_exchange_fish(fish_id: String):
 	var sel = _find_popup("FishingExchangePopup")
 	if sel: sel.queue_free()
 	if not res.get("ok", false):
+		# 【新增】批次②③④-B6：失败反馈（原因取自系统层：无兑换/不可兑换/进度不足）
+		c._show_stage_hint(str(res.get("reason", "兑换失败")))
 		return
 	var view = c.get_node("PageContainer/AdventurePage/FishingView")
 	view.get_node("FishingResult").text = "兑换获得【%s】%s！" % [res.get("quality", ""), res.get("name", "")]

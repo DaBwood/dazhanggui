@@ -243,13 +243,19 @@ func _build_plot_row(sid: String, plot_index: int, land_word: String) -> HBoxCon
 	
 	# 品种升级（耗铜钱，费用随等级平方增长）
 	var lv_btn = Button.new()
-	lv_btn.text = "等级↑ %s" % c.format_number(data.get_manor_level_up_cost(lv))
+	var lv_cost = data.get_manor_level_up_cost(lv)
+	lv_btn.text = "等级↑ %s" % c.format_number(lv_cost)
+	# 【新增】批次②③④-B6：升级成本按 拥有(铜钱)/需要 着色
+	lv_btn.add_theme_color_override("font_color", c._cost_color(int(data.money), int(lv_cost)))
 	lv_btn.pressed.connect(func(): _on_upgrade_level(sid, plot_index, lv_btn))
 	row.add_child(lv_btn)
 	
 	# 土地/血统升级（耗商铺图纸）
 	var land_btn = Button.new()
-	land_btn.text = "%s↑ %d图纸" % [land_word, data.get_manor_land_up_cost(land)]
+	var land_cost = data.get_manor_land_up_cost(land)
+	land_btn.text = "%s↑ %d图纸" % [land_word, land_cost]
+	# 【新增】批次②③④-B6：图纸成本按 拥有/需要 着色
+	land_btn.add_theme_color_override("font_color", c._cost_color(int(data.items.get("shop_blueprint", 0)), int(land_cost)))
 	land_btn.pressed.connect(_on_upgrade_land.bind(sid, plot_index))
 	row.add_child(land_btn)
 	return row

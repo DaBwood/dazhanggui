@@ -351,6 +351,7 @@ func _show_cricket_detail(item: Dictionary):
 	var q = int(cdata.quality)
 	var max_lv = item.get("max_level", sys.get_cricket_max_level(q))
 	var cost = sys.get_levelup_cost(item.level, q)
+	# 【待Kimi】③升阶材料"拥有数"无现成 getter（cuzhi_caught 实体无数量字段），此处成本着色待 Kimi 定数据口径
 	var exp_lbl = Label.new()
 	if item.level >= max_lv:
 		exp_lbl.text = "军衔：已满阶"
@@ -360,6 +361,7 @@ func _show_cricket_detail(item: Dictionary):
 	exp_lbl.add_theme_color_override("font_color", Color("#aaaaaa"))
 	vbox.add_child(exp_lbl)
 
+	# 【待Kimi】④此处长说明应迁说明入口（促织详情机制说明：重复转化升阶材料/军衔影响战力）
 	var desc = Label.new()
 	desc.text = "重复捉到同名促织自动转化为升阶材料\n军衔影响促织战力（后续玩法使用）"
 	desc.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
@@ -377,13 +379,22 @@ func _build_catch_view() -> Control:
 	var back = _make_sub_back(root)
 	back.pressed.connect(_show_main)
 
-	var cage_lbl = Label.new()
-	cage_lbl.name = "CageLabel"
-	cage_lbl.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
-	cage_lbl.add_theme_font_size_override("font_size", 20)
-	cage_lbl.position = Vector2(0, 80)
-	cage_lbl.size = Vector2(600, 40)
-	root.add_child(cage_lbl)
+	# 【新增】批次②③④-B6（返工·消耗统一范式）：促织笼消耗行——名字默认色，（拥有/消耗）红绿；节点名沿用 CageLabel 供刷新定位
+	var cage_row := HBoxContainer.new()
+	cage_row.name = "CageLabel"
+	cage_row.alignment = BoxContainer.ALIGNMENT_CENTER
+	cage_row.add_theme_constant_override("separation", 0)
+	cage_row.position = Vector2(0, 80)
+	cage_row.size = Vector2(600, 40)
+	var cage_name := Label.new()
+	cage_name.text = "消耗：促织笼"
+	cage_name.add_theme_font_size_override("font_size", 20)
+	cage_row.add_child(cage_name)
+	var cage_num := Label.new()
+	cage_num.name = "CostNum"
+	cage_num.add_theme_font_size_override("font_size", 20)
+	cage_row.add_child(cage_num)
+	root.add_child(cage_row)
 
 	_catch_progress_lbl = Label.new()
 	_catch_progress_lbl.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
@@ -446,8 +457,11 @@ func _refresh_catch():
 	var cage = data.items.get("cuzhi_cage", 0)
 	var clbl = _catch.get_node_or_null("CageLabel")
 	if clbl:
-		clbl.text = "当前拥有促织笼：%d" % cage
-		clbl.add_theme_color_override("font_color", Color("#66ff66") if cage > 0 else Color("#ff6666"))
+		# 【新增】批次②③④-B6（返工·消耗统一范式）：促织笼消耗行刷新——（拥有/消耗）红绿
+		var cnum = clbl.get_node_or_null("CostNum")
+		if cnum:
+			cnum.text = "（%s/1）" % c.format_number(int(cage))
+			cnum.add_theme_color_override("font_color", c._cost_color(int(cage), 1))
 
 	var prog = sys.get_guarantee_progress()
 	var tgt = sys.get_guarantee_target()
@@ -673,6 +687,10 @@ func _make_temple_hero_row(hero_id: String, h: Dictionary) -> Panel:
 		if sys.upgrade_temple(hero_id, career):
 			c._show_stage_hint("%s 促织庙 +1" % h.name)
 			_refresh_temple()
+		else:
+			# 【新增】批次②③④-B6：失败反馈（系统层失败=缘分不足，满级已被禁用态覆盖）
+			c.flash_red(up_btn.get_path())
+			c._show_stage_hint("%s缘分不足！" % career)
 	)
 	hbox.add_child(up_btn)
 
@@ -729,11 +747,9 @@ func _make_shop_row(g: Dictionary) -> Panel:
 	name_lbl.add_theme_font_size_override("font_size", 18)
 	hbox.add_child(name_lbl)
 
-	var price_lbl = Label.new()
-	price_lbl.text = "%d 元宝" % g.price
-	price_lbl.custom_minimum_size = Vector2(100, 0)
-	price_lbl.add_theme_color_override("font_color", Color("#ffaa00"))
-	hbox.add_child(price_lbl)
+	# 【新增】批次②③④-B6（返工·消耗统一范式）：价格行——名字默认色，（拥有/消耗）红绿
+	var price_row: HBoxContainer = c._add_cost_row(hbox, "消耗：元宝", int(data.yuanbao), int(g.price))
+	price_row.custom_minimum_size = Vector2(100, 0)
 
 	var buy_btn = Button.new()
 	buy_btn.text = "购买"
@@ -1030,11 +1046,9 @@ func _show_worm_skill_upgrade(hero_id: String, idx: int, skill: Dictionary, cdat
 	var can = sys.can_upgrade_worm_skill(hero_id, idx)
 	var exp_have = data.items.get(exp_item, 0)
 
-	var cost_lbl = Label.new()
-	cost_lbl.text = "拥有%s：%d  |  升级消耗：%d" % [exp_name, exp_have, cost]
-	cost_lbl.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
-	cost_lbl.add_theme_color_override("font_color", Color("#ffaa00") if can else Color("#ff6666"))
-	vbox.add_child(cost_lbl)
+	# 【新增】批次②③④-B6（返工·消耗统一范式）：升级消耗行——名字默认色，（拥有/消耗）红绿
+	var cost_row: HBoxContainer = c._add_cost_row(vbox, "消耗：%s" % exp_name, int(exp_have), int(cost))
+	cost_row.alignment = BoxContainer.ALIGNMENT_CENTER
 
 	var up_btn = Button.new()
 	up_btn.text = "升级"
@@ -1330,6 +1344,10 @@ func _show_jar_action(jar: Dictionary):
 			c._show_stage_hint("加速成功！")
 			popup.queue_free()
 			_refresh_peiyu()
+		else:
+			# 【新增】批次②③④-B6：失败反馈（系统层 can_speedup=促织蜜膏不足）
+			c.flash_red(btn10.get_path())
+			c._show_stage_hint("促织蜜膏不足！")
 	)
 	hbox.add_child(btn10)
 
@@ -1345,6 +1363,10 @@ func _show_jar_action(jar: Dictionary):
 			c._show_stage_hint("加速成功！使用%d个" % use_count)
 			popup.queue_free()
 			_refresh_peiyu()
+		else:
+			# 【新增】批次②③④-B6：失败反馈（系统层 can_speedup=促织蜜膏不足）
+			c.flash_red(auto_btn.get_path())
+			c._show_stage_hint("促织蜜膏不足！")
 	)
 	hbox.add_child(auto_btn)
 
@@ -1486,6 +1508,10 @@ func _show_part_selector(cid: String, _cdata: Dictionary):
 				c._show_stage_hint("开始培育 %s！" % pname)
 				popup.queue_free()
 				_refresh_peiyu()
+			else:
+				# 【新增】批次②③④-B6：防御性失败反馈（罐满/部位满/培育中均被禁用态覆盖，此处兜底）
+				c.flash_red(btn.get_path())
+				c._show_stage_hint("培育失败，促织罐不足或促织忙碌中！")
 		)
 		hbox.add_child(btn)
 

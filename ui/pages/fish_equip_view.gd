@@ -146,6 +146,8 @@ func _build_dev_panel(vb, fish_id: String):
 	else:
 		var cost = fs.get_promote_cost(fish_id)
 		promote_btn.text = "晋升（耗%d只同名）" % cost
+		# 【新增】批次②③④-B6：晋升成本按 拥有/需要 着色（需要=消耗+装备保留1只，与 promote_fish 门槛一致）
+		promote_btn.add_theme_color_override("font_color", c._cost_color(int(data.fishing_storage.get(fish_id, 0)), cost + 1))
 		promote_btn.pressed.connect(_on_promote.bind(fish_id))
 	promote_btn.custom_minimum_size = Vector2(200, 48)
 	op.add_child(promote_btn)
@@ -186,11 +188,14 @@ func _build_skill_row(fish_id: String, sk: Dictionary) -> HBoxContainer:
 	lbl.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	lbl.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
 	if sk.unlocked:
-		lbl.text = "%s Lv.%d/%d（资质+%d）\n经验 %d/%d" % [sk.name, int(sk.level), int(sk.max_level), int(sk.level) * int(sk.apt_per_level), int(sk.xp), int(sk.xp_need)]
+		lbl.text = "%s Lv.%d/%d（资质+%d）" % [sk.name, int(sk.level), int(sk.max_level), int(sk.level) * int(sk.apt_per_level)]
 	else:
 		lbl.text = "%s（%d阶解锁）" % [sk.name, int(sk.unlock_tier)]
 		lbl.add_theme_color_override("font_color", Color("#666666"))
 	row.add_child(lbl)
+	if sk.unlocked:
+		# 【新增】批次②③④-B6（返工·消耗统一范式）：经验进度行——名字默认色，（当前/升级需）红绿
+		c._add_cost_row(row, "经验", int(sk.xp), int(sk.xp_need))
 
 	var btn = Button.new()
 	btn.text = "喂养"
@@ -258,6 +263,8 @@ func _on_feed(fish_id: String, skill_index: int, mat: String):
 	_refresh_equip_popup()
 	c.hero_page.update_hero_panel()   # 资质变化，刷新门客面板对账
 	if not res.get("ok", false):
+		# 【新增】批次②③④-B6：失败反馈（原因取自系统层：不可养成/无效材料/技能未解锁等）
+		c._show_stage_hint(str(res.get("reason", "喂养失败")))
 		return
 
 # 一键喂养执行：关材料弹窗，原地刷新主弹窗与门客面板，并提示升级结果与各材料消耗
@@ -281,6 +288,8 @@ func _on_feed_all(fish_id: String, skill_index: int):
 func _on_equip(fish_id: String):
 	var res: Dictionary = data.fishing_system.equip_fish(_hero_id, fish_id)
 	if not res.get("ok", false):
+		# 【新增】批次②③④-B6：失败反馈（原因取自系统层：不可装备/仓库没有/已被装备）
+		c._show_stage_hint(str(res.get("reason", "装备失败")))
 		return
 	_refresh_equip_popup()
 	c.hero_page.update_hero_panel()   # 面板赚速/资质对账
@@ -295,6 +304,8 @@ func _on_unequip():
 func _on_promote(fish_id: String):
 	var res: Dictionary = data.fishing_system.promote_fish(fish_id)
 	if not res.get("ok", false):
+		# 【新增】批次②③④-B6：失败反馈（原因取自系统层：同名渔获不足/已满阶）
+		c._show_stage_hint(str(res.get("reason", "晋升失败")))
 		return
 	_refresh_equip_popup()
 	c.hero_page.update_hero_panel()   # 晋升改变加成，刷新面板
