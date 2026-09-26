@@ -1127,38 +1127,18 @@ func _get_category_color(category: String) -> Color:
 
 func _show_shop_skill_detail(skill_index: int):
 	_selected_shop_skill_index = skill_index
-	# 【改】弹窗统一挂控制器根节点 c（项目弹窗惯例），守卫同步查 c 根；
-	#  原挂在 FriendPage 下，与挂 c 根的技能弹窗不在同一条排序链上，z 拼不过被压在下面
 	if c.has_node("ShopSkillDetailPanel"): return
 
 	var f = data.friends[current_friend_id]
 	if not f.has("shop_skills") or skill_index >= f.shop_skills.size(): return
 	var skill = f.shop_skills[skill_index]
 
-	var panel = PanelContainer.new()
+	# 【改】UI统一批A：迁弹窗工厂（✕/遮罩/居中接管，删【关闭】钮）；
+	#  z=40 保持原口径：压过 z30 的仪容技能弹窗（同页内弹窗 z 总表）
+	var panel = c._create_base_popup("【%s类】店铺技能" % skill.category, Vector2(360, 280))
 	panel.name = "ShopSkillDetailPanel"
-	panel.custom_minimum_size = Vector2(360, 280)
-	# 【改】定位基准从 FriendPage.size 改为视口尺寸（挂载点变了，父节点尺寸不再适用）
-	panel.position = (c.get_viewport_rect().size - panel.custom_minimum_size) / 2
-	# 【改】z=40：压过所有 _create_base_popup 系弹窗（z=30，含仪容技能弹窗）
 	panel.z_index = 40
-
-	var style = StyleBoxFlat.new()
-	style.bg_color = Color("#1e1b2e")
-	style.set_corner_radius_all(12)
-	panel.add_theme_stylebox_override("panel", style)
-
-	var vbox = VBoxContainer.new()
-	vbox.alignment = BoxContainer.ALIGNMENT_CENTER
-	vbox.add_theme_constant_override("separation", 14)
-	panel.add_child(vbox)
-
-	var title = Label.new()
-	title.text = "【%s类】店铺技能" % skill.category
-	title.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
-	title.add_theme_font_size_override("font_size", 20)
-	title.add_theme_color_override("font_color", Color("#ffd700"))
-	vbox.add_child(title)
+	var vbox = panel.get_child(0)
 
 	var info_box = HBoxContainer.new()
 	info_box.alignment = BoxContainer.ALIGNMENT_CENTER
@@ -1195,12 +1175,11 @@ func _show_shop_skill_detail(skill_index: int):
 		wish_check.text = "使用许愿石（拥有：%d）" % data.items.get("wish_stone", 0)
 		vbox.add_child(wish_check)
 
-	var btn_box = HBoxContainer.new()
-	btn_box.alignment = BoxContainer.ALIGNMENT_CENTER
-	btn_box.add_theme_constant_override("separation", 16)
-	vbox.add_child(btn_box)
-
 	if skill.bonus < 0.299:
+		var btn_box = HBoxContainer.new()
+		btn_box.alignment = BoxContainer.ALIGNMENT_CENTER
+		btn_box.add_theme_constant_override("separation", 16)
+		vbox.add_child(btn_box)
 		var refresh_btn = Button.new()
 		refresh_btn.name = "DetailRefreshBtn"
 		refresh_btn.text = "刷新"
@@ -1208,20 +1187,11 @@ func _show_shop_skill_detail(skill_index: int):
 		refresh_btn.pressed.connect(_on_refresh_selected_skill)
 		btn_box.add_child(refresh_btn)
 
-	var close_btn = Button.new()
-	close_btn.text = "关闭"
-	close_btn.custom_minimum_size = Vector2(100, 40)
-	close_btn.pressed.connect(_close_shop_skill_detail)
-	btn_box.add_child(close_btn)
-
-	# 【改】挂载点：parent.add_child → c.add_child（与所有弹窗一致）
 	c.add_child(panel)
 
 func _close_shop_skill_detail():
-	# 【改】详情弹窗已改挂 c 根节点
-	var panel = c.get_node_or_null("ShopSkillDetailPanel")
-	if panel:
-		panel.queue_free()
+	# 【改】UI统一批A：_safe_close 连带摘遮罩
+	c._safe_close("ShopSkillDetailPanel")
 
 func _on_refresh_selected_skill():
 	if _selected_shop_skill_index < 0: return
@@ -1498,31 +1468,16 @@ func on_gift_friend():
 	_show_gift_selector()
 
 func _show_gift_selector():
-	var parent = c.get_node("PageContainer/FriendPage")
-	if parent.has_node("GiftSelector"): return
+	# 【改】UI统一批A：迁弹窗工厂——✕/遮罩/遮罩点击关闭由工厂接管，删自建底色/居中/【取消】钮
+	if c.has_node("GiftSelector"): return
 
 	var vs = c.get_viewport().get_visible_rect().size
 	var panel_w = 440
 	var panel_h = min(560, vs.y - 240)
 
-	var panel = PanelContainer.new()
+	var panel = c._create_base_popup("选择礼物", Vector2(panel_w, panel_h))
 	panel.name = "GiftSelector"
-	panel.custom_minimum_size = Vector2(panel_w, panel_h)
-	panel.position = Vector2((vs.x - panel_w) / 2, max(110, (vs.y - panel_h) / 2 - 40))
-	panel.z_index = 30
-	var style = StyleBoxFlat.new()
-	style.bg_color = Color("#1e1b2e")
-	style.set_corner_radius_all(8)
-	panel.add_theme_stylebox_override("panel", style)
-
-	var vbox = VBoxContainer.new()
-	vbox.add_theme_constant_override("separation", 10)
-	panel.add_child(vbox)
-
-	var title = Label.new()
-	title.text = "选择礼物"
-	title.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
-	vbox.add_child(title)
+	var vbox = panel.get_child(0)
 
 	var scroll = ScrollContainer.new()
 	scroll.custom_minimum_size = Vector2(panel_w - 20, panel_h - 110)
@@ -1581,18 +1536,11 @@ func _show_gift_selector():
 		confirm_btn.pressed.connect(_on_gift_item_confirmed.bind(spin, g.id))
 		hbox.add_child(confirm_btn)
 
-	var cancel = Button.new()
-	cancel.text = "取消"
-	cancel.pressed.connect(_close_gift_selector)
-	vbox.add_child(cancel)
-
-	parent.add_child(panel)
+	c.add_child(panel)
 
 func _close_gift_selector():
-	var parent = c.get_node("PageContainer/FriendPage")
-	var gift = parent.get_node_or_null("GiftSelector")
-	if gift != null:
-		gift.queue_free()
+	# 【改】迁工厂后挂 c 根节点，_safe_close 连带摘遮罩
+	c._safe_close("GiftSelector")
 
 func _on_gift_item_confirmed(spin: SpinBox, item_id: String):
 	var count = int(spin.value)
@@ -1611,8 +1559,8 @@ func _on_gift_item_confirmed(spin: SpinBox, item_id: String):
 	c.update_all_ui()
 
 func _refresh_gift_selector():
-	var parent = c.get_node("PageContainer/FriendPage")
-	if not parent.has_node("GiftSelector"): return
+	# 【改】迁工厂后挂 c 根节点
+	if not c.has_node("GiftSelector"): return
 	var gifts = [
 		{"id": "wood_comb", "name": "木梳", "effect": "友好+1"},
 		{"id": "rouge", "name": "胭脂", "effect": "才华+1"},
@@ -1622,7 +1570,7 @@ func _refresh_gift_selector():
 		{"id": "huarong_xia", "name": "花容匣", "effect": "才华+5"}
 	]
 	for g in gifts:
-		var row = parent.get_node("GiftSelector").find_child("GiftRow_" + g.id, true, false)
+		var row = c.get_node("GiftSelector").find_child("GiftRow_" + g.id, true, false)
 		if row == null: continue
 		var count = data.items.get(g.id, 0)
 

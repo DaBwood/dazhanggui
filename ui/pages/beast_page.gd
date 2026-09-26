@@ -812,85 +812,59 @@ func _on_beast_skill_clicked(skill_index: int):
 	_show_beast_skill_refresh_panel()
 
 func _show_beast_skill_refresh_panel():
-	var parent = c.get_node("BeastDetailPanel")
-	if parent == null: return
-	if parent.has_node("BeastSkillRefreshPanel"): return
-	
+	# 【改】UI统一批A：迁弹窗工厂挂 c 根（✕/遮罩/居中接管，删【关闭】钮）；
+	#  z30 天然盖过珍兽详情页 BeastDetailPanel(z20)，原 z50 子挂方案作废
+	if c.has_node("BeastSkillRefreshPanel"): return
+	if not c.has_node("BeastDetailPanel"): return
+
 	var instance = data.get_beast_instance(_current_beast_id, _current_beast_index)
 	if instance == null: return
 	var skills = instance.get("skills", [])
 	if _selected_beast_skill_index < 0 or _selected_beast_skill_index >= skills.size(): return
 	var skill = skills[_selected_beast_skill_index]
-	
-	var panel = PanelContainer.new()
+
+	var panel = c._create_base_popup("技能槽位 #%d" % (_selected_beast_skill_index + 1), Vector2(360, 260))
 	panel.name = "BeastSkillRefreshPanel"
-	panel.custom_minimum_size = Vector2(360, 260)
-	panel.position = (parent.size - panel.custom_minimum_size) / 2
-	panel.z_index = 50
-	
-	var style = StyleBoxFlat.new()
-	style.bg_color = Color("#1e1b2e")
-	style.set_corner_radius_all(12)
-	panel.add_theme_stylebox_override("panel", style)
-	
-	var vbox = VBoxContainer.new()
-	vbox.alignment = BoxContainer.ALIGNMENT_CENTER
-	vbox.add_theme_constant_override("separation", 14)
-	panel.add_child(vbox)
-	
-	# 标题
-	var title = Label.new()
-	title.text = "技能槽位 #%d" % (_selected_beast_skill_index + 1)
-	title.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
-	title.add_theme_font_size_override("font_size", 20)
-	title.add_theme_color_override("font_color", Color("#ffd700"))
-	vbox.add_child(title)
-	
+	var vbox = panel.get_child(0)
+
 	# 当前加成
 	var bonus_lbl = Label.new()
 	bonus_lbl.name = "BeastSkillBonus"
 	bonus_lbl.text = "当前加成：+%.0f%%" % (skill.percent * 100)
 	bonus_lbl.add_theme_font_size_override("font_size", 18)
 	vbox.add_child(bonus_lbl)
-	
+
 	# 状态/消耗
 	var status_lbl = Label.new()
 	status_lbl.name = "BeastSkillStatus"
 	vbox.add_child(status_lbl)
-	
+
 	# 勾选框
 	if skill.percent < 0.249:
 		var aroma_check = CheckBox.new()
 		aroma_check.name = "AromaCheck"
 		aroma_check.text = "使用奇香果（拥有：%d）" % int(data.items.get("aroma_fruit", 0))
 		vbox.add_child(aroma_check)
-	
-	# 按钮区
-	var btn_box = HBoxContainer.new()
-	btn_box.alignment = BoxContainer.ALIGNMENT_CENTER
-	btn_box.add_theme_constant_override("separation", 16)
-	vbox.add_child(btn_box)
-	
+
+	# 按钮区（刷新；关闭由工厂 ✕ 接管）
 	if skill.percent < 0.249:
+		var btn_box = HBoxContainer.new()
+		btn_box.alignment = BoxContainer.ALIGNMENT_CENTER
+		btn_box.add_theme_constant_override("separation", 16)
+		vbox.add_child(btn_box)
 		var refresh_btn = Button.new()
 		refresh_btn.name = "BeastSkillRefreshBtn"
 		refresh_btn.text = "刷新"
 		refresh_btn.custom_minimum_size = Vector2(100, 40)
 		refresh_btn.pressed.connect(_on_refresh_beast_skill)
 		btn_box.add_child(refresh_btn)
-	
-	var close_btn = Button.new()
-	close_btn.text = "关闭"
-	close_btn.custom_minimum_size = Vector2(100, 40)
-	close_btn.pressed.connect(_close_beast_skill_refresh_panel)
-	btn_box.add_child(close_btn)
-	
-	parent.add_child(panel)
+
+	c.add_child(panel)
 	_update_beast_skill_refresh_panel()
 
 func _update_beast_skill_refresh_panel():
-	var parent = c.get_node("BeastDetailPanel")
-	var panel = parent.get_node_or_null("BeastSkillRefreshPanel")
+	# 【改】迁工厂后挂 c 根节点
+	var panel = c.get_node_or_null("BeastSkillRefreshPanel")
 	if not panel: return
 	
 	var instance = data.get_beast_instance(_current_beast_id, _current_beast_index)
@@ -935,8 +909,8 @@ func _update_beast_skill_refresh_panel():
 
 func _on_refresh_beast_skill():
 	if _selected_beast_skill_index < 0: return
-	var parent = c.get_node("BeastDetailPanel")
-	var panel = parent.get_node_or_null("BeastSkillRefreshPanel")
+	# 【改】迁工厂后挂 c 根节点
+	var panel = c.get_node_or_null("BeastSkillRefreshPanel")
 	var use_aroma = false
 	if panel:
 		var aroma_check = panel.find_child("AromaCheck", true, false)
@@ -956,25 +930,22 @@ func _on_refresh_beast_skill():
 		else:
 			_update_beast_skill_refresh_panel()
 	else:
-		var panel2 = c.get_node("BeastDetailPanel").get_node_or_null("BeastSkillRefreshPanel")
+		var panel2 = c.get_node_or_null("BeastSkillRefreshPanel")
 		if panel2:
 			var refresh_btn = panel2.find_child("BeastSkillRefreshBtn", true, false)
 			if refresh_btn:
 				c.flash_red(refresh_btn.get_path())
 
 func _close_beast_skill_refresh_panel():
-	var parent = c.get_node_or_null("BeastDetailPanel")
-	if parent == null: return
-	var panel = parent.get_node_or_null("BeastSkillRefreshPanel")
-	if panel:
-		panel.queue_free()
+	# 【改】迁工厂后挂 c 根节点，_safe_close 连带摘遮罩
+	c._safe_close("BeastSkillRefreshPanel")
 
 # 【改】全屏页关闭：只清节点，不再碰 _current_popup/Overlay（全屏页不透明直盖下层，返回即露出）
 func _close_beast_detail():
-	# 先关闭内层面板
-	if c.has_node("BeastDetailPanel/BeastSkillRefreshPanel"):
-		var inner = c.get_node("BeastDetailPanel/BeastSkillRefreshPanel")
-		inner.get_parent().remove_child(inner)
+	# 先关闭内层面板（【改】批A后挂 c 根节点）
+	if c.has_node("BeastSkillRefreshPanel"):
+		var inner = c.get_node("BeastSkillRefreshPanel")
+		c.remove_child(inner)
 		inner.queue_free()
 	# 立即从场景树移除旧面板，避免同名冲突
 	if c.has_node("BeastDetailPanel"):

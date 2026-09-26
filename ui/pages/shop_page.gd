@@ -9,6 +9,8 @@ extends RefCounted
 
 var c      # game_controller 根脚本引用
 var data   # GameData 数据中枢引用
+var _batch_hire: bool = false   # 【新增】批A：十连招募勾选类变量记忆（商铺面板改工厂弹窗后节点每次重建，状态不能存节点上）
+var _assign_selector_open: bool = false   # 【新增】批A：派遣选择器开着标记——ShopPanel 销毁回调据此区分"✕关闭清店铺id"与"选派派遣流程主动销毁"
 
 # 由 game_controller._ready 创建本模块时注入引用
 func _init(p_c):
@@ -320,85 +322,77 @@ func on_shop_entry_pressed(shop_id: String):
 
 func _show_hero_assign_selector(slot: int):
 	if c.current_shop_id == "": return
-	c.close_popup()  # 先关闭店铺面板，防止遮挡
-	c._current_popup = null  # 清空弹窗记录，避免全局点击误关
-	
-	var overlay = c.get_node("Overlay")
-	overlay.show()
-	
-	var selector = PanelContainer.new()
-	selector.name = "AssignSelector"
-	selector.custom_minimum_size = Vector2(500, 400)
-	 # 【修】原硬编码 Vector2(326,150) 在 600 宽基准分辨率下导致弹窗偏右出界，
-	#       改按当前视口尺寸动态居中（与 _create_base_popup 居中逻辑一致）
-	var vs = c.get_viewport_rect().size
-	selector.position = Vector2((vs.x - 500) / 2, (vs.y - 400) / 2)
-	selector.z_index = 20
-	
-	 # 【修】补弹窗背景样式，解决默认背景过淡与底层混淆
-	var sel_style = StyleBoxFlat.new()
-	sel_style.bg_color = Color("#1e1b2e")   # 弹窗统一底色；觉得不够深可改 #15121e
-	sel_style.set_corner_radius_all(12)
-	selector.add_theme_stylebox_override("panel", sel_style)
-	
-	var vbox = VBoxContainer.new()
-	vbox.alignment = BoxContainer.ALIGNMENT_CENTER
-	selector.add_child(vbox)
-	
-	var title = Label.new()
-	title.text = "选择门客派遣到【%s】" % data.shops[c.current_shop_id].name
-	title.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
-	vbox.add_child(title)
-	
+	# 【改】UI统一批A：店铺面板已是工厂弹窗，按名销毁（原 close_popup 持久面板方案作废）；
+	#  标记置真——ShopPanel 销毁回调据此不清 current_shop_id（本流程还要用）
+	_assign_selector_open = true
+	c._safe_close("ShopPanel")
+
+	# 【改】迁弹窗工厂：遮罩/✕/居中/竖屏钳制全接管（原手动 Overlay+自建样式+【取消】钮作废）
+	var panel = c._create_base_popup("选择门客派遣到【%s】" % data.shops[c.current_shop_id].name, Vector2(500, 400))
+	panel.name = "AssignSelector"
+	# 任何关闭路径（✕/遮罩点击/选派完成）销毁后都重开店铺面板
+	panel.tree_exiting.connect(_on_assign_selector_closed)
+	var vbox = panel.get_child(0)
+
 	var scroll = ScrollContainer.new()
-	scroll.custom_minimum_size = Vector2(480, 280)
+	scroll.custom_minimum_size = Vector2(480, 300)
 	vbox.add_child(scroll)
-	
+
 	var list = VBoxContainer.new()
 	scroll.add_child(list)
-	
+
 	# 显示所有"闲置"门客
 	var has_idle = false
 	for hero_id in data.heroes.keys():
 		var h = data.heroes[hero_id]
 		if h.assigned_shop != "": continue  # 已派遣的跳过
-		
+
 		has_idle = true
 		var btn = Button.new()
 		var income = data.get_hero_income(hero_id)
 		btn.text = "【%s】%s Lv.%d | %s/秒" % [h.name, h.category, h.level, c.format_number(income)]
-		# 【修】手机端：按钮默认 STOP 拦截触摸滚动，改 PASS 让滑动事件穿透到 ScrollContainer
+		# 手机端：按钮默认 STOP 拦截触摸滚动，改 PASS 让滑动事件穿透到 ScrollContainer
 		btn.mouse_filter = Control.MOUSE_FILTER_PASS
 		btn.pressed.connect(_on_hero_assigned.bind(hero_id, slot))
 		list.add_child(btn)
-	
+
 	if not has_idle:
 		var empty = Label.new()
 		empty.text = "暂无可派遣门客"
 		empty.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 		list.add_child(empty)
-	
-	var cancel_btn = Button.new()
-	cancel_btn.text = "取消"
-	cancel_btn.pressed.connect(_close_assign_selector)
-	vbox.add_child(cancel_btn)
-	
-	c.add_child(selector)
 
+	c.add_child(panel)
+
+# 【新增】批A：派遣选择器销毁回调（tree_exiting）——复位标记并重开店铺面板
+func _on_assign_selector_closed():
+	_assign_selector_open = false
+	if c.current_shop_id != "":
+		# 【修】tree_exiting 回调内引擎正处理节点删除，父节点 busy 禁止 add_child（报 Parent node is busy
+		#  setting up children，面板建不出来→update_shop_panel 连环 null），重开推迟一帧出回调再执行
+		call_deferred("_reopen_shop_panel_deferred")
+
+# 【新增】批A：推迟一帧的店铺面板重开（配合 _on_assign_selector_closed）
+func _reopen_shop_panel_deferred():
+	# 防御：延迟期间店铺 id 被清/面板已被别的路径重建则不动作
+	if c.current_shop_id == "" or c.has_node("ShopPanel"): return
+	_build_shop_panel_popup()
+	update_shop_panel()
+
+# 【新增】批A：商铺面板销毁回调（tree_exiting）——✕/遮罩点击关闭时清店铺 id；
+#  派遣选择器流程主动销毁时标记为真，保留 id 供选择器与重开使用
+func _on_shop_panel_closed():
+	if not _assign_selector_open:
+		c.current_shop_id = ""
 
 func _close_assign_selector():
-	if c.has_node("AssignSelector"):
-		c._safe_close("AssignSelector")
-	c.get_node("Overlay").hide()
-	# 重新打开店铺面板
-	if c.current_shop_id != "":
-		c.open_popup(c.get_node("ShopPanel"))
-		update_shop_panel()
+	# 【改】批A：只负责销毁；重开店铺面板由 tree_exiting（_on_assign_selector_closed）接管
+	c._safe_close("AssignSelector")
 
 func _on_hero_assigned(hero_id: String, _slot: int):
 	data.heroes[hero_id].assigned_shop = c.current_shop_id
 	_close_assign_selector()
-	update_shop_panel()
+	# 【改】批A：不再此处 update_shop_panel——店铺面板由 tree_exiting 重开并刷新
 	c.update_all_ui()
 	c.update_hero_list()
 
@@ -408,24 +402,96 @@ func _on_hero_unassign(hero_id: String):
 	c.update_all_ui()
 	c.update_hero_list()
 
+# 【新增】批A：总部面板构建器（迁弹窗工厂——打开时创建、关闭即销毁，原 controller 持久场景面板作废）
+func _build_hq_panel_popup():
+	var panel = c._create_base_popup("总部", Vector2(480, 320))
+	panel.name = "HQPanel"
+	# ✕/遮罩点击关闭后刷新门客列表（原 close_hq_panel 语义，挂 tree_exiting 覆盖一切关闭路径）
+	panel.tree_exiting.connect(func(): c.update_hero_list())
+	var hb = panel.get_child(0)
+	hb.name = "VBoxContainer"   # 【新增】命名对齐既有节点路径（update_hq_panel/flash_red 按此取值）
+	var hq_info = Label.new()
+	hq_info.name = "HQInfo"
+	hb.add_child(hq_info)
+	var hq_row = HBoxContainer.new()
+	hq_row.name = "HBoxContainer"
+	hb.add_child(hq_row)
+	var hq_click = Button.new()
+	hq_click.name = "HQClickBtn"
+	hq_click.text = c.TXT_HQ_CLICK
+	hq_click.pressed.connect(on_hq_click)   # 【改】启动期 connect 挪入构建器（面板随建随连）
+	hq_row.add_child(hq_click)
+	var hq_up = Button.new()
+	hq_up.name = "HQUpgradeBtn"
+	hq_up.pressed.connect(on_hq_upgrade)
+	hq_row.add_child(hq_up)
+	c.add_child(panel)
+
+# 【新增】批A：商铺面板构建器（同总部迁工厂）
+func _build_shop_panel_popup():
+	var panel = c._create_base_popup("商铺", Vector2(560, 640))
+	panel.name = "ShopPanel"
+	# ✕/遮罩点击关闭时清 current_shop_id；派遣选择器流程主动销毁（标记为真）则保留
+	panel.tree_exiting.connect(_on_shop_panel_closed)
+	var sb = panel.get_child(0)
+	sb.name = "VBoxContainer"   # 【新增】命名对齐既有节点路径
+	var s_info = Label.new()
+	s_info.name = "ShopInfo"
+	sb.add_child(s_info)
+	var s_row = HBoxContainer.new()
+	s_row.name = "HBoxContainer"
+	sb.add_child(s_row)
+	var s_up = Button.new()
+	s_up.name = "ShopUpgradeBtn"
+	s_up.pressed.connect(on_current_shop_upgrade)
+	s_row.add_child(s_up)
+	var s_hire = Button.new()
+	s_hire.name = "ShopHireBtn"
+	s_hire.pressed.connect(on_current_shop_hire)
+	s_row.add_child(s_hire)
+	var s_batch = CheckBox.new()
+	s_batch.name = "BatchHireCheck"
+	s_batch.text = c.TXT_BATCH_HIRE
+	s_batch.button_pressed = _batch_hire   # 【改】勾选状态从类变量回灌（connect 前赋值不触发 toggled）
+	s_batch.toggled.connect(_on_batch_hire_toggled)
+	s_row.add_child(s_batch)
+	var assign_box = VBoxContainer.new()
+	assign_box.name = "AssignContainer"
+	assign_box.size_flags_vertical = Control.SIZE_EXPAND_FILL
+	sb.add_child(assign_box)
+	for i in 5:
+		var slot = HBoxContainer.new()
+		slot.name = "AssignSlot_%d" % i
+		assign_box.add_child(slot)
+		var lbl = Label.new()
+		lbl.name = "AssignLabel"
+		lbl.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+		slot.add_child(lbl)
+		var btn = Button.new()
+		btn.name = "AssignBtn"
+		slot.add_child(btn)
+	c.add_child(panel)
+
 func open_hq_panel():
-	if c.has_node("HQPanel"):
-		c.open_popup(c.get_node("HQPanel"))
-		update_hq_panel()
+	# 【改】批A：工厂弹窗，未开才建（原 open_popup 显隐持久面板作废）
+	if not c.has_node("HQPanel"):
+		_build_hq_panel_popup()
+	update_hq_panel()
 
 func close_hq_panel():
-	c.close_popup()
-	c.update_hero_list()
+	# 【改】批A：按名销毁（连带遮罩）；update_hero_list 由 tree_exiting 接管
+	c._safe_close("HQPanel")
 
 func open_shop_panel(shop_id: String):
 	c.current_shop_id = shop_id
-	if c.has_node("ShopPanel"):
-		c.open_popup(c.get_node("ShopPanel"))
-		update_shop_panel()
+	# 【改】批A：工厂弹窗，未开才建
+	if not c.has_node("ShopPanel"):
+		_build_shop_panel_popup()
+	update_shop_panel()
 
 func close_shop_panel():
-	c.close_popup()
-	c.current_shop_id = ""
+	# 【改】批A：按名销毁（连带遮罩）；current_shop_id 清理由 tree_exiting 接管
+	c._safe_close("ShopPanel")
 
 
 
@@ -467,7 +533,8 @@ func on_current_shop_hire():
 		c.flash_red("ShopPanel/VBoxContainer/HBoxContainer/ShopHireBtn")
 
 func _on_batch_hire_toggled(_pressed: bool):
-	if c.current_shop_id != "" and c.has_node("ShopPanel") and c.get_node("ShopPanel").visible:
+	_batch_hire = _pressed   # 【改】批A：勾选状态进类变量（面板重建后回灌）
+	if c.current_shop_id != "" and c.has_node("ShopPanel"):
 		update_shop_panel()
 
 func update_entry_buttons():
@@ -509,8 +576,9 @@ func update_entry_buttons():
 			btn.disabled = false   # 【改】锁定也可点：点击弹"通关第X章解锁"提示（on_shop_entry_pressed else 分支），disabled 会让玩家点不动、条件无处可查
 
 func update_hq_panel():
-	if c.has_node("HQPanel/VBoxContainer/HQName"):
-		c.get_node("HQPanel/VBoxContainer/HQName").text = "【%s】Lv.%d" % [data.hq.name, data.hq.level]
+	if c.has_node("HQPanel/VBoxContainer/PopupTitle"):
+		# 【改】批A：名字行并入工厂标题（原 HQName 内层 Label 删除）
+		c.get_node("HQPanel/VBoxContainer/PopupTitle").text = "【%s】Lv.%d" % [data.hq.name, data.hq.level]
 	if c.has_node("HQPanel/VBoxContainer/HQInfo"):
 		var auto = data.get_hq_auto_income()
 		var bonus = data.get_global_bonus_percent() * 100
@@ -523,8 +591,9 @@ func update_shop_panel():
 	var s = data.shops[c.current_shop_id]
 	var cost = s.hire_cost
 	
-	if c.has_node("ShopPanel/VBoxContainer/ShopName"):
-		c.get_node("ShopPanel/VBoxContainer/ShopName").text = "【%s】Lv.%d" % [s.name, s.level]
+	if c.has_node("ShopPanel/VBoxContainer/PopupTitle"):
+		# 【改】批A：名字行并入工厂标题（原 ShopName 内层 Label 删除）
+		c.get_node("ShopPanel/VBoxContainer/PopupTitle").text = "【%s】Lv.%d" % [s.name, s.level]
 	if c.has_node("ShopPanel/VBoxContainer/ShopInfo"):
 		var income = data.get_shop_auto_income(c.current_shop_id)
 		c.get_node("ShopPanel/VBoxContainer/ShopInfo").text = "赚速 %s/秒  |  店员 %d人" % [c.format_number(income), s.staff]

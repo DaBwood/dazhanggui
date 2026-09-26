@@ -79,10 +79,11 @@ func _on_buy_test_beast_pack():
 		c._show_stage_hint("元宝不足！")
 
 func on_recharge():
-	if c.has_node("RechargePage"):
-		c.open_popup(c.get_node("RechargePage"))
-		_switch_recharge_tab("normal")
-		_update_recharge_page()
+	# 【改】UI统一批A：工厂弹窗，未开才建（原 open_popup 显隐持久面板作废）
+	if not c.has_node("RechargePage"):
+		_build_recharge_page()
+	_switch_recharge_tab("normal")
+	_update_recharge_page()
 		
 
 func _on_tab_normal_pressed():
@@ -93,6 +94,67 @@ func _on_tab_daily_pressed():
 
 func _on_tab_special_pressed():
 	_switch_recharge_tab("special")
+
+# 【新增】UI统一批A：充值页构建器（迁弹窗工厂——打开时创建、关闭即销毁，原 controller 持久场景面板作废）
+func _build_recharge_page():
+	var panel = c._create_base_popup("充值", Vector2(620, 860))
+	panel.name = "RechargePage"
+	var rc = panel.get_child(0)
+	rc.name = "RechargeContainer"   # 【新增】命名对齐既有节点路径（_switch_recharge_tab/三个_update 按此取值）
+	var tab_bar = HBoxContainer.new()
+	tab_bar.name = "TabBar"
+	tab_bar.alignment = BoxContainer.ALIGNMENT_CENTER
+	rc.add_child(tab_bar)
+	var tab_names = ["TapYuanbao", "TapDaily", "TapSpecial"]
+	var tab_callbacks = [_on_tab_normal_pressed, _on_tab_daily_pressed, _on_tab_special_pressed]
+	for i in 3:
+		var t = Button.new()
+		t.name = tab_names[i]
+		t.text = c.RECHARGE_TAB_LABELS[i]
+		t.custom_minimum_size = Vector2(140, 44)
+		t.pressed.connect(tab_callbacks[i])   # 【改】启动期 connect 挪入构建器（面板随建随连）
+		tab_bar.add_child(t)
+	var content = VBoxContainer.new()
+	content.name = "ContentContainer"
+	content.size_flags_vertical = Control.SIZE_EXPAND_FILL
+	rc.add_child(content)
+	var yuanbai = VBoxContainer.new()   # 元宝充值列表
+	yuanbai.name = "YuanbaiContainer"
+	content.add_child(yuanbai)
+	var grid = GridContainer.new()
+	grid.name = "RechargeGrid"
+	grid.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	yuanbai.add_child(grid)
+	var daily = VBoxContainer.new()
+	daily.name = "DailyGiftContainer"
+	daily.visible = false
+	content.add_child(daily)
+	var special = VBoxContainer.new()
+	special.name = "SpecialPackContainer"
+	content.add_child(special)
+	c.add_child(panel)
+
+# 【新增】UI统一批A：VIP 面板构建器（同充值页迁工厂；标题走工厂 PopupTitle，原内层 Title 删除）
+func _build_vip_panel():
+	var panel = c._create_base_popup(c.TXT_VIP_TITLE, Vector2(520, 720))
+	panel.name = "VIPPanel"
+	var vb = panel.get_child(0)
+	vb.name = "VBoxContainer"   # 【新增】命名对齐既有节点路径（_update_vip_panel 按此取值）
+	for n in ["VIPLevel", "VIPExpInfo"]:
+		var l = Label.new()
+		l.name = n
+		vb.add_child(l)
+	var progress = ProgressBar.new()
+	progress.name = "VIPProgress"
+	progress.max_value = 100
+	progress.show_percentage = false
+	vb.add_child(progress)
+	vb.add_child(HSeparator.new())
+	var vip_list = VBoxContainer.new()
+	vip_list.name = "VIPList"
+	vip_list.size_flags_vertical = Control.SIZE_EXPAND_FILL
+	vb.add_child(vip_list)
+	c.add_child(panel)
 
 func _switch_recharge_tab(tab: String):
 	var normal_container = c.get_node("RechargePage/RechargeContainer/ContentContainer/YuanbaiContainer")
@@ -296,9 +358,10 @@ func _show_recharge_success(amount: int):
 	c.add_child(panel)
 
 func on_vip():
-	if c.has_node("VIPPanel"):
-		c.open_popup(c.get_node("VIPPanel"))
-		_update_vip_panel()
+	# 【改】UI统一批A：工厂弹窗，未开才建
+	if not c.has_node("VIPPanel"):
+		_build_vip_panel()
+	_update_vip_panel()
 
 func _update_vip_panel():
 	

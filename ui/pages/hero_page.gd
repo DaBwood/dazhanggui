@@ -195,12 +195,12 @@ func _ensure_hero_panel_code():
 	attr_btn.pressed.connect(_show_attr_breakdown)
 	income_row.add_child(attr_btn)
 
-	# 关闭按钮（右上；代码重建后需重新连接信号）
+	# 返回按钮（左上）【改】UI统一批A：全屏页定规统一 < 返回（与挚友详情/批次①全屏页口径一致），原右上 X 作废
 	var close_btn = Button.new()
 	close_btn.name = "HeroCloseBtn"
-	close_btn.text = "X"
-	close_btn.position = Vector2(vw.x - 70, 10)
-	close_btn.size = Vector2(50, 40)
+	close_btn.text = "< 返回"
+	close_btn.position = Vector2(10, 10)
+	close_btn.size = Vector2(90, 40)
 	close_btn.pressed.connect(close_hero_panel)
 	panel.add_child(close_btn)
 

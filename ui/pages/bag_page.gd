@@ -293,53 +293,31 @@ func update_bag_list():
 
 
 func _show_ginseng_selector():
-	var bag_page = c.get_node("PageContainer/BagPage")
-	if bag_page.has_node("GinsengSelector"): return
-	
-	var panel = PanelContainer.new()
+	# 【改】UI统一批A：迁弹窗工厂（✕/遮罩/居中接管，删【取消】钮与自建样式）
+	if c.has_node("GinsengSelector"): return
+
+	var panel = c._create_base_popup("选择门客使用%s" % data.ITEM_CONFIG.get(_pending_ginseng_type, {}).get("name", "人参"), Vector2(500, 400))
 	panel.name = "GinsengSelector"
-	panel.custom_minimum_size = Vector2(500, 400)
-	var vs = c.get_viewport_rect().size
-	panel.position = Vector2((vs.x - 500) / 2, (vs.y - 400) / 2)
-	var vbox = VBoxContainer.new()
-	vbox.alignment = BoxContainer.ALIGNMENT_CENTER
-	panel.add_child(vbox)
-	
-	 # 【修】补弹窗背景样式，解决默认背景过淡与底层混淆
-	var sel_style = StyleBoxFlat.new()
-	sel_style.bg_color = Color("#1e1b2e")   # 弹窗统一底色；觉得不够深可改 #15121e
-	sel_style.set_corner_radius_all(12)
-	panel.add_theme_stylebox_override("panel", sel_style)
-	
-	var title = Label.new()
-	title.text = "选择门客使用%s" % data.ITEM_CONFIG.get(_pending_ginseng_type, {}).get("name", "人参")
-	title.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
-	vbox.add_child(title)
-	
+	var vbox = panel.get_child(0)
+
 	var scroll = ScrollContainer.new()
-	scroll.custom_minimum_size = Vector2(480, 280)
+	scroll.custom_minimum_size = Vector2(480, 300)
 	vbox.add_child(scroll)
-	
+
 	var list = VBoxContainer.new()
 	scroll.add_child(list)
-	
-	# 【改】门客按实时赚速降序排列（原按字典顺序）
+
+	# 门客按实时赚速降序排列（走收入缓存表）
 	var hero_ids = data.heroes.keys()
 	hero_ids.sort_custom(func(a, b): return data.get_hero_income(a) > data.get_hero_income(b))
 	for hero_id in hero_ids:
 		var h = data.heroes[hero_id]
 		var btn = Button.new()
-		# 【改】按钮文本补上赚速（排序依据可见，否则顺序看起来是乱的；与其他选择器样式一致）
 		btn.text = "【%s】%s Lv.%d | %s/秒" % [h.name, h.category, h.level, c.format_number(data.get_hero_income(hero_id))]
 		btn.pressed.connect(_on_ginseng_target_selected.bind(hero_id))
 		list.add_child(btn)
-	
-	var cancel_btn = Button.new()
-	cancel_btn.text = "取消"
-	cancel_btn.pressed.connect(_close_ginseng_selector)
-	vbox.add_child(cancel_btn)
-	
-	bag_page.add_child(panel)
+
+	c.add_child(panel)
 
 func _on_ginseng_target_selected(hero_id: String):
 	var count = _pending_ginseng_count
@@ -364,38 +342,22 @@ func _on_ginseng_target_selected(hero_id: String):
 	c.update_all_ui()
 
 func _close_ginseng_selector():
-	var bag_page = c.get_node("PageContainer/BagPage")
-	if bag_page.has_node("GinsengSelector"):
-		bag_page.get_node("GinsengSelector").queue_free()
+	# 【改】迁工厂后挂 c 根节点，_safe_close 连带摘遮罩
+	c._safe_close("GinsengSelector")
 	_pending_ginseng_count = 0
 	_pending_ginseng_type = ""
 
 # 【新增】2026-09-16 百业札记门客选择器：结构同人参选择器（按实时赚速降序，按钮带赚速与当前百业经验）
 func _show_baiye_selector():
-	var bag_page = c.get_node("PageContainer/BagPage")
-	if bag_page.has_node("BaiyeSelector"): return
+	# 【改】UI统一批A：迁弹窗工厂（✕/遮罩/居中接管，删【取消】钮与自建样式）
+	if c.has_node("BaiyeSelector"): return
 
-	var panel = PanelContainer.new()
+	var panel = c._create_base_popup("选择门客使用百业札记（+%d百业经验/本）" % int(data.ITEM_CONFIG.get("baiye_zhaji", {}).get("use", {}).get("per", 10)), Vector2(500, 400))
 	panel.name = "BaiyeSelector"
-	panel.custom_minimum_size = Vector2(500, 400)
-	var vs = c.get_viewport_rect().size
-	panel.position = Vector2((vs.x - 500) / 2, (vs.y - 400) / 2)
-	var vbox = VBoxContainer.new()
-	vbox.alignment = BoxContainer.ALIGNMENT_CENTER
-	panel.add_child(vbox)
-
-	var sel_style = StyleBoxFlat.new()
-	sel_style.bg_color = Color("#1e1b2e")   # 弹窗统一底色（同 GinsengSelector）
-	sel_style.set_corner_radius_all(12)
-	panel.add_theme_stylebox_override("panel", sel_style)
-
-	var title = Label.new()
-	title.text = "选择门客使用百业札记（+%d百业经验/本）" % int(data.ITEM_CONFIG.get("baiye_zhaji", {}).get("use", {}).get("per", 10))
-	title.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
-	vbox.add_child(title)
+	var vbox = panel.get_child(0)
 
 	var scroll = ScrollContainer.new()
-	scroll.custom_minimum_size = Vector2(480, 280)
+	scroll.custom_minimum_size = Vector2(480, 300)
 	vbox.add_child(scroll)
 
 	var list = VBoxContainer.new()
@@ -412,12 +374,7 @@ func _show_baiye_selector():
 		btn.pressed.connect(_on_baiye_target_selected.bind(hero_id))
 		list.add_child(btn)
 
-	var cancel_btn = Button.new()
-	cancel_btn.text = "取消"
-	cancel_btn.pressed.connect(_close_baiye_selector)
-	vbox.add_child(cancel_btn)
-
-	bag_page.add_child(panel)
+	c.add_child(panel)
 
 func _on_baiye_target_selected(hero_id: String):
 	var count = _pending_baiye_count
@@ -435,9 +392,8 @@ func _on_baiye_target_selected(hero_id: String):
 	c.update_all_ui()
 
 func _close_baiye_selector():
-	var bag_page = c.get_node("PageContainer/BagPage")
-	if bag_page.has_node("BaiyeSelector"):
-		bag_page.get_node("BaiyeSelector").queue_free()
+	# 【改】迁工厂后挂 c 根节点，_safe_close 连带摘遮罩
+	c._safe_close("BaiyeSelector")
 	_pending_baiye_count = 0
 
 func _show_hero_box_selector():

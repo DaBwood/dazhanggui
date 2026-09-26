@@ -241,32 +241,12 @@ func _on_start_cook():
 func _show_hero_popup():
 	_close_node("InnHeroPopup")
 	var sys = data.inn_system
-	var popup := PanelContainer.new()
+	# 【改】UI统一批A：迁弹窗工厂（✕/遮罩/居中接管，删自建标题行与✕）；z=40 盖过 InnPage(z35)，同 DishPopup 先例
+	var vs: Vector2 = c.get_viewport_rect().size
+	var popup = c._create_base_popup("选择掌勺门客", Vector2(maxi(300, int(vs.x) - 24), maxi(420, int(vs.y) - 140)))
 	popup.name = "InnHeroPopup"
 	popup.z_index = 40
-	var ps := StyleBoxFlat.new()
-	ps.bg_color = Color("#2a2640")
-	ps.set_corner_radius_all(10)
-	popup.add_theme_stylebox_override("panel", ps)
-	var vs: Vector2 = c.get_viewport_rect().size
-	popup.size = Vector2(maxi(300, int(vs.x) - 24), maxi(420, int(vs.y) - 140))
-	var vb := VBoxContainer.new()
-	vb.add_theme_constant_override("separation", 6)
-	popup.add_child(vb)
-	var title_row := HBoxContainer.new()
-	vb.add_child(title_row)
-	var title := Label.new()
-	title.text = "选择掌勺门客"
-	title.size_flags_horizontal = Control.SIZE_EXPAND_FILL
-	title.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
-	title.add_theme_font_size_override("font_size", 17)
-	title.add_theme_color_override("font_color", Color("#ffd700"))
-	title_row.add_child(title)
-	var close_btn := Button.new()
-	close_btn.text = "✕"
-	close_btn.custom_minimum_size = Vector2(36, 30)
-	close_btn.pressed.connect(func(): _close_node("InnHeroPopup"))
-	title_row.add_child(close_btn)
+	var vb = popup.get_child(0)
 	var sub := Label.new()
 	sub.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
 	sub.add_theme_font_size_override("font_size", 12)
@@ -304,7 +284,6 @@ func _show_hero_popup():
 	scroll.add_child(grid)
 	ctx["grid"] = grid
 	c.add_child(popup)
-	popup.position = Vector2(floori((vs.x - popup.size.x) * 0.5), floori((vs.y - popup.size.y) * 0.5))
 	_refresh_hero_popup_grid(ctx, grid)
 
 func _refresh_hero_popup_grid(ctx: Dictionary, grid: GridContainer):
@@ -337,32 +316,12 @@ func _show_pack_popup(hero_id: String):
 	var career := str(h.get("category", ""))
 	var bonus: bool = sys.is_bonus_career(career)
 	var ctx := {"pack": "", "n": 1, "hero": hero_id, "career": career, "bonus": bonus, "cards": []}
-	var popup := PanelContainer.new()
+	# 【改】UI统一批A：迁弹窗工厂（✕/遮罩/居中接管，删自建标题行与✕）；z=40 盖过 InnPage(z35)
+	var vs: Vector2 = c.get_viewport_rect().size
+	var popup = c._create_base_popup("选择食材包", Vector2(maxi(300, int(vs.x) - 24), maxi(440, int(vs.y) - 140)))
 	popup.name = "InnPackPopup"
 	popup.z_index = 40
-	var ps := StyleBoxFlat.new()
-	ps.bg_color = Color("#2a2640")
-	ps.set_corner_radius_all(10)
-	popup.add_theme_stylebox_override("panel", ps)
-	var vs: Vector2 = c.get_viewport_rect().size
-	popup.size = Vector2(maxi(300, int(vs.x) - 24), maxi(440, int(vs.y) - 140))
-	var vb := VBoxContainer.new()
-	vb.add_theme_constant_override("separation", 6)
-	popup.add_child(vb)
-	var title_row := HBoxContainer.new()
-	vb.add_child(title_row)
-	var title := Label.new()
-	title.size_flags_horizontal = Control.SIZE_EXPAND_FILL
-	title.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
-	title.add_theme_font_size_override("font_size", 20)
-	title.add_theme_color_override("font_color", Color("#ffd700"))
-	title.text = "选择食材包"
-	title_row.add_child(title)
-	var close_btn := Button.new()
-	close_btn.text = "✕"
-	close_btn.custom_minimum_size = Vector2(36, 30)
-	close_btn.pressed.connect(func(): _close_node("InnPackPopup"))
-	title_row.add_child(close_btn)
+	var vb = popup.get_child(0)
 	# 食材包卡片网格（2列；点卡片选中高亮）
 	var scroll := ScrollContainer.new()
 	scroll.size_flags_vertical = Control.SIZE_EXPAND_FILL
@@ -456,7 +415,6 @@ func _show_pack_popup(hero_id: String):
 	ctx["qty_lbl"] = qty_lbl
 	ctx["cook_btn"] = cook_btn
 	c.add_child(popup)
-	popup.position = Vector2(floori((vs.x - popup.size.x) * 0.5), floori((vs.y - popup.size.y) * 0.5))
 	_refresh_pack_popup(ctx)
 
 func _on_pack_card_input(ev: InputEvent, ctx: Dictionary, pack_id: String):

@@ -265,17 +265,7 @@ func connect_signals():
 	
 	# 钱庄入口
 	
-	# 钱庄面板内
-	if has_node("HQPanel/VBoxContainer/HBoxContainer/HQClickBtn"): $HQPanel/VBoxContainer/HBoxContainer/HQClickBtn.pressed.connect(on_hq_click)
-	if has_node("HQPanel/VBoxContainer/HBoxContainer/HQUpgradeBtn"): $HQPanel/VBoxContainer/HBoxContainer/HQUpgradeBtn.pressed.connect(on_hq_upgrade)
-	if has_node("HQPanel/CloseBtn"): $HQPanel/CloseBtn.pressed.connect(close_hq_panel)
-	
-	# 通用店铺面板内
-	if has_node("ShopPanel/VBoxContainer/HBoxContainer/ShopUpgradeBtn"): $ShopPanel/VBoxContainer/HBoxContainer/ShopUpgradeBtn.pressed.connect(on_current_shop_upgrade)
-	if has_node("ShopPanel/VBoxContainer/HBoxContainer/ShopHireBtn"): $ShopPanel/VBoxContainer/HBoxContainer/ShopHireBtn.pressed.connect(on_current_shop_hire)
-	if has_node("ShopPanel/ShopCloseBtn"): $ShopPanel/ShopCloseBtn.pressed.connect(close_shop_panel)
-	if has_node("ShopPanel/VBoxContainer/HBoxContainer/BatchHireCheck"):
-		$ShopPanel/VBoxContainer/HBoxContainer/BatchHireCheck.toggled.connect(_on_batch_hire_toggled)
+	# 【改】UI统一批A：总部/商铺/充值/VIP 四面板迁弹窗工厂（随建随连），此处的启动期 connect 全删
 	
 	# 底部导航
 	if has_node("BottomNav/NavMansionBtn"): $BottomNav/NavMansionBtn.pressed.connect(switch_page.bind("mansion"))
@@ -290,20 +280,10 @@ func connect_signals():
 	if has_node("Timer"): $Timer.timeout.connect(on_auto_earn)
 	
 	
-	#充值面板
-	if has_node("RechargePage/RechargeContainer/CloseBtn"): $RechargePage/RechargeContainer/CloseBtn.pressed.connect(close_popup)
-	if has_node("RechargePage/RechargeContainer/TabBar/TapYuanbao"):$RechargePage/RechargeContainer/TabBar/TapYuanbao.pressed.connect(_on_tab_normal_pressed)
-	if has_node("RechargePage/RechargeContainer/TabBar/TapDaily"):$RechargePage/RechargeContainer/TabBar/TapDaily.pressed.connect(_on_tab_daily_pressed)
-	if has_node("RechargePage/RechargeContainer/TabBar/TapSpecial"):
-		$RechargePage/RechargeContainer/TabBar/TapSpecial.pressed.connect(_on_tab_special_pressed)
-	
-	#vip面板
-	if has_node("VIPPanel/VBoxContainer/CloseBtn"): $VIPPanel/VBoxContainer/CloseBtn.pressed.connect(close_popup)
-	
-	
-
 func switch_page(page_id: String):
 	_close_ginseng_selector()  # 切换页面时关闭人参选择器
+	bag_page._close_baiye_selector()   # 【新增】批A：百业选择器迁工厂后挂 c 根不随页面隐藏，切页主动关（对齐上行人参口径）
+	friend_page._close_gift_selector()   # 【新增】批A：赠礼选择器同理（原挂 FriendPage 随页隐藏，迁工厂后需主动关）
 	current_page = page_id
 	
 	# 隐藏所有页面（加 mansion）
@@ -360,32 +340,16 @@ func close_popup():
 func _input(event: InputEvent):
 	if event is InputEventMouseButton:
 		if event.pressed and event.button_index == MOUSE_BUTTON_LEFT:
-				# 礼物选择器打开时，点击其内部不触发 close_popup
-			if has_node("PageContainer/FriendPage/GiftSelector"):
-				var gift_rect = get_node("PageContainer/FriendPage/GiftSelector").get_global_rect()
-				if gift_rect.has_point(get_global_mouse_position()):
-					return
-			# 如果有弹窗打开
+			# 【改】UI统一批A：GiftSelector/AssignSelector 已迁弹窗工厂（遮罩点击关闭接管），三处特判全删
+			# 如果有弹窗打开（open_popup 系：HeroPanel 及 mall/lottery/player 自管弹窗）
 			if _current_popup != null and _current_popup.visible:
-				
+
 				# 获取弹窗的全局矩形区域
 				var popup_rect = _current_popup.get_global_rect()
 				# 如果鼠标点击在弹窗区域之外
 				if not popup_rect.has_point(get_global_mouse_position()):
 					close_popup()
 					# 阻止事件继续传给下面的按钮
-					get_viewport().set_input_as_handled()
-			# 新增：AssignSelector 外部点击关闭
-			if has_node("AssignSelector"):
-				var selector_rect = get_node("AssignSelector").get_global_rect()
-				if not selector_rect.has_point(get_global_mouse_position()):
-					_close_assign_selector()
-					get_viewport().set_input_as_handled()
-			#挚友礼物选择器,点击外部关闭
-			if has_node("PageContainer/FriendPage/GiftSelector"):
-				var gift_rect = get_node("PageContainer/FriendPage/GiftSelector").get_global_rect()
-				if not gift_rect.has_point(get_global_mouse_position()):
-					_safe_close("PageContainer/FriendPage/FriendDetail/GiftSelector")
 					get_viewport().set_input_as_handled()
 
 func _show_unlock_hint(role_name: String, vip_level: int):
@@ -674,8 +638,6 @@ func on_shop_entry_pressed(shop_id: String):
 func _show_hero_assign_selector(slot: int):
 	return shop_page._show_hero_assign_selector(slot)
 
-func _close_assign_selector():
-	return shop_page._close_assign_selector()
 
 func _on_hero_assigned(hero_id: String, _slot: int):
 	return shop_page._on_hero_assigned(hero_id, _slot)
@@ -686,29 +648,15 @@ func _on_hero_unassign(hero_id: String):
 func open_hq_panel():
 	return shop_page.open_hq_panel()
 
-func close_hq_panel():
-	return shop_page.close_hq_panel()
 
 func open_shop_panel(shop_id: String):
 	return shop_page.open_shop_panel(shop_id)
 
-func close_shop_panel():
-	return shop_page.close_shop_panel()
 
-func on_hq_click():
-	return shop_page.on_hq_click()
 
-func on_hq_upgrade():
-	return shop_page.on_hq_upgrade()
 
-func on_current_shop_upgrade():
-	return shop_page.on_current_shop_upgrade()
 
-func on_current_shop_hire():
-	return shop_page.on_current_shop_hire()
 
-func _on_batch_hire_toggled(_pressed: bool):
-	return shop_page._on_batch_hire_toggled(_pressed)
 
 func update_entry_buttons():
 	return shop_page.update_entry_buttons()
@@ -1141,20 +1089,10 @@ func _on_buy_test_beast_pack():
 func on_recharge():
 	return mall_panel.on_recharge()
 
-func _on_tab_normal_pressed():
-	return mall_panel._on_tab_normal_pressed()
 
-func _on_tab_daily_pressed():
-	return mall_panel._on_tab_daily_pressed()
 
-func _on_tab_special_pressed():
-	return mall_panel._on_tab_special_pressed()
 
-func _switch_recharge_tab(tab: String):
-	return mall_panel._switch_recharge_tab(tab)
 
-func _update_recharge_page():
-	return mall_panel._update_recharge_page()
 
 func _update_special_pack_page():
 	return mall_panel._update_special_pack_page()
@@ -1171,8 +1109,6 @@ func _on_daily_gift_buy():
 func _show_daily_gift_success():
 	return mall_panel._show_daily_gift_success()
 
-func _on_recharge_confirmed(amount: int):
-	return mall_panel._on_recharge_confirmed(amount)
 
 func _show_recharge_success(amount: int):
 	return mall_panel._show_recharge_success(amount)
@@ -1180,8 +1116,6 @@ func _show_recharge_success(amount: int):
 func on_vip():
 	return mall_panel.on_vip()
 
-func _update_vip_panel():
-	return mall_panel._update_vip_panel()
 
 func _on_claim_vip_reward(level: int):
 	return mall_panel._on_claim_vip_reward(level)
@@ -1288,7 +1222,6 @@ const RECHARGE_TAB_LABELS = ["元宝", "每日礼包", "特惠礼包"]    # 充�
 const TXT_VIP_TITLE = "VIP 特权"
 const TXT_HQ_CLICK = "💰 点击赚钱"
 const TXT_BATCH_HIRE = "十连招募"
-const TXT_CLOSE = "关闭"
 
 # ============ 建结构 ============
 func _build_scene_shell():
@@ -1378,11 +1311,8 @@ func _build_scene_shell():
 	overlay.visible = false
 	add_child(overlay)
 
-	# ── 4个场景弹窗（HeroPanel 由 hero_page 代码重建，不在此列）──
-	_build_recharge_page()
-	_build_vip_panel()
-	_build_hq_panel()
-	_build_shop_panel()
+	# 【改】UI统一批A：4个场景弹窗（充值/VIP/总部/商铺）已迁弹窗工厂，不再启动期预建；
+	#  HeroPanel 仍由 hero_page 代码重建自管，不在此列
 
 	# ── 每秒收益计时器（on_auto_earn 按"每秒"结算，wait_time 必须是 1.0）──
 	var timer = Timer.new()
@@ -1390,169 +1320,6 @@ func _build_scene_shell():
 	timer.wait_time = 1.0
 	timer.autostart = true
 	add_child(timer)
-
-# 统一建场景弹窗：Panel + 全矩形内边距 VBox，底色与弹窗工厂一致
-# （尺寸为默认值，_apply_portrait_layout 会居中 + 钳进视口）
-func _make_scene_popup(p_name: String, p_size: Vector2, vbox_name: String = "VBoxContainer") -> Panel:
-	var p = Panel.new()
-	p.name = p_name
-	p.visible = false
-	p.size = p_size
-	var style = StyleBoxFlat.new()
-	style.bg_color = Color("#2a2640")
-	style.set_corner_radius_all(12)
-	style.set_border_width_all(2)
-	style.border_color = Color("#6a5f9e")
-	p.add_theme_stylebox_override("panel", style)
-	var vbox = VBoxContainer.new()
-	vbox.name = vbox_name   # 注意：RechargePage 的代码按 "RechargeContainer" 查找，其余按 "VBoxContainer"
-	vbox.set_anchors_preset(Control.PRESET_FULL_RECT)
-	vbox.offset_left = 16
-	vbox.offset_right = -16
-	vbox.offset_top = 12
-	vbox.offset_bottom = -12
-	p.add_child(vbox)
-	add_child(p)
-	return p
-
-# 充值页（TabBar 3页签 + 3个内容容器 + CloseBtn 在 VBox 内）
-func _build_recharge_page():
-	var recharge = _make_scene_popup("RechargePage", Vector2(620, 860), "RechargeContainer")
-	var rc = recharge.get_node("RechargeContainer")
-	var tab_bar = HBoxContainer.new()
-	tab_bar.name = "TabBar"
-	tab_bar.alignment = BoxContainer.ALIGNMENT_CENTER
-	rc.add_child(tab_bar)
-	var tab_names = ["TapYuanbao", "TapDaily", "TapSpecial"]
-	for i in 3:
-		var t = Button.new()
-		t.name = tab_names[i]
-		t.text = RECHARGE_TAB_LABELS[i]
-		t.custom_minimum_size = Vector2(140, 44)
-		tab_bar.add_child(t)
-	var content = VBoxContainer.new()
-	content.name = "ContentContainer"
-	content.size_flags_vertical = Control.SIZE_EXPAND_FILL
-	rc.add_child(content)
-	var yuanbai = VBoxContainer.new()   # 元宝充值列表
-	yuanbai.name = "YuanbaiContainer"
-	content.add_child(yuanbai)
-	var grid = GridContainer.new()      # 列数由 mall_panel 代码设置
-	grid.name = "RechargeGrid"
-	grid.size_flags_horizontal = Control.SIZE_EXPAND_FILL
-	yuanbai.add_child(grid)
-	var daily = VBoxContainer.new()
-	daily.name = "DailyGiftContainer"
-	daily.visible = false
-	content.add_child(daily)
-	var special = VBoxContainer.new()
-	special.name = "SpecialPackContainer"
-	content.add_child(special)
-	var rc_close = Button.new()
-	rc_close.name = "CloseBtn"
-	rc_close.text = TXT_CLOSE
-	rc.add_child(rc_close)
-
-# VIP 面板（标题/等级/经验/进度条/列表/CloseBtn 全在 VBox 内）
-func _build_vip_panel():
-	var vip = _make_scene_popup("VIPPanel", Vector2(520, 720))
-	var vb = vip.get_node("VBoxContainer")
-	var title = Label.new()
-	title.name = "Title"
-	title.text = TXT_VIP_TITLE
-	title.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
-	title.add_theme_color_override("font_color", Color("#ffd700"))
-	vb.add_child(title)
-	for n in ["VIPLevel", "VIPExpInfo"]:
-		var l = Label.new()
-		l.name = n
-		vb.add_child(l)
-	var progress = ProgressBar.new()
-	progress.name = "VIPProgress"
-	progress.max_value = 100
-	progress.show_percentage = false
-	vb.add_child(progress)
-	vb.add_child(HSeparator.new())
-	var vip_list = VBoxContainer.new()
-	vip_list.name = "VIPList"
-	vip_list.size_flags_vertical = Control.SIZE_EXPAND_FILL
-	vb.add_child(vip_list)
-	var vip_close = Button.new()
-	vip_close.name = "CloseBtn"
-	vip_close.text = TXT_CLOSE
-	vb.add_child(vip_close)
-
-# 钱庄面板（注意：CloseBtn 是 HQPanel 直接子节点，不在 VBox 内）
-func _build_hq_panel():
-	var hq = _make_scene_popup("HQPanel", Vector2(480, 320))
-	var hb = hq.get_node("VBoxContainer")
-	var hq_name = Label.new()
-	hq_name.name = "HQName"
-	hb.add_child(hq_name)
-	var hq_info = Label.new()
-	hq_info.name = "HQInfo"
-	hb.add_child(hq_info)
-	var hq_row = HBoxContainer.new()
-	hq_row.name = "HBoxContainer"
-	hb.add_child(hq_row)
-	var hq_click = Button.new()
-	hq_click.name = "HQClickBtn"
-	hq_click.text = TXT_HQ_CLICK
-	hq_row.add_child(hq_click)
-	var hq_up = Button.new()
-	hq_up.name = "HQUpgradeBtn"
-	hq_row.add_child(hq_up)
-	var hq_close = Button.new()
-	hq_close.name = "CloseBtn"
-	hq_close.text = TXT_CLOSE
-	hq_close.position = Vector2(hq.size.x - 90, 8)   # 右上角
-	hq_close.custom_minimum_size = Vector2(80, 36)
-	hq.add_child(hq_close)
-
-# 店铺面板（5个派遣位 AssignSlot_0..4 + ShopCloseBtn 直接子节点）
-func _build_shop_panel():
-	var shop = _make_scene_popup("ShopPanel", Vector2(560, 640))
-	var sb = shop.get_node("VBoxContainer")
-	var s_name = Label.new()
-	s_name.name = "ShopName"
-	sb.add_child(s_name)
-	var s_info = Label.new()
-	s_info.name = "ShopInfo"
-	sb.add_child(s_info)
-	var s_row = HBoxContainer.new()
-	s_row.name = "HBoxContainer"
-	sb.add_child(s_row)
-	var s_up = Button.new()
-	s_up.name = "ShopUpgradeBtn"
-	s_row.add_child(s_up)
-	var s_hire = Button.new()
-	s_hire.name = "ShopHireBtn"
-	s_row.add_child(s_hire)
-	var s_batch = CheckBox.new()
-	s_batch.name = "BatchHireCheck"
-	s_batch.text = TXT_BATCH_HIRE
-	s_row.add_child(s_batch)
-	var assign_box = VBoxContainer.new()
-	assign_box.name = "AssignContainer"
-	assign_box.size_flags_vertical = Control.SIZE_EXPAND_FILL
-	sb.add_child(assign_box)
-	for i in 5:
-		var slot = HBoxContainer.new()
-		slot.name = "AssignSlot_%d" % i
-		assign_box.add_child(slot)
-		var lbl = Label.new()
-		lbl.name = "AssignLabel"
-		lbl.size_flags_horizontal = Control.SIZE_EXPAND_FILL
-		slot.add_child(lbl)
-		var btn = Button.new()
-		btn.name = "AssignBtn"
-		slot.add_child(btn)
-	var s_close = Button.new()
-	s_close.name = "ShopCloseBtn"
-	s_close.text = TXT_CLOSE
-	s_close.position = Vector2(shop.size.x - 90, 8)   # 右上角
-	s_close.custom_minimum_size = Vector2(80, 36)
-	shop.add_child(s_close)
 
 # 【新增】顶栏/底栏显隐开关：进入二级页隐藏（全屏），返回时恢复
 # 只改状态位再触发重排，实际矩形计算全在 _apply_portrait_layout 里（单一事实来源）
@@ -1646,17 +1413,6 @@ func _apply_portrait_layout():
 			else:
 				sc.position = Vector2.ZERO
 				sc.size = Vector2(vs.x, vs.y - 110)
-
-	# 场景弹窗：居中并钳进视口（HeroPanel 由 hero_page 自建自管，不在此列）
-	for path in ["RechargePage", "VIPPanel", "HQPanel", "ShopPanel"]:
-		if has_node(path):
-			var p = get_node(path)
-			p.set_anchors_preset(Control.PRESET_TOP_LEFT)
-			var sz = p.size
-			if sz.x > vs.x - 40 or sz.y > vs.y - 80:
-				sz = Vector2(minf(sz.x, vs.x - 40), minf(sz.y, vs.y - 80))
-				p.size = sz
-			p.position = ((vs - sz) / 2).max(Vector2.ZERO)
 
 # 【新增】无双促织盒子使用入口（由 bag_page 调用）
 func show_wushuang_box_selector():
