@@ -9,6 +9,9 @@ extends BaseView
 
 var _tab: String = "home"   # home/buildings/satisfaction/rookies/audition
 var _rookie_filter: String = "all"   # 新秀页职业筛选：all 或 profession_id
+var _building_fac_idx: int = 0   # 【改】批次②③④-B10：建筑弹窗当前选中的设施页签
+var _building_sync_checked: bool = false   # 同步升级勾选态；切换建筑/升级重建后保留
+var _building_ten_checked: bool = false   # 十连勾选态；切换建筑/升级重建后保留
 
 func _init(p_c):
 	super(p_c)
@@ -313,7 +316,7 @@ func _build_building_page(page: Panel):
 			b.text = "%s%s（%s）  Lv.%d\n下一级费用 %s" % [
 				prefix, str(card.get("name", bid)), type_name, int(card.get("level", 0)),
 				c.format_number(int(card.get("next_cost", 0)))]
-			b.pressed.connect(_show_building_popup.bind(bid))
+			b.pressed.connect(_open_building_popup.bind(bid))
 			_add_btn_dot(b, card.get("upgradeable", false))
 		else:
 			b.text = "锁 %s（%s）\n需要勋章 %d 级解锁" % [
@@ -323,9 +326,16 @@ func _build_building_page(page: Panel):
 			b.pressed.connect(func(): c._show_stage_hint("需要妙音坊勋章 %d 级解锁" % need_lv))
 		list.add_child(b)
 
+func _open_building_popup(bid: String):
+	_building_fac_idx = 0   # 打开另一栋建筑时回到第一个设施页签；同步/十连勾选态保留
+	_show_building_popup(bid)
+
 func _show_building_popup(bid: String):
 	var bcfg: Dictionary = _sys().get_building_cfg(bid)
 	if bcfg.is_empty():
+		return
+	if not _sys().is_building_unlocked(bcfg):
+		c._show_stage_hint("需要妙音坊勋章 %d 级解锁" % int(bcfg.get("unlock_medal", 1)))
 		return
 	close_popup()
 	_popup_kind = "building"
@@ -335,78 +345,158 @@ func _show_building_popup(bid: String):
 	popup.z_index = 40
 	c.add_child(popup)
 	var vb: VBoxContainer = popup.get_child(0)
-	var head := Label.new()
+	
+	var fac_count: int = _sys().get_facility_count(bid)
+	_building_fac_idx = clampi(_building_fac_idx, 0, maxi(0, fac_count - 1))
 	var type_name: String = "功能建筑" if str(bcfg.get("type", "")) == "function" else "居住建筑"
-	head.text = "%s　总等级 Lv.%d　%s" % [type_name, _sys().get_building_level(bid), str(bcfg.get("name", bid))]
+	var head := Label.new()
+	head.text = "%s　总等级 Lv.%d　设施 %d 个" % [type_name, _sys().get_building_level(bid), fac_count]
 	head.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	head.add_theme_font_size_override("font_size", 16)
 	vb.add_child(head)
 	var yyb_lbl := Label.new()
-	# 【改】批次②③④-B3："设施等级独立…"规则迁入主标题旁"?"玩法说明，画面只留数值
 	yyb_lbl.text = "应援币 %s" % c.format_number(int(_sys().yyb))
 	yyb_lbl.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	yyb_lbl.add_theme_color_override("font_color", Color("#bdb7d8"))
 	vb.add_child(yyb_lbl)
-	var sync_row := HBoxContainer.new()
-	sync_row.alignment = BoxContainer.ALIGNMENT_CENTER
-	sync_row.add_theme_constant_override("separation", 10)
-	vb.add_child(sync_row)
-	var sync1 := Button.new()
-	sync1.text = "同步+1"
-	sync1.custom_minimum_size = Vector2(112, 36)
-	sync1.disabled = not _sys().can_upgrade_building_sync(bid, 1).get("ok", false)
-	sync1.pressed.connect(_on_building_sync.bind(bid, 1))
-	sync_row.add_child(sync1)
-	var sync10 := Button.new()
-	sync10.text = "同步十连"
-	sync10.custom_minimum_size = Vector2(112, 36)
-	sync10.disabled = not _sys().can_upgrade_building_sync(bid, 10).get("ok", false)
-	sync10.pressed.connect(_on_building_sync.bind(bid, 10))
-	sync_row.add_child(sync10)
-	var scroll := ScrollContainer.new()
-	scroll.custom_minimum_size = Vector2(0, 330)
-	scroll.horizontal_scroll_mode = ScrollContainer.SCROLL_MODE_DISABLED
-	vb.add_child(scroll)
-	var rows := VBoxContainer.new()
-	rows.size_flags_horizontal = Control.SIZE_EXPAND_FILL
-	rows.add_theme_constant_override("separation", 6)
-	scroll.add_child(rows)
-	for i in range(_sys().get_facility_count(bid)):
+	
+	# 设施页签区：同步升级入口固定放在页签上方；勾选后升级动作从“单设施”切换为“整栋建筑”
+	var mode_row := HBoxContainer.new()
+	mode_row.alignment = BoxContainer.ALIGNMENT_CENTER
+	mode_row.add_theme_constant_override("separation", 10)
+	vb.add_child(mode_row)
+	var sync_chk := CheckBox.new()
+	sync_chk.text = "同步升级"
+	sync_chk.button_pressed = _building_sync_checked
+	sync_chk.toggled.connect(_on_building_sync_toggled)
+	mode_row.add_child(sync_chk)
+	var mode_hint := Label.new()
+	mode_hint.text = "勾选后升级整栋建筑全部设施"
+	mode_hint.add_theme_color_override("font_color", Color("#9a93b8"))
+	mode_row.add_child(mode_hint)
+	
+	var tabs_row := HBoxContainer.new()
+	tabs_row.alignment = BoxContainer.ALIGNMENT_CENTER
+	tabs_row.add_theme_constant_override("separation", 6)
+	vb.add_child(tabs_row)
+	for i in range(fac_count):
 		var fac: Dictionary = _sys().get_facility_cfg(bid, i)
 		var lv: int = _sys().get_facility_level(bid, i)
-		var row := HBoxContainer.new()
-		row.alignment = BoxContainer.ALIGNMENT_CENTER
-		row.add_theme_constant_override("separation", 6)
-		rows.add_child(row)
-		var name_lbl := Label.new()
-		name_lbl.text = _sys().get_facility_display_name(str(fac.get("name", "")), lv)
-		name_lbl.size_flags_horizontal = Control.SIZE_EXPAND_FILL
-		name_lbl.add_theme_color_override("font_color", _sys().get_facility_color(lv))
-		row.add_child(name_lbl)
-		var lv_lbl := Label.new()
-		lv_lbl.text = "Lv.%d" % lv
-		lv_lbl.custom_minimum_size = Vector2(58, 30)
-		row.add_child(lv_lbl)
-		var cost_lbl := Label.new()
-		var cost1: int = _sys().get_facility_upgrade_cost(bid, i, 1)
-		cost_lbl.text = "%s / %s" % [c.format_number(cost1),
-			c.format_number(_sys().get_facility_upgrade_cost(bid, i, 10))]
-		cost_lbl.custom_minimum_size = Vector2(116, 30)
-		# 【改】批次②③④-B3：费用按 +1 档着色（应援币够绿 #7ee787 / 不够红 #ff6666）
-		cost_lbl.add_theme_color_override("font_color", c._cost_color(int(_sys().yyb), cost1))
-		row.add_child(cost_lbl)
-		var up1 := Button.new()
-		up1.text = "+1"
-		up1.custom_minimum_size = Vector2(52, 32)
-		up1.disabled = not _sys().can_upgrade_facility(bid, i, 1).get("ok", false)
-		up1.pressed.connect(_on_facility_upgrade.bind(bid, i, 1))
-		row.add_child(up1)
-		var up10 := Button.new()
-		up10.text = "+10"
-		up10.custom_minimum_size = Vector2(56, 32)
-		up10.disabled = not _sys().can_upgrade_facility(bid, i, 10).get("ok", false)
-		up10.pressed.connect(_on_facility_upgrade.bind(bid, i, 10))
-		row.add_child(up10)
+		var fac_tab := Button.new()
+		fac_tab.text = "%s\nLv.%d" % [str(fac.get("name", "设施")), lv]
+		fac_tab.custom_minimum_size = Vector2(74, 48)
+		fac_tab.add_theme_font_size_override("font_size", 11)
+		fac_tab.toggle_mode = true
+		fac_tab.button_pressed = i == _building_fac_idx
+		fac_tab.add_theme_color_override("font_color", _sys().get_facility_color(lv))
+		var normal_style := StyleBoxFlat.new()
+		normal_style.bg_color = Color("#2a2640")
+		normal_style.set_corner_radius_all(6)
+		normal_style.set_border_width_all(1)
+		normal_style.border_color = Color("#5a537a")
+		var hover_style := StyleBoxFlat.new()
+		hover_style.bg_color = Color("#332c4c")
+		hover_style.set_corner_radius_all(6)
+		hover_style.set_border_width_all(1)
+		hover_style.border_color = Color("#7d73a8")
+		var selected_style := StyleBoxFlat.new()
+		selected_style.bg_color = Color("#3a3156")
+		selected_style.set_corner_radius_all(6)
+		selected_style.set_border_width_all(2)
+		selected_style.border_color = Color("#ffd700")
+		fac_tab.add_theme_stylebox_override("normal", selected_style if i == _building_fac_idx else normal_style)
+		fac_tab.add_theme_stylebox_override("hover", selected_style if i == _building_fac_idx else hover_style)
+		fac_tab.add_theme_stylebox_override("pressed", selected_style)
+		fac_tab.add_theme_stylebox_override("focus", selected_style if i == _building_fac_idx else normal_style)
+		fac_tab.pressed.connect(_select_building_facility.bind(i))
+		tabs_row.add_child(fac_tab)
+	
+	# 底部固定升级区：始终显示当前设施信息；同步勾选时费用/动作切换为整栋建筑聚合口径
+	var detail := PanelContainer.new()
+	detail.custom_minimum_size = Vector2(0, 260)
+	detail.size_flags_vertical = Control.SIZE_EXPAND_FILL
+	var detail_style := StyleBoxFlat.new()
+	detail_style.bg_color = Color("#241f38")
+	detail_style.set_corner_radius_all(8)
+	detail_style.set_border_width_all(1)
+	detail_style.border_color = Color("#6a5f9e")
+	detail.add_theme_stylebox_override("panel", detail_style)
+	vb.add_child(detail)
+	var dv := VBoxContainer.new()
+	dv.alignment = BoxContainer.ALIGNMENT_CENTER
+	dv.add_theme_constant_override("separation", 10)
+	detail.add_child(dv)
+	var cur_fac: Dictionary = _sys().get_facility_cfg(bid, _building_fac_idx)
+	var cur_lv: int = _sys().get_facility_level(bid, _building_fac_idx)
+	var fac_title := Label.new()
+	fac_title.text = _sys().get_facility_display_name(str(cur_fac.get("name", "设施")), cur_lv)
+	fac_title.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	fac_title.add_theme_font_size_override("font_size", 18)
+	fac_title.add_theme_color_override("font_color", _sys().get_facility_color(cur_lv))
+	dv.add_child(fac_title)
+	var fac_info := Label.new()
+	fac_info.text = "所属建筑：%s　设施 %d/%d　建筑总等级 Lv.%d" % [
+		str(bcfg.get("name", bid)), _building_fac_idx + 1, fac_count, _sys().get_building_level(bid)]
+	fac_info.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	fac_info.add_theme_color_override("font_color", Color("#bdb7d8"))
+	dv.add_child(fac_info)
+	
+	var action_count: int = 10 if _building_ten_checked else 1
+	var action_cost: int = _get_building_sync_cost(bid, action_count) if _building_sync_checked else _sys().get_facility_upgrade_cost(bid, _building_fac_idx, action_count)
+	var cost_prefix: String = "同步消耗：应援币" if _building_sync_checked else "升级消耗：应援币"
+	c._add_cost_row(dv, cost_prefix, int(_sys().yyb), action_cost)   # 【改】批次②③④-B10：统一（拥有/消耗），数字红绿
+	var action_hint := Label.new()
+	action_hint.text = "同步模式：全部可升级设施各升 %d 级" % action_count if _building_sync_checked else "当前模式：仅升级选中设施 %d 级" % action_count
+	action_hint.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	action_hint.add_theme_color_override("font_color", Color("#9a93b8"))
+	dv.add_child(action_hint)
+	
+	var action_row := HBoxContainer.new()
+	action_row.alignment = BoxContainer.ALIGNMENT_CENTER
+	action_row.add_theme_constant_override("separation", 12)
+	dv.add_child(action_row)
+	var up_btn := Button.new()
+	up_btn.text = "升级"
+	up_btn.custom_minimum_size = Vector2(130, 42)
+	var can_act: Dictionary = _sys().can_upgrade_building_sync(bid, action_count) if _building_sync_checked else _sys().can_upgrade_facility(bid, _building_fac_idx, action_count)
+	up_btn.disabled = not can_act.get("ok", false)
+	if not can_act.get("ok", false):
+		up_btn.tooltip_text = str(can_act.get("msg", "无法升级"))
+	up_btn.pressed.connect(_on_building_upgrade_action.bind(bid, _building_fac_idx))
+	action_row.add_child(up_btn)
+	var ten_chk := CheckBox.new()
+	ten_chk.text = "十连"
+	ten_chk.button_pressed = _building_ten_checked
+	ten_chk.toggled.connect(_on_building_ten_toggled)
+	action_row.add_child(ten_chk)
+
+func _select_building_facility(fac_idx: int):
+	# Toggle 按钮点击已选页签时会先短暂取消选中；统一重建，确保选中态视觉不被卡在未选状态
+	_building_fac_idx = fac_idx
+	_rebuild_popup()
+
+func _on_building_sync_toggled(pressed: bool):
+	_building_sync_checked = pressed
+	_rebuild_popup()
+
+func _on_building_ten_toggled(pressed: bool):
+	_building_ten_checked = pressed
+	_rebuild_popup()
+
+func _get_building_sync_cost(bid: String, count: int) -> int:
+	# 只按等级上限过滤；不能因当前应援币不足就把需求费用显示为 0，是否足够由消耗行红绿/按钮禁用表达
+	var total: int = 0
+	for i in range(_sys().get_facility_count(bid)):
+		if _sys().get_facility_level(bid, i) + count <= _sys().get_facility_max_lv_pub():
+			total += _sys().get_facility_upgrade_cost(bid, i, count)
+	return total
+
+func _on_building_upgrade_action(bid: String, fac_idx: int):
+	var count: int = 10 if _building_ten_checked else 1
+	if _building_sync_checked:
+		_on_building_sync(bid, count)
+	else:
+		_on_facility_upgrade(bid, fac_idx, count)
 
 func _on_facility_upgrade(bid: String, fac_idx: int, count: int):
 	var r: Dictionary = _sys().upgrade_facility(bid, fac_idx, count)
@@ -816,12 +906,9 @@ func _add_gate_row(parent: VBoxContainer, label_text: String, value: int, gate: 
 	row.alignment = BoxContainer.ALIGNMENT_CENTER
 	row.add_theme_constant_override("separation", 8)
 	parent.add_child(row)
-	var lbl := Label.new()
-	lbl.text = "%s　%s/%s" % [label_text, c.format_number(value), c.format_number(gate)]
-	lbl.custom_minimum_size = Vector2(190, 26)
-	# 【改】批次②③④-B3：属性门"拥有/需要"着色（够绿不够红）
-	lbl.add_theme_color_override("font_color", c._cost_color(value, gate))
-	row.add_child(lbl)
+	# 【改】批次②③④-B10：属性门槛统一（当前/需求）格式，属性名默认色、数字红绿
+	var gate_cost_row: HBoxContainer = c._add_cost_row(row, label_text, value, gate)
+	gate_cost_row.custom_minimum_size = Vector2(190, 26)
 	var bar := ProgressBar.new()
 	bar.min_value = 0.0
 	bar.max_value = maxf(1.0, float(gate))
@@ -964,12 +1051,8 @@ func _show_medal_popup():
 		full.add_theme_color_override("font_color", Color("#9a93b8"))
 		cvb.add_child(full)
 	else:
-		var next_lbl := Label.new()
-		next_lbl.text = "繁荣度 %s / %s" % [c.format_number(_sys().get_prosperity()), c.format_number(need)]
-		next_lbl.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
-		# 【改】批次②③④-B3：门槛"拥有/需要"着色（够绿不够红）
-		next_lbl.add_theme_color_override("font_color", c._cost_color(int(_sys().get_prosperity()), need))
-		cvb.add_child(next_lbl)
+		# 【改】批次②③④-B10：繁荣度门槛统一（当前/需求）格式，保留达到/未达到红绿提示
+		c._add_cost_row(cvb, "繁荣度", int(_sys().get_prosperity()), need)
 		var bar := ProgressBar.new()
 		bar.min_value = 0.0
 		bar.max_value = maxf(1.0, float(need))

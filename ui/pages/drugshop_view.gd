@@ -350,8 +350,8 @@ func _show_medal_popup():
 		vb.add_child(max_lbl)
 	else:
 		var need: int = int(nxt.get("need_exp", 0))
-		# 【改】批次②③④-B2：门槛"拥有/需要"着色（够绿不够红）
-		c._add_have_need_row(vb, "下一级【%s】需累计药铺经验 " % nxt.get("name", ""), int(_sys().exp_total), need)
+		# 【改】批次②③④-B10：门槛进度统一（当前/需求）格式，保留达到/未达到红绿提示
+		c._add_cost_row(vb, "下一级【%s】需累计药铺经验" % str(nxt.get("name", "")), int(_sys().exp_total), need)
 		var bar := ProgressBar.new()
 		bar.min_value = 0.0
 		bar.max_value = maxf(1.0, float(need))
@@ -528,8 +528,8 @@ func _show_craft_popup(cid: String):
 		str(cdef.get("per_level", 0)), lv]
 	info.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
 	vb.add_child(info)
-	# 【改】批次②③④-B2：成本"拥有/需要"着色（够绿不够红）
-	c._add_have_need_row(vb, "下级消耗：铜板 ", int(_sys().coins), _sys().get_craft_cost(cid))
+	# 【改】批次②③④-B10：伙计技艺升级消耗统一（拥有/消耗），道具名默认色、数字红绿
+	c._add_cost_row(vb, "下级消耗：铜板", int(_sys().coins), _sys().get_craft_cost(cid))
 	var btn := Button.new()
 	btn.text = "升级"
 	btn.disabled = not _sys().can_upgrade_craft(cid).get("ok", false)
@@ -597,8 +597,8 @@ func _show_recipe_popup(rid: String):
 	var vb: VBoxContainer = popup.get_child(0)
 	if not _sys().is_recipe_unlocked(rid):
 		# 未解锁：显示累计经验门槛 + 手动解锁（不消耗经验）
-		# 【改】批次②③④-B2：解锁门槛"拥有/需要"着色（够绿不够红）
-		c._add_have_need_row(vb, "解锁需求：累计药铺经验 ", int(_sys().exp_total), _sys().get_recipe_unlock_need(rid))
+		# 【改】批次②③④-B10：配方解锁门槛统一（当前/需求）格式，保留达到/未达到红绿提示
+		c._add_cost_row(vb, "解锁需求：累计药铺经验", int(_sys().exp_total), _sys().get_recipe_unlock_need(rid))
 		var unlock_btn := Button.new()
 		unlock_btn.text = "解锁"
 		unlock_btn.disabled = not _sys().can_unlock_recipe(rid).get("ok", false)
@@ -628,8 +628,8 @@ func _show_recipe_popup(rid: String):
 	wallet.add_theme_color_override("font_color", Color("#e6c07b"))
 	vb.add_child(wallet)
 	if lv < max_lv:
-		# 【改】批次②③④-B2：成本"拥有/需要"着色（够绿不够红）
-		c._add_have_need_row(vb, "下级消耗：熟练度 ", int(_sys().get_recipe_prof(rid)), _sys().get_recipe_upgrade_cost(rid))
+		# 【改】批次②③④-B10：配方升级消耗统一（当前熟练度/消耗），数字红绿
+		c._add_cost_row(vb, "下级消耗：熟练度", int(_sys().get_recipe_prof(rid)), _sys().get_recipe_upgrade_cost(rid))
 		var btn_row := HBoxContainer.new()
 		btn_row.add_theme_constant_override("separation", 8)
 		vb.add_child(btn_row)

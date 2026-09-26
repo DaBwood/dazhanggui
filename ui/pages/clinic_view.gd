@@ -359,15 +359,16 @@ func _fill_patient(body: VBoxContainer):
 		if not is_unlocked:
 			nm.add_theme_color_override("font_color", Color("#666080"))
 		row.add_child(nm)
-		var info := Label.new()
-		info.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+		var info: Label = null   # 【改】批次②③④-B10：未解锁门槛不再整行着色，改走统一消耗/门槛行
 		if is_unlocked:
+			info = Label.new()
 			info.text = "加成 +%d%%" % int(float(p.get("bonus", 0)) * 100)
 		else:
-			info.text = "需医术 %s" % c.format_number(int(p.get("need_yishu", 0)))
-			# 【改】批次②③④-B2：解锁门槛着色（医术够绿 #7ee787 / 不够红 #ff6666）
-			info.add_theme_color_override("font_color", c._cost_color(int(_sys().yishu), int(p.get("need_yishu", 0))))
-		row.add_child(info)
+			var unlock_row: HBoxContainer = c._add_cost_row(row, "需医术", int(_sys().yishu), int(p.get("need_yishu", 0)))
+			unlock_row.size_flags_horizontal = Control.SIZE_EXPAND_FILL   # 保持右侧解锁按钮贴行尾
+		if info != null:
+			info.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+			row.add_child(info)
 		# 【新增】2026-09-16 手动解锁（无消耗）：医术达阈值未解锁的显示【解锁】
 		if not is_unlocked and yishu_ok:
 			var ub := Button.new()
@@ -452,16 +453,16 @@ func _show_dept_popup(dept_id: String):
 		next_lbl.text = next_txt
 		next_lbl.add_theme_color_override("font_color", Color("#9a93b8"))
 		vb.add_child(next_lbl)
-		# 【改】批次②③④-B2：成本"拥有/需要"着色（够绿不够红）
-		c._add_have_need_row(vb, "升级消耗：图纸 ", int(data.items.get("ke_shi_tu_zhi", 0)), _sys().get_dept_upgrade_cost(dept_id))
+		# 【改】批次②③④-B10：升级消耗统一（拥有/消耗），道具名默认色、数字红绿
+		c._add_cost_row(vb, "升级消耗：图纸", int(data.items.get("ke_shi_tu_zhi", 0)), _sys().get_dept_upgrade_cost(dept_id))
 		var btn := Button.new()
 		btn.text = "升级"
 		btn.disabled = not _sys().can_upgrade_dept(dept_id).get("ok", false)
 		btn.pressed.connect(func(): _on_dept_upgrade(dept_id))
 		vb.add_child(btn)
 	else:
-		# 未建科室：新增【改】批次②③④-B2：成本"拥有/需要"着色（够绿不够红）
-		c._add_have_need_row(vb, "新增消耗：图纸 ", int(data.items.get("ke_shi_tu_zhi", 0)), _sys().get_dept_unlock_cost(dept_id))
+		# 【改】批次②③④-B10：新增消耗统一（拥有/消耗），道具名默认色、数字红绿
+		c._add_cost_row(vb, "新增消耗：图纸", int(data.items.get("ke_shi_tu_zhi", 0)), _sys().get_dept_unlock_cost(dept_id))
 		var btn := Button.new()
 		btn.text = "新增科室"
 		btn.disabled = not _sys().can_unlock_dept(dept_id).get("ok", false)
@@ -572,8 +573,8 @@ func _show_illness_popup(illness_id: String):
 		int(_sys().get_illness_pct(illness_id) * 100), home.get("category", ""), _sys().get_illness_level(illness_id)]
 	pct_lbl.add_theme_color_override("font_color", Color("#e6c07b"))
 	vb.add_child(pct_lbl)
-	# 该病症独立评分池【改】批次②③④-B2：升级消耗"拥有/需要"着色（够绿不够红）
-	c._add_have_need_row(vb, "升级消耗：该病症评分 ", int(_sys().get_illness_score(illness_id)), _sys().get_illness_upgrade_cost(illness_id))
+	# 【改】批次②③④-B10：病症评分升级消耗统一（拥有/消耗），数字红绿
+	c._add_cost_row(vb, "升级消耗：该病症评分", int(_sys().get_illness_score(illness_id)), _sys().get_illness_upgrade_cost(illness_id))
 	# 升级按钮（扣该病症自己的评分池）
 	var btn := Button.new()
 	btn.text = "升级"

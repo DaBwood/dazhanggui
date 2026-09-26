@@ -245,7 +245,7 @@ func _show_workshop_popup(wid: String):
 		else:
 			var up_cost: int = _sys().get_process_upgrade_cost(wid, pid)
 			btn.text = "升级 %s" % c.format_number(up_cost)   # 本次消耗直接显示在按钮上
-			# 【新增】批次②③④-B2：酒艺值够绿 #7ee787 / 不够红 #ff6666（禁用态同色，消耗即门槛）
+			# 【改】批次②③④-B10：按钮内嵌成本不适用统一消耗行，按 B6 边界保持整钮红绿（禁用态同色）
 			var cost_col: Color = c._cost_color(int(_sys().jiuyi), up_cost)
 			btn.add_theme_color_override("font_color", cost_col)
 			btn.add_theme_color_override("font_disabled_color", cost_col)
@@ -470,8 +470,8 @@ func _show_medal_popup():
 		max_lbl.add_theme_color_override("font_color", Color("#9a93b8"))
 		vb.add_child(max_lbl)
 	else:
-		# 【改】批次②③④-B2：门槛"拥有/需要"着色（够绿不够红）
-		c._add_have_need_row(vb, "下一级需累计酒香 ", int(_sys().get_jiuxiang()), need)
+		# 【改】批次②③④-B10：门槛进度统一（当前/需求）格式，保留达到/未达到红绿提示
+		c._add_cost_row(vb, "下一级需累计酒香", int(_sys().get_jiuxiang()), need)
 		var bar := ProgressBar.new()
 		bar.min_value = 0.0
 		bar.max_value = maxf(1.0, float(need))
@@ -573,16 +573,23 @@ func _show_wine_info(wine_id: String):
 	inc.add_theme_color_override("font_color", Color("#2ecc71"))
 	vb.add_child(inc)
 	var next_need: int = _sys().get_wine_next_need(wine_id)
-	var up := Label.new()
-	# 【修】Godot 4 的 Label 无 bbcode_enabled（Godot 3 残留 API，运行时报错）；达标用绿字，未达标灰字
+	# 【改】批次②③④-B10：酿造进度拆为默认色前缀 + 统一（当前/需求）红绿数字 + 默认色单位
+	var up := HBoxContainer.new()
+	up.add_theme_constant_override("separation", 0)
 	if next_need < 0:
-		up.text = "Lv.%d 已满级（累计酿造 %d 瓶）" % [_sys().get_wine_lv(wine_id), _sys().get_wine_brewed(wine_id)]
+		var full_lbl := Label.new()
+		full_lbl.text = "Lv.%d 已满级（累计酿造 %d 瓶）" % [_sys().get_wine_lv(wine_id), _sys().get_wine_brewed(wine_id)]
+		full_lbl.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+		full_lbl.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+		up.add_child(full_lbl)
 	else:
-		up.text = "Lv.%d → 本级还需酿造 %d/%d 瓶" % [
-			_sys().get_wine_lv(wine_id), _sys().get_wine_overplus(wine_id), next_need]
-		# 【改】批次②③④-B2：进度着色统一 _cost_color（够绿 #7ee787 / 不够红 #ff6666）
-		up.add_theme_color_override("font_color", c._cost_color(int(_sys().get_wine_overplus(wine_id)), next_need))
-	up.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+		var pre_lbl := Label.new()
+		pre_lbl.text = "Lv.%d → 本级还需酿造 " % _sys().get_wine_lv(wine_id)
+		up.add_child(pre_lbl)
+		c._add_cost_row(up, "", int(_sys().get_wine_overplus(wine_id)), next_need)
+		var unit_lbl := Label.new()
+		unit_lbl.text = " 瓶"
+		up.add_child(unit_lbl)
 	vb.add_child(up)
 	var row := HBoxContainer.new()
 	row.add_theme_constant_override("separation", 6)

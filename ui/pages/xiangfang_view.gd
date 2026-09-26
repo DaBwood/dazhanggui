@@ -591,8 +591,8 @@ func _show_furniture_popup(fid: String):
 		nxt_l.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
 		nxt_l.add_theme_color_override("font_color", Color("#8fd3c7"))
 		vbox.add_child(nxt_l)
-		# 【新增】批次②③④-B3：升级消耗"拥有/需要"着色（够绿不够红）
-		c._add_have_need_row(vbox, "升级消耗：同名家具 ", int(st["cnt"]), cost)
+		# 【改】批次②③④-B10：升级消耗统一（拥有/消耗），道具名默认色、数字红绿
+		c._add_cost_row(vbox, "升级消耗：同名家具", int(st["cnt"]), cost)
 	elif st["lv"] >= _sys().get_max_lv():
 		# 满级：富余件回收（回收价=品质工坊价×80%，返家具币道具）
 		var recyc: int = _sys().get_recyclable_count(fid)
@@ -770,8 +770,8 @@ func _show_medal_popup():
 		vb.add_child(max_lbl)
 	else:
 		var need: int = int(nxt.get("need_comfort", 0))
-		# 【改】批次②③④-B3：门槛"拥有/需要"着色（够绿不够红）
-		c._add_have_need_row(vb, "下一级需舒适度 ", int(_sys().get_total_comfort()), need)
+		# 【改】批次②③④-B10：门槛进度统一（当前/需求）格式，保留达到/未达到红绿提示
+		c._add_cost_row(vb, "下一级需舒适度", int(_sys().get_total_comfort()), need)
 		var bar := ProgressBar.new()
 		bar.min_value = 0.0
 		bar.max_value = maxf(1.0, float(need))
@@ -1000,7 +1000,7 @@ func _build_mingpan_page(page: Panel):
 	root.add_child(ops)
 	var divine_btn := Button.new()
 	divine_btn.text = "卜卦（风水符 %d/%d）" % [_msys().get_talisman_count(), _msys().get_divine_cost()]
-	# 【新增】批次②③④-B3：风水符够绿 #7ee787 / 不够红 #ff6666
+	# 【改】批次②③④-B10：按钮内嵌成本不适用统一消耗行，按 B6 边界保持整钮红绿
 	divine_btn.add_theme_color_override("font_color", c._cost_color(_msys().get_talisman_count(), _msys().get_divine_cost()))
 	divine_btn.custom_minimum_size = Vector2(180, 42)
 	divine_btn.pressed.connect(func(): _on_divine(divine_btn))
