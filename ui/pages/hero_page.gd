@@ -559,7 +559,7 @@ func update_hero_panel():
 	elif need_bt:
 		# 到达突破节点：按钮显示 突破+风雅颂数量，隐藏勾选框
 		lv_btn.text = "突破\n%d" % bt_cost
-		# 【新增】批次②③④-B4：突破钮按 风雅颂拥有/消耗 着色（够绿不够红）
+		# 【改】批次②③④-B9：按钮内嵌成本不适用统一消耗行，按 B6 边界保持整钮红绿
 		lv_btn.add_theme_color_override("font_color", c._cost_color(int(data.items.get("fengyasong", 0)), int(bt_cost)))
 		batch_check.visible = false
 		#关闭升级
@@ -571,7 +571,7 @@ func update_hero_panel():
 	else:
 		# 【改】消耗数字交给统一函数：未勾选显示下一级消耗，勾选十连显示十连总价
 		lv_btn.text = _get_level_up_btn_text(h)
-		# 【新增】批次②③④-B4：升级钮按 阅历拥有/消耗 着色（够绿不够红）
+		# 【改】批次②③④-B9：按钮内嵌成本不适用统一消耗行，按 B6 边界保持整钮红绿
 		lv_btn.add_theme_color_override("font_color", c._cost_color(int(data.items.get("experience", 0)), _get_level_up_cost(h)))
 		batch_check.visible = true
 		#关闭突破
@@ -1142,7 +1142,7 @@ func _render_skill_detail(list: VBoxContainer, item: Dictionary) -> void:
 			var pool_stock: int = int(data.hero_system.get_baiye(current_hero_id))
 			var chk_pill := CheckBox.new()
 			var chk_baiye := CheckBox.new()   # 【修】2026-09-25 声明前置：GDScript lambda 不得引用后声明变量（parse error），原顺序 pill 回调引用 chk_baiye 报错
-			chk_pill.text = "资质丹"   # 【改】数字拆独立 Label 后同排显示（2026-09-24）
+			chk_pill.text = ""   # 【改】批次②③④-B9：勾选框只保留勾选态，道具名/消耗数走统一消耗行
 			chk_pill.button_pressed = not _use_baiye
 			chk_pill.add_theme_font_size_override("font_size", 12)
 			chk_pill.toggled.connect(func(pressed):
@@ -1158,7 +1158,7 @@ func _render_skill_detail(list: VBoxContainer, item: Dictionary) -> void:
 					chk_pill.button_pressed = true
 					_cos_chk_syncing = false
 			)
-			chk_baiye.text = "百业经验"
+			chk_baiye.text = ""   # 【改】批次②③④-B9：勾选框只保留勾选态，道具名/消耗数走统一消耗行
 			chk_baiye.button_pressed = _use_baiye
 			chk_baiye.add_theme_font_size_override("font_size", 12)
 			chk_baiye.toggled.connect(func(pressed):
@@ -1174,33 +1174,31 @@ func _render_skill_detail(list: VBoxContainer, item: Dictionary) -> void:
 					chk_baiye.button_pressed = true
 					_cos_chk_syncing = false
 			)
-			# 【改】2026-09-24 勾选框与消耗数字同排：名字随选中变色，数字保持 _cost_color 红绿色
+			# 【改】批次②③④-B9：勾选框与统一消耗行同排；道具名默认色，数字固定（拥有/消耗）并红绿着色
 			var pill_row := HBoxContainer.new()
 			pill_row.add_theme_constant_override("separation", 2)
-			var pill_num_lbl := Label.new()
-			pill_num_lbl.text = "(%d/%d)" % [per_level, pill_stock]
-			pill_num_lbl.add_theme_color_override("font_color", c._cost_color(pill_stock, per_level))
-			pill_num_lbl.add_theme_font_size_override("font_size", 12)
 			pill_row.add_child(chk_pill)
-			pill_row.add_child(pill_num_lbl)
+			var pill_cost_row: HBoxContainer = c._add_cost_row(pill_row, "资质丹", pill_stock, per_level)
+			for pill_lbl in pill_cost_row.get_children():
+				if pill_lbl is Label:
+					pill_lbl.add_theme_font_size_override("font_size", 12)
 			chk_col.add_child(pill_row)
+			var baiye_need: int = per_level * data.hero_system.get_baiye_per_pill()
 			var baiye_row := HBoxContainer.new()
 			baiye_row.add_theme_constant_override("separation", 2)
-			var baiye_num_lbl := Label.new()
-			baiye_num_lbl.text = "(%d/%d)" % [per_level * data.hero_system.get_baiye_per_pill(), pool_stock]
-			baiye_num_lbl.add_theme_color_override("font_color", c._cost_color(pool_stock, per_level * data.hero_system.get_baiye_per_pill()))
-			baiye_num_lbl.add_theme_font_size_override("font_size", 12)
 			baiye_row.add_child(chk_baiye)
-			baiye_row.add_child(baiye_num_lbl)
+			var baiye_cost_row: HBoxContainer = c._add_cost_row(baiye_row, "百业经验", pool_stock, baiye_need)
+			for baiye_lbl in baiye_cost_row.get_children():
+				if baiye_lbl is Label:
+					baiye_lbl.add_theme_font_size_override("font_size", 12)
 			chk_col.add_child(baiye_row)
 		elif item.has("own"):
 			var own: Array = item["own"]
-			var own_lbl := Label.new()
-			own_lbl.text = "%s %d/%d" % [item["own_name"], own[0], own[1]]
-			own_lbl.add_theme_color_override("font_color", c._cost_color(int(own[1]), int(own[0])))   # 【改】够升级绿/不够红（own=[消耗,库存]）
-			own_lbl.add_theme_font_size_override("font_size", 13)
-			own_lbl.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
-			right.add_child(own_lbl)
+			# 【改】批次②③④-B9：统一（库存/消耗）格式；own=[消耗,库存]，数字红绿、道具名默认色
+			var own_cost_row: HBoxContainer = c._add_cost_row(right, str(item["own_name"]), int(own[1]), int(own[0]))
+			for own_lbl in own_cost_row.get_children():
+				if own_lbl is Label:
+					own_lbl.add_theme_font_size_override("font_size", 13)
 		# 【新增】可选"?"说明钮（光环.极档：升级钮上方，点击显示各门客对应技能等级需求）
 		if item.has("on_hint"):
 			var hbtn := Button.new()
@@ -1690,18 +1688,18 @@ func _show_cuzhi_action_panel(cid: String):
 		
 		var check_bf = CheckBox.new()
 		check_bf.name = "CheckBeastFruit"
-		check_bf.text = "珍兽果(%d)" % cost_bf
-		check_bf.add_theme_color_override("font_color", c._cost_color(int(bf_have), int(cost_bf)))   # 【新增】批次②③④-B4：够升绿/不够红
+		check_bf.text = ""   # 【改】批次②③④-B9：勾选框只保留勾选态，道具名/消耗数走统一消耗行
 		# 【修复】根据上次选择恢复勾选状态
 		check_bf.button_pressed = not _cuzhi_last_use_jinghua
 		check_box.add_child(check_bf)
+		c._add_cost_row(check_box, "珍兽果", int(bf_have), int(cost_bf))   # 【改】批次②③④-B9：默认道具名 + （拥有/消耗）红绿数字
 		
 		var check_jh = CheckBox.new()
 		check_jh.name = "CheckJinghua"
-		check_jh.text = "促织精华(%d)" % cost_jh
-		check_jh.add_theme_color_override("font_color", c._cost_color(int(jh_have), int(cost_jh)))   # 【新增】批次②③④-B4：够升绿/不够红
+		check_jh.text = ""   # 【改】批次②③④-B9：勾选框只保留勾选态，道具名/消耗数走统一消耗行
 		check_jh.button_pressed = _cuzhi_last_use_jinghua
 		check_box.add_child(check_jh)
+		c._add_cost_row(check_box, "促织精华", int(jh_have), int(cost_jh))   # 【改】批次②③④-B9：默认道具名 + （拥有/消耗）红绿数字
 		
 		# 互斥逻辑：必须勾选一个且只能勾选一个 + 记录选择
 		check_bf.toggled.connect(func(pressed):
@@ -1899,7 +1897,7 @@ func _show_guardian_panel():
 	
 	var up_btn = Button.new()
 	up_btn.text = "注灵\n%d/%d" % [has_yulin, cost]
-	# 【新增】批次②③④-B4：注灵钮按 蕴灵珏拥有/消耗 着色（够绿不够红）
+	# 【改】批次②③④-B9：按钮内嵌成本不适用统一消耗行，按 B6 边界保持整钮红绿
 	up_btn.add_theme_color_override("font_color", c._cost_color(int(has_yulin), int(cost)))
 	up_btn.custom_minimum_size = Vector2(120, 50)
 	up_btn.pressed.connect(_on_guardian_level_up)
@@ -2002,25 +2000,29 @@ func _show_guardian_avatar_popup():
 		var row = HBoxContainer.new()
 		row.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 		
-		var info = Label.new()
+		var info: Label = null   # 【改】批次②③④-B9：未解锁形象不再用整行 Label 着色，改走统一消耗行
 		var has_unlocked = gs.avatars.get(av.id, false)
 		var is_current = gs.get("avatar", "mingling") == av.id
 		var item_name = ""
 		if av.unlock_item != "" and data.ITEM_CONFIG.has(av.unlock_item):
-			item_name = "（需%s）" % data.ITEM_CONFIG[av.unlock_item].name
+			item_name = data.ITEM_CONFIG[av.unlock_item].name   # 仅保留道具名，是否足够由消耗行红绿表达
 		
 		if is_current:
+			info = Label.new()
 			info.text = "【%s】当前形象" % av.name
 			info.add_theme_color_override("font_color", Color("#ffd700"))
 		elif has_unlocked:
+			info = Label.new()
 			info.text = "【%s】已解锁" % av.name
 		else:
-			var have = data.items.get(av.unlock_item, 0)
-			info.text = "【%s】%s %d/100" % [av.name, item_name, have]   # 【改】显示拥有/需要
-			info.add_theme_color_override("font_color", c._cost_color(int(have), 100))   # 【新增】批次②③④-B4：够解锁绿/不够红
-		info.size_flags_horizontal = Control.SIZE_EXPAND_FILL
-		info.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
-		row.add_child(info)
+			var have: int = int(data.items.get(av.unlock_item, 0))
+			# 【改】批次②③④-B9：形象解锁消耗统一（拥有/消耗）；消耗行横向扩展，保持右侧操作钮贴行尾
+			var avatar_cost_row: HBoxContainer = c._add_cost_row(row, "【%s】%s" % [av.name, item_name], have, 100)
+			avatar_cost_row.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+		if info != null:
+			info.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+			info.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
+			row.add_child(info)
 		
 		var btn = Button.new()
 		btn.custom_minimum_size = Vector2(80, 32)
@@ -2128,7 +2130,7 @@ func _fill_talent_refine_area(vb):
 		var refine_btn = Button.new()
 		refine_btn.custom_minimum_size = Vector2(130, 48)
 		refine_btn.text = "精进%d星\n%d【%s】" % [star + 1, int(cfg.get("cost", 0)), item_name]
-		# 【新增】批次②③④-B4：精进钮按 道具拥有/消耗 着色（置灰时保持同色，font_disabled_color 同步）
+		# 【改】批次②③④-B9：按钮内嵌成本不适用统一消耗行，按 B6 边界保持整钮红绿（置灰时同步）
 		var refine_col: Color = c._cost_color(int(data.items.get(ts.get_cost_item(), 0)), int(cfg.get("cost", 0)))
 		refine_btn.add_theme_color_override("font_color", refine_col)
 		refine_btn.add_theme_color_override("font_disabled_color", refine_col)

@@ -2,7 +2,7 @@
 # 门客面板·信物风姿子模块（2026-09-25 架构批次B：从 hero_page.gd 拆分）
 # 覆盖：信物面板（绑定/伴生技能/十连）/ 苦情契约（白月初）/ 风姿面板（醉墨挥毫）
 # hp = HeroPage 本页引用：共享状态与通用渲染件经 hp.xxx 访问；
-# 晋升面板入口经 hp.promo.xxx（模块互调只走 hp 中转，不直接互引用）
+# 晋升面板入口经 hp.promo.xxx（模块互调只走 hp 中转，不直接互引用）；独立消耗/门槛行走 c._add_cost_row 统一范式（批次②③④-B9）
 # ============================================================
 class_name HeroPanelToken
 extends RefCounted
@@ -106,14 +106,11 @@ func _show_token_panel():
 	var shared_partner: String = data.talent_system.get_token_shared_partner(hp.current_hero_id)
 	if shared_partner == "":
 		var cost_item: String = t_cfg.get("cost_item", "")
+		var cost_item_name: String = str(data.ITEM_CONFIG.get(cost_item, {}).get("name", cost_item))
 		var cost_need: int = int(t_cfg.get("cost_per_level", 600)) * (10 if _token_batch else 1)	# 十连时消耗×10
 		var cost_have: int = int(data.items.get(cost_item, 0))
-		var res_lbl = Label.new()
-		res_lbl.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
-		res_lbl.text = "【%s】%d/%d" % [data.ITEM_CONFIG.get(cost_item, {}).get("name", cost_item), cost_have, cost_need]
-		# 【改】批次②③④-B4：资源行统一 _cost_color 公共件（够绿不够红；原仅不足时红）
-		res_lbl.add_theme_color_override("font_color", c._cost_color(cost_have, cost_need))
-		vb.add_child(res_lbl)
+		# 【改】批次②③④-B9：资源行统一（拥有/消耗），道具名默认色、数字红绿；返回行供十连原地刷新
+		var res_cost_row: HBoxContainer = c._add_cost_row(vb, cost_item_name, cost_have, cost_need)
 		var up_box = HBoxContainer.new()
 		up_box.alignment = BoxContainer.ALIGNMENT_CENTER
 		vb.add_child(up_box)
@@ -137,10 +134,12 @@ func _show_token_panel():
 		batch_check.toggled.connect(func(pressed):
 			_token_batch = pressed   # 【新增】记录勾选变化
 			up_btn.text = data.token_system.get_upgrade_btn_text(hp.current_hero_id, _token_batch)
-			# 【改】十连时资源行消耗×10（批次②③④-B4：统一 _cost_color 着色，够绿不够红）
-			var need10 = int(t_cfg.get("cost_per_level", 600)) * (10 if pressed else 1)
-			res_lbl.text = "【%s】%d/%d" % [data.ITEM_CONFIG.get(cost_item, {}).get("name", cost_item), cost_have, need10]
-			res_lbl.add_theme_color_override("font_color", c._cost_color(cost_have, need10))
+			# 【改】批次②③④-B9：十连时只原地刷新统一消耗行内的 CostNum
+			var need10: int = int(t_cfg.get("cost_per_level", 600)) * (10 if pressed else 1)
+			var cost_num: Label = res_cost_row.find_child("CostNum", true, false) as Label
+			if cost_num != null:
+				cost_num.text = "（%s/%s）" % [c.format_number(cost_have), c.format_number(need10)]
+				cost_num.add_theme_color_override("font_color", c._cost_color(cost_have, need10))
 		)
 		up_box.add_child(batch_check)
 		up_btn.text = data.token_system.get_upgrade_btn_text(hp.current_hero_id, _token_batch)
@@ -250,12 +249,8 @@ func _show_contract_panel():
 	i_btn.custom_minimum_size = Vector2(28, 28)
 	i_btn.pressed.connect(_show_contract_hint)
 	info_row.add_child(i_btn)
-	# 【改】批次②③④-B4：下级需求拆独立行，按 技能栏资质拥有/需求 着色（够绿不够红）
-	var req_lbl = Label.new()
-	req_lbl.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
-	req_lbl.text = "下级需求：技能栏资质 %d / %d" % [apt, next_req]
-	req_lbl.add_theme_color_override("font_color", c._cost_color(apt, next_req))
-	vb.add_child(req_lbl)
+	# 【改】批次②③④-B9：门槛进度统一（当前/需求）格式，保留达到/未达到红绿提示
+	c._add_cost_row(vb, "下级需求：技能栏资质", int(apt), int(next_req))
 	
 	# ── 升级按钮：不耗道具，技能栏资质够累计需求才可升 ──
 	var up_btn = Button.new()
@@ -491,16 +486,12 @@ func _show_fengzi_panel():
 	var up_right = VBoxContainer.new()
 	up_right.alignment = BoxContainer.ALIGNMENT_CENTER   # 【改】2026-09-24 与左列垂直居中对齐
 	up_right.add_theme_constant_override("separation", 2)
-	var cost_lbl = Label.new()
-	cost_lbl.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
-	var fz_have: int = data.items.get(f_cfg.get("cost_item", ""), 0)
+	var fz_item: String = str(f_cfg.get("cost_item", ""))
+	var fz_item_name: String = str(data.ITEM_CONFIG.get(fz_item, {}).get("name", fz_item))
+	var fz_have: int = data.items.get(fz_item, 0)
 	var fz_need: int = int(f_cfg.get("cost_per_level", 600))
-	cost_lbl.text = "%s %d/%d" % [
-		data.ITEM_CONFIG.get(f_cfg.get("cost_item", ""), {}).get("name", f_cfg.get("cost_item", "")),
-		fz_have, fz_need
-	]
-	cost_lbl.add_theme_color_override("font_color", c._cost_color(fz_have, fz_need))   # 【改】批次②③④-B4：统一走 c._cost_color 公共委托
-	up_right.add_child(cost_lbl)
+	# 【改】批次②③④-B9：消耗统一（拥有/消耗），道具名默认色、数字红绿
+	c._add_cost_row(up_right, fz_item_name, fz_have, fz_need)
 	var up_box = HBoxContainer.new()
 	up_box.alignment = BoxContainer.ALIGNMENT_CENTER
 	up_right.add_child(up_box)

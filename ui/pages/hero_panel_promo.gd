@@ -3,7 +3,7 @@
 # 覆盖：赋诗晋升 / 服装一键晋升 / 金兰（花木兰）/ 亲和（沉香）/ 拜师（小八）/ 复制天赋 /
 #       凤魁全家桶（秦淮五艳晋升+五岳服装+转移）/ 三家光环卡（小八师徒·小舞双人·小柒自带）
 # hp = HeroPage 本页引用：共享状态（current_hero_id/_use_baiye/_sel_idx）与
-# 通用渲染件（update_hero_panel/_render_skill_tab）一律经 hp.xxx 访问；消耗着色走 c._cost_color 公共委托（批次②③④-B4）；
+# 通用渲染件（update_hero_panel/_render_skill_tab）一律经 hp.xxx 访问；独立消耗/门槛行走 c._add_cost_row 统一范式（批次②③④-B9）；
 # 信物/风姿面板入口经 hp.token.xxx（模块互调只走 hp 中转，不直接互引用）
 # ============================================================
 class_name HeroPanelPromo
@@ -80,13 +80,10 @@ func _on_promo_btn_clicked():
 	var up_right = VBoxContainer.new()
 	up_right.alignment = BoxContainer.ALIGNMENT_CENTER   # 【改】与左列垂直居中对齐
 	up_right.add_theme_constant_override("separation", 2)
-	var cost_lbl = Label.new()
-	cost_lbl.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	var promo_have: int = data.items.get(promo.cost_item, 0)
 	var promo_need: int = int(promo.cost_amount)
-	cost_lbl.text = "%s %d/%d" % [item_name, promo_have, promo_need]
-	cost_lbl.add_theme_color_override("font_color", c._cost_color(promo_have, promo_need))   # 【改】批次②③④-B4：统一走 c._cost_color 公共委托
-	up_right.add_child(cost_lbl)
+	# 【改】批次②③④-B9：消耗统一（拥有/消耗），道具名默认色、数字红绿
+	c._add_cost_row(up_right, item_name, promo_have, promo_need)
 	var up_box = HBoxContainer.new()
 	up_box.alignment = BoxContainer.ALIGNMENT_CENTER
 	up_right.add_child(up_box)
@@ -403,11 +400,8 @@ func _show_jinlan_panel():
 		card.add_child(left_v)
 		var right_v = VBoxContainer.new()
 		right_v.add_theme_constant_override("separation", 2)
-		var rz_lbl = Label.new()
-		rz_lbl.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
-		rz_lbl.add_theme_color_override("font_color", c._cost_color(fz_lv, req))   # 【改】批次②③④-B4：统一走 _cost_color 公共件
-		rz_lbl.text = "【红妆缭乱】%d/%d" % [fz_lv, req]
-		right_v.add_child(rz_lbl)
+		# 【改】批次②③④-B9：门槛进度统一（当前/需求）格式，保留达到/未达到红绿提示
+		c._add_cost_row(right_v, "【红妆缭乱】", int(fz_lv), int(req))
 		var up_btn = Button.new()
 		up_btn.text = "升级"
 		up_btn.disabled = lv >= cap
@@ -567,11 +561,8 @@ func _show_qinhe_panel():
 	card1.add_child(left_v)
 	var right_v = VBoxContainer.new()
 	right_v.add_theme_constant_override("separation", 2)
-	var rz_lbl = Label.new()
-	rz_lbl.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
-	rz_lbl.add_theme_color_override("font_color", c._cost_color(promo_lv, req))   # 【改】批次②③④-B4：统一走 _cost_color 公共件
-	rz_lbl.text = "【开山斧决】%d/%d" % [promo_lv, req]
-	right_v.add_child(rz_lbl)
+	# 【改】批次②③④-B9：门槛进度统一（当前/需求）格式，保留达到/未达到红绿提示
+	c._add_cost_row(right_v, "【开山斧决】", int(promo_lv), int(req))
 	var up_btn = Button.new()
 	up_btn.text = "升级"
 	up_btn.disabled = aura_lv >= cap
@@ -869,12 +860,10 @@ func _fill_fengkui_skill_tab(vb):
 	left.add_child(apt_lbl)
 	var right = VBoxContainer.new()
 	top.add_child(right)
-	var cost = int(promo.get("cost_amount", 600))
-	var have = int(data.items.get(str(promo.get("cost_item", "")), 0))
-	var cost_lbl = Label.new()
-	cost_lbl.text = "凤游宴图  %d/%d" % [have, cost]
-	cost_lbl.add_theme_color_override("font_color", c._cost_color(have, cost))   # 【改】批次②③④-B4：统一走 c._cost_color 公共委托
-	right.add_child(cost_lbl)
+	var cost: int = int(promo.get("cost_amount", 600))
+	var have: int = int(data.items.get(str(promo.get("cost_item", "")), 0))
+	# 【改】批次②③④-B9：消耗统一（拥有/消耗），道具名默认色、数字红绿
+	c._add_cost_row(right, "凤游宴图", have, cost)
 	var btns = HBoxContainer.new()
 	btns.add_theme_constant_override("separation", 8)
 	right.add_child(btns)
