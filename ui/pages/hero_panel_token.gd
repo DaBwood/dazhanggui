@@ -28,6 +28,8 @@ func _on_token_skill_upgrade(skill_name: String, mode: String) -> void:
 		hp.update_hero_panel()
 		c.update_all_ui()
 		c.update_bag_list()
+	else:
+		c._show_stage_hint("资质丹不足")   # 【新增】批次②③④-B4：失败反馈（伴生技能耗资质丹）
 
 
 # ============ 【新增】信物面板 ============
@@ -109,8 +111,8 @@ func _show_token_panel():
 		var res_lbl = Label.new()
 		res_lbl.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 		res_lbl.text = "【%s】%d/%d" % [data.ITEM_CONFIG.get(cost_item, {}).get("name", cost_item), cost_have, cost_need]
-		if cost_have < cost_need:
-			res_lbl.add_theme_color_override("font_color", Color(0.9, 0.3, 0.3))
+		# 【改】批次②③④-B4：资源行统一 _cost_color 公共件（够绿不够红；原仅不足时红）
+		res_lbl.add_theme_color_override("font_color", c._cost_color(cost_have, cost_need))
 		vb.add_child(res_lbl)
 		var up_box = HBoxContainer.new()
 		up_box.alignment = BoxContainer.ALIGNMENT_CENTER
@@ -125,6 +127,8 @@ func _show_token_panel():
 				hp.update_hero_panel()   # 资质变化，门客面板对账
 				c.update_all_ui()
 				c.update_bag_list()
+			else:
+				c._show_stage_hint("%s不足" % str(data.ITEM_CONFIG.get(cost_item, {}).get("name", cost_item)))   # 【新增】批次②③④-B4：失败反馈
 		)
 		up_box.add_child(up_btn)
 		var batch_check = CheckBox.new()
@@ -133,13 +137,10 @@ func _show_token_panel():
 		batch_check.toggled.connect(func(pressed):
 			_token_batch = pressed   # 【新增】记录勾选变化
 			up_btn.text = data.token_system.get_upgrade_btn_text(hp.current_hero_id, _token_batch)
-			# 【改】十连时资源行消耗×10（不足变红，取消勾选还原）
+			# 【改】十连时资源行消耗×10（批次②③④-B4：统一 _cost_color 着色，够绿不够红）
 			var need10 = int(t_cfg.get("cost_per_level", 600)) * (10 if pressed else 1)
 			res_lbl.text = "【%s】%d/%d" % [data.ITEM_CONFIG.get(cost_item, {}).get("name", cost_item), cost_have, need10]
-			if cost_have < need10:
-				res_lbl.add_theme_color_override("font_color", Color(0.9, 0.3, 0.3))
-			else:
-				res_lbl.remove_theme_color_override("font_color")
+			res_lbl.add_theme_color_override("font_color", c._cost_color(cost_have, need10))
 		)
 		up_box.add_child(batch_check)
 		up_btn.text = data.token_system.get_upgrade_btn_text(hp.current_hero_id, _token_batch)
@@ -230,16 +231,31 @@ func _show_contract_panel():
 	c.add_child(popup)
 	var vb = popup.get_child(0)
 	
-	# ── 契约信息：等级/转化%/当前赚速/下一级资质需求 ──
+	# ── 契约信息：等级/转化%/当前赚速（下级需求拆独立行着色；名额与算法说明迁入"i"入口）──
+	var info_row = HBoxContainer.new()
+	info_row.alignment = BoxContainer.ALIGNMENT_CENTER
+	info_row.add_theme_constant_override("separation", 6)
+	vb.add_child(info_row)
 	var info = Label.new()
 	info.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	info.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
-	info.text = "契约 %d级（转化挚友提供赚钱的%d%%）\n当前：+%s赚速\n下级需求：技能栏资质 %d / %d" % [
+	info.text = "契约 %d级（转化挚友提供赚钱的%d%%）\n当前：+%s赚速" % [
 		lv, int(lv * 0.1),
-		c.format_number(tsys.get_contract_income(hp.current_hero_id)),
-		apt, next_req
+		c.format_number(tsys.get_contract_income(hp.current_hero_id))
 	]
-	vb.add_child(info)
+	info_row.add_child(info)
+	# 【新增】批次②③④-B4：面板内补充信息入口用 i（用户 2026-09-26 约定：玩法规则"?"只在主标题旁）
+	var i_btn = Button.new()
+	i_btn.text = "i"
+	i_btn.custom_minimum_size = Vector2(28, 28)
+	i_btn.pressed.connect(_show_contract_hint)
+	info_row.add_child(i_btn)
+	# 【改】批次②③④-B4：下级需求拆独立行，按 技能栏资质拥有/需求 着色（够绿不够红）
+	var req_lbl = Label.new()
+	req_lbl.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	req_lbl.text = "下级需求：技能栏资质 %d / %d" % [apt, next_req]
+	req_lbl.add_theme_color_override("font_color", c._cost_color(apt, next_req))
+	vb.add_child(req_lbl)
 	
 	# ── 升级按钮：不耗道具，技能栏资质够累计需求才可升 ──
 	var up_btn = Button.new()
@@ -286,15 +302,30 @@ func _show_contract_panel():
 			pick_btn.pressed.connect(func(): _show_contract_friend_selector())
 			row.add_child(pick_btn)
 	
-	# 名额与算法说明
-	var hint = Label.new()
-	hint.text = "仙缘梦绕达到5/80/200/400级各+1个指定名额（共5个）\n挚友提供赚钱=对每个绑定门客的（固定值+门客基础赚速×百分比）之和"
-	hint.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
-	hint.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
-	hint.add_theme_font_size_override("font_size", 12)
-	hint.add_theme_color_override("font_color", Color("#a89ec7"))
-	vb.add_child(hint)
+	# 【删】批次②③④-B4：名额与算法说明迁入"i"入口弹窗 _show_contract_hint（长说明不进画面）
 	
+
+
+# 【新增】批次②③④-B4：契约补充信息弹窗（名额规则+提供赚钱算法；从面板迁入，长说明不进画面）
+func _show_contract_hint():
+	if c.has_node("ContractHintPopup"):
+		var old = c.get_node("ContractHintPopup")
+		c.remove_child(old)
+		old.queue_free()
+	var popup = c._create_base_popup("契约说明", Vector2(420, 220))
+	popup.name = "ContractHintPopup"
+	popup.z_index = 36   # 高于契约面板(30)与挚友选择器(35)
+	c.add_child(popup)   # 弹窗工厂只创建不挂载，必须调用方 add_child
+	var vb = popup.get_child(0)
+	for line in [
+		"仙缘梦绕达到5/80/200/400级各+1个指定名额（共5个）。",
+		"挚友提供赚钱=对每个绑定门客的（固定值+门客基础赚速×百分比）之和。",
+	]:
+		var body = Label.new()
+		body.text = line
+		body.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+		body.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+		vb.add_child(body)
 
 
 # 【新增】契约挚友选择器：已拥有且未指定的挚友，按提供赚钱降序，显示具体贡献值
@@ -468,7 +499,7 @@ func _show_fengzi_panel():
 		data.ITEM_CONFIG.get(f_cfg.get("cost_item", ""), {}).get("name", f_cfg.get("cost_item", "")),
 		fz_have, fz_need
 	]
-	cost_lbl.add_theme_color_override("font_color", hp._cost_color(fz_have, fz_need))   # 【改】2026-09-24 够升级绿/不够红
+	cost_lbl.add_theme_color_override("font_color", c._cost_color(fz_have, fz_need))   # 【改】批次②③④-B4：统一走 c._cost_color 公共委托
 	up_right.add_child(cost_lbl)
 	var up_box = HBoxContainer.new()
 	up_box.alignment = BoxContainer.ALIGNMENT_CENTER
@@ -484,6 +515,8 @@ func _show_fengzi_panel():
 			hp.update_hero_panel()    # 资质/赚速变化，门客面板对账
 			c.update_all_ui()
 			c.update_bag_list()
+		else:
+			c._show_stage_hint("%s不足" % str(data.ITEM_CONFIG.get(f_cfg.get("cost_item", ""), {}).get("name", f_cfg.get("cost_item", ""))))   # 【新增】批次②③④-B4：失败反馈
 	)
 	up_box.add_child(up_btn)
 	var batch_check = CheckBox.new()

@@ -232,7 +232,7 @@ func unlock_avatar(hero_id: String, avatar_id: String) -> bool:
 			if av.get("is_default", false): return true
 			var item_id = av.get("unlock_item", "")
 			if item_id == "": return false
-			if g.items.get(item_id, 0) <= 100: return false
+			if g.items.get(item_id, 0) < 100: return false   # 【修】2026-09-26 用户拍板：判定 <=100 误致需 101 个才解锁，改 <100 与 UI"x/100"口径一致
 			g.items[item_id] = int(g.items[item_id]) - 100
 			gs.avatars[avatar_id] = true
 			return true

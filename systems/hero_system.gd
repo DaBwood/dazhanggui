@@ -121,6 +121,8 @@ func upgrade_hero_level(hero_id: String, batch: bool = false) -> int:
 	var levels = 0
 	for lv in range(hero.level, target):
 		var cost = int(ceil(900 * pow(1.0158, lv)))
+		if batch:
+			cost *= 10   # 【改】2026-09-26 用户拍板：十连实扣对齐门客面板按钮显示（每级×10）
 		if exp_count < total_cost + cost:
 			break
 		total_cost += cost

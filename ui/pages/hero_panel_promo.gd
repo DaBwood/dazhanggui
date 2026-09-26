@@ -3,7 +3,7 @@
 # 覆盖：赋诗晋升 / 服装一键晋升 / 金兰（花木兰）/ 亲和（沉香）/ 拜师（小八）/ 复制天赋 /
 #       凤魁全家桶（秦淮五艳晋升+五岳服装+转移）/ 三家光环卡（小八师徒·小舞双人·小柒自带）
 # hp = HeroPage 本页引用：共享状态（current_hero_id/_use_baiye/_sel_idx）与
-# 通用渲染件（update_hero_panel/_render_skill_tab/_cost_color）一律经 hp.xxx 访问；
+# 通用渲染件（update_hero_panel/_render_skill_tab）一律经 hp.xxx 访问；消耗着色走 c._cost_color 公共委托（批次②③④-B4）；
 # 信物/风姿面板入口经 hp.token.xxx（模块互调只走 hp 中转，不直接互引用）
 # ============================================================
 class_name HeroPanelPromo
@@ -29,6 +29,11 @@ func on_promotion_upgrade(mode: String = "single"):
 		hp.update_hero_panel()
 		c.update_all_ui()
 		c.update_bag_list()
+	else:
+		# 【新增】批次②③④-B4：失败反馈（晋升耗对应道具，道具名读配置）
+		var promo_cfg: Dictionary = data.heroes[hp.current_hero_id].get("promotion", {})
+		var iname: String = str(data.ITEM_CONFIG.get(str(promo_cfg.get("cost_item", "")), {}).get("name", "晋升道具"))
+		c._show_stage_hint("%s不足" % iname)
 
 
 # 【改】晋升面板参数化 v3：标题/资质技能名/解锁列表/按钮文案全部读 promotion 配置
@@ -80,7 +85,7 @@ func _on_promo_btn_clicked():
 	var promo_have: int = data.items.get(promo.cost_item, 0)
 	var promo_need: int = int(promo.cost_amount)
 	cost_lbl.text = "%s %d/%d" % [item_name, promo_have, promo_need]
-	cost_lbl.add_theme_color_override("font_color", hp._cost_color(promo_have, promo_need))   # 【改】2026-09-24 够升级绿/不够红
+	cost_lbl.add_theme_color_override("font_color", c._cost_color(promo_have, promo_need))   # 【改】批次②③④-B4：统一走 c._cost_color 公共委托
 	up_right.add_child(cost_lbl)
 	var up_box = HBoxContainer.new()
 	up_box.alignment = BoxContainer.ALIGNMENT_CENTER
@@ -271,6 +276,8 @@ func _show_simple_promo_panel():
 		var cond_lbl = Label.new()
 		cond_lbl.add_theme_font_size_override("font_size", 15)
 		cond_lbl.text = "晋升%s：%s" % [q_names.get(int(st.get("quality", 2)), "传奇"), _simple_cond_text(hp.current_hero_id, st)]
+		# 【新增】批次②③④-B4：条件行按是否可晋升着色（够绿不够红；面板只显示下一档，与 can_simple_promote 同口径）
+		cond_lbl.add_theme_color_override("font_color", Color("#7ee787") if data.hero_system.can_simple_promote(hp.current_hero_id) else Color("#ff6666"))
 		vb.add_child(cond_lbl)
 		for sk in st.get("skills", []):
 			var sk_lbl = Label.new()
@@ -398,7 +405,7 @@ func _show_jinlan_panel():
 		right_v.add_theme_constant_override("separation", 2)
 		var rz_lbl = Label.new()
 		rz_lbl.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
-		rz_lbl.add_theme_color_override("font_color", Color("#7ee787") if fz_lv >= req else Color("#ff6666"))
+		rz_lbl.add_theme_color_override("font_color", c._cost_color(fz_lv, req))   # 【改】批次②③④-B4：统一走 _cost_color 公共件
 		rz_lbl.text = "【红妆缭乱】%d/%d" % [fz_lv, req]
 		right_v.add_child(rz_lbl)
 		var up_btn = Button.new()
@@ -562,7 +569,7 @@ func _show_qinhe_panel():
 	right_v.add_theme_constant_override("separation", 2)
 	var rz_lbl = Label.new()
 	rz_lbl.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
-	rz_lbl.add_theme_color_override("font_color", Color("#7ee787") if promo_lv >= req else Color("#ff6666"))
+	rz_lbl.add_theme_color_override("font_color", c._cost_color(promo_lv, req))   # 【改】批次②③④-B4：统一走 _cost_color 公共件
 	rz_lbl.text = "【开山斧决】%d/%d" % [promo_lv, req]
 	right_v.add_child(rz_lbl)
 	var up_btn = Button.new()
@@ -712,6 +719,7 @@ func _get_copy_talent_info(hero_id: String) -> Dictionary:
 func _on_copy_talent_btn_clicked():
 	var ct = _get_copy_talent_info(hp.current_hero_id)
 	if ct.is_empty():
+		c._show_stage_hint("未找到天赋信息")   # 【新增】批次②③④-B4：空信息反馈
 		return
 	var popup = c._create_base_popup(ct.get("name", "天赋"), Vector2(460, 260))
 	c.add_child(popup)   # 【修】panel 需自行入树（helper 只挂遮罩），否则只有遮罩无窗体
@@ -825,6 +833,11 @@ func _on_fengkui_upgrade(batch: bool):
 	if data.hero_system.upgrade_fengkui(hp.current_hero_id, batch) > 0:
 		_show_fengkui_panel("skill")
 		hp.update_hero_panel()
+	else:
+		# 【新增】批次②③④-B4：失败反馈（凤临乐宴耗对应道具，道具名读配置）
+		var fk_cfg: Dictionary = data.heroes[hp.current_hero_id].get("fengkui", {})
+		var iname: String = str(data.ITEM_CONFIG.get(str(fk_cfg.get("cost_item", "")), {}).get("name", "凤游宴图"))
+		c._show_stage_hint("%s不足" % iname)
 
 
 func _on_fengkui_skill_upgrade(mode: String):
@@ -860,7 +873,7 @@ func _fill_fengkui_skill_tab(vb):
 	var have = int(data.items.get(str(promo.get("cost_item", "")), 0))
 	var cost_lbl = Label.new()
 	cost_lbl.text = "凤游宴图  %d/%d" % [have, cost]
-	cost_lbl.add_theme_color_override("font_color", hp._cost_color(have, cost))
+	cost_lbl.add_theme_color_override("font_color", c._cost_color(have, cost))   # 【改】批次②③④-B4：统一走 c._cost_color 公共委托
 	right.add_child(cost_lbl)
 	var btns = HBoxContainer.new()
 	btns.add_theme_constant_override("separation", 8)

@@ -552,12 +552,15 @@ func update_hero_panel():
 		lv_btn.text = ct.get("name", "天赋详情")
 		lv_btn.visible = true
 		lv_btn.disabled = false
+		lv_btn.remove_theme_color_override("font_color")   # 【新增】批次②③④-B4：复用钮清掉升级/突破分支的消耗着色
 		for conn in lv_btn.pressed.get_connections():
 			lv_btn.pressed.disconnect(conn.callable)
 		lv_btn.pressed.connect(promo._on_copy_talent_btn_clicked)
 	elif need_bt:
 		# 到达突破节点：按钮显示 突破+风雅颂数量，隐藏勾选框
 		lv_btn.text = "突破\n%d" % bt_cost
+		# 【新增】批次②③④-B4：突破钮按 风雅颂拥有/消耗 着色（够绿不够红）
+		lv_btn.add_theme_color_override("font_color", c._cost_color(int(data.items.get("fengyasong", 0)), int(bt_cost)))
 		batch_check.visible = false
 		#关闭升级
 		if lv_btn.pressed.is_connected(on_hero_level_upgrade):
@@ -568,6 +571,8 @@ func update_hero_panel():
 	else:
 		# 【改】消耗数字交给统一函数：未勾选显示下一级消耗，勾选十连显示十连总价
 		lv_btn.text = _get_level_up_btn_text(h)
+		# 【新增】批次②③④-B4：升级钮按 阅历拥有/消耗 着色（够绿不够红）
+		lv_btn.add_theme_color_override("font_color", c._cost_color(int(data.items.get("experience", 0)), _get_level_up_cost(h)))
 		batch_check.visible = true
 		#关闭突破
 		if lv_btn.pressed.is_connected(on_hero_breakthrough):
@@ -615,26 +620,39 @@ func on_hero_level_upgrade():
 		update_hero_panel()
 		c.update_all_ui()
 		c.update_bag_list()
+	else:
+		c._show_stage_hint("阅历不足")   # 【新增】批次②③④-B4：升级失败反馈（门客升级耗阅历）
 
 # 【新增】升级按钮文本：未勾选十连显示下一级消耗；勾选十连显示接下来最多10级（不超突破上限）的总消耗
-# 十连总价按 hero_system.upgrade_hero_level 的实际扣费公式 100*1.05^lv 逐级累加，保证显示多少扣多少
+# 【改】批次②③④-B4：消耗数值拆出 _get_level_up_cost，按钮文本与批次③着色共用同一口径
 func _get_level_up_btn_text(h) -> String:
 	if not c.has_node("HeroPanel/LevelUpBox/LevelUpBtnBox/BatchCheck"):
 		return "升级"
-	var batch = c.get_node("HeroPanel/LevelUpBox/LevelUpBtnBox/BatchCheck").button_pressed
-	if not batch:
-		return "升级\n%d" % int(ceil(900 * pow(1.0158, h.level)))
+	var cost: int = _get_level_up_cost(h)
+	if c.get_node("HeroPanel/LevelUpBox/LevelUpBtnBox/BatchCheck").button_pressed:
+		return "十连\n%d" % cost
+	return "升级\n%d" % cost
+
+# 升级消耗：单级=ceil(900×1.0158^lv)；十连=接下来最多10级（不超突破上限）逐级累加（每级×10）
+# 十连每级×10 与 hero_system.upgrade_hero_level 实扣口径一致（2026-09-26 用户拍板：实扣对齐显示）
+func _get_level_up_cost(h) -> int:
+	if not c.has_node("HeroPanel/LevelUpBox/LevelUpBtnBox/BatchCheck"):
+		return int(ceil(900 * pow(1.0158, h.level)))
+	if not c.get_node("HeroPanel/LevelUpBox/LevelUpBtnBox/BatchCheck").button_pressed:
+		return int(ceil(900 * pow(1.0158, h.level)))
 	var max_lv = 50 + h.breakthrough_count * 50
 	var total = 0
 	for lv in range(h.level, min(h.level + 10, max_lv)):
 		total += int(ceil(900 * pow(1.0158, lv))) * 10
-	return "十连\n%d" % total
+	return total
 
 func on_hero_breakthrough():
 	if data.breakthrough_hero(current_hero_id):
 		update_hero_panel()
 		c.update_all_ui()
 		c.update_bag_list()
+	else:
+		c._show_stage_hint("风雅颂不足")   # 【新增】批次②③④-B4：突破失败反馈
 
 func _on_hero_beast_btn_clicked(beast_id: String, beast_idx: int):
 	var panel = c._create_base_popup("珍兽操作", Vector2(360, 240), Vector2(396, 200))
@@ -768,6 +786,8 @@ func on_aptitude_skill_upgrade(skill_index: int, mode: String = "single"):
 			update_hero_panel()
 			c.update_all_ui()
 			c.update_bag_list()
+		else:
+			c._show_stage_hint("%s不足" % str(data.ITEM_CONFIG.get(book_id, {}).get("name", book_id)))   # 【新增】批次②③④-B4：失败反馈
 		return
 
 	var cost_per_level = int(skill.get("aptitude_per_level", 1))  # 每级固定消耗=每级加的资质数
@@ -784,10 +804,13 @@ func on_aptitude_skill_upgrade(skill_index: int, mode: String = "single"):
 			update_hero_panel()
 			c.update_all_ui()
 			c.update_bag_list()
+		else:
+			c._show_stage_hint("百业经验不足")   # 【新增】批次②③④-B4：失败反馈
 		return
 
 	var pill_count = data.items.get("aptitude_pill", 0)
 	if pill_count < cost_per_level:
+		c._show_stage_hint("资质丹不足")   # 【新增】批次②③④-B4：失败反馈
 		return
 
 	if mode == "single":
@@ -807,6 +830,8 @@ func on_shop_skill_upgrade(skill_index: int, mode: String = "single"):
 		update_hero_panel()
 		c.update_all_ui()
 		c.update_bag_list()
+	else:
+		c._show_stage_hint("算盘不足")   # 【新增】批次②③④-B4：失败反馈
 
 # 【新增】钱庄财源广进升级（独立技能，走筹算值；single=升1级，bulk=筹算值够升多少升多少）
 func on_shop_skill_chousuan_upgrade(mode: String = "single"):
@@ -814,6 +839,8 @@ func on_shop_skill_chousuan_upgrade(mode: String = "single"):
 		update_hero_panel()
 		c.update_all_ui()   # 店铺技能加成↑ → 派遣赚速/全局赚速飘字
 		c.update_bag_list()
+	else:
+		c._show_stage_hint("筹算值不足")   # 【新增】批次②③④-B4：失败反馈
 
 # 【新增】虫师副业技能升级（促织园体系走 cuzhi_system；single=升1级，bulk=升级10次）
 # 【第35节】支持百业经验抵扣（勾选状态共享 _use_baiye）
@@ -822,6 +849,8 @@ func on_side_skill_upgrade(skill_idx: int, mode: String = "single"):
 		update_hero_panel()
 		c.update_all_ui()
 		c.update_bag_list()
+	else:
+		c._show_stage_hint("百业经验不足" if _use_baiye else "资质丹不足")   # 【新增】批次②③④-B4：失败反馈
 
 # 【新增】副业资质技能升级（side_skill_system；single=升1级，bulk=升级10次）【第35节】
 func on_side_sys_upgrade(key: String, mode: String = "single"):
@@ -829,6 +858,12 @@ func on_side_sys_upgrade(key: String, mode: String = "single"):
 		update_hero_panel()
 		c.update_all_ui()
 		c.update_bag_list()
+	else:
+		# 【新增】批次②③④-B4：失败反馈（按该技能自身货币名提示，不写模糊文案）
+		for r in data.side_skill_system.get_hero_skill_rows(current_hero_id):
+			if str(r["key"]) == key:
+				c._show_stage_hint("%s不足" % str(r["currency"]))
+				break
 
 func open_hero_detail(hero_id: String):
 	open_hero_panel(hero_id)
@@ -1144,7 +1179,7 @@ func _render_skill_detail(list: VBoxContainer, item: Dictionary) -> void:
 			pill_row.add_theme_constant_override("separation", 2)
 			var pill_num_lbl := Label.new()
 			pill_num_lbl.text = "(%d/%d)" % [per_level, pill_stock]
-			pill_num_lbl.add_theme_color_override("font_color", _cost_color(pill_stock, per_level))
+			pill_num_lbl.add_theme_color_override("font_color", c._cost_color(pill_stock, per_level))
 			pill_num_lbl.add_theme_font_size_override("font_size", 12)
 			pill_row.add_child(chk_pill)
 			pill_row.add_child(pill_num_lbl)
@@ -1153,7 +1188,7 @@ func _render_skill_detail(list: VBoxContainer, item: Dictionary) -> void:
 			baiye_row.add_theme_constant_override("separation", 2)
 			var baiye_num_lbl := Label.new()
 			baiye_num_lbl.text = "(%d/%d)" % [per_level * data.hero_system.get_baiye_per_pill(), pool_stock]
-			baiye_num_lbl.add_theme_color_override("font_color", _cost_color(pool_stock, per_level * data.hero_system.get_baiye_per_pill()))
+			baiye_num_lbl.add_theme_color_override("font_color", c._cost_color(pool_stock, per_level * data.hero_system.get_baiye_per_pill()))
 			baiye_num_lbl.add_theme_font_size_override("font_size", 12)
 			baiye_row.add_child(chk_baiye)
 			baiye_row.add_child(baiye_num_lbl)
@@ -1162,7 +1197,7 @@ func _render_skill_detail(list: VBoxContainer, item: Dictionary) -> void:
 			var own: Array = item["own"]
 			var own_lbl := Label.new()
 			own_lbl.text = "%s %d/%d" % [item["own_name"], own[0], own[1]]
-			own_lbl.add_theme_color_override("font_color", _cost_color(int(own[1]), int(own[0])))   # 【改】够升级绿/不够红（own=[消耗,库存]）
+			own_lbl.add_theme_color_override("font_color", c._cost_color(int(own[1]), int(own[0])))   # 【改】够升级绿/不够红（own=[消耗,库存]）
 			own_lbl.add_theme_font_size_override("font_size", 13)
 			own_lbl.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
 			right.add_child(own_lbl)
@@ -1227,10 +1262,7 @@ func _render_skill_tab(list: VBoxContainer, items: Array, tab_id: String) -> voi
 	_render_skill_buttons(list, items, sel, tab_id)
 	_render_skill_detail(list, items[sel])
 
-# 【新增】消耗数字着色通用件（2026-09-24 用户拍板）：够升级绿 #7ee787 / 不够红 #ff6666
-# 风姿/晋升/技能栏（资质丹·百业经验·副业货币·算盘·筹算值·伙伴币）所有"消耗/库存"文本共用
-func _cost_color(have: int, need: int) -> Color:
-	return Color("#7ee787") if have >= need else Color("#ff6666")
+# 【删】批次②③④-B4：局部 _cost_color 删除，全仓统一走 c._cost_color 公共委托（ui_helpers；够绿 #7ee787 / 不够红 #ff6666）
 
 # 【第35节】填充「技能」页：资质技能 + 守护灵技能，统一按钮排+详情区（资质类格式：资质+X（下级+Y））
 func _fill_skill_tab(list):
@@ -1509,7 +1541,9 @@ func _build_aura_card(skill: Dictionary) -> Dictionary:
 # 【新增】.极档"？"说明弹窗：各特级厨师对应技能等级明细 + 总和/下级需求（固定尺寸面板，防过长）
 func _on_aura_extreme_hint(skill_name: String):
 	var lines = data.talent_system.get_aura_extreme_detail(current_hero_id, skill_name)
-	if lines.is_empty(): return
+	if lines.is_empty():
+		c._show_stage_hint("暂无升级需求明细")   # 【新增】批次②③④-B4：空明细反馈
+		return
 	if c.has_node("AuraHintPanel"):
 		var old = c.get_node("AuraHintPanel")
 		c.remove_child(old)
@@ -1657,6 +1691,7 @@ func _show_cuzhi_action_panel(cid: String):
 		var check_bf = CheckBox.new()
 		check_bf.name = "CheckBeastFruit"
 		check_bf.text = "珍兽果(%d)" % cost_bf
+		check_bf.add_theme_color_override("font_color", c._cost_color(int(bf_have), int(cost_bf)))   # 【新增】批次②③④-B4：够升绿/不够红
 		# 【修复】根据上次选择恢复勾选状态
 		check_bf.button_pressed = not _cuzhi_last_use_jinghua
 		check_box.add_child(check_bf)
@@ -1664,6 +1699,7 @@ func _show_cuzhi_action_panel(cid: String):
 		var check_jh = CheckBox.new()
 		check_jh.name = "CheckJinghua"
 		check_jh.text = "促织精华(%d)" % cost_jh
+		check_jh.add_theme_color_override("font_color", c._cost_color(int(jh_have), int(cost_jh)))   # 【新增】批次②③④-B4：够升绿/不够红
 		check_jh.button_pressed = _cuzhi_last_use_jinghua
 		check_box.add_child(check_jh)
 		
@@ -1863,6 +1899,8 @@ func _show_guardian_panel():
 	
 	var up_btn = Button.new()
 	up_btn.text = "注灵\n%d/%d" % [has_yulin, cost]
+	# 【新增】批次②③④-B4：注灵钮按 蕴灵珏拥有/消耗 着色（够绿不够红）
+	up_btn.add_theme_color_override("font_color", c._cost_color(int(has_yulin), int(cost)))
 	up_btn.custom_minimum_size = Vector2(120, 50)
 	up_btn.pressed.connect(_on_guardian_level_up)
 	up_box.add_child(up_btn)
@@ -1901,6 +1939,13 @@ func _on_guardian_level_up():
 		update_hero_panel()
 		c.update_all_ui()
 		c.update_bag_list()
+	else:
+		# 【新增】批次②③④-B4：失败反馈——阶段上限与蕴灵珏不足分开提示（不写模糊文案）
+		var gs_now: Dictionary = data.guardian_system.get_guardian(current_hero_id)
+		if int(gs_now.get("level", 0)) >= data.guardian_system.get_level_cap(current_hero_id):
+			c._show_stage_hint("已达当前阶段上限")
+		else:
+			c._show_stage_hint("蕴灵珏不足")
 
 # 【改】切换幻化后同步刷新弹窗（如果打开着）
 func _on_guardian_avatar_selected(avatar_id: String):
@@ -1932,6 +1977,8 @@ func _on_guardian_skill_upgrade(skill_idx: int, mode: String):
 		update_hero_panel()
 		c.update_all_ui()
 		c.update_bag_list()
+	else:
+		c._show_stage_hint("百业经验不足" if _use_baiye else "资质丹不足")   # 【新增】批次②③④-B4：失败反馈
 
 # 【新增】打开幻化形象选择弹窗（从守护灵面板独立出来，避免内容过多挤出去）
 func _show_guardian_avatar_popup():
@@ -1970,6 +2017,7 @@ func _show_guardian_avatar_popup():
 		else:
 			var have = data.items.get(av.unlock_item, 0)
 			info.text = "【%s】%s %d/100" % [av.name, item_name, have]   # 【改】显示拥有/需要
+			info.add_theme_color_override("font_color", c._cost_color(int(have), 100))   # 【新增】批次②③④-B4：够解锁绿/不够红
 		info.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 		info.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
 		row.add_child(info)
@@ -2080,6 +2128,10 @@ func _fill_talent_refine_area(vb):
 		var refine_btn = Button.new()
 		refine_btn.custom_minimum_size = Vector2(130, 48)
 		refine_btn.text = "精进%d星\n%d【%s】" % [star + 1, int(cfg.get("cost", 0)), item_name]
+		# 【新增】批次②③④-B4：精进钮按 道具拥有/消耗 着色（置灰时保持同色，font_disabled_color 同步）
+		var refine_col: Color = c._cost_color(int(data.items.get(ts.get_cost_item(), 0)), int(cfg.get("cost", 0)))
+		refine_btn.add_theme_color_override("font_color", refine_col)
+		refine_btn.add_theme_color_override("font_disabled_color", refine_col)
 		refine_btn.disabled = not check.ok
 		refine_btn.pressed.connect(func():
 			var res = ts.refine(current_hero_id)
