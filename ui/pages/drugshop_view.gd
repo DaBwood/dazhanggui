@@ -112,10 +112,11 @@ func _jar_text() -> String:
 		prof_total += int(pot["prof"][rid])
 	if prof_total > 0:
 		parts.append("熟练度 %s" % c.format_number(prof_total))
-	return "收益罐：" + "　".join(parts)
+	return "可领取：" + "　".join(parts)
 
 # ---------- 页面构建 ----------
 func _build(page: Panel):
+	# 【改】批次②③④-B12：主页收益罐居中放大，玩法入口固定底部大号页签；二级页仍走滚动容器
 	var vb := VBoxContainer.new()
 	vb.position = Vector2.ZERO
 	vb.size = page.size
@@ -135,14 +136,12 @@ func _build(page: Panel):
 	title.text = "药铺" if _tab == "main" else ("药铺 · 打理" if _tab == "craft" else ("药铺 · 本草秘籍" if _tab == "recipe" else "药铺 · 成就"))
 	title.add_theme_font_size_override("font_size", 24)
 	top.add_child(title)
-	# 【新增】批次②③④-B2：玩法说明入口"?"（只在玩法主标题旁，说明流程/规则/后台计算）
 	var rule_btn := Button.new()
 	rule_btn.text = "?"
 	rule_btn.custom_minimum_size = Vector2(30, 30)
 	rule_btn.add_theme_font_size_override("font_size", 16)
 	rule_btn.pressed.connect(_show_rule_popup)
 	top.add_child(rule_btn)
-	# 【改】2026-09-18 勋章统一样式：右上角入口+弹窗（同酒坊模板），替代原主页内嵌勋章卡
 	var medal_sp := Control.new()
 	medal_sp.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	top.add_child(medal_sp)
@@ -151,25 +150,32 @@ func _build(page: Panel):
 	medal_btn.custom_minimum_size = Vector2(84, 42)
 	medal_btn.pressed.connect(_show_medal_popup)
 	top.add_child(medal_btn)
-	_add_btn_dot(medal_btn, _sys().can_upgrade_medal().get("ok", false))   # 内部红点：勋章可升
-	# 【删】2026-09-16 资源行（铜板/累计药铺经验）移除：用到它们的地方（收益罐/勋章卡/秘籍页）各自有显示
-	# 内容体
-	var scroll := ScrollContainer.new()
-	scroll.size_flags_vertical = Control.SIZE_EXPAND_FILL
-	vb.add_child(scroll)
-	var body := VBoxContainer.new()
-	body.size_flags_horizontal = Control.SIZE_EXPAND_FILL
-	body.add_theme_constant_override("separation", 8)
-	scroll.add_child(body)
-	match _tab:
-		"craft":
-			_fill_craft(body)
-		"recipe":
-			_fill_recipe(body)
-		"ach":
-			_fill_ach(body)
-		_:
-			_fill_main(body)
+	_add_btn_dot(medal_btn, _sys().can_upgrade_medal().get("ok", false))
+	var res_lbl := Label.new()
+	res_lbl.text = "铜板 %s　药铺经验 %s" % [c.format_number(int(_sys().coins)), c.format_number(int(_sys().exp_total))]
+	res_lbl.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	res_lbl.add_theme_font_size_override("font_size", 16)
+	res_lbl.add_theme_color_override("font_color", Color("#e6c07b"))
+	vb.add_child(res_lbl)
+	if _tab == "main":
+		var main_body: VBoxContainer = c._add_centered_panel(vb, Vector2(430, 340))
+		_fill_main(main_body)
+		_add_main_nav(vb)
+	else:
+		var scroll := ScrollContainer.new()
+		scroll.size_flags_vertical = Control.SIZE_EXPAND_FILL
+		vb.add_child(scroll)
+		var body := VBoxContainer.new()
+		body.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+		body.add_theme_constant_override("separation", 8)
+		scroll.add_child(body)
+		match _tab:
+			"craft":
+				_fill_craft(body)
+			"recipe":
+				_fill_recipe(body)
+			"ach":
+				_fill_ach(body)
 
 func _on_back():
 	if _tab == "main":
@@ -213,91 +219,99 @@ func _show_rule_popup():
 		body.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
 		vb.add_child(body)
 
-# ---------- 主页：收益罐 + 病人行 + 三入口（勋章已改右上角弹窗，2026-09-18 统一样式） ----------
+# ---------- 主页：收益罐主卡 + 病人/营业操作 ----------
 func _fill_main(body: VBoxContainer):
-	# 收益罐（铜板/药铺经验/熟练度，领取统一入账）
+	var jar_title := Label.new()
+	jar_title.text = "收益罐"
+	jar_title.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	jar_title.add_theme_font_size_override("font_size", 22)
+	jar_title.add_theme_color_override("font_color", Color("#ffd700"))
+	body.add_child(jar_title)
 	var jar_row := HBoxContainer.new()
+	jar_row.alignment = BoxContainer.ALIGNMENT_CENTER
 	jar_row.add_theme_constant_override("separation", 8)
 	body.add_child(jar_row)
 	_jar_lbl = Label.new()
 	_jar_lbl.text = _jar_text()
-	_jar_lbl.size_flags_horizontal = Control.SIZE_EXPAND_FILL
-	_jar_lbl.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+	_jar_lbl.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	_jar_lbl.add_theme_font_size_override("font_size", 17)
 	jar_row.add_child(_jar_lbl)
 	_jar_dot = Label.new()
 	_jar_dot.text = "●"
 	_jar_dot.add_theme_color_override("font_color", Color("#e74c3c"))
 	_jar_dot.visible = _sys().has_pot()
 	jar_row.add_child(_jar_dot)
-	_collect_btn = Button.new()   # 【改】登记引用，节拍里刷新 disabled
+	_collect_btn = Button.new()   # 登记引用，节拍里刷新 disabled
 	_collect_btn.text = "领取"
-	_collect_btn.custom_minimum_size = Vector2(90, 36)
+	_collect_btn.custom_minimum_size = Vector2(100, 38)
 	_collect_btn.disabled = not _sys().has_pot()
 	_collect_btn.pressed.connect(_on_collect)
 	jar_row.add_child(_collect_btn)
-	# 病人行：计数 + 招牌加号（药铺招牌，仅限此处）+ 营业按钮
 	var count_row := HBoxContainer.new()
-	count_row.add_theme_constant_override("separation", 6)
+	count_row.alignment = BoxContainer.ALIGNMENT_CENTER
+	count_row.add_theme_constant_override("separation", 8)
 	body.add_child(count_row)
 	_stamina_lbl = Label.new()
 	_stamina_lbl.text = "病人：%d / %d" % [_sys().get_stamina(), _sys().get_stamina_cap()]
-	_stamina_lbl.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	_stamina_lbl.add_theme_font_size_override("font_size", 17)
 	count_row.add_child(_stamina_lbl)
-	# 【新增】药铺招牌加号：弹出数量选择器批量恢复病人（不受自然上限限制，背包不开放，同医馆病人手册）
 	var sign_btn := Button.new()
 	sign_btn.text = "＋"
-	sign_btn.custom_minimum_size = Vector2(40, 32)
+	sign_btn.custom_minimum_size = Vector2(42, 34)
 	sign_btn.tooltip_text = "使用【药铺招牌】+3 病人"
 	sign_btn.pressed.connect(_on_use_sign)
 	count_row.add_child(sign_btn)
-	_serve_btn = Button.new()   # 【改】登记引用，节拍里刷新 disabled
+	_serve_btn = Button.new()   # 登记引用，节拍里刷新 disabled
 	_serve_btn.text = "营业"
-	_serve_btn.custom_minimum_size = Vector2(110, 38)
+	_serve_btn.custom_minimum_size = Vector2(120, 42)
 	_serve_btn.disabled = _sys().get_stamina() <= 0
 	_serve_btn.pressed.connect(_on_serve)
 	count_row.add_child(_serve_btn)
 	_cd_lbl = Label.new()
 	_cd_lbl.text = _cd_text()
+	_cd_lbl.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	_cd_lbl.add_theme_color_override("font_color", Color("#9a93b8"))
 	body.add_child(_cd_lbl)
-	# 一键接待勾选（【改】2026-09-16：勾选只切换营业模式，不消耗病人；勾选后点营业=全部转入队列）
-	# 勾选框放营业下面；队列状态跟随显示
 	var auto_row := HBoxContainer.new()
-	auto_row.add_theme_constant_override("separation", 6)
+	auto_row.alignment = BoxContainer.ALIGNMENT_CENTER
+	auto_row.add_theme_constant_override("separation", 8)
 	body.add_child(auto_row)
 	var auto_check := CheckBox.new()
 	auto_check.text = "一键接待"
 	auto_check.button_pressed = _sys().get_auto_settle()
-	auto_check.toggled.connect(_on_auto_toggled)   # 【改】命名方法直连（原 lambda 多语句改绑）
+	auto_check.toggled.connect(_on_auto_toggled)
 	auto_row.add_child(auto_check)
 	_queue_lbl = Label.new()
 	_queue_lbl.text = _queue_text()
 	_queue_lbl.add_theme_color_override("font_color", Color("#ffd700"))
 	auto_row.add_child(_queue_lbl)
-	# 三入口按钮（【新增】各自红点：工艺可升/药方可升/成就可领，仅药铺页内显示，不透到地图）
-	var grid := GridContainer.new()
-	grid.columns = 3
-	grid.add_theme_constant_override("h_separation", 8)
-	grid.add_theme_constant_override("v_separation", 8)
-	body.add_child(grid)
+
+func _add_main_nav(parent: VBoxContainer):
+	var nav := HBoxContainer.new()
+	nav.alignment = BoxContainer.ALIGNMENT_CENTER
+	nav.add_theme_constant_override("separation", 8)
+	nav.custom_minimum_size = Vector2(0, 56)
+	parent.add_child(nav)
 	for t in [["craft", "打理", _sys().has_upgradeable_craft()],
 			["recipe", "本草秘籍", _sys().has_upgradeable_recipe()],
 			["ach", "成就", _sys().has_claimable_ach()]]:
 		var wrap_node := Control.new()
-		wrap_node.custom_minimum_size = Vector2(170, 56)   # 显式尺寸：红点按常量定位（新建 Button 当帧 size 为 0）
-		grid.add_child(wrap_node)
+		wrap_node.custom_minimum_size = Vector2(120, 54)
+		nav.add_child(wrap_node)
 		var b := Button.new()
 		b.text = t[1]
+		b.add_theme_font_size_override("font_size", 15)
 		b.position = Vector2.ZERO
-		b.size = Vector2(170, 56)
-		b.pressed.connect(func(): _switch_tab(t[0]))
+		b.size = Vector2(120, 54)
+		var tab_id: String = t[0]
+		b.pressed.connect(func(): _switch_tab(tab_id))
 		wrap_node.add_child(b)
 		var dot := Label.new()
 		dot.text = "●"
 		dot.add_theme_color_override("font_color", Color("#e74c3c"))
 		dot.add_theme_font_size_override("font_size", 16)
-		dot.position = Vector2(148, -6)   # 按钮右上角
-		dot.mouse_filter = Control.MOUSE_FILTER_IGNORE   # 红点不拦截触摸
+		dot.position = Vector2(102, -6)
+		dot.mouse_filter = Control.MOUSE_FILTER_IGNORE
 		dot.visible = t[2]
 		wrap_node.add_child(dot)
 
@@ -482,15 +496,18 @@ func _fill_craft(body: VBoxContainer):
 	body.add_child(head)
 	var grid := GridContainer.new()
 	grid.columns = 2
-	grid.add_theme_constant_override("h_separation", 8)
-	grid.add_theme_constant_override("v_separation", 8)
+	grid.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	grid.add_theme_constant_override("h_separation", 10)
+	grid.add_theme_constant_override("v_separation", 10)
 	body.add_child(grid)
 	for cdef in _sys().get_craft_list():
 		var cid: String = str(cdef.get("id", ""))
 		if cid == "":
 			continue
 		var b := Button.new()
-		b.custom_minimum_size = Vector2(260, 64)
+		b.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+		b.custom_minimum_size = Vector2(0, 68)
+		b.add_theme_font_size_override("font_size", 14)
 		b.text = "【%s】\nLv.%d" % [cdef.get("name", cid), _sys().get_craft_level(cid)]
 		var cid_c: String = cid
 		b.pressed.connect(func(): _show_craft_popup(cid_c))
@@ -554,14 +571,16 @@ func _fill_recipe(body: VBoxContainer):
 	body.add_child(head)
 	var grid := GridContainer.new()
 	grid.columns = 3
-	grid.add_theme_constant_override("h_separation", 6)
-	grid.add_theme_constant_override("v_separation", 6)
+	grid.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	grid.add_theme_constant_override("h_separation", 8)
+	grid.add_theme_constant_override("v_separation", 8)
 	body.add_child(grid)
 	for rc in _sys().get_recipe_list():
 		var rid: String = str(rc.get("id", ""))
 		# 【新增】2026-09-16 可升级药方红点（同医馆病症页模式）：外套 Control 显式尺寸
 		var wrap_node := Control.new()
-		wrap_node.custom_minimum_size = Vector2(170, 52)
+		wrap_node.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+		wrap_node.custom_minimum_size = Vector2(0, 58)
 		grid.add_child(wrap_node)
 		var b := Button.new()
 		if _sys().is_recipe_unlocked(rid):
@@ -569,8 +588,8 @@ func _fill_recipe(body: VBoxContainer):
 		else:
 			b.text = "%s\n需经验 %s" % [rc.get("name", rid), c.format_number(_sys().get_recipe_unlock_need(rid))]
 			b.add_theme_color_override("font_color", Color("#666080"))
-		b.position = Vector2.ZERO
-		b.size = Vector2(170, 52)
+		b.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
+		b.add_theme_font_size_override("font_size", 13)
 		var rid_c: String = rid
 		b.pressed.connect(func(): _show_recipe_popup(rid_c))
 		wrap_node.add_child(b)
@@ -578,7 +597,12 @@ func _fill_recipe(body: VBoxContainer):
 		dot.text = "●"
 		dot.add_theme_color_override("font_color", Color("#e74c3c"))
 		dot.add_theme_font_size_override("font_size", 15)
-		dot.position = Vector2(148, -6)   # 170宽按钮右上角
+		dot.anchor_left = 1.0
+		dot.anchor_right = 1.0
+		dot.offset_left = -18
+		dot.offset_right = -4
+		dot.offset_top = -6
+		dot.offset_bottom = 14
 		dot.mouse_filter = Control.MOUSE_FILTER_IGNORE
 		dot.visible = _sys().can_upgrade_recipe(rid)
 		wrap_node.add_child(dot)

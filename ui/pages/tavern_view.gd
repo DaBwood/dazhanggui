@@ -108,7 +108,7 @@ func _cd_text() -> String:
 	return "叫号恢复 %02d:%02d:%02d" % [int(sec / 3600.0), int(sec / 60.0) % 60, sec % 60]
 
 func _jar_text() -> String:
-	return "收益罐：银条 %s" % c.format_number(_sys().get_jar())
+	return "可领取：银条 %s" % c.format_number(_sys().get_jar())
 
 func _tq_text() -> String:
 	var n := _sys().get_serve_queue()
@@ -126,33 +126,7 @@ func _build(page: Panel):
 	mark.set_anchors_and_offsets_preset(Control.PRESET_CENTER)
 	mark.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	page.add_child(mark)
-	# 右上浮层：招牌 / 知名度 / 银条（锚定右上，鼠标穿透）
-	var overlay := MarginContainer.new()
-	overlay.set_anchors_and_offsets_preset(Control.PRESET_TOP_RIGHT)
-	overlay.add_theme_constant_override("margin_top", 56)
-	overlay.add_theme_constant_override("margin_right", 16)
-	overlay.mouse_filter = Control.MOUSE_FILTER_IGNORE
-	page.add_child(overlay)
-	var ov_vb := VBoxContainer.new()
-	ov_vb.alignment = BoxContainer.ALIGNMENT_BEGIN
-	overlay.add_child(ov_vb)
-	var sign_lbl := Label.new()
-	sign_lbl.text = "【%s】 Lv.%d" % [_sys().get_sign_name(), _sys().get_level()]
-	sign_lbl.add_theme_font_size_override("font_size", 20)
-	sign_lbl.add_theme_color_override("font_color", Color("#f0d9a8"))
-	sign_lbl.horizontal_alignment = HORIZONTAL_ALIGNMENT_RIGHT
-	ov_vb.add_child(sign_lbl)
-	var fame_lbl := Label.new()
-	fame_lbl.text = "知名度：%s" % c.format_number(_sys().get_fame_total())
-	fame_lbl.add_theme_color_override("font_color", Color("#e6c07b"))
-	fame_lbl.horizontal_alignment = HORIZONTAL_ALIGNMENT_RIGHT
-	ov_vb.add_child(fame_lbl)
-	var yt_lbl := Label.new()
-	yt_lbl.text = "银条：%s" % c.format_number(_sys().get_yintiao())
-	yt_lbl.add_theme_color_override("font_color", Color("#e6c07b"))
-	yt_lbl.horizontal_alignment = HORIZONTAL_ALIGNMENT_RIGHT
-	ov_vb.add_child(yt_lbl)
-	# 主体：顶栏 + 可滚内容
+	# 【改】批次②③④-B12：主页不再用右上小浮层，资源统一居中；收益罐主卡垂直居中，玩法入口固定底部
 	var vb := VBoxContainer.new()
 	vb.position = Vector2.ZERO
 	vb.size = page.size
@@ -167,7 +141,6 @@ func _build(page: Panel):
 	back_btn.custom_minimum_size = Vector2(90, 42)
 	back_btn.pressed.connect(_on_back)
 	top.add_child(back_btn)
-	# 【改】批次②③④-B1修正：标题旁"?"只放规则说明；【酒肆信息】是玩法功能入口，恢复显式按钮
 	var left_spring := Control.new()
 	left_spring.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	top.add_child(left_spring)
@@ -189,16 +162,25 @@ func _build(page: Panel):
 	info_btn.custom_minimum_size = Vector2(104, 40)
 	info_btn.pressed.connect(_show_info_popup)
 	top.add_child(info_btn)
-	var scroll := ScrollContainer.new()
-	scroll.size_flags_vertical = Control.SIZE_EXPAND_FILL
-	vb.add_child(scroll)
-	var body := VBoxContainer.new()
-	body.size_flags_horizontal = Control.SIZE_EXPAND_FILL
-	body.add_theme_constant_override("separation", 8)
-	scroll.add_child(body)
+	var res_lbl := Label.new()
+	res_lbl.text = "【%s】 Lv.%d　知名度 %s　银条 %s" % [
+		_sys().get_sign_name(), _sys().get_level(), c.format_number(_sys().get_fame_total()), c.format_number(_sys().get_yintiao())]
+	res_lbl.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	res_lbl.add_theme_font_size_override("font_size", 16)
+	res_lbl.add_theme_color_override("font_color", Color("#e6c07b"))
+	vb.add_child(res_lbl)
 	if _tab == "main":
-		_fill_main(body)
+		var main_body: VBoxContainer = c._add_centered_panel(vb, Vector2(430, 360))
+		_fill_main(main_body)
+		_add_main_nav(vb)
 	else:
+		var scroll := ScrollContainer.new()
+		scroll.size_flags_vertical = Control.SIZE_EXPAND_FILL
+		vb.add_child(scroll)
+		var body := VBoxContainer.new()
+		body.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+		body.add_theme_constant_override("separation", 8)
+		scroll.add_child(body)
 		_fill_area(body, _tab)
 
 func _on_back():
@@ -219,77 +201,84 @@ func _refresh():
 	elif _popup_kind == "facility" and _popup_id != "":
 		_show_facility_popup(_popup_id)
 
-# ---------- 主页：收益罐 + 叫号条 + 双入口 ----------
+# ---------- 主页：收益罐主卡 + 叫号操作 ----------
 func _fill_main(body: VBoxContainer):
-	# 收益罐（银条）
+	var jar_title := Label.new()
+	jar_title.text = "收益罐"
+	jar_title.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	jar_title.add_theme_font_size_override("font_size", 22)
+	jar_title.add_theme_color_override("font_color", Color("#ffd700"))
+	body.add_child(jar_title)
 	var jar_row := HBoxContainer.new()
-	jar_row.add_theme_constant_override("separation", 8)
+	jar_row.alignment = BoxContainer.ALIGNMENT_CENTER
+	jar_row.add_theme_constant_override("separation", 12)
 	body.add_child(jar_row)
 	_jar_lbl = Label.new()
 	_jar_lbl.text = _jar_text()
-	_jar_lbl.size_flags_horizontal = Control.SIZE_EXPAND_FILL
-	_jar_lbl.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+	_jar_lbl.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	_jar_lbl.add_theme_font_size_override("font_size", 18)
 	jar_row.add_child(_jar_lbl)
 	var collect_btn := Button.new()
 	collect_btn.text = "领取"
-	collect_btn.custom_minimum_size = Vector2(90, 36)
+	collect_btn.custom_minimum_size = Vector2(100, 38)
 	collect_btn.disabled = not _sys().has_jar()
 	collect_btn.pressed.connect(_on_collect)
 	jar_row.add_child(collect_btn)
-	# 叫号条：计数 + 加号（佳酿道具面板，仅限此处）
 	var jh_row := HBoxContainer.new()
-	jh_row.add_theme_constant_override("separation", 6)
+	jh_row.alignment = BoxContainer.ALIGNMENT_CENTER
+	jh_row.add_theme_constant_override("separation", 8)
 	body.add_child(jh_row)
 	_jh_lbl = Label.new()
 	_jh_lbl.text = _jh_text()
-	_jh_lbl.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	_jh_lbl.add_theme_font_size_override("font_size", 17)
 	jh_row.add_child(_jh_lbl)
 	var add_btn := Button.new()
 	add_btn.text = "＋"
-	add_btn.custom_minimum_size = Vector2(40, 32)
+	add_btn.custom_minimum_size = Vector2(42, 34)
 	add_btn.tooltip_text = "使用【佳酿】+2 叫号"
 	add_btn.pressed.connect(_on_add_jiaohao)
 	jh_row.add_child(add_btn)
 	_cd_lbl = Label.new()
 	_cd_lbl.text = _cd_text()
+	_cd_lbl.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	_cd_lbl.add_theme_color_override("font_color", Color("#9a93b8"))
 	body.add_child(_cd_lbl)
-	# 叫号 / 一键叫号：只做搬运纯改数字永不卡，接待由定时器批处理
-	# 按钮只写功能名，不展示"转入队列"等内部设定说明（对玩家隐藏实现细节）
 	var has_jh: bool = _sys().get_jiaohao() > 0
 	var call_btn := Button.new()
 	call_btn.text = "叫号"
-	call_btn.custom_minimum_size = Vector2(0, 46)
+	call_btn.custom_minimum_size = Vector2(320, 44)
 	call_btn.disabled = not has_jh
 	call_btn.pressed.connect(_on_call_one)
 	body.add_child(call_btn)
 	var call_all_btn := Button.new()
 	call_all_btn.text = "一键叫号"
-	call_all_btn.custom_minimum_size = Vector2(0, 40)
+	call_all_btn.custom_minimum_size = Vector2(320, 40)
 	call_all_btn.disabled = not has_jh
 	call_all_btn.pressed.connect(_on_call_all)
 	body.add_child(call_all_btn)
-	# 接待队列状态（接待由定时器后台批处理推进）
 	_tq_lbl = Label.new()
 	_tq_lbl.text = _tq_text()
+	_tq_lbl.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	_tq_lbl.add_theme_color_override("font_color", Color("#ffd700"))
 	body.add_child(_tq_lbl)
-	# 餐饮/娱乐双入口（带红点）
-	var grid := GridContainer.new()
-	grid.columns = 2
-	grid.add_theme_constant_override("h_separation", 8)
-	grid.add_theme_constant_override("v_separation", 8)
-	body.add_child(grid)
+
+func _add_main_nav(parent: VBoxContainer):
+	# 底部大号玩法页签（参考妙音坊底部导航）
+	var nav := HBoxContainer.new()
+	nav.alignment = BoxContainer.ALIGNMENT_CENTER
+	nav.add_theme_constant_override("separation", 10)
+	nav.custom_minimum_size = Vector2(0, 56)
+	parent.add_child(nav)
 	for t in [["餐饮", "餐饮", _area_has_hint("餐饮")],
 			["娱乐", "娱乐", _area_has_hint("娱乐")]]:
-		# 入口红点（参考药铺 wrap_node 模式：外套 Control 显式尺寸，红点 IGNORE 不拦截触摸）
 		var wrap_node := Control.new()
-		wrap_node.custom_minimum_size = Vector2(260, 64)
-		grid.add_child(wrap_node)
+		wrap_node.custom_minimum_size = Vector2(180, 54)
+		nav.add_child(wrap_node)
 		var b := Button.new()
 		b.text = "【%s】设施" % t[1]
+		b.add_theme_font_size_override("font_size", 16)
 		b.position = Vector2.ZERO
-		b.size = Vector2(260, 64)
+		b.size = Vector2(180, 54)
 		var area: String = t[0]
 		b.pressed.connect(func(): _switch_tab(area))
 		wrap_node.add_child(b)
@@ -297,7 +286,7 @@ func _fill_main(body: VBoxContainer):
 		dot.text = "●"
 		dot.add_theme_color_override("font_color", Color("#e74c3c"))
 		dot.add_theme_font_size_override("font_size", 16)
-		dot.position = Vector2(236, -6)
+		dot.position = Vector2(158, -6)
 		dot.mouse_filter = Control.MOUSE_FILTER_IGNORE
 		dot.visible = t[2]
 		wrap_node.add_child(dot)
@@ -354,6 +343,7 @@ func _fill_area(body: VBoxContainer, area: String):
 	# 设施卡片网格（2列：点击弹详情，红点=可升级或可解锁）
 	var grid := GridContainer.new()
 	grid.columns = 2
+	grid.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	grid.add_theme_constant_override("h_separation", 8)
 	grid.add_theme_constant_override("v_separation", 8)
 	body.add_child(grid)
@@ -361,7 +351,8 @@ func _fill_area(body: VBoxContainer, area: String):
 		var fid := str(f.get("id", ""))
 		var fname := str(f.get("name", fid))
 		var wrap_node := Control.new()
-		wrap_node.custom_minimum_size = Vector2(260, 64)
+		wrap_node.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+		wrap_node.custom_minimum_size = Vector2(0, 64)
 		grid.add_child(wrap_node)
 		var b := Button.new()
 		if _sys().is_facility_unlocked(fid):
@@ -370,8 +361,7 @@ func _fill_area(body: VBoxContainer, area: String):
 		else:
 			b.text = "【%s】\n知名度 %s 解锁" % [fname, c.format_number(_sys().get_unlock_fame(f))]
 			b.add_theme_color_override("font_color", Color("#8f88ad"))
-		b.position = Vector2.ZERO
-		b.size = Vector2(260, 64)
+		b.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
 		var fid_c: String = fid
 		b.pressed.connect(func(): _show_facility_popup(fid_c))
 		wrap_node.add_child(b)
@@ -379,7 +369,12 @@ func _fill_area(body: VBoxContainer, area: String):
 		dot.text = "●"
 		dot.add_theme_color_override("font_color", Color("#e74c3c"))
 		dot.add_theme_font_size_override("font_size", 16)
-		dot.position = Vector2(236, -6)
+		dot.anchor_left = 1.0
+		dot.anchor_right = 1.0
+		dot.offset_left = -20
+		dot.offset_right = 0
+		dot.offset_top = -6
+		dot.offset_bottom = 14
 		dot.mouse_filter = Control.MOUSE_FILTER_IGNORE
 		dot.visible = _sys().can_upgrade_facility(fid).get("ok", false) or _sys().can_unlock_facility(fid).get("ok", false)
 		wrap_node.add_child(dot)

@@ -74,7 +74,7 @@ func _cd_text() -> String:
 	return "下个病人：%d分%02d秒" % [int(sec / 60.0), sec % 60]
 
 func _jar_text() -> String:
-	return "收益罐：医术 %s" % c.format_number(_sys().get_jar_total()["yishu"])
+	return "可领取：医术 %s" % c.format_number(_sys().get_jar_total()["yishu"])
 
 func _tq_text() -> String:
 	var n := _sys().get_treat_queue()
@@ -84,6 +84,7 @@ func _tq_text() -> String:
 
 # ---------- 页面构建 ----------
 func _build(page: Panel):
+	# 【改】批次②③④-B12：主页收益罐主卡垂直居中，玩法入口固定底部；二级页继续滚动
 	var vb := VBoxContainer.new()
 	vb.position = Vector2.ZERO
 	vb.size = page.size
@@ -103,36 +104,37 @@ func _build(page: Panel):
 	title.text = "医馆" if _tab == "main" else ("医馆 · 病人" if _tab == "patient" else ("医馆 · 科室" if _tab == "dept" else "医馆 · 病症"))
 	title.add_theme_font_size_override("font_size", 24)
 	top.add_child(title)
-	# 【新增】批次②③④-B2：玩法说明入口"?"（只在玩法主标题旁，说明流程/规则/后台计算）
 	var rule_btn := Button.new()
 	rule_btn.text = "?"
 	rule_btn.custom_minimum_size = Vector2(30, 30)
 	rule_btn.add_theme_font_size_override("font_size", 16)
 	rule_btn.pressed.connect(_show_rule_popup)
 	top.add_child(rule_btn)
-	# 资源行：医术 / 科室图纸（评分已按病症独立，顶部不再显示全局评分）
 	var res := Label.new()
-	res.text = "医术 %s　图纸 %d" % [
-		c.format_number(_sys().yishu), int(data.items.get("ke_shi_tu_zhi", 0))]
+	res.text = "医术 %s　图纸 %d" % [c.format_number(_sys().yishu), int(data.items.get("ke_shi_tu_zhi", 0))]
+	res.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	res.add_theme_font_size_override("font_size", 16)
 	res.add_theme_color_override("font_color", Color("#e6c07b"))
 	vb.add_child(res)
-	# 内容体
-	var scroll := ScrollContainer.new()
-	scroll.size_flags_vertical = Control.SIZE_EXPAND_FILL
-	vb.add_child(scroll)
-	var body := VBoxContainer.new()
-	body.size_flags_horizontal = Control.SIZE_EXPAND_FILL
-	body.add_theme_constant_override("separation", 8)
-	scroll.add_child(body)
-	match _tab:
-		"patient":
-			_fill_patient(body)
-		"dept":
-			_fill_dept(body)
-		"illness":
-			_fill_illness(body)
-		_:
-			_fill_main(body)
+	if _tab == "main":
+		var main_body: VBoxContainer = c._add_centered_panel(vb, Vector2(430, 360))
+		_fill_main(main_body)
+		_add_main_nav(vb)
+	else:
+		var scroll := ScrollContainer.new()
+		scroll.size_flags_vertical = Control.SIZE_EXPAND_FILL
+		vb.add_child(scroll)
+		var body := VBoxContainer.new()
+		body.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+		body.add_theme_constant_override("separation", 8)
+		scroll.add_child(body)
+		match _tab:
+			"patient":
+				_fill_patient(body)
+			"dept":
+				_fill_dept(body)
+			"illness":
+				_fill_illness(body)
 
 func _on_back():
 	if _tab == "main":
@@ -175,90 +177,97 @@ func _show_rule_popup():
 		body.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
 		vb.add_child(body)
 
-# ---------- 主页：接诊队列 + 收益罐 + 三入口 ----------
+# ---------- 主页：收益罐主卡 + 接诊操作 ----------
 func _fill_main(body: VBoxContainer):
-	# 收益罐（医术）
+	var jar_title := Label.new()
+	jar_title.text = "收益罐"
+	jar_title.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	jar_title.add_theme_font_size_override("font_size", 22)
+	jar_title.add_theme_color_override("font_color", Color("#ffd700"))
+	body.add_child(jar_title)
 	var jar_row := HBoxContainer.new()
-	jar_row.add_theme_constant_override("separation", 8)
+	jar_row.alignment = BoxContainer.ALIGNMENT_CENTER
+	jar_row.add_theme_constant_override("separation", 12)
 	body.add_child(jar_row)
 	_jar_lbl = Label.new()
 	_jar_lbl.text = _jar_text()
-	_jar_lbl.size_flags_horizontal = Control.SIZE_EXPAND_FILL
-	_jar_lbl.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+	_jar_lbl.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	_jar_lbl.add_theme_font_size_override("font_size", 18)
 	jar_row.add_child(_jar_lbl)
 	var collect_btn := Button.new()
 	collect_btn.text = "领取"
-	collect_btn.custom_minimum_size = Vector2(90, 36)
+	collect_btn.custom_minimum_size = Vector2(100, 38)
 	collect_btn.disabled = not _sys().has_jar()
 	collect_btn.pressed.connect(_on_collect)
 	jar_row.add_child(collect_btn)
-	# 病人区：计数 + 加号（病人手册，仅限此处）
 	var count_row := HBoxContainer.new()
-	count_row.add_theme_constant_override("separation", 6)
+	count_row.alignment = BoxContainer.ALIGNMENT_CENTER
+	count_row.add_theme_constant_override("separation", 8)
 	body.add_child(count_row)
 	_count_lbl = Label.new()
 	_count_lbl.text = "病人：%d / %d" % [_sys().get_patient_count(), _sys().get_patient_cap()]
-	_count_lbl.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	_count_lbl.add_theme_font_size_override("font_size", 17)
 	count_row.add_child(_count_lbl)
 	var add_btn := Button.new()
 	add_btn.text = "＋"
-	add_btn.custom_minimum_size = Vector2(40, 32)
+	add_btn.custom_minimum_size = Vector2(42, 34)
 	add_btn.tooltip_text = "使用【病人手册】+3 病人"
 	add_btn.pressed.connect(_on_add_patient)
 	count_row.add_child(add_btn)
 	_cd_lbl = Label.new()
 	_cd_lbl.text = _cd_text()
+	_cd_lbl.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	_cd_lbl.add_theme_color_override("font_color", Color("#9a93b8"))
 	body.add_child(_cd_lbl)
-	# 接诊 / 一键接诊：只做搬运转入接诊队列，纯改数字永不卡
-	# 按钮只写功能名，不展示"转入队列"等内部设定说明（用户要求对玩家隐藏实现细节）
 	var has_p: bool = _sys().get_patient_count() > 0
 	var treat_btn := Button.new()
 	treat_btn.text = "接诊"
-	treat_btn.custom_minimum_size = Vector2(0, 46)
+	treat_btn.custom_minimum_size = Vector2(320, 44)
 	treat_btn.disabled = not has_p
 	treat_btn.pressed.connect(_on_treat)
 	body.add_child(treat_btn)
 	var treat_all_btn := Button.new()
 	treat_all_btn.text = "一键接诊"
-	treat_all_btn.custom_minimum_size = Vector2(0, 40)
+	treat_all_btn.custom_minimum_size = Vector2(320, 40)
 	treat_all_btn.disabled = not has_p
 	treat_all_btn.pressed.connect(_on_treat_all)
 	body.add_child(treat_all_btn)
-	# 接诊队列状态（治疗由定时器后台批处理推进）
 	_tq_lbl = Label.new()
 	_tq_lbl.text = _tq_text()
+	_tq_lbl.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	_tq_lbl.add_theme_color_override("font_color", Color("#ffd700"))
 	body.add_child(_tq_lbl)
-	# 三入口按钮
-	var grid := GridContainer.new()
-	grid.columns = 3
-	grid.add_theme_constant_override("h_separation", 8)
-	grid.add_theme_constant_override("v_separation", 8)
-	body.add_child(grid)
+
+func _add_main_nav(parent: VBoxContainer):
+	var nav := HBoxContainer.new()
+	nav.alignment = BoxContainer.ALIGNMENT_CENTER
+	nav.add_theme_constant_override("separation", 8)
+	nav.custom_minimum_size = Vector2(0, 56)
+	parent.add_child(nav)
 	for t in [["patient", "病人", _sys().has_unlockable_patient()],
 			["dept", "科室", _sys().has_upgradeable_dept()],
 			["illness", "病症", _sys().has_upgradeable_illness()]]:
-		# 【新增】2026-09-16 三入口红点（参考药铺 wrap_node 模式：外套 Control 显式尺寸，红点 IGNORE 不拦截触摸）
 		var wrap_node := Control.new()
-		wrap_node.custom_minimum_size = Vector2(170, 56)
-		grid.add_child(wrap_node)
+		wrap_node.custom_minimum_size = Vector2(112, 54)
+		nav.add_child(wrap_node)
 		var b := Button.new()
 		b.text = t[1]
+		b.add_theme_font_size_override("font_size", 15)
 		b.position = Vector2.ZERO
-		b.size = Vector2(170, 56)
-		b.pressed.connect(func(): _switch_tab(t[0]))
+		b.size = Vector2(112, 54)
+		var tab_id: String = t[0]
+		b.pressed.connect(func(): _switch_tab(tab_id))
 		wrap_node.add_child(b)
 		var dot := Label.new()
 		dot.text = "●"
 		dot.add_theme_color_override("font_color", Color("#e74c3c"))
 		dot.add_theme_font_size_override("font_size", 16)
-		dot.position = Vector2(148, -6)
+		dot.position = Vector2(96, -6)
 		dot.mouse_filter = Control.MOUSE_FILTER_IGNORE
 		dot.visible = t[2]
 		wrap_node.add_child(dot)
 
-# 加号：弹出数量选择器，批量消耗病人手册恢复病人（不受队列上限限制，背包不开放）
+# 加号：弹出数量选择器，批量消耗病人手册恢复病人# 加号：弹出数量选择器，批量消耗病人手册恢复病人（不受队列上限限制，背包不开放）
 func _on_add_patient():
 	var manual: String = data._clinic_configs.get("settings", {}).get("manual_item", "patient_manual")
 	var owned: int = int(data.items.get(manual, 0))
@@ -398,14 +407,16 @@ func _on_upgrade_all_illness():
 func _fill_dept(body: VBoxContainer):
 	var grid := GridContainer.new()
 	grid.columns = 2
-	grid.add_theme_constant_override("h_separation", 8)
-	grid.add_theme_constant_override("v_separation", 8)
+	grid.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	grid.add_theme_constant_override("h_separation", 10)
+	grid.add_theme_constant_override("v_separation", 10)
 	body.add_child(grid)
 	for dept_id in data._clinic_configs.get("departments", {}):
 		var d: Dictionary = data._clinic_configs["departments"][dept_id]
 		# 【新增】2026-09-16 可新增/可升级科室红点：外套 Control 显式尺寸
 		var wrap_node := Control.new()
-		wrap_node.custom_minimum_size = Vector2(260, 64)
+		wrap_node.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+		wrap_node.custom_minimum_size = Vector2(0, 68)
 		grid.add_child(wrap_node)
 		var b := Button.new()
 		if _sys().is_dept_unlocked(dept_id):
@@ -413,8 +424,8 @@ func _fill_dept(body: VBoxContainer):
 		else:
 			b.text = "【%s】\n新增（图纸 %d）" % [d.get("name", dept_id), _sys().get_dept_unlock_cost(dept_id)]
 			b.add_theme_color_override("font_color", Color("#8f88ad"))
-		b.position = Vector2.ZERO
-		b.size = Vector2(260, 64)
+		b.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
+		b.add_theme_font_size_override("font_size", 14)
 		var did: String = dept_id
 		b.pressed.connect(func(): _show_dept_popup(did))
 		wrap_node.add_child(b)
@@ -422,7 +433,12 @@ func _fill_dept(body: VBoxContainer):
 		dot.text = "●"
 		dot.add_theme_color_override("font_color", Color("#e74c3c"))
 		dot.add_theme_font_size_override("font_size", 16)
-		dot.position = Vector2(236, -6)   # 260宽按钮右上角
+		dot.anchor_left = 1.0
+		dot.anchor_right = 1.0
+		dot.offset_left = -20
+		dot.offset_right = 0
+		dot.offset_top = -6
+		dot.offset_bottom = 14
 		dot.mouse_filter = Control.MOUSE_FILTER_IGNORE
 		dot.visible = _sys().can_unlock_dept(dept_id).get("ok", false) or _sys().can_upgrade_dept(dept_id).get("ok", false)
 		wrap_node.add_child(dot)
@@ -504,8 +520,9 @@ func _fill_illness(body: VBoxContainer):
 	body.add_child(all_btn)
 	var grid := GridContainer.new()
 	grid.columns = 3
-	grid.add_theme_constant_override("h_separation", 6)
-	grid.add_theme_constant_override("v_separation", 6)
+	grid.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	grid.add_theme_constant_override("h_separation", 8)
+	grid.add_theme_constant_override("v_separation", 8)
 	body.add_child(grid)
 	for dept_id in data._clinic_configs.get("departments", {}):
 		var d: Dictionary = data._clinic_configs["departments"][dept_id]
@@ -513,7 +530,8 @@ func _fill_illness(body: VBoxContainer):
 			var ic: Dictionary = d["illnesses"][iid]
 			# 【新增】2026-09-16 可升级病症红点（仅"已解锁且评分够升级"的）：外套 Control 显式尺寸
 			var wrap_node := Control.new()
-			wrap_node.custom_minimum_size = Vector2(170, 52)
+			wrap_node.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+			wrap_node.custom_minimum_size = Vector2(0, 58)
 			grid.add_child(wrap_node)
 			var b := Button.new()
 			b.text = str(ic.get("name", iid))
@@ -521,8 +539,8 @@ func _fill_illness(body: VBoxContainer):
 				# 【改】明确写"哪个科室多少级解锁"，避免玩家误解为病症等级；不用全角括号（部分环境不渲染）
 				b.text = "%s\n%s %d级解锁" % [str(ic.get("name", iid)), d.get("name", ""), int(ic.get("unlock_level", 1))]
 				b.add_theme_color_override("font_color", Color("#666080"))
-			b.position = Vector2.ZERO
-			b.size = Vector2(170, 52)
+			b.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
+			b.add_theme_font_size_override("font_size", 13)
 			var iid_c: String = iid
 			b.pressed.connect(func(): _show_illness_popup(iid_c))
 			wrap_node.add_child(b)
@@ -530,7 +548,12 @@ func _fill_illness(body: VBoxContainer):
 			dot.text = "●"
 			dot.add_theme_color_override("font_color", Color("#e74c3c"))
 			dot.add_theme_font_size_override("font_size", 15)
-			dot.position = Vector2(148, -6)   # 170宽按钮右上角
+			dot.anchor_left = 1.0
+			dot.anchor_right = 1.0
+			dot.offset_left = -18
+			dot.offset_right = -4
+			dot.offset_top = -6
+			dot.offset_bottom = 14
 			dot.mouse_filter = Control.MOUSE_FILTER_IGNORE
 			dot.visible = _sys().is_illness_unlocked(iid) and _sys().can_upgrade_illness(iid).get("ok", false)
 			wrap_node.add_child(dot)

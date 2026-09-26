@@ -46,29 +46,24 @@ func hide_view():
 	super()
 
 func _build(page: Panel):
+	# 【改】批次②③④-B12：营业收益罐改为居中主卡；玩法页签固定底部并放大，避免内容挤在顶部
 	var vb := VBoxContainer.new()
 	vb.position = Vector2.ZERO
 	vb.size = page.size
 	vb.add_theme_constant_override("separation", 8)
 	page.add_child(vb)
-	# 顶栏：返回 + 标题
 	var top := HBoxContainer.new()
-	top.custom_minimum_size = Vector2(0, 52)
+	top.custom_minimum_size = Vector2(0, 46)
 	top.add_theme_constant_override("separation", 8)
 	vb.add_child(top)
 	var back_btn := Button.new()
 	back_btn.text = "< 返回"
-	back_btn.custom_minimum_size = Vector2(90, 44)
+	back_btn.custom_minimum_size = Vector2(90, 42)
 	back_btn.pressed.connect(hide_inn_view)
 	top.add_child(back_btn)
-	# 【改】批次②③④-B1修正："?"只出现在玩法主标题旁，用于说明流程/规则
-	var left_spring := Control.new()
-	left_spring.size_flags_horizontal = Control.SIZE_EXPAND_FILL
-	top.add_child(left_spring)
 	var title := Label.new()
-	title.text = "客栈"
-	title.add_theme_font_size_override("font_size", 22)
-	title.add_theme_color_override("font_color", Color("#ffd700"))
+	title.text = "客栈" if _tab == "cook" else ("菜谱" if _tab == "recipe" else "兑换商店")
+	title.add_theme_font_size_override("font_size", 24)
 	top.add_child(title)
 	var rule_btn := Button.new()
 	rule_btn.text = "?"
@@ -76,56 +71,21 @@ func _build(page: Panel):
 	rule_btn.add_theme_font_size_override("font_size", 16)
 	rule_btn.pressed.connect(_show_rule_popup)
 	top.add_child(rule_btn)
-	var right_spring := Control.new()
-	right_spring.size_flags_horizontal = Control.SIZE_EXPAND_FILL
-	top.add_child(right_spring)
+	var spring := Control.new()
+	spring.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	top.add_child(spring)
 	var pad := Control.new()
 	pad.custom_minimum_size = Vector2(90, 44)
 	top.add_child(pad)
-	# 资源栏（秒刷改文本）
-	var res := Label.new()
-	res.name = "InnResBar"
-	res.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
-	res.add_theme_color_override("font_color", Color("#e6c07b"))
-	res.add_theme_font_size_override("font_size", 14)
-	vb.add_child(res)
-	# 页签栏
-	var tabs := HBoxContainer.new()
-	tabs.alignment = BoxContainer.ALIGNMENT_CENTER
-	tabs.add_theme_constant_override("separation", 6)
-	vb.add_child(tabs)
-	for t in [["cook", "营业"], ["recipe", "菜谱"], ["exchange", "兑换商店"]]:
-		var tab_wrap := Control.new()
-		tab_wrap.custom_minimum_size = Vector2(104, 34)
-		tabs.add_child(tab_wrap)
-		var tb := Button.new()
-		tb.text = t[1]
-		tb.position = Vector2.ZERO
-		tb.size = Vector2(104, 34)
-		tb.add_theme_font_size_override("font_size", 13)
-		if _tab == t[0]:
-			tb.add_theme_color_override("font_color", Color("#ffd700"))
-		tb.pressed.connect(_on_tab.bind(str(t[0])))
-		tab_wrap.add_child(tb)
-		if t[0] == "recipe":
-			var dot := Label.new()
-			dot.text = "●"
-			dot.add_theme_color_override("font_color", Color("#e74c3c"))
-			dot.add_theme_font_size_override("font_size", 13)
-			dot.position = Vector2(88, -5)
-			dot.mouse_filter = Control.MOUSE_FILTER_IGNORE
-			dot.visible = data.inn_system.has_upgradeable_dish()
-			tab_wrap.add_child(dot)
-	# 内容体
 	var body := VBoxContainer.new()
 	body.name = "InnBody"
 	body.size_flags_vertical = Control.SIZE_EXPAND_FILL
 	body.add_theme_constant_override("separation", 6)
 	vb.add_child(body)
 	_fill_body(body)
+	_add_bottom_tabs(vb)
 
 func _after_build(page: Panel):
-	_refresh_res()
 	# 秒刷 Timer（随页面节点销毁，无需手动停）
 	var timer := Timer.new()
 	timer.name = "TickTimer"
@@ -149,14 +109,6 @@ func _on_tick():
 	if _jar_btn:
 		_jar_btn.disabled = not sys.has_pending()
 
-func _refresh_res():
-	var page = c.get_node_or_null("InnPage")
-	if page == null: return
-	# 【改】顶栏资源条移除：厨艺值已门客独立（门客页显示），交子在兑换商店页显示
-	var bar = page.get_child(0).get_node_or_null("InnResBar")
-	if bar:
-		bar.queue_free()
-
 func _fmt_secs(sec: int) -> String:
 	if sec >= 3600:
 		return "%d时%02d分" % [int(sec / 3600.0), int((sec % 3600) / 60.0)]
@@ -169,51 +121,76 @@ func _fill_body(body: VBoxContainer):
 		"recipe": _fill_recipe(body)
 		"exchange": _fill_exchange(body)
 
+func _add_bottom_tabs(parent: VBoxContainer):
+	var tabs := HBoxContainer.new()
+	tabs.alignment = BoxContainer.ALIGNMENT_CENTER
+	tabs.add_theme_constant_override("separation", 8)
+	tabs.custom_minimum_size = Vector2(0, 56)
+	parent.add_child(tabs)
+	for t in [["cook", "营业", 112], ["recipe", "菜谱", 112], ["exchange", "兑换商店", 126]]:
+		var tab_wrap := Control.new()
+		tab_wrap.custom_minimum_size = Vector2(t[2], 54)
+		tabs.add_child(tab_wrap)
+		var tb := Button.new()
+		tb.text = t[1]
+		tb.position = Vector2.ZERO
+		tb.size = Vector2(t[2], 54)
+		tb.add_theme_font_size_override("font_size", 15)
+		if _tab == t[0]:
+			tb.add_theme_color_override("font_color", Color("#ffd700"))
+		tb.pressed.connect(_on_tab.bind(str(t[0])))
+		tab_wrap.add_child(tb)
+		if t[0] == "recipe":
+			var dot := Label.new()
+			dot.text = "●"
+			dot.add_theme_color_override("font_color", Color("#e74c3c"))
+			dot.add_theme_font_size_override("font_size", 16)
+			dot.position = Vector2(108, -6)
+			dot.mouse_filter = Control.MOUSE_FILTER_IGNORE
+			dot.visible = data.inn_system.has_upgradeable_dish()
+			tab_wrap.add_child(dot)
+
 # ==================== 页签一：营业 ====================
 func _fill_cook(body: VBoxContainer):
 	var sys = data.inn_system
 	var st: Dictionary = sys.get_status()
+	var main_body: VBoxContainer = c._add_centered_panel(body, Vector2(430, 320))
 	_status_lbl = Label.new()
 	_status_lbl.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
-	_status_lbl.add_theme_font_size_override("font_size", 13)
+	_status_lbl.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	_status_lbl.add_theme_font_size_override("font_size", 14)
 	_status_lbl.add_theme_color_override("font_color", Color("#e6c07b"))
 	_status_lbl.text = _status_text(st)
-	body.add_child(_status_lbl)
-	# 收益罐（待领取收益）
-	var jar_card := PanelContainer.new()
-	var js := StyleBoxFlat.new()
-	js.bg_color = Color("#2a2640")
-	js.set_corner_radius_all(8)
-	jar_card.add_theme_stylebox_override("panel", js)
-	body.add_child(jar_card)
+	main_body.add_child(_status_lbl)
+	var jar_title := Label.new()
+	jar_title.text = "收益罐"
+	jar_title.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	jar_title.add_theme_font_size_override("font_size", 22)
+	jar_title.add_theme_color_override("font_color", Color("#ffd700"))
+	main_body.add_child(jar_title)
 	var jar_row := HBoxContainer.new()
-	jar_row.add_theme_constant_override("separation", 6)
-	jar_card.add_child(jar_row)
+	jar_row.alignment = BoxContainer.ALIGNMENT_CENTER
+	jar_row.add_theme_constant_override("separation", 10)
+	main_body.add_child(jar_row)
 	_jar_lbl = Label.new()
-	_jar_lbl.size_flags_horizontal = Control.SIZE_EXPAND_FILL
-	_jar_lbl.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
-	_jar_lbl.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
-	_jar_lbl.add_theme_font_size_override("font_size", 13)
+	_jar_lbl.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	_jar_lbl.add_theme_font_size_override("font_size", 17)
 	_jar_lbl.add_theme_color_override("font_color", Color("#e6c07b"))
 	_jar_lbl.text = _jar_text()
 	jar_row.add_child(_jar_lbl)
 	_jar_btn = Button.new()
 	_jar_btn.text = "领取"
-	_jar_btn.custom_minimum_size = Vector2(70, 30)
+	_jar_btn.custom_minimum_size = Vector2(100, 38)
 	_jar_btn.disabled = not sys.has_pending()
 	_jar_btn.pressed.connect(_on_claim)
 	jar_row.add_child(_jar_btn)
-	# 开始营业按钮（营业中禁用）
-	var start_row := HBoxContainer.new()
-	start_row.alignment = BoxContainer.ALIGNMENT_CENTER
-	body.add_child(start_row)
 	var start_btn := Button.new()
 	start_btn.text = "开始营业"
-	start_btn.custom_minimum_size = Vector2(150, 36)
-	start_btn.add_theme_font_size_override("font_size", 14)
+	start_btn.custom_minimum_size = Vector2(320, 44)
+	start_btn.add_theme_font_size_override("font_size", 16)
 	start_btn.disabled = bool(st.get("active", false))
 	start_btn.pressed.connect(_on_start_cook)
-	start_row.add_child(start_btn)
+	main_body.add_child(start_btn)
 
 func _status_text(st: Dictionary) -> String:
 	if not bool(st.get("active", false)):
@@ -237,8 +214,8 @@ func _jar_text() -> String:
 	for k in cooks.keys():
 		times += int(cooks[k])
 	if cu <= 0 and jiao <= 0:
-		return "收益罐：空空如也（营业完成后收益存入这里）"
-	return "收益罐：厨艺+%d ｜ 交子+%d（%d 次烹饪）" % [cu, jiao, times]
+		return "空空如也（营业完成后收益存入这里）"
+	return "可领取：厨艺+%d ｜ 交子+%d（%d 次烹饪）" % [cu, jiao, times]
 
 func _on_claim():
 	var got: Dictionary = data.inn_system.claim()
@@ -599,21 +576,24 @@ func _fill_exchange(body: VBoxContainer):
 	var sys = data.inn_system
 	var head := Label.new()
 	head.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
-	head.add_theme_font_size_override("font_size", 13)
+	head.add_theme_font_size_override("font_size", 14)
 	head.add_theme_color_override("font_color", Color("#e6c07b"))
 	# 【改】合成统一走背包合成页，此处只保留购买；机制说明不上 UI
 	head.text = "交子 %d　无限购" % sys.get_jiaozi()
 	body.add_child(head)
+	# 【改】批次②③④-B12：兑换商店改双列卡片，不再用“整行信息+右侧小按钮”
 	var scroll := ScrollContainer.new()
 	scroll.size_flags_vertical = Control.SIZE_EXPAND_FILL
 	body.add_child(scroll)
-	var list := VBoxContainer.new()
-	list.size_flags_horizontal = Control.SIZE_EXPAND_FILL
-	list.add_theme_constant_override("separation", 4)
-	scroll.add_child(list)
+	var grid := GridContainer.new()
+	grid.columns = 2
+	grid.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	grid.add_theme_constant_override("h_separation", 10)
+	grid.add_theme_constant_override("v_separation", 10)
+	scroll.add_child(grid)
 	var idx := 0
 	for e in sys.get_exchange_list():
-		list.add_child(_make_exchange_row(idx, e))
+		grid.add_child(_make_exchange_card(idx, e))
 		idx += 1
 
 func _item_display_name(item_id: String) -> String:
@@ -622,31 +602,44 @@ func _item_display_name(item_id: String) -> String:
 		return str(data.ITEM_CONFIG[item_id].get("name", item_id))
 	return item_id
 
-func _make_exchange_row(index: int, e: Dictionary) -> PanelContainer:
+func _make_exchange_card(index: int, e: Dictionary) -> PanelContainer:
 	var sys = data.inn_system
 	var card := PanelContainer.new()
-	var rs := StyleBoxFlat.new()
-	rs.bg_color = Color("#252138")
-	rs.set_corner_radius_all(6)
-	card.add_theme_stylebox_override("panel", rs)
+	card.custom_minimum_size = Vector2(160, 116)
 	card.size_flags_horizontal = Control.SIZE_EXPAND_FILL
-	var row := HBoxContainer.new()
-	row.add_theme_constant_override("separation", 6)
-	card.add_child(row)
+	card.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	var cs := StyleBoxFlat.new()
+	cs.bg_color = Color("#252138")
+	cs.set_corner_radius_all(8)
+	cs.set_border_width_all(1)
+	cs.border_color = Color("#5a537a")
+	card.add_theme_stylebox_override("panel", cs)
+	var vb := VBoxContainer.new()
+	vb.alignment = BoxContainer.ALIGNMENT_CENTER
+	vb.add_theme_constant_override("separation", 6)
+	card.add_child(vb)
 	var item_id := str(e.get("item", ""))
 	var name_lbl := Label.new()
-	name_lbl.text = "%s　拥有 %d" % [_item_display_name(item_id), int(data.items.get(item_id, 0))]
-	name_lbl.size_flags_horizontal = Control.SIZE_EXPAND_FILL
-	name_lbl.add_theme_font_size_override("font_size", 13)
-	row.add_child(name_lbl)
+	name_lbl.text = _item_display_name(item_id)
+	name_lbl.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	name_lbl.add_theme_font_size_override("font_size", 15)
+	name_lbl.add_theme_color_override("font_color", Color("#ffd700"))
+	vb.add_child(name_lbl)
+	var owned_lbl := Label.new()
+	owned_lbl.text = "拥有 %d" % int(data.items.get(item_id, 0))
+	owned_lbl.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	owned_lbl.add_theme_font_size_override("font_size", 12)
+	owned_lbl.add_theme_color_override("font_color", Color("#c8c3e0"))
+	vb.add_child(owned_lbl)
 	var buy_btn := Button.new()
-	buy_btn.text = "购买（%d 交子）" % int(e.get("cost", 0))
-	buy_btn.custom_minimum_size = Vector2(120, 28)
-	buy_btn.add_theme_font_size_override("font_size", 11)
+	buy_btn.text = "兑换（%d 交子）" % int(e.get("cost", 0))
+	buy_btn.custom_minimum_size = Vector2(156, 34)
+	buy_btn.add_theme_font_size_override("font_size", 12)
 	buy_btn.disabled = sys.get_jiaozi() < int(e.get("cost", 0))
+	if buy_btn.disabled:
+		buy_btn.tooltip_text = "交子不足"
 	buy_btn.pressed.connect(_on_exchange_buy.bind(index))
-	row.add_child(buy_btn)
-	# 【删】合成入口统一在背包合成页，兑换商店不再重复提供（用户 09-15 拍板）
+	vb.add_child(buy_btn)
 	return card
 
 func _on_exchange_buy(index: int):

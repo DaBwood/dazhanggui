@@ -539,6 +539,9 @@ func _cost_color(have: int, need: int) -> Color:
 func _add_cost_row(parent: Node, prefix: String, have: int, need: int) -> HBoxContainer:
 	return ui_helpers._add_cost_row(parent, prefix, have, need)
 
+func _add_centered_panel(parent: Control, min_size: Vector2) -> VBoxContainer:
+	return ui_helpers._add_centered_panel(parent, min_size)
+
 func _create_base_popup(title_text: String, popup_size: Vector2, _pos: Vector2 = Vector2.ZERO, with_close: bool = true) -> PanelContainer:   # 【改】UI统一批次①：透传 with_close（确认弹窗传false不带右上✕）
 	return ui_helpers._create_base_popup(title_text, popup_size, _pos, with_close)   # 【改】主体迁 ui/ui_helpers.gd（2026-09-19 重构批次B）
 

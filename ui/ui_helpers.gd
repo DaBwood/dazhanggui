@@ -221,25 +221,56 @@ func style_nav_buttons():
 				btn.modulate = Color("#c9a959")  # 普通
 
 func style_button(btn: Button):
+	# 【改】批次②③④-B12：按钮统一改暗紫底+细描边+圆角，避免大面积金色显得拥挤、廉价
 	var normal = StyleBoxFlat.new()
-	normal.bg_color = Color("#c9a959")
+	normal.bg_color = Color("#3b3354")
+	normal.set_border_width_all(1)
+	normal.border_color = Color("#6a5f9e")
+	normal.set_content_margin_all(6)
 	for i in 4:
 		normal.set_corner_radius(i, 8)
 	btn.add_theme_stylebox_override("normal", normal)
 
 	var hover = StyleBoxFlat.new()
-	hover.bg_color = Color("#e0c070")
+	hover.bg_color = Color("#4a4168")
+	hover.set_border_width_all(1)
+	hover.border_color = Color("#8b7fb8")
+	hover.set_content_margin_all(6)
 	for i in 4:
 		hover.set_corner_radius(i, 8)
 	btn.add_theme_stylebox_override("hover", hover)
 
 	var pressed = StyleBoxFlat.new()
-	pressed.bg_color = Color("#a08030")
+	pressed.bg_color = Color("#2e2848")
+	pressed.set_border_width_all(1)
+	pressed.border_color = Color("#ffd700")
+	pressed.set_content_margin_all(6)
 	for i in 4:
 		pressed.set_corner_radius(i, 8)
 	btn.add_theme_stylebox_override("pressed", pressed)
 
-	btn.add_theme_color_override("font_color", Color("#2d2a2e"))
+	var focus = StyleBoxFlat.new()
+	focus.bg_color = Color("#3b3354")
+	focus.set_border_width_all(1)
+	focus.border_color = Color("#ffd700")
+	focus.set_content_margin_all(6)
+	for i in 4:
+		focus.set_corner_radius(i, 8)
+	btn.add_theme_stylebox_override("focus", focus)
+
+	var disabled = StyleBoxFlat.new()
+	disabled.bg_color = Color("#2a2636")
+	disabled.set_border_width_all(1)
+	disabled.border_color = Color("#4d4566")
+	disabled.set_content_margin_all(6)
+	for i in 4:
+		disabled.set_corner_radius(i, 8)
+	btn.add_theme_stylebox_override("disabled", disabled)
+
+	btn.add_theme_color_override("font_color", Color("#f2e9e4"))
+	btn.add_theme_color_override("font_hover_color", Color("#ffffff"))
+	btn.add_theme_color_override("font_pressed_color", Color("#ffd700"))
+	btn.add_theme_color_override("font_disabled_color", Color("#8a819f"))
 	btn.add_theme_font_size_override("font_size", 16)
 
 func animate_button(node_path: String):
@@ -302,6 +333,34 @@ func flash_red(node_path: String):
 # 够=绿 #7ee787，不够=红 #ff6666；页面经 c._cost_color 委托调用
 func _cost_color(have: int, need: int) -> Color:
 	return Color("#7ee787") if have >= need else Color("#ff6666")
+
+
+# 【新增】批次②③④-B12：商铺主页居中主卡公共容器（收益罐/主操作卡统一参考妙音坊）
+# 调用方负责往返回的 VBoxContainer 内放内容；卡片在父容器中垂直居中，底部页签仍由页面自行控制
+func _add_centered_panel(parent: Control, min_size: Vector2) -> VBoxContainer:
+	var center := CenterContainer.new()
+	center.size_flags_vertical = Control.SIZE_EXPAND_FILL
+	parent.add_child(center)
+	var card := PanelContainer.new()
+	card.custom_minimum_size = min_size
+	var card_style := StyleBoxFlat.new()
+	card_style.bg_color = Color("#2a2640")
+	card_style.set_corner_radius_all(8)
+	card_style.set_border_width_all(1)
+	card_style.border_color = Color("#6a5f9e")
+	card.add_theme_stylebox_override("panel", card_style)
+	center.add_child(card)
+	var margin := MarginContainer.new()
+	margin.add_theme_constant_override("margin_left", 14)
+	margin.add_theme_constant_override("margin_right", 14)
+	margin.add_theme_constant_override("margin_top", 12)
+	margin.add_theme_constant_override("margin_bottom", 12)
+	card.add_child(margin)
+	var body := VBoxContainer.new()
+	body.alignment = BoxContainer.ALIGNMENT_CENTER
+	body.add_theme_constant_override("separation", 10)
+	margin.add_child(body)
+	return body
 
 # 【新增】批次②③④-B6：消耗类统一范式（用户 2026-09-26 定调）——消耗物名字不变色，数字固定"（拥有/消耗）"，拥有≥消耗绿色否则红色
 # 数字 Label 固定命名 CostNum：需要原地刷新的场景用 find_child("CostNum", true, false) 定位改文本和着色

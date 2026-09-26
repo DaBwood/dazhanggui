@@ -78,77 +78,69 @@ func _after_build(page: Panel):
 func _fill_body(vb: VBoxContainer):
 	var sys = data.bank_system
 	sys._ensure_counters()
-	# 信誉等级卡
-	var card := PanelContainer.new()
-	var cs := StyleBoxFlat.new()
-	cs.bg_color = Color("#2a2640")
-	cs.set_corner_radius_all(10)
-	card.add_theme_stylebox_override("panel", cs)
-	vb.add_child(card)
-	var cv := VBoxContainer.new()
-	cv.add_theme_constant_override("separation", 4)
-	card.add_child(cv)
+	# 【改】批次②③④-B12：信誉主卡垂直居中放大；柜台网格占据中部；资源/一键全领固定底部
+	var main_body: VBoxContainer = c._add_centered_panel(vb, Vector2(460, 220))
 	var lv_lbl := Label.new()
 	lv_lbl.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	lv_lbl.text = "信誉等级 Lv.%d/%d" % [sys.get_xinyu_level(), sys.get_xinyu_max_level()]
 	lv_lbl.add_theme_color_override("font_color", Color("#ffd700"))
-	lv_lbl.add_theme_font_size_override("font_size", 17)
-	cv.add_child(lv_lbl)
+	lv_lbl.add_theme_font_size_override("font_size", 20)
+	main_body.add_child(lv_lbl)
 	var bonus_lbl := Label.new()
 	bonus_lbl.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	bonus_lbl.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
 	bonus_lbl.text = "当前加成：徒弟赚速 +%d、+%.0f%% ｜ 珍兽等级上限 +%d ｜ 珍兽觉醒上限 +%d" % [
 		sys.get_apprentice_flat_bonus(), sys.get_apprentice_pct_bonus() * 100.0,
 		sys.get_beast_level_cap_bonus(), sys.get_awaken_limit_bonus()]
-	bonus_lbl.add_theme_font_size_override("font_size", 13)
+	bonus_lbl.add_theme_font_size_override("font_size", 14)
 	bonus_lbl.add_theme_color_override("font_color", Color("#e6c07b"))
-	cv.add_child(bonus_lbl)
-	# 升级按钮居中，不横拉满（同卡片内按钮惯例）
-	var up_row := HBoxContainer.new()
-	up_row.alignment = BoxContainer.ALIGNMENT_CENTER
-	cv.add_child(up_row)
+	main_body.add_child(bonus_lbl)
+	var maxed: bool = sys.get_xinyu_level() >= sys.get_xinyu_max_level()
+	if not maxed:
+		c._add_cost_row(main_body, "升级消耗：信誉值", int(sys.get_xinyu()), int(sys.get_xinyu_cost()))
 	var up_btn := Button.new()
-	if sys.get_xinyu_level() >= sys.get_xinyu_max_level():
+	up_btn.custom_minimum_size = Vector2(260, 42)
+	if maxed:
 		up_btn.text = "已满级"
 		up_btn.disabled = true
 	else:
-		up_btn.text = "升级（%d 信誉值）" % sys.get_xinyu_cost()
+		up_btn.text = "升级信誉"
 		up_btn.disabled = sys.get_xinyu() < sys.get_xinyu_cost()
 		up_btn.pressed.connect(func(): _on_xinyu_upgrade(up_btn))
-	up_row.add_child(up_btn)
+	main_body.add_child(up_btn)
 	# 柜台区：卡片网格（3列，用户拍板）；长说明文案已删（2026-09-16 用户要求）
 	var scroll := ScrollContainer.new()
 	scroll.size_flags_vertical = Control.SIZE_EXPAND_FILL
 	vb.add_child(scroll)
 	var grid := GridContainer.new()
-	grid.columns = 3   # 按按钮尺寸实测3列正好，4列会顶出去（用户 2026-09-12 拍板）
+	grid.columns = 3
 	grid.size_flags_horizontal = Control.SIZE_EXPAND_FILL
-	grid.add_theme_constant_override("h_separation", 6)
-	grid.add_theme_constant_override("v_separation", 6)
+	grid.add_theme_constant_override("h_separation", 8)
+	grid.add_theme_constant_override("v_separation", 8)
 	scroll.add_child(grid)
 	# 只渲染已解锁柜台，末尾恒有一个「+」新增卡（用户拍板：不一次全显示30个）
 	for i in range(sys.get_counter_count()):
 		_add_counter_card(grid, i)
 	_add_unlock_card(grid)
-	# 资源栏（挪到柜台后，2026-09-16 用户要求）：信誉值 + 一键全领
+	# 资源栏：信誉值 + 一键全领固定底部
 	var res := HBoxContainer.new()
 	res.alignment = BoxContainer.ALIGNMENT_CENTER
 	res.add_theme_constant_override("separation", 12)
 	vb.add_child(res)
 	var res_lbl := Label.new()
-	# 筹算值/百业经验已门客独立池（门客页显示），这里只留全局的信誉值
 	res_lbl.text = "信誉值 %d" % sys.get_xinyu()
 	res_lbl.add_theme_color_override("font_color", Color("#e6c07b"))
-	res_lbl.add_theme_font_size_override("font_size", 14)
+	res_lbl.add_theme_font_size_override("font_size", 15)
 	res.add_child(res_lbl)
 	var collect_all_btn := Button.new()
 	collect_all_btn.text = "一键全领"
+	collect_all_btn.custom_minimum_size = Vector2(110, 38)
 	collect_all_btn.pressed.connect(_on_collect_all)
-	collect_all_btn.disabled = true   # 无待领产出时置灰（_refresh_rows 里按总量刷新）
+	collect_all_btn.disabled = true
 	_collect_all_btn = collect_all_btn
 	res.add_child(collect_all_btn)
 
-# ---------- 柜台卡片 ----------
+# ---------- 柜台卡片 ----------# ---------- 柜台卡片 ----------
 func _add_counter_card(grid: GridContainer, idx: int):
 	var sys = data.bank_system
 	var card := PanelContainer.new()
@@ -157,12 +149,14 @@ func _add_counter_card(grid: GridContainer, idx: int):
 	rs.set_corner_radius_all(8)
 	card.add_theme_stylebox_override("panel", rs)
 	card.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	card.custom_minimum_size = Vector2(0, 96)
 	grid.add_child(card)
 	var vb := VBoxContainer.new()
-	vb.add_theme_constant_override("separation", 3)
+	vb.add_theme_constant_override("separation", 4)
 	card.add_child(vb)
 	var title := Label.new()
-	title.add_theme_font_size_override("font_size", 13)
+	title.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	title.add_theme_font_size_override("font_size", 14)
 	title.clip_text = true
 	vb.add_child(title)
 	var info := Label.new()
@@ -176,12 +170,12 @@ func _add_counter_card(grid: GridContainer, idx: int):
 	btn_row.add_theme_constant_override("separation", 6)
 	vb.add_child(btn_row)
 	var btn := Button.new()
-	btn.custom_minimum_size = Vector2(58, 24)
-	btn.add_theme_font_size_override("font_size", 11)
+	btn.custom_minimum_size = Vector2(70, 30)
+	btn.add_theme_font_size_override("font_size", 12)
 	btn_row.add_child(btn)
 	var btn2 := Button.new()
-	btn2.custom_minimum_size = Vector2(58, 24)
-	btn2.add_theme_font_size_override("font_size", 11)
+	btn2.custom_minimum_size = Vector2(70, 30)
+	btn2.add_theme_font_size_override("font_size", 12)
 	btn_row.add_child(btn2)
 	# 两态：空闲 / 已委任（未解锁柜台不渲染，由末尾「+」卡负责新增）
 	var hid: String = sys.get_counter_hero(idx)   # 显式标注（sys 为 Variant，方法返回 Variant）
@@ -210,14 +204,15 @@ func _add_unlock_card(grid: GridContainer):
 	rs.set_corner_radius_all(8)
 	card.add_theme_stylebox_override("panel", rs)
 	card.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	card.custom_minimum_size = Vector2(0, 96)
 	grid.add_child(card)
 	var vb := VBoxContainer.new()
-	vb.add_theme_constant_override("separation", 3)
+	vb.add_theme_constant_override("separation", 4)
 	card.add_child(vb)
 	var title := Label.new()
 	title.text = "新增柜台"
 	title.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
-	title.add_theme_font_size_override("font_size", 13)
+	title.add_theme_font_size_override("font_size", 14)
 	title.add_theme_color_override("font_color", Color("#ffd700"))
 	vb.add_child(title)
 	var info := Label.new()
@@ -232,8 +227,8 @@ func _add_unlock_card(grid: GridContainer):
 	vb.add_child(btn_row)
 	var btn := Button.new()
 	btn.text = "＋"
-	btn.custom_minimum_size = Vector2(58, 24)
-	btn.add_theme_font_size_override("font_size", 13)
+	btn.custom_minimum_size = Vector2(70, 30)
+	btn.add_theme_font_size_override("font_size", 14)
 	btn_row.add_child(btn)
 	# 三态：达上限（禁用）/ 等级不足（点击提示升级钱庄店铺）/ 可花元宝解锁
 	var count: int = sys.get_counter_count()   # 显式标注（sys 为 Variant，方法返回 Variant）
