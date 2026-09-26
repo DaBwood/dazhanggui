@@ -697,7 +697,8 @@ func _build_skill_row(parent: Control, icon_char: String, icon_color: Color, tit
 	right.add_theme_constant_override("separation", 2)
 	row.add_child(right)
 	var cost_lbl = Label.new()
-	cost_lbl.text = "%s / %s" % [have_text, cost_text]
+	# 【改】批次②③④-B8：数字格式统一新消耗范式（拥有/消耗）；未着色场景保持原样，着色口径不变（B5）
+	cost_lbl.text = ("（%s/%s）" % [have_text, cost_text]) if have_val >= 0 else ("%s / %s" % [have_text, cost_text])
 	if have_val >= 0:   # 【新增】批次②③④-B5：拥有/需要着色（够绿 #7ee787 / 不够红 #ff6666）
 		cost_lbl.add_theme_color_override("font_color", c._cost_color(have_val, cost_val))
 	right.add_child(cost_lbl)
@@ -936,9 +937,12 @@ func _build_fanghua_detail(content: VBoxContainer, fid: String, idx: int):
 	row.add_child(right)
 	var cost_txt = str(cost) if st.unlocked else str(st.reason)
 	var cost_lbl := Label.new()
-	cost_lbl.text = "%s / %s" % [c.format_number(have), cost_txt]
-	if st.unlocked:   # 【新增】批次②③④-B5：拥有/需要着色（未解锁时 cost 位是原因文本，不着色）
+	if st.unlocked:
+		# 【改】批次②③④-B8：已解锁=新消耗范式数字（拥有/消耗）；未解锁=cost 位是原因文本，保持原样（B5 口径）
+		cost_lbl.text = "（%s/%s）" % [c.format_number(have), cost_txt]
 		cost_lbl.add_theme_color_override("font_color", c._cost_color(have, cost))
+	else:
+		cost_lbl.text = "%s / %s" % [c.format_number(have), cost_txt]
 	right.add_child(cost_lbl)
 	var up_row := HBoxContainer.new()
 	up_row.alignment = BoxContainer.ALIGNMENT_END
@@ -1050,17 +1054,11 @@ func _show_title_popup():
 		next_lbl.text = "下一级【%s】：" % next_t.title
 		next_lbl.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 		vbox.add_child(next_lbl)
-		# 【改】批次②③④-B5：友好/才华拆两行，各按 够绿/不够红 着色（原一行混排无法分色）
-		var req_f = Label.new()
-		req_f.text = "友好 %s/%s" % [c.format_number(f.friendly), c.format_number(next_t.req)]
-		req_f.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
-		req_f.add_theme_color_override("font_color", c._cost_color(int(f.friendly), int(next_t.req)))
-		vbox.add_child(req_f)
-		var req_t = Label.new()
-		req_t.text = "才华 %s/%s" % [c.format_number(f.talent), c.format_number(next_t.req)]
-		req_t.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
-		req_t.add_theme_color_override("font_color", c._cost_color(int(f.talent), int(next_t.req)))
-		vbox.add_child(req_t)
+		# 【改】批次②③④-B8：走新消耗范式 _add_cost_row（名字不变色，数字（拥有/需要）红绿着色，B5 拆行口径保留）
+		var req_f: HBoxContainer = c._add_cost_row(vbox, "友好", int(f.friendly), int(next_t.req))
+		req_f.alignment = BoxContainer.ALIGNMENT_CENTER
+		var req_t: HBoxContainer = c._add_cost_row(vbox, "才华", int(f.talent), int(next_t.req))
+		req_t.alignment = BoxContainer.ALIGNMENT_CENTER
 	else:
 		var max_lbl = Label.new()
 		max_lbl.text = "已达最高美名"
@@ -1182,20 +1180,29 @@ func _show_shop_skill_detail(skill_index: int):
 	bonus_lbl.add_theme_font_size_override("font_size", 18)
 	info_vbox.add_child(bonus_lbl)
 
+	# 【改】批次②③④-B8：状态行走新消耗范式（名字标签+数字标签分建，更新时按勾选分支换名字/数字）
+	var status_row := HBoxContainer.new()
+	info_vbox.add_child(status_row)
+	var status_name = Label.new()
+	status_name.name = "DetailStatusName"
+	status_row.add_child(status_name)
 	var status_lbl = Label.new()
 	status_lbl.name = "DetailStatus"
+	status_row.add_child(status_lbl)
 	if skill.bonus >= 0.299:
 		status_lbl.text = "已满级"
 		status_lbl.add_theme_color_override("font_color", Color("#ffd700"))
 	else:
 		var cost = 100 * int(pow(2, skill.refresh_count))
-		status_lbl.text = "刷新消耗：%s 铜钱" % c.format_number(cost)
-	info_vbox.add_child(status_lbl)
+		status_name.text = "刷新消耗：铜钱"
+		status_lbl.text = "（%s/%s）" % [c.format_number(int(data.money)), c.format_number(cost)]
+		status_lbl.add_theme_color_override("font_color", c._cost_color(int(data.money), cost))
 
 	if skill.bonus < 0.299:
 		var wish_check = CheckBox.new()
 		wish_check.name = "WishStoneCheck"
-		wish_check.text = "使用许愿石（拥有：%d）" % data.items.get("wish_stone", 0)
+		# 【改】批次②③④-B8：勾选框文案统一（拥有/消耗）格式，着色口径不变（B5）
+		wish_check.text = "使用许愿石（%d/1）" % int(data.items.get("wish_stone", 0))
 		vbox.add_child(wish_check)
 
 	if skill.bonus < 0.299:
@@ -1260,26 +1267,32 @@ func _update_shop_skill_detail():
 		bonus_lbl.text = "当前加成：+%.0f%%" % (skill.bonus * 100)
 
 	var status_lbl = panel.find_child("DetailStatus", true, false)
+	var status_name = panel.find_child("DetailStatusName", true, false)
 	var wish_check = panel.find_child("WishStoneCheck", true, false)
 	if status_lbl:
 		if skill.bonus >= 0.299:
+			if status_name: status_name.text = ""
 			status_lbl.text = "已满级"
 			status_lbl.add_theme_color_override("font_color", Color("#ffd700"))
 		else:
 			var use_wish = wish_check != null and wish_check.button_pressed
 			if use_wish:
 				var wish_count = int(data.items.get("wish_stone", 0))
-				status_lbl.text = "许愿石：%d/1" % wish_count
+				if status_name: status_name.text = "许愿石"
+				# 【改】批次②③④-B8：新消耗范式数字（拥有/消耗），名字在 DetailStatusName 不变色
+				status_lbl.text = "（%d/%d）" % [wish_count, 1]
 				# 【新增】批次②③④-B5：拥有/需要着色（够绿/不够红）
 				status_lbl.add_theme_color_override("font_color", c._cost_color(wish_count, 1))
 			else:
 				var cost = 100 * int(pow(2, skill.refresh_count))
-				status_lbl.text = "刷新消耗：%s 铜钱" % c.format_number(cost)
+				if status_name: status_name.text = "刷新消耗：铜钱"
+				status_lbl.text = "（%s/%s）" % [c.format_number(int(data.money)), c.format_number(cost)]
 				# 【新增】批次②③④-B5：铜钱够绿/不够红
 				status_lbl.add_theme_color_override("font_color", c._cost_color(int(data.money), cost))
 
 	if wish_check:
-		wish_check.text = "使用许愿石（拥有：%d）" % data.items.get("wish_stone", 0)
+		# 【改】批次②③④-B8：勾选框文案统一（拥有/消耗）格式，着色口径不变（B5）
+		wish_check.text = "使用许愿石（%d/1）" % int(data.items.get("wish_stone", 0))
 		# 【新增】批次②③④-B5：勾选框拥有数着色（用 1 颗，够绿/不够红）
 		wish_check.add_theme_color_override("font_color", c._cost_color(int(data.items.get("wish_stone", 0)), 1))
 		if skill.bonus >= 0.299:

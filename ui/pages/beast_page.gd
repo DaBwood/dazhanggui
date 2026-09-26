@@ -528,12 +528,9 @@ func _show_awaken_confirm(beast_id: String, instance_index: int):
 	info.text = "本次觉醒消耗：觉醒果×%d" % acost
 	info.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	vbox.add_child(info)
-	# 【改】批次②③④-B5：拥有行拆出单独着色（原两行一个 Label 无法分色；够绿/不够红）
-	var have_lbl = Label.new()
-	have_lbl.text = "当前拥有：觉醒果×%d" % have
-	have_lbl.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
-	have_lbl.add_theme_color_override("font_color", c._cost_color(have, acost))
-	vbox.add_child(have_lbl)
+	# 【改】批次②③④-B8：走新消耗范式 _add_cost_row（名字不变色，数字（拥有/消耗）红绿着色）
+	var have_row: HBoxContainer = c._add_cost_row(vbox, "觉醒果", have, acost)
+	have_row.alignment = BoxContainer.ALIGNMENT_CENTER
 	# 【改】UI统一批次①：确认弹窗双钮统一【取消】左【确定】右，动作含义写进标题/正文
 	var btn_row = HBoxContainer.new()
 	btn_row.alignment = BoxContainer.ALIGNMENT_CENTER
@@ -853,15 +850,22 @@ func _show_beast_skill_refresh_panel():
 	vbox.add_child(bonus_lbl)
 
 	# 状态/消耗
+	# 【改】批次②③④-B8：状态行走新消耗范式（名字标签+数字标签分建，更新时按勾选分支换名字/数字）
+	var status_row := HBoxContainer.new()
+	vbox.add_child(status_row)
+	var status_name = Label.new()
+	status_name.name = "BeastSkillStatusName"
+	status_row.add_child(status_name)
 	var status_lbl = Label.new()
 	status_lbl.name = "BeastSkillStatus"
-	vbox.add_child(status_lbl)
+	status_row.add_child(status_lbl)
 
 	# 勾选框
 	if skill.percent < 0.249:
 		var aroma_check = CheckBox.new()
 		aroma_check.name = "AromaCheck"
-		aroma_check.text = "使用奇香果（拥有：%d）" % int(data.items.get("aroma_fruit", 0))
+		# 【改】批次②③④-B8：勾选框文案统一（拥有/消耗）格式，着色口径不变（B5）
+		aroma_check.text = "使用奇香果（%d/1）" % int(data.items.get("aroma_fruit", 0))
 		# 【新增】批次②③④-B5：勾选框拥有数着色（与 _update_beast_skill_refresh_panel 同口径）
 		aroma_check.add_theme_color_override("font_color", c._cost_color(int(data.items.get("aroma_fruit", 0)), 1))
 		vbox.add_child(aroma_check)
@@ -898,25 +902,31 @@ func _update_beast_skill_refresh_panel():
 		bonus_lbl.text = "当前加成：+%.0f%%" % (skill.percent * 100)
 	
 	var status_lbl = panel.find_child("BeastSkillStatus", true, false)
+	var status_name = panel.find_child("BeastSkillStatusName", true, false)
 	var aroma_check = panel.find_child("AromaCheck", true, false)
 	if status_lbl:
 		if skill.percent >= 0.249:
+			if status_name: status_name.text = ""
 			status_lbl.text = "已满级"
 			status_lbl.add_theme_color_override("font_color", Color("#ffd700"))
 		else:
 			var use_aroma = aroma_check != null and aroma_check.button_pressed
 			if use_aroma:
-				status_lbl.text = "奇香果：%d/1" % int(data.items.get("aroma_fruit", 0))
+				if status_name: status_name.text = "奇香果"
+				# 【改】批次②③④-B8：新消耗范式数字（拥有/消耗），名字在 BeastSkillStatusName 不变色
+				status_lbl.text = "（%d/%d）" % [int(data.items.get("aroma_fruit", 0)), 1]
 				# 【新增】批次②③④-B5：拥有/需要着色（够绿/不够红）
 				status_lbl.add_theme_color_override("font_color", c._cost_color(int(data.items.get("aroma_fruit", 0)), 1))
 			else:
 				var cost = 100 * int(pow(2, skill.refresh_count))
-				status_lbl.text = "刷新消耗：%s 铜钱" % c.format_number(cost)
+				if status_name: status_name.text = "刷新消耗：铜钱"
+				status_lbl.text = "（%s/%s）" % [c.format_number(int(data.money)), c.format_number(cost)]
 				# 【新增】批次②③④-B5：铜钱够绿/不够红（原分支末尾 remove_theme_color_override 删除，改各分支自着色）
 				status_lbl.add_theme_color_override("font_color", c._cost_color(int(data.money), cost))
 	
 	if aroma_check:
-		aroma_check.text = "使用奇香果（拥有：%d）" % int(data.items.get("aroma_fruit", 0))
+		# 【改】批次②③④-B8：勾选框文案统一（拥有/消耗）格式，着色口径不变（B5）
+		aroma_check.text = "使用奇香果（%d/1）" % int(data.items.get("aroma_fruit", 0))
 		# 【新增】批次②③④-B5：勾选框拥有数着色（用 1 颗，够绿/不够红）
 		aroma_check.add_theme_color_override("font_color", c._cost_color(int(data.items.get("aroma_fruit", 0)), 1))
 		if skill.percent >= 0.249:
