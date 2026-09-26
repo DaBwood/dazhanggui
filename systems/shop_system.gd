@@ -104,6 +104,11 @@ func get_total_auto_income() -> int:
 	# 徒弟赚速（含魔法师/联姻加成）
 	for i in range(5):
 		total += g.get_apprentice_income(i)
+	# 【修】2026-09-26：已结业徒弟（现充/魔法师/已婚）原未计入总赚速，结业即"掉赚速"——
+	# 结业列表逐条累加（get_graduated_income 已含魔法师乘区与联姻配偶赚速，与槽位同口径）
+	for i in range(g.graduated_apprentices.size()):
+		if g.graduated_apprentices[i] != null:
+			total += g.get_graduated_income(i)
 	return total
 
 #钱庄升级

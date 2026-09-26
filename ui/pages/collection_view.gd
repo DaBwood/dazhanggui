@@ -254,11 +254,11 @@ func _build_medal_card(popup: PanelContainer):
 		pr.show_percentage = false
 		pr.custom_minimum_size = Vector2(0, 12)
 		vb.add_child(pr)
-		var pr_lbl := Label.new()
-		pr_lbl.text = "藏品总评分：%s / %s" % [c.format_number(score), c.format_number(need)]
-		pr_lbl.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
-		pr_lbl.add_theme_font_size_override("font_size", 12)
-		vb.add_child(pr_lbl)
+		# 【改】批次②③④-B7：勋章升级门槛走新范式 _add_cost_row（总评分是门槛不消耗，按"拥有/需要"着色）
+		var pr_row: HBoxContainer = c._add_cost_row(vb, "藏品总评分：", score, need)
+		pr_row.alignment = BoxContainer.ALIGNMENT_CENTER
+		for pr_lbl in pr_row.get_children():
+			pr_lbl.add_theme_font_size_override("font_size", 12)
 		var up := Button.new()
 		up.text = "升级勋章"
 		var chk: Dictionary = cs.can_upgrade_medal()
@@ -272,6 +272,8 @@ func _build_medal_card(popup: PanelContainer):
 		max_lbl.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 		vb.add_child(max_lbl)
 
+# 【待Kimi】④：勋章规则走 _show_stage_hint 瞬时提示，且"?"入口挂在勋章弹窗内 head_row——
+# 应迁玩法主标题旁"?"（规则进说明弹窗），等全局说明入口方案统一处理（同批次②③④-B6 钓鱼，只标不实施）
 func _on_medal_help():
 	c._show_stage_hint("藏品评分：单件=品质基数×等级×星级（普通100/优秀345/卓越1980/传奇13320/无双116650）；总评分=已拥有藏品求和，只作升级门槛不消耗。")
 
@@ -585,11 +587,9 @@ func _show_detail(cid: String):
 	if not sys.is_owned(cid):
 		# 合成区
 		var info = sys.get_synthesize_info(cid)
-		var line = Label.new()
-		line.text = "碎片 %d/%d" % [info.have, info.need]
-		line.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
-		line.size_flags_horizontal = Control.SIZE_EXPAND_FILL
-		vbox.add_child(line)
+		# 【改】批次②③④-B7：合成消耗走新范式 _add_cost_row（碎片名不变色，数字"拥有/消耗"着色）
+		var syn_row: HBoxContainer = c._add_cost_row(vbox, "合成：碎片", int(info.have), int(info.need))
+		syn_row.alignment = BoxContainer.ALIGNMENT_CENTER
 
 		var btn = Button.new()
 		btn.text = "合成"
@@ -632,11 +632,9 @@ func _show_detail(cid: String):
 		var cost = sys.get_upgrade_cost(cid)
 		var have = int(data.items.get(item, 0))
 		var iname = data.ITEM_CONFIG.get(item, {}).get("name", item)
-		var ul = Label.new()
-		ul.text = "升级：%s×%d（拥有 %d）" % [iname, cost, have]
-		ul.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
-		ul.size_flags_horizontal = Control.SIZE_EXPAND_FILL
-		vbox.add_child(ul)
+		# 【改】批次②③④-B7：升级消耗走新范式 _add_cost_row（道具名不变色，数字"拥有/消耗"着色）
+		var up_row: HBoxContainer = c._add_cost_row(vbox, "升级：%s" % iname, have, cost)
+		up_row.alignment = BoxContainer.ALIGNMENT_CENTER
 
 		var urow = HBoxContainer.new()
 		urow.alignment = BoxContainer.ALIGNMENT_CENTER
@@ -667,11 +665,9 @@ func _show_detail(cid: String):
 		# 晋升区
 		var scost = sys.get_star_up_cost(cid)
 		var shave = sys.get_frag_have(q, cid)
-		var sl = Label.new()
-		sl.text = "晋升：碎片×%d（拥有 %d）" % [scost, shave]
-		sl.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
-		sl.size_flags_horizontal = Control.SIZE_EXPAND_FILL
-		vbox.add_child(sl)
+		# 【改】批次②③④-B7：晋升消耗走新范式 _add_cost_row（碎片名不变色，数字"拥有/消耗"着色）
+		var star_row: HBoxContainer = c._add_cost_row(vbox, "晋升：碎片", shave, scost)
+		star_row.alignment = BoxContainer.ALIGNMENT_CENTER
 
 		var sb = Button.new()
 		sb.text = "晋升"
@@ -756,7 +752,9 @@ func show_suit_frag_box_selector(item_id: String, p_qty: int = 1):
 		btn.custom_minimum_size = Vector2(80, 40)
 		btn.pressed.connect(func():
 			var n = mini(p_qty, int(data.items.get(item_id, 0)))
+			# 【新增】批次②③④-B7：选择期间锦盒被消耗光时补反馈（防御，入口已校验 owned≥1）
 			if n < 1:
+				c._show_stage_hint("锦盒不足！")
 				return
 			data.items[item_id] = int(data.items.get(item_id, 0)) - n
 			sys.add_frags(cid, n)
@@ -865,10 +863,10 @@ func _fill_ta(body: VBoxContainer):
 func _fill_tao(body: VBoxContainer):
 	var sys = data.collection_system
 	# 券信息
-	var tl = Label.new()
-	tl.text = "淘宝券 ×%d（获取途径：活动）" % sys.get_ticket_count()
-	tl.add_theme_font_size_override("font_size", 16)
-	body.add_child(tl)
+	# 【改】批次②③④-B7：淘宝券走新范式 _add_cost_row（need=单次消耗1张）；"获取途径：活动"按用户拍板不显示（2026-09-26）
+	var tl_row: HBoxContainer = c._add_cost_row(body, "淘宝券", sys.get_ticket_count(), 1)
+	for tl in tl_row.get_children():
+		tl.add_theme_font_size_override("font_size", 16)
 	var row = HBoxContainer.new()
 	row.alignment = BoxContainer.ALIGNMENT_CENTER
 	row.add_theme_constant_override("separation", 16)
@@ -900,7 +898,9 @@ func _fill_tao(body: VBoxContainer):
 
 func _do_roll(n: int):
 	var r = data.collection_system.roll(n)
+	# 【新增】批次②③④-B7：roll 失败（淘宝券不足）补反馈——按钮 disabled 已门控，此处防双连点等边界
 	if not r.ok:
+		c._show_stage_hint(str(r.get("msg", "淘宝券不足")))
 		return
 	_show_results(r.results)
 

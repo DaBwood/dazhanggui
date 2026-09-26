@@ -140,6 +140,8 @@ func _build_tax_tab(list):
 	op.add_child(claim_btn)
 	var up_btn = Button.new()
 	up_btn.text = "升级（%s 税引）" % c.format_number(data.get_war_tax_up_cost())
+	# 【改】批次②③④-B7：按钮内嵌成本按 B6 边界维持整钮着色（war_tax_yin 是 float，int 强转）
+	up_btn.add_theme_color_override("font_color", c._cost_color(int(data.war_tax_yin), data.get_war_tax_up_cost()))
 	up_btn.custom_minimum_size = Vector2(240, 50)
 	up_btn.pressed.connect(_on_upgrade_tax)
 	op.add_child(up_btn)
@@ -154,6 +156,7 @@ func _build_tax_tab(list):
 	battle_btn.pressed.connect(_show_battle_popup)
 	op2.add_child(battle_btn)
 	
+	# 【待Kimi】④：税所收益公式说明应迁说明入口；war 页无玩法主标题 Label（只有页签），"?"挂载位置需与全局说明入口方案一起定（只标不实施）
 	var tip = Label.new()
 	tip.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	tip.add_theme_font_size_override("font_size", 13)
@@ -435,9 +438,12 @@ func _build_shop_tab(list):
 		list.add_child(row)
 		var info = Label.new()
 		var item_name = data.ITEM_CONFIG.get(item_id, {}).get("name", item_id)
-		info.text = "%s ｜ %d 积分" % [item_name, int(e.get("cost", 0))]
+		info.text = item_name
 		info.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 		row.add_child(info)
+		# 【改】批次②③④-B7：积分消耗从混排行拆出走新范式 _add_cost_row（war_points 是 float，int 强转）
+		var pts_row: HBoxContainer = c._add_cost_row(row, "积分", int(data.war_points), int(e.get("cost", 0)))
+		pts_row.size_flags_horizontal = Control.SIZE_SHRINK_BEGIN
 		var b = Button.new()
 		b.text = "兑换"
 		b.pressed.connect(_on_exchange.bind(item_id))

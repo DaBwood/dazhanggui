@@ -152,10 +152,14 @@ func _show_join_popup():
 	popup.name = "GuildJoinPopup"
 	var vb = popup.get_child(0)
 	var tip = Label.new()
-	tip.text = "创建商会（%d 元宝），或输入邀请码加入好友的商会" % int(data.guild_system.get_settings().get("create_cost", 500))
+	tip.text = "输入邀请码可加入好友的商会"
 	tip.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	tip.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
 	vb.add_child(tip)
+	# 【改】批次②③④-B7：创建消耗走新范式 _add_cost_row（元宝名不变色，数字"拥有/消耗"着色）
+	var create_cost := int(data.guild_system.get_settings().get("create_cost", 500))
+	var cost_row: HBoxContainer = c._add_cost_row(vb, "创建商会：元宝", int(data.yuanbao), create_cost)
+	cost_row.alignment = BoxContainer.ALIGNMENT_CENTER
 	var name_edit = LineEdit.new()
 	name_edit.placeholder_text = "输入商会名（2~16字）"
 	vb.add_child(name_edit)
@@ -195,7 +199,9 @@ func _on_create(name_edit: LineEdit, popup):
 
 func _on_join(id_edit: LineEdit, popup):
 	var gid = id_edit.text.strip_edges()
+	# 【新增】批次②③④-B7：空邀请码原静默 return，补提示
 	if gid == "":
+		c._show_stage_hint("请输入邀请码")
 		return
 	c.net.guild_get(gid, func(_code, d):
 		if not d.get("ok", false):
@@ -337,16 +343,19 @@ func _render_build():
 		list.add_child(row)
 		var info = Label.new()
 		info.size_flags_horizontal = Control.SIZE_EXPAND_FILL
-		var cost_txt = "免费"
-		if int(conf.get("yuanbao", 0)) > 0:
-			cost_txt = "%d元宝" % int(conf.yuanbao)
-		if str(conf.get("item", "")) != "":
-			cost_txt = "消耗%s×%d" % [data.ITEM_CONFIG.get(str(conf.item), {}).get("name", conf.item), int(conf.get("item_count", 1))]
-		info.text = "%s ｜ %s ｜ 今日 %d/%d\n财富+%s 贡献+%d 经验+%d" % [
-			conf.get("name", kind), cost_txt, used, int(conf.get("daily", 0)),
+		info.text = "%s ｜ 今日 %d/%d\n财富+%s 贡献+%d 经验+%d" % [
+			conf.get("name", kind), used, int(conf.get("daily", 0)),
 			c.format_number(float(conf.get("wealth", 0))), int(conf.get("contribution", 0)), int(conf.get("exp", 0))]
 		info.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
 		row.add_child(info)
+		# 【改】批次②③④-B7：建设消耗走新范式 _add_cost_row（免费档不加消耗行），插在 info 与按钮之间
+		if int(conf.get("yuanbao", 0)) > 0:
+			var yb_row: HBoxContainer = c._add_cost_row(row, "建设：元宝", int(data.yuanbao), int(conf.get("yuanbao", 0)))
+			yb_row.size_flags_horizontal = Control.SIZE_SHRINK_BEGIN
+		elif str(conf.get("item", "")) != "":
+			var item_id: String = str(conf.get("item", ""))
+			var item_row: HBoxContainer = c._add_cost_row(row, "建设：%s" % data.ITEM_CONFIG.get(item_id, {}).get("name", item_id), int(data.items.get(item_id, 0)), int(conf.get("item_count", 1)))
+			item_row.size_flags_horizontal = Control.SIZE_SHRINK_BEGIN
 		var btn = Button.new()
 		btn.text = "建设"
 		btn.disabled = used >= int(conf.get("daily", 0))
@@ -391,8 +400,11 @@ func _add_shop_section(list, section_name: String, entries: Array, guild_lv: int
 			name_txt = str(data._beast_configs.get(str(e.beast), {}).get("name", e.beast))
 		else:
 			name_txt = str(data.ITEM_CONFIG.get(str(e.item), {}).get("name", e.item))
-		info.text = "%s ｜ %d贡献 ｜ 已购 %d/%d%s" % [name_txt, int(e.cost), used, int(e.limit), "（%d级解锁）" % int(e.level) if locked else ""]
+		# 【改】批次②③④-B7：贡献消耗从混排行拆出走新范式 _add_cost_row；"已购 x/y"是限购进度非消耗，保持原色（用户拍板 2026-09-26）
+		info.text = "%s ｜ 已购 %d/%d%s" % [name_txt, used, int(e.limit), "（%d级解锁）" % int(e.level) if locked else ""]
 		row.add_child(info)
+		var contrib_row: HBoxContainer = c._add_cost_row(row, "贡献", data.guild_system.guild_contribution, int(e.cost))
+		contrib_row.size_flags_horizontal = Control.SIZE_SHRINK_BEGIN
 		var btn = Button.new()
 		btn.text = "兑换"
 		btn.disabled = locked
@@ -530,6 +542,8 @@ func _save_and_render():
 # 规则（用户拍板）：会长/副会长耗财富开启（可全开）→ 成员委任门客（可多条路线、可多个门客）
 # → 全队委任赚速总和≥要求即锁定（不可撤回）→ 倒计时结束发邮件（贡献按占比分，随机池人人平等抽）
 # 每天刷新：今天开启第二天没走完也清空；锁定后不可再加人；开启者无额外奖励；人机不参与
+# 【待Kimi】④：商贸长说明（开启→委任→锁定→邮件流程）应迁说明入口；商会"主标题"是顶栏动态 GuildHeader，
+# "?"挂载方式需与全局说明入口方案一起定（同批次②③④-B6 钓鱼，只标不实施）
 func _render_trade():
 	var list = _list()
 	var gs = data.guild_system
@@ -641,6 +655,8 @@ func _make_trade_card(conf: Dictionary, record: Dictionary, now: int) -> PanelCo
 		elif gs.is_officer(record):
 			var open_btn = Button.new()
 			open_btn.text = "开启（财富 %s）" % c.format_number(float(conf.get("cost", 0)))
+			# 【改】批次②③④-B7：按钮内嵌成本按 B6 边界维持整钮着色（财富是商会共享资源，按可支付性红绿）
+			open_btn.add_theme_color_override("font_color", c._cost_color(int(float(record.get("wealth", 0))), int(float(conf.get("cost", 0)))))
 			open_btn.pressed.connect(_on_trade_open.bind(tid))
 			btns.add_child(open_btn)
 		else:

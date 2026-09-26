@@ -121,8 +121,22 @@ func _update_apprentice_train(content: VBoxContainer):
 		
 		# 未解锁槽位
 		if i >= unlocked:
-			info.text = "【槽位%d】身份等级 Lv.%d 解锁" % [i + 1, data.APPRENTICE_UNLOCK_LEVELS[i]]
-			info.modulate = Color(0.5, 0.5, 0.5)
+			# 【改】批次②③④-B7：解锁需求按可达成性着色（B2 医馆"需医术"同口径）——原整行 modulate 灰会压暗着色，改为需求数字自身红绿、其余文字保持灰
+			var unlock_row := HBoxContainer.new()
+			unlock_row.add_theme_constant_override("separation", 0)
+			row.add_child(unlock_row)
+			var unlock_prefix := Label.new()
+			unlock_prefix.text = "【槽位%d】身份等级 Lv." % (i + 1)
+			unlock_prefix.modulate = Color(0.5, 0.5, 0.5)
+			unlock_row.add_child(unlock_prefix)
+			var unlock_lv := Label.new()
+			unlock_lv.text = str(data.APPRENTICE_UNLOCK_LEVELS[i])
+			unlock_lv.add_theme_color_override("font_color", c._cost_color(data.identity_level, data.APPRENTICE_UNLOCK_LEVELS[i]))
+			unlock_row.add_child(unlock_lv)
+			var unlock_suffix := Label.new()
+			unlock_suffix.text = " 解锁"
+			unlock_suffix.modulate = Color(0.5, 0.5, 0.5)
+			unlock_row.add_child(unlock_suffix)
 			continue
 		
 		var entry = data.apprentices[i]
@@ -147,11 +161,20 @@ func _update_apprentice_train(content: VBoxContainer):
 		if list.size() > 1:
 			names_txt = "双胞胎！\n" + names_txt
 		
-		info.text = "%s挚友:%s\n进度 %d/10000 | 赚速 %s/秒 | 活力 %d/500 | %s" % [
+		# 【改】批次②③④-B7：活力消耗从混排 info 拆出走新范式 _add_cost_row（上限取 get_vigor_max，不硬编码 500），插在 info 与按钮之间
+		info.text = "%s挚友:%s\n进度 %d/10000 | 赚速 %s/秒 | %s" % [
 			names_txt, friend_name,
-			first.progress, c.format_number(data.get_apprentice_income(i)),
-			data.get_slot_vigor(i), state_txt
+			first.progress, c.format_number(data.get_apprentice_income(i)), state_txt
 		]
+		var vigor_now: int = data.get_slot_vigor(i)
+		var vigor_row: HBoxContainer = c._add_cost_row(row, "活力", vigor_now, data.collection_system.get_vigor_max())
+		vigor_row.size_flags_horizontal = Control.SIZE_SHRINK_BEGIN
+		# 【改】批次②③④-B7返修：活力是恢复上限型体力（同游历体力/谈心精力口径）——上限是恢复封顶不是单次消耗，<上限不红，耗尽（=0，培养不了）才红
+		var vigor_num: Label = vigor_row.get_node("CostNum") as Label
+		if vigor_now <= 0:
+			vigor_num.add_theme_color_override("font_color", Color("#ff6666"))
+		else:
+			vigor_num.remove_theme_color_override("font_color")
 		
 		# 培养中：活力旁加"+"按钮（使用活力丹）
 		if first.state == "training":
@@ -299,6 +322,9 @@ func _on_graduate(slot: int, path: String):
 		# 双胞胎：槽位里还有徒弟，继续为其选择方向
 		if data.apprentices[slot] != null:
 			_show_graduate_selector(slot)
+	else:
+		# 【新增】批次②③④-B7：结业失败原静默（按钮只对待结业槽显示，纯防御补反馈）
+		c._show_stage_hint("结业失败：徒弟状态已变化")
 
 func _show_vitality_pill_prompt(slot: int):
 	var max_pills = data.items.get("vitality_pill", 0)
@@ -313,9 +339,23 @@ func _show_vitality_pill_prompt(slot: int):
 	var vbox = panel.get_child(0)
 	
 	var info = Label.new()
-	info.text = "槽位%d 当前活力：%d/500\n拥有活力丹：%d（每个+5）" % [slot + 1, data.get_slot_vigor(slot), max_pills]
+	info.text = "槽位%d" % (slot + 1)
 	info.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	vbox.add_child(info)
+	# 【改】批次②③④-B7：当前活力走新范式 _add_cost_row（上限取 get_vigor_max，不硬编码 500）；"拥有活力丹"是库存行无明确需量，保持原色（用户拍板 2026-09-26）
+	var pill_vigor_now: int = data.get_slot_vigor(slot)
+	var pill_vigor_row: HBoxContainer = c._add_cost_row(vbox, "当前活力", pill_vigor_now, data.collection_system.get_vigor_max())
+	pill_vigor_row.alignment = BoxContainer.ALIGNMENT_CENTER
+	# 【改】批次②③④-B7返修：体力类口径同槽位活力行——=0 才红
+	var pill_vigor_num: Label = pill_vigor_row.get_node("CostNum") as Label
+	if pill_vigor_now <= 0:
+		pill_vigor_num.add_theme_color_override("font_color", Color("#ff6666"))
+	else:
+		pill_vigor_num.remove_theme_color_override("font_color")
+	var pill_stock = Label.new()
+	pill_stock.text = "拥有活力丹：%d（每个+5）" % max_pills
+	pill_stock.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	vbox.add_child(pill_stock)
 	
 	var pair = c._create_slider_spin_pair(vbox, max_pills)
 	var spin = pair.spin
@@ -342,18 +382,24 @@ func _show_vitality_pill_prompt(slot: int):
 
 func _on_use_vitality_pill(spin: SpinBox):
 	var count = clamp(int(spin.value), 1, data.items.get("vitality_pill", 0))
+	# 【新增】批次②③④-B7：use_vitality_pill 失败原静默（入口已校验库存，纯防御补反馈）
 	if data.use_vitality_pill(_vitality_target_slot, count):
 		c._safe_close("VitalityPillPrompt")
 		c._show_stage_hint("活力 +%d！" % (5 * count))
 		update_apprentice_page()
 		c.update_bag_list()
+	else:
+		c._show_stage_hint("使用失败：活力丹不足")
 	_vitality_target_slot = -1
 
 func _show_marriage_proposal(slot: int):
 	c._safe_close("MarriagePanel")
 	_proposing_slot = slot
 	_proposed_spouse = data.generate_spouse(slot)
-	if _proposed_spouse.is_empty(): return
+	# 【新增】批次②③④-B7：生成联姻对象失败原静默 return，补反馈
+	if _proposed_spouse.is_empty():
+		c._show_stage_hint("生成联姻对象失败，请重试")
+		return
 	
 	var a = data.graduated_apprentices[slot]
 	var panel = c._create_base_popup("提亲", Vector2(420, 300), Vector2(366, 140))
@@ -396,3 +442,6 @@ func _on_marry_apprentice():
 		c.update_all_ui()
 		_proposing_slot = -1
 		_proposed_spouse = {}
+	else:
+		# 【新增】批次②③④-B7：联姻失败原静默（按钮只对现充显示，纯防御补反馈）
+		c._show_stage_hint("联姻失败：对象已失效")
