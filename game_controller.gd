@@ -356,6 +356,8 @@ func _show_unlock_hint(role_name: String, vip_level: int):
 	ui_helpers._show_unlock_hint(role_name, vip_level)   # 【改】主体迁 ui/ui_helpers.gd（2026-09-19 重构批次B）
 
 func on_auto_earn():
+	if not _game_entered: return   # 【新增】丢档根修（2026-09-26）：过登录门进游戏之前节拍整体不跑——
+	# 旧病根：计时器 autostart 随场景即跑，门期间满30秒就用空白新档自动存档覆盖真实存档
 	data.money += data.get_total_auto_income()
 	data.settle_manor()   # 【第4批新增】庄园每秒懒结算产量入仓库
 	# 【第6批新增】每秒检查挚友目标，达成即自动解锁并弹提示（各玩法的计数钩子在 data 层，这里统一反馈）

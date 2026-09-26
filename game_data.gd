@@ -37,6 +37,7 @@ func set_save_path_for(p_username: String) -> void:
 		to.store_string(content)
 		to.close()
 
+var _load_done := false   # 【新增】丢档根修标记（2026-09-26）：load_game 跑过才允许写盘，杜绝登录门期间空白新档覆盖真实存档
 var save_id: String = ""   # 【新增】存档血缘ID：同一份档的所有分支同一个ID，不同档不同ID；存档冲突判定用（名字可改不可靠、时间偏向本地）
 
 const OFFLINE_RATE = 0.8
@@ -1043,6 +1044,7 @@ func _read_file_text(path: String) -> String:
 
 
 func save_game():
+	if not _load_done: return   # 【新增】丢档根修：未读档（登录门停留/进游戏前）一律禁止写盘——旧病根：门期间30秒自动存档用空白新档覆盖真实存档
 	@warning_ignore("narrowing_conversion")
 	last_logout_time = Time.get_unix_time_from_system()
 	var save_data = {
@@ -1079,10 +1081,13 @@ func save_game():
 		var dir = DirAccess.open("user://")
 		if dir and dir.rename(tmp_path.trim_prefix("user://"), save_path.trim_prefix("user://")) == OK:
 			game_saved.emit(save_text)   # 【新增】通知网络层自动上传云存档（rename 成功才算写完）
+		else:
+			push_error("【存档】原子写最后一步 rename 失败，本次存档未落盘: " + save_path)   # 【新增】丢档根修：原为静默失败
 
 
 # 读取存档：先加载配置，核心字段由本中枢读取，其余各子系统从同一张扁平表认领自己的字段
 func load_game():
+	_load_done = true   # 【新增】丢档根修：必须放第一行——无存档/解析失败等任何早退路径都算"已读档"，新档之后允许正常写盘
 	# 【新增】血缘ID兜底：必须放在任何 return 之前——新档走"无文件早退"路径，
 	# 放认领区里永远执行不到（云端 save_id 为空的根因）
 	if save_id == "":
@@ -1095,9 +1100,17 @@ func load_game():
 		player_name = SURNAMES[randi() % SURNAMES.size()] + NAME_PARTS[randi() % NAME_PARTS.size()]
 
 	if not FileAccess.file_exists(save_path): return   # 无存档=新游戏；【删】批次D：四档迁移标记随迁移块一并删除
+	# 【新增】启动快照（2026-09-26 丢档根修配套保险）：读档前把现有存档复制为 .boot.bak，
+	# 之后任何流程都不写它——即便正式档和 .bak 都被意外覆盖，仍能从这个文件手工找回
+	var boot_txt: String = _read_file_text(save_path)
+	if boot_txt != "":
+		var boot_f = FileAccess.open(save_path + ".boot.bak", FileAccess.WRITE)
+		if boot_f:
+			boot_f.store_string(boot_txt)
+			boot_f.close()
 	# 【改】读档保底链（防闪退截断，2026-09-22）：正式档损坏 → 有 .bak 自动恢复并重试一次 →
 	# 仍失败则 rename 成 .corrupt 留证（否则新档流程几秒内的自动存档会把它彻底覆盖）
-	var text: String = _read_file_text(save_path)
+	var text: String = boot_txt   # 【改】丢档根修：复用上面启动快照已读出的文本（原再读一次）
 	if text == "": return
 	var json = JSON.new()
 	if json.parse(text) != OK:
