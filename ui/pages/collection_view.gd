@@ -328,7 +328,7 @@ func _fill_ge(body: VBoxContainer):
 			b.add_theme_color_override("font_color", Color(QUALITY_COLORS[q]))
 		b.pressed.connect(func(): _ge_q = q; _refresh_body())
 		qrow.add_child(b)
-	# 当前品质藏品网格（已获得在上按星/级降序，未获得在下）
+	# 当前品质藏品网格（已获得在上按星/级降序；可合成未获得其次；其余未获得在下。批次B13修：通用碎片库存≥100时不再整页插队）
 	var scroll = ScrollContainer.new()
 	scroll.size_flags_vertical = Control.SIZE_EXPAND_FILL
 	scroll.horizontal_scroll_mode = ScrollContainer.SCROLL_MODE_DISABLED
@@ -347,10 +347,10 @@ func _fill_ge(body: VBoxContainer):
 	var owned_ids = ids.filter(func(i): return sys.is_owned(i))
 	owned_ids.sort_custom(func(a, b): return sys.get_star(b) * 1000 + sys.get_level(b) < sys.get_star(a) * 1000 + sys.get_level(a))
 	var unowned_ids = ids.filter(func(i): return not sys.is_owned(i))
-	# 【新增】可合成藏品排最前：碎片够100的未获得藏品优先展示
+	# 【改】批次B13：可合成的未获得藏品排未获得段最前（不再压过已获得，避免通用碎片库存≥100时整页插队）
 	var synth_ids = unowned_ids.filter(func(i): return sys.get_synthesize_info(i).ok)
 	var rest_ids = unowned_ids.filter(func(i): return not sys.get_synthesize_info(i).ok)
-	for cid in synth_ids + owned_ids + rest_ids:
+	for cid in owned_ids + synth_ids + rest_ids:
 		grid.add_child(_make_coll_card(cid))
 
 # ---------- 藏品玩家可见效果文案 ----------
@@ -498,26 +498,57 @@ func _collection_special_effect(cid: String) -> String:
 	return "特殊效果：%s %s %s" % [target, stat_name, value_txt]
 
 # 藏品卡片：已获显示★/Lv与效果摘要；未获显示碎片进度（点击都进详情）
-func _make_coll_card(cid: String) -> Button:
+func _make_coll_card(cid: String) -> PanelContainer:
 	var sys = data.collection_system
 	var coll = sys.get_collection(cid)
 	var q = int(coll.get("quality", 4))
-	var btn = Button.new()
-	btn.custom_minimum_size = Vector2(270, 84)
-	btn.size_flags_horizontal = Control.SIZE_EXPAND_FILL
-	btn.mouse_filter = Control.MOUSE_FILTER_PASS   # 坑#10：滚动穿透
-	btn.add_theme_font_size_override("font_size", 12)
-	# 【新增】藏品名字按品质着色：无双红/传奇橙/卓越紫/优秀蓝/普通白
-	btn.add_theme_color_override("font_color", Color(QUALITY_COLORS[q]))
-	if sys.is_owned(cid):
+	var owned: bool = sys.is_owned(cid)
+	# 【改】批次B13：整卡改卡片容器（名字大字单独一行，状态/进度小字二三行），不再用整卡 Button 贴多行文本
+	var card := PanelContainer.new()
+	card.custom_minimum_size = Vector2(270, 92)   # 【改】批次B13抛光：三行排紧，消除空荡感
+	card.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	card.mouse_filter = Control.MOUSE_FILTER_PASS   # 坑#10/#11：滚动穿透、点击整卡响应
+	var cs := StyleBoxFlat.new()
+	# 【改】批次B13抛光：未获得底色暗一档；描边用品质色（已获得55%透明度/未获得灰边），五品质一眼可分
+	cs.bg_color = Color("#252138") if owned else Color("#1e1a30")
+	cs.set_corner_radius_all(8)
+	cs.set_border_width_all(1)
+	cs.border_color = Color(QUALITY_COLORS[q], 0.55) if owned else Color("#3f3a58")
+	card.add_theme_stylebox_override("panel", cs)
+	var vb := VBoxContainer.new()
+	vb.alignment = BoxContainer.ALIGNMENT_CENTER
+	vb.add_theme_constant_override("separation", 4)
+	card.add_child(vb)
+	# 第一行：名字（15px 大字；只染名字；未获得降饱和灰紫）
+	var nm := Label.new()
+	nm.text = str(coll.get("name", cid))
+	nm.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	nm.add_theme_font_size_override("font_size", 16 if owned else 15)
+	nm.add_theme_color_override("font_color", Color(QUALITY_COLORS[q]) if owned else Color("#666080"))
+	vb.add_child(nm)
+	# 第二行：已获得=星级/等级；未获得=状态
+	var st := Label.new()
+	st.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	st.add_theme_font_size_override("font_size", 12)
+	st.add_theme_color_override("font_color", Color("#a49fc4"))
+	vb.add_child(st)   # 【修】批次B13：补上遗漏的 add_child（此前二三行未进树只剩标题）
+	# 第三行：已获得=效果摘要；未获得=碎片进度
+	var dt := Label.new()
+	dt.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	dt.add_theme_font_size_override("font_size", 12)
+	dt.add_theme_color_override("font_color", Color("#a49fc4"))
+	vb.add_child(dt)   # 【修】批次B13：补上遗漏的 add_child
+	if owned:
+		st.text = "★%d Lv.%d" % [sys.get_star(cid), sys.get_level(cid)]
 		# 【改】卡片摘要显示当前特殊效果结果值，不再贴后台 desc
 		var brief = _collection_special_effect(cid).trim_prefix("特殊效果：")
 		if brief.length() > 22:
 			brief = brief.substr(0, 22) + "…"
-		btn.text = "%s ★%d Lv.%d\n%s" % [coll.get("name", cid), sys.get_star(cid), sys.get_level(cid), brief]
+		dt.text = brief
 	else:
 		var info = sys.get_synthesize_info(cid)
-		btn.text = "%s（未获得）\n碎片 %d/%d" % [coll.get("name", cid), info.have, info.need]
+		st.text = "未获得"
+		dt.text = "碎片 %d/%d" % [info.have, info.need]
 		# 【新增】可合成红点：碎片足够时提示可合成
 		if info.ok:
 			var dot = Label.new()
@@ -525,13 +556,15 @@ func _make_coll_card(cid: String) -> Button:
 			dot.mouse_filter = Control.MOUSE_FILTER_IGNORE   # 装饰节点不拦截点击
 			dot.add_theme_font_size_override("font_size", 16)
 			dot.add_theme_color_override("font_color", Color(1, 0.2, 0.2))
-			dot.position = Vector2(246, 4)
-			btn.add_child(dot)
-	# 【新增】打开新详情时清空上一次操作提示，避免跨藏品串文案
-	btn.pressed.connect(func():
-		_detail_status = ""
-		_show_detail(cid))
-	return btn
+			dot.set_anchors_preset(Control.PRESET_TOP_RIGHT)
+			dot.position = Vector2(-24, 6)
+			card.add_child(dot)
+	# 打开新详情时清空上一次操作提示，避免跨藏品串文案
+	card.gui_input.connect(func(ev):
+		if ev is InputEventMouseButton and ev.pressed and ev.button_index == MOUSE_BUTTON_LEFT:
+			_detail_status = ""
+			_show_detail(cid))
+	return card
 
 # 藏品详情弹窗：合成/升级/晋升/自选门客
 func _show_detail(cid: String):
@@ -594,6 +627,9 @@ func _show_detail(cid: String):
 		var btn = Button.new()
 		btn.text = "合成"
 		btn.disabled = not info.ok
+		# 【改】批次B13：弹窗主操作钮放大居中（去右侧小按钮范式）
+		btn.custom_minimum_size = Vector2(240, 44)
+		btn.size_flags_horizontal = Control.SIZE_SHRINK_CENTER
 		# 【改】成功不显示“已合成/Lv.X”文字，失败才显示原因
 		btn.pressed.connect(func():
 			var r = sys.synthesize(cid)
@@ -622,6 +658,9 @@ func _show_detail(cid: String):
 
 			var pb = Button.new()
 			pb.text = "选择"
+			# 【改】批次B13：主操作钮放大
+			pb.custom_minimum_size = Vector2(120, 44)
+			pb.add_theme_font_size_override("font_size", 13)
 			# 【新增】确保按钮自身接收点击
 			pb.mouse_filter = Control.MOUSE_FILTER_STOP
 			pb.pressed.connect(_show_pick_selector.bind(cid))
@@ -740,16 +779,13 @@ func show_suit_frag_box_selector(item_id: String, p_qty: int = 1):
 	vbox.add_child(hint)
 	for cid in suit.get("members", []):
 		var coll = sys.get_collection(cid)
-		var row = HBoxContainer.new()
-		row.add_theme_constant_override("separation", 8)
-		var lbl = Label.new()
-		lbl.size_flags_horizontal = Control.SIZE_EXPAND_FILL
-		lbl.add_theme_color_override("font_color", Color(QUALITY_COLORS[int(coll.get("quality", 4))]))
-		lbl.text = "%s（当前碎片 %d）" % [coll.get("name", cid), sys.get_frag_count(cid)]
-		row.add_child(lbl)
+		# 【改】批次B13：选项改大卡按钮（整卡可点，品质色名字）
 		var btn = Button.new()
-		btn.text = "选择"
-		btn.custom_minimum_size = Vector2(80, 40)
+		btn.custom_minimum_size = Vector2(360, 44)
+		btn.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+		btn.add_theme_font_size_override("font_size", 13)
+		btn.add_theme_color_override("font_color", Color(QUALITY_COLORS[int(coll.get("quality", 4))]))
+		btn.text = "%s（当前碎片 %d）" % [coll.get("name", cid), sys.get_frag_count(cid)]
 		btn.pressed.connect(func():
 			var n = mini(p_qty, int(data.items.get(item_id, 0)))
 			# 【新增】批次②③④-B7：选择期间锦盒被消耗光时补反馈（防御，入口已校验 owned≥1）
@@ -761,8 +797,7 @@ func show_suit_frag_box_selector(item_id: String, p_qty: int = 1):
 			popup.queue_free()
 			c._show_stage_hint("获得【%s】碎片×%d" % [coll.get("name", cid), n])
 			c.update_bag_list())
-		row.add_child(btn)
-		vbox.add_child(row)
+		vbox.add_child(btn)
 	c.add_child(popup)
 
 # 【新增】套装效果玩家文案：已接入类按"已激活档数×每档值"显示当前实际加成；未接入统一"后续版本开放"
@@ -805,59 +840,146 @@ func _fill_ta(body: VBoxContainer):
 	scroll.size_flags_vertical = Control.SIZE_EXPAND_FILL
 	scroll.horizontal_scroll_mode = ScrollContainer.SCROLL_MODE_DISABLED
 	body.add_child(scroll)
-	var list = VBoxContainer.new()
-	list.size_flags_horizontal = Control.SIZE_EXPAND_FILL
-	list.add_theme_constant_override("separation", 8)
-	scroll.add_child(list)
+	# 【改】批次B13：套装图腾卡（概念A拍板）——构成图形化：成员点阵清单+档位圆点条，弃文字堆叠
+	var grid = GridContainer.new()
+	grid.columns = 2
+	grid.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	grid.add_theme_constant_override("h_separation", 8)
+	grid.add_theme_constant_override("v_separation", 8)
+	scroll.add_child(grid)
 	for sid in sys.get_suits().keys():
 		var suit = sys.get_suits()[sid]
 		var info = sys.get_suit_info(sid)
 		var box = PanelContainer.new()
+		var bs := StyleBoxFlat.new()
+		bs.bg_color = Color("#252138")
+		bs.set_corner_radius_all(8)
+		bs.set_border_width_all(1)
+		bs.border_color = Color("#6b5a35")   # 淡金描边呼应套装金色主题
+		box.add_theme_stylebox_override("panel", bs)
+		box.mouse_filter = Control.MOUSE_FILTER_PASS   # 坑#10/#11：滚动穿透、点击整卡
+		box.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 		var vb = VBoxContainer.new()
-		vb.add_theme_constant_override("separation", 4)
+		vb.add_theme_constant_override("separation", 3)
 		box.add_child(vb)
-		list.add_child(box)
-		# 标题行 + 激活按钮/红点
-		var row = HBoxContainer.new()
-		vb.add_child(row)
+		grid.add_child(box)
+		# 标题：套装名（16px金字居中）
 		var tl = Label.new()
-		tl.text = "【%s】 已激活 %d/%d 档" % [suit.get("name", sid), info.activated, info.total]
-		tl.size_flags_horizontal = Control.SIZE_EXPAND_FILL
-		tl.add_theme_font_size_override("font_size", 15)
+		tl.text = "【%s】" % suit.get("name", sid)
+		tl.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+		tl.add_theme_font_size_override("font_size", 16)
 		tl.add_theme_color_override("font_color", Color("#ffd700"))
-		row.add_child(tl)
-		if info.can_activate:
-			var dot = Label.new()
-			dot.text = "● "
-			dot.add_theme_color_override("font_color", Color(1, 0.2, 0.2))
-			row.add_child(dot)
+		vb.add_child(tl)
+		# 构成清单：每成员一行，金点=已拥有/灰圈=未拥有（缺谁一眼看到）
+		for m in suit.get("members", []):
+			var owned_m: bool = sys.is_owned(m)
+			var mrow = HBoxContainer.new()
+			mrow.alignment = BoxContainer.ALIGNMENT_CENTER   # 【改】批次B13：构成行居中
+			mrow.add_theme_constant_override("separation", 4)
+			vb.add_child(mrow)
+			var mdot = Label.new()
+			mdot.text = "●"
+			mdot.add_theme_font_size_override("font_size", 10)
+			mdot.add_theme_color_override("font_color", Color("#ffd700") if owned_m else Color("#55506e"))
+			mrow.add_child(mdot)
+			var ml = Label.new()
+			ml.text = "%s★%d" % [sys.get_collection(m).get("name", m), sys.get_star(m) if owned_m else 0]
+			ml.add_theme_font_size_override("font_size", 12)
+			ml.add_theme_color_override("font_color", Color("#c8c3e0") if owned_m else Color("#666080"))
+			mrow.add_child(ml)
+		# 档位圆点条：已激活=金实心、未激活=暗色
+		var pips = HBoxContainer.new()
+		pips.alignment = BoxContainer.ALIGNMENT_CENTER
+		pips.add_theme_constant_override("separation", 2)
+		vb.add_child(pips)
+		for i in range(info.total):
+			var pip = Label.new()
+			pip.text = "●"
+			pip.add_theme_font_size_override("font_size", 9)
+			pip.add_theme_color_override("font_color", Color("#ffd700") if i < info.activated else Color("#4a4468"))
+			pips.add_child(pip)
+		# 弹性占位：激活钮贴卡底，整页按钮对齐（网格行高被最高卡拉齐，不沉底会留黑洞）
+		var sp = Control.new()
+		sp.size_flags_vertical = Control.SIZE_EXPAND_FILL
+		vb.add_child(sp)
+		# 主操作：卡内整宽激活钮（不可激活置灰）
 		var ab = Button.new()
 		ab.text = "激活"
-		ab.custom_minimum_size = Vector2(80, 34)
+		ab.custom_minimum_size = Vector2(0, 38)
+		ab.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+		ab.add_theme_font_size_override("font_size", 13)
 		ab.disabled = not info.can_activate
 		ab.pressed.connect(func():
 			sys.activate_suit(sid)
 			# 激活后重建整页（刷新页签红点）
 			show_collection_view())
-		row.add_child(ab)
-		# 成员与进度
-		var members_text = []
-		for m in suit.get("members", []):
-			var cname = sys.get_collection(m).get("name", m)
-			members_text.append("%s ★%d" % [cname, sys.get_star(m) if sys.is_owned(m) else 0])
+		vb.add_child(ab)
+		# 点击整卡打开套装详情弹窗（效果全文/进度概况）
+		box.gui_input.connect(func(ev):
+			if ev is InputEventMouseButton and ev.pressed and ev.button_index == MOUSE_BUTTON_LEFT:
+				_show_suit_detail(sid))
+
+# 【新增】批次B13：套装详情弹窗（成员明细/进度/效果全文/大激活钮）——卡片从简后的详情落点
+func _show_suit_detail(sid: String):
+	_close_node("SuitDetailPopup")
+	var sys = data.collection_system
+	var suit = sys.get_suits().get(sid, {})
+	if suit.is_empty():
+		return
+	var info = sys.get_suit_info(sid)
+	var panel = c._create_base_popup("套装详情", Vector2(440, 460))
+	panel.name = "SuitDetailPopup"
+	panel.z_index = 40
+	c.add_child(panel)
+	var vbox = panel.get_child(0)
+	# 标题 + 进度概况
+	var head = Label.new()
+	head.text = "【%s】" % suit.get("name", sid)
+	head.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	head.add_theme_font_size_override("font_size", 18)
+	head.add_theme_color_override("font_color", Color("#ffd700"))
+	vbox.add_child(head)
+	var sub = Label.new()
+	sub.text = "已激活 %d/%d 档　成员最低★%d，已达 %d 档" % [info.activated, info.total, info.min_star, info.reached]
+	sub.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	sub.add_theme_font_size_override("font_size", 12)
+	sub.add_theme_color_override("font_color", Color("#a49fc4"))
+	vbox.add_child(sub)
+	# 成员明细：未拥有的降灰
+	for m in suit.get("members", []):
+		var owned_m: bool = sys.is_owned(m)
 		var ml = Label.new()
-		ml.text = "成员：" + "、".join(members_text)
-		ml.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
-		vb.add_child(ml)
-		var pl = Label.new()
-		pl.text = "成员最低★%d，已达 %d 档" % [info.min_star, info.reached]
-		pl.add_theme_color_override("font_color", Color(0.75, 0.75, 0.78))
-		vb.add_child(pl)
-		# 【改】按已激活档数显示当前实际效果值；未接入套装不再贴配置原文
-		var el = Label.new()
-		el.text = _suit_effect_label(sid, suit)
-		el.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
-		vb.add_child(el)
+		ml.text = "%s ★%d" % [sys.get_collection(m).get("name", m), sys.get_star(m) if owned_m else 0]
+		ml.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+		ml.add_theme_font_size_override("font_size", 13)
+		ml.add_theme_color_override("font_color", Color("#c8c3e0") if owned_m else Color("#666080"))
+		vbox.add_child(ml)
+	# 当前效果全文
+	var et = Label.new()
+	et.text = "当前效果"
+	et.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	et.add_theme_color_override("font_color", Color("#ffd700"))
+	vbox.add_child(et)
+	var el = Label.new()
+	el.text = _suit_effect_label(sid, suit)
+	el.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+	el.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	el.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	el.add_theme_font_size_override("font_size", 12)
+	el.add_theme_color_override("font_color", Color("#7ee787"))
+	vbox.add_child(el)
+	# 主操作：大激活钮
+	var ab = Button.new()
+	ab.text = "激活"
+	ab.custom_minimum_size = Vector2(240, 44)
+	ab.size_flags_horizontal = Control.SIZE_SHRINK_CENTER
+	ab.add_theme_font_size_override("font_size", 13)
+	ab.disabled = not info.can_activate
+	ab.pressed.connect(func():
+		sys.activate_suit(sid)
+		_close_node("SuitDetailPopup")
+		show_collection_view())
+	vbox.add_child(ab)
 
 # ===== 淘宝 =====
 func _fill_tao(body: VBoxContainer):

@@ -677,17 +677,13 @@ func _show_manhuang_box_selector(p_qty: int):
 	vbox.add_child(hint)
 	var options: Dictionary = data._manhuang_configs.get("box_options", {})
 	for iid in options.keys():
-		var line = HBoxContainer.new()
-		var lbl = Label.new()
-		lbl.size_flags_horizontal = Control.SIZE_EXPAND_FILL
-		lbl.text = "%s×%d" % [data.ITEM_CONFIG.get(iid, {}).get("name", iid), 100 * p_qty]
-		line.add_child(lbl)
+		# 【改】批次B13：选项改大卡按钮（整卡可点，去"整行信息+右侧小按钮"）
 		var btn = Button.new()
-		btn.text = "选择"
-		btn.custom_minimum_size = Vector2(80, 40)
+		btn.text = "%s ×%d" % [data.ITEM_CONFIG.get(iid, {}).get("name", iid), 100 * p_qty]
+		btn.custom_minimum_size = Vector2(360, 44)
+		btn.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 		btn.pressed.connect(_on_manhuang_box_pick.bind(popup, iid, p_qty))
-		line.add_child(btn)
-		vbox.add_child(line)
+		vbox.add_child(btn)
 	c.add_child(popup)
 
 # 【改】蛮荒礼盒确认：扣N个礼盒、发100×N个所选道具
@@ -715,18 +711,13 @@ func _show_zixuan_baoyin_selector(p_qty: int, is_fragment: bool):
 	var first_id := "kaishan_yin" if is_fragment else "kaishan_ling"
 	var second_id := "zongjiang_yin" if is_fragment else "zongjiang_ling"
 	for target_id in [first_id, second_id]:
-		var line = HBoxContainer.new()
-		line.size_flags_horizontal = Control.SIZE_EXPAND_FILL
-		var lbl = Label.new()
-		lbl.size_flags_horizontal = Control.SIZE_EXPAND_FILL
-		lbl.text = "%s ×%d" % [data.ITEM_CONFIG.get(target_id, {}).get("name", target_id), p_qty]
-		line.add_child(lbl)
+		# 【改】批次B13：选项改大卡按钮（整卡可点）
 		var btn = Button.new()
-		btn.text = "选择"
-		btn.custom_minimum_size = Vector2(80, 40)
+		btn.text = "%s ×%d" % [data.ITEM_CONFIG.get(target_id, {}).get("name", target_id), p_qty]
+		btn.custom_minimum_size = Vector2(360, 44)
+		btn.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 		btn.pressed.connect(_on_zixuan_baoyin_pick.bind(popup, src_id, target_id, p_qty))
-		line.add_child(btn)
-		vbox.add_child(line)
+		vbox.add_child(btn)
 	c.add_child(popup)
 
 # 【新增】2026-09-18 自选宝印确认：扣N个源道具，发N个所选目标
@@ -752,18 +743,22 @@ func _show_hungu_box_selector(p_qty: int):
 	var sp = data.soulpower_system
 	var qualities: Dictionary = data._soulpower_configs.get("qualities", {})
 	for q in qualities.keys():
-		var row = HBoxContainer.new()
-		row.alignment = BoxContainer.ALIGNMENT_CENTER
-		row.add_theme_constant_override("separation", 6)
+		# 【改】批次B13：品级改节标题行，部位钮放大拉伸（去"左侧标签+小按钮"行）
 		var qlbl = Label.new()
 		qlbl.text = q
-		qlbl.custom_minimum_size = Vector2(70, 40)
+		qlbl.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+		qlbl.add_theme_font_size_override("font_size", 15)
 		qlbl.add_theme_color_override("font_color", Color(qualities[q].get("color", "#ffffff")))
-		row.add_child(qlbl)
+		vbox.add_child(qlbl)
+		var row = HBoxContainer.new()
+		row.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+		row.add_theme_constant_override("separation", 6)
 		for slot in sp.get_slots():
 			var btn = Button.new()
 			btn.text = sp.get_slot_name(slot).replace("骨", "")
-			btn.custom_minimum_size = Vector2(74, 40)
+			btn.custom_minimum_size = Vector2(0, 44)
+			btn.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+			btn.add_theme_font_size_override("font_size", 13)
 			btn.pressed.connect(_on_hungu_box_pick.bind(popup, slot, q, p_qty))
 			row.add_child(btn)
 		vbox.add_child(row)
