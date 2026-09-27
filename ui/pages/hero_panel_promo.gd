@@ -869,10 +869,16 @@ func _fill_fengkui_skill_tab(vb):
 	right.add_child(btns)
 	var up1 = Button.new()
 	up1.text = "升级"
+	# 【改】批次B13：凤魁升级钮放大（默认小钮 → 120×44 主操作钮）
+	up1.custom_minimum_size = Vector2(120, 44)
+	up1.add_theme_font_size_override("font_size", 13)
 	up1.pressed.connect(_on_fengkui_upgrade.bind(false))
 	btns.add_child(up1)
 	var up10 = Button.new()
 	up10.text = "凤临十次"
+	# 【改】批次B13：凤临十次钮放大（默认小钮 → 120×44）
+	up10.custom_minimum_size = Vector2(120, 44)
+	up10.add_theme_font_size_override("font_size", 13)
 	up10.pressed.connect(_on_fengkui_upgrade.bind(true))
 	btns.add_child(up10)
 	# 【改】2026-09-25 解锁信息不再逐行展示：点击技能卡片后在技能栏详情区显示（未解锁=纯展示条目"凤临乐宴X级解锁"，解锁后=升级信息），见 _fengkui_skill_items

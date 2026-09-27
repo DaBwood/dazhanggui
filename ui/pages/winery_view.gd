@@ -238,7 +238,9 @@ func _show_workshop_popup(wid: String):
 		lbl.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
 		row.add_child(lbl)
 		var btn := Button.new()
-		btn.custom_minimum_size = Vector2(120, 40)
+		# 【改】批次B13：工艺升级钮加高（120×40 → 120×44 主操作钮，内嵌成本维持整钮着色）
+		btn.custom_minimum_size = Vector2(120, 44)
+		btn.add_theme_font_size_override("font_size", 13)
 		if p_lv >= _sys().get_process_max_lv():
 			btn.text = "满级"
 			btn.disabled = true
@@ -707,7 +709,9 @@ func _show_drink_popup():
 		wrow.add_child(wl)
 		var db := Button.new()
 		db.text = "共饮×1"
-		db.custom_minimum_size = Vector2(96, 40)
+		# 【改】批次B13：共饮钮放大（旧 96×40 行尾小钮 → 120×44 主操作钮）
+		db.custom_minimum_size = Vector2(120, 44)
+		db.add_theme_font_size_override("font_size", 13)
 		db.disabled = invited == "" or cnt <= 0
 		var wid_c2: String = wid5
 		db.pressed.connect(func(): _on_drink(invited, wid_c2))
@@ -864,7 +868,9 @@ func _show_bond_popup(hero_id: String):
 		row.add_child(lbl)
 		var btn := Button.new()
 		btn.text = "领取"
-		btn.custom_minimum_size = Vector2(90, 40)
+		# 【改】批次B13：交情奖励领取钮放大（旧 90×40 行尾小钮 → 120×44 主操作钮）
+		btn.custom_minimum_size = Vector2(120, 44)
+		btn.add_theme_font_size_override("font_size", 13)
 		var can: bool = _sys().can_claim_bond(hero_id).get("ok", false) and int(_sys().can_claim_bond(hero_id).get("lv", 0)) == lv
 		btn.disabled = not can
 		var lv_c: int = lv

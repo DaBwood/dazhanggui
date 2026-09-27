@@ -811,7 +811,9 @@ func _show_house_popup(fid: String):
 		occ_lbl.text = str(card.get("occupant_name", "")) if str(card.get("occupant", "")) != "" else "空"
 		row.add_child(occ_lbl)
 		var go := Button.new()
-		go.custom_minimum_size = Vector2(70, 32)
+		# 【改】批次B13：居所卡操作钮放大（旧 70×32 行尾小钮 → 120×44 主操作钮）
+		go.custom_minimum_size = Vector2(120, 44)
+		go.add_theme_font_size_override("font_size", 13)
 		if bid == cur_house:
 			go.text = "当前"
 			go.disabled = true
@@ -951,7 +953,9 @@ func _show_audition_team_popup(slot: int):
 		row.add_child(name_lbl)
 		var pick := Button.new()
 		pick.text = "上阵"
-		pick.custom_minimum_size = Vector2(70, 32)
+		# 【改】批次B13：选秀上阵钮放大（旧 70×32 行尾小钮 → 120×44 主操作钮）
+		pick.custom_minimum_size = Vector2(120, 44)
+		pick.add_theme_font_size_override("font_size", 13)
 		pick.pressed.connect(_on_pick_audition_slot.bind(slot, fid))
 		row.add_child(pick)
 	var clear_btn := Button.new()

@@ -601,7 +601,9 @@ func _build_task_row(t: Dictionary) -> HBoxContainer:
 
 	var btn = Button.new()
 	btn.text = "交付" if cfg.get("type", "") == "deliver" else "领取"
-	btn.custom_minimum_size = Vector2(80, 44)
+	# 【改】批次B13：任务领取钮放大（旧 80×44 行尾小钮 → 120×44 主操作钮）
+	btn.custom_minimum_size = Vector2(120, 44)
+	btn.add_theme_font_size_override("font_size", 13)
 	btn.disabled = not fs.is_task_ready(t)
 	btn.pressed.connect(_on_claim_task.bind(t.get("id", "")))
 	row.add_child(btn)
@@ -690,7 +692,9 @@ func _build_dex_row(f: Dictionary) -> HBoxContainer:
 			# 已解锁未领取：显示领取按钮
 			var btn = Button.new()
 			btn.text = "领取"
-			btn.custom_minimum_size = Vector2(80, 40)
+			# 【改】批次B13：图鉴领取钮放大（旧 80×40 行尾小钮 → 120×44 主操作钮）
+			btn.custom_minimum_size = Vector2(120, 44)
+			btn.add_theme_font_size_override("font_size", 13)
 			btn.pressed.connect(_on_claim_dex.bind(f.id))
 			row.add_child(btn)
 		else:
@@ -744,7 +748,9 @@ func _on_exchange_btn():
 		row.add_child(lbl)
 		var btn = Button.new()
 		btn.text = "兑换"
-		btn.custom_minimum_size = Vector2(80, 40)
+		# 【改】批次B13：保底兑换钮放大（旧 80×40 行尾小钮 → 120×44 主操作钮）
+		btn.custom_minimum_size = Vector2(120, 44)
+		btn.add_theme_font_size_override("font_size", 13)
 		btn.pressed.connect(_on_exchange_fish.bind(f.id))
 		row.add_child(btn)
 		list.add_child(row)

@@ -121,7 +121,9 @@ func _fill_body(body):
 	body_row.add_child(body_lbl)
 	var up_btn = Button.new()
 	up_btn.text = "升级(%d)" % lv_cost
-	up_btn.custom_minimum_size = Vector2(110, 36)
+	# 【改】批次B13：魂体升级钮放大（旧 110×36 → 120×44 主操作钮）
+	up_btn.custom_minimum_size = Vector2(120, 44)
+	up_btn.add_theme_font_size_override("font_size", 13)
 	up_btn.disabled = lv >= max_lv or int(data.items.get("long_zhi_cao", 0)) < lv_cost
 	# 【新增】批次②③④-B5：消耗按龙芝草拥有着色（够绿/不够红；font_disabled_color 同步）
 	up_btn.add_theme_color_override("font_color", c._cost_color(int(data.items.get("long_zhi_cao", 0)), lv_cost))
@@ -151,7 +153,9 @@ func _fill_body(body):
 	rz_row.add_child(rz_lbl)
 	var rz_btn = Button.new()
 	rz_btn.text = "共鸣详情"
-	rz_btn.custom_minimum_size = Vector2(110, 36)
+	# 【改】批次B13：共鸣详情钮放大（旧 110×36 → 120×44）
+	rz_btn.custom_minimum_size = Vector2(120, 44)
+	rz_btn.add_theme_font_size_override("font_size", 13)
 	rz_btn.pressed.connect(_show_resonance_popup)
 	rz_row.add_child(rz_btn)
 
@@ -394,7 +398,8 @@ func _show_bone_popup(uid: String, p_slot: String = "", lt: Dictionary = {}):
 	tier_lbl.text = tier_txt
 	tier_row.add_child(tier_lbl)
 	var tier_btn = Button.new()
-	tier_btn.custom_minimum_size = Vector2(150, 36)
+	# 【改】批次B13：升阶钮加高（150×36 → 150×44 主操作钮，宽度已达标）
+	tier_btn.custom_minimum_size = Vector2(150, 44)
 	var cost_info = sp.get_tier_upgrade_cost(uid)
 	if cost_info.is_empty():
 		tier_btn.text = "已满阶"

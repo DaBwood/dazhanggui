@@ -294,11 +294,17 @@ func _render_council():
 	list.add_child(row)
 	var pick = Button.new()
 	pick.text = "委任/更换门客"
+	# 【改】批次B13：委任钮放大（默认小钮 → 120×44 主操作钮）
+	pick.custom_minimum_size = Vector2(120, 44)
+	pick.add_theme_font_size_override("font_size", 13)
 	pick.pressed.connect(_on_council_pick)
 	row.add_child(pick)
 	if gs.guild_council_hero != "":
 		var clear = Button.new()
 		clear.text = "撤回委任"
+		# 【改】批次B13：撤回委任钮放大（默认小钮 → 120×44）
+		clear.custom_minimum_size = Vector2(120, 44)
+		clear.add_theme_font_size_override("font_size", 13)
 		clear.pressed.connect(_on_council_clear)
 		row.add_child(clear)
 
@@ -358,6 +364,9 @@ func _render_build():
 			item_row.size_flags_horizontal = Control.SIZE_SHRINK_BEGIN
 		var btn = Button.new()
 		btn.text = "建设"
+		# 【改】批次B13：建设钮放大（默认小钮 → 120×44 主操作钮；与商会商店兑换行同款结构一并清零）
+		btn.custom_minimum_size = Vector2(120, 44)
+		btn.add_theme_font_size_override("font_size", 13)
 		btn.disabled = used >= int(conf.get("daily", 0))
 		btn.pressed.connect(_on_build.bind(kind))
 		row.add_child(btn)
@@ -407,6 +416,9 @@ func _add_shop_section(list, section_name: String, entries: Array, guild_lv: int
 		contrib_row.size_flags_horizontal = Control.SIZE_SHRINK_BEGIN
 		var btn = Button.new()
 		btn.text = "兑换"
+		# 【改】批次B13：兑换钮放大（默认小钮 → 120×44 主操作钮）
+		btn.custom_minimum_size = Vector2(120, 44)
+		btn.add_theme_font_size_override("font_size", 13)
 		btn.disabled = locked
 		btn.pressed.connect(_on_buy.bind(str(e.row)))
 		row.add_child(btn)
@@ -466,10 +478,16 @@ func _render_manage():
 			row.add_child(lbl)
 			var vice = Button.new()
 			vice.text = "取消副会长" if m.get("role", "") == "vice" else "设为副会长"
+			# 【改】批次B13：副会长管理钮放大（默认小钮 → 120×44）
+			vice.custom_minimum_size = Vector2(120, 44)
+			vice.add_theme_font_size_override("font_size", 13)
 			vice.pressed.connect(_on_set_vice.bind(str(m.user)))
 			row.add_child(vice)
 			var kick = Button.new()
 			kick.text = "踢出"
+			# 【改】批次B13：踢出钮放大（默认小钮 → 120×44）
+			kick.custom_minimum_size = Vector2(120, 44)
+			kick.add_theme_font_size_override("font_size", 13)
 			kick.pressed.connect(_on_kick.bind(str(m.user), str(m.name)))
 			row.add_child(kick)
 
@@ -655,6 +673,9 @@ func _make_trade_card(conf: Dictionary, record: Dictionary, now: int) -> PanelCo
 		elif gs.is_officer(record):
 			var open_btn = Button.new()
 			open_btn.text = "开启（财富 %s）" % c.format_number(float(conf.get("cost", 0)))
+			# 【改】批次B13：商贸开启钮放大（默认小钮 → 120×44，内嵌成本维持整钮着色）
+			open_btn.custom_minimum_size = Vector2(120, 44)
+			open_btn.add_theme_font_size_override("font_size", 13)
 			# 【改】批次②③④-B7：按钮内嵌成本按 B6 边界维持整钮着色（财富是商会共享资源，按可支付性红绿）
 			open_btn.add_theme_color_override("font_color", c._cost_color(int(float(record.get("wealth", 0))), int(float(conf.get("cost", 0)))))
 			open_btn.pressed.connect(_on_trade_open.bind(tid))

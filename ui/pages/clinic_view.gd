@@ -155,6 +155,8 @@ func _refresh():
 		_close_node("ClinicPopup")
 		if _popup_kind == "dept":
 			_show_dept_popup(_popup_id)
+		elif _popup_kind == "patient":
+			_show_patient_popup(_popup_id)
 		else:
 			_show_illness_popup(_popup_id)
 
@@ -349,42 +351,93 @@ func _on_treat_all():
 	_refresh()
 
 # ---------- 子页：病人 ----------
+# 【新增】批次B13：统一网格卡片（科室/病症/病人共用）：wrap+卡面按钮填满格子+红点右上角锚点；
+# 卡面样式走 B12 全局按钮皮肤（ui_helpers.style_button），不自造皮肤
+func _make_grid_card(main_txt: String, sub_txt: String, min_h: int, font_size: int, cb: Callable, dot: bool) -> Control:
+	var wrap_node := Control.new()
+	wrap_node.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	wrap_node.custom_minimum_size = Vector2(0, min_h)
+	var b := Button.new()
+	b.text = main_txt if sub_txt == "" else main_txt + "\n" + sub_txt
+	b.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
+	b.add_theme_font_size_override("font_size", font_size)
+	# 手机端：按钮默认 STOP 会拦截触摸滚动，改 PASS 让滑动穿透到 ScrollContainer
+	b.mouse_filter = Control.MOUSE_FILTER_PASS
+	b.pressed.connect(cb)
+	wrap_node.add_child(b)
+	var dot_lbl := Label.new()
+	dot_lbl.text = "●"
+	dot_lbl.add_theme_color_override("font_color", Color("#e74c3c"))
+	dot_lbl.add_theme_font_size_override("font_size", 15)
+	dot_lbl.anchor_left = 1.0
+	dot_lbl.anchor_right = 1.0
+	dot_lbl.offset_left = -18
+	dot_lbl.offset_right = -4
+	dot_lbl.offset_top = -6
+	dot_lbl.offset_bottom = 14
+	dot_lbl.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	dot_lbl.visible = dot
+	wrap_node.add_child(dot_lbl)
+	return wrap_node
+
+# 【改】批次B13：病人页整行列表 → 3列卡片网格（卡内从简：名字+状态，详情点开看，解锁在弹窗做大钮）
 func _fill_patient(body: VBoxContainer):
 	var head := Label.new()
 	head.text = "病人解锁（医术 %s）" % c.format_number(_sys().yishu)
 	head.add_theme_color_override("font_color", Color("#e6c07b"))
 	body.add_child(head)
+	var grid := GridContainer.new()
+	grid.columns = 3
+	grid.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	grid.add_theme_constant_override("h_separation", 8)
+	grid.add_theme_constant_override("v_separation", 8)
+	body.add_child(grid)
 	for p in _sys().get_patient_unlock_info():
-		var row := HBoxContainer.new()
-		row.add_theme_constant_override("separation", 6)
-		body.add_child(row)
-		# 【改】2026-09-16 手动解锁制：入池以解锁表为准；医术判定只决定"能否点解锁"
+		# 2026-09-16 手动解锁制：入池以解锁表为准；医术判定只决定"能否点解锁"
 		var pid := str(p.get("id", ""))
 		var is_unlocked: bool = _sys().is_patient_unlocked(pid)
-		var yishu_ok: bool = _sys().yishu >= int(p.get("need_yishu", 0))
-		var nm := Label.new()
-		nm.text = str(p.get("name", ""))
-		nm.custom_minimum_size = Vector2(110, 0)
+		var need_yishu: int = int(p.get("need_yishu", 0))
+		var yishu_ok: bool = _sys().yishu >= need_yishu
+		var sub: String = "加成 +%d%%" % int(float(p.get("bonus", 0)) * 100) if is_unlocked else "需医术 %s" % c.format_number(need_yishu)
+		var pid_c: String = pid
+		var card: Control = _make_grid_card(str(p.get("name", "")), sub, 64, 13, func(): _show_patient_popup(pid_c), (not is_unlocked) and yishu_ok)
 		if not is_unlocked:
-			nm.add_theme_color_override("font_color", Color("#666080"))
-		row.add_child(nm)
-		var info: Label = null   # 【改】批次②③④-B10：未解锁门槛不再整行着色，改走统一消耗/门槛行
-		if is_unlocked:
-			info = Label.new()
-			info.text = "加成 +%d%%" % int(float(p.get("bonus", 0)) * 100)
-		else:
-			var unlock_row: HBoxContainer = c._add_cost_row(row, "需医术", int(_sys().yishu), int(p.get("need_yishu", 0)))
-			unlock_row.size_flags_horizontal = Control.SIZE_EXPAND_FILL   # 保持右侧解锁按钮贴行尾
-		if info != null:
-			info.size_flags_horizontal = Control.SIZE_EXPAND_FILL
-			row.add_child(info)
-		# 【新增】2026-09-16 手动解锁（无消耗）：医术达阈值未解锁的显示【解锁】
-		if not is_unlocked and yishu_ok:
-			var ub := Button.new()
-			ub.text = "解锁"
-			ub.custom_minimum_size = Vector2(64, 28)
-			ub.pressed.connect(_on_unlock_patient.bind(pid))
-			row.add_child(ub)
+			card.get_child(0).add_theme_color_override("font_color", Color("#666080"))
+		grid.add_child(card)
+
+# 【新增】批次B13：病人详情弹窗（卡面从简后的完整信息：加成/需医术 + 大号解锁钮）
+func _show_patient_popup(pid: String):
+	var info: Dictionary = {}
+	for p in _sys().get_patient_unlock_info():
+		if str(p.get("id", "")) == pid:
+			info = p
+			break
+	if info.is_empty():
+		return
+	_popup_kind = "patient"
+	_popup_id = pid
+	_close_node("ClinicPopup")
+	var popup: PanelContainer = c._create_base_popup(str(info.get("name", pid)), Vector2(420, 300))
+	popup.name = "ClinicPopup"
+	popup.z_index = 40   # 盖过 ClinicPage(z35)，同科室/病症弹窗惯例
+	c.add_child(popup)   # 弹窗工厂只创建不挂载，必须调用方 add_child（同 inn/bank 惯例）
+	var vb: VBoxContainer = popup.get_child(0)
+	if _sys().is_patient_unlocked(pid):
+		var st := Label.new()
+		st.text = "已解锁　加成 +%d%%" % int(float(info.get("bonus", 0)) * 100)
+		st.add_theme_color_override("font_color", Color("#e6c07b"))
+		vb.add_child(st)
+	else:
+		# 批次②③④-B10 口径：需医术走统一消耗/门槛行（拥有/需要，数字红绿）
+		var need: int = int(info.get("need_yishu", 0))
+		c._add_cost_row(vb, "需医术", int(_sys().yishu), need)
+		var btn := Button.new()
+		btn.text = "解锁"
+		btn.custom_minimum_size = Vector2(120, 44)
+		btn.add_theme_font_size_override("font_size", 13)
+		btn.disabled = _sys().yishu < need
+		btn.pressed.connect(func(): _on_unlock_patient(pid))
+		vb.add_child(btn)
 
 # 【新增】2026-09-16 解锁病人：解锁后进入接诊随机池
 func _on_unlock_patient(pid: String):
@@ -413,35 +466,15 @@ func _fill_dept(body: VBoxContainer):
 	body.add_child(grid)
 	for dept_id in data._clinic_configs.get("departments", {}):
 		var d: Dictionary = data._clinic_configs["departments"][dept_id]
-		# 【新增】2026-09-16 可新增/可升级科室红点：外套 Control 显式尺寸
-		var wrap_node := Control.new()
-		wrap_node.size_flags_horizontal = Control.SIZE_EXPAND_FILL
-		wrap_node.custom_minimum_size = Vector2(0, 68)
-		grid.add_child(wrap_node)
-		var b := Button.new()
-		if _sys().is_dept_unlocked(dept_id):
-			b.text = "【%s】\nLv.%d" % [d.get("name", dept_id), _sys().get_dept_level(dept_id)]
-		else:
-			b.text = "【%s】\n新增（图纸 %d）" % [d.get("name", dept_id), _sys().get_dept_unlock_cost(dept_id)]
-			b.add_theme_color_override("font_color", Color("#8f88ad"))
-		b.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
-		b.add_theme_font_size_override("font_size", 14)
+		var unlocked: bool = _sys().is_dept_unlocked(dept_id)
+		var sub: String = "Lv.%d" % _sys().get_dept_level(dept_id) if unlocked else "新增（图纸 %d）" % _sys().get_dept_unlock_cost(dept_id)
 		var did: String = dept_id
-		b.pressed.connect(func(): _show_dept_popup(did))
-		wrap_node.add_child(b)
-		var dot := Label.new()
-		dot.text = "●"
-		dot.add_theme_color_override("font_color", Color("#e74c3c"))
-		dot.add_theme_font_size_override("font_size", 16)
-		dot.anchor_left = 1.0
-		dot.anchor_right = 1.0
-		dot.offset_left = -20
-		dot.offset_right = 0
-		dot.offset_top = -6
-		dot.offset_bottom = 14
-		dot.mouse_filter = Control.MOUSE_FILTER_IGNORE
-		dot.visible = _sys().can_unlock_dept(dept_id).get("ok", false) or _sys().can_upgrade_dept(dept_id).get("ok", false)
-		wrap_node.add_child(dot)
+		# 可新增/可升级红点条件不变
+		var card: Control = _make_grid_card("【%s】" % d.get("name", dept_id), sub, 68, 14, func(): _show_dept_popup(did),
+			_sys().can_unlock_dept(dept_id).get("ok", false) or _sys().can_upgrade_dept(dept_id).get("ok", false))
+		if not unlocked:
+			card.get_child(0).add_theme_color_override("font_color", Color("#8f88ad"))
+		grid.add_child(card)
 
 func _show_dept_popup(dept_id: String):
 	_popup_kind = "dept"
@@ -505,16 +538,18 @@ func _fill_illness(body: VBoxContainer):
 	var head := Label.new()
 	var parts := []
 	for cat in ["士", "农", "工", "商", "侠"]:
-		# 【改】2026-09-16 0.05 浮点累加后×100 可能是 1264.999…，int() 截断吃掉 1（应显 1265）→ round 后取整
+		# 2026-09-16 0.05 浮点累加后×100 可能是 1264.999…，int() 截断吃掉 1（应显 1265）→ round 后取整
 		parts.append("%s +%d%%" % [cat, int(round(_sys().get_category_bonus(cat) * 100))])
 	head.text = "店铺赚速加成：%s" % "　".join(parts)
 	head.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
 	head.add_theme_color_override("font_color", Color("#e6c07b"))
 	body.add_child(head)
-	# 【新增】2026-09-16 病症一键升级：全部可升级病症一键升到评分不足
+	# 病症一键升级：全部可升级病症一键升到评分不足
 	var all_btn := Button.new()
 	all_btn.text = "一键升级"
-	all_btn.custom_minimum_size = Vector2(104, 30)
+	# 【改】批次B13：一键升级钮放大（旧 104×30 小钮 → 120×44 主操作钮）
+	all_btn.custom_minimum_size = Vector2(120, 44)
+	all_btn.add_theme_font_size_override("font_size", 13)
 	all_btn.disabled = not _sys().has_upgradeable_illness()
 	all_btn.pressed.connect(_on_upgrade_all_illness)
 	body.add_child(all_btn)
@@ -528,35 +563,16 @@ func _fill_illness(body: VBoxContainer):
 		var d: Dictionary = data._clinic_configs["departments"][dept_id]
 		for iid in d.get("illnesses", {}):
 			var ic: Dictionary = d["illnesses"][iid]
-			# 【新增】2026-09-16 可升级病症红点（仅"已解锁且评分够升级"的）：外套 Control 显式尺寸
-			var wrap_node := Control.new()
-			wrap_node.size_flags_horizontal = Control.SIZE_EXPAND_FILL
-			wrap_node.custom_minimum_size = Vector2(0, 58)
-			grid.add_child(wrap_node)
-			var b := Button.new()
-			b.text = str(ic.get("name", iid))
-			if not _sys().is_illness_unlocked(iid):
-				# 【改】明确写"哪个科室多少级解锁"，避免玩家误解为病症等级；不用全角括号（部分环境不渲染）
-				b.text = "%s\n%s %d级解锁" % [str(ic.get("name", iid)), d.get("name", ""), int(ic.get("unlock_level", 1))]
-				b.add_theme_color_override("font_color", Color("#666080"))
-			b.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
-			b.add_theme_font_size_override("font_size", 13)
+			var unlocked: bool = _sys().is_illness_unlocked(iid)
+			# 明确写"哪个科室多少级解锁"，避免玩家误解为病症等级；不用全角括号（部分环境不渲染）
+			var sub: String = "" if unlocked else "%s %d级解锁" % [d.get("name", ""), int(ic.get("unlock_level", 1))]
 			var iid_c: String = iid
-			b.pressed.connect(func(): _show_illness_popup(iid_c))
-			wrap_node.add_child(b)
-			var dot := Label.new()
-			dot.text = "●"
-			dot.add_theme_color_override("font_color", Color("#e74c3c"))
-			dot.add_theme_font_size_override("font_size", 15)
-			dot.anchor_left = 1.0
-			dot.anchor_right = 1.0
-			dot.offset_left = -18
-			dot.offset_right = -4
-			dot.offset_top = -6
-			dot.offset_bottom = 14
-			dot.mouse_filter = Control.MOUSE_FILTER_IGNORE
-			dot.visible = _sys().is_illness_unlocked(iid) and _sys().can_upgrade_illness(iid).get("ok", false)
-			wrap_node.add_child(dot)
+			# 可升级红点（仅"已解锁且评分够升级"的）条件不变
+			var card: Control = _make_grid_card(str(ic.get("name", iid)), sub, 58, 13, func(): _show_illness_popup(iid_c),
+				unlocked and _sys().can_upgrade_illness(iid).get("ok", false))
+			if not unlocked:
+				card.get_child(0).add_theme_color_override("font_color", Color("#666080"))
+			grid.add_child(card)
 
 func _show_illness_popup(illness_id: String):
 	_popup_kind = "illness"

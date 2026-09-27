@@ -709,7 +709,9 @@ func _build_skill_row(parent: Control, icon_char: String, icon_color: Color, tit
 	var btn = Button.new()
 	btn.name = btn_name
 	btn.text = "升级"
-	btn.custom_minimum_size = Vector2(90, 34)
+	# 【改】批次B13：挚友技能升级钮放大（旧 90×34 → 120×44 主操作钮，_build_skill_row 通用件 4 技能行一并生效）
+	btn.custom_minimum_size = Vector2(120, 44)
+	btn.add_theme_font_size_override("font_size", 13)
 	btn.disabled = not can_upgrade
 	btn.pressed.connect(upgrade_callable)
 	up_row.add_child(btn)
@@ -951,7 +953,9 @@ func _build_fanghua_detail(content: VBoxContainer, fid: String, idx: int):
 	var btn := Button.new()
 	btn.name = "FanghuaUpgradeBtn%d" % idx
 	btn.text = "升级"
-	btn.custom_minimum_size = Vector2(90, 34)
+	# 【改】批次B13：芳华升级钮放大（旧 90×34 → 120×44 主操作钮）
+	btn.custom_minimum_size = Vector2(120, 44)
+	btn.add_theme_font_size_override("font_size", 13)
 	btn.disabled = not (st.unlocked and have >= cost)
 	btn.pressed.connect(_on_fanghua_upgrade.bind(idx))
 	up_row.add_child(btn)
@@ -1071,6 +1075,9 @@ func _show_title_popup():
 		var pbtn = Button.new()
 		pbtn.name = "PromoteTitleBtn"
 		pbtn.text = "晋升【%s】" % titles[promo].title
+		# 【改】批次B13：美名晋升钮放大（默认小钮 → 120×44 主操作钮）
+		pbtn.custom_minimum_size = Vector2(120, 44)
+		pbtn.add_theme_font_size_override("font_size", 13)
 		pbtn.pressed.connect(_on_promote_title)
 		vbox.add_child(pbtn)
 	elif idx < titles.size() - 1:

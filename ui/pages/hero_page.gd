@@ -2025,7 +2025,9 @@ func _show_guardian_avatar_popup():
 			row.add_child(info)
 		
 		var btn = Button.new()
-		btn.custom_minimum_size = Vector2(80, 32)
+		# 【改】批次B13：形象行操作钮放大（旧 80×32 行尾小钮 → 120×44 主操作钮）
+		btn.custom_minimum_size = Vector2(120, 44)
+		btn.add_theme_font_size_override("font_size", 13)
 		if is_current:
 			btn.text = "使用中"
 			btn.disabled = true

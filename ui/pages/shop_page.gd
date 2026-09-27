@@ -418,11 +418,17 @@ func _build_hq_panel_popup():
 	hb.add_child(hq_row)
 	var hq_click = Button.new()
 	hq_click.name = "HQClickBtn"
+	# 【改】批次B13：工厂点击钮放大（默认小钮 → 120×44 主操作钮）
+	hq_click.custom_minimum_size = Vector2(120, 44)
+	hq_click.add_theme_font_size_override("font_size", 13)
 	hq_click.text = c.TXT_HQ_CLICK
 	hq_click.pressed.connect(on_hq_click)   # 【改】启动期 connect 挪入构建器（面板随建随连）
 	hq_row.add_child(hq_click)
 	var hq_up = Button.new()
 	hq_up.name = "HQUpgradeBtn"
+	# 【改】批次B13：工厂升级钮放大（默认小钮 → 120×44 主操作钮）
+	hq_up.custom_minimum_size = Vector2(120, 44)
+	hq_up.add_theme_font_size_override("font_size", 13)
 	hq_up.pressed.connect(on_hq_upgrade)
 	hq_row.add_child(hq_up)
 	c.add_child(panel)
@@ -443,10 +449,16 @@ func _build_shop_panel_popup():
 	sb.add_child(s_row)
 	var s_up = Button.new()
 	s_up.name = "ShopUpgradeBtn"
+	# 【改】批次B13：商铺升级钮放大（默认小钮 → 120×44 主操作钮）
+	s_up.custom_minimum_size = Vector2(120, 44)
+	s_up.add_theme_font_size_override("font_size", 13)
 	s_up.pressed.connect(on_current_shop_upgrade)
 	s_row.add_child(s_up)
 	var s_hire = Button.new()
 	s_hire.name = "ShopHireBtn"
+	# 【改】批次B13：商铺招募钮放大（默认小钮 → 120×44 主操作钮）
+	s_hire.custom_minimum_size = Vector2(120, 44)
+	s_hire.add_theme_font_size_override("font_size", 13)
 	s_hire.pressed.connect(on_current_shop_hire)
 	s_row.add_child(s_hire)
 	var s_batch = CheckBox.new()
@@ -469,6 +481,9 @@ func _build_shop_panel_popup():
 		slot.add_child(lbl)
 		var btn = Button.new()
 		btn.name = "AssignBtn"
+		# 【改】批次B13：派遣槽钮放大（默认小钮 → 120×44，5 槽循环一并生效）
+		btn.custom_minimum_size = Vector2(120, 44)
+		btn.add_theme_font_size_override("font_size", 13)
 		slot.add_child(btn)
 	c.add_child(panel)
 

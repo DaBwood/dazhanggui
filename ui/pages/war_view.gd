@@ -446,6 +446,9 @@ func _build_shop_tab(list):
 		pts_row.size_flags_horizontal = Control.SIZE_SHRINK_BEGIN
 		var b = Button.new()
 		b.text = "兑换"
+		# 【改】批次B13：兑换钮放大（默认小钮 → 120×44 主操作钮）
+		b.custom_minimum_size = Vector2(120, 44)
+		b.add_theme_font_size_override("font_size", 13)
 		b.pressed.connect(_on_exchange.bind(item_id))
 		row.add_child(b)
 
