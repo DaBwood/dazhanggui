@@ -144,9 +144,8 @@ func open_player_panel():
 		if c.has_node("Overlay"):
 			c.get_node("Overlay").hide()
 		c._current_popup = null
-		# 面板任何路径死亡（✕/遮罩/代码关闭）连带关成功弹窗+清孤儿点击层
+		# 面板任何路径死亡（✕/遮罩/代码关闭）连带关成功弹窗
 		c._safe_close("SuccessPopup")
-		c._cleanup_success_popups()
 	)
 	_update_identity_reward_list()
 

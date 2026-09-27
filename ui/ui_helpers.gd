@@ -523,45 +523,14 @@ func _format_gains(gains: Dictionary) -> String:
 		lines.append("、".join(parts.slice(i, min(i + 2, parts.size()))))
 	return "\n".join(lines)
 
-# 【新增】成功反馈：孤儿点击层清扫——SuccessPopup 面板不在树时，残留的透明点击层一并摘（每次新建弹窗前调用兜底）
-func _cleanup_success_popups():
-	var live_mask = null
-	var popup = c.get_node_or_null("SuccessPopup")
-	if popup != null:
-		live_mask = popup.get_meta("popup_mask", null)
-	for child in c.get_children():
-		if str(child.name) == "SuccessPopupMask" and is_instance_valid(child) and child != live_mask:
-			child.queue_free()
+# 【新增】成功反馈：成功弹窗是否开着（供 controller._input 关闭钩子查询）
+func _success_popup_open() -> bool:
+	return c.get_node_or_null("SuccessPopup") != null
 
-# 【新增】成功反馈：透明穿透点击层——视觉上无遮罩（alpha 0 + PASS 不拦截下层交互），仅监听"按下"关闭弹窗（弹窗外区域）
-func _make_popup_mask(on_input: Callable) -> ColorRect:
-	var mask = ColorRect.new()
-	mask.name = "SuccessPopupMask"
-	mask.set_anchors_preset(Control.PRESET_FULL_RECT)
-	mask.color = Color(0, 0, 0, 0)
-	mask.z_index = 55
-	mask.mouse_filter = Control.MOUSE_FILTER_PASS   # PASS：点击穿透到下层控件（按钮照常可用），本层只收监听
-	mask.gui_input.connect(func(ev):
-		# 仅"按下"关闭：释放不响应（防触发弹窗的按钮被 _refresh 销毁后、释放 hit-test 落到本层误关）
-		var is_press: bool = (ev is InputEventMouseButton and ev.pressed) or (ev is InputEventScreenTouch and ev.pressed)
-		if is_press:
-			on_input.call()
-			if is_instance_valid(mask):
-				mask.queue_free()   # 自删兜底：面板被直接 queue_free 时本层不留残
-	)
-	return mask
-
-# 【新增】成功反馈：给成功弹窗面板挂透明点击层（创建 + meta 登记 + tree_exiting 连带摘），创建与复用补建共用
-func _attach_success_mask(panel: Button) -> void:
-	var mask: ColorRect = _make_popup_mask(func(): c._safe_close("SuccessPopup"))
-	c.add_child(mask)
-	panel.set_meta("popup_mask", mask)
-	panel.tree_exiting.connect(_on_popup_tree_exiting.bind(mask))
-
-# 【新增】成功反馈：成功结果弹窗——居中、1.5~2 秒自动关闭、点击任意位置（含弹窗内部）立即关闭。
-# 弹窗卡 Button 化：pressed 引擎级信号，点弹窗任意处必触发；透明点击层管"弹窗外"；单例防堆叠（新替旧）
+# 【新增】成功反馈：成功结果弹窗——居中、1.5~2 秒自动关闭、点击任意位置立即关闭。
+# 关闭主路径 = controller._input 节点级钩子（先于 GUI 分发，任何 Control 都挡不住）；本面板 pressed 仅作双保险。
+# 弹窗卡 Button 化（pressed 引擎级信号）；单例防堆叠（新替旧）；无视觉遮罩（用户拍板）。
 func _show_success_popup(text: String, auto_hide: float = 0.0):
-	_cleanup_success_popups()   # 兜底清扫上代残留点击层
 	var panel = c.get_node_or_null("SuccessPopup")
 	if panel == null or not panel.is_inside_tree():
 		panel = Button.new()
@@ -580,17 +549,13 @@ func _show_success_popup(text: String, auto_hide: float = 0.0):
 		panel.add_theme_stylebox_override("disabled", style)
 		panel.add_theme_font_size_override("font_size", 16)
 		panel.add_theme_color_override("font_color", Color("#ffd700"))
-		_attach_success_mask(panel)
-		panel.pressed.connect(func(): c._safe_close("SuccessPopup"))   # 点弹窗内部关闭
+		panel.pressed.connect(func(): c._safe_close("SuccessPopup"))
 		c.add_child(panel)
 	else:
-		# 单例复用：杀旧 tween（防堆叠同 StageHint 惯例）；点击层异常丢失则补建（补建同样绑 tree_exiting）
+		# 单例复用：杀旧 tween（防堆叠同 StageHint 惯例）
 		var old_tween0 = panel.get_meta("success_tween", null)
 		if old_tween0 != null and old_tween0.is_valid():
 			old_tween0.kill()
-		var old_mask = panel.get_meta("popup_mask", null)
-		if old_mask == null or not is_instance_valid(old_mask) or not old_mask.is_inside_tree():
-			_attach_success_mask(panel)
 
 	panel.text = text
 	# 动态限宽（同 StageHint 口径）：按最长一行实测宽度 + 按钮内边距

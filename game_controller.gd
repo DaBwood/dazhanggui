@@ -344,6 +344,12 @@ func close_popup():
 	$Overlay.hide()
 
 func _input(event: InputEvent):
+	# 【新增】成功反馈：成功弹窗任意按下即关。节点级 _input 先于 GUI 分发，任何 Control 事件链都挡不住；
+	# 不吞事件——同一按下继续传给下层（连点"领取"按钮时：先关旧弹窗，按钮照常触发新弹窗）
+	if ui_helpers._success_popup_open():
+		if (event is InputEventMouseButton and event.pressed and event.button_index == MOUSE_BUTTON_LEFT) \
+				or (event is InputEventScreenTouch and event.pressed):
+			ui_helpers._safe_close("SuccessPopup")
 	if event is InputEventMouseButton:
 		if event.pressed and event.button_index == MOUSE_BUTTON_LEFT:
 			# 【改】UI统一批A：GiftSelector/AssignSelector 已迁弹窗工厂（遮罩点击关闭接管），三处特判全删
@@ -496,9 +502,6 @@ func _show_success_popup(text: String, auto_hide: float = 0.0):
 func _format_gains(gains: Dictionary) -> String:
 	return ui_helpers._format_gains(gains)
 
-# 【新增】成功反馈：孤儿点击层清扫委托（面板关闭时清场用）
-func _cleanup_success_popups():
-	ui_helpers._cleanup_success_popups()
 
 func _init_avatar_box():
 	if not has_node("TopBar"): return
