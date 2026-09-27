@@ -333,9 +333,8 @@ func open_popup(panel: Control):
 
 func close_popup():
 	if _current_popup != null:
-		# 【改】带 _create_base_popup 遮罩的一次性弹窗（meta popup_mask）改走 _safe_close（摘遮罩+queue_free+tree_exiting 连带清理）——
-		# 原 hide 路径不触发 tree_exiting，遮罩没人摘会残留全屏（2026-09-27 实测身份面板点外部关闭后遮罩残留）；
-		# 无 meta 的持久面板（HeroPanel 等 open_popup 系）维持 hide 复用原逻辑
+		# 带 _create_base_popup 遮罩的一次性弹窗（meta popup_mask）走 _safe_close（摘遮罩+queue_free+tree_exiting 连带清理）——
+		# hide 路径不触发 tree_exiting 会留遮罩；无 meta 的持久面板（HeroPanel 等 open_popup 系）维持 hide 复用
 		if _current_popup.has_meta("popup_mask"):
 			_safe_close(_current_popup.name)
 		else:
@@ -495,7 +494,7 @@ func on_beast():
 func _show_stage_hint(text: String, auto_hide: float = 2.5):
 	ui_helpers._show_stage_hint(text, auto_hide)   # 【改】主体迁 ui/ui_helpers.gd（2026-09-19 重构批次B）
 
-# 【新增】成功反馈：成功结果弹窗 + gains 文案格式化（主体在 ui_helpers，试点先行）
+# 【新增】成功反馈：成功结果弹窗 + gains 文案格式化（主体在 ui_helpers，已定型）
 func _show_success_popup(text: String, auto_hide: float = 0.0):
 	ui_helpers._show_success_popup(text, auto_hide)
 

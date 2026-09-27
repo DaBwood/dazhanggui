@@ -334,7 +334,7 @@ func _on_add_patient():
 
 func _on_collect():
 	var r := _sys().collect_jar()
-	# 【改】成功反馈试点：成功弹关键结果（医术增量），居中自动关弹窗
+	# 【改】成功反馈：成功弹关键结果（医术增量）
 	c._show_success_popup("领取成功\n医术 +%s" % c.format_number(r["yishu"]))
 	_refresh()
 

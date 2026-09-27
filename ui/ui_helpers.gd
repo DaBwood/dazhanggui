@@ -536,7 +536,6 @@ func _show_success_popup(text: String, auto_hide: float = 0.0):
 		panel = Button.new()
 		panel.name = "SuccessPopup"
 		panel.z_index = 60
-		panel.mouse_filter = Control.MOUSE_FILTER_STOP
 		# 卡面样式直接挂按钮（四态同款，避免 hover 变色打断观感）
 		var style = StyleBoxFlat.new()
 		style.bg_color = Color("#2a2640")

@@ -191,7 +191,7 @@ func _update_identity_reward_list():
 func _on_claim_identity_reward(level: int):
 	var result = data.claim_identity_reward(level)
 	if result.ok:
-		# 【改】成功反馈试点：成功弹关键结果（奖励名），居中自动关弹窗
+		# 【改】成功反馈：成功弹关键结果（奖励名）
 		c._show_success_popup("领取成功\n%s" % result.reward.name)
 		_update_identity_reward_list()
 		c.update_all_ui()
