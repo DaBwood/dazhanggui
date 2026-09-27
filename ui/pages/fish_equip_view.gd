@@ -92,7 +92,9 @@ func _build_fish_selector(list: VBoxContainer):
 		row.add_child(lbl)
 		var btn = Button.new()
 		btn.text = "装备"
-		btn.custom_minimum_size = Vector2(80, 40)
+		# 【改】批次B13：渔获装备钮放大（旧 80×40 行尾小钮 → 120×44 主操作钮）
+		btn.custom_minimum_size = Vector2(120, 44)
+		btn.add_theme_font_size_override("font_size", 13)
 		btn.pressed.connect(_on_equip.bind(f.id))
 		row.add_child(btn)
 		list.add_child(row)

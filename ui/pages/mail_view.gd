@@ -112,7 +112,9 @@ func _make_mail_card(m: Dictionary) -> PanelContainer:
 	head.add_child(title)
 	var claim_btn = Button.new()
 	claim_btn.text = "领取"
-	claim_btn.custom_minimum_size = Vector2(80, 36)
+	# 【改】批次B13：邮件领取钮放大（旧 80×36 行尾小钮 → 120×44 主操作钮）
+	claim_btn.custom_minimum_size = Vector2(120, 44)
+	claim_btn.add_theme_font_size_override("font_size", 13)
 	claim_btn.pressed.connect(_on_claim.bind(str(m.get("id", ""))))
 	head.add_child(claim_btn)
 	# 时间

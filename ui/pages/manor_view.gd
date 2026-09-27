@@ -245,6 +245,9 @@ func _build_plot_row(sid: String, plot_index: int, land_word: String) -> HBoxCon
 	var lv_btn = Button.new()
 	var lv_cost = data.get_manor_level_up_cost(lv)
 	lv_btn.text = "等级↑ %s" % c.format_number(lv_cost)
+	# 【改】批次B13：地块升级钮放大（默认小钮 → 120×44 主操作钮，内嵌成本维持整钮着色）
+	lv_btn.custom_minimum_size = Vector2(120, 44)
+	lv_btn.add_theme_font_size_override("font_size", 13)
 	# 【新增】批次②③④-B6：升级成本按 拥有(铜钱)/需要 着色
 	lv_btn.add_theme_color_override("font_color", c._cost_color(int(data.money), int(lv_cost)))
 	lv_btn.pressed.connect(func(): _on_upgrade_level(sid, plot_index, lv_btn))
@@ -254,6 +257,9 @@ func _build_plot_row(sid: String, plot_index: int, land_word: String) -> HBoxCon
 	var land_btn = Button.new()
 	var land_cost = data.get_manor_land_up_cost(land)
 	land_btn.text = "%s↑ %d图纸" % [land_word, land_cost]
+	# 【改】批次B13：地块升级钮放大（默认小钮 → 120×44 主操作钮，内嵌成本维持整钮着色）
+	land_btn.custom_minimum_size = Vector2(120, 44)
+	land_btn.add_theme_font_size_override("font_size", 13)
 	# 【新增】批次②③④-B6：图纸成本按 拥有/需要 着色
 	land_btn.add_theme_color_override("font_color", c._cost_color(int(data.items.get("shop_blueprint", 0)), int(land_cost)))
 	land_btn.pressed.connect(_on_upgrade_land.bind(sid, plot_index))

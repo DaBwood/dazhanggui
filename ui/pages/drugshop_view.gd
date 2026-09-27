@@ -731,7 +731,9 @@ func _add_ach_tier_row(vb: VBoxContainer, lid: String, tier_idx: int, tier: Dict
 	info.text = "第%d档 %s　%s" % [tier_idx + 1, c.format_number(int(tier.get("need", 0))), "、".join(parts)]
 	row.add_child(info)
 	var btn := Button.new()
-	btn.custom_minimum_size = Vector2(72, 30)
+	# 【改】批次B13：成就领取钮放大（旧 72×30 行尾小钮 → 120×44 主操作钮）
+	btn.custom_minimum_size = Vector2(120, 44)
+	btn.add_theme_font_size_override("font_size", 13)
 	btn.text = "领取"
 	btn.disabled = not _sys().can_claim_ach(lid, tier_idx)
 	var lid_c: String = lid
@@ -764,7 +766,9 @@ func _add_repeat_row(vb: VBoxContainer):
 		c.format_number(int(rp.get("have", 0))), c.format_number(int(rp.get("need", 10000)))]
 	row.add_child(info)
 	var btn := Button.new()
-	btn.custom_minimum_size = Vector2(72, 30)
+	# 【改】批次B13：成就领取钮放大（旧 72×30 行尾小钮 → 120×44 主操作钮）
+	btn.custom_minimum_size = Vector2(120, 44)
+	btn.add_theme_font_size_override("font_size", 13)
 	btn.text = "领取"
 	btn.disabled = not _sys().can_claim_repeat()
 	btn.pressed.connect(_on_repeat_claim)

@@ -753,7 +753,9 @@ func _make_shop_row(g: Dictionary) -> Panel:
 
 	var buy_btn = Button.new()
 	buy_btn.text = "购买"
-	buy_btn.custom_minimum_size = Vector2(80, 40)
+	# 【改】批次B13：商城购买钮放大（旧 80×40 行尾小钮 → 120×44 主操作钮）
+	buy_btn.custom_minimum_size = Vector2(120, 44)
+	buy_btn.add_theme_font_size_override("font_size", 13)
 	buy_btn.pressed.connect(func():
 		if data.yuanbao < g.price:
 			c._show_stage_hint("元宝不足！")
@@ -1501,7 +1503,9 @@ func _show_part_selector(cid: String, _cdata: Dictionary):
 
 		var btn = Button.new()
 		btn.text = "已满" if is_max else ("培育中" if jar_busy else "培育")
-		btn.custom_minimum_size = Vector2(100, 40)
+		# 【改】批次B13：培育钮放大（旧 100×40 → 120×44 主操作钮）
+		btn.custom_minimum_size = Vector2(120, 44)
+		btn.add_theme_font_size_override("font_size", 13)
 		btn.disabled = is_max or jar_busy or not sys.is_any_jar_free()
 		btn.pressed.connect(func():
 			if sys.start_peiyu(cid, part):

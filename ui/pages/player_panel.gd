@@ -172,7 +172,9 @@ func _update_identity_reward_list():
 		
 		var btn = Button.new()
 		btn.text = "领取"
-		btn.custom_minimum_size = Vector2(80, 32)
+		# 【改】批次B13：身份奖励领取钮放大（旧 80×32 行尾小钮 → 120×44 主操作钮）
+		btn.custom_minimum_size = Vector2(120, 44)
+		btn.add_theme_font_size_override("font_size", 13)
 		btn.pressed.connect(_on_claim_identity_reward.bind(level))
 		row.add_child(btn)
 		

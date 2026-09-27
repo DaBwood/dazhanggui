@@ -39,7 +39,9 @@ func on_mall():
 		
 		var buy_btn = Button.new()
 		buy_btn.text = "%d元宝" % pack.cost
-		buy_btn.custom_minimum_size = Vector2(120, 40)
+		# 【改】批次B13：商城购买钮放大加高（120×40 → 120×44，内嵌元宝价维持整钮口径）
+		buy_btn.custom_minimum_size = Vector2(120, 44)
+		buy_btn.add_theme_font_size_override("font_size", 13)
 		buy_btn.pressed.connect(_on_buy_mall_pack.bind(pack))
 		row.add_child(buy_btn)
 	
