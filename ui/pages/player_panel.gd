@@ -144,6 +144,9 @@ func open_player_panel():
 		if c.has_node("Overlay"):
 			c.get_node("Overlay").hide()
 		c._current_popup = null
+		# 面板任何路径死亡（✕/遮罩/代码关闭）连带关成功弹窗+清孤儿点击层
+		c._safe_close("SuccessPopup")
+		c._cleanup_success_popups()
 	)
 	_update_identity_reward_list()
 
@@ -189,7 +192,8 @@ func _update_identity_reward_list():
 func _on_claim_identity_reward(level: int):
 	var result = data.claim_identity_reward(level)
 	if result.ok:
-		c._show_stage_hint("领取成功！%s" % result.reward.name)
+		# 【改】成功反馈试点：成功弹关键结果（奖励名），居中自动关弹窗
+		c._show_success_popup("领取成功\n%s" % result.reward.name)
 		_update_identity_reward_list()
 		c.update_all_ui()
 		c.generate_hero_list()

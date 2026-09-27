@@ -333,7 +333,13 @@ func open_popup(panel: Control):
 
 func close_popup():
 	if _current_popup != null:
-		_current_popup.hide()
+		# 【改】带 _create_base_popup 遮罩的一次性弹窗（meta popup_mask）改走 _safe_close（摘遮罩+queue_free+tree_exiting 连带清理）——
+		# 原 hide 路径不触发 tree_exiting，遮罩没人摘会残留全屏（2026-09-27 实测身份面板点外部关闭后遮罩残留）；
+		# 无 meta 的持久面板（HeroPanel 等 open_popup 系）维持 hide 复用原逻辑
+		if _current_popup.has_meta("popup_mask"):
+			_safe_close(_current_popup.name)
+		else:
+			_current_popup.hide()
 		_current_popup = null
 	$Overlay.hide()
 
@@ -482,6 +488,17 @@ func on_beast():
 #            按视口宽度手动算居中 x + 按文本实际宽度在 400~560 间取宽并自动换行
 func _show_stage_hint(text: String, auto_hide: float = 2.5):
 	ui_helpers._show_stage_hint(text, auto_hide)   # 【改】主体迁 ui/ui_helpers.gd（2026-09-19 重构批次B）
+
+# 【新增】成功反馈：成功结果弹窗 + gains 文案格式化（主体在 ui_helpers，试点先行）
+func _show_success_popup(text: String, auto_hide: float = 0.0):
+	ui_helpers._show_success_popup(text, auto_hide)
+
+func _format_gains(gains: Dictionary) -> String:
+	return ui_helpers._format_gains(gains)
+
+# 【新增】成功反馈：孤儿点击层清扫委托（面板关闭时清场用）
+func _cleanup_success_popups():
+	ui_helpers._cleanup_success_popups()
 
 func _init_avatar_box():
 	if not has_node("TopBar"): return

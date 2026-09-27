@@ -12,6 +12,7 @@ class_name UiHelpers
 extends RefCounted
 
 var c   # game_controller 根脚本（无类型，与 pages 模块一致）
+var _popup_gen: int = 0   # 【新增】成功反馈：成功弹窗代际号（连点顶替时关闭校验用，lambda 只捕获 int 防 freed 警告）
 
 var _last_total_income: int = -1   # 【新增】全局赚速飘字：上次总赚速快照（-1=未初始化，首次只记录不弹）
 var _income_float_state := {"tween": null, "display": 0.0, "target": 0}   # 【新增】赚速飘字状态：动画引用/滚动显示值/累计目标增量（连点累加，飘尽归零）
@@ -500,6 +501,129 @@ func _show_stage_hint(text: String, auto_hide: float = 2.5):
 	tween.tween_callback(func():
 		if c.has_node("StageHint"):
 			_safe_close("StageHint")
+	)
+
+# ============ 成功结果弹窗（后续优先级第 2 条·试点） ============
+
+# 【新增】成功反馈：gains 字典 → 文案（按 ITEM_CONFIG 配置顺序、顿号连接；每两项换行适配弹窗卡宽度；未配置 id 排尾防御）
+func _format_gains(gains: Dictionary) -> String:
+	var ordered = []
+	for iid in c.data.ITEM_CONFIG.keys():
+		if gains.has(iid):
+			ordered.append(iid)
+	for iid in gains.keys():
+		if not ordered.has(iid):
+			ordered.append(iid)
+	var parts := []
+	for iid in ordered:
+		parts.append("【%s】×%d" % [c.data.ITEM_CONFIG.get(iid, {}).get("name", iid), gains[iid]])
+	# 每两项一行：成功弹窗卡为 Button（不支持 autowrap），手动折行防超宽
+	var lines := []
+	for i in range(0, parts.size(), 2):
+		lines.append("、".join(parts.slice(i, min(i + 2, parts.size()))))
+	return "\n".join(lines)
+
+# 【新增】成功反馈：孤儿点击层清扫——SuccessPopup 面板不在树时，残留的透明点击层一并摘（每次新建弹窗前调用兜底）
+func _cleanup_success_popups():
+	var live_mask = null
+	var popup = c.get_node_or_null("SuccessPopup")
+	if popup != null:
+		live_mask = popup.get_meta("popup_mask", null)
+	for child in c.get_children():
+		if str(child.name) == "SuccessPopupMask" and is_instance_valid(child) and child != live_mask:
+			child.queue_free()
+
+# 【新增】成功反馈：透明穿透点击层——视觉上无遮罩（alpha 0 + PASS 不拦截下层交互），仅监听"按下"关闭弹窗（弹窗外区域）
+func _make_popup_mask(on_input: Callable) -> ColorRect:
+	var mask = ColorRect.new()
+	mask.name = "SuccessPopupMask"
+	mask.set_anchors_preset(Control.PRESET_FULL_RECT)
+	mask.color = Color(0, 0, 0, 0)
+	mask.z_index = 55
+	mask.mouse_filter = Control.MOUSE_FILTER_PASS   # PASS：点击穿透到下层控件（按钮照常可用），本层只收监听
+	mask.gui_input.connect(func(ev):
+		# 仅"按下"关闭：释放不响应（防触发弹窗的按钮被 _refresh 销毁后、释放 hit-test 落到本层误关）
+		var is_press: bool = (ev is InputEventMouseButton and ev.pressed) or (ev is InputEventScreenTouch and ev.pressed)
+		if is_press:
+			on_input.call()
+			if is_instance_valid(mask):
+				mask.queue_free()   # 自删兜底：面板被直接 queue_free 时本层不留残
+	)
+	return mask
+
+# 【新增】成功反馈：给成功弹窗面板挂透明点击层（创建 + meta 登记 + tree_exiting 连带摘），创建与复用补建共用
+func _attach_success_mask(panel: Button) -> void:
+	var mask: ColorRect = _make_popup_mask(func(): c._safe_close("SuccessPopup"))
+	c.add_child(mask)
+	panel.set_meta("popup_mask", mask)
+	panel.tree_exiting.connect(_on_popup_tree_exiting.bind(mask))
+
+# 【新增】成功反馈：成功结果弹窗——居中、1.5~2 秒自动关闭、点击任意位置（含弹窗内部）立即关闭。
+# 弹窗卡 Button 化：pressed 引擎级信号，点弹窗任意处必触发；透明点击层管"弹窗外"；单例防堆叠（新替旧）
+func _show_success_popup(text: String, auto_hide: float = 0.0):
+	_cleanup_success_popups()   # 兜底清扫上代残留点击层
+	var panel = c.get_node_or_null("SuccessPopup")
+	if panel == null or not panel.is_inside_tree():
+		panel = Button.new()
+		panel.name = "SuccessPopup"
+		panel.z_index = 60
+		panel.mouse_filter = Control.MOUSE_FILTER_STOP
+		# 卡面样式直接挂按钮（四态同款，避免 hover 变色打断观感）
+		var style = StyleBoxFlat.new()
+		style.bg_color = Color("#2a2640")
+		style.set_corner_radius_all(12)
+		style.set_border_width_all(2)
+		style.border_color = Color("#6a5f9e")
+		panel.add_theme_stylebox_override("normal", style)
+		panel.add_theme_stylebox_override("hover", style)
+		panel.add_theme_stylebox_override("pressed", style)
+		panel.add_theme_stylebox_override("disabled", style)
+		panel.add_theme_font_size_override("font_size", 16)
+		panel.add_theme_color_override("font_color", Color("#ffd700"))
+		_attach_success_mask(panel)
+		panel.pressed.connect(func(): c._safe_close("SuccessPopup"))   # 点弹窗内部关闭
+		c.add_child(panel)
+	else:
+		# 单例复用：杀旧 tween（防堆叠同 StageHint 惯例）；点击层异常丢失则补建（补建同样绑 tree_exiting）
+		var old_tween0 = panel.get_meta("success_tween", null)
+		if old_tween0 != null and old_tween0.is_valid():
+			old_tween0.kill()
+		var old_mask = panel.get_meta("popup_mask", null)
+		if old_mask == null or not is_instance_valid(old_mask) or not old_mask.is_inside_tree():
+			_attach_success_mask(panel)
+
+	panel.text = text
+	# 动态限宽（同 StageHint 口径）：按最长一行实测宽度 + 按钮内边距
+	var font = panel.get_theme_font("font")
+	if font == null:
+		font = ThemeDB.fallback_font   # 兜底：主题未配字体时用引擎回退字体，防止空引用
+	var max_w: float = 0.0
+	for line in text.split("\n"):
+		max_w = maxf(max_w, font.get_string_size(line, HORIZONTAL_ALIGNMENT_LEFT, -1, panel.get_theme_font_size("font_size")).x)
+	panel.custom_minimum_size = Vector2(clampf(max_w + 80, 260, 560), 96)
+	# 居中（根 Control 未铺满视口，锚点居中会算到左边缘——同 StageHint 手动算，y 取视口 38% 偏上视觉中心）
+	var vs = c.get_viewport().get_visible_rect().size
+	panel.position = Vector2((vs.x - panel.custom_minimum_size.x) / 2, vs.y * 0.38)
+	# 展示时长必须 lambda 外算好（GDScript lambda 按值捕获，内部赋值不生效）
+	if auto_hide <= 0.0:
+		auto_hide = clampf(1.2 + text.length() * 0.02, 1.5, 2.0)   # 未显式传时按文案长度取 1.5~2 秒（拍板口径 1–2 秒）
+	# 代际号：连点顶替时"只关自己这代"的校验凭据；lambda 只捕获 int/float（零对象捕获，杜绝 capture-freed 警告）
+	_popup_gen += 1
+	panel.set_meta("gen", _popup_gen)
+	var gen: int = _popup_gen
+	# 立即入场（无延迟）：淡入 + 轻微回弹缩放
+	panel.modulate.a = 0.0
+	panel.scale = Vector2(0.92, 0.92)
+	var tween = c.create_tween()
+	panel.set_meta("success_tween", tween)
+	tween.set_parallel(true)
+	tween.tween_property(panel, "modulate:a", 1.0, 0.15)
+	tween.tween_property(panel, "scale", Vector2.ONE, 0.2).set_trans(Tween.TRANS_BACK).set_ease(Tween.EASE_OUT)
+	# 自动关闭：独立一次性定时器（0.2 动效 + 展示时长），只被自身 timeout 触发一次；代际校验防复用误关
+	c.get_tree().create_timer(0.2 + auto_hide).timeout.connect(func():
+		var cur2 = c.get_node_or_null("SuccessPopup")
+		if cur2 != null and int(cur2.get_meta("gen", 0)) == gen:
+			c._safe_close("SuccessPopup")
 	)
 
 # ============ 飘字徽标（赚速 / 门客赚钱） ============

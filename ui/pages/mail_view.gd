@@ -151,7 +151,8 @@ func _on_claim(mail_id: String):
 	if not r.get("ok", false):
 		c._show_stage_hint(str(r.get("reason", "领取失败")))
 		return
-	c._show_stage_hint("已领取，奖励进背包")
+	# 【改】成功反馈试点：成功弹关键结果（获得 XX×N），居中自动关弹窗
+	c._show_success_popup("领取成功\n获得 " + c._format_gains(r.get("gains", {})))
 	_refresh()
 
 func _on_claim_all():

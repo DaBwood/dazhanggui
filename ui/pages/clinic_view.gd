@@ -18,6 +18,7 @@ var _timer: Timer = null         # 批处理/秒刷定时器（0.05s）
 var _count_lbl: Label = null     # 病人数量文本
 var _cd_lbl: Label = null        # 恢复倒计时文本
 var _jar_lbl: Label = null       # 收益罐文本
+var _jar_btn: Button = null        # 收益罐领取钮引用（tick 同步 disabled，修"接诊后按钮不刷新"）
 var _tq_lbl: Label = null        # 接诊队列状态文本
 # _popup_kind/_popup_id 由基类 BaseView 持有（2026-09-18 架构重构批次⑧），此处不再声明
 
@@ -64,6 +65,9 @@ func _on_tick():
 		_cd_lbl.text = _cd_text()
 	if _jar_lbl:
 		_jar_lbl.text = _jar_text()
+	# 收益罐按钮禁用态同步：批处理随时把收益灌进罐，不能只靠重建页面刷新（一键接诊后立即可领的关键）
+	if _jar_btn != null and is_instance_valid(_jar_btn):
+		_jar_btn.disabled = not _sys().has_jar()
 	if _tq_lbl:
 		_tq_lbl.text = _tq_text()
 
@@ -199,6 +203,7 @@ func _fill_main(body: VBoxContainer):
 	var collect_btn := Button.new()
 	collect_btn.text = "领取"
 	collect_btn.custom_minimum_size = Vector2(100, 38)
+	_jar_btn = collect_btn   # 存引用供 _on_tick 同步禁用态
 	collect_btn.disabled = not _sys().has_jar()
 	collect_btn.pressed.connect(_on_collect)
 	jar_row.add_child(collect_btn)
@@ -329,7 +334,8 @@ func _on_add_patient():
 
 func _on_collect():
 	var r := _sys().collect_jar()
-	c._show_stage_hint("领取：医术 +%s" % c.format_number(r["yishu"]))
+	# 【改】成功反馈试点：成功弹关键结果（医术增量），居中自动关弹窗
+	c._show_success_popup("领取成功\n医术 +%s" % c.format_number(r["yishu"]))
 	_refresh()
 
 # 接诊：1 人转入接诊队列（治疗由定时器批处理）
