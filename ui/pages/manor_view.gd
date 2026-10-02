@@ -13,6 +13,8 @@
 # 【B14-5改】卡片左侧信息一行写不完拆两行（单块产量/每级增量 分开；产量加成/品种上限 分开）
 # 【B14-6改】新增"该类商铺赚速"（每品种映射士农工商侠一类商铺，manor.json shop_category，
 #   土地/血统每级+25% 读取式接入 shop_system 赚速链，每块独立累计只算已解锁块）；取消土地/血统等级上限
+# 【B14-7改】等级卡右列=当前铜钱/升级钮/所需铜钱（红绿，十连时显示10级总价）/等级十连勾选；
+#   勾选切换即刷新弹窗；底部开关行只剩"同步升级"
 # 纯逻辑模块：场景节点查找/弹窗挂载/共享工具/跨页调用一律经 c.xxx
 # （c = game_controller 根脚本，语义与原 controller 内调用完全一致）
 # data = GameData 数据中枢，用法与原来完全一致
@@ -248,16 +250,11 @@ func _fill_species_popup(panel: PanelContainer):
 	else:
 		vbox.add_child(_build_level_card(sid, _plot_sel))
 		vbox.add_child(_build_land_card(sid, _plot_sel, land_word))
-	# 【改】B14-3 开关行挪到弹窗底部（原来挤在标题下）；等级十连（选中块连升10级）+ 同步升级（全部已解锁地块逐块结算）
+	# 【改】B14-7 底部开关行只留"同步升级"；"等级十连"勾选挪进等级卡所需铜钱下面（勾选后所需数跟着变）
 	var check_row = HBoxContainer.new()
 	check_row.alignment = BoxContainer.ALIGNMENT_CENTER
 	check_row.add_theme_constant_override("separation", 16)
 	vbox.add_child(check_row)
-	var batch_check = CheckBox.new()
-	batch_check.text = "等级十连"
-	batch_check.button_pressed = _batch_checked
-	batch_check.toggled.connect(_on_batch_toggled)
-	check_row.add_child(batch_check)
 	var sync_check = CheckBox.new()
 	sync_check.text = "同步升级"
 	sync_check.button_pressed = _sync_checked
@@ -346,15 +343,33 @@ func _build_level_card(sid: String, plot_index: int) -> PanelContainer:
 	inc_lbl.text = "每级+%s/分" % str(float(st.get("rate_per_level", 1)))
 	left.add_child(inc_lbl)
 
+	# 【改】B14-7 右列：当前铜钱数量（上）→ 升级钮 → 所需铜钱（下，红绿着色）→ 等级十连勾选（勾选后所需数刷新为10级总价）
 	var right := VBoxContainer.new()
 	right.add_theme_constant_override("separation", 2)
 	body.add_child(right)
+	var have_lbl = Label.new()
+	have_lbl.add_theme_font_size_override("font_size", 12)
+	have_lbl.text = "铜钱 %s" % c.format_number(int(data.money))
+	right.add_child(have_lbl)
 	var lv_btn = Button.new()
 	lv_btn.text = "升级"
 	lv_btn.custom_minimum_size = Vector2(90, 44)
 	right.add_child(lv_btn)
 	lv_btn.pressed.connect(func(): _on_upgrade_level(sid, plot_index, lv_btn))
-	c._add_cost_row(right, "铜钱", int(data.money), int(data.get_manor_level_up_cost(lv)))
+	var lv_cost = int(data.get_manor_level_up_cost(lv))
+	if _batch_checked:
+		for i in range(1, 10):   # 十连勾选时所需数显示10级总价（逐次结算的预估和）
+			lv_cost += int(data.get_manor_level_up_cost(lv + i))
+	var need_lbl = Label.new()
+	need_lbl.add_theme_font_size_override("font_size", 12)
+	need_lbl.text = "需 %s" % c.format_number(lv_cost)
+	need_lbl.add_theme_color_override("font_color", c._cost_color(int(data.money), lv_cost))
+	right.add_child(need_lbl)
+	var batch_check = CheckBox.new()
+	batch_check.text = "等级十连"
+	batch_check.button_pressed = _batch_checked
+	batch_check.toggled.connect(_on_batch_toggled)
+	right.add_child(batch_check)
 	return card
 
 # 【改】B14-4 土地/血统卡：左侧加成与品种上限 当前→下级 预览，右侧"升级"钮，图纸（拥有/需要）放钮下方
@@ -419,8 +434,10 @@ func _on_tab(kind: String):
 	update_manor_view()
 
 # 【新增】弹窗内“等级十连”勾选变化时记录状态，重开弹窗保持上次选择
+# 【改】B14-7 勾选切换即原地刷新弹窗：等级卡"所需铜钱"随十连显示 1级/10级总价
 func _on_batch_toggled(pressed: bool):
 	_batch_checked = pressed
+	_refresh_species_popup()
 
 # 【新增】B14-2 弹窗内“同步升级”勾选变化时记录状态，重开弹窗保持上次选择
 func _on_sync_toggled(pressed: bool):

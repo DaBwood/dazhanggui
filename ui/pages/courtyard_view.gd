@@ -6,13 +6,16 @@
 # 【B15改】技艺弹窗对齐庄园 B14 惯例（2026-10-02 用户要求）：标题去【】居中；十连勾选挪弹窗底部；
 #   卷一/卷二改左文右钮卡片（左=卷名等级+效果 当前→下级 预览，右=升级钮+产物（拥有/需要）红绿在钮下）
 # 【B15-2改】效果文本拆两行（当前一行/下级一行，禁自动换行）；技艺弹窗滚动位置按 tech_id 记忆（升级后/重开不跳顶）
+# 【B15-3改】卷卡消耗只显示所需数量（库存顶部已有）；“十连升级”勾选挪到 project1 卷一按钮下面
+# 【B15-4改】每卷独立"十连升级"勾选（嵌各自卡片产物下面，tech|project|volume 键互不干扰）；
+#   滚动记忆改 scrolled 信号连续记录（废升级时单点保存的失效路径）；cost_formulas 配置修复见 courtyard.json
 # ============================================================
 class_name CourtyardView
 extends RefCounted
 
 var c      # game_controller 根脚本引用
 var data   # GameData 数据中枢引用
-var _batch_checked: bool = false   # 十连「卷一卷二通用」状态（勾选框在弹窗内，这里记住上次选择）
+var _scroll_batch: Dictionary = {}   # 【改】B15-4 十连状态按卷独立（键 "tech|project|volume"，拆开互不干扰）
 var _tech_scroll: Dictionary = {}   # 【新增】B15-2 技艺弹窗滚动位置记忆（tech_id → 像素，升级后原地刷新不跳顶）
 
 # 由 game_controller._ready 创建本模块时注入引用
@@ -89,16 +92,24 @@ func _fill_technique_popup(panel: PanelContainer):
 
 	detail_list.add_child(_build_project_block(cfg, "project1"))
 	detail_list.add_child(_build_project_block(cfg, "project2"))
-	# 【新增】B15-2 恢复上次滚动位置（set_deferred 等本帧布局完再滚，避免被最小尺寸钳回 0）
-	scroll.set_deferred("scroll_vertical", int(_tech_scroll.get(tech_id, 0)))
+	# 【改】B15-5 滚动记忆双保险：value_changed 连续记录（restored 闸门——恢复完成前不存档，防重建瞬态 0 覆盖存档）；
+	#   位置改两帧后恢复（set_deferred 单帧时机不可靠：布局 sort 可能晚于赋值，被钳回 0）
+	scroll.get_v_scroll_bar().value_changed.connect(func(v):
+		if bool(scroll.get_meta("restored", false)):
+			_tech_scroll[tech_id] = int(v))
+	_restore_scroll_later(scroll, int(_tech_scroll.get(tech_id, 0)))
 
-	# 【改】B15 十连「卷一卷二通用」勾选挪到弹窗底部（与庄园弹窗开关行位置一致）；勾选状态记在 _batch_checked
-	var batch_check = CheckBox.new()
-	batch_check.text = "十连升级"
-	batch_check.button_pressed = _batch_checked
-	batch_check.toggled.connect(_on_batch_toggled)
-	vbox.add_child(batch_check)
 
+
+# 【新增】B15-5 两帧后恢复滚动位置：等容器布局算出最大滚动值再赋值；恢复完成置 restored 闸门，之后滚动才存档
+func _restore_scroll_later(sc: ScrollContainer, v: int) -> void:
+	if not is_instance_valid(sc):
+		return
+	await c.get_tree().process_frame
+	await c.get_tree().process_frame
+	if is_instance_valid(sc):
+		sc.scroll_vertical = v
+		sc.set_meta("restored", true)
 
 # 按 id 从宅院配置取技艺，避免弹窗刷新时继续持有旧配置字典
 func _get_technique_cfg(tech_id: String) -> Dictionary:
@@ -198,7 +209,21 @@ func _build_scroll_row(tech: Dictionary, project_key: String, project: Dictionar
 	btn.custom_minimum_size = Vector2(90, 44)
 	right.add_child(btn)
 	btn.pressed.connect(_on_upgrade_scroll.bind(tech_id, project_key, volume))
-	c._add_cost_row(right, product, int(data.get_manor_goods_count(product)), int(cost))
+	# 【改】B15-3 只显示升级所需数量（库存：xxx 在弹窗顶部已有，不再重复拥有/需要）
+	var have_n = int(data.get_manor_goods_count(product))
+	var cost_lbl = Label.new()
+	cost_lbl.add_theme_font_size_override("font_size", 12)
+	cost_lbl.text = "%s %s" % [product, c.format_number(int(cost))]
+	cost_lbl.add_theme_color_override("font_color", c._cost_color(have_n, int(cost)))
+	right.add_child(cost_lbl)
+	# 【新增】B15-4 该卷独立的"十连升级"勾选（放产物数量下面），状态按 "tech|project|volume" 记忆
+	var batch_key = "%s|%s|%s" % [tech_id, project_key, volume]
+	var batch_chk = CheckBox.new()
+	batch_chk.text = "十连升级"
+	batch_chk.button_pressed = bool(_scroll_batch.get(batch_key, false))
+	batch_chk.add_theme_font_size_override("font_size", 12)
+	batch_chk.toggled.connect(_on_scroll_batch_toggled.bind(batch_key))
+	right.add_child(batch_chk)
 	return card
 
 # 【新增】B15 卡片样式：与庄园弹窗升级卡同款（深底#221d33+淡紫描边，见 manor_view._make_upgrade_card_style）
@@ -231,20 +256,16 @@ func _get_scroll_effect_text(project: Dictionary, volume: String, level: int) ->
 
 # ============ 交互回调 ============
 # 【新增】弹窗内“卷一十连”勾选变化时记录状态，重开弹窗保持上次选择
-func _on_batch_toggled(pressed: bool):
-	_batch_checked = pressed
+# 【改】B15-4 每卷独立十连勾选变化：按 "tech|project|volume" 键记录，四个卷互不干扰
+func _on_scroll_batch_toggled(key: String, pressed: bool):
+	_scroll_batch[key] = pressed
 
 # 升级卷轴：卷一跟随弹窗内的“卷一十连”勾选；卷二固定只升1级
 func _on_upgrade_scroll(tech_id: String, project_key: String, volume: String):
-	# 【新增】B15-2 升级会原地刷新弹窗，先把滚动位置按技艺 id 存进记忆，刷新后由 _fill_technique_popup 恢复、不跳顶
-	var pop0 = c.get_node_or_null("CourtyardTechPopup")
-	if pop0 != null:
-		var sc0 = pop0.get_node_or_null("VBoxContainer/TechScroll")
-		if sc0 != null:
-			_tech_scroll[tech_id] = sc0.scroll_vertical
+	var batch_key = "%s|%s|%s" % [tech_id, project_key, volume]
 	var result: Dictionary
-	# 十连状态读模块变量（勾选框在弹窗内）
-	if _batch_checked:
+	# 【改】B15-4 十连状态按卷独立（勾选框在该卷卡片内，键 tech|project|volume）
+	if bool(_scroll_batch.get(batch_key, false)):
 		result = data.upgrade_courtyard_scroll_batch(tech_id, project_key, volume)
 	else:
 		result = data.upgrade_courtyard_scroll(tech_id, project_key, volume)
