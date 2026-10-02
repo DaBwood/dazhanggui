@@ -1,24 +1,10 @@
 # ============================================================
-# 庄园视图（第4批新增：农场+牧场挂机产出，入口在闯荡页；【第7批新增】宅院页签）
-# 【第8批改】农场/牧场/宅院主列表全部改为“按钮 + 弹窗”：
-#   主列表只显示品种按钮（名称+产物），点击弹窗内再升级该地块/卷轴，避免长列表滚动
-# 【B14改】农场/牧场内部再分"分组页签"：牧场=杂食/草食/肉食、农场=北田/南田/灌木/东林/西林，
-#   每组固定4个品种（2×2 卡片网格）；品种弹窗内 4 个地块改成页签，选中哪个块就单独升哪个块
-# 【B14-2改】弹窗升级面板完善（2026-10-02 用户实测反馈）：作物名居中标题+产物速率行；
-#   品种等级/土地血统 双卡片（当前→下级效果预览+大号按钮）；新增"同步升级"开关
-# 【B14-3改】升级钮回归全仓惯例：消耗走 _add_cost_row（铜钱/图纸 拥有/需要 红绿着色）+普通"升级"钮；
-#   "等级十连/同步升级"开关挪到弹窗底部（双卡腾出空间，2026-10-02 用户实测反馈）
-# 【B14-4改】升级钮挪卡片右侧、"铜钱/图纸（拥有/需要）"放钮下方（去"升级消耗："前缀）；
-#   返回按钮下的"仓库：××"总览行整排删除（2026-10-02 用户实测反馈）
-# 【B14-5改】卡片左侧信息一行写不完拆两行（单块产量/每级增量 分开；产量加成/品种上限 分开）
-# 【B14-6改】新增"该类商铺赚速"（每品种映射士农工商侠一类商铺，manor.json shop_category，
-#   土地/血统每级+25% 读取式接入 shop_system 赚速链，每块独立累计只算已解锁块）；取消土地/血统等级上限
-# 【B14-7改】等级卡右列=当前铜钱/升级钮/所需铜钱（红绿，十连时显示10级总价）/等级十连勾选；
-#   勾选切换即刷新弹窗；底部开关行只剩"同步升级"
+# 庄园视图：农场/牧场/宅院三页签；农场/牧场=分组页签+品种卡片，点卡片弹窗升级（升级卡惯例见范式规范第九节）
 # 纯逻辑模块：场景节点查找/弹窗挂载/共享工具/跨页调用一律经 c.xxx
 # （c = game_controller 根脚本，语义与原 controller 内调用完全一致）
 # data = GameData 数据中枢，用法与原来完全一致
 # UI 全部代码生成：入口按钮与子视图跟随闯荡页重建，零场景改动
+# 最近批次见档案 §十一
 # ============================================================
 class_name ManorView
 extends RefCounted
@@ -28,10 +14,10 @@ var data   # GameData 数据中枢引用
 
 # 本页 UI 状态变量
 var _manor_tab: String = "crops"   # crops=农场 / animals=牧场 / courtyard=宅院
-var _batch_checked: bool = false   # 【新增】等级十连状态（勾选框已移入弹窗，这里记住上次选择）
-var _manor_group: Dictionary = {"crops": "", "animals": ""}   # 【新增】B14 分组页签当前选择（空=该组第一个）
-var _plot_sel: int = 0   # 【新增】B14 品种弹窗内当前选中的地块页签下标（0~3，类变量记忆）
-var _sync_checked: bool = false   # 【新增】B14-2 同步升级勾选（全部已解锁地块一起升）
+var _batch_checked: bool = false   # 等级十连勾选状态（勾选框在弹窗内，类变量记忆、重建不丢）
+var _manor_group: Dictionary = {"crops": "", "animals": ""}   # 分组页签当前选择（空=该组第一个）
+var _plot_sel: int = 0   # 品种弹窗内当前选中的地块页签下标（0~3，类变量记忆）
+var _sync_checked: bool = false   # 同步升级勾选（全部已解锁地块一起升）
 
 # 由 game_controller._ready 创建本模块时注入引用
 func _init(p_c):
@@ -57,7 +43,7 @@ func build_manor_view(page, vbox):
 	page.add_child(view)
 	
 	var back_btn = Button.new()
-	back_btn.text = "< 返回"   # 【改】UI统一批次①：返回文案统一 < 返回
+	back_btn.text = "< 返回"   # 文案口径：全仓返回统一 < 返回
 	back_btn.pressed.connect(c.hide_view.bind("manor"))
 	view.add_child(back_btn)
 	
@@ -79,15 +65,15 @@ func build_manor_view(page, vbox):
 	ranch_tab.pressed.connect(_on_tab.bind("animals"))
 	tab_box.add_child(ranch_tab)
 	
-	# 【新增】宅院页签：与农场/牧场并列，内容构建由 pages/courtyard_view.gd 负责
+	# 宅院页签：与农场/牧场并列，内容构建由 pages/courtyard_view.gd 负责
 	var courtyard_tab = Button.new()
 	courtyard_tab.text = "宅院"
 	courtyard_tab.custom_minimum_size = Vector2(160, 44)
 	courtyard_tab.pressed.connect(_on_tab.bind("courtyard"))
 	tab_box.add_child(courtyard_tab)
 	
-	# 【改】等级十连勾选从页签栏移入升级弹窗（见 _fill_species_popup），
-	# 否则玩家点开弹窗看不到开关，甚至不知道有十连
+	# 等级十连勾选放升级弹窗内而非页签栏：
+	# 开关必须挨着它控制的按钮，否则玩家不知道有十连
 	
 	# 品种按钮列表（scroll双向填充，内容只横向填充）
 	var scroll = ScrollContainer.new()
@@ -112,7 +98,7 @@ func show_manor_view():
 	data.settle_manor()   # 打开时先结算一次在线产量
 	update_manor_view()
 
-# 返回闯荡主页（【新增】同时关闭可能开着的品种升级弹窗）
+# 返回闯荡主页（同时关闭可能开着的品种升级弹窗）
 func hide_manor_view():
 	if not c.has_node("PageContainer/AdventurePage/ManorView"): return
 	c._safe_close("ManorSpeciesPopup")
@@ -121,7 +107,7 @@ func hide_manor_view():
 	page.get_node("AdventureVBox").visible = true
 
 # ============ 刷新 ============
-# 【改】B14-4 重绘当前分页的品种按钮（仓库总览行已按用户要求删除）
+# 重绘当前分页的品种按钮（返回按钮下的仓库总览行已按需求删除）
 func update_manor_view():
 	if not c.has_node("PageContainer/AdventurePage/ManorView"): return
 	var view = c.get_node("PageContainer/AdventurePage/ManorView")
@@ -134,7 +120,7 @@ func update_manor_view():
 		c.update_courtyard_view(list)
 		return
 	
-	# 【改】B14：农场/牧场主列表 = 分组页签行 + 当前组 4 个品种卡片（2×2 网格），点击卡片打开升级弹窗
+	# 农场/牧场主列表 = 分组页签行 + 当前组 4 个品种卡片（2×2 网格），点击卡片打开升级弹窗
 	var groups = data.get_manor_group_list(_manor_tab)
 	if groups.is_empty(): return
 	if not groups.has(String(_manor_group.get(_manor_tab, ""))):
@@ -149,7 +135,7 @@ func update_manor_view():
 	for cfg in data.get_manor_species_list_by_group(_manor_tab, String(_manor_group[_manor_tab])):
 		grid.add_child(_build_species_button(cfg))
 
-# 【改】B14 构建品种入口卡片（2×2 大卡片）：名称+产物+总产量；未解锁品种置灰并显示身份要求
+# 品种入口卡片（2×2 大卡片）：名称+产物+总产量；未解锁品种置灰并显示身份要求
 func _build_species_button(cfg: Dictionary) -> Button:
 	var sid = String(cfg.get("id", ""))
 	var btn = Button.new()
@@ -166,8 +152,8 @@ func _build_species_button(cfg: Dictionary) -> Button:
 		btn.pressed.connect(_on_species_button.bind(sid))
 	return btn
 
-# 【新增】B14 构建分组页签行（牧场：杂食/草食/肉食；农场：北田/南田/灌木/东林/西林）
-# 当前选中页签金色高亮；选中状态在 _manor_group 类变量记忆，节点重建不丢
+# 分组页签行（牧场：杂食/草食/肉食；农场：北田/南田/灌木/东林/西林）
+# 当前选中页签金色高亮；选中状态在 _manor_group 记忆，节点重建不丢
 func _build_group_tab_row(groups: Array) -> HBoxContainer:
 	var row = HBoxContainer.new()
 	row.alignment = BoxContainer.ALIGNMENT_CENTER
@@ -183,7 +169,7 @@ func _build_group_tab_row(groups: Array) -> HBoxContainer:
 		row.add_child(btn)
 	return row
 
-# 【新增】B14 切换分组页签（同步关闭品种弹窗，避免残留旧组内容）
+# 切换分组页签（同步关闭品种弹窗，避免残留旧组内容）
 func _on_group_tab(group: String):
 	_manor_group[_manor_tab] = group
 	c._safe_close("ManorSpeciesPopup")
@@ -193,7 +179,7 @@ func _on_group_tab(group: String):
 # 打开某个品种的升级弹窗；重复打开时先关闭旧弹窗，避免叠加
 func _on_species_button(species_id: String):
 	c._safe_close("ManorSpeciesPopup")
-	_plot_sel = 0   # 【新增】B14 换品种时地块页签回到第1块
+	_plot_sel = 0   # 换品种时地块页签回到第1块
 	var panel = c._create_base_popup("", Vector2(400, 540))
 	panel.name = "ManorSpeciesPopup"
 	panel.set_meta("species_id", species_id)
@@ -216,22 +202,22 @@ func _fill_species_popup(panel: PanelContainer):
 	var land_word = "土地" if is_crop else "血统"
 	
 	var vbox: VBoxContainer = panel.get_child(0)
-	# 【改】UI统一批次①补充：清空重建保留下标0标题 Label（✕已改悬浮层不占内容流），动态标题改写 PopupTitle、不再自建 Label
+	# 清空重建保留下标0标题 Label（✕ 在悬浮层不占内容流），动态标题改写 PopupTitle
 	for child in vbox.get_children():
 		if child == vbox.get_child(0): continue
 		child.queue_free()
 
 	var title: Label = vbox.get_node("PopupTitle")
-	title.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER   # 【改】B14-2 作物名居中做标题
+	title.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER   # 作物名居中做标题
 	title.text = "%s" % cfg.get("name", sid)
-	# 【改】B14-2 产物+速率合并一行（作物与产物同名，不再罗列"产物：xxx ｜ 总产量"）
+	# 产物+速率合并一行（作物与产物同名，不重复罗列"产物/总产量"）
 	var rate_lbl = Label.new()
 	rate_lbl.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	rate_lbl.text = "%s %.1f/分" % [cfg.get("product", ""), data.get_manor_species_rate(sid)]
 	rate_lbl.add_theme_color_override("font_color", Color("#ffd700"))
 	vbox.add_child(rate_lbl)
 	
-	# 【改】B14：4 个地块改成页签行（每块显示品种Lv+单块产量），选中哪块就单独升哪块
+	# 4 个地块页签行：每块显示品种Lv+单块产量，选中哪块就单独升哪块
 	var unlocked_cnt = data.get_manor_unlocked_plots(sid)
 	_plot_sel = clampi(_plot_sel, 0, data.get_manor_plots_per_species() - 1)
 	var tab_row = HBoxContainer.new()
@@ -250,7 +236,7 @@ func _fill_species_popup(panel: PanelContainer):
 	else:
 		vbox.add_child(_build_level_card(sid, _plot_sel))
 		vbox.add_child(_build_land_card(sid, _plot_sel, land_word))
-	# 【改】B14-7 底部开关行只留"同步升级"；"等级十连"勾选挪进等级卡所需铜钱下面（勾选后所需数跟着变）
+	# 底部开关行只留"同步升级"（等级十连勾选在等级卡内）
 	var check_row = HBoxContainer.new()
 	check_row.alignment = BoxContainer.ALIGNMENT_CENTER
 	check_row.add_theme_constant_override("separation", 16)
@@ -275,8 +261,8 @@ func _refresh_species_popup():
 	if popup != null:
 		_fill_species_popup(popup)
 
-# 【新增】B14 构建单个地块页签：显示该块品种等级与单块产量；未解锁块显示身份要求
-# 选中块金色高亮（_plot_sel 类变量记忆，弹窗原地重建不丢）
+# 单个地块页签：显示该块品种Lv+单块产量；未解锁块显示身份要求
+# 选中块金色高亮（_plot_sel 记忆，弹窗原地重建不丢）
 func _build_plot_tab(sid: String, plot_index: int, unlocked_cnt: int, plot_word: String) -> Button:
 	var btn = Button.new()
 	btn.custom_minimum_size = Vector2(80, 58)
@@ -293,14 +279,14 @@ func _build_plot_tab(sid: String, plot_index: int, unlocked_cnt: int, plot_word:
 	btn.pressed.connect(_on_plot_tab.bind(plot_index))
 	return btn
 
-# 【新增】B14 选中地块页签：只切换选中下标并原地刷新弹窗（节点不动，符合同名弹窗禁删旧建新）
-# 【改】B14-2 去掉未用的 sid 参数（编辑器 UNUSED_PARAMETER 告警：不用的参数不下传）
+# 选中地块页签：切换下标并原地刷新弹窗（节点不动，符合同名弹窗禁删旧建新）
+# 去掉未用的 sid 参数（UNUSED_PARAMETER 告警：不用的参数不下传）
 func _on_plot_tab(plot_index: int):
 	_plot_sel = plot_index
 	_refresh_species_popup()
 
-# 【改】B14-2 原 _build_plot_panel 重构为双卡片：品种等级卡 + 土地/血统卡（卡片式，效果预览+大号按钮）
-# 卡片底比弹窗底(#2a2640)深一档、淡紫描边，与全仓卡片惯例一致（见 courtyard_view._build_scroll_row）
+# 品种等级卡 + 土地/血统卡 共用建造器（卡片式，效果当前→下级预览+升级钮）
+# 卡片底比弹窗底(#2a2640)深一档、淡紫描边（全仓卡片惯例）
 func _make_upgrade_card_style() -> StyleBoxFlat:
 	var card_sty := StyleBoxFlat.new()
 	card_sty.bg_color = Color("#221d33")
@@ -310,7 +296,7 @@ func _make_upgrade_card_style() -> StyleBoxFlat:
 	card_sty.set_content_margin_all(8)
 	return card_sty
 
-# 【改】B14-4 品种等级卡：左侧等级/产量构成，右侧"升级"钮，铜钱（拥有/需要 红绿）放钮下方（去"升级消耗："前缀）
+# 品种等级卡：左=等级/产量构成，右=升级钮+铜钱（拥有/需要 红绿）+十连勾选（消耗惯例见范式规范八.2）
 func _build_level_card(sid: String, plot_index: int) -> PanelContainer:
 	var st = data.get_manor_settings()
 	var plot = data.get_manor_plot(sid, plot_index)
@@ -331,7 +317,7 @@ func _build_level_card(sid: String, plot_index: int) -> PanelContainer:
 	title_lbl.text = "品种等级 Lv%d/%d" % [lv, cap]
 	title_lbl.add_theme_font_size_override("font_size", 15)
 	left.add_child(title_lbl)
-	# 【改】B14-5 一行写不完拆两行（2026-10-02 用户实测反馈）
+	# 一行写不完就拆两行（不靠自动换行，用户拍板）
 	var info = Label.new()
 	info.add_theme_font_size_override("font_size", 13)
 	info.add_theme_color_override("font_color", Color("#bbbbbb"))
@@ -343,7 +329,7 @@ func _build_level_card(sid: String, plot_index: int) -> PanelContainer:
 	inc_lbl.text = "每级+%s/分" % str(float(st.get("rate_per_level", 1)))
 	left.add_child(inc_lbl)
 
-	# 【改】B14-7 右列：当前铜钱数量（上）→ 升级钮 → 所需铜钱（下，红绿着色）→ 等级十连勾选（勾选后所需数刷新为10级总价）
+	# 右列：当前铜钱（上）→ 升级钮 → 所需铜钱（红绿）→ 十连勾选（勾选后所需数=10级总价）
 	var right := VBoxContainer.new()
 	right.add_theme_constant_override("separation", 2)
 	body.add_child(right)
@@ -358,7 +344,7 @@ func _build_level_card(sid: String, plot_index: int) -> PanelContainer:
 	lv_btn.pressed.connect(func(): _on_upgrade_level(sid, plot_index, lv_btn))
 	var lv_cost = int(data.get_manor_level_up_cost(lv))
 	if _batch_checked:
-		for i in range(1, 10):   # 十连勾选时所需数显示10级总价（逐次结算的预估和）
+		for i in range(1, 10):   # 十连显示10级总价（逐次结算的预估和）
 			lv_cost += int(data.get_manor_level_up_cost(lv + i))
 	var need_lbl = Label.new()
 	need_lbl.add_theme_font_size_override("font_size", 12)
@@ -372,14 +358,14 @@ func _build_level_card(sid: String, plot_index: int) -> PanelContainer:
 	right.add_child(batch_check)
 	return card
 
-# 【改】B14-4 土地/血统卡：左侧加成与品种上限 当前→下级 预览，右侧"升级"钮，图纸（拥有/需要）放钮下方
+# 土地/血统卡：左=加成/品种上限/该类商铺赚速 当前→下级 预览，右=升级钮+图纸（拥有/需要）
 func _build_land_card(sid: String, plot_index: int, land_word: String) -> PanelContainer:
 	var st = data.get_manor_settings()
 	var plot = data.get_manor_plot(sid, plot_index)
 	var land = int(plot.land)
 	var per_land = int(st.get("level_per_land", 50))
 	var pct_per = float(st.get("land_pct_per_level", 0.25))
-	# 【改】B14-6 该品种映射的商铺类目（manor.json shop_category），土地每级给该类商铺赚速+25%
+	# 该品种映射的商铺类目（manor.json shop_category），每级给该类商铺赚速+25%
 	var shop_cat = String(_get_species_cfg(sid).get("shop_category", ""))
 	var card := PanelContainer.new()
 	card.size_flags_horizontal = Control.SIZE_EXPAND_FILL
@@ -393,10 +379,10 @@ func _build_land_card(sid: String, plot_index: int, land_word: String) -> PanelC
 	left.add_theme_constant_override("separation", 4)
 	body.add_child(left)
 	var title_lbl = Label.new()
-	title_lbl.text = "%s Lv%d" % [land_word, land]   # 【改】B14-6 取消等级上限，不显示 /上限
+	title_lbl.text = "%s Lv%d" % [land_word, land]   # 土地/血统无等级上限，不显示 /上限
 	title_lbl.add_theme_font_size_override("font_size", 15)
 	left.add_child(title_lbl)
-	# 【改】B14-5 拆两行：产量加成一行、品种上限一行；【新增】B14-6 中间加"该类商铺赚速"一行
+	# 三行分开：产量加成 / 该类商铺赚速 / 品种上限
 	var info = Label.new()
 	info.add_theme_font_size_override("font_size", 13)
 	info.add_theme_color_override("font_color", Color("#bbbbbb"))
@@ -427,24 +413,22 @@ func _build_land_card(sid: String, plot_index: int, land_word: String) -> PanelC
 	return card
 
 # ============ 交互回调 ============
-# 切换 农场/牧场/宅院 分页（【新增】切页时关闭品种弹窗，避免弹窗残留）
+# 切换 农场/牧场/宅院 分页（切页时关闭品种弹窗，避免弹窗残留）
 func _on_tab(kind: String):
 	c._safe_close("ManorSpeciesPopup")
 	_manor_tab = kind
 	update_manor_view()
 
-# 【新增】弹窗内“等级十连”勾选变化时记录状态，重开弹窗保持上次选择
-# 【改】B14-7 勾选切换即原地刷新弹窗：等级卡"所需铜钱"随十连显示 1级/10级总价
+# 十连勾选变化：记状态
+# 并原地刷新弹窗：等级卡"所需铜钱"随勾选显示 1级/10级总价
 func _on_batch_toggled(pressed: bool):
 	_batch_checked = pressed
 	_refresh_species_popup()
 
-# 【新增】B14-2 弹窗内“同步升级”勾选变化时记录状态，重开弹窗保持上次选择
+# 同步升级勾选变化：记状态，重开弹窗保持
 func _on_sync_toggled(pressed: bool):
 	_sync_checked = pressed
 
-
-# 升级某块的品种等级（勾选"等级十连"时一次连升10级；失败弹原因）
 # 升级品种等级（勾选"等级十连"=每块连升10级；勾选"同步升级"=全部已解锁地块一起升，逐块结算失败即停；失败弹原因）
 func _on_upgrade_level(species_id: String, plot_index: int, lv_btn: Button = null):
 	var targets: Array = [plot_index]
@@ -461,12 +445,11 @@ func _on_upgrade_level(species_id: String, plot_index: int, lv_btn: Button = nul
 		if not r.ok:
 			break
 	if not r.ok:
-		if lv_btn != null: c.flash_red(lv_btn.get_path())   # 【新增】闪红审计：操作失败反馈（2026-09-19）
-		c._show_success_popup(r.reason, 0.0, "warn")   # 【改】B14 失败弹窗改 warn 红（成功才 ok 金）
+		if lv_btn != null: c.flash_red(lv_btn.get_path())   # 操作失败反馈闪红
+		c._show_success_popup(r.reason, 0.0, "warn")   # 失败弹窗 warn 红（成功才 ok 金，口径见范式规范四.6）
 	update_manor_view()
-	_refresh_species_popup()   # 【新增】刷新弹窗内等级/费用显示
+	_refresh_species_popup()   # 刷新弹窗内等级/费用显示
 
-# 升级某块的土地/血统（耗商铺图纸，失败弹原因）
 # 升级土地/血统（耗商铺图纸；勾选"同步升级"=全部已解锁地块一起升，逐块结算失败即停；失败弹原因）
 func _on_upgrade_land(species_id: String, plot_index: int):
 	var targets: Array = [plot_index]
@@ -480,6 +463,6 @@ func _on_upgrade_land(species_id: String, plot_index: int):
 		if not r.ok:
 			break
 	if not r.ok:
-		c._show_success_popup(r.reason, 0.0, "warn")   # 【改】B14 失败弹窗改 warn 红（成功才 ok 金）
+		c._show_success_popup(r.reason, 0.0, "warn")   # 失败弹窗 warn 红（成功才 ok 金，口径见范式规范四.6）
 	update_manor_view()
-	_refresh_species_popup()   # 【新增】刷新弹窗内土地/血统显示
+	_refresh_species_popup()   # 刷新弹窗内土地/血统显示

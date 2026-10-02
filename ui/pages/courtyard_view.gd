@@ -2,21 +2,16 @@
 # 宅院视图（庄园第三页签：技艺按钮 + 弹窗升级卷轴）
 # 纯逻辑模块：场景节点查找/弹窗挂载/共享工具/跨页调用一律经 c.xxx
 # （c = game_controller 根脚本，data = GameData 数据中枢）
-# UI 由 ManorView 的“宅院”页签触发，复用庄园滚动列表与“等级十连”勾选框
-# 【B15改】技艺弹窗对齐庄园 B14 惯例（2026-10-02 用户要求）：标题去【】居中；十连勾选挪弹窗底部；
-#   卷一/卷二改左文右钮卡片（左=卷名等级+效果 当前→下级 预览，右=升级钮+产物（拥有/需要）红绿在钮下）
-# 【B15-2改】效果文本拆两行（当前一行/下级一行，禁自动换行）；技艺弹窗滚动位置按 tech_id 记忆（升级后/重开不跳顶）
-# 【B15-3改】卷卡消耗只显示所需数量（库存顶部已有）；“十连升级”勾选挪到 project1 卷一按钮下面
-# 【B15-4改】每卷独立"十连升级"勾选（嵌各自卡片产物下面，tech|project|volume 键互不干扰）；
-#   滚动记忆改 scrolled 信号连续记录（废升级时单点保存的失效路径）；cost_formulas 配置修复见 courtyard.json
+# UI 由 ManorView 的"宅院"页签触发，复用庄园滚动列表
+# 最近批次见档案 §十一
 # ============================================================
 class_name CourtyardView
 extends RefCounted
 
 var c      # game_controller 根脚本引用
 var data   # GameData 数据中枢引用
-var _scroll_batch: Dictionary = {}   # 【改】B15-4 十连状态按卷独立（键 "tech|project|volume"，拆开互不干扰）
-var _tech_scroll: Dictionary = {}   # 【新增】B15-2 技艺弹窗滚动位置记忆（tech_id → 像素，升级后原地刷新不跳顶）
+var _scroll_batch: Dictionary = {}   # 十连状态按卷独立（键 "tech|project|volume"，互不干扰）
+var _tech_scroll: Dictionary = {}   # 弹窗滚动位置记忆（tech_id → 像素）
 
 # 由 game_controller._ready 创建本模块时注入引用
 func _init(p_c):
@@ -67,7 +62,7 @@ func _fill_technique_popup(panel: PanelContainer):
 		child.queue_free()
 
 	var title = Label.new()
-	title.text = "%s" % cfg.get("name", tech_id)   # 【改】B15 去【】，与庄园弹窗标题惯例一致
+	title.text = "%s" % cfg.get("name", tech_id)   # 标题去【】居中（与庄园弹窗同惯例）
 	title.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	title.add_theme_font_size_override("font_size", 20)
 	title.add_theme_color_override("font_color", Color("#ffd700"))
@@ -92,8 +87,8 @@ func _fill_technique_popup(panel: PanelContainer):
 
 	detail_list.add_child(_build_project_block(cfg, "project1"))
 	detail_list.add_child(_build_project_block(cfg, "project2"))
-	# 【改】B15-5 滚动记忆双保险：value_changed 连续记录（restored 闸门——恢复完成前不存档，防重建瞬态 0 覆盖存档）；
-	#   位置改两帧后恢复（set_deferred 单帧时机不可靠：布局 sort 可能晚于赋值，被钳回 0）
+	# 滚动记忆双保险：value_changed 连续记录（restored 闸门——恢复完成前不存档，防重建瞬态 0 覆盖存档）；
+	#   位置两帧后恢复（单帧延迟赋值时机不可靠：布局 sort 可能晚于赋值，被钳回 0）
 	scroll.get_v_scroll_bar().value_changed.connect(func(v):
 		if bool(scroll.get_meta("restored", false)):
 			_tech_scroll[tech_id] = int(v))
@@ -101,7 +96,7 @@ func _fill_technique_popup(panel: PanelContainer):
 
 
 
-# 【新增】B15-5 两帧后恢复滚动位置：等容器布局算出最大滚动值再赋值；恢复完成置 restored 闸门，之后滚动才存档
+# 两帧后恢复滚动位置：等容器布局算出最大滚动值再赋值；恢复完成置 restored 闸门，之后滚动才存档
 func _restore_scroll_later(sc: ScrollContainer, v: int) -> void:
 	if not is_instance_valid(sc):
 		return
@@ -166,7 +161,7 @@ func _get_members_text(project: Dictionary) -> String:
 			names.append(data.get_friend_config(friend_id).get("name", friend_id))
 	return "、".join(names)
 
-# 【改】B15 卷一/卷二升级卡（对齐庄园弹窗惯例）：左=卷名等级+效果 当前→下级 预览；右="升级"钮+产物（拥有/需要 红绿）在钮下
+# 卷一/卷二升级卡（对齐庄园弹窗惯例）：左=卷名等级+效果 当前→下级 预览；右=升级钮+产物（拥有/需要 红绿）在钮下
 func _build_scroll_row(tech: Dictionary, project_key: String, project: Dictionary, volume: String) -> PanelContainer:
 	var tech_id = String(tech.get("id", ""))
 	var level = data.get_courtyard_scroll_level(tech_id, project_key, volume)
@@ -189,7 +184,7 @@ func _build_scroll_row(tech: Dictionary, project_key: String, project: Dictionar
 	title_lbl.text = "%s Lv%d" % [vol_name, level]
 	title_lbl.add_theme_font_size_override("font_size", 15)
 	left.add_child(title_lbl)
-	# 【改】B15-2 效果文本拆两行（当前一行/下级一行），禁自动换行——窄列折行难看（2026-10-02 用户实测反馈）
+	# 效果文本拆两行（当前一行/下级一行），禁自动换行——窄列折行难看（用户拍板）
 	var info = Label.new()
 	info.add_theme_font_size_override("font_size", 13)
 	info.add_theme_color_override("font_color", Color("#bbbbbb"))
@@ -209,14 +204,14 @@ func _build_scroll_row(tech: Dictionary, project_key: String, project: Dictionar
 	btn.custom_minimum_size = Vector2(90, 44)
 	right.add_child(btn)
 	btn.pressed.connect(_on_upgrade_scroll.bind(tech_id, project_key, volume))
-	# 【改】B15-3 只显示升级所需数量（库存：xxx 在弹窗顶部已有，不再重复拥有/需要）
+	# 只显示升级所需数量（库存：xxx 在弹窗顶部已有，不重复拥有/需要）
 	var have_n = int(data.get_manor_goods_count(product))
 	var cost_lbl = Label.new()
 	cost_lbl.add_theme_font_size_override("font_size", 12)
 	cost_lbl.text = "%s %s" % [product, c.format_number(int(cost))]
 	cost_lbl.add_theme_color_override("font_color", c._cost_color(have_n, int(cost)))
 	right.add_child(cost_lbl)
-	# 【新增】B15-4 该卷独立的"十连升级"勾选（放产物数量下面），状态按 "tech|project|volume" 记忆
+	# 该卷独立的"十连升级"勾选（放产物数量下面），状态按 "tech|project|volume" 记忆
 	var batch_key = "%s|%s|%s" % [tech_id, project_key, volume]
 	var batch_chk = CheckBox.new()
 	batch_chk.text = "十连升级"
@@ -226,7 +221,7 @@ func _build_scroll_row(tech: Dictionary, project_key: String, project: Dictionar
 	right.add_child(batch_chk)
 	return card
 
-# 【新增】B15 卡片样式：与庄园弹窗升级卡同款（深底#221d33+淡紫描边，见 manor_view._make_upgrade_card_style）
+# 卡片样式：与庄园弹窗升级卡同款（深底#221d33+淡紫描边）
 func _make_card_style() -> StyleBoxFlat:
 	var card_sty := StyleBoxFlat.new()
 	card_sty.bg_color = Color("#221d33")
@@ -255,16 +250,15 @@ func _get_scroll_effect_text(project: Dictionary, volume: String, level: int) ->
 	return "无效果"
 
 # ============ 交互回调 ============
-# 【新增】弹窗内“卷一十连”勾选变化时记录状态，重开弹窗保持上次选择
-# 【改】B15-4 每卷独立十连勾选变化：按 "tech|project|volume" 键记录，四个卷互不干扰
+# 每卷独立十连勾选变化：按 "tech|project|volume" 键记录，互不干扰
 func _on_scroll_batch_toggled(key: String, pressed: bool):
 	_scroll_batch[key] = pressed
 
-# 升级卷轴：卷一跟随弹窗内的“卷一十连”勾选；卷二固定只升1级
+# 升级卷轴：按该卷自己的十连勾选决定升 1 级还是 10 级
 func _on_upgrade_scroll(tech_id: String, project_key: String, volume: String):
 	var batch_key = "%s|%s|%s" % [tech_id, project_key, volume]
 	var result: Dictionary
-	# 【改】B15-4 十连状态按卷独立（勾选框在该卷卡片内，键 tech|project|volume）
+	# 十连状态按卷独立（勾选框在该卷卡片内）
 	if bool(_scroll_batch.get(batch_key, false)):
 		result = data.upgrade_courtyard_scroll_batch(tech_id, project_key, volume)
 	else:
@@ -272,8 +266,8 @@ func _on_upgrade_scroll(tech_id: String, project_key: String, volume: String):
 
 	if not result.ok:
 		var pop2 = c.get_node_or_null("CourtyardTechPopup")
-		if pop2 != null: c.flash_red(pop2.get_path())   # 【新增】闪红审计：操作失败反馈（2026-09-19）
-		c._show_success_popup(result.get("reason", "升级失败"), 0.0, "warn")   # 【改】飘字退休→warn 弹窗
+		if pop2 != null: c.flash_red(pop2.get_path())   # 操作失败反馈闪红
+		c._show_success_popup(result.get("reason", "升级失败"), 0.0, "warn")   # 失败弹窗 warn 红（成功才 ok 金，口径见范式规范四.6）
 	else:
 		c.update_all_ui()
 	c.update_manor_view()
