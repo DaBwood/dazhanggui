@@ -651,7 +651,7 @@ func _on_exchange_buy(index: int):
 func _on_dish_upgrade(pack_id: String, career: String):
 	var r: Dictionary = data.inn_system.upgrade_dish(pack_id, career)
 	if not r.get("ok", false):
-		c._show_stage_hint(str(r.get("msg", "")))
+		c._show_success_popup(str(r.get("msg", "")), 0.0, "ok")   # 【改】飘字退休→ok 弹窗
 		return
 	show_inn_view()
 	c.update_all_ui()

@@ -80,7 +80,7 @@ func _on_buy_test_beast_pack():
 		# 【改】成功反馈铺开：购买成功弹窗
 		c._show_success_popup("购买成功\n驺虞×1 珍兽果×988 奇香果×988")
 	else:
-		c._show_stage_hint("元宝不足！")
+		c._show_success_popup("元宝不足！", 0.0, "warn")   # 【改】飘字退休→warn 弹窗
 
 func on_recharge():
 	# 【改】UI统一批A：工厂弹窗，未开才建（原 open_popup 显隐持久面板作废）

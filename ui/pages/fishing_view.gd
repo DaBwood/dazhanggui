@@ -229,15 +229,16 @@ func _show_medal_popup():
 
 func _on_medal_help():
 	# 【待Kimi】④此处长说明应迁说明入口（勋章规则长文案现走瞬时提示；另勋章"?"挂在弹窗内，按约定应迁玩法主标题）
-	c._show_stage_hint("钓鱼勋章：普通鱼+5、优秀鱼+10、卓越鱼+30、传奇鱼+60、无双/极.无双鱼+100；累计经验只作门槛不消耗。")
+	# 【改】飘字退休：规则说明升级"?"规则弹窗（带遮罩、点外部关、不自动关）
+	c._show_rule_popup("勋章规则", "钓鱼勋章：普通鱼+5、优秀鱼+10、卓越鱼+30、传奇鱼+60、无双/极.无双鱼+100；累计经验只作门槛不消耗。")
 
 func _on_medal_upgrade():
 	var fs = data.fishing_system
 	var r: Dictionary = fs.upgrade_medal()
 	if not r.get("ok", false):
-		c._show_stage_hint(str(r.get("msg", "暂不可升级")))
+		c._show_success_popup(str(r.get("msg", "暂不可升级")), 0.0, "ok")   # 【改】飘字退休→ok 弹窗
 		return
-	c._show_stage_hint("勋章升级成功")
+	c._show_success_popup("勋章升级成功", 0.0, "ok")   # 【改】飘字退休→ok 弹窗
 	_refresh_dots()
 	if c.has_node("FishingMedalPopup"):
 		c.get_node("FishingMedalPopup").queue_free()
@@ -614,7 +615,7 @@ func _on_claim_task(task_id: String):
 	var res: Dictionary = data.fishing_system.claim_task(task_id)
 	if not res.get("ok", false):
 		# 【新增】批次②③④-B6：失败反馈（原因取自系统层：任务不存在/未达成）
-		c._show_stage_hint(str(res.get("reason", "领取失败")))
+		c._show_success_popup(str(res.get("reason", "领取失败")), 0.0, "warn")   # 【改】飘字退休→warn 弹窗
 		return
 	# 原地刷新任务列表
 	var popup = _find_popup("FishingTaskPopup")
@@ -709,7 +710,7 @@ func _on_claim_dex(fish_id: String):
 	var res: Dictionary = data.fishing_system.claim_dex_reward(fish_id)
 	if not res.get("ok", false):
 		# 【新增】批次②③④-B6：失败反馈（原因取自系统层：不可领取）
-		c._show_stage_hint(str(res.get("reason", "领取失败")))
+		c._show_success_popup(str(res.get("reason", "领取失败")), 0.0, "warn")   # 【改】飘字退休→warn 弹窗
 		return
 	# 原地刷新图鉴列表
 	var popup = _find_popup("FishingDexPopup")
@@ -763,7 +764,7 @@ func _on_exchange_fish(fish_id: String):
 	if sel: sel.queue_free()
 	if not res.get("ok", false):
 		# 【新增】批次②③④-B6：失败反馈（原因取自系统层：无兑换/不可兑换/进度不足）
-		c._show_stage_hint(str(res.get("reason", "兑换失败")))
+		c._show_success_popup(str(res.get("reason", "兑换失败")), 0.0, "warn")   # 【改】飘字退休→warn 弹窗
 		return
 	var view = c.get_node("PageContainer/AdventurePage/FishingView")
 	view.get_node("FishingResult").text = "兑换获得【%s】%s！" % [res.get("quality", ""), res.get("name", "")]

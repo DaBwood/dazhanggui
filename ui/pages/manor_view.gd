@@ -288,7 +288,7 @@ func _on_upgrade_level(species_id: String, plot_index: int, lv_btn: Button = nul
 		r = data.upgrade_manor_plot_level(species_id, plot_index)
 	if not r.ok:
 		if lv_btn != null: c.flash_red(lv_btn.get_path())   # 【新增】闪红审计：操作失败反馈（2026-09-19）
-		c._show_stage_hint(r.reason)
+		c._show_success_popup(r.reason, 0.0, "ok")   # 【改】飘字退休→ok 弹窗
 	update_manor_view()
 	_refresh_species_popup()   # 【新增】刷新弹窗内等级/费用显示
 
@@ -296,6 +296,6 @@ func _on_upgrade_level(species_id: String, plot_index: int, lv_btn: Button = nul
 func _on_upgrade_land(species_id: String, plot_index: int):
 	var r = data.upgrade_manor_plot_land(species_id, plot_index)
 	if not r.ok:
-		c._show_stage_hint(r.reason)
+		c._show_success_popup(r.reason, 0.0, "ok")   # 【改】飘字退休→ok 弹窗
 	update_manor_view()
 	_refresh_species_popup()   # 【新增】刷新弹窗内土地/血统显示

@@ -523,14 +523,28 @@ func _format_gains(gains: Dictionary) -> String:
 		lines.append("、".join(parts.slice(i, min(i + 2, parts.size()))))
 	return "\n".join(lines)
 
+# 【新增】规则说明弹窗（"?"按钮）：带遮罩、点外部关闭、不自动关——区别于成功/警告弹窗（可自动关），2026-10-02 用户拍板规则长文必须弹窗。
+func _show_rule_popup(title: String, text: String):
+	var popup: PanelContainer = _create_base_popup(title, Vector2(480, 320))
+	popup.name = "RuleHelpPopup"
+	popup.z_index = 40   # 盖过页面(z35)，同科室/病症弹窗惯例
+	c.add_child(popup)   # 弹窗工厂只创建不挂载，必须调用方 add_child
+	var vb: VBoxContainer = popup.get_child(0)
+	var lbl = Label.new()
+	lbl.text = text
+	lbl.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+	vb.add_child(lbl)
+
 # 【新增】成功反馈：成功弹窗是否开着（供 controller._input 关闭钩子查询）
 func _success_popup_open() -> bool:
 	return c.get_node_or_null("SuccessPopup") != null
 
-# 【新增】成功反馈：成功结果弹窗——居中、1.5~2 秒自动关闭、点击任意位置立即关闭。
+# 【新增】成功反馈：结果弹窗——居中、1.5~2 秒自动关闭、点击任意位置立即关闭。
+# kind 色调："ok" 成功金 / "warn" 警告红 / "info" 信息浅（失败与警告提示同享可关+自动关，2026-10-02 用户拍板 _show_stage_hint 全面退休）。
 # 关闭主路径 = controller._input 节点级钩子（先于 GUI 分发，任何 Control 都挡不住）；本面板 pressed 仅作双保险。
 # 弹窗卡 Button 化（pressed 引擎级信号）；单例防堆叠（新替旧）；无视觉遮罩（用户拍板）。
-func _show_success_popup(text: String, auto_hide: float = 0.0):
+func _show_success_popup(text: String, auto_hide: float = 0.0, kind: String = "ok"):
+	var tone: Color = {"ok": Color("#ffd700"), "warn": Color("#ff6b6b"), "info": Color("#f2e9e4")}.get(kind, Color("#ffd700"))
 	var panel = c.get_node_or_null("SuccessPopup")
 	if panel == null or not panel.is_inside_tree():
 		panel = Button.new()
@@ -547,7 +561,7 @@ func _show_success_popup(text: String, auto_hide: float = 0.0):
 		panel.add_theme_stylebox_override("pressed", style)
 		panel.add_theme_stylebox_override("disabled", style)
 		panel.add_theme_font_size_override("font_size", 16)
-		panel.add_theme_color_override("font_color", Color("#ffd700"))
+		panel.add_theme_color_override("font_color", tone)
 		panel.pressed.connect(func(): c._safe_close("SuccessPopup"))
 		c.add_child(panel)
 	else:
@@ -557,6 +571,7 @@ func _show_success_popup(text: String, auto_hide: float = 0.0):
 			old_tween0.kill()
 
 	panel.text = text
+	panel.add_theme_color_override("font_color", tone)   # 复用时按 kind 换色调
 	# 动态限宽（同 StageHint 口径）：按最长一行实测宽度 + 按钮内边距
 	var font = panel.get_theme_font("font")
 	if font == null:

@@ -149,7 +149,7 @@ func _make_mail_card(m: Dictionary) -> PanelContainer:
 func _on_claim(mail_id: String):
 	var r = data.mail_system.claim(mail_id)
 	if not r.get("ok", false):
-		c._show_stage_hint(str(r.get("reason", "领取失败")))
+		c._show_success_popup(str(r.get("reason", "领取失败")), 0.0, "warn")   # 【改】飘字退休→warn 弹窗
 		return
 	# 【改】成功反馈：成功弹关键结果（获得 XX×N）
 	c._show_success_popup("领取成功\n获得 " + c._format_gains(r.get("gains", {})))
@@ -158,7 +158,7 @@ func _on_claim(mail_id: String):
 func _on_claim_all():
 	var r = data.mail_system.claim_all()
 	if not r.get("ok", false):
-		c._show_stage_hint(str(r.get("reason", "")))
+		c._show_success_popup(str(r.get("reason", "")), 0.0, "ok")   # 【改】飘字退休→ok 弹窗
 		return
 	# 汇总明细弹窗（复用关卡宝箱结果弹窗套路：背包页有 _show_item_gains_popup）
 	var bag_page = c.get_node_or_null("PageContainer/BagPage")

@@ -29,7 +29,7 @@ func _on_token_skill_upgrade(skill_name: String, mode: String) -> void:
 		c.update_all_ui()
 		c.update_bag_list()
 	else:
-		c._show_stage_hint("资质丹不足")   # 【新增】批次②③④-B4：失败反馈（伴生技能耗资质丹）
+		c._show_success_popup("资质丹不足", 0.0, "warn")   # 【新增】批次②③④-B4：失败反馈（伴生技能耗资质丹）   # 【改】飘字退休→warn 弹窗
 
 
 # ============ 【新增】信物面板 ============
@@ -125,7 +125,7 @@ func _show_token_panel():
 				c.update_all_ui()
 				c.update_bag_list()
 			else:
-				c._show_stage_hint("%s不足" % str(data.ITEM_CONFIG.get(cost_item, {}).get("name", cost_item)))   # 【新增】批次②③④-B4：失败反馈
+				c._show_success_popup("%s不足" % str(data.ITEM_CONFIG.get(cost_item, {}).get("name", cost_item)), 0.0, "warn")   # 【新增】批次②③④-B4：失败反馈   # 【改】飘字退休→warn 弹窗
 		)
 		up_box.add_child(up_btn)
 		var batch_check = CheckBox.new()
@@ -406,7 +406,7 @@ func _show_token_bind_selector(idx: int):
 				c.update_all_ui()
 			else:
 				c.flash_red(btn.get_path())   # 【新增】闪红审计：操作失败反馈（2026-09-19）
-				c._show_stage_hint(res.get("msg", "绑定失败"))
+				c._show_success_popup(res.get("msg", "绑定失败"), 0.0, "warn")   # 【改】飘字退休→warn 弹窗
 		)
 		list.add_child(btn)
 	
@@ -507,7 +507,7 @@ func _show_fengzi_panel():
 			c.update_all_ui()
 			c.update_bag_list()
 		else:
-			c._show_stage_hint("%s不足" % str(data.ITEM_CONFIG.get(f_cfg.get("cost_item", ""), {}).get("name", f_cfg.get("cost_item", ""))))   # 【新增】批次②③④-B4：失败反馈
+			c._show_success_popup("%s不足" % str(data.ITEM_CONFIG.get(f_cfg.get("cost_item", ""), {}).get("name", f_cfg.get("cost_item", ""))), 0.0, "warn")   # 【新增】批次②③④-B4：失败反馈   # 【改】飘字退休→warn 弹窗
 	)
 	up_box.add_child(up_btn)
 	var batch_check = CheckBox.new()

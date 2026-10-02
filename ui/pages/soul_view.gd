@@ -348,12 +348,12 @@ func _on_cell_tapped(cell: int):
 	if not ss.get_unlocked_cells(_beast_id, _beast_index).has(cell):
 		var res: Dictionary = ss.unlock_cell(_beast_id, _beast_index, cell)
 		if not res.get("ok", false):
-			c._show_stage_hint(res.get("reason", "无法解锁"))
+			c._show_success_popup(res.get("reason", "无法解锁"), 0.0, "warn")   # 【改】飘字退休→warn 弹窗
 		_refresh_body()
 		return
 	var uid = ss.get_cell_stone(_beast_id, _beast_index, cell)
 	if uid == "":
-		c._show_stage_hint("按住下方仓库的魂石，拖到这里放置")
+		c._show_success_popup("按住下方仓库的魂石，拖到这里放置", 0.0, "ok")   # 【改】飘字退休→ok 弹窗
 		return
 	ss.remove_stone(_beast_id, _beast_index, uid)
 	_refresh_body()
@@ -678,14 +678,14 @@ func _on_recast_do():
 	_close_node("SoulRecastPopup")
 	_refresh_body()
 	if not res.get("ok", false):
-		c._show_stage_hint(res.get("reason", "无法重塑"))
+		c._show_success_popup(res.get("reason", "无法重塑"), 0.0, "warn")   # 【改】飘字退休→warn 弹窗
 		return
 	var st: Dictionary = res.get("stone", {})
 	if res.get("upgraded", false):
 		# 【改】成功反馈铺开：升品成功弹窗
 		c._show_success_popup("升品成功\n获得【%s】魂石" % st.get("quality", ""))
 	else:
-		c._show_stage_hint("未升品，【%s】魂石已重新随机" % st.get("quality", ""))
+		c._show_success_popup("未升品，【%s】魂石已重新随机" % st.get("quality", ""), 0.0, "ok")   # 【改】飘字退休→ok 弹窗
 
 # ============ 魂盘光环详情 ============
 # 【新增】满盘加成详情弹窗：当前状态（激活/未激活）+ 填满进度 + 规则说明 + 各等级加成表

@@ -228,7 +228,7 @@ func _on_upgrade_scroll(tech_id: String, project_key: String, volume: String):
 	if not result.ok:
 		var pop2 = c.get_node_or_null("CourtyardTechPopup")
 		if pop2 != null: c.flash_red(pop2.get_path())   # 【新增】闪红审计：操作失败反馈（2026-09-19）
-		c._show_stage_hint(result.get("reason", "升级失败"))
+		c._show_success_popup(result.get("reason", "升级失败"), 0.0, "warn")   # 【改】飘字退休→warn 弹窗
 	else:
 		c.update_all_ui()
 	c.update_manor_view()

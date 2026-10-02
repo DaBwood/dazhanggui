@@ -275,15 +275,16 @@ func _build_medal_card(popup: PanelContainer):
 # 【待Kimi】④：勋章规则走 _show_stage_hint 瞬时提示，且"?"入口挂在勋章弹窗内 head_row——
 # 应迁玩法主标题旁"?"（规则进说明弹窗），等全局说明入口方案统一处理（同批次②③④-B6 钓鱼，只标不实施）
 func _on_medal_help():
-	c._show_stage_hint("藏品评分：单件=品质基数×等级×星级（普通100/优秀345/卓越1980/传奇13320/无双116650）；总评分=已拥有藏品求和，只作升级门槛不消耗。")
+	# 【改】飘字退休：规则说明升级"?"规则弹窗（带遮罩、点外部关、不自动关）
+	c._show_rule_popup("勋章规则", "藏品评分：单件=品质基数×等级×星级（普通100/优秀345/卓越1980/传奇13320/无双116650）；总评分=已拥有藏品求和，只作升级门槛不消耗。")
 
 func _on_medal_upgrade():
 	var cs = data.collection_system
 	var r: Dictionary = cs.upgrade_medal()
 	if not r.get("ok", false):
-		c._show_stage_hint(str(r.get("msg", "暂不可升级")))
+		c._show_success_popup(str(r.get("msg", "暂不可升级")), 0.0, "ok")   # 【改】飘字退休→ok 弹窗
 		return
-	c._show_stage_hint("勋章升级成功")
+	c._show_success_popup("勋章升级成功", 0.0, "ok")   # 【改】飘字退休→ok 弹窗
 	_refresh_body()
 	_refresh_medal_popup()   # 勋章卡原地重建（不动弹窗节点）
 	# 右上角入口红点即时刷新（入口在顶栏，_refresh_body 管不到）
@@ -761,11 +762,11 @@ func show_suit_frag_box_selector(item_id: String, p_qty: int = 1):
 	var suit_id = "s_" + item_id.trim_prefix("suitbox_")
 	var suit = sys.get_suits().get(suit_id, {})
 	if suit.is_empty():
-		c._show_stage_hint("锦盒配置缺失")
+		c._show_success_popup("锦盒配置缺失", 0.0, "ok")   # 【改】飘字退休→ok 弹窗
 		return
 	var owned = int(data.items.get(item_id, 0))
 	if owned < 1:
-		c._show_stage_hint("锦盒不足！")
+		c._show_success_popup("锦盒不足！", 0.0, "warn")   # 【改】飘字退休→warn 弹窗
 		return
 	var box_name = data.ITEM_CONFIG.get(item_id, {}).get("name", item_id)
 	var popup = c._create_base_popup("%s（使用%d个）" % [box_name, p_qty], Vector2(480, 520))
@@ -790,7 +791,7 @@ func show_suit_frag_box_selector(item_id: String, p_qty: int = 1):
 			var n = mini(p_qty, int(data.items.get(item_id, 0)))
 			# 【新增】批次②③④-B7：选择期间锦盒被消耗光时补反馈（防御，入口已校验 owned≥1）
 			if n < 1:
-				c._show_stage_hint("锦盒不足！")
+				c._show_success_popup("锦盒不足！", 0.0, "warn")   # 【改】飘字退休→warn 弹窗
 				return
 			data.items[item_id] = int(data.items.get(item_id, 0)) - n
 			sys.add_frags(cid, n)
@@ -1023,7 +1024,7 @@ func _do_roll(n: int):
 	var r = data.collection_system.roll(n)
 	# 【新增】批次②③④-B7：roll 失败（淘宝券不足）补反馈——按钮 disabled 已门控，此处防双连点等边界
 	if not r.ok:
-		c._show_stage_hint(str(r.get("msg", "淘宝券不足")))
+		c._show_success_popup(str(r.get("msg", "淘宝券不足")), 0.0, "warn")   # 【改】飘字退休→warn 弹窗
 		return
 	_show_results(r.results)
 

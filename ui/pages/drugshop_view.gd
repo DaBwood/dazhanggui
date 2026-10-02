@@ -386,12 +386,13 @@ func _show_medal_popup():
 		vb.add_child(btn)
 
 func _on_medal_help():
-	c._show_stage_hint("药铺勋章：累计药铺经验只作门槛不消耗；全体商铺赚速+100%×等级，并提高精进技能等级上限。")
+	# 【改】飘字退休：规则说明升级"?"规则弹窗（带遮罩、点外部关、不自动关）
+	c._show_rule_popup("勋章规则", "药铺勋章：累计药铺经验只作门槛不消耗；全体商铺赚速+100%×等级，并提高精进技能等级上限。")
 
 func _on_medal_upgrade():
 	var r := _sys().upgrade_medal()
 	if not r.get("ok", false):
-		c._show_stage_hint(str(r.get("msg", "")))
+		c._show_success_popup(str(r.get("msg", "")), 0.0, "ok")   # 【改】飘字退休→ok 弹窗
 		return
 	c.update_all_ui()   # 勋章%入账→全体商铺赚速变化→全局飘字
 	_refresh()
@@ -407,7 +408,7 @@ func _on_use_sign():
 	var sign_item: String = data._drugshop_configs.get("settings", {}).get("sign_item", "drugshop_sign")
 	var owned: int = int(data.items.get(sign_item, 0))
 	if owned <= 0:
-		c._show_stage_hint("没有【药铺招牌】")
+		c._show_success_popup("没有【药铺招牌】", 0.0, "warn")   # 【改】飘字退休→warn 弹窗
 		return
 	_close_node("DrugshopPopup")
 	var give: int = int(data._drugshop_configs.get("settings", {}).get("sign_give", 3))
@@ -454,7 +455,7 @@ func _on_use_sign():
 		data.items[sign_item] = int(data.items.get(sign_item, 0)) - n
 		_sys().add_stamina(n * give)
 		_close_node("DrugshopPopup")
-		c._show_stage_hint("病人 +%d" % (n * give))
+		c._show_success_popup("病人 +%d" % (n * give), 0.0, "ok")   # 【改】飘字退休→ok 弹窗
 		_refresh())
 	btn_row.add_child(ok_btn)
 
@@ -471,14 +472,14 @@ func _on_serve():
 	if _sys().get_auto_settle():
 		var ra := _sys().settle_all()
 		if not ra.get("ok", false):
-			c._show_stage_hint(str(ra.get("msg", "")))
+			c._show_success_popup(str(ra.get("msg", "")), 0.0, "ok")   # 【改】飘字退休→ok 弹窗
 			return
-		c._show_stage_hint("%d 位病人已转入接待队列，结算中…" % int(ra.get("n", 0)))
+		c._show_success_popup("%d 位病人已转入接待队列，结算中…" % int(ra.get("n", 0)), 0.0, "ok")   # 【改】飘字退休→ok 弹窗
 		_refresh()
 		return
 	var r := _sys().serve_one()
 	if not r.get("ok", false):
-		c._show_stage_hint(str(r.get("msg", "")))
+		c._show_success_popup(str(r.get("msg", "")), 0.0, "ok")   # 【改】飘字退休→ok 弹窗
 		return
 	# 【改】成功反馈铺开：接待成功弹关键结果
 	c._show_success_popup("接待完成\n收益已入罐")
@@ -519,7 +520,7 @@ func _fill_craft(body: VBoxContainer):
 func _on_craft_all():
 	var r := _sys().upgrade_all_crafts()
 	if int(r.get("up", 0)) <= 0:
-		c._show_stage_hint("铜板不足")
+		c._show_success_popup("铜板不足", 0.0, "warn")   # 【改】飘字退休→warn 弹窗
 		return
 	c.update_all_ui()   # 工艺固定值入账→伙计赚速变化→全局飘字
 	_refresh()
@@ -558,7 +559,7 @@ func _show_craft_popup(cid: String):
 func _on_craft_upgrade(cid: String):
 	var r := _sys().upgrade_craft(cid)
 	if not r.get("ok", false):
-		c._show_stage_hint(str(r.get("msg", "")))
+		c._show_success_popup(str(r.get("msg", "")), 0.0, "ok")   # 【改】飘字退休→ok 弹窗
 		return
 	c.update_all_ui()   # 工艺固定值入账→伙计赚速变化→全局飘字
 	_refresh()
@@ -675,14 +676,14 @@ func _show_recipe_popup(rid: String):
 func _on_recipe_unlock(rid: String):
 	var r := _sys().unlock_recipe(rid)
 	if not r.get("ok", false):
-		c._show_stage_hint(str(r.get("msg", "")))
+		c._show_success_popup(str(r.get("msg", "")), 0.0, "ok")   # 【改】飘字退休→ok 弹窗
 		return
 	_refresh()
 
 func _on_recipe_upgrade(rid: String, batch: bool):
 	var r := _sys().upgrade_recipe(rid, batch)
 	if not r.get("ok", false):
-		c._show_stage_hint(str(r.get("msg", "")))
+		c._show_success_popup(str(r.get("msg", "")), 0.0, "ok")   # 【改】飘字退休→ok 弹窗
 		return
 	_refresh()
 
@@ -779,16 +780,16 @@ func _add_repeat_row(vb: VBoxContainer):
 func _on_ach_claim(lid: String, tier_idx: int):
 	var r := _sys().claim_ach(lid, tier_idx)
 	if not r.get("ok", false):
-		c._show_stage_hint(str(r.get("msg", "")))
+		c._show_success_popup(str(r.get("msg", "")), 0.0, "ok")   # 【改】飘字退休→ok 弹窗
 		return
-	c._show_stage_hint("获得 %s" % str(r.get("rewards", "")))
+	c._show_success_popup("获得 %s" % str(r.get("rewards", "")), 0.0, "ok")   # 【改】飘字退休→ok 弹窗
 	_refresh()
 
 # 【新增】病人线满档后重复领取末档奖励
 func _on_repeat_claim():
 	var r := _sys().claim_repeat()
 	if not r.get("ok", false):
-		c._show_stage_hint(str(r.get("msg", "")))
+		c._show_success_popup(str(r.get("msg", "")), 0.0, "ok")   # 【改】飘字退休→ok 弹窗
 		return
-	c._show_stage_hint("获得 %s" % str(r.get("rewards", "")))
+	c._show_success_popup("获得 %s" % str(r.get("rewards", "")), 0.0, "ok")   # 【改】飘字退休→ok 弹窗
 	_refresh()

@@ -62,7 +62,7 @@ func on_lottery_draw(draw_count: int, ticket_need: int):
 		var short = ticket_need - ticket_have
 		var need_yuanbao = short * 50
 		if data.yuanbao < need_yuanbao:
-			c._show_stage_hint("抽奖券和元宝均不足！")
+			c._show_success_popup("抽奖券和元宝均不足！", 0.0, "warn")   # 【改】飘字退休→warn 弹窗
 			return
 		_show_lottery_confirm(draw_count, ticket_need, ticket_have)
 
@@ -75,7 +75,7 @@ func _do_lottery_draw(draw_count: int, ticket_need: int, use_yuanbao: bool):
 		if c.has_node("PageContainer/AdventurePage/LotteryView"):
 			update_lottery_view()
 	else:
-		c._show_stage_hint(result.reason)
+		c._show_success_popup(result.reason, 0.0, "ok")   # 【改】飘字退休→ok 弹窗
 
 func _show_lottery_confirm(draw_count: int, ticket_need: int, ticket_have: int):
 	var short = ticket_need - ticket_have

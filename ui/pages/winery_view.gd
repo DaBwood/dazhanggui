@@ -273,7 +273,7 @@ func _on_process_upgrade(wid: String, pid: String, sync: bool, btn: Button = nul
 		r = _sys().upgrade_process(wid, pid)
 	if not r.get("ok", false):
 		if btn != null: c.flash_red(btn.get_path())   # 【新增】闪红审计：操作失败反馈（2026-09-19）
-		c._show_stage_hint(str(r.get("msg", "")))
+		c._show_success_popup(str(r.get("msg", "")), 0.0, "ok")   # 【改】飘字退休→ok 弹窗
 		return
 	c.update_all_ui()   # 流程职业加成→商铺赚速变化→全局飘字
 	_refresh()
@@ -325,7 +325,7 @@ func _show_brew_popup():
 func _on_brew(mid: String, n: int):
 	var r := _sys().brew(mid, n)
 	if not r.get("ok", false):
-		c._show_stage_hint(str(r.get("msg", "")))
+		c._show_success_popup(str(r.get("msg", "")), 0.0, "ok")   # 【改】飘字退休→ok 弹窗
 		return
 	c.update_all_ui()   # 酿造入账→数值已可见，不弹成功字（协作规则 28）
 	_refresh()
@@ -412,7 +412,7 @@ func _fill_buy_bag(vb: VBoxContainer):
 func _on_buy(mid: String, n: int = 1):
 	var r := _sys().buy_material(mid, n)
 	if not r.get("ok", false):
-		c._show_stage_hint(str(r.get("msg", "")))
+		c._show_success_popup(str(r.get("msg", "")), 0.0, "ok")   # 【改】飘字退休→ok 弹窗
 		return
 	c.update_all_ui()
 	_refresh()
@@ -494,7 +494,8 @@ func _show_medal_popup():
 		vb.add_child(btn)
 
 func _on_medal_help():
-	c._show_stage_hint("酒坊勋章：累计酒香只作门槛不消耗；全部商铺赚速+100%×等级。")
+	# 【改】飘字退休：规则说明升级"?"规则弹窗（带遮罩、点外部关、不自动关）
+	c._show_rule_popup("勋章规则", "酒坊勋章：累计酒香只作门槛不消耗；全部商铺赚速+100%×等级。")
 
 # 有可升级的名酒（名酒记入口红点）
 func _has_upgradeable_wine() -> bool:
@@ -506,7 +507,7 @@ func _has_upgradeable_wine() -> bool:
 func _on_medal_upgrade():
 	var r := _sys().upgrade_medal()
 	if not r.get("ok", false):
-		c._show_stage_hint(str(r.get("msg", "")))
+		c._show_success_popup(str(r.get("msg", "")), 0.0, "ok")   # 【改】飘字退休→ok 弹窗
 		return
 	c.update_all_ui()   # 勋章百分比→商铺赚速
 	_refresh()
@@ -613,7 +614,7 @@ func _show_wine_info(wine_id: String):
 func _on_wine_upgrade(wine_id: String, batch: bool):
 	var r := _sys().upgrade_wine(wine_id, batch)
 	if not r.get("ok", false):
-		c._show_stage_hint(str(r.get("msg", "")))
+		c._show_success_popup(str(r.get("msg", "")), 0.0, "ok")   # 【改】飘字退休→ok 弹窗
 		return
 	_refresh()
 
@@ -721,13 +722,13 @@ func _show_drink_popup():
 func _on_drink(hero_id: String, wine_id: String):
 	var r := _sys().drink(hero_id, wine_id, 1)
 	if not r.get("ok", false):
-		c._show_stage_hint(str(r.get("msg", "")))
+		c._show_success_popup(str(r.get("msg", "")), 0.0, "ok")   # 【改】飘字退休→ok 弹窗
 		return
 	# 共饮反馈：+多少要看得见（2026-09-18 用户拍板）
 	var txt := "百业经验+%d　交情+%d　满意+%d" % [int(r.get("baiye", 0)), int(r.get("bond", 0)), int(r.get("satis", 0))]
 	if int(r.get("tokens", 0)) > 0:
 		txt += "　门客帖×%d" % int(r.get("tokens", 0))
-	c._show_stage_hint(txt)
+	c._show_success_popup(txt, 0.0, "ok")   # 【改】飘字退休→ok 弹窗
 	c.update_all_ui()   # 百业经验入账
 	_refresh()
 
@@ -888,7 +889,7 @@ func _on_claim_bond(hero_id: String, _lv: int):
 	# 只许按序领取当前档（can_claim_bond 已校验）；_lv 仅作行标识，实际领取按序推进
 	var r := _sys().claim_bond(hero_id)
 	if not r.get("ok", false):
-		c._show_stage_hint(str(r.get("msg", "")))
+		c._show_success_popup(str(r.get("msg", "")), 0.0, "ok")   # 【改】飘字退休→ok 弹窗
 		return
 	c.update_all_ui()
 	# 【改】成功反馈铺开：领取弹窗

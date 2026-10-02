@@ -292,7 +292,7 @@ func _add_building(content: Control, shop_id: String, pos: Vector2, bld_size: Ve
 				dot.visible = _play_dot_visible(shop_id)
 				play.add_child(dot)
 		else:
-			play.pressed.connect(func(): c._show_stage_hint("【%s】特色玩法开发中，敬请期待" % play_shop_name))
+			play.pressed.connect(func(): c._show_success_popup("【%s】特色玩法开发中，敬请期待" % play_shop_name, 0.0, "ok"))   # 【改】飘字退休→ok 弹窗
 		bld.add_child(play)
 
 # 【新增】批次C：地图侧「▶」红点唯一条件（各玩法内部红点互不穿透，2026-09-16 口径）——
@@ -319,7 +319,7 @@ func on_shop_entry_pressed(shop_id: String):
 			open_shop_panel(shop_id)
 	else:
 		var need = data.get_shop_unlock_chapter(shop_id)
-		c._show_stage_hint("【%s】通关第%d章解锁" % [data.get_shop_config(shop_id).name, need])
+		c._show_success_popup("【%s】通关第%d章解锁" % [data.get_shop_config(shop_id).name, need], 0.0, "ok")   # 【改】飘字退休→ok 弹窗
 
 func _show_hero_assign_selector(slot: int):
 	if c.current_shop_id == "": return

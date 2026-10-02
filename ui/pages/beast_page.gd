@@ -498,7 +498,7 @@ func _on_beast_upgrade(beast_id: String, instance_index: int):
 		c.update_all_ui()
 	else:
 		# 【新增】批次②③④-B5：升级失败补反馈（原静默；失败=珍兽果不足，见 beast_system.upgrade_beast）
-		c._show_stage_hint("珍兽果不足！")
+		c._show_success_popup("珍兽果不足！", 0.0, "warn")   # 【改】飘字退休→warn 弹窗
 		var up_btn = c.get_node_or_null("BeastDetailPanel")
 		if up_btn:
 			var b = up_btn.find_child("BeastUpBtn", true, false)
@@ -509,7 +509,7 @@ func _on_beast_upgrade(beast_id: String, instance_index: int):
 func _on_beast_awaken(beast_id: String, instance_index: int):
 	var res: Dictionary = data.beast_system.awaken_beast(beast_id, instance_index)
 	if not res.get("ok", false):
-		c._show_stage_hint(res.get("reason", "觉醒失败"))
+		c._show_success_popup(res.get("reason", "觉醒失败"), 0.0, "warn")   # 【改】飘字退休→warn 弹窗
 		return
 	_update_beast_detail(beast_id, instance_index)
 	update_beast_page()
@@ -746,10 +746,10 @@ func _on_recycle_selected():
 		_refresh_beast_recycle_panel()
 	if _recycle_selected_keys.is_empty():
 		if had_selection:
-			c._show_stage_hint("所选珍兽已不存在或状态变化，请重新选择")
+			c._show_success_popup("所选珍兽已不存在或状态变化，请重新选择", 0.0, "ok")   # 【改】飘字退休→ok 弹窗
 		else:
 			c.flash_red(_recycle_confirm_btn.get_path())   # 【新增】闪红审计：操作失败反馈（2026-09-19）
-			c._show_stage_hint("请先点击卡片选择要回收的珍兽（可多选）")
+			c._show_success_popup("请先点击卡片选择要回收的珍兽（可多选）", 0.0, "warn")   # 【改】飘字退休→warn 弹窗
 		return
 
 	# 批量回收：同种珍兽按下标倒序删，避免先删小号导致后续下标位移
@@ -786,13 +786,13 @@ func _on_recycle_selected():
 		if not fail_parts.is_empty():
 			fail_msg = "；".join(fail_parts)
 		c.flash_red(_recycle_confirm_btn.get_path())   # 【新增】闪红审计：操作失败反馈（2026-09-19）
-		c._show_stage_hint("回收失败：" + fail_msg)
+		c._show_success_popup("回收失败：" + fail_msg, 0.0, "warn")   # 【改】飘字退休→warn 弹窗
 		return
 
 	var msg := "回收珍兽×%d：觉醒果×%d / 珍兽果×%d" % [ok_count, total_awaken, total_beast]
 	if not fail_parts.is_empty():
 		msg += "（失败：%s）" % "；".join(fail_parts)
-	c._show_stage_hint(msg)
+	c._show_success_popup(msg, 0.0, "ok")   # 【改】飘字退休→ok 弹窗
 
 	_recycle_selected_keys.clear()
 	if _recycle_confirm_btn:
@@ -971,7 +971,7 @@ func _on_refresh_beast_skill():
 			if refresh_btn:
 				c.flash_red(refresh_btn.get_path())
 		# 【新增】批次②③④-B5：失败补文字提示（刷新失败=奇香果/铜钱不足，与 beast_system.refresh_beast_skill 口径一致）
-		c._show_stage_hint("奇香果不足！" if use_aroma else "铜钱不足！")
+		c._show_success_popup("奇香果不足！" if use_aroma else "铜钱不足！", 0.0, "warn")   # 【改】飘字退休→warn 弹窗
 
 func _close_beast_skill_refresh_panel():
 	# 【改】迁工厂后挂 c 根节点，_safe_close 连带摘遮罩
@@ -1070,7 +1070,7 @@ func _make_aura_btn(beast_id: String, instance_index: int, which: int) -> Button
 func _on_aura_upgrade(beast_id: String, instance_index: int, which: int):
 	var res: Dictionary = data.beast_system.upgrade_aura(beast_id, instance_index, which)
 	if not res.get("ok", false):
-		c._show_stage_hint(res.get("reason", "升级失败"))
+		c._show_success_popup(res.get("reason", "升级失败"), 0.0, "warn")   # 【改】飘字退休→warn 弹窗
 		return
 	_update_beast_detail(beast_id, instance_index)
 	c.update_beast_page()

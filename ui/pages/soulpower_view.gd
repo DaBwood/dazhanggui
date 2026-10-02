@@ -498,9 +498,9 @@ func _show_bone_popup(uid: String, p_slot: String = "", lt: Dictionary = {}):
 func _on_upgrade_body(times: int):
 	var res: Dictionary = data.soulpower_system.upgrade_body(_beast_id, _beast_index, times)
 	if not res.get("ok", false):
-		c._show_stage_hint(res.get("reason", "无法升级"))
+		c._show_success_popup(res.get("reason", "无法升级"), 0.0, "warn")   # 【改】飘字退休→warn 弹窗
 	elif int(res.get("up", 0)) < times:
-		c._show_stage_hint("材料不足，升了%d级" % int(res.get("up", 0)))
+		c._show_success_popup("材料不足，升了%d级" % int(res.get("up", 0)), 0.0, "warn")   # 【改】飘字退休→warn 弹窗
 	_refresh_body()
 	c.update_all_ui()   # 资质变化，顶栏赚速对账
 
@@ -508,7 +508,7 @@ func _on_upgrade_body(times: int):
 func _on_upgrade_tier(uid: String):
 	var res: Dictionary = data.soulpower_system.upgrade_bone_tier(uid)
 	if not res.get("ok", false):
-		c._show_stage_hint(res.get("reason", "无法升阶"))
+		c._show_success_popup(res.get("reason", "无法升阶"), 0.0, "warn")   # 【改】飘字退休→warn 弹窗
 	_show_bone_popup(uid)
 	_refresh_body()
 	c.update_all_ui()
@@ -517,7 +517,7 @@ func _on_upgrade_tier(uid: String):
 func _on_upgrade_skill(uid: String, skill_id: String):
 	var res: Dictionary = data.soulpower_system.upgrade_bone_skill(uid, skill_id)
 	if not res.get("ok", false):
-		c._show_stage_hint(res.get("reason", "无法升级"))
+		c._show_success_popup(res.get("reason", "无法升级"), 0.0, "warn")   # 【改】飘字退休→warn 弹窗
 	_show_bone_popup(uid)
 	_refresh_body()
 	c.update_all_ui()
@@ -526,7 +526,7 @@ func _on_upgrade_skill(uid: String, skill_id: String):
 func _on_equip(uid: String):
 	var res: Dictionary = data.soulpower_system.equip_bone(_beast_id, _beast_index, uid)
 	if not res.get("ok", false):
-		c._show_stage_hint(res.get("reason", "无法装备"))
+		c._show_success_popup(res.get("reason", "无法装备"), 0.0, "warn")   # 【改】飘字退休→warn 弹窗
 	else:
 		_close_node("HunliPickPopup")
 		_close_node("HunliBonePopup")
@@ -581,7 +581,7 @@ func _on_recycle_confirmed(uid: String):
 	var res: Dictionary = data.soulpower_system.recycle_bone(uid)
 	_close_node("HunliConfirmPopup")
 	if not res.get("ok", false):
-		c._show_stage_hint(res.get("reason", "无法回收"))
+		c._show_success_popup(res.get("reason", "无法回收"), 0.0, "warn")   # 【改】飘字退休→warn 弹窗
 		return
 	_close_node("HunliBonePopup")
 	# 【改】成功反馈铺开：回收成功弹窗

@@ -113,7 +113,7 @@ func _hide_sync_mask():
 # 还没进游戏（启动仲裁过期）→重新亮登录门走正常登录
 func _on_net_auth_expired():
 	if c._game_entered:
-		c._show_stage_hint("登录已过期，云端同步已停止，重启游戏后重新登录", 5.0)
+		c._show_success_popup("登录已过期，云端同步已停止，重启游戏后重新登录", 5.0, "ok")   # 【改】飘字退休→ok 弹窗
 	else:
 		_show_login_gate()
 
@@ -200,10 +200,10 @@ func _on_net_download_result(ok: bool, has_save: bool, save_text: String, update
 		c._enter_game()
 		return
 	if not ok:
-		if was_manual: c._show_stage_hint("网络错误，稍后再试", 3.0)
+		if was_manual: c._show_success_popup("网络错误，稍后再试", 3.0, "warn")   # 【改】飘字退休→warn 弹窗
 		return
 	if not has_save or save_text.is_empty():
-		if was_manual: c._show_stage_hint("云端还没有存档", 3.0)
+		if was_manual: c._show_success_popup("云端还没有存档", 3.0, "warn")   # 【改】飘字退休→warn 弹窗
 		return
 	var manual_save_id := ""
 	var parsed_manual = JSON.parse_string(save_text)
@@ -213,7 +213,7 @@ func _on_net_download_result(ok: bool, has_save: bool, save_text: String, update
 		_show_cloud_restore_popup(save_text, updated_at)
 		return
 	if updated_at / 1000.0 <= c.data.last_logout_time + 5:
-		if was_manual: c._show_stage_hint("云端存档不比本机新，无需恢复", 3.0)
+		if was_manual: c._show_success_popup("云端存档不比本机新，无需恢复", 3.0, "ok")   # 【改】飘字退休→ok 弹窗
 		return
 	# 云端较新（或手动"从云端恢复"）：统一走冲突/恢复弹窗（写明双方名字+时间，恢复写当前账号档）
 	_show_cloud_restore_popup(save_text, updated_at)
@@ -355,7 +355,7 @@ func _show_account_panel():
 	sync_btn.custom_minimum_size = Vector2(180, 40)
 	sync_btn.pressed.connect(func():
 		c.data.save_game()   # 写盘同时经 game_saved 信号自动上传
-		c._show_stage_hint("已同步到云端", 3.0)
+		c._show_success_popup("已同步到云端", 3.0, "ok")   # 【改】飘字退休→ok 弹窗
 	)
 	vb.add_child(sync_btn)
 	var dl_btn = Button.new()

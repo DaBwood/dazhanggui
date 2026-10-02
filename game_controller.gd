@@ -495,8 +495,12 @@ func _show_stage_hint(text: String, auto_hide: float = 2.5):
 	ui_helpers._show_stage_hint(text, auto_hide)   # 【改】主体迁 ui/ui_helpers.gd（2026-09-19 重构批次B）
 
 # 【新增】成功反馈：成功结果弹窗 + gains 文案格式化（主体在 ui_helpers，已定型）
-func _show_success_popup(text: String, auto_hide: float = 0.0):
-	ui_helpers._show_success_popup(text, auto_hide)
+func _show_success_popup(text: String, auto_hide: float = 0.0, kind: String = "ok"):
+	ui_helpers._show_success_popup(text, auto_hide, kind)
+
+# 【新增】规则说明弹窗委托（"?"按钮，不自动关）
+func _show_rule_popup(title: String, text: String):
+	ui_helpers._show_rule_popup(title, text)
 
 func _format_gains(gains: Dictionary) -> String:
 	return ui_helpers._format_gains(gains)

@@ -201,7 +201,7 @@ func _on_detail_use(item_id: String, qty: int, popup: Control):
 	var use_cfg = data.ITEM_CONFIG.get(item_id, {}).get("use", {})
 	var count = int(data.items.get(item_id, 0))
 	if qty <= 0:
-		c._show_stage_hint("请先选择使用数量")
+		c._show_success_popup("请先选择使用数量", 0.0, "warn")   # 【改】飘字退休→warn 弹窗
 		return
 	if qty > count:
 		qty = count
@@ -233,7 +233,7 @@ func _on_detail_use(item_id: String, qty: int, popup: Control):
 			if has_method("_show_friend_box_selector"):
 				_show_friend_box_selector()
 			else:
-				c._show_stage_hint("挚友盒子功能开发中")
+				c._show_success_popup("挚友盒子功能开发中", 0.0, "ok")   # 【改】飘字退休→ok 弹窗
 		"item_box":
 			popup.queue_free()
 			_show_item_box_selector(qty)
@@ -275,9 +275,9 @@ func _use_items(item_id: String, count: int):
 		if result.has("gains"):
 			_show_item_gains_popup("打开关卡宝箱", result.gains)
 		else:
-			c._show_stage_hint(result.get("msg", "使用成功"))
+			c._show_success_popup(result.get("msg", "使用成功"), 0.0, "ok")   # 【改】飘字退休→ok 弹窗
 	else:
-		c._show_stage_hint(result.get("msg", "使用失败"))
+		c._show_success_popup(result.get("msg", "使用失败"), 0.0, "warn")   # 【改】飘字退休→warn 弹窗
 
 func _on_item_use_confirmed(spin: SpinBox):
 	var count = int(spin.value)
@@ -385,7 +385,7 @@ func _on_baiye_target_selected(hero_id: String):
 	var per: int = int(data.ITEM_CONFIG.get("baiye_zhaji", {}).get("use", {}).get("per", 10))
 	data.items["baiye_zhaji"] = int(data.items.get("baiye_zhaji", 0)) - count
 	data.hero_system.add_baiye(hero_id, per * count)
-	c._show_stage_hint("【%s】百业经验 +%d" % [data.heroes[hero_id].name, per * count])
+	c._show_success_popup("【%s】百业经验 +%d" % [data.heroes[hero_id].name, per * count], 0.0, "ok")   # 【改】飘字退休→ok 弹窗
 	_pending_baiye_count = 0
 	_close_baiye_selector()
 	update_bag_list()
@@ -470,7 +470,7 @@ func _show_friend_box_selector():
 # 【改】魂石宝箱N连开：一次扣N个，N个结果汇总进一个弹窗
 func _open_soul_boxes(item_id: String, kind: String, n: int):
 	if int(data.items.get(item_id, 0)) < n:
-		c._show_stage_hint("没有可开启的" + data.ITEM_CONFIG.get(item_id, {}).get("name", "宝箱"))
+		c._show_success_popup("没有可开启的" + data.ITEM_CONFIG.get(item_id, {}).get("name", "宝箱"), 0.0, "warn")   # 【改】飘字退休→warn 弹窗
 		return
 	data.items[item_id] = int(data.items.get(item_id, 0)) - n
 	var lines: Array = []
@@ -572,7 +572,7 @@ func _on_item_box_selected(item_id: String, count: int):
 	data.items[item_id] = data.items.get(item_id, 0) + count
 	var cfg = data.ITEM_CONFIG.get(item_id, {})
 	c._safe_close("ItemBoxSelector")
-	c._show_stage_hint("使用%d个物品盒子，获得【%s】×%d" % [count, cfg.get("name", item_id), count])
+	c._show_success_popup("使用%d个物品盒子，获得【%s】×%d" % [count, cfg.get("name", item_id), count], 0.0, "ok")   # 【改】飘字退休→ok 弹窗
 	c.update_all_ui()
 	update_bag_list()
 
@@ -620,11 +620,11 @@ func _on_cos_box_selected(e: Dictionary):
 	if res.get("ok", false):
 		# 【改】2026-09-24 未拥有门客→待领池提示（招募后自动到账）
 		if res.get("pending", false):
-			c._show_stage_hint("【%s】%s 已存入待领池，招募%s后自动到账" % [e["quality"], e["name"], e["hero_name"]])
+			c._show_success_popup("【%s】%s 已存入待领池，招募%s后自动到账" % [e["quality"], e["name"], e["hero_name"]], 0.0, "ok")   # 【改】飘字退休→ok 弹窗
 		else:
-			c._show_stage_hint("【%s】%s 库存+1（共%d，请到%s服装页解锁）" % [e["quality"], e["name"], res["stock"], e["hero_name"]])
+			c._show_success_popup("【%s】%s 库存+1（共%d，请到%s服装页解锁）" % [e["quality"], e["name"], res["stock"], e["hero_name"]], 0.0, "ok")   # 【改】飘字退休→ok 弹窗
 	else:
-		c._show_stage_hint(res.get("msg", "获取失败"))
+		c._show_success_popup(res.get("msg", "获取失败"), 0.0, "warn")   # 【改】飘字退休→warn 弹窗
 	c.update_all_ui()
 	update_bag_list()
 func _on_hero_box_selected(hero_id: String):
@@ -691,7 +691,7 @@ func _show_manhuang_box_selector(p_qty: int):
 # 【改】蛮荒礼盒确认：扣N个礼盒、发100×N个所选道具
 func _on_manhuang_box_pick(popup, item_id: String, qty: int):
 	if int(data.items.get("manhuang_box", 0)) < qty:
-		c._show_stage_hint("蛮荒礼盒不足！")
+		c._show_success_popup("蛮荒礼盒不足！", 0.0, "warn")   # 【改】飘字退休→warn 弹窗
 		return
 	data.items["manhuang_box"] -= qty
 	data.items[item_id] = int(data.items.get(item_id, 0)) + 100 * qty
@@ -726,7 +726,7 @@ func _show_zixuan_baoyin_selector(p_qty: int, is_fragment: bool):
 # 【新增】2026-09-18 自选宝印确认：扣N个源道具，发N个所选目标
 func _on_zixuan_baoyin_pick(popup, src_id: String, target_id: String, qty: int):
 	if int(data.items.get(src_id, 0)) < qty:
-		c._show_stage_hint("%s不足！" % data.ITEM_CONFIG.get(src_id, {}).get("name", src_id))
+		c._show_success_popup("%s不足！" % data.ITEM_CONFIG.get(src_id, {}).get("name", src_id), 0.0, "warn")   # 【改】飘字退休→warn 弹窗
 		return
 	data.items[src_id] -= qty
 	data.items[target_id] = int(data.items.get(target_id, 0)) + qty
@@ -771,7 +771,7 @@ func _show_hungu_box_selector(p_qty: int):
 # 【改】魂骨盒子确认：扣N个盒子，生成N个同部位同品级魂骨
 func _on_hungu_box_pick(popup, slot: String, quality: String, qty: int):
 	if int(data.items.get("hun_gu_box", 0)) < qty:
-		c._show_stage_hint("魂骨盒子不足！")
+		c._show_success_popup("魂骨盒子不足！", 0.0, "warn")   # 【改】飘字退休→warn 弹窗
 		return
 	data.items["hun_gu_box"] -= qty
 	for i in range(qty):
@@ -871,7 +871,7 @@ func _show_compose_popup(recipe: Dictionary):
 	ok_btn.pressed.connect(func():
 		var n := int(pair.spin.value)
 		if n <= 0:
-			c._show_stage_hint("请先选择合成数量")
+			c._show_success_popup("请先选择合成数量", 0.0, "warn")   # 【改】飘字退休→warn 弹窗
 			return
 		data.items[mat_id] = int(data.items.get(mat_id, 0)) - n * ratio
 		if is_beast:
@@ -897,7 +897,7 @@ func _show_compose_popup(recipe: Dictionary):
 # 珍宝箱：N连开，五种商品随机其一×500入背包（商品使用=随机一名对应职业门客基础赚速+500）
 func _open_treasure_boxes(count: int):
 	if int(data.items.get("treasure_box", 0)) < count:
-		c._show_stage_hint("珍宝箱数量不足")
+		c._show_success_popup("珍宝箱数量不足", 0.0, "warn")   # 【改】飘字退休→warn 弹窗
 		return
 	data.items["treasure_box"] = int(data.items.get("treasure_box", 0)) - count
 	var goods := ["huo_qi", "ci_qi", "qiong_jiang", "cha_ye", "xuan_zhi"]

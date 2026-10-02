@@ -389,9 +389,9 @@ func _on_pick_project(area: String, proj: String):
 func _on_sync_upgrade(proj: String):
 	var r := _sys().upgrade_project(proj)
 	if not r.get("ok", false):
-		c._show_stage_hint(str(r.get("msg", "")))
+		c._show_success_popup(str(r.get("msg", "")), 0.0, "ok")   # 【改】飘字退休→ok 弹窗
 		return
-	c._show_stage_hint("同步升级：%d 个设施各升 1 级" % int(r.get("count", 0)))
+	c._show_success_popup("同步升级：%d 个设施各升 1 级" % int(r.get("count", 0)), 0.0, "ok")   # 【改】飘字退休→ok 弹窗
 	_refresh()
 
 # ---------- 设施弹窗：三属性当前→下级 + 升级/同步升级勾选 + 左右切设施 ----------
@@ -502,9 +502,9 @@ func _show_facility_popup(fid: String):
 func _on_facility_unlock(fid: String):
 	var r := _sys().unlock_facility(fid)
 	if not r.get("ok", false):
-		c._show_stage_hint(str(r.get("msg", "")))
+		c._show_success_popup(str(r.get("msg", "")), 0.0, "ok")   # 【改】飘字退休→ok 弹窗
 		return
-	c._show_stage_hint("解锁成功")
+	c._show_success_popup("解锁成功", 0.0, "ok")   # 【改】飘字退休→ok 弹窗
 	_refresh()
 
 func _on_facility_upgrade(fid: String, project: String, sync: bool, up_btn: Button = null):
@@ -512,14 +512,14 @@ func _on_facility_upgrade(fid: String, project: String, sync: bool, up_btn: Butt
 	if sync:
 		r = _sys().upgrade_project(project)
 		if r.get("ok", false):
-			c._show_stage_hint("同步升级：%d 个设施各升 1 级" % int(r.get("count", 0)))
+			c._show_success_popup("同步升级：%d 个设施各升 1 级" % int(r.get("count", 0)), 0.0, "ok")   # 【改】飘字退休→ok 弹窗
 	else:
 		r = _sys().upgrade_facility(fid)
 		if r.get("ok", false):
-			c._show_stage_hint("升级成功")
+			c._show_success_popup("升级成功", 0.0, "ok")   # 【改】飘字退休→ok 弹窗
 	if not r.get("ok", false):
 		if up_btn != null: c.flash_red(up_btn.get_path())   # 【新增】闪红审计：操作失败反馈（2026-09-19）
-		c._show_stage_hint(str(r.get("msg", "")))
+		c._show_success_popup(str(r.get("msg", "")), 0.0, "ok")   # 【改】飘字退休→ok 弹窗
 		return
 	_refresh()
 
@@ -528,7 +528,7 @@ func _on_add_jiaohao():
 	var item: String = data._tavern_configs.get("settings", {}).get("jiaohao_item", "jia_niang")
 	var owned: int = int(data.items.get(item, 0))
 	if owned <= 0:
-		c._show_stage_hint("没有【佳酿】")
+		c._show_success_popup("没有【佳酿】", 0.0, "warn")   # 【改】飘字退休→warn 弹窗
 		return
 	_close_node("TavernPopup")
 	_popup_kind = ""   # 道具面板不属于信息/设施弹窗，刷新时不重建
@@ -592,7 +592,7 @@ func _on_collect():
 func _on_call_one():
 	var r := _sys().call_one()
 	if not r.get("ok", false):
-		c._show_stage_hint(str(r.get("msg", "")))
+		c._show_success_popup(str(r.get("msg", "")), 0.0, "ok")   # 【改】飘字退休→ok 弹窗
 		return
 	# 【改】成功反馈铺开：叫号成功弹窗
 	c._show_success_popup("叫号成功\n接待中")
@@ -602,9 +602,9 @@ func _on_call_one():
 func _on_call_all():
 	var r := _sys().call_all()
 	if not r.get("ok", false):
-		c._show_stage_hint(str(r.get("msg", "")))
+		c._show_success_popup(str(r.get("msg", "")), 0.0, "ok")   # 【改】飘字退休→ok 弹窗
 		return
-	c._show_stage_hint("已叫号 %d 位客人，接待中…" % int(r.get("count", 0)))
+	c._show_success_popup("已叫号 %d 位客人，接待中…" % int(r.get("count", 0)), 0.0, "ok")   # 【改】飘字退休→ok 弹窗
 	_refresh()
 
 # 【新增】批次②③④-B1修正：酒肆规则/后台计算说明弹窗（只放说明，不放玩法操作）
@@ -728,7 +728,7 @@ func _show_rename_popup():
 	ok_btn.pressed.connect(func():
 		var r := _sys().rename_sign(edit.text)
 		if not r.get("ok", false):
-			c._show_stage_hint(str(r.get("msg", "")))
+			c._show_success_popup(str(r.get("msg", "")), 0.0, "ok")   # 【改】飘字退休→ok 弹窗
 			return
 		_refresh())
 	btn_row.add_child(ok_btn)
@@ -736,7 +736,7 @@ func _show_rename_popup():
 func _on_level_up():
 	var r := _sys().level_up()
 	if not r.get("ok", false):
-		c._show_stage_hint(str(r.get("msg", "")))
+		c._show_success_popup(str(r.get("msg", "")), 0.0, "ok")   # 【改】飘字退休→ok 弹窗
 		return
-	c._show_stage_hint("酒肆升级：Lv.%d" % _sys().get_level())
+	c._show_success_popup("酒肆升级：Lv.%d" % _sys().get_level(), 0.0, "ok")   # 【改】飘字退休→ok 弹窗
 	_refresh()

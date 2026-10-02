@@ -238,7 +238,7 @@ func _add_unlock_card(grid: GridContainer):
 	elif count >= sys.get_max_unlockable():
 		var req_lv: int = 2 * (count + 1 - 5) + 1   # 下一柜台所需钱庄店铺等级（每2级+1个额度）
 		info.text = "需钱庄店铺等级%d\n升级地图上的钱庄解锁" % req_lv
-		btn.pressed.connect(func(): c._show_stage_hint("钱庄店铺等级不足，升级地图上的钱庄后可继续解锁柜台"))
+		btn.pressed.connect(func(): c._show_success_popup("钱庄店铺等级不足，升级地图上的钱庄后可继续解锁柜台", 0.0, "warn"))   # 【改】飘字退休→warn 弹窗
 	else:
 		info.text = "花%d元宝解锁柜台%d" % [sys.get_counter_unlock_cost(), count + 1]
 		btn.disabled = int(data.yuanbao) < sys.get_counter_unlock_cost()
@@ -276,7 +276,7 @@ func _refresh_rows():
 func _on_collect(idx: int):
 	var gain: Dictionary = data.bank_system.collect_counter(idx)   # 显式标注（data 无类型，方法返回 Variant）
 	if gain.is_empty():
-		c._show_stage_hint("还没有产出，稍后再来")
+		c._show_success_popup("还没有产出，稍后再来", 0.0, "warn")   # 【改】飘字退休→warn 弹窗
 		return
 	# 【改】成功反馈铺开：领取成功弹关键结果
 	c._show_success_popup("领取成功\n百业 +%d　筹算 +%d　信誉 +%d" % [int(gain["baiye"]), int(gain["chousuan"]), int(gain["xinyu"])])
@@ -285,7 +285,7 @@ func _on_collect(idx: int):
 func _on_collect_all():
 	var total: Dictionary = data.bank_system.collect_all()   # 显式标注（data 无类型，方法返回 Variant）
 	if int(total["baiye"]) + int(total["chousuan"]) + int(total["xinyu"]) <= 0:
-		c._show_stage_hint("所有柜台都还没有产出")
+		c._show_success_popup("所有柜台都还没有产出", 0.0, "warn")   # 【改】飘字退休→warn 弹窗
 		return
 	# 【改】成功反馈铺开：领取成功弹关键结果
 	c._show_success_popup("一键全领\n百业 +%d　筹算 +%d　信誉 +%d" % [int(total["baiye"]), int(total["chousuan"]), int(total["xinyu"])])
@@ -302,7 +302,7 @@ func _on_unlock(btn: Button = null):
 		_rebuild()
 	else:
 		if btn != null: c.flash_red(btn.get_path())   # 【新增】闪红审计：操作失败反馈（2026-09-19）
-		c._show_stage_hint("元宝不足")
+		c._show_success_popup("元宝不足", 0.0, "warn")   # 【改】飘字退休→warn 弹窗
 
 func _on_xinyu_upgrade(up_btn: Button = null):
 	if data.bank_system.upgrade_xinyu_level():
@@ -311,7 +311,7 @@ func _on_xinyu_upgrade(up_btn: Button = null):
 	else:
 		# 钮禁用时点不到，能走到这=满级等边缘态；补反馈不留静默失败
 		if up_btn != null: c.flash_red(up_btn.get_path())   # 【新增】闪红审计：操作失败反馈（2026-09-19）
-		c._show_stage_hint("信誉值不足或已满级")
+		c._show_success_popup("信誉值不足或已满级", 0.0, "warn")   # 【改】飘字退休→warn 弹窗
 
 func _rebuild():
 	if c.has_node("BankPage"):

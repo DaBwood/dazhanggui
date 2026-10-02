@@ -32,7 +32,7 @@ func open():
 		return
 	# 【修】net_system 在 GameData 上；未登录（token 空）不让进
 	if c.net == null or c.net.token == "":
-		c._show_stage_hint("请先在设置页登录账号，再使用商会")
+		c._show_success_popup("请先在设置页登录账号，再使用商会", 0.0, "warn")   # 【改】飘字退休→warn 弹窗
 		return
 	# 【改】未入会：弹窗创建/加入；已入会：直接进入商会主界面（两者不再杂糅）
 	if data.guild_system.guild_id == "":
@@ -183,11 +183,11 @@ func _show_join_popup():
 func _on_create(name_edit: LineEdit, popup):
 	var cost = int(data.guild_system.get_settings().get("create_cost", 500))
 	if data.yuanbao < cost:
-		c._show_stage_hint("元宝不足（需要%d）" % cost)
+		c._show_success_popup("元宝不足（需要%d）" % cost, 0.0, "warn")   # 【改】飘字退休→warn 弹窗
 		return
 	c.net.guild_create(name_edit.text.strip_edges(), func(_code, d):
 		if not d.get("ok", false):
-			c._show_stage_hint(str(d.get("msg", "创建失败")))
+			c._show_success_popup(str(d.get("msg", "创建失败")), 0.0, "warn")   # 【改】飘字退休→warn 弹窗
 			return
 		data.yuanbao -= cost
 		data.guild_system.guild_id = str(d.get("guild_id", ""))
@@ -202,25 +202,25 @@ func _on_join(id_edit: LineEdit, popup):
 	var gid = id_edit.text.strip_edges()
 	# 【新增】批次②③④-B7：空邀请码原静默 return，补提示
 	if gid == "":
-		c._show_stage_hint("请输入邀请码")
+		c._show_success_popup("请输入邀请码", 0.0, "ok")   # 【改】飘字退休→ok 弹窗
 		return
 	c.net.guild_get(gid, func(_code, d):
 		if not d.get("ok", false):
-			c._show_stage_hint("邀请码无效：" + str(d.get("msg", "商会不存在")))
+			c._show_success_popup("邀请码无效：" + str(d.get("msg", "商会不存在")), 0.0, "ok")   # 【改】飘字退休→ok 弹窗
 			return
 		var record = d.get("record", {})
 		var gs = data.guild_system
 		if record.get("members", []).size() >= gs.get_member_cap(int(record.get("level", 1))):
-			c._show_stage_hint("该商会已满员")
+			c._show_success_popup("该商会已满员", 0.0, "ok")   # 【改】飘字退休→ok 弹窗
 			return
 		for m in record.get("members", []):
 			if not m.get("bot", false) and m.get("user", "") == c.net.username:
-				c._show_stage_hint("你已在该商会中")
+				c._show_success_popup("你已在该商会中", 0.0, "ok")   # 【改】飘字退休→ok 弹窗
 				return
 		record["members"].append({"user": c.net.username, "name": c.net.username, "role": ""})
 		c.net.guild_save(gid, record, func(_c2, d2):
 			if not d2.get("ok", false):
-				c._show_stage_hint("加入失败，请重试")
+				c._show_success_popup("加入失败，请重试", 0.0, "warn")   # 【改】飘字退休→warn 弹窗
 				return
 			data.guild_system.guild_id = gid
 			data.save_game()
@@ -328,7 +328,7 @@ func _on_council_pick():
 		b.text = "%s（%s 店铺技能+%d%%）" % [cfg.get("name", hid), cfg.get("career", ""), int(data.guild_system.get_hero_shop_pct(hid) * 100)]
 		b.pressed.connect(func():
 			var r = data.guild_system.set_council_hero(hid)
-			if not r.ok: c._show_stage_hint(r.reason)
+			if not r.ok: c._show_success_popup(r.reason, 0.0, "ok")   # 【改】飘字退休→ok 弹窗
 			popup.queue_free()
 			_save_and_render())
 		lst.add_child(b)
@@ -336,7 +336,7 @@ func _on_council_pick():
 
 func _on_council_clear():
 	var r = data.guild_system.set_council_hero("")
-	if not r.ok: c._show_stage_hint(r.reason)
+	if not r.ok: c._show_success_popup(r.reason, 0.0, "ok")   # 【改】飘字退休→ok 弹窗
 	_save_and_render()
 
 # ============ 建设 ============
@@ -376,7 +376,7 @@ func _render_build():
 func _on_build(kind: String):
 	var r = data.guild_system.build(kind)
 	if not r.ok:
-		c._show_stage_hint(r.reason)
+		c._show_success_popup(r.reason, 0.0, "ok")   # 【改】飘字退休→ok 弹窗
 		return
 	_save_and_render()
 
@@ -428,7 +428,7 @@ func _add_shop_section(list, section_name: String, entries: Array, guild_lv: int
 func _on_buy(row_id: String):
 	var r = data.guild_system.buy(row_id)
 	if not r.ok:
-		c._show_stage_hint(r.reason)
+		c._show_success_popup(r.reason, 0.0, "ok")   # 【改】飘字退休→ok 弹窗
 		return
 	# 【改】成功反馈铺开：兑换成功弹窗
 	c._show_success_popup("兑换成功")
@@ -497,7 +497,7 @@ func _render_manage():
 func _on_recruit():
 	var r = data.guild_system.recruit_bots()
 	if not r.ok:
-		c._show_stage_hint(r.reason)
+		c._show_success_popup(r.reason, 0.0, "ok")   # 【改】飘字退休→ok 弹窗
 		return
 	# 【改】成功反馈铺开：招募弹窗
 	c._show_success_popup("已招募 %d 名人机" % int(r.count))
@@ -556,7 +556,7 @@ func _on_kick(username: String, disp_name: String):
 func _save_and_render():
 	c.net.guild_save(data.guild_system.guild_id, data.guild_system.cache, func(_c2, d2):
 		if not d2.get("ok", false):
-			c._show_stage_hint("同步失败：" + str(d2.get("msg", "网络错误")) + "（下次进入商会会自动补齐）")
+			c._show_success_popup("同步失败：" + str(d2.get("msg", "网络错误")) + "（下次进入商会会自动补齐）", 0.0, "warn")   # 【改】飘字退休→warn 弹窗
 		_update_header(data.guild_system.cache)
 		_render())
 
@@ -706,7 +706,7 @@ func _make_trade_card(conf: Dictionary, record: Dictionary, now: int) -> PanelCo
 func _on_trade_open(trade_id: String):
 	var r = data.guild_system.open_trade(trade_id)
 	if not r.get("ok", false):
-		c._show_stage_hint(str(r.get("reason", "开启失败")))
+		c._show_success_popup(str(r.get("reason", "开启失败")), 0.0, "warn")   # 【改】飘字退休→warn 弹窗
 		return
 	# 【改】成功反馈铺开：开启弹窗
 	c._show_success_popup("已开启\n%s" % str(r.conf.get("name", trade_id)))
@@ -715,7 +715,7 @@ func _on_trade_open(trade_id: String):
 func _on_trade_withdraw(trade_id: String):
 	var r = data.guild_system.withdraw_trade(trade_id)
 	if not r.get("ok", false):
-		c._show_stage_hint(str(r.get("reason", "撤回失败")))
+		c._show_success_popup(str(r.get("reason", "撤回失败")), 0.0, "warn")   # 【改】飘字退休→warn 弹窗
 		return
 	# 【改】成功反馈铺开：撤回弹窗
 	c._show_success_popup("已撤回委任")
@@ -774,14 +774,14 @@ func _on_trade_assign(trade_id: String):
 				picked.append(str(child.get_meta("hid")))
 		var r = gs.assign_trade(trade_id, picked)
 		if not r.get("ok", false):
-			c._show_stage_hint(str(r.get("reason", "委任失败")))
+			c._show_success_popup(str(r.get("reason", "委任失败")), 0.0, "warn")   # 【改】飘字退休→warn 弹窗
 			return
 		popup.queue_free()
 		if r.get("locked", false):
 			# 【改】成功反馈铺开：锁定弹窗
 			c._show_success_popup("全队赚速达标\n路线已锁定")
 		else:
-			c._show_stage_hint("已委任 %d 名门客（全队赚速还差 %s 达标）" % [picked.size(), c.format_number(float(conf.get("require", 0)) - float(r.get("total", 0)))])
+			c._show_success_popup("已委任 %d 名门客（全队赚速还差 %s 达标）" % [picked.size(), c.format_number(float(conf.get("require", 0)) - float(r.get("total", 0)))], 0.0, "ok")   # 【改】飘字退休→ok 弹窗
 		_save_and_render())
 	btns.add_child(ok_btn)
 	c.add_child(popup)

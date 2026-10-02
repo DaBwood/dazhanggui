@@ -101,7 +101,7 @@ func _on_travel():
 		if result.msg == "体力不足" and int(data.items.get("stamina_pill", 0)) > 0:
 			_on_stamina_plus_pressed()
 		else:
-			c._show_stage_hint(result.msg)
+			c._show_success_popup(result.msg, 0.0, "ok")   # 【改】飘字退休→ok 弹窗
 		update_travel_view()
 		return
 	if c.has_node("PageContainer/AdventurePage/TravelView/TravelResult"):
@@ -118,7 +118,7 @@ func _on_travel():
 # 点击体力行“＋”：弹出体力丹数量选择器（复用全局通用选择器），可批量使用
 func _on_stamina_plus_pressed():
 	if int(data.items.get("stamina_pill", 0)) <= 0:
-		c._show_stage_hint("没有体力丹，可前往元宝商城购买体力礼包")
+		c._show_success_popup("没有体力丹，可前往元宝商城购买体力礼包", 0.0, "warn")   # 【改】飘字退休→warn 弹窗
 		return
 	c._show_quantity_selector("stamina_pill", "使用体力丹（每颗体力+1）", _on_stamina_pill_confirmed)
 
@@ -128,7 +128,7 @@ func _on_stamina_pill_confirmed(spin):
 	c._close_quantity_selector()
 	if count <= 0: return
 	var result = data.use_item("stamina_pill", count)
-	c._show_stage_hint(result.get("msg", ""))
+	c._show_success_popup(result.get("msg", ""), 0.0, "ok")   # 【改】飘字退休→ok 弹窗
 	update_travel_view()
 	c.update_bag_list()
 	c.update_all_ui()
@@ -183,7 +183,7 @@ func _make_travel_all_check() -> CheckBox:
 func _on_travel_all():
 	var summary = data.do_travel_all()
 	if not summary.get("ok", false):
-		c._show_stage_hint(summary.get("msg", "体力不足"))
+		c._show_success_popup(summary.get("msg", "体力不足"), 0.0, "warn")   # 【改】飘字退休→warn 弹窗
 		update_travel_view()
 		return
 	_show_travel_all_popup(summary)

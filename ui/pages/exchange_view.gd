@@ -316,7 +316,7 @@ func _on_exchange_series_hero(entry: Dictionary, series: Dictionary, cell: Butto
 		c.update_friend_page()
 	else:
 		c.flash_red(cell.get_path())   # 【新增】闪红审计：操作失败反馈（2026-09-19）
-		c._show_stage_hint(result.reason)
+		c._show_success_popup(result.reason, 0.0, "ok")   # 【改】飘字退休→ok 弹窗
 
 func _on_exchange_role(role_type: String, role_id: String, cost: int, cell: Button = null):
 	var result = data.exchange_role_with_token(role_type, role_id, cost)
@@ -332,7 +332,7 @@ func _on_exchange_role(role_type: String, role_id: String, cost: int, cell: Butt
 		c.update_friend_page()
 	else:
 		c.flash_red(cell.get_path())   # 【新增】闪红审计：操作失败反馈（2026-09-19）
-		c._show_stage_hint(result.reason)
+		c._show_success_popup(result.reason, 0.0, "ok")   # 【改】飘字退休→ok 弹窗
 
 
 func _on_exchange_beast(beast_id: String):
@@ -340,7 +340,7 @@ func _on_exchange_beast(beast_id: String):
 	var ex = cfg.get("exchange_item", "")
 	if data.items.get(ex, 0) < 100:
 		c.flash_red("PageContainer/AdventurePage/ExchangeView/BeastExchangeView")   # 【新增】闪红审计：操作失败反馈（2026-09-19）
-		c._show_stage_hint("【%s】兑换道具不足！" % cfg.name)
+		c._show_success_popup("【%s】兑换道具不足！" % cfg.name, 0.0, "warn")   # 【改】飘字退休→warn 弹窗
 		return
 	data.items[ex] -= 100
 	if data.add_beast(beast_id):
@@ -354,7 +354,7 @@ func _on_exchange_beast(beast_id: String):
 			update_beast_exchange_view()
 	else:
 		c.flash_red("PageContainer/AdventurePage/ExchangeView/BeastExchangeView")   # 【新增】闪红审计：操作失败反馈（2026-09-19）
-		c._show_stage_hint("兑换失败")
+		c._show_success_popup("兑换失败", 0.0, "warn")   # 【改】飘字退休→warn 弹窗
 
 # 【服装系统】兑换目录追加「服装兑换」入口按钮（代码创建，只建一次）
 func _ensure_costume_entry_btn(ev):

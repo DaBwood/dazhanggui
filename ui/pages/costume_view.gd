@@ -131,7 +131,7 @@ func _fill_hero_costume_list(list: VBoxContainer, hero_id: String):
 # 门客服装兑换回调：兑换后原地刷新列表 + 门客面板（资质/赚速变化）
 func _on_exchange_hero_cos(hero_id: String, cos_id: String):
 	var res = data.costume_system.exchange_hero_costume(hero_id, cos_id)
-	c._show_stage_hint(res.get("msg", ""))
+	c._show_success_popup(res.get("msg", ""), 0.0, "ok")   # 【改】飘字退休→ok 弹窗
 	if res.get("ok", false):
 		var popup = c.get_node_or_null("HeroCostumePopup")
 		if popup:
@@ -142,7 +142,7 @@ func _on_exchange_hero_cos(hero_id: String, cos_id: String):
 # 【新增】手动解锁服装回调：消耗1库存，创建服装状态
 func _on_cos_unlock(hero_id: String, cos_id: String):
 	var res = data.costume_system.unlock_hero_cos(hero_id, cos_id)
-	c._show_stage_hint(res.get("msg", ""))
+	c._show_success_popup(res.get("msg", ""), 0.0, "ok")   # 【改】飘字退休→ok 弹窗
 	if res.get("ok", false):
 		var popup = c.get_node_or_null("HeroCostumePopup")
 		if popup:
@@ -153,7 +153,7 @@ func _on_cos_unlock(hero_id: String, cos_id: String):
 # 【新增】手动升级服装（消耗库存加额外等级）回调
 func _on_cos_extra_upgrade(hero_id: String, cos_id: String):
 	var res = data.costume_system.upgrade_hero_cos_extra(hero_id, cos_id)
-	c._show_stage_hint(res.get("msg", ""))
+	c._show_success_popup(res.get("msg", ""), 0.0, "ok")   # 【改】飘字退休→ok 弹窗
 	if res.get("ok", false):
 		var popup = c.get_node_or_null("HeroCostumePopup")
 		if popup:
@@ -232,7 +232,7 @@ func _fill_friend_costume_list(list: VBoxContainer, friend_id: String):
 # 挚友服装兑换回调：兑换后原地刷新列表 + 挚友详情（友好/才华变化）
 func _on_exchange_friend_cos(friend_id: String, cos_id: String):
 	var res = data.costume_system.exchange_friend_costume(friend_id, cos_id)
-	c._show_stage_hint(res.get("msg", ""))
+	c._show_success_popup(res.get("msg", ""), 0.0, "ok")   # 【改】飘字退休→ok 弹窗
 	if res.get("ok", false):
 		var popup = c.get_node_or_null("FriendCostumePopup")
 		if popup:
@@ -383,7 +383,7 @@ func _add_series_section(list: VBoxContainer, series: Dictionary):
 # 兑换页里的兑换回调：兑换后原地刷新服装兑换列表
 func _on_exchange_from_view(owner_id: String, cos_id: String, is_friend: bool):
 	var res = data.costume_system.exchange_friend_costume(owner_id, cos_id) if is_friend else data.costume_system.exchange_hero_costume(owner_id, cos_id)
-	c._show_stage_hint(res.get("msg", ""))
+	c._show_success_popup(res.get("msg", ""), 0.0, "ok")   # 【改】飘字退休→ok 弹窗
 	if res.get("ok", false):
 		update_costume_exchange_view()
 		c.update_all_ui()

@@ -97,7 +97,7 @@ func update_stage_page():
 	
 	# 【新增】一键贸易停止原因：进入/刷新本页时消费并弹出（停止当下不弹，点进关卡页才弹）
 	if data.stage_auto_stop_reason != "":
-		c._show_stage_hint("一键贸易已停止：%s" % data.stage_auto_stop_reason, 4.0)
+		c._show_success_popup("一键贸易已停止：%s" % data.stage_auto_stop_reason, 4.0, "ok")   # 【改】飘字退休→ok 弹窗
 		data.stage_auto_stop_reason = ""
 	
 	# 【新增】勾选框状态与数据层同步（自动停止后取消勾选；set_pressed_no_signal 避免触发 toggled 回写）
@@ -168,9 +168,9 @@ func on_stage_trade():
 	
 	# 【改】普通贸易静默，只有关键节点才短暂提示
 	if result.type == "next_sub":
-		c._show_stage_hint("通关！宝箱×1  阅历+%d" % result.get("exp_reward", 0))
+		c._show_success_popup("通关！宝箱×1  阅历+%d" % result.get("exp_reward", 0), 0.0, "ok")   # 【改】飘字退休→ok 弹窗
 	elif result.type == "boss_ready":
-		c._show_stage_hint("贸易完成，Boss 已出现！")
+		c._show_success_popup("贸易完成，Boss 已出现！", 0.0, "ok")   # 【改】飘字退休→ok 弹窗
 
 func on_stage_boss():
 	var result = data.do_stage_boss()
@@ -185,10 +185,10 @@ func on_stage_boss():
 	else:
 		var bb2 = c.find_child("BossBtn", true, false)   # 【改】RefCounted 模块无 find_child，经 c（controller 根节点）递归找
 		if bb2 != null: c.flash_red(bb2.get_path())   # 【新增】闪红审计：操作失败反馈（2026-09-19）
-		c._show_stage_hint("谈判失败！Boss 赚速 %s，我方仅 %s" % [
+		c._show_success_popup("谈判失败！Boss 赚速 %s，我方仅 %s" % [   # 【改】飘字退休→warn 弹窗
 			c.format_number(result.boss_income),
 			c.format_number(result.hero_power)
-		])
+		], 0.0, "warn")
 	
 	update_stage_page()
 	c.update_all_ui()

@@ -384,7 +384,7 @@ func _on_open_costume_popup():
 	if current_friend_id == "": return
 	# 防御：controller 未接 costume_view 时不崩，给提示
 	if not ("costume_view" in c) or c.costume_view == null:
-		c._show_stage_hint("服装系统未接线")
+		c._show_success_popup("服装系统未接线", 0.0, "ok")   # 【改】飘字退休→ok 弹窗
 		return
 	c.costume_view.show_friend_costume_popup(current_friend_id)
 
@@ -791,7 +791,7 @@ func _on_caiyi_skill_upgrade(skill_key: String):
 		_update_friend_page_detail()
 		c.update_all_ui()
 	else:
-		c._show_stage_hint("才艺经验不足！")
+		c._show_success_popup("才艺经验不足！", 0.0, "warn")   # 【改】飘字退休→warn 弹窗
 		if popup:
 			var btn = popup.find_child(btn_name, true, false)
 			if btn:
@@ -985,7 +985,7 @@ func _on_fanghua_upgrade(idx: int):
 		_update_friend_page_detail()
 		c.update_all_ui()
 	else:
-		c._show_stage_hint(str(res.get("msg", "缘分之花不足！")))
+		c._show_success_popup(str(res.get("msg", "缘分之花不足！")), 0.0, "warn")   # 【改】飘字退休→warn 弹窗
 		if popup:
 			var btn = popup.find_child("FanghuaUpgradeBtn%d" % idx, true, false)
 			if btn:
@@ -1016,7 +1016,7 @@ func _on_skill_upgrade_in_popup(is_fixed: bool):
 		c.update_all_ui()
 	else:
 		if popup != null: c.flash_red(popup.get_path())   # 【新增】闪红审计：操作失败反馈（2026-09-19）
-		c._show_stage_hint("缘分不足！")
+		c._show_success_popup("缘分不足！", 0.0, "warn")   # 【改】飘字退休→warn 弹窗
 
 # ============ 美名弹窗 ============
 # 【重写】K2.6 版虚构了"晋升"按钮和不存在的字段（.name/.friendly/.talent_bonus/.aptitude_bonus），
@@ -1100,7 +1100,7 @@ func _on_promote_title():
 		_update_friend_page_detail()
 		c.update_all_ui()
 	else:
-		c._show_stage_hint("晋升条件未达标！")
+		c._show_success_popup("晋升条件未达标！", 0.0, "warn")   # 【改】飘字退休→warn 弹窗
 		if c.has_node("TitlePopup"):
 			var pbtn = c.get_node("TitlePopup").find_child("PromoteTitleBtn", true, false)
 			if pbtn:
@@ -1130,7 +1130,7 @@ func _on_quick_gift(item_id: String):
 	var count = 10 if batch else 1
 
 	if data.items.get(item_id, 0) < count:
-		c._show_stage_hint("礼物不足！")
+		c._show_success_popup("礼物不足！", 0.0, "warn")   # 【改】飘字退休→warn 弹窗
 		return
 
 	for i in range(count):
@@ -1258,7 +1258,7 @@ func _on_refresh_selected_skill():
 			if refresh_btn:
 				c.flash_red(refresh_btn.get_path())
 		# 【新增】批次②③④-B5：失败补文字提示（刷新失败=许愿石/铜钱不足，与 friend_system.refresh_friend_shop_skill 口径一致）
-		c._show_stage_hint("许愿石不足！" if use_wish else "铜钱不足！")
+		c._show_success_popup("许愿石不足！" if use_wish else "铜钱不足！", 0.0, "warn")   # 【改】飘字退休→warn 弹窗
 
 func _update_shop_skill_detail():
 	# 【改】详情弹窗已改挂 c 根节点
@@ -1484,14 +1484,14 @@ func _upgrade_friend_percent_batch(friend_id: String, batch: bool) -> int:
 # ============ 游玩（不变） ============
 func _on_play_scenery():
 	if data.yuanbao < 1000:
-		c._show_stage_hint("元宝不足！")
+		c._show_success_popup("元宝不足！", 0.0, "warn")   # 【改】飘字退休→warn 弹窗
 		return
 	data.yuanbao -= 1000
 	_do_play_chat()
 
 func _on_play_poetry():
 	if data.items.get("rose_perfume", 0) < 1:
-		c._show_stage_hint("玫瑰香水不足！")
+		c._show_success_popup("玫瑰香水不足！", 0.0, "warn")   # 【改】飘字退休→warn 弹窗
 		return
 	data.items.rose_perfume -= 1
 	_do_play_chat()
@@ -1507,7 +1507,7 @@ func _do_play_chat():
 				msg += "（观音送子！）"
 		elif result.get("adopted", false):
 			msg += "，领养了一位徒弟！"
-		c._show_stage_hint(msg)
+		c._show_success_popup(msg, 0.0, "ok")   # 【改】飘字退休→ok 弹窗
 		_update_friend_page_detail()
 		c.update_all_ui()
 		c.update_bag_list()
@@ -1597,7 +1597,7 @@ func _on_gift_item_confirmed(spin: SpinBox, item_id: String):
 	if count <= 0: return
 	if current_friend_id == "": return
 	if data.items.get(item_id, 0) < count:
-		c._show_stage_hint("礼物不足！")   # 【新增】批次②③④-B5：防御分支补反馈（原静默 return）
+		c._show_success_popup("礼物不足！", 0.0, "warn")   # 【新增】批次②③④-B5：防御分支补反馈（原静默 return）   # 【改】飘字退休→warn 弹窗
 		return
 
 	for i in range(count):

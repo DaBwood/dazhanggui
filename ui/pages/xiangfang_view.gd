@@ -669,7 +669,7 @@ func _show_recycle_popup(fid: String):
 func _on_recycle(fid: String, n: int, btn: Button):
 	var r: Dictionary = _sys().recycle_furniture(fid, n)
 	if not r.get("ok", false):
-		c._show_stage_hint(str(r.get("reason", "回收失败")))
+		c._show_success_popup(str(r.get("reason", "回收失败")), 0.0, "warn")   # 【改】飘字退休→warn 弹窗
 		_flash_btn(btn)
 		return
 	# 【改】成功反馈铺开：回收弹窗
@@ -793,12 +793,13 @@ func _show_medal_popup():
 		vb.add_child(up_btn)
 
 func _on_medal_help():
-	c._show_stage_hint("厢房勋章：舒适度达到门槛即可升级（舒适度只作门槛不消耗）；每级全部商铺赚速+100%；技能等级上限效果挂起未接入。")
+	# 【改】飘字退休：规则说明升级"?"规则弹窗（带遮罩、点外部关、不自动关）
+	c._show_rule_popup("勋章规则", "厢房勋章：舒适度达到门槛即可升级（舒适度只作门槛不消耗）；每级全部商铺赚速+100%；技能等级上限效果挂起未接入。")
 
 func _on_medal_upgrade():
 	var r: Dictionary = _sys().upgrade_medal()
 	if not r.get("ok", false):
-		c._show_stage_hint(str(r.get("reason", "暂不可升级")))
+		c._show_success_popup(str(r.get("reason", "暂不可升级")), 0.0, "ok")   # 【改】飘字退休→ok 弹窗
 		return
 	# 【改】成功反馈铺开：勋章升级弹窗
 	c._show_success_popup("勋章升级成功")
@@ -808,7 +809,7 @@ func _on_medal_upgrade():
 func _on_advance_set(sid: String, btn: Button):
 	var r: Dictionary = _sys().advance_set(sid)
 	if not r.get("ok", false):
-		c._show_stage_hint(str(r.get("reason", "条件未达成")))
+		c._show_success_popup(str(r.get("reason", "条件未达成")), 0.0, "warn")   # 【改】飘字退休→warn 弹窗
 		_flash_btn(btn)
 		return
 	# 【改】成功反馈铺开：套装升级弹窗
@@ -828,7 +829,7 @@ func _on_upgrade(fid: String, is_all: bool, btn: Button):
 	var fs0: int = _sys().get_fengshui()
 	var r: Dictionary = _sys().upgrade_all(fid) if is_all else _sys().upgrade_furniture(fid)
 	if not r.get("ok", false):
-		c._show_stage_hint(str(r.get("reason", "无法升级")))
+		c._show_success_popup(str(r.get("reason", "无法升级")), 0.0, "warn")   # 【改】飘字退休→warn 弹窗
 		_flash_btn(btn)
 		return
 	var st1: Dictionary = _sys().get_furniture_state(fid)
@@ -883,7 +884,7 @@ func _show_buy_popup(fid: String):
 func _on_buy(fid: String, n: int, btn: Button):
 	var r: Dictionary = _sys().buy_furniture(fid, n)
 	if not r.get("ok", false):
-		c._show_stage_hint(str(r.get("reason", "购买失败")))
+		c._show_success_popup(str(r.get("reason", "购买失败")), 0.0, "warn")   # 【改】飘字退休→warn 弹窗
 		_flash_btn(btn)
 		return
 	# 【改】成功反馈铺开：购买弹窗
@@ -1136,7 +1137,7 @@ func _show_luck_detail_popup(popup_id: String):
 func _on_divine(btn: Button):
 	var r: Dictionary = _msys().divine()
 	if not r.get("ok", false):
-		c._show_stage_hint(str(r.get("reason", "无法卜卦")))
+		c._show_success_popup(str(r.get("reason", "无法卜卦")), 0.0, "warn")   # 【改】飘字退休→warn 弹窗
 		_flash_btn(btn)
 		return
 	_pending_luck = r.get("luck", {})
@@ -1226,7 +1227,7 @@ func _show_divine_popup():
 	drop_btn.pressed.connect(func():
 		_pending_luck = {}
 		if _auto_divining:
-			c._show_stage_hint("已放弃（自动卜卦继续）")
+			c._show_success_popup("已放弃（自动卜卦继续）", 0.0, "ok")   # 【改】飘字退休→ok 弹窗
 			_refresh()
 			_auto_resume()
 			return
@@ -1245,11 +1246,11 @@ func _on_install_pending():
 	_pending_luck = {}
 	if _auto_divining:
 		_auto_stats["replaced"] = int(_auto_stats.get("replaced", 0)) + 1
-		c._show_stage_hint("已装上（自动卜卦继续）")
+		c._show_success_popup("已装上（自动卜卦继续）", 0.0, "ok")   # 【改】飘字退休→ok 弹窗
 		_refresh()
 		_auto_resume()
 		return
-	c._show_stage_hint("命格已装上")
+	c._show_success_popup("命格已装上", 0.0, "ok")   # 【改】飘字退休→ok 弹窗
 	_refresh()
 
 # 自动卜卦（用户拍板节奏）：每 0.5 秒一卦；低于/等于槽内现值的自动消失，更高的弹窗暂停手动二选一；
@@ -1257,11 +1258,11 @@ func _on_install_pending():
 func _on_auto_divine():
 	if _auto_divining:
 		_auto_divining = false
-		c._show_stage_hint("已停止自动卜卦")
+		c._show_success_popup("已停止自动卜卦", 0.0, "ok")   # 【改】飘字退休→ok 弹窗
 		_refresh()
 		return
 	if not _msys().can_divine():
-		c._show_stage_hint("风水符不足")
+		c._show_success_popup("风水符不足", 0.0, "warn")   # 【改】飘字退休→warn 弹窗
 		return
 	_auto_divining = true
 	_refresh()
@@ -1272,7 +1273,7 @@ func _auto_divine_step(rolls: int, replaced: int):
 		return
 	if not _msys().can_divine():
 		_auto_divining = false
-		c._show_stage_hint("自动卜卦结束：共 %d 卦，装上 %d 个" % [rolls, replaced])
+		c._show_success_popup("自动卜卦结束：共 %d 卦，装上 %d 个" % [rolls, replaced], 0.0, "ok")   # 【改】飘字退休→ok 弹窗
 		_refresh()
 		return
 	var r: Dictionary = _msys().divine()

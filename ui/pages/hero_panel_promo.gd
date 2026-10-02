@@ -33,7 +33,7 @@ func on_promotion_upgrade(mode: String = "single"):
 		# 【新增】批次②③④-B4：失败反馈（晋升耗对应道具，道具名读配置）
 		var promo_cfg: Dictionary = data.heroes[hp.current_hero_id].get("promotion", {})
 		var iname: String = str(data.ITEM_CONFIG.get(str(promo_cfg.get("cost_item", "")), {}).get("name", "晋升道具"))
-		c._show_stage_hint("%s不足" % iname)
+		c._show_success_popup("%s不足" % iname, 0.0, "warn")   # 【改】飘字退休→warn 弹窗
 
 
 # 【改】晋升面板参数化 v3：标题/资质技能名/解锁列表/按钮文案全部读 promotion 配置
@@ -180,7 +180,7 @@ func _on_promo_btn_clicked():
 		tianzi_btn.text = "天资"
 		tianzi_btn.custom_minimum_size = Vector2(64, 30)
 		tianzi_btn.add_theme_font_size_override("font_size", 13)
-		tianzi_btn.pressed.connect(func(): c._show_stage_hint("后续版本开放"))
+		tianzi_btn.pressed.connect(func(): c._show_success_popup("后续版本开放", 0.0, "ok"))   # 【改】飘字退休→ok 弹窗
 		top_bar.add_child(tianzi_btn)
 	if hp.current_hero_id == data.token_system.CONTRACT_HERO:
 		contract_btn.text = "契约"   # 【改】2026-09-24 只显示"契约"
@@ -688,7 +688,7 @@ func _show_master_selector():
 				# 【改】成功反馈铺开：拜师成功弹窗
 				c._show_success_popup("已拜师\n%s" % str(data.heroes[hid].get("name", hid)))
 			else:
-				c._show_stage_hint(res.get("msg", "拜师失败"))
+				c._show_success_popup(res.get("msg", "拜师失败"), 0.0, "warn")   # 【改】飘字退休→warn 弹窗
 			hp.update_hero_panel()   # 师傅变化影响师徒光环效果显示
 			c.update_all_ui()
 		)
@@ -711,7 +711,7 @@ func _get_copy_talent_info(hero_id: String) -> Dictionary:
 func _on_copy_talent_btn_clicked():
 	var ct = _get_copy_talent_info(hp.current_hero_id)
 	if ct.is_empty():
-		c._show_stage_hint("未找到天赋信息")   # 【新增】批次②③④-B4：空信息反馈
+		c._show_success_popup("未找到天赋信息", 0.0, "ok")   # 【新增】批次②③④-B4：空信息反馈   # 【改】飘字退休→ok 弹窗
 		return
 	var popup = c._create_base_popup(ct.get("name", "天赋"), Vector2(460, 260))
 	c.add_child(popup)   # 【修】panel 需自行入树（helper 只挂遮罩），否则只有遮罩无窗体
@@ -765,7 +765,7 @@ func _on_fengkui_confirmed():
 	c._safe_close("FengkuiConfirmPopup")
 	var res = data.hero_system.choose_fengkui(hp.current_hero_id)
 	if not res.get("ok", false):
-		c._show_stage_hint(res.get("msg", "选定失败"), 2.0)
+		c._show_success_popup(res.get("msg", "选定失败"), 2.0, "warn")   # 【改】飘字退休→warn 弹窗
 		return
 	# 【改】成功反馈铺开：凤魁任命弹窗
 	c._show_success_popup("【%s】已成为凤魁" % data.heroes[hp.current_hero_id].get("name", ""), 2.5)
@@ -830,7 +830,7 @@ func _on_fengkui_upgrade(batch: bool):
 		# 【新增】批次②③④-B4：失败反馈（凤临乐宴耗对应道具，道具名读配置）
 		var fk_cfg: Dictionary = data.heroes[hp.current_hero_id].get("fengkui", {})
 		var iname: String = str(data.ITEM_CONFIG.get(str(fk_cfg.get("cost_item", "")), {}).get("name", "凤游宴图"))
-		c._show_stage_hint("%s不足" % iname)
+		c._show_success_popup("%s不足" % iname, 0.0, "warn")   # 【改】飘字退休→warn 弹窗
 
 
 func _on_fengkui_skill_upgrade(mode: String):
@@ -838,7 +838,7 @@ func _on_fengkui_skill_upgrade(mode: String):
 	if sname == "": return
 	var res = data.hero_system.upgrade_fengkui_skill(hp.current_hero_id, sname, mode, hp._use_baiye)
 	if not res.get("ok", false):
-		c._show_stage_hint(res.get("msg", "升级失败"), 2.0)
+		c._show_success_popup(res.get("msg", "升级失败"), 2.0, "warn")   # 【改】飘字退休→warn 弹窗
 		return
 	_show_fengkui_panel("skill")
 	hp.update_hero_panel()
@@ -963,7 +963,7 @@ func _fill_fengkui_wuyue_tab(vb):
 func _on_wuyue_cos_skill(owner: String, cos_id: String, mode: String):
 	var res = data.costume_system.upgrade_cos_skill(owner, cos_id, mode, hp._use_baiye)
 	if not res.get("ok", false):
-		c._show_stage_hint(res.get("msg", "升级失败"), 2.0)
+		c._show_success_popup(res.get("msg", "升级失败"), 2.0, "warn")   # 【改】飘字退休→warn 弹窗
 		return
 	_show_fengkui_panel("wuyue")
 	hp.update_hero_panel()
@@ -1027,7 +1027,7 @@ func _on_fengkui_transfer_confirmed(hid: String):
 	c._safe_close("FengkuiTransferConfirm")
 	var res = data.hero_system.transfer_fengkui(hid)
 	if not res.get("ok", false):
-		c._show_stage_hint(res.get("msg", "转移失败"), 2.0)
+		c._show_success_popup(res.get("msg", "转移失败"), 2.0, "warn")   # 【改】飘字退休→warn 弹窗
 		return
 	# 【改】成功反馈铺开：凤魁转移弹窗
 	c._show_success_popup("凤魁已转移给【%s】" % data.heroes[hid].get("name", ""), 2.5)
@@ -1076,7 +1076,7 @@ func _build_master_aura_card(aura: Dictionary) -> Dictionary:
 
 func _on_master_aura_up(aura_id: String, times: int):
 	var res: Dictionary = data.hero_system.upgrade_master_aura(hp.current_hero_id, aura_id, times)
-	c._show_stage_hint("【%s】升至 %d 级" % [_aura_name(aura_id), res.get("level", 0)] if res.get("ok", false) else res.get("msg", "升级失败"))
+	c._show_success_popup("【%s】升至 %d 级" % [_aura_name(aura_id), res.get("level", 0)] if res.get("ok", false) else res.get("msg", "升级失败"), 0.0, "warn")   # 【改】飘字退休→warn 弹窗
 	hp.update_hero_panel()   # 光环变化影响资质/赚钱，整面板对账
 	c.update_all_ui()
 
@@ -1142,7 +1142,7 @@ func _on_self_aura_up(aura_id: String):
 		# 【改】成功反馈铺开：光环升级弹窗
 		c._show_success_popup("【%s】升至 %d 级" % [_self_aura_name(aura_id), int(res.get("level", 0))])
 	else:
-		c._show_stage_hint(str(res.get("msg", "升级失败")))
+		c._show_success_popup(str(res.get("msg", "升级失败")), 0.0, "warn")   # 【改】飘字退休→warn 弹窗
 	hp.update_hero_panel()
 	c.update_all_ui()
 
@@ -1155,7 +1155,7 @@ func _self_aura_name(aura_id: String) -> String:
 
 func _on_pair_aura_up(aura_id: String, times: int):
 	var res: Dictionary = data.hero_system.upgrade_pair_aura(hp.current_hero_id, aura_id, times)
-	c._show_stage_hint("【%s】升至 %d 级" % [_pair_aura_name(aura_id), res.get("level", 0)] if res.get("ok", false) else res.get("msg", "升级失败"))
+	c._show_success_popup("【%s】升至 %d 级" % [_pair_aura_name(aura_id), res.get("level", 0)] if res.get("ok", false) else res.get("msg", "升级失败"), 0.0, "warn")   # 【改】飘字退休→warn 弹窗
 	hp.update_hero_panel()   # 光环变化影响资质/赚钱，整面板对账
 	c.update_all_ui()
 

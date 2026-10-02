@@ -65,12 +65,12 @@ func _on_charity():
 		# 单次行善
 		var result = data.do_charity()
 		if not result.ok:
-			c._show_stage_hint(result.reason)
+			c._show_success_popup(result.reason, 0.0, "ok")   # 【改】飘字退休→ok 弹窗
 			return
 		var msg = "在【%s】行善！\n获得：%s" % [result.location, "、".join(result.rewards)]
 		if result.completed:
 			msg += "\n\n第%d档完成！%s类徒弟赚速加成池 +%d（结业时生效）" % [result.tier, result.career, data.CHARITY_EFFECT_PER_TIER]
-		c._show_stage_hint(msg, 4.0)
+		c._show_success_popup(msg, 4.0, "ok")   # 【改】飘字退休→ok 弹窗
 	else:
 		# 十连：逐次结算（每次消耗按当时次数×1.5递增），失败即停
 		var done = 0
@@ -89,7 +89,7 @@ func _on_charity():
 			if r.completed:
 				tier_msgs.append("【%s】第%d档（%s类+%d）" % [r.location, r.tier, r.career, data.CHARITY_EFFECT_PER_TIER])
 		if done == 0:
-			c._show_stage_hint("铜钱不足")
+			c._show_success_popup("铜钱不足", 0.0, "warn")   # 【改】飘字退休→warn 弹窗
 			return
 		var loc_parts = []
 		for k in loc_counts.keys():
@@ -102,7 +102,7 @@ func _on_charity():
 			msg += "\n\n满档：\n" + "\n".join(tier_msgs)
 		if done < 10:
 			msg += "\n（铜钱不足，提前结束）"
-		c._show_stage_hint(msg, 5.0)
+		c._show_success_popup(msg, 5.0, "ok")   # 【改】飘字退休→ok 弹窗
 	
 	update_charity_view()
 	c.update_all_ui()

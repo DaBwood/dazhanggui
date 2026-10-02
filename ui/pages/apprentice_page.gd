@@ -246,7 +246,7 @@ func _on_train_apprentice(slot: int, btn: Button = null):
 				msg += "，徒弟已成年，可以结业了"
 			elif result.get("stop_reason", "") != "":
 				msg += "（%s）" % result.stop_reason
-			c._show_stage_hint(msg)
+			c._show_success_popup(msg, 0.0, "ok")   # 【改】飘字退休→ok 弹窗
 		else:
 			_handle_train_fail(slot, result.reason, btn)
 	else:
@@ -265,7 +265,7 @@ func _handle_train_fail(slot: int, reason: String, btn: Button = null):
 		_show_vitality_pill_prompt(slot)
 	else:
 		if btn != null: c.flash_red(btn.get_path())   # 【新增】闪红审计：操作失败反馈（2026-09-19）
-		c._show_stage_hint(reason)
+		c._show_success_popup(reason, 0.0, "ok")   # 【改】飘字退休→ok 弹窗
 
 func _show_graduate_selector(slot: int):
 	c._safe_close("GraduatePanel")
@@ -327,12 +327,12 @@ func _on_graduate(slot: int, path: String):
 			_show_graduate_selector(slot)
 	else:
 		# 【新增】批次②③④-B7：结业失败原静默（按钮只对待结业槽显示，纯防御补反馈）
-		c._show_stage_hint("结业失败：徒弟状态已变化")
+		c._show_success_popup("结业失败：徒弟状态已变化", 0.0, "warn")   # 【改】飘字退休→warn 弹窗
 
 func _show_vitality_pill_prompt(slot: int):
 	var max_pills = data.items.get("vitality_pill", 0)
 	if max_pills <= 0:
-		c._show_stage_hint("没有活力丹，可前往商城购买活力礼包")
+		c._show_success_popup("没有活力丹，可前往商城购买活力礼包", 0.0, "warn")   # 【改】飘字退休→warn 弹窗
 		return
 	_vitality_target_slot = slot
 	c._safe_close("VitalityPillPrompt")
@@ -393,7 +393,7 @@ func _on_use_vitality_pill(spin: SpinBox):
 		update_apprentice_page()
 		c.update_bag_list()
 	else:
-		c._show_stage_hint("使用失败：活力丹不足")
+		c._show_success_popup("使用失败：活力丹不足", 0.0, "warn")   # 【改】飘字退休→warn 弹窗
 	_vitality_target_slot = -1
 
 func _show_marriage_proposal(slot: int):
@@ -402,7 +402,7 @@ func _show_marriage_proposal(slot: int):
 	_proposed_spouse = data.generate_spouse(slot)
 	# 【新增】批次②③④-B7：生成联姻对象失败原静默 return，补反馈
 	if _proposed_spouse.is_empty():
-		c._show_stage_hint("生成联姻对象失败，请重试")
+		c._show_success_popup("生成联姻对象失败，请重试", 0.0, "warn")   # 【改】飘字退休→warn 弹窗
 		return
 	
 	var a = data.graduated_apprentices[slot]
@@ -449,4 +449,4 @@ func _on_marry_apprentice():
 		_proposed_spouse = {}
 	else:
 		# 【新增】批次②③④-B7：联姻失败原静默（按钮只对现充显示，纯防御补反馈）
-		c._show_stage_hint("联姻失败：对象已失效")
+		c._show_success_popup("联姻失败：对象已失效", 0.0, "warn")   # 【改】飘字退休→warn 弹窗

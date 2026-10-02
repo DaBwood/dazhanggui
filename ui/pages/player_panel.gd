@@ -199,7 +199,7 @@ func _on_claim_identity_reward(level: int):
 		if c.has_node("PageContainer/BeastPage"):
 			c.update_beast_page()
 	elif result.duplicate:
-		c._show_stage_hint("门客【%s】已拥有，无法重复领取" % result.reward.name)
+		c._show_success_popup("门客【%s】已拥有，无法重复领取" % result.reward.name, 0.0, "warn")   # 【改】飘字退休→warn 弹窗
 	else:
 		c.flash_red("PlayerPanel")
 

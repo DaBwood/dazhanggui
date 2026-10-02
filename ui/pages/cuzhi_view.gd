@@ -480,7 +480,7 @@ func _refresh_catch():
 func _do_catch(count: int = 1):
 	var cage = data.items.get("cuzhi_cage", 0)
 	if cage < count:
-		c._show_stage_hint("促织笼不足，去商城购买吧！")
+		c._show_success_popup("促织笼不足，去商城购买吧！", 0.0, "warn")   # 【改】飘字退休→warn 弹窗
 		return
 
 	var results = []
@@ -517,7 +517,7 @@ func _do_catch(count: int = 1):
 	_refresh_catch()
 
 	if results.size() > 0 and results[-1].guarantee_ready:
-		c._show_stage_hint("保底已满！可自选一只促织")
+		c._show_success_popup("保底已满！可自选一只促织", 0.0, "ok")   # 【改】飘字退休→ok 弹窗
 
 func _show_guarantee_selector():
 	if sys.get_guarantee_progress() < sys.get_guarantee_target():
@@ -564,7 +564,7 @@ func _show_guarantee_selector():
 				_refresh_catch()
 			else:
 				c.flash_red(btn.get_path())   # 【新增】闪红审计：操作失败反馈（2026-09-19）
-				c._show_stage_hint("兑换失败")
+				c._show_success_popup("兑换失败", 0.0, "warn")   # 【改】飘字退休→warn 弹窗
 		)
 		grid.add_child(btn)
 
@@ -686,12 +686,12 @@ func _make_temple_hero_row(hero_id: String, h: Dictionary) -> Panel:
 	up_btn.custom_minimum_size = Vector2(80, 40)
 	up_btn.pressed.connect(func():
 		if sys.upgrade_temple(hero_id, career):
-			c._show_stage_hint("%s 促织庙 +1" % h.name)
+			c._show_success_popup("%s 促织庙 +1" % h.name, 0.0, "ok")   # 【改】飘字退休→ok 弹窗
 			_refresh_temple()
 		else:
 			# 【新增】批次②③④-B6：失败反馈（系统层失败=缘分不足，满级已被禁用态覆盖）
 			c.flash_red(up_btn.get_path())
-			c._show_stage_hint("%s缘分不足！" % career)
+			c._show_success_popup("%s缘分不足！" % career, 0.0, "warn")   # 【改】飘字退休→warn 弹窗
 	)
 	hbox.add_child(up_btn)
 
@@ -759,7 +759,7 @@ func _make_shop_row(g: Dictionary) -> Panel:
 	buy_btn.add_theme_font_size_override("font_size", 13)
 	buy_btn.pressed.connect(func():
 		if data.yuanbao < g.price:
-			c._show_stage_hint("元宝不足！")
+			c._show_success_popup("元宝不足！", 0.0, "warn")   # 【改】飘字退休→warn 弹窗
 			return
 		data.yuanbao -= g.price
 		data.items["cuzhi_cage"] = data.items.get("cuzhi_cage", 0) + g.count
@@ -1059,13 +1059,13 @@ func _show_worm_skill_upgrade(hero_id: String, idx: int, skill: Dictionary, cdat
 	up_btn.disabled = not can
 	up_btn.pressed.connect(func():
 		if sys.upgrade_worm_skill(hero_id, idx):
-			c._show_stage_hint("升级成功！")
+			c._show_success_popup("升级成功！", 0.0, "ok")   # 【改】飘字退休→ok 弹窗
 			popup.queue_free()
 			# 【新增】刷新底层技能列表，再打开新的升级弹窗
 			_refresh_worm_skill_list()
 			_show_worm_skill_upgrade(hero_id, idx, sys.get_hero_worm_skills(hero_id)[idx], cdata)
 		else:
-			c._show_stage_hint("升级失败")
+			c._show_success_popup("升级失败", 0.0, "warn")   # 【改】飘字退休→warn 弹窗
 	)
 	vbox.add_child(up_btn)
 
@@ -1352,7 +1352,7 @@ func _show_jar_action(jar: Dictionary):
 		else:
 			# 【新增】批次②③④-B6：失败反馈（系统层 can_speedup=促织蜜膏不足）
 			c.flash_red(btn10.get_path())
-			c._show_stage_hint("促织蜜膏不足！")
+			c._show_success_popup("促织蜜膏不足！", 0.0, "warn")   # 【改】飘字退休→warn 弹窗
 	)
 	hbox.add_child(btn10)
 
@@ -1365,13 +1365,13 @@ func _show_jar_action(jar: Dictionary):
 	auto_btn.disabled = use_count <= 0 or remain <= 0
 	auto_btn.pressed.connect(func():
 		if sys.speedup(jar, use_count):
-			c._show_stage_hint("加速成功！使用%d个" % use_count)
+			c._show_success_popup("加速成功！使用%d个" % use_count, 0.0, "ok")   # 【改】飘字退休→ok 弹窗
 			popup.queue_free()
 			_refresh_peiyu()
 		else:
 			# 【新增】批次②③④-B6：失败反馈（系统层 can_speedup=促织蜜膏不足）
 			c.flash_red(auto_btn.get_path())
-			c._show_stage_hint("促织蜜膏不足！")
+			c._show_success_popup("促织蜜膏不足！", 0.0, "warn")   # 【改】飘字退休→warn 弹窗
 	)
 	hbox.add_child(auto_btn)
 
@@ -1438,7 +1438,7 @@ func _make_peiyu_cricket_row(item: Dictionary) -> Button:
 	molt_btn.pressed.connect(func():
 		if sys.can_molt(cid):
 			if sys.do_molt(cid):
-				c._show_stage_hint("蜕壳成功！")
+				c._show_success_popup("蜕壳成功！", 0.0, "ok")   # 【改】飘字退休→ok 弹窗
 				_refresh_peiyu()
 		else:
 			_show_molt_blocker(cid)
@@ -1462,21 +1462,21 @@ func _show_molt_blocker(cid: String):
 	var phase = sys.get_current_phase(cid)
 	var phases = _cfg().get("phases", [])
 	if phase >= phases.size() - 1:
-		c._show_stage_hint("该促织已达最高阶段，无法继续蜕壳")
+		c._show_success_popup("该促织已达最高阶段，无法继续蜕壳", 0.0, "warn")   # 【改】飘字退休→warn 弹窗
 		return
 	var max_lv = sys.get_part_max_level(cid)
 	for part in ["head", "jaw", "wing"]:
 		if sys.get_part_level(cid, part) < max_lv:
-			c._show_stage_hint("所有部位需培育至%d级方可蜕壳" % max_lv)
+			c._show_success_popup("所有部位需培育至%d级方可蜕壳" % max_lv, 0.0, "ok")   # 【改】飘字退休→ok 弹窗
 			return
 	var series = sys.get_cricket_series(cid)
 	if series == "":
-		c._show_stage_hint("该促织无系列归属，无法蜕壳")
+		c._show_success_popup("该促织无系列归属，无法蜕壳", 0.0, "warn")   # 【改】飘字退休→warn 弹窗
 		return
 	var item_id = _cfg().get("molt_items", {}).get(series, "")
 	var item_name = data.ITEM_CONFIG.get(item_id, {}).get("name", item_id)
 	var have = data.items.get(item_id, 0)
-	c._show_stage_hint("蜕壳需要 %s×1（当前拥有 %d）" % [item_name, have])
+	c._show_success_popup("蜕壳需要 %s×1（当前拥有 %d）" % [item_name, have], 0.0, "ok")   # 【改】飘字退休→ok 弹窗
 
 
 func _show_part_selector(cid: String, _cdata: Dictionary):
@@ -1512,13 +1512,13 @@ func _show_part_selector(cid: String, _cdata: Dictionary):
 		btn.disabled = is_max or jar_busy or not sys.is_any_jar_free()
 		btn.pressed.connect(func():
 			if sys.start_peiyu(cid, part):
-				c._show_stage_hint("开始培育 %s！" % pname)
+				c._show_success_popup("开始培育 %s！" % pname, 0.0, "ok")   # 【改】飘字退休→ok 弹窗
 				popup.queue_free()
 				_refresh_peiyu()
 			else:
 				# 【新增】批次②③④-B6：防御性失败反馈（罐满/部位满/培育中均被禁用态覆盖，此处兜底）
 				c.flash_red(btn.get_path())
-				c._show_stage_hint("培育失败，促织罐不足或促织忙碌中！")
+				c._show_success_popup("培育失败，促织罐不足或促织忙碌中！", 0.0, "warn")   # 【改】飘字退休→warn 弹窗
 		)
 		hbox.add_child(btn)
 
@@ -1566,6 +1566,6 @@ func show_wushuang_box_selector():
 				popup.queue_free()
 			else:
 				c.flash_red(btn.get_path())   # 【新增】闪红审计：操作失败反馈（2026-09-19）
-				c._show_stage_hint("兑换失败")
+				c._show_success_popup("兑换失败", 0.0, "warn")   # 【改】飘字退休→warn 弹窗
 		)
 		grid.add_child(btn)

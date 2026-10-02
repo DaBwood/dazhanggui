@@ -202,16 +202,16 @@ func _fmt_rate(x: float) -> String:
 func _on_plus_pressed():
 	var count: int = int(data.items.get("miaoyin_jiasu_ka", 0))
 	if count <= 0:
-		c._show_stage_hint("没有妙音坊加速卡")
+		c._show_success_popup("没有妙音坊加速卡", 0.0, "warn")   # 【改】飘字退休→warn 弹窗
 		return
 	_show_accel_popup()
 
 func _on_claim_pressed():
 	var r: Dictionary = _sys().claim_jar()
 	if not r.get("ok", false):
-		c._show_stage_hint(str(r.get("msg", "暂无可领取收益")))
+		c._show_success_popup(str(r.get("msg", "暂无可领取收益")), 0.0, "warn")   # 【改】飘字退休→warn 弹窗
 		return
-	c._show_stage_hint(str(r.get("msg", "领取成功")))
+	c._show_success_popup(str(r.get("msg", "领取成功")), 0.0, "ok")   # 【改】飘字退休→ok 弹窗
 	c.update_all_ui()
 	_refresh()
 
@@ -323,7 +323,7 @@ func _build_building_page(page: Panel):
 				str(card.get("name", bid)), "功能" if str(card.get("type", "")) == "function" else "居所",
 				int(card.get("unlock_medal", 1))]
 			var need_lv: int = int(card.get("unlock_medal", 1))
-			b.pressed.connect(func(): c._show_stage_hint("需要妙音坊勋章 %d 级解锁" % need_lv))
+			b.pressed.connect(func(): c._show_success_popup("需要妙音坊勋章 %d 级解锁" % need_lv, 0.0, "ok"))   # 【改】飘字退休→ok 弹窗
 		list.add_child(b)
 
 func _open_building_popup(bid: String):
@@ -335,7 +335,7 @@ func _show_building_popup(bid: String):
 	if bcfg.is_empty():
 		return
 	if not _sys().is_building_unlocked(bcfg):
-		c._show_stage_hint("需要妙音坊勋章 %d 级解锁" % int(bcfg.get("unlock_medal", 1)))
+		c._show_success_popup("需要妙音坊勋章 %d 级解锁" % int(bcfg.get("unlock_medal", 1)), 0.0, "ok")   # 【改】飘字退休→ok 弹窗
 		return
 	close_popup()
 	_popup_kind = "building"
@@ -501,7 +501,7 @@ func _on_building_upgrade_action(bid: String, fac_idx: int):
 func _on_facility_upgrade(bid: String, fac_idx: int, count: int):
 	var r: Dictionary = _sys().upgrade_facility(bid, fac_idx, count)
 	if not r.get("ok", false):
-		c._show_stage_hint(str(r.get("msg", "升级失败")))
+		c._show_success_popup(str(r.get("msg", "升级失败")), 0.0, "warn")   # 【改】飘字退休→warn 弹窗
 		return
 	# 【改】成功反馈铺开：升级成功弹窗
 	c._show_success_popup("升级成功" if count >= 10 else "升级成功")
@@ -511,7 +511,7 @@ func _on_facility_upgrade(bid: String, fac_idx: int, count: int):
 func _on_building_sync(bid: String, count: int):
 	var r: Dictionary = _sys().upgrade_building_sync(bid, count)
 	if not r.get("ok", false):
-		c._show_stage_hint(str(r.get("msg", "同步升级失败")))
+		c._show_success_popup(str(r.get("msg", "同步升级失败")), 0.0, "warn")   # 【改】飘字退休→warn 弹窗
 		return
 	# 【改】成功反馈铺开：同步升级弹窗
 	c._show_success_popup(("同步十连" if count >= 10 else "同步升级") + "\n%d 个设施升级" % int(r.get("count", 0)))
@@ -760,16 +760,16 @@ func _show_rookie_popup(fid: String):
 func _on_sync_profession_rookies():
 	var r: Dictionary = _sys().train_profession_rookies_level_up(_rookie_filter)
 	if not r.get("ok", false):
-		c._show_stage_hint(str(r.get("msg", "同步升级失败")))
+		c._show_success_popup(str(r.get("msg", "同步升级失败")), 0.0, "warn")   # 【改】飘字退休→warn 弹窗
 		return
-	c._show_stage_hint(str(r.get("msg", "同步升级成功")))
+	c._show_success_popup(str(r.get("msg", "同步升级成功")), 0.0, "ok")   # 【改】飘字退休→ok 弹窗
 	c.update_all_ui()
 	_refresh()
 
 func _on_train_level_up(fid: String):
 	var r: Dictionary = _sys().train_rookie_level_up_once(fid)
 	if not r.get("ok", false):
-		c._show_stage_hint(str(r.get("msg", "升级失败")))
+		c._show_success_popup(str(r.get("msg", "升级失败")), 0.0, "warn")   # 【改】飘字退休→warn 弹窗
 		return
 	# 【改】成功反馈铺开：升级成功弹窗
 	c._show_success_popup("升级成功")
@@ -834,9 +834,9 @@ func _show_house_popup(fid: String):
 func _on_checkin(fid: String, bid: String):
 	var r: Dictionary = _sys().checkin_rookie(fid, bid)
 	if not r.get("ok", false):
-		c._show_stage_hint(str(r.get("msg", "入住失败")))
+		c._show_success_popup(str(r.get("msg", "入住失败")), 0.0, "warn")   # 【改】飘字退休→warn 弹窗
 		return
-	c._show_stage_hint(str(r.get("msg", "入住成功")))
+	c._show_success_popup(str(r.get("msg", "入住成功")), 0.0, "ok")   # 【改】飘字退休→ok 弹窗
 	c.update_all_ui()
 	_refresh()
 
@@ -970,21 +970,21 @@ func _show_audition_team_popup(slot: int):
 func _on_pick_audition_slot(slot: int, fid: String):
 	var r: Dictionary = _sys().set_audition_team_slot(slot, fid)
 	if not r.get("ok", false):
-		c._show_stage_hint(str(r.get("msg", "上阵失败")))
+		c._show_success_popup(str(r.get("msg", "上阵失败")), 0.0, "warn")   # 【改】飘字退休→warn 弹窗
 		return
 	c.update_all_ui()
 	_refresh()
 
 func _on_auto_audition_team():
 	_sys().set_audition_team(_sys().auto_pick_audition_team())
-	c._show_stage_hint("已按主属性职业自动上阵")
+	c._show_success_popup("已按主属性职业自动上阵", 0.0, "ok")   # 【改】飘字退休→ok 弹窗
 	c.update_all_ui()
 	_refresh()
 
 func _on_challenge_audition():
 	var r: Dictionary = _sys().pass_audition()
 	if not r.get("ok", false):
-		c._show_stage_hint(str(r.get("msg", "挑战失败")))
+		c._show_success_popup(str(r.get("msg", "挑战失败")), 0.0, "warn")   # 【改】飘字退休→warn 弹窗
 		return
 	var rewards: Dictionary = r.get("rewards", {})
 	# 【改】成功反馈铺开：通关弹窗
@@ -1081,12 +1081,13 @@ func _show_medal_popup():
 		cvb.add_child(up)
 
 func _on_medal_help():
-	c._show_stage_hint("妙音坊勋章：繁荣度=应援币总产出/分；全部商铺赚速+100%×等级；升级只校验繁荣度，不消耗繁荣度。")
+	# 【改】飘字退休：规则说明升级"?"规则弹窗（带遮罩、点外部关、不自动关）
+	c._show_rule_popup("勋章规则", "妙音坊勋章：繁荣度=应援币总产出/分；全部商铺赚速+100%×等级；升级只校验繁荣度，不消耗繁荣度。")
 
 func _on_medal_upgrade():
 	var r: Dictionary = _sys().upgrade_medal()
 	if not r.get("ok", false):
-		c._show_stage_hint(str(r.get("msg", "暂不可升级")))
+		c._show_success_popup(str(r.get("msg", "暂不可升级")), 0.0, "ok")   # 【改】飘字退休→ok 弹窗
 		return
 	# 【改】成功反馈铺开：勋章升级弹窗
 	c._show_success_popup("勋章升级成功")
@@ -1099,7 +1100,7 @@ func _show_accel_popup():
 	_popup_kind = "accel"
 	var count: int = int(data.items.get("miaoyin_jiasu_ka", 0))
 	if count <= 0:
-		c._show_stage_hint("没有妙音坊加速卡")
+		c._show_success_popup("没有妙音坊加速卡", 0.0, "warn")   # 【改】飘字退休→warn 弹窗
 		return
 	var popup: PanelContainer = c._create_base_popup("使用妙音坊加速卡", Vector2(430, 300), Vector2.ZERO, false)   # 【改】UI统一批次①：确认弹窗不带右上✕
 	popup.name = _popup_node_name
@@ -1137,9 +1138,9 @@ func _on_accel_confirm(spin: SpinBox):
 	var n: int = int(spin.value)
 	var r: Dictionary = data.use_item("miaoyin_jiasu_ka", n)
 	if not r.get("ok", false):
-		c._show_stage_hint(str(r.get("msg", "使用失败")))
+		c._show_success_popup(str(r.get("msg", "使用失败")), 0.0, "warn")   # 【改】飘字退休→warn 弹窗
 		return
-	c._show_stage_hint(str(r.get("msg", "使用成功")))
+	c._show_success_popup(str(r.get("msg", "使用成功")), 0.0, "ok")   # 【改】飘字退休→ok 弹窗
 	c.update_all_ui()
 	close_popup()
 	_refresh()

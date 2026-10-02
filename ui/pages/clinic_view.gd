@@ -279,7 +279,7 @@ func _on_add_patient():
 	var manual: String = data._clinic_configs.get("settings", {}).get("manual_item", "patient_manual")
 	var owned: int = int(data.items.get(manual, 0))
 	if owned <= 0:
-		c._show_stage_hint("没有【病人手册】")
+		c._show_success_popup("没有【病人手册】", 0.0, "warn")   # 【改】飘字退休→warn 弹窗
 		return
 	_close_node("ClinicPopup")
 	var give: int = int(data._clinic_configs.get("settings", {}).get("manual_give", 3))
@@ -343,16 +343,16 @@ func _on_collect():
 func _on_treat():
 	var r := _sys().admit_one()
 	if not r.get("ok", false):
-		c._show_stage_hint(str(r.get("msg", "")))
+		c._show_success_popup(str(r.get("msg", "")), 0.0, "ok")   # 【改】飘字退休→ok 弹窗
 		return
-	c._show_stage_hint("已转入接诊队列，治疗中…")
+	c._show_success_popup("已转入接诊队列，治疗中…", 0.0, "ok")   # 【改】飘字退休→ok 弹窗
 	_refresh()
 
 # 一键接诊：全部转入接诊队列（纯改数字，不卡）
 func _on_treat_all():
 	var r := _sys().admit_all()
 	if not r.get("ok", false):
-		c._show_stage_hint(str(r.get("msg", "")))
+		c._show_success_popup(str(r.get("msg", "")), 0.0, "ok")   # 【改】飘字退休→ok 弹窗
 		return
 	# 【改】成功反馈铺开：接诊成功弹窗
 	c._show_success_popup("接诊成功\n已将 %d 人转入接诊队列" % int(r.get("count", 0)))
@@ -451,7 +451,7 @@ func _show_patient_popup(pid: String):
 func _on_unlock_patient(pid: String):
 	var r: Dictionary = _sys().unlock_patient(pid)
 	if not r.get("ok", false):
-		c._show_stage_hint(str(r.get("msg", "")))
+		c._show_success_popup(str(r.get("msg", "")), 0.0, "ok")   # 【改】飘字退休→ok 弹窗
 		return
 	_refresh()
 
@@ -459,7 +459,7 @@ func _on_unlock_patient(pid: String):
 func _on_upgrade_all_illness():
 	var n: int = _sys().upgrade_all_illnesses()
 	if n <= 0:
-		c._show_stage_hint("暂无可升级病症")
+		c._show_success_popup("暂无可升级病症", 0.0, "warn")   # 【改】飘字退休→warn 弹窗
 		return
 	_refresh()
 	c.update_all_ui()
@@ -529,14 +529,14 @@ func _show_dept_popup(dept_id: String):
 func _on_dept_unlock(dept_id: String):
 	var r := _sys().unlock_dept(dept_id)
 	if not r.get("ok", false):
-		c._show_stage_hint(str(r.get("msg", "")))
+		c._show_success_popup(str(r.get("msg", "")), 0.0, "ok")   # 【改】飘字退休→ok 弹窗
 		return
 	_refresh()
 
 func _on_dept_upgrade(dept_id: String):
 	var r := _sys().upgrade_dept(dept_id)
 	if not r.get("ok", false):
-		c._show_stage_hint(str(r.get("msg", "")))
+		c._show_success_popup(str(r.get("msg", "")), 0.0, "ok")   # 【改】飘字退休→ok 弹窗
 		return
 	_refresh()
 
@@ -632,6 +632,6 @@ func _show_illness_popup(illness_id: String):
 func _on_illness_upgrade(illness_id: String):
 	var r := _sys().upgrade_illness(illness_id)
 	if not r.get("ok", false):
-		c._show_stage_hint(str(r.get("msg", "")))
+		c._show_success_popup(str(r.get("msg", "")), 0.0, "ok")   # 【改】飘字退休→ok 弹窗
 		return
 	_refresh()

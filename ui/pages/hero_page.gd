@@ -621,7 +621,7 @@ func on_hero_level_upgrade():
 		c.update_all_ui()
 		c.update_bag_list()
 	else:
-		c._show_stage_hint("阅历不足")   # 【新增】批次②③④-B4：升级失败反馈（门客升级耗阅历）
+		c._show_success_popup("阅历不足", 0.0, "warn")   # 【新增】批次②③④-B4：升级失败反馈（门客升级耗阅历）   # 【改】飘字退休→warn 弹窗
 
 # 【新增】升级按钮文本：未勾选十连显示下一级消耗；勾选十连显示接下来最多10级（不超突破上限）的总消耗
 # 【改】批次②③④-B4：消耗数值拆出 _get_level_up_cost，按钮文本与批次③着色共用同一口径
@@ -652,7 +652,7 @@ func on_hero_breakthrough():
 		c.update_all_ui()
 		c.update_bag_list()
 	else:
-		c._show_stage_hint("风雅颂不足")   # 【新增】批次②③④-B4：突破失败反馈
+		c._show_success_popup("风雅颂不足", 0.0, "warn")   # 【新增】批次②③④-B4：突破失败反馈   # 【改】飘字退休→warn 弹窗
 
 func _on_hero_beast_btn_clicked(beast_id: String, beast_idx: int):
 	var panel = c._create_base_popup("珍兽操作", Vector2(360, 240), Vector2(396, 200))
@@ -787,7 +787,7 @@ func on_aptitude_skill_upgrade(skill_index: int, mode: String = "single"):
 			c.update_all_ui()
 			c.update_bag_list()
 		else:
-			c._show_stage_hint("%s不足" % str(data.ITEM_CONFIG.get(book_id, {}).get("name", book_id)))   # 【新增】批次②③④-B4：失败反馈
+			c._show_success_popup("%s不足" % str(data.ITEM_CONFIG.get(book_id, {}).get("name", book_id)), 0.0, "warn")   # 【新增】批次②③④-B4：失败反馈   # 【改】飘字退休→warn 弹窗
 		return
 
 	var cost_per_level = int(skill.get("aptitude_per_level", 1))  # 每级固定消耗=每级加的资质数
@@ -805,12 +805,12 @@ func on_aptitude_skill_upgrade(skill_index: int, mode: String = "single"):
 			c.update_all_ui()
 			c.update_bag_list()
 		else:
-			c._show_stage_hint("百业经验不足")   # 【新增】批次②③④-B4：失败反馈
+			c._show_success_popup("百业经验不足", 0.0, "warn")   # 【新增】批次②③④-B4：失败反馈   # 【改】飘字退休→warn 弹窗
 		return
 
 	var pill_count = data.items.get("aptitude_pill", 0)
 	if pill_count < cost_per_level:
-		c._show_stage_hint("资质丹不足")   # 【新增】批次②③④-B4：失败反馈
+		c._show_success_popup("资质丹不足", 0.0, "warn")   # 【新增】批次②③④-B4：失败反馈   # 【改】飘字退休→warn 弹窗
 		return
 
 	if mode == "single":
@@ -831,7 +831,7 @@ func on_shop_skill_upgrade(skill_index: int, mode: String = "single"):
 		c.update_all_ui()
 		c.update_bag_list()
 	else:
-		c._show_stage_hint("算盘不足")   # 【新增】批次②③④-B4：失败反馈
+		c._show_success_popup("算盘不足", 0.0, "warn")   # 【新增】批次②③④-B4：失败反馈   # 【改】飘字退休→warn 弹窗
 
 # 【新增】钱庄财源广进升级（独立技能，走筹算值；single=升1级，bulk=筹算值够升多少升多少）
 func on_shop_skill_chousuan_upgrade(mode: String = "single"):
@@ -840,7 +840,7 @@ func on_shop_skill_chousuan_upgrade(mode: String = "single"):
 		c.update_all_ui()   # 店铺技能加成↑ → 派遣赚速/全局赚速飘字
 		c.update_bag_list()
 	else:
-		c._show_stage_hint("筹算值不足")   # 【新增】批次②③④-B4：失败反馈
+		c._show_success_popup("筹算值不足", 0.0, "warn")   # 【新增】批次②③④-B4：失败反馈   # 【改】飘字退休→warn 弹窗
 
 # 【新增】虫师副业技能升级（促织园体系走 cuzhi_system；single=升1级，bulk=升级10次）
 # 【第35节】支持百业经验抵扣（勾选状态共享 _use_baiye）
@@ -850,7 +850,7 @@ func on_side_skill_upgrade(skill_idx: int, mode: String = "single"):
 		c.update_all_ui()
 		c.update_bag_list()
 	else:
-		c._show_stage_hint("百业经验不足" if _use_baiye else "资质丹不足")   # 【新增】批次②③④-B4：失败反馈
+		c._show_success_popup("百业经验不足" if _use_baiye else "资质丹不足", 0.0, "warn")   # 【新增】批次②③④-B4：失败反馈   # 【改】飘字退休→warn 弹窗
 
 # 【新增】副业资质技能升级（side_skill_system；single=升1级，bulk=升级10次）【第35节】
 func on_side_sys_upgrade(key: String, mode: String = "single"):
@@ -862,7 +862,7 @@ func on_side_sys_upgrade(key: String, mode: String = "single"):
 		# 【新增】批次②③④-B4：失败反馈（按该技能自身货币名提示，不写模糊文案）
 		for r in data.side_skill_system.get_hero_skill_rows(current_hero_id):
 			if str(r["key"]) == key:
-				c._show_stage_hint("%s不足" % str(r["currency"]))
+				c._show_success_popup("%s不足" % str(r["currency"]), 0.0, "warn")   # 【改】飘字退休→warn 弹窗
 				break
 
 func open_hero_detail(hero_id: String):
@@ -967,7 +967,7 @@ func _get_fate_friends(hero_id: String) -> Array:
 func _on_fate_btn_clicked(hero_id: String):
 	var fate_ids = _get_fate_friends(hero_id)
 	if fate_ids.is_empty():
-		c._show_stage_hint("该门客没有缘分挚友")
+		c._show_success_popup("该门客没有缘分挚友", 0.0, "warn")   # 【改】飘字退休→warn 弹窗
 		return
 	var popup = c._create_base_popup("缘分挚友", Vector2(420, 400), Vector2(366, 120))
 	popup.name = "FatePopup"
@@ -1432,7 +1432,7 @@ func _fill_costume_tab(list):
 func _on_cos_skill_upgrade(cos_id: String, mode: String):
 	var res = data.costume_system.upgrade_cos_skill(current_hero_id, cos_id, mode, _use_baiye)
 	if not res.get("ok", false):
-		c._show_stage_hint(res.get("msg", "无法升级"))
+		c._show_success_popup(res.get("msg", "无法升级"), 0.0, "warn")   # 【改】飘字退休→warn 弹窗
 		return
 	update_hero_panel()   # 资质变化，面板对账
 	c.update_all_ui()
@@ -1540,7 +1540,7 @@ func _build_aura_card(skill: Dictionary) -> Dictionary:
 func _on_aura_extreme_hint(skill_name: String):
 	var lines = data.talent_system.get_aura_extreme_detail(current_hero_id, skill_name)
 	if lines.is_empty():
-		c._show_stage_hint("暂无升级需求明细")   # 【新增】批次②③④-B4：空明细反馈
+		c._show_success_popup("暂无升级需求明细", 0.0, "warn")   # 【新增】批次②③④-B4：空明细反馈   # 【改】飘字退休→warn 弹窗
 		return
 	if c.has_node("AuraHintPanel"):
 		var old = c.get_node("AuraHintPanel")
@@ -1562,7 +1562,7 @@ func _on_aura_extreme_hint(skill_name: String):
 func _on_aura_upgrade(skill_name: String, mode: String):
 	var res = data.talent_system.upgrade_aura(current_hero_id, skill_name, mode)
 	if not res.get("ok", false):
-		c._show_stage_hint(res.get("msg", "无法升级"))
+		c._show_success_popup(res.get("msg", "无法升级"), 0.0, "warn")   # 【改】飘字退休→warn 弹窗
 		return
 	update_hero_panel()   # 光环页 SkillList 原地重建（等级行即时刷新）
 	c.update_all_ui()     # 全局对账（光环效果批次③接线后此处产生真实 diff）
@@ -1572,7 +1572,7 @@ func _on_aura_upgrade(skill_name: String, mode: String):
 func _on_halo_upgrade(cos_id: String, mode: String):
 	var res = data.costume_system.upgrade_halo(current_hero_id, cos_id, mode)
 	if not res.get("ok", false):
-		c._show_stage_hint(res.get("msg", "无法升级"))
+		c._show_success_popup(res.get("msg", "无法升级"), 0.0, "warn")   # 【改】飘字退休→warn 弹窗
 		return
 	update_hero_panel()
 	c.update_all_ui()
@@ -1781,7 +1781,7 @@ func _do_cuzhi_upgrade(cid: String, use_jinghua: bool):
 		c.update_all_ui()
 		c.update_bag_list()
 	else:
-		c._show_stage_hint(res.get("reason", "升级失败"))
+		c._show_success_popup(res.get("reason", "升级失败"), 0.0, "warn")   # 【改】飘字退休→warn 弹窗
 
 # 【新增】执行促织装备回收
 func _do_cuzhi_recycle(cid: String):
@@ -1795,7 +1795,7 @@ func _do_cuzhi_recycle(cid: String):
 		c.update_all_ui()
 		c.update_bag_list()
 	else:
-		c._show_stage_hint(res.get("reason", "回收失败"))
+		c._show_success_popup(res.get("reason", "回收失败"), 0.0, "warn")   # 【改】飘字退休→warn 弹窗
 
 # 【促织装备】从场景树移除并延迟删除（避免信号中断+避免同名冲突）
 func _close_cuzhi_panel():
@@ -1836,7 +1836,7 @@ func _show_guardian_panel():
 	data.guardian_system.init_guardian(current_hero_id)
 	var gs = data.guardian_spirits.get(current_hero_id, {})
 	if gs.is_empty():
-		c._show_stage_hint("该门客没有守护灵")
+		c._show_success_popup("该门客没有守护灵", 0.0, "warn")   # 【改】飘字退休→warn 弹窗
 		return
 	
 	# 等级与加成信息
@@ -1943,9 +1943,9 @@ func _on_guardian_level_up():
 		# 【新增】批次②③④-B4：失败反馈——阶段上限与蕴灵珏不足分开提示（不写模糊文案）
 		var gs_now: Dictionary = data.guardian_system.get_guardian(current_hero_id)
 		if int(gs_now.get("level", 0)) >= data.guardian_system.get_level_cap(current_hero_id):
-			c._show_stage_hint("已达当前阶段上限")
+			c._show_success_popup("已达当前阶段上限", 0.0, "warn")   # 【改】飘字退休→warn 弹窗
 		else:
-			c._show_stage_hint("蕴灵珏不足")
+			c._show_success_popup("蕴灵珏不足", 0.0, "warn")   # 【改】飘字退休→warn 弹窗
 
 # 【改】切换幻化后同步刷新弹窗（如果打开着）
 func _on_guardian_avatar_selected(avatar_id: String):
@@ -1968,7 +1968,7 @@ func _on_guardian_avatar_unlock(avatar_id: String):
 		c.update_bag_list()
 	else:
 		c.flash_red("GuardianAvatarPopup")   # 【新增】闪红审计：操作失败反馈（2026-09-19）
-		c._show_stage_hint("道具不足，无法解锁")
+		c._show_success_popup("道具不足，无法解锁", 0.0, "warn")   # 【改】飘字退休→warn 弹窗
 
 # 【新增】守护灵技能升级回调
 func _on_guardian_skill_upgrade(skill_idx: int, mode: String):
@@ -1978,7 +1978,7 @@ func _on_guardian_skill_upgrade(skill_idx: int, mode: String):
 		c.update_all_ui()
 		c.update_bag_list()
 	else:
-		c._show_stage_hint("百业经验不足" if _use_baiye else "资质丹不足")   # 【新增】批次②③④-B4：失败反馈
+		c._show_success_popup("百业经验不足" if _use_baiye else "资质丹不足", 0.0, "warn")   # 【新增】批次②③④-B4：失败反馈   # 【改】飘字退休→warn 弹窗
 
 # 【新增】打开幻化形象选择弹窗（从守护灵面板独立出来，避免内容过多挤出去）
 func _show_guardian_avatar_popup():

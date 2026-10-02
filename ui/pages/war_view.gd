@@ -168,7 +168,7 @@ func _build_tax_tab(list):
 func _on_claim_tax():
 	var r = data.claim_war_tax()
 	if not r.ok:
-		c._show_stage_hint(r.reason)
+		c._show_success_popup(r.reason, 0.0, "ok")   # 【改】飘字退休→ok 弹窗
 	else:
 		# 【改】成功反馈铺开：领取弹窗
 		c._show_success_popup("领取成功\n铜钱 +%s" % c.format_number(r.amount))
@@ -178,7 +178,7 @@ func _on_claim_tax():
 func _on_upgrade_tax():
 	var r = data.upgrade_war_tax()
 	if not r.ok:
-		c._show_stage_hint(r.reason)
+		c._show_success_popup(r.reason, 0.0, "ok")   # 【改】飘字退休→ok 弹窗
 	update_war_view()
 
 # ============ 战斗弹窗（队伍列表） ============
@@ -326,7 +326,7 @@ func _on_del_squad(idx: int):
 	ok.pressed.connect(func():
 		var r = data.war_system.remove_squad(idx)
 		if not r.ok:
-			c._show_stage_hint(r.reason)
+			c._show_success_popup(r.reason, 0.0, "ok")   # 【改】飘字退休→ok 弹窗
 		popup.queue_free()
 		_refresh_battle_popup())
 	row.add_child(ok)
@@ -369,7 +369,7 @@ func _on_slot(squad_index: int, slot: int):
 func _on_pick_hero(popup, squad_index: int, slot: int, hero_id: String):
 	var r = data.assign_war_hero(squad_index, slot, hero_id)
 	if not r.ok:
-		c._show_stage_hint(r.reason)
+		c._show_success_popup(r.reason, 0.0, "ok")   # 【改】飘字退休→ok 弹窗
 	popup.queue_free()
 	_refresh_battle_popup()
 
@@ -384,22 +384,22 @@ func _on_battle(idx: int, battle_btn: Button = null):
 	var r = data.war_battle(idx)
 	if not r.ok:
 		if battle_btn != null: c.flash_red(battle_btn.get_path())   # 【新增】闪红审计：操作失败反馈（2026-09-19）
-		c._show_stage_hint(r.reason)
+		c._show_success_popup(r.reason, 0.0, "ok")   # 【改】飘字退休→ok 弹窗
 	else:
 		var msg = "战胜商队！" if r.win else "败给商队……"
 		msg += "\n我方战力 %s vs 商队 %s\n击败 %d 人 ｜ 商战积分 +%d ｜ 商战税引 +%d" % [
 			c.format_number(r.power), c.format_number(r.npc_power), r.kills, r.points, r.yin]
-		c._show_stage_hint(msg, 4.0)
+		c._show_success_popup(msg, 4.0, "ok")   # 【改】飘字退休→ok 弹窗
 	_refresh_battle_popup()
 
 # 快速战斗：所有可出战小队各结算一场，弹汇总
 func _on_quick_battle():
 	var r = data.war_system.quick_battle()
 	if not r.ok:
-		c._show_stage_hint(r.reason)
+		c._show_success_popup(r.reason, 0.0, "ok")   # 【改】飘字退休→ok 弹窗
 		return
 	if r.battles == 0:
-		c._show_stage_hint("没有可出战的小队（门客今日均已出战或队伍为空）")
+		c._show_success_popup("没有可出战的小队（门客今日均已出战或队伍为空）", 0.0, "warn")   # 【改】飘字退休→warn 弹窗
 		return
 	_show_quick_result(r)
 	_refresh_battle_popup()
@@ -457,5 +457,5 @@ func _build_shop_tab(list):
 func _on_exchange(item_id: String):
 	var r = data.war_exchange(item_id)
 	if not r.ok:
-		c._show_stage_hint(r.reason)
+		c._show_success_popup(r.reason, 0.0, "ok")   # 【改】飘字退休→ok 弹窗
 	update_war_view()
