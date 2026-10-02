@@ -781,7 +781,7 @@ func _show_medal_popup():
 	help_btn.pressed.connect(_on_medal_help)
 	head_row.add_child(help_btn)
 	var effect := Label.new()
-	effect.text = "全部商铺赚速 +%d%%" % int(_sys().get_medal_shop_pct() * 100)
+	effect.text = "全部商铺赚速 +%d%%　初始技能等级上限 +%d" % [int(_sys().get_medal_shop_pct() * 100), _sys().get_medal_skill_cap()]
 	effect.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	effect.add_theme_color_override("font_color", Color("#e6c07b"))
 	vb.add_child(effect)
@@ -804,7 +804,7 @@ func _show_medal_popup():
 		bar.custom_minimum_size = Vector2(410, 18)
 		vb.add_child(bar)
 		var next_effect := Label.new()
-		next_effect.text = "下级效果：全部商铺赚速 +%d%%" % int(float(nxt.get("shop_pct", 0.0)) * 100.0)
+		next_effect.text = "下级效果：全部商铺赚速 +%d%%　初始技能等级上限 +%d" % [int(float(nxt.get("shop_pct", 0.0)) * 100.0), int(nxt.get("skill_cap", 0))]
 		next_effect.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 		next_effect.add_theme_color_override("font_color", Color("#7ee787"))
 		vb.add_child(next_effect)
@@ -817,7 +817,7 @@ func _show_medal_popup():
 
 func _on_medal_help():
 	# 【改】飘字退休：规则说明升级"?"规则弹窗（带遮罩、点外部关、不自动关）
-	c._show_rule_popup("勋章规则", "厢房勋章：舒适度达到门槛即可升级（舒适度只作门槛不消耗）；每级全部商铺赚速+100%；技能等级上限效果挂起未接入。")
+	c._show_rule_popup("勋章规则", "厢房勋章：舒适度达到门槛即可升级（舒适度只作门槛不消耗）；每级全部商铺赚速+100%；初始技能等级上限+5×等级（与藏品/酒坊/妙音坊勋章叠加）。")
 
 func _on_medal_upgrade():
 	var r: Dictionary = _sys().upgrade_medal()

@@ -1150,6 +1150,21 @@ func load_game():
 		sys.load_save_data(data)
 
 # ==================== 子系统API转发区 ====================
+# ==================== 【聚合】初始技能等级上限加成（跨三玩法勋章） ====================
+# 口径（2026-10-02 用户拍板）：初始技能池=门客自带资质技能+晋升获得技能+凤魁线；
+# 藏品/酒坊/妙音坊三勋章的 cap 全部读取式叠加于此，存档存技能基础上限，零迁移
+func get_initial_skill_cap_bonus() -> int:
+	var bonus: int = 0
+	if collection_system != null:
+		bonus += collection_system.get_medal_skill_cap()
+	if winery_system != null:
+		bonus += winery_system.get_refine_cap_bonus()
+	if miaoyin_system != null:
+		bonus += miaoyin_system.get_refine_cap_bonus()
+	if xiangfang_system != null:
+		bonus += xiangfang_system.get_medal_skill_cap()
+	return bonus
+
 # ==================== 【转发】门客系统 → systems/hero_system.gd ====================
 
 func exchange_series_hero(hero_id: String, item_id: String, cost: int, friend_id: String = "") -> Dictionary:

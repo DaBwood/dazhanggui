@@ -460,7 +460,7 @@ func _show_medal_popup():
 	help_btn.pressed.connect(_on_medal_help)
 	head_row.add_child(help_btn)
 	var effect := Label.new()
-	effect.text = "全部商铺赚速 +%d%%" % int(round(_sys().get_medal_shop_pct() * 100.0))
+	effect.text = "全部商铺赚速 +%d%%　初始技能等级上限 +%d" % [int(round(_sys().get_medal_shop_pct() * 100.0)), _sys().get_refine_cap_bonus()]
 	effect.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	effect.add_theme_color_override("font_color", Color("#e6c07b"))
 	vb.add_child(effect)
@@ -482,7 +482,7 @@ func _show_medal_popup():
 		bar.custom_minimum_size = Vector2(410, 18)
 		vb.add_child(bar)
 		var next_effect := Label.new()
-		next_effect.text = "下级效果：全部商铺赚速 +%d%%" % int(round(float(lv + 1) * 100.0))
+		next_effect.text = "下级效果：全部商铺赚速 +%d%%　初始技能等级上限 +%d" % [int(round(float(lv + 1) * 100.0)), int(medals_cfg[lv].get("refine_cap", 0))]
 		next_effect.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 		next_effect.add_theme_color_override("font_color", Color("#7ee787"))
 		vb.add_child(next_effect)
@@ -495,7 +495,7 @@ func _show_medal_popup():
 
 func _on_medal_help():
 	# 【改】飘字退休：规则说明升级"?"规则弹窗（带遮罩、点外部关、不自动关）
-	c._show_rule_popup("勋章规则", "酒坊勋章：累计酒香只作门槛不消耗；全部商铺赚速+100%×等级。")
+	c._show_rule_popup("勋章规则", "酒坊勋章：累计酒香只作门槛不消耗；全部商铺赚速+100%×等级；初始技能等级上限+3×等级（与藏品/妙音坊/厢房勋章叠加）。")
 
 # 有可升级的名酒（名酒记入口红点）
 func _has_upgradeable_wine() -> bool:

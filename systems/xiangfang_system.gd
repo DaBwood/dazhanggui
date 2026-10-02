@@ -8,8 +8,8 @@
 #           前提=套内家具最低件等级≥目标级（0→1 需全套≥1 级，1→2 需全套≥2 级，依此类推，上限 50）；
 #           条件未达点击弹提示"需要全套家具达到XX级"；效果=配置表值×套装等级（表值同 xlsx）。
 # 勋章：15 级×舒适度门槛手动升级；效果①全部商铺赚速+100%/级=读取式挂 shop bonus 链（批次② view+挂点）；
-#       效果②初始技能等级上限：批次④已接 talent_system.apply_skill_cap_delta（仿药铺范式，
-#       升级差值写入+读档漏补自愈 cap_applied_lv）；四链读取函数 get_hero_* 供 hero_data 经 game_data 转发接入。
+#       效果②初始技能等级上限：2026-10-02 改读取式并入初始技能池（game_data.get_initial_skill_cap_bonus，
+#       用户拍板与藏品/酒坊/妙音坊同池；原写入天赋路径已拆，历史写入差值测试档不迁移）；四链读取函数 get_hero_* 供 hero_data 经 game_data 转发接入。
 # 货币：家具币=普通道具 items 轨（id "jiajibi"，道具表原有占位道具，用户 2026-09-20 拍板接入——
 #       不开独立货币 var，珍兽果双轨坑铁律）；风水符=普通道具 fengshui_fu 同轨。回收主来源，批次②接 UI。
 # ============================================================
@@ -23,7 +23,6 @@ var g
 var furniture: Dictionary = {}   # {fid: {lv, cnt}}（cnt=富余件数）
 var set_levels: Dictionary = {}  # {sid: 套装等级}（手动解锁/升级制，用户 2026-09-20 拍板；上限=套内最低件等级）
 var medal_lv: int = 1            # 勋章等级 1~15
-var cap_applied_lv: int = 1      # 技能上限已写入天赋系统的勋章等级（读档漏补自愈，防重复/漏写）
 
 # 家具币道具 id（道具表 items.json 原有占位道具，直接复用不开存档字段）
 const JIAJIBI_ITEM := "jiajibi"
@@ -35,7 +34,6 @@ func _init(p_g):
 func get_save_data() -> Dictionary:
 	return {"xiangfang": {
 		"furniture": furniture, "set_levels": set_levels, "medal": medal_lv,
-		"cap_applied_lv": cap_applied_lv,
 	}}
 
 # 从扁平存档表认领本系统字段（旧档缺 xiangfang 段则按初始形状建档）
@@ -48,7 +46,6 @@ func load_save_data(s: Dictionary):
 	if not (furniture is Dictionary):
 		furniture = {}
 	medal_lv = clampi(int(d.get("medal", 1)), 1, get_medal_count())
-	cap_applied_lv = clampi(int(d.get("cap_applied_lv", medal_lv)), 1, medal_lv)   # 【删】批次D：fv 判断随 fv1→fv2 迁移删除
 	_init_state()
 
 # 存档形状兜底：逐件钳等级/件数（空容器也是 Dictionary，读档即自愈，防"空表死锁"同类坑）
@@ -64,12 +61,7 @@ func _init_state() -> void:
 	# 套装等级钳到当前上限内（上限随家具等级变化，读取式重钳即对齐）
 	for sid in set_levels.keys():
 		set_levels[sid] = clampi(int(set_levels[sid]), 0, get_set_max_level(str(sid)))
-	# 技能上限漏补自愈：cap_applied_lv < medal_lv 时把差值补写天赋系统（写入式幂等）
-	if cap_applied_lv < medal_lv:
-		var dcap: int = get_medal_skill_cap_at(medal_lv) - get_medal_skill_cap_at(cap_applied_lv)
-		if g.talent_system != null and dcap > 0:
-			g.talent_system.apply_skill_cap_delta(dcap)
-		cap_applied_lv = medal_lv
+	# 技能上限已改读取式（game_data.get_initial_skill_cap_bonus 聚合），此处无写入动作
 
 # ============ 配置读取（静态匹配读配置不读存档快照——加成范式铁律） ============
 func _cfg() -> Dictionary:
@@ -429,24 +421,19 @@ func can_upgrade_medal() -> Dictionary:
 		return {"ok": false, "reason": "舒适度不足（%d/%d）" % [get_total_comfort(), need], "need": need}
 	return {"ok": true, "need": need}
 
-# 手动升级勋章：舒适度门槛不消耗；精进上限差值写入天赋解锁技能（仿药铺 upgrade_medal 范式）
+# 手动升级勋章：舒适度门槛不消耗；初始技能上限为读取式（聚合 getter），此处只升等级
 func upgrade_medal() -> Dictionary:
 	var chk: Dictionary = can_upgrade_medal()
 	if not chk.get("ok", false):
 		return chk
-	var old_cap: int = get_medal_skill_cap()
 	medal_lv = mini(medal_lv + 1, get_medal_count())
-	var new_cap: int = get_medal_skill_cap()
-	if g.talent_system != null and new_cap > old_cap:
-		g.talent_system.apply_skill_cap_delta(new_cap - old_cap)
-	cap_applied_lv = medal_lv
 	return {"ok": true, "lv": medal_lv}
 
 # 全部商铺赚速加成（倍率，1.0=+100%；shop_system bonus 链读取式挂点，批次②接入）
 func get_medal_shop_pct() -> float:
 	return float(get_current_medal_cfg().get("shop_pct", 0.0))
 
-# 指定等级勋章的初始技能等级上限（效果②，批次④接入天赋系统）
+# 指定等级勋章的初始技能等级上限（效果②；读取式，消费侧=game_data.get_initial_skill_cap_bonus 聚合）
 func get_medal_skill_cap_at(lv: int) -> int:
 	return int(get_medal_cfg(lv).get("skill_cap", 0))
 

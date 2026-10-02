@@ -156,8 +156,8 @@ func upgrade_hero_aptitude_skill(hero_id: String, skill_index: int) -> bool:
 	var skills = g.heroes[hero_id].aptitude_skills
 	if skill_index < 0 or skill_index >= skills.size(): return false
 	var skill = skills[skill_index]
-	# 资质技能上限与 UI 同口径：基础上限+勋章 skill_cap（读取式；本 API 暂无 UI 调用，保持一致防未来误用）
-	if skill.level >= int(skill.max_level) + g.collection_system.get_medal_skill_cap(): return false
+	# 资质技能上限与 UI 同口径：基础上限+勋章聚合加成（读取式；本 API 暂无 UI 调用，保持一致防未来误用）
+	if skill.level >= int(skill.max_level) + g.get_initial_skill_cap_bonus(): return false
 	skill.level += 1
 	return true
 
@@ -927,7 +927,7 @@ func upgrade_fengkui_skill(hero_id: String, skill_name: String, mode: String = "
 		return {"ok": false, "msg": "凤临乐宴 %d 级解锁" % int(sk.get("threshold", 0))}
 	var cost = int(sk.get("stars", 1))
 	# 勋章初始技能上限读取式叠加（与凤魁面板显示同口径；存档存配置基础上限）
-	var max_lv: int = int(sk.get("max_level", 200)) + g.collection_system.get_medal_skill_cap()
+	var max_lv: int = int(sk.get("max_level", 200)) + g.get_initial_skill_cap_bonus()
 	var base = int(promo["skills"][skill_name])
 	if base >= max_lv: return {"ok": false, "msg": "已满级"}
 	var limit: int = 1 if mode == "single" else 10

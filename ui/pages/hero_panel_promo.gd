@@ -903,7 +903,7 @@ func _fengkui_skill_items() -> Array:
 			continue
 		var slv: int = int(promo["skills"][sname])
 		# 勋章初始技能上限读取式叠加，与门客技能栏同口径（存档存配置基础上限，显示/判定读时加）
-		var smax: int = int(sk.get("max_level", 200)) + data.collection_system.get_medal_skill_cap()
+		var smax: int = int(sk.get("max_level", 200)) + data.get_initial_skill_cap_bonus()
 		var is_max: bool = slv >= smax
 		var info: String = "【%s】  Lv.%d/%d\n资质+%d" % [sname, slv, smax, slv * stars]
 		if is_max:

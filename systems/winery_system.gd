@@ -6,7 +6,8 @@
 # 货币线：酒艺值（酿造产出，升流程）｜酒香值（酿造产出，累计升勋章 15 级，只增不减）｜元宝（采买材料）
 # 加成接线：①勋章全部商铺赚速%（shop_system 百分比层，同药铺勋章挂点）
 #           ②流程对应职业商铺赚速+10%×级（读取式，shop_system 百分比层追加）
-# 待接入（方案 §8 挂标记，勿动）：勋章 refine_cap 写入天赋 / 藏品对酒香加成(已接 2026-09-19: c196 玉生烟 +2%/星) / 家具币挂点 / 6 种新道具效果
+# 待接入（方案 §8 挂标记，勿动）：藏品对酒香加成(已接 2026-09-19: c196 玉生烟 +2%/星) / 家具币挂点 / 6 种新道具效果
+# 勋章 refine_cap：2026-10-02 已接读取式并入初始技能池（game_data.get_initial_skill_cap_bonus，用户拍板非写入天赋）
 # 状态内部持有随 get_save_data 落盘（game_data 只注册系统+加载配置，零新字段，同 drugshop 惯例）
 # ============================================================
 class_name WinerySystem
@@ -339,6 +340,10 @@ func _medal_cfg(lv: int) -> Dictionary:
 func get_medal_shop_pct() -> float:
 	return float(_medal_cfg(medal_lv).get("shop_pct", 0.0))
 
+# 当前勋章初始技能等级上限加成（读取式：消费侧走 game_data.get_initial_skill_cap_bonus 聚合）
+func get_refine_cap_bonus() -> int:
+	return int(_medal_cfg(medal_lv).get("refine_cap", 0))
+
 # 下一级勋章所需累计酒香（满级返回 -1）
 func get_next_medal_need() -> int:
 	var nxt: Dictionary = _medal_cfg(medal_lv + 1)
@@ -353,7 +358,7 @@ func can_upgrade_medal() -> Dictionary:
 		return {"ok": false, "msg": "累计酒香不足"}
 	return {"ok": true}
 
-# 手动升级勋章；refine_cap 待接入（方案 §8 挂标记：等用户完善门客系统时仿 drugshop apply_skill_cap_delta 补）
+# 手动升级勋章；refine_cap 已接读取式（2026-10-02 并入初始技能池聚合加成，见 game_data.get_initial_skill_cap_bonus）
 func upgrade_medal() -> Dictionary:
 	var chk := can_upgrade_medal()
 	if not chk.get("ok", false):

@@ -1375,6 +1375,7 @@ func get_audition_overview() -> Dictionary:
 
 
 # ============ 勋章（女团等级）：繁荣度=应援币总产出/分；赚速读取式挂 shop_system ============
+# 勋章 refine_cap=初始技能等级上限：2026-10-02 已接读取式（game_data.get_initial_skill_cap_bonus 聚合，用户拍板）
 func get_medal_count() -> int:
 	return _extra("medal").get("medals", []).size()
 
@@ -1398,6 +1399,10 @@ func get_prosperity() -> int:
 
 func get_medal_shop_pct() -> float:
 	return float(get_medal_cfg(medal_lv).get("shop_pct", 0.0))
+
+# 当前勋章初始技能等级上限加成（读取式：消费侧走 game_data.get_initial_skill_cap_bonus 聚合）
+func get_refine_cap_bonus() -> int:
+	return int(get_medal_cfg(medal_lv).get("refine_cap", 0))
 
 func get_next_medal_need() -> int:
 	var nxt: Dictionary = get_medal_cfg(medal_lv + 1)

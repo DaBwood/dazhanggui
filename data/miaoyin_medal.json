@@ -141,10 +141,20 @@
 			"name": "天后·银",
 			"rank": "天后",
 			"metal": "银",
-			"need_prosperity": 1620000,
+			"need_prosperity": 1400000,
 			"shop_pct": 14.0,
 			"unlock_total": 28,
 			"refine_cap": 70
+		},
+		{
+			"lv": 15,
+			"name": "天后·金",
+			"rank": "天后",
+			"metal": "金",
+			"need_prosperity": 1620000,
+			"shop_pct": 15.0,
+			"unlock_total": 28,
+			"refine_cap": 75
 		}
 	]
 }
