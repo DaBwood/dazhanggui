@@ -23,7 +23,8 @@ var _sel_set: String = "s01"     # 图鉴当前选中套装
 var _sel_plate: String = "p1"    # 命盘当前选中盘
 var _pending_luck: Dictionary = {}   # 卜卦待二选一的新命格（替换/放弃后清空）
 var _upresult: Dictionary = {}       # 升级效果弹窗数据（升级前后等级/舒适度/风水差值）
-var _auto_divining: bool = false     # 自动卜卦进行中（再按一次停止）
+var _auto_divining: bool = false
+var _was_auto_divining: bool = false   # 【改】退出厢房时自动卜卦的暂存开关（hide 暂停/show 恢复）     # 自动卜卦进行中（再按一次停止）
 var _auto_stats: Dictionary = {}     # 自动卜卦暂停时的计数（卦数/装上数）
 var _popup_panel: PanelContainer = null   # 当前弹窗基座（原地重建内容用）
 
@@ -47,8 +48,24 @@ func hide_xiangfang_view():
 func show_view():
 	_close_node("XiangfangRulePopup")
 	super()
+	# 【改】自动卜卦恢复：退出时暂停过且进度仍有效则续跑（_auto_stats 已暂存卦数/装上数）
+	if _was_auto_divining:
+		_was_auto_divining = false
+		if not _auto_divining:
+			_auto_divining = true
+		_refresh()
+		_auto_resume()
 
 func hide_view():
+	# 【改】自动卜卦绑定页面生命周期：退出厢房暂停循环（原循环不感知页面，退后台照跑弹窗=观感"强制拉回厢房"）；
+	# 未决命格视为放弃本卦（与外部关闭兜底同语义）
+	_was_auto_divining = _auto_divining
+	if _auto_divining:
+		_auto_divining = false   # await 中的 _auto_divine_step 醒来见 false 即退，不会与恢复后的新循环双开
+	if not _pending_luck.is_empty():
+		_pending_luck = {}
+	if _popup_kind == "divine":
+		close_popup()
 	_close_node("XiangfangRulePopup")
 	super()
 
@@ -547,6 +564,12 @@ func _popup_vbox(title: String, size: Vector2) -> VBoxContainer:
 	_popup_panel = c._create_base_popup(title, size)
 	_popup_panel.name = _popup_node_name
 	_popup_panel.z_index = 40   # 【关键】必须高于全屏页 z35（照妙音坊勋章弹窗模板），否则弹窗被页面盖住"隐身"
+	_popup_panel.tree_exiting.connect(func():
+		# 【改】弹窗被外部途径关闭（遮罩/✕）且留有未决命格=放弃本卦：自动模式续抽，杜绝"显示自动中却卡死"
+		if not _pending_luck.is_empty():
+			_pending_luck = {}
+			if _auto_divining:
+				_auto_resume())
 	c.add_child(_popup_panel)
 	return _popup_panel.get_child(0)
 
@@ -1147,6 +1170,8 @@ func _on_divine(btn: Button):
 	_show_divine_popup()
 
 # 卜卦对比弹窗：新命格 vs 槽内原命格（涨绿跌红，铁律：不模糊文案）
+# 【改】命格对比弹窗重构（2026-10-02 用户拍板）：双卡并排对比（旧/新各一卡，逐门客红绿差异）+
+# 赚速大字置顶对比 + 禁止外部关闭（必须二选一：保留旧/替换装上）
 func _show_divine_popup():
 	if _pending_luck.is_empty():
 		close_popup()
@@ -1154,86 +1179,138 @@ func _show_divine_popup():
 	_popup_kind = "divine"
 	_popup_id = ""
 	var luck: Dictionary = _pending_luck
-	var vbox: VBoxContainer = _popup_vbox("卜卦", Vector2(480, 470))
+	var vbox: VBoxContainer = _popup_vbox("卜卦 · 命格对比", Vector2(780, 520))
+	_block_divine_external_close()
 	var pid: String = str(luck.get("plate", ""))
 	var idx: int = int(luck.get("slot", 0))
 	var pcfg: Dictionary = _msys().get_plate_cfg(pid)
 	var slot_name: String = str(pcfg.get("outer", [])[idx]) if idx < 6 else str(pcfg.get("inner", [])[idx - 6])
-	var qcfg: Dictionary = _msys().get_quality_cfg(str(luck.get("q", "")))
+	var old: Dictionary = _msys().get_slot_luck(pid, idx)
+
+	# ① 赚速大字对比（一眼看到，涨绿跌红）
+	var d_money: float = _msys().luck_money_impact(luck)
+	var money_l := Label.new()
+	money_l.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	money_l.add_theme_font_size_override("font_size", 26)
+	if d_money >= 0.0:
+		money_l.text = "装上后赚速 +%s/秒 ▲" % c.format_number(int(d_money))
+		money_l.add_theme_color_override("font_color", Color("#7ee787"))
+	else:
+		money_l.text = "装上后赚速 %s/秒 ▼" % c.format_number(int(d_money))
+		money_l.add_theme_color_override("font_color", Color("#e74c3c"))
+	vbox.add_child(money_l)
+
+	# ② 双卡：左旧右新，新卡逐门客带差异红绿
+	var cards := HBoxContainer.new()
+	cards.alignment = BoxContainer.ALIGNMENT_CENTER
+	cards.add_theme_constant_override("separation", 20)
+	vbox.add_child(cards)
+	cards.add_child(_make_luck_card("当前命格", old, pid, idx, pcfg, slot_name, false))
+	cards.add_child(_make_luck_card("新命格", luck, pid, idx, pcfg, slot_name, true))
+
+	# ③ 按钮行：必须二选一（外部已禁关）
+	var btns := HBoxContainer.new()
+	btns.alignment = BoxContainer.ALIGNMENT_CENTER
+	btns.add_theme_constant_override("separation", 30)
+	vbox.add_child(btns)
+	var keep_btn := Button.new()
+	keep_btn.text = "保留旧"
+	keep_btn.custom_minimum_size = Vector2(130, 46)
+	keep_btn.add_theme_font_size_override("font_size", 14)
+	keep_btn.pressed.connect(_on_divine_keep)
+	btns.add_child(keep_btn)
+	var install_btn := Button.new()
+	install_btn.text = "替换装上"
+	install_btn.custom_minimum_size = Vector2(130, 46)
+	install_btn.add_theme_font_size_override("font_size", 14)
+	install_btn.pressed.connect(_on_install_pending)
+	btns.add_child(install_btn)
+
+# 【改】命格对比卡：卡标题+命格行（品质色）+逐门客明细行；show_diff 时新旧逐门客差值红绿（+绿 -红）
+func _make_luck_card(title: String, luck: Dictionary, pid: String, idx: int, pcfg: Dictionary, slot_name: String, show_diff: bool) -> Control:
+	var card := PanelContainer.new()
+	card.custom_minimum_size = Vector2(340, 220)
+	card.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	var style = StyleBoxFlat.new()
+	style.bg_color = Color("#262236")
+	style.set_corner_radius_all(10)
+	style.set_border_width_all(1)
+	style.border_color = Color("#5a5178")
+	card.add_theme_stylebox_override("panel", style)
+	var cv := VBoxContainer.new()
+	cv.alignment = BoxContainer.ALIGNMENT_CENTER
+	card.add_child(cv)
+	var t := Label.new()
+	t.text = title
+	t.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	t.add_theme_font_size_override("font_size", 15)
+	t.add_theme_color_override("font_color", Color("#e6c07b"))
+	cv.add_child(t)
+	if luck.is_empty():
+		var empty_l := Label.new()
+		empty_l.text = slot_name + "（空槽）"
+		empty_l.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+		empty_l.add_theme_color_override("font_color", Color("#888888"))
+		cv.add_child(empty_l)
+		return card
 	var is_outer: bool = idx < 6
-
+	var qcfg: Dictionary = _msys().get_quality_cfg(str(luck.get("q", "")))
 	var head := Label.new()
-	head.text = "新命格：%s盘 · %s · %s Lv%d" % [pcfg.get("name", ""), slot_name, qcfg.get("name", ""), int(luck.get("lv", 1))]
+	head.text = "%s · %s · %s Lv%d" % [pcfg.get("name", ""), slot_name, qcfg.get("name", ""), int(luck.get("lv", 1))]
 	head.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
-	head.add_theme_font_size_override("font_size", 15)
+	head.add_theme_font_size_override("font_size", 14)
 	head.add_theme_color_override("font_color", Color(_msys().get_quality_color(str(luck.get("q", "")))))
-	vbox.add_child(head)
-
-	# 新命格明细
+	cv.add_child(head)
+	# 旧值映射（仅新卡算差异用）
+	var old_map := {}
+	if show_diff:
+		var old_luck: Dictionary = _msys().get_slot_luck(pid, idx)
+		for hid in (old_luck.get("heroes", {}) as Dictionary).keys():
+			old_map[hid] = float(old_luck["heroes"][hid])
 	for hid in (luck.get("heroes", {}) as Dictionary).keys():
 		var hero_name: String = str((data.heroes.get(hid, {}) as Dictionary).get("name", hid))
 		var val: float = float(luck["heroes"][hid])
 		var line := Label.new()
-		line.text = "%s：%s" % [hero_name, ("资质 +%d" % int(val)) if is_outer else ("赚钱 +%.2f%%" % val)]
 		line.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
-		line.add_theme_color_override("font_color", Color("#dddddd"))
-		vbox.add_child(line)
+		var txt: String = "%s：%s" % [hero_name, ("资质 +%d" % int(val)) if is_outer else ("赚钱 +%.2f%%" % val)]
+		if show_diff and old_map.has(hid):
+			var d: float = val - float(old_map[hid])
+			if d > 0.0:
+				txt += "（+%s）" % _fmt_val(d, is_outer)
+				line.add_theme_color_override("font_color", Color("#7ee787"))
+			elif d < 0.0:
+				txt += "（%s）" % _fmt_val(d, is_outer)
+				line.add_theme_color_override("font_color", Color("#e74c3c"))
+			else:
+				line.add_theme_color_override("font_color", Color("#dddddd"))
+		else:
+			line.add_theme_color_override("font_color", Color("#dddddd"))
+		line.text = txt
+		cv.add_child(line)
+	return card
 
-	# 对比行：同槽同量纲总值，涨绿跌红
-	var old: Dictionary = _msys().get_slot_luck(pid, idx)
-	var unit: String = "资质" if is_outer else "赚钱%"
-	var new_v: float = _msys().luck_value(luck)
-	if old.is_empty():
-		var empty_l := Label.new()
-		empty_l.text = "%s 空槽 → 直接装上" % slot_name
-		empty_l.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
-		empty_l.add_theme_color_override("font_color", Color("#7ee787"))
-		vbox.add_child(empty_l)
+# 【改】命格对比弹窗禁止外部关闭（用户拍板必须二选一）：摘遮罩点击回调 + 摘右上角✕
+func _block_divine_external_close():
+	if _popup_panel == null:
+		return
+	var mask = _popup_panel.get_meta("popup_mask", null)
+	if mask != null and is_instance_valid(mask):
+		for conn in mask.gui_input.get_connections():
+			mask.gui_input.disconnect(conn.callable)
+	var xx = _popup_panel.find_child("PopupCloseX", true, false)
+	if xx != null:
+		xx.queue_free()
+
+# 【改】命格对比：保留旧——清未决命格；自动模式续抽，手动模式关窗
+func _on_divine_keep():
+	var luck: Dictionary = _pending_luck
+	_pending_luck = {}
+	if _auto_divining:
+		c._show_success_popup("已保留【%s】，自动卜卦继续中" % luck.get("name", ""), 0.0, "ok")
+		_auto_resume()
 	else:
-		var old_v: float = _msys().luck_value(old)
-		var diff: float = new_v - old_v
-		var cmp_l := Label.new()
-		cmp_l.text = "%s 对比：%s %s vs %s（%+.2f）" % [
-			slot_name, unit, _fmt_val(old_v, is_outer), _fmt_val(new_v, is_outer), diff]
-		cmp_l.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
-		cmp_l.add_theme_color_override("font_color", Color("#7ee787") if diff >= 0.0 else Color("#e74c3c"))
-		vbox.add_child(cmp_l)
-		# 真实赚速增量（替换基准，用户拍板）：装上后总赚速变化，涨绿跌红
-		var d_money: float = _msys().luck_money_impact(luck)
-		var money_l := Label.new()
-		money_l.text = "装上后赚速变化：%+d/秒" % int(d_money)
-		money_l.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
-		money_l.add_theme_color_override("font_color", Color("#7ee787") if d_money >= 0.0 else Color("#e74c3c"))
-		vbox.add_child(money_l)
-		var old_q: String = str((_msys().get_quality_cfg(str(old.get("q", ""))) as Dictionary).get("name", ""))
-		var old_l := Label.new()
-		old_l.text = "原命格：%s Lv%d" % [old_q, int(old.get("lv", 1))]
-		old_l.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
-		old_l.add_theme_color_override("font_color", Color("#888888"))
-		vbox.add_child(old_l)
-
-	var btn_row := HBoxContainer.new()
-	btn_row.alignment = BoxContainer.ALIGNMENT_CENTER
-	btn_row.add_theme_constant_override("separation", 16)
-	vbox.add_child(btn_row)
-	var install_btn := Button.new()
-	install_btn.text = "替换装上"
-	install_btn.custom_minimum_size = Vector2(130, 40)
-	install_btn.pressed.connect(_on_install_pending)
-	btn_row.add_child(install_btn)
-	var drop_btn := Button.new()
-	drop_btn.text = "放弃"
-	drop_btn.custom_minimum_size = Vector2(130, 40)
-	drop_btn.pressed.connect(func():
-		_pending_luck = {}
-		if _auto_divining:
-			c._show_success_popup("已放弃（自动卜卦继续）", 0.0, "ok")   # 【改】飘字退休→ok 弹窗
-			_refresh()
-			_auto_resume()
-			return
 		close_popup()
-		_refresh())
-	btn_row.add_child(drop_btn)
+		_refresh()
 
 func _fmt_val(v: float, is_outer: bool) -> String:
 	return "%d" % int(v) if is_outer else "%.2f%%" % v

@@ -5,7 +5,7 @@
 # 约定：
 #   · 本类是 RefCounted 不是 Node——一切节点树操作（has_node/get_node/add_child/remove_child/
 #     get_node_or_null/get_tree）必须经 c 转发；弹窗/遮罩挂 c 根节点，z 序才对兄弟节点有效；
-#   · 对 controller 其它设施（data/net/弹窗工厂/飘字/_safe_close 等）一律 c.xxx；
+#   · 对 controller 其它设施（data/net/弹窗工厂/_safe_close 等）一律 c.xxx；
 #   · 块内互调（本文件的函数之间）直接本地调用，不加 c. 前缀。
 # ============================================================
 class_name NetUi

@@ -374,7 +374,7 @@ func on_auto_earn():
 	# 【第6批新增】每秒检查挚友目标，达成即自动解锁并弹提示（各玩法的计数钩子在 data 层，这里统一反馈）
 	var unlocked = data.check_friend_goals()
 	for fname in unlocked:
-		_show_stage_hint("达成挚友目标，解锁挚友【%s】！" % fname, 4.0)
+		_show_success_popup("达成挚友目标，解锁挚友【%s】！" % fname, 4.0, "ok")
 	# 【新增】一键贸易节拍：勾选期间每秒自动贸易一次；挂在本函数故离开关卡页也持续跑
 	if data.stage_auto_trade:
 		_on_stage_auto_trade_tick(data.stage_auto_trade_tick())
@@ -403,15 +403,15 @@ func _on_stage_auto_trade_tick(result: Dictionary):
 			# 通关小关发宝箱，同步背包显示；提示仅关卡页可见时弹（文案与手动贸易一致）
 			update_bag_list()
 			if current_page == "stage":
-				_show_stage_hint("通关！宝箱×1  阅历+%d" % result.get("exp_reward", 0))
+				_show_success_popup("通关！宝箱×1  阅历+%d" % result.get("exp_reward", 0), 0.0, "ok")
 		"boss_ready":
 			if current_page == "stage":
-				_show_stage_hint("贸易完成，Boss 已出现！")
+				_show_success_popup("贸易完成，Boss 已出现！", 0.0, "ok")
 		"boss_win":
 			# 进新章后刷新入口按钮（与手动谈判一致）
 			update_entry_buttons()
 			if current_page == "stage":
-				_show_stage_hint("谈判成功！声望 +10，抽奖券 +1")
+				_show_success_popup("谈判成功！声望 +10，抽奖券 +1", 0.0, "ok")
 		"stop_money", "stop_power":
 			# 玩家正好在关卡页时刷新页面，让 update_stage_page 立刻消费停止原因并弹出
 			if current_page == "stage":
@@ -429,7 +429,7 @@ func _close_quantity_selector():
 func on_money_plus_clicked():
 	var count = data.items.get("hour_card", 0)
 	if count <= 0:
-		_show_stage_hint("没有小时卡，请前往商城购买")
+		_show_success_popup("没有小时卡，请前往商城购买", 0.0, "warn")
 		return
 	_show_quantity_selector("hour_card", "使用小时卡", _on_item_use_confirmed)
 
@@ -491,9 +491,6 @@ func on_beast():
 # 修复记录①：原写死 position=Vector2(376,250) 且 Label 无自动换行，长文本会把弹窗向右撑出屏幕；
 # 修复记录②：锚点居中方案在根节点未铺满视口时失效（框跑左边缘），改回绝对定位，
 #            按视口宽度手动算居中 x + 按文本实际宽度在 400~560 间取宽并自动换行
-func _show_stage_hint(text: String, auto_hide: float = 2.5):
-	ui_helpers._show_stage_hint(text, auto_hide)   # 【改】主体迁 ui/ui_helpers.gd（2026-09-19 重构批次B）
-
 # 【新增】成功反馈：成功结果弹窗 + gains 文案格式化（主体在 ui_helpers，已定型）
 func _show_success_popup(text: String, auto_hide: float = 0.0, kind: String = "ok"):
 	ui_helpers._show_success_popup(text, auto_hide, kind)
@@ -648,7 +645,7 @@ func _on_exit_confirmed():
 		return
 	if OS.has_feature("web"):
 		JavaScriptBridge.eval("window.close();", true)
-		_show_stage_hint("已存档，可安全关闭页面", 5.0)
+		_show_success_popup("已存档，可安全关闭页面", 5.0, "ok")
 	else:
 		get_tree().quit()
 

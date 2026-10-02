@@ -1,7 +1,7 @@
 # ============================================================
 # 《大掌柜》UI 助手设施（2026-09-19 架构重构批次B，自 game_controller.gd 原样迁出）
 # 职责：弹窗三件套（工厂/二次居中/OK按钮/滑条数字对）/ 通用关闭 / 主题样式动画 /
-#       顶部提示（StageHint/解锁提示）/ 赚速·门客赚钱飘字徽标 / 数量选择器
+#       顶部提示 / 成功·警告结果弹窗 / 赚速·门客赚钱徽标（飘字已退休 2026-10-02） / 数量选择器
 # 约定（与 ui/net_ui.gd 相同）：
 #   · 本类是 RefCounted 不是 Node——节点树操作（has_node/get_node/add_child/find_children/
 #     get_viewport*/get_tree/create_tween）必须经 c 转发；弹窗/提示挂 c 根节点 z 序才有效；
@@ -445,67 +445,14 @@ func _close_quantity_selector():
 # 修复记录①：原写死 position=Vector2(376,250) 且 Label 无自动换行，长文本会把弹窗向右撑出屏幕；
 # 修复记录②：锚点居中方案在根节点未铺满视口时失效（框跑左边缘），改回绝对定位，
 #            按视口宽度手动算居中 x + 按文本实际宽度在 400~560 间取宽并自动换行
-func _show_stage_hint(text: String, auto_hide: float = 2.5):
-	var panel = c.get_node_or_null("StageHint")
-	var vbox: VBoxContainer
-	var label: Label
-
-	if panel == null:
-		panel = PanelContainer.new()
-		panel.name = "StageHint"
-		panel.custom_minimum_size = Vector2(400, 120)
-		panel.z_index = 50
-
-		var style = StyleBoxFlat.new()
-		style.bg_color = Color("#1e1b2e")
-		style.set_corner_radius_all(12)
-		panel.add_theme_stylebox_override("panel", style)
-
-		vbox = VBoxContainer.new()
-		vbox.alignment = BoxContainer.ALIGNMENT_CENTER
-		vbox.add_theme_constant_override("separation", 12)
-		panel.add_child(vbox)
-
-		label = Label.new()
-		label.name = "HintLabel"
-		label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 		# 长文本自动换行（中文按字断行）
-		label.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
-		label.add_theme_font_size_override("font_size", 18)
-		label.add_theme_color_override("font_color", Color("#ffd700"))
-		vbox.add_child(label)
-
-		c.add_child(panel)
-	else:
 		# 杀掉旧 tween，防止堆叠
-		var old_tween = panel.get_meta("hint_tween", null)
-		if old_tween != null and old_tween.is_valid():
-			old_tween.kill()
-		vbox = panel.get_child(0)
-		label = vbox.get_node("HintLabel")
-
-	label.text = text
 	# 按文本实际宽度动态限宽：短提示维持原 400 宽，长提示限宽 560 并在该宽度内换行
-	var font = label.get_theme_font("font")
-	if font == null:
-		font = ThemeDB.fallback_font   # 兜底：主题未配字体时用引擎回退字体，防止空引用
-	var text_w = font.get_string_size(text, HORIZONTAL_ALIGNMENT_LEFT, -1, label.get_theme_font_size("font_size")).x
-	label.custom_minimum_size.x = clampf(text_w, 400, 560)
 	# 水平居中：弹窗宽度≈label限宽（StyleBox无内边距），按视口宽度手动算 x，y固定250（每次显示重算）
 	# （不能用锚点居中：根 Control 未铺满视口，锚点 0.5 会算到左边缘）
-	panel.position = Vector2((c.get_viewport().get_visible_rect().size.x - label.custom_minimum_size.x) / 2, 250)
-
-	var tween = c.create_tween()
-	panel.set_meta("hint_tween", tween)
-	tween.tween_interval(auto_hide)
-	tween.tween_callback(func():
-		if c.has_node("StageHint"):
-			_safe_close("StageHint")
-	)
-
 # ============ 成功结果弹窗（后续优先级第 2 条·试点） ============
-
 # 【新增】成功反馈：gains 字典 → 文案（按 ITEM_CONFIG 配置顺序、顿号连接；每两项换行适配弹窗卡宽度；未配置 id 排尾防御）
+
 func _format_gains(gains: Dictionary) -> String:
 	var ordered = []
 	for iid in c.data.ITEM_CONFIG.keys():
@@ -565,14 +512,14 @@ func _show_success_popup(text: String, auto_hide: float = 0.0, kind: String = "o
 		panel.pressed.connect(func(): c._safe_close("SuccessPopup"))
 		c.add_child(panel)
 	else:
-		# 单例复用：杀旧 tween（防堆叠同 StageHint 惯例）
+		# 单例复用：杀旧 tween（防堆叠惯例）
 		var old_tween0 = panel.get_meta("success_tween", null)
 		if old_tween0 != null and old_tween0.is_valid():
 			old_tween0.kill()
 
 	panel.text = text
 	panel.add_theme_color_override("font_color", tone)   # 复用时按 kind 换色调
-	# 动态限宽（同 StageHint 口径）：按最长一行实测宽度 + 按钮内边距
+	# 动态限宽：按最长一行实测宽度 + 按钮内边距
 	var font = panel.get_theme_font("font")
 	if font == null:
 		font = ThemeDB.fallback_font   # 兜底：主题未配字体时用引擎回退字体，防止空引用
@@ -580,7 +527,7 @@ func _show_success_popup(text: String, auto_hide: float = 0.0, kind: String = "o
 	for line in text.split("\n"):
 		max_w = maxf(max_w, font.get_string_size(line, HORIZONTAL_ALIGNMENT_LEFT, -1, panel.get_theme_font_size("font_size")).x)
 	panel.custom_minimum_size = Vector2(clampf(max_w + 80, 260, 560), 96)
-	# 居中（根 Control 未铺满视口，锚点居中会算到左边缘——同 StageHint 手动算，y 取视口 38% 偏上视觉中心）
+	# 居中（根 Control 未铺满视口，锚点居中会算到左边缘——手动算，y 取视口 38% 偏上视觉中心）
 	var vs = c.get_viewport().get_visible_rect().size
 	panel.position = Vector2((vs.x - panel.custom_minimum_size.x) / 2, vs.y * 0.38)
 	# 展示时长必须 lambda 外算好（GDScript lambda 按值捕获，内部赋值不生效）
