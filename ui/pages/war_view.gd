@@ -170,7 +170,8 @@ func _on_claim_tax():
 	if not r.ok:
 		c._show_stage_hint(r.reason)
 	else:
-		c._show_stage_hint("领取税所收益 +%s 铜钱" % c.format_number(r.amount))
+		# 【改】成功反馈铺开：领取弹窗
+		c._show_success_popup("领取成功\n铜钱 +%s" % c.format_number(r.amount))
 	update_war_view()
 
 # 升级税所（耗商战税引）

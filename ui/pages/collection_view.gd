@@ -795,7 +795,8 @@ func show_suit_frag_box_selector(item_id: String, p_qty: int = 1):
 			data.items[item_id] = int(data.items.get(item_id, 0)) - n
 			sys.add_frags(cid, n)
 			popup.queue_free()
-			c._show_stage_hint("获得【%s】碎片×%d" % [coll.get("name", cid), n])
+			# 【改】成功反馈铺开：获得弹窗
+			c._show_success_popup("获得\n【%s】碎片×%d" % [coll.get("name", cid), n])
 			c.update_bag_list())
 		vbox.add_child(btn)
 	c.add_child(popup)

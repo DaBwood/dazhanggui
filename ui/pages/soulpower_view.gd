@@ -584,7 +584,8 @@ func _on_recycle_confirmed(uid: String):
 		c._show_stage_hint(res.get("reason", "无法回收"))
 		return
 	_close_node("HunliBonePopup")
-	c._show_stage_hint("已回收，返还晶核×1 + 淬骨精尘×%d" % int(res.get("dust", 0)))
+	# 【改】成功反馈铺开：回收成功弹窗
+	c._show_success_popup("回收成功\n返还晶核×1 + 淬骨精尘×%d" % int(res.get("dust", 0)))
 	_refresh_body()
 	c.update_bag_list()
 	c.update_all_ui()

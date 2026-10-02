@@ -304,9 +304,11 @@ func _on_exchange_series_hero(entry: Dictionary, series: Dictionary, cell: Butto
 		var cfg = data.get_hero_config(entry.hero)
 		if friend_id != "":
 			var fcfg = data.get_friend_config(friend_id)
-			c._show_stage_hint("兑换成功！获得门客【%s】和挚友【%s】" % [cfg.name, fcfg.name])
+			# 【改】成功反馈铺开：兑换成功弹关键结果
+			c._show_success_popup("兑换成功\n门客【%s】+挚友【%s】" % [cfg.name, fcfg.name])
 		else:
-			c._show_stage_hint("兑换成功！获得门客【%s】" % cfg.name)
+			# 【改】成功反馈铺开：兑换成功弹关键结果
+			c._show_success_popup("兑换成功\n门客【%s】" % cfg.name)
 		update_series_exchange_view()
 		c.update_all_ui()
 		c.update_bag_list()
@@ -320,7 +322,8 @@ func _on_exchange_role(role_type: String, role_id: String, cost: int, cell: Butt
 	var result = data.exchange_role_with_token(role_type, role_id, cost)
 	if result.ok:
 		var cfg = data.get_hero_config(role_id) if role_type == "hero" else data.get_friend_config(role_id)
-		c._show_stage_hint("兑换成功！获得【%s】" % cfg.name)
+		# 【改】成功反馈铺开：兑换成功弹窗
+		c._show_success_popup("兑换成功\n挚友【%s】" % cfg.name)
 		update_token_exchange_view()
 		c.update_all_ui()
 		c.update_bag_list()
@@ -344,7 +347,8 @@ func _on_exchange_beast(beast_id: String):
 		c.update_beast_page()
 		c.update_all_ui()
 		c.update_bag_list()
-		c._show_stage_hint("兑换成功！获得【%s】" % cfg.name)
+		# 【改】成功反馈铺开：兑换成功弹窗
+		c._show_success_popup("兑换成功\n挚友【%s】" % cfg.name)
 		# 如果兑换视图打开，也刷新
 		if c.has_node("PageContainer/AdventurePage/ExchangeView/BeastExchangeView") and c.get_node("PageContainer/AdventurePage/ExchangeView/BeastExchangeView").visible:
 			update_beast_exchange_view()

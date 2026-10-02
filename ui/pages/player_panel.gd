@@ -218,13 +218,15 @@ func _on_rename_confirmed(input: LineEdit):
 		if c.has_node("TopBar/AvatarBox/PlayerNameBtn"):
 			c.get_node("TopBar/AvatarBox/PlayerNameBtn").text = data.player_name
 		_close_player_panel()
-		c._show_stage_hint("改名成功！")
+		# 【改】成功反馈铺开：改名成功弹窗
+		c._show_success_popup("改名成功")
 	else:
 		c.flash_red("PlayerPanel")
 
 func _on_promote_identity():
 	if data.promote_identity():
-		c._show_stage_hint("晋升成功！身份 Lv.%d" % data.identity_level)
+		# 【改】成功反馈铺开：晋升成功弹窗
+		c._show_success_popup("晋升成功\n身份 Lv.%d" % data.identity_level)
 		# 【新增】如果面板还开着，刷新奖励列表
 		if c.has_node("PlayerPanel"):
 			_update_identity_reward_list()
@@ -236,7 +238,8 @@ func _on_promote_identity():
 func _on_claim_daily_reward():
 	var reward = data.claim_daily_reward()
 	if reward > 0:
-		c._show_stage_hint("领取成功！元宝 +%s" % c.format_number(reward))
+		# 【改】成功反馈铺开：每日领取弹窗
+		c._show_success_popup("领取成功\n元宝 +%s" % c.format_number(reward))
 		c.update_all_ui()
 		# 刷新个人页面内的宝箱按钮状态，不关闭面板
 		if c.has_node("PlayerPanel"):

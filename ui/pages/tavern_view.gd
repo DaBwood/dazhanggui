@@ -577,13 +577,15 @@ func _on_add_jiaohao():
 		data.items[item] = int(data.items.get(item, 0)) - n
 		_sys().add_jiaohao(n * give)
 		_close_node("TavernPopup")
-		c._show_stage_hint("叫号 +%d" % (n * give))
+		# 【改】成功反馈铺开：叫号成功弹窗
+		c._show_success_popup("叫号成功\n+%d 位客人" % (n * give))
 		_refresh())
 	btn_row.add_child(ok_btn)
 
 func _on_collect():
 	var r := _sys().collect_jar()
-	c._show_stage_hint("领取：银条 +%s" % c.format_number(r))
+	# 【改】成功反馈铺开：领取成功弹窗
+	c._show_success_popup("领取成功\n银条 +%s" % c.format_number(r))
 	_refresh()
 
 # 叫号：1 位客人转入接待队列（接待由定时器批处理）
@@ -592,7 +594,8 @@ func _on_call_one():
 	if not r.get("ok", false):
 		c._show_stage_hint(str(r.get("msg", "")))
 		return
-	c._show_stage_hint("已叫号，接待中…")
+	# 【改】成功反馈铺开：叫号成功弹窗
+	c._show_success_popup("叫号成功\n接待中")
 	_refresh()
 
 # 一键叫号：全部转入接待队列（纯改数字，不卡）

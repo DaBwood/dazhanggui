@@ -664,7 +664,8 @@ func _show_drink_popup():
 		if on and invited != "":
 			var r: Dictionary = _sys().auto_drink_all(invited)
 			if r.get("ok", false):
-				c._show_stage_hint("自动饮酒：共饮 %d 瓶" % int(r.get("n", 0)))
+				# 【改】成功反馈铺开：自动饮酒弹窗
+				c._show_success_popup("自动饮酒\n共饮 %d 瓶" % int(r.get("n", 0)))
 			c.update_all_ui()
 			_refresh())
 	vb.add_child(auto_chk)
@@ -890,5 +891,6 @@ func _on_claim_bond(hero_id: String, _lv: int):
 		c._show_stage_hint(str(r.get("msg", "")))
 		return
 	c.update_all_ui()
-	c._show_stage_hint("领取成功：%s" % str(r.get("rewards", "")))
+	# 【改】成功反馈铺开：领取弹窗
+	c._show_success_popup("领取成功\n%s" % str(r.get("rewards", "")))
 	_refresh()

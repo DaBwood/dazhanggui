@@ -193,7 +193,8 @@ func _on_create(name_edit: LineEdit, popup):
 		data.guild_system.guild_id = str(d.get("guild_id", ""))
 		data.save_game()
 		popup.queue_free()
-		c._show_stage_hint("商会创建成功！去「管理」页招募人机填充商会吧")
+		# 【改】成功反馈铺开：创建成功弹窗
+		c._show_success_popup("商会创建成功\n去「管理」页招募人机填充商会吧")
 		_build_shell()
 		_refresh())
 
@@ -224,7 +225,8 @@ func _on_join(id_edit: LineEdit, popup):
 			data.guild_system.guild_id = gid
 			data.save_game()
 			popup.queue_free()
-			c._show_stage_hint("加入商会成功！")
+			# 【改】成功反馈铺开：加入成功弹窗
+			c._show_success_popup("加入商会成功")
 			_build_shell()
 			_refresh()))
 
@@ -428,7 +430,8 @@ func _on_buy(row_id: String):
 	if not r.ok:
 		c._show_stage_hint(r.reason)
 		return
-	c._show_stage_hint("兑换成功！")
+	# 【改】成功反馈铺开：兑换成功弹窗
+	c._show_success_popup("兑换成功")
 	_update_header(data.guild_system.cache)
 	_render()
 
@@ -496,14 +499,16 @@ func _on_recruit():
 	if not r.ok:
 		c._show_stage_hint(r.reason)
 		return
-	c._show_stage_hint("已招募 %d 名人机" % int(r.count))
+	# 【改】成功反馈铺开：招募弹窗
+	c._show_success_popup("已招募 %d 名人机" % int(r.count))
 	_save_and_render()
 
 func _on_remove_bot():
 	var members = data.guild_system.cache.get("members", [])
 	for i in range(members.size() - 1, -1, -1):
 		if members[i].get("bot", false):
-			c._show_stage_hint("已移除人机：%s" % members[i].get("name", ""))
+			# 【改】成功反馈铺开：移除弹窗
+			c._show_success_popup("已移除人机\n%s" % members[i].get("name", ""))
 			members.remove_at(i)
 			break
 	_save_and_render()
@@ -703,7 +708,8 @@ func _on_trade_open(trade_id: String):
 	if not r.get("ok", false):
 		c._show_stage_hint(str(r.get("reason", "开启失败")))
 		return
-	c._show_stage_hint("已开启：%s" % str(r.conf.get("name", trade_id)))
+	# 【改】成功反馈铺开：开启弹窗
+	c._show_success_popup("已开启\n%s" % str(r.conf.get("name", trade_id)))
 	_save_and_render()
 
 func _on_trade_withdraw(trade_id: String):
@@ -711,7 +717,8 @@ func _on_trade_withdraw(trade_id: String):
 	if not r.get("ok", false):
 		c._show_stage_hint(str(r.get("reason", "撤回失败")))
 		return
-	c._show_stage_hint("已撤回委任")
+	# 【改】成功反馈铺开：撤回弹窗
+	c._show_success_popup("已撤回委任")
 	_save_and_render()
 
 # 委任弹窗：多选门客（CheckBox+meta 读回，避开闭包捕获坑），确认时整体替换我的委任
@@ -771,7 +778,8 @@ func _on_trade_assign(trade_id: String):
 			return
 		popup.queue_free()
 		if r.get("locked", false):
-			c._show_stage_hint("全队赚速达标，路线已锁定！")
+			# 【改】成功反馈铺开：锁定弹窗
+			c._show_success_popup("全队赚速达标\n路线已锁定")
 		else:
 			c._show_stage_hint("已委任 %d 名门客（全队赚速还差 %s 达标）" % [picked.size(), c.format_number(float(conf.get("require", 0)) - float(r.get("total", 0)))])
 		_save_and_render())

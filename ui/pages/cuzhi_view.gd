@@ -558,7 +558,8 @@ func _show_guarantee_selector():
 		btn.add_theme_color_override("font_color_normal", col)
 		btn.pressed.connect(func():
 			if sys.claim_guarantee(cdata.id):
-				c._show_stage_hint("获得 %s！" % cdata.name)
+				# 【改】成功反馈铺开：获得弹窗
+				c._show_success_popup("获得\n%s" % cdata.name)
 				popup.queue_free()
 				_refresh_catch()
 			else:
@@ -766,7 +767,8 @@ func _make_shop_row(g: Dictionary) -> Panel:
 		if g.has("items"):
 				for item_id in g.items.keys():
 					data.items[item_id] = data.items.get(item_id, 0) + g.items[item_id]
-		c._show_stage_hint("购买成功！+%d 促织笼" % g.count)
+					# 【改】成功反馈铺开：购买成功弹窗
+					c._show_success_popup("购买成功\n促织笼 +%d" % g.count)
 		c.update_money_label()
 		_refresh_shop()
 		)
@@ -1343,7 +1345,8 @@ func _show_jar_action(jar: Dictionary):
 	btn10.disabled = have < 10 or remain <= 0
 	btn10.pressed.connect(func():
 		if sys.speedup(jar, 10):
-			c._show_stage_hint("加速成功！")
+			# 【改】成功反馈铺开：
+			c._show_success_popup("加速成功")
 			popup.queue_free()
 			_refresh_peiyu()
 		else:
@@ -1558,7 +1561,8 @@ func show_wushuang_box_selector():
 		btn.add_theme_color_override("font_color_normal", col)
 		btn.pressed.connect(func():
 			if sys.do_wushuang_box_claim(cdata.id):
-				c._show_stage_hint("获得 %s！" % cdata.name)
+				# 【改】成功反馈铺开：获得弹窗
+				c._show_success_popup("获得\n%s" % cdata.name)
 				popup.queue_free()
 			else:
 				c.flash_red(btn.get_path())   # 【新增】闪红审计：操作失败反馈（2026-09-19）

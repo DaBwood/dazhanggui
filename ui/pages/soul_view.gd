@@ -566,7 +566,8 @@ func _on_reset_confirmed():
 	_refresh_body()
 	c.update_all_ui()
 	if int(res.get("refund", 0)) > 0:
-		c._show_stage_hint("已重置，退还五色石×%d" % int(res.refund))
+		# 【改】成功反馈铺开：重置成功弹窗
+		c._show_success_popup("已重置\n退还五色石×%d" % int(res.refund))
 
 # ============ 重塑弹窗 ============
 # 打开重塑弹窗：列仓库中可重塑魂石（未上盘、非无双），点选2块同品质后执行
@@ -681,7 +682,8 @@ func _on_recast_do():
 		return
 	var st: Dictionary = res.get("stone", {})
 	if res.get("upgraded", false):
-		c._show_stage_hint("升品成功！获得【%s】魂石" % st.get("quality", ""))
+		# 【改】成功反馈铺开：升品成功弹窗
+		c._show_success_popup("升品成功\n获得【%s】魂石" % st.get("quality", ""))
 	else:
 		c._show_stage_hint("未升品，【%s】魂石已重新随机" % st.get("quality", ""))
 

@@ -278,7 +278,8 @@ func _on_collect(idx: int):
 	if gain.is_empty():
 		c._show_stage_hint("还没有产出，稍后再来")
 		return
-	c._show_stage_hint("领取：%d百业 %d筹算 %d信誉" % [int(gain["baiye"]), int(gain["chousuan"]), int(gain["xinyu"])])
+	# 【改】成功反馈铺开：领取成功弹关键结果
+	c._show_success_popup("领取成功\n百业 +%d　筹算 +%d　信誉 +%d" % [int(gain["baiye"]), int(gain["chousuan"]), int(gain["xinyu"])])
 	_rebuild()
 
 func _on_collect_all():
@@ -286,7 +287,8 @@ func _on_collect_all():
 	if int(total["baiye"]) + int(total["chousuan"]) + int(total["xinyu"]) <= 0:
 		c._show_stage_hint("所有柜台都还没有产出")
 		return
-	c._show_stage_hint("一键全领：%d百业 %d筹算 %d信誉" % [int(total["baiye"]), int(total["chousuan"]), int(total["xinyu"])])
+	# 【改】成功反馈铺开：领取成功弹关键结果
+	c._show_success_popup("一键全领\n百业 +%d　筹算 +%d　信誉 +%d" % [int(total["baiye"]), int(total["chousuan"]), int(total["xinyu"])])
 	_rebuild()
 
 func _on_unassign(idx: int):

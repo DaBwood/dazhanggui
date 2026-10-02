@@ -1773,7 +1773,8 @@ func _do_cuzhi_upgrade(cid: String, use_jinghua: bool):
 	
 	var res = data.cuzhi_system.upgrade_equip(cid, use_jinghua)
 	if res.ok:
-		c._show_stage_hint("升级成功！当前等级 Lv.%d" % res.new_level)
+		# 【改】成功反馈铺开：升级成功弹窗
+		c._show_success_popup("升级成功\n当前等级 Lv.%d" % res.new_level)
 		_close_cuzhi_panel()
 		_show_cuzhi_action_panel(cid)
 		update_hero_panel()
@@ -1786,7 +1787,8 @@ func _do_cuzhi_upgrade(cid: String, use_jinghua: bool):
 func _do_cuzhi_recycle(cid: String):
 	var res = data.cuzhi_system.recycle_equip(cid)
 	if res.ok:
-		c._show_stage_hint("回收成功！返还促织精华×%d" % res.return_jinghua)
+		# 【改】成功反馈铺开：回收成功弹窗
+		c._show_success_popup("回收成功\n返还促织精华×%d" % res.return_jinghua)
 		_close_cuzhi_panel()
 		# 【修复】回收后促织仍装备但等级重置为1，刷新门客面板显示
 		update_hero_panel()

@@ -503,7 +503,8 @@ func _on_facility_upgrade(bid: String, fac_idx: int, count: int):
 	if not r.get("ok", false):
 		c._show_stage_hint(str(r.get("msg", "升级失败")))
 		return
-	c._show_stage_hint("十连升级成功" if count >= 10 else "升级成功")
+	# 【改】成功反馈铺开：升级成功弹窗
+	c._show_success_popup("升级成功" if count >= 10 else "升级成功")
 	c.update_all_ui()
 	_refresh()
 
@@ -512,7 +513,8 @@ func _on_building_sync(bid: String, count: int):
 	if not r.get("ok", false):
 		c._show_stage_hint(str(r.get("msg", "同步升级失败")))
 		return
-	c._show_stage_hint("同步十连：%d 个设施升级" % int(r.get("count", 0)) if count >= 10 else "同步升级：%d 个设施升级" % int(r.get("count", 0)))
+	# 【改】成功反馈铺开：同步升级弹窗
+	c._show_success_popup(("同步十连" if count >= 10 else "同步升级") + "\n%d 个设施升级" % int(r.get("count", 0)))
 	c.update_all_ui()
 	_refresh()
 
@@ -769,7 +771,8 @@ func _on_train_level_up(fid: String):
 	if not r.get("ok", false):
 		c._show_stage_hint(str(r.get("msg", "升级失败")))
 		return
-	c._show_stage_hint("升级成功")
+	# 【改】成功反馈铺开：升级成功弹窗
+	c._show_success_popup("升级成功")
 	c.update_all_ui()
 	_refresh()
 
@@ -984,7 +987,8 @@ func _on_challenge_audition():
 		c._show_stage_hint(str(r.get("msg", "挑战失败")))
 		return
 	var rewards: Dictionary = r.get("rewards", {})
-	c._show_stage_hint("通关：缘分物+%s 应援物+%s 应援币+%s" % [
+	# 【改】成功反馈铺开：通关弹窗
+	c._show_success_popup("通关\n缘分物 +%s　应援物 +%s　应援币 +%s" % [
 		c.format_number(int(rewards.get("yyf", 0))), c.format_number(int(rewards.get("yyw", 0))), c.format_number(int(rewards.get("yyb", 0)))])
 	c.update_all_ui()
 	_refresh()
@@ -1084,7 +1088,8 @@ func _on_medal_upgrade():
 	if not r.get("ok", false):
 		c._show_stage_hint(str(r.get("msg", "暂不可升级")))
 		return
-	c._show_stage_hint("勋章升级成功")
+	# 【改】成功反馈铺开：勋章升级弹窗
+	c._show_success_popup("勋章升级成功")
 	c.update_all_ui()
 	_refresh()
 

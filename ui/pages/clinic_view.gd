@@ -328,7 +328,8 @@ func _on_add_patient():
 		data.items[manual] = int(data.items.get(manual, 0)) - n
 		_sys().add_patients(n * give)
 		_close_node("ClinicPopup")
-		c._show_stage_hint("病人 +%d" % (n * give))
+		# 【改】成功反馈铺开：接诊成功弹窗
+		c._show_success_popup("接诊成功\n病人 +%d" % (n * give))
 		_refresh())
 	btn_row.add_child(ok_btn)
 
@@ -353,7 +354,8 @@ func _on_treat_all():
 	if not r.get("ok", false):
 		c._show_stage_hint(str(r.get("msg", "")))
 		return
-	c._show_stage_hint("已将 %d 人转入接诊队列，治疗中…" % int(r.get("count", 0)))
+	# 【改】成功反馈铺开：接诊成功弹窗
+	c._show_success_popup("接诊成功\n已将 %d 人转入接诊队列" % int(r.get("count", 0)))
 	_refresh()
 
 # ---------- 子页：病人 ----------

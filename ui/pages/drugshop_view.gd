@@ -460,7 +460,8 @@ func _on_use_sign():
 
 func _on_collect():
 	var r := _sys().collect_pot()
-	c._show_stage_hint("领取：铜板+%s 药铺经验+%s" % [
+	# 【改】成功反馈铺开：领取成功弹关键结果
+	c._show_success_popup("领取成功\n铜板 +%s　药铺经验 +%s" % [
 		c.format_number(int(r["coins"])), c.format_number(int(r["exp"]))])
 	_refresh()
 
@@ -479,7 +480,8 @@ func _on_serve():
 	if not r.get("ok", false):
 		c._show_stage_hint(str(r.get("msg", "")))
 		return
-	c._show_stage_hint("接待完成，收益已入罐")
+	# 【改】成功反馈铺开：接待成功弹关键结果
+	c._show_success_popup("接待完成\n收益已入罐")
 	_refresh()
 
 # ---------- 子页：打理（7工艺卡片 + 全部升级） ----------

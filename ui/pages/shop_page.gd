@@ -314,7 +314,8 @@ func on_shop_entry_pressed(shop_id: String):
 	elif data.can_unlock_shop(shop_id):
 		if data.unlock_shop(shop_id):
 			c.update_all_ui()
-			c._show_stage_hint("解锁【%s】成功！" % data.get_shop_config(shop_id).name)
+			# 【改】成功反馈铺开：解锁成功弹窗
+			c._show_success_popup("解锁成功\n【%s】" % data.get_shop_config(shop_id).name)
 			open_shop_panel(shop_id)
 	else:
 		var need = data.get_shop_unlock_chapter(shop_id)

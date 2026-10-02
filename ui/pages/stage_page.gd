@@ -180,7 +180,8 @@ func on_stage_boss():
 		return
 	
 	if result.win:
-		c._show_stage_hint("谈判成功！声望 +10，抽奖券 +1")
+		# 【改】成功反馈铺开：谈判成功弹窗
+		c._show_success_popup("谈判成功\n声望 +10　抽奖券 +1")
 	else:
 		var bb2 = c.find_child("BossBtn", true, false)   # 【改】RefCounted 模块无 find_child，经 c（controller 根节点）递归找
 		if bb2 != null: c.flash_red(bb2.get_path())   # 【新增】闪红审计：操作失败反馈（2026-09-19）

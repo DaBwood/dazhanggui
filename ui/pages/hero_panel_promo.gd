@@ -685,7 +685,8 @@ func _show_master_selector():
 			var res: Dictionary = data.hero_system.set_master_hero_id(hp.current_hero_id, hid)
 			c._safe_close("MasterSelector")
 			if res.get("ok", false):
-				c._show_stage_hint("已拜师 %s" % str(data.heroes[hid].get("name", hid)))
+				# 【改】成功反馈铺开：拜师成功弹窗
+				c._show_success_popup("已拜师\n%s" % str(data.heroes[hid].get("name", hid)))
 			else:
 				c._show_stage_hint(res.get("msg", "拜师失败"))
 			hp.update_hero_panel()   # 师傅变化影响师徒光环效果显示
@@ -766,7 +767,8 @@ func _on_fengkui_confirmed():
 	if not res.get("ok", false):
 		c._show_stage_hint(res.get("msg", "选定失败"), 2.0)
 		return
-	c._show_stage_hint("【%s】已成为凤魁！" % data.heroes[hp.current_hero_id].get("name", ""), 2.5)
+	# 【改】成功反馈铺开：凤魁任命弹窗
+	c._show_success_popup("【%s】已成为凤魁" % data.heroes[hp.current_hero_id].get("name", ""), 2.5)
 	hp.update_hero_panel()
 
 
@@ -1027,7 +1029,8 @@ func _on_fengkui_transfer_confirmed(hid: String):
 	if not res.get("ok", false):
 		c._show_stage_hint(res.get("msg", "转移失败"), 2.0)
 		return
-	c._show_stage_hint("凤魁已转移给【%s】！" % data.heroes[hid].get("name", ""), 2.5)
+	# 【改】成功反馈铺开：凤魁转移弹窗
+	c._show_success_popup("凤魁已转移给【%s】" % data.heroes[hid].get("name", ""), 2.5)
 	# 原门客不再是凤魁：关闭凤魁页面，面板刷新（凤魁钮/信物随之消失）
 	if c.has_node("FengkuiPanel"):
 		var old = c.get_node("FengkuiPanel")
@@ -1136,7 +1139,8 @@ func _build_self_aura_card(aura: Dictionary) -> Dictionary:
 func _on_self_aura_up(aura_id: String):
 	var res: Dictionary = data.hero_system.upgrade_self_aura(hp.current_hero_id, aura_id)
 	if res.get("ok", false):
-		c._show_stage_hint("【%s】升至 %d 级" % [_self_aura_name(aura_id), int(res.get("level", 0))])
+		# 【改】成功反馈铺开：光环升级弹窗
+		c._show_success_popup("【%s】升至 %d 级" % [_self_aura_name(aura_id), int(res.get("level", 0))])
 	else:
 		c._show_stage_hint(str(res.get("msg", "升级失败")))
 	hp.update_hero_panel()
@@ -1165,4 +1169,3 @@ func _pair_aura_name(aura_id: String) -> String:
 # 品质名（拜师选择器等小处复用）
 func _quality_name(q: int) -> String:
 	return {0: "优秀", 1: "卓越", 2: "传奇", 3: "无双"}.get(q, "优秀")
-

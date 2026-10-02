@@ -672,7 +672,8 @@ func _on_recycle(fid: String, n: int, btn: Button):
 		c._show_stage_hint(str(r.get("reason", "回收失败")))
 		_flash_btn(btn)
 		return
-	c._show_stage_hint("回收成功：+%d 家具币" % int(r.get("gain", 0)))
+	# 【改】成功反馈铺开：回收弹窗
+	c._show_success_popup("回收成功\n家具币 +%d" % int(r.get("gain", 0)))
 	_refresh()
 
 # ---- 风水详情弹窗：推导说明 + 10 档品质概率表 ----
@@ -799,7 +800,8 @@ func _on_medal_upgrade():
 	if not r.get("ok", false):
 		c._show_stage_hint(str(r.get("reason", "暂不可升级")))
 		return
-	c._show_stage_hint("勋章升级成功")
+	# 【改】成功反馈铺开：勋章升级弹窗
+	c._show_success_popup("勋章升级成功")
 	_refresh()   # 页+弹窗按状态原地重建（进度条/红点同步）
 
 # 套装解锁/升级：条件未达→红色提示+按钮闪红；成功→提示并刷新（页+弹窗按状态原地重建）
@@ -809,7 +811,8 @@ func _on_advance_set(sid: String, btn: Button):
 		c._show_stage_hint(str(r.get("reason", "条件未达成")))
 		_flash_btn(btn)
 		return
-	c._show_stage_hint("套装升级成功：Lv%d" % int(r.get("lv", 0)))
+	# 【改】成功反馈铺开：套装升级弹窗
+	c._show_success_popup("套装升级成功\nLv%d" % int(r.get("lv", 0)))
 	_refresh()
 
 func _effect_text(fc: Dictionary, lv: int) -> String:
@@ -836,7 +839,8 @@ func _on_upgrade(fid: String, is_all: bool, btn: Button):
 	}
 	_popup_kind = "upresult"
 	_popup_id = fid
-	c._show_stage_hint("升级成功：Lv%d" % st1["lv"])
+	# 【改】成功反馈铺开：升级成功弹窗
+	c._show_success_popup("升级成功\nLv%d" % st1["lv"])
 	_refresh()   # 重建页面+按弹窗状态原地重建
 
 # ---- 工坊购买弹窗：滑条+SpinBox 数量选择 ----
@@ -882,7 +886,8 @@ func _on_buy(fid: String, n: int, btn: Button):
 		c._show_stage_hint(str(r.get("reason", "购买失败")))
 		_flash_btn(btn)
 		return
-	c._show_stage_hint("购买成功：%s ×%d" % [_sys().get_furniture_cfg(fid).get("name", ""), n])
+	# 【改】成功反馈铺开：购买弹窗
+	c._show_success_popup("购买成功\n%s ×%d" % [_sys().get_furniture_cfg(fid).get("name", ""), n])
 	_refresh()
 
 # 按钮闪红（捕获节点版：回调/闭包捕获按钮，先 is_instance_valid 守卫——闪红后紧跟页面重建是惯例，防悬挂崩溃）
@@ -1136,7 +1141,8 @@ func _on_divine(btn: Button):
 		return
 	_pending_luck = r.get("luck", {})
 	if int(r.get("ups", 0)) > 0:
-		c._show_stage_hint("命盘升级：%d 级！" % _msys().plate_lv)
+		# 【改】成功反馈铺开：命盘升级弹窗
+		c._show_success_popup("命盘升级\n%d 级" % _msys().plate_lv)
 	_show_divine_popup()
 
 # 卜卦对比弹窗：新命格 vs 槽内原命格（涨绿跌红，铁律：不模糊文案）
@@ -1276,7 +1282,8 @@ func _auto_divine_step(rolls: int, replaced: int):
 		return
 	rolls += 1
 	if int(r.get("ups", 0)) > 0:
-		c._show_stage_hint("命盘升级：%d 级！" % _msys().plate_lv)
+		# 【改】成功反馈铺开：命盘升级弹窗
+		c._show_success_popup("命盘升级\n%d 级" % _msys().plate_lv)
 	var luck: Dictionary = r.get("luck", {})
 	var delta: float = _msys().luck_money_impact(luck)   # 真实赚速增量（临时换装重算，>0 更好）
 	var better: bool = delta > 0.0

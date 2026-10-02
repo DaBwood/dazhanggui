@@ -512,7 +512,8 @@ func _on_friend_box_selected(friend_id: String):
 	
 	var cfg = data.get_friend_config(friend_id)
 	c._safe_close("FriendBoxSelector")
-	c._show_stage_hint("获得挚友【%s】" % cfg.name)
+	# 【改】成功反馈铺开：获得弹窗
+	c._show_success_popup("获得挚友\n【%s】" % cfg.name)
 	c.update_all_ui()
 	update_bag_list()
 
@@ -636,7 +637,8 @@ func _on_hero_box_selected(hero_id: String):
 	
 	var cfg = data.get_hero_config(hero_id)
 	c._safe_close("HeroBoxSelector")
-	c._show_stage_hint("获得门客【%s】" % cfg.name)
+	# 【改】成功反馈铺开：获得弹窗
+	c._show_success_popup("获得门客\n【%s】" % cfg.name)
 	c.update_all_ui()
 	update_bag_list()
 	c.generate_hero_list() 
@@ -694,7 +696,8 @@ func _on_manhuang_box_pick(popup, item_id: String, qty: int):
 	data.items["manhuang_box"] -= qty
 	data.items[item_id] = int(data.items.get(item_id, 0)) + 100 * qty
 	popup.queue_free()
-	c._show_stage_hint("获得【%s】×%d" % [data.ITEM_CONFIG.get(item_id, {}).get("name", item_id), 100 * qty])
+	# 【改】成功反馈铺开：获得弹窗
+	c._show_success_popup("获得\n【%s】×%d" % [data.ITEM_CONFIG.get(item_id, {}).get("name", item_id), 100 * qty])
 	c.update_bag_list()
 
 # 【新增】2026-09-18 自选宝印/自选宝印碎片选择器：N连开=扣N个盒子，二选一得N个所选
@@ -728,7 +731,8 @@ func _on_zixuan_baoyin_pick(popup, src_id: String, target_id: String, qty: int):
 	data.items[src_id] -= qty
 	data.items[target_id] = int(data.items.get(target_id, 0)) + qty
 	popup.queue_free()
-	c._show_stage_hint("获得【%s】×%d" % [data.ITEM_CONFIG.get(target_id, {}).get("name", target_id), qty])
+	# 【改】成功反馈铺开：获得弹窗
+	c._show_success_popup("获得\n【%s】×%d" % [data.ITEM_CONFIG.get(target_id, {}).get("name", target_id), qty])
 	c.update_bag_list()
 
 # 【改】魂骨盒子选择器：带数量（同部位同品级 ×N）
@@ -773,7 +777,8 @@ func _on_hungu_box_pick(popup, slot: String, quality: String, qty: int):
 	for i in range(qty):
 		data.soulpower_system.gen_bone(slot, quality)
 	popup.queue_free()
-	c._show_stage_hint("获得【%s·%s】×%d（珍兽详情 → 魂力培养 装配）" % [quality, data.soulpower_system.get_slot_name(slot), qty])
+	# 【改】成功反馈铺开：获得弹窗
+	c._show_success_popup("获得\n【%s·%s】×%d" % [quality, data.soulpower_system.get_slot_name(slot), qty])
 	c.update_bag_list()
 
 
@@ -877,7 +882,8 @@ func _show_compose_popup(recipe: Dictionary):
 			popup.queue_free()
 			update_bag_list()
 			c.update_all_ui()
-			c._show_stage_hint("合成获得珍兽【%s】×%d" % [out_name, n])
+			# 【改】成功反馈铺开：合成成功弹窗
+			c._show_success_popup("合成成功\n珍兽【%s】×%d" % [out_name, n])
 			return
 		data.items[out_id] = int(data.items.get(out_id, 0)) + n
 		data.save_game()

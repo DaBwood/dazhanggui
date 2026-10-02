@@ -108,7 +108,8 @@ func _on_travel():
 		c.get_node("PageContainer/AdventurePage/TravelView/TravelResult").text = result.msg
 	# 若触发了好感解锁，额外提示
 	if result.get("unlock_friend", "") != "":
-		c._show_stage_hint("喜获挚友【%s】！" % data.friends[result.unlock_friend].name)
+		# 【改】成功反馈铺开：获得挚友弹窗
+		c._show_success_popup("喜获挚友\n【%s】" % data.friends[result.unlock_friend].name)
 	update_travel_view()
 	c.update_all_ui()
 	c.update_bag_list()

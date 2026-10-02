@@ -60,7 +60,8 @@ func _on_buy_mall_pack(pack: Dictionary):
 	if data.buy_mall_pack(pack):
 		c.update_all_ui()
 		c.update_bag_list()
-		c._show_stage_hint("购买成功！%s" % pack.name)
+		# 【改】成功反馈铺开：购买成功弹窗
+		c._show_success_popup("购买成功\n%s" % pack.name)
 	else:
 		c.flash_red("MallPanel")
 
@@ -76,7 +77,8 @@ func _on_buy_test_beast_pack():
 		c.update_beast_page()
 		c.update_all_ui()
 		c.update_bag_list()
-		c._show_stage_hint("购买成功！驺虞×1 珍兽果×988 奇香果×988")
+		# 【改】成功反馈铺开：购买成功弹窗
+		c._show_success_popup("购买成功\n驺虞×1 珍兽果×988 奇香果×988")
 	else:
 		c._show_stage_hint("元宝不足！")
 
@@ -248,7 +250,8 @@ func _update_special_pack_page():
 
 func _on_buy_special_pack(pack: Dictionary):
 	data.buy_special_pack(pack)
-	c._show_stage_hint("购买成功！%s" % pack.name)
+	# 【改】成功反馈铺开：购买成功弹窗
+	c._show_success_popup("购买成功\n%s" % pack.name)
 	c.update_all_ui()
 	c.update_bag_list()
 

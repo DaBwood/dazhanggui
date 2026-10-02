@@ -255,7 +255,8 @@ func _on_train_apprentice(slot: int, btn: Button = null):
 			update_apprentice_page()
 			c.update_all_ui()
 			if result.get("adult", false):
-				c._show_stage_hint("培养完成！徒弟已成年，可以结业了")
+				# 【改】成功反馈铺开：培养完成弹窗
+				c._show_success_popup("培养完成\n徒弟已成年，可以结业了")
 		else:
 			_handle_train_fail(slot, result.reason, btn)
 
@@ -314,9 +315,11 @@ func _on_graduate(slot: int, path: String):
 		# 刚结业的徒弟在已结业列表末尾
 		var a = data.graduated_apprentices.back()
 		if path == "magician":
-			c._show_stage_hint("【%s】转职魔法师！赚速提升 %d%%" % [a.name, int(a.magic_bonus * 100)])
+			# 【改】成功反馈铺开：转职成功弹窗
+			c._show_success_popup("转职成功\n【%s】赚速提升 %d%%" % [a.name, int(a.magic_bonus * 100)])
 		else:
-			c._show_stage_hint("【%s】结业成功！已进入现充" % a.name)
+			# 【改】成功反馈铺开：结业成功弹窗
+			c._show_success_popup("结业成功\n【%s】已进入现充" % a.name)
 		update_apprentice_page()
 		c.update_all_ui()
 		# 双胞胎：槽位里还有徒弟，继续为其选择方向
@@ -385,7 +388,8 @@ func _on_use_vitality_pill(spin: SpinBox):
 	# 【新增】批次②③④-B7：use_vitality_pill 失败原静默（入口已校验库存，纯防御补反馈）
 	if data.use_vitality_pill(_vitality_target_slot, count):
 		c._safe_close("VitalityPillPrompt")
-		c._show_stage_hint("活力 +%d！" % (5 * count))
+		# 【改】成功反馈铺开：活力弹窗
+		c._show_success_popup("活力 +%d" % (5 * count))
 		update_apprentice_page()
 		c.update_bag_list()
 	else:
@@ -437,7 +441,8 @@ func _show_marriage_proposal(slot: int):
 func _on_marry_apprentice():
 	if data.marry_apprentice(_proposing_slot, _proposed_spouse):
 		c._safe_close("MarriagePanel")
-		c._show_stage_hint("联姻成功！徒弟已进入已婚")
+		# 【改】成功反馈铺开：联姻成功弹窗
+		c._show_success_popup("联姻成功\n徒弟已进入已婚")
 		update_apprentice_page()
 		c.update_all_ui()
 		_proposing_slot = -1
