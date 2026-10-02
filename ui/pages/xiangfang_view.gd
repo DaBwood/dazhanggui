@@ -1179,7 +1179,9 @@ func _show_divine_popup():
 	_popup_kind = "divine"
 	_popup_id = ""
 	var luck: Dictionary = _pending_luck
-	var vbox: VBoxContainer = _popup_vbox("卜卦 · 命格对比", Vector2(780, 520))
+	# 尺寸随视口自适应：竖屏 780 固定宽会溢出屏幕（2026-10-02 用户实测）
+	var vs: Vector2 = c.get_viewport().get_visible_rect().size
+	var vbox: VBoxContainer = _popup_vbox("卜卦 · 命格对比", Vector2(clampf(vs.x - 48.0, 340.0, 720.0), clampf(vs.y - 140.0, 420.0, 560.0)))
 	_block_divine_external_close()
 	var pid: String = str(luck.get("plate", ""))
 	var idx: int = int(luck.get("slot", 0))
@@ -1187,16 +1189,16 @@ func _show_divine_popup():
 	var slot_name: String = str(pcfg.get("outer", [])[idx]) if idx < 6 else str(pcfg.get("inner", [])[idx - 6])
 	var old: Dictionary = _msys().get_slot_luck(pid, idx)
 
-	# ① 赚速大字对比（一眼看到，涨绿跌红）
+	# ① 赚钱大字对比（一眼看到，涨绿跌红）——门客口径统一用"赚钱"，"赚速"专指全局挂机速度（用户指正 2026-10-02）
 	var d_money: float = _msys().luck_money_impact(luck)
 	var money_l := Label.new()
 	money_l.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	money_l.add_theme_font_size_override("font_size", 26)
 	if d_money >= 0.0:
-		money_l.text = "装上后赚速 +%s/秒 ▲" % c.format_number(int(d_money))
+		money_l.text = "装上后赚钱 +%s/秒 ▲" % c.format_number(int(d_money))
 		money_l.add_theme_color_override("font_color", Color("#7ee787"))
 	else:
-		money_l.text = "装上后赚速 %s/秒 ▼" % c.format_number(int(d_money))
+		money_l.text = "装上后赚钱 %s/秒 ▼" % c.format_number(int(d_money))
 		money_l.add_theme_color_override("font_color", Color("#e74c3c"))
 	vbox.add_child(money_l)
 
@@ -1229,7 +1231,7 @@ func _show_divine_popup():
 # 【改】命格对比卡：卡标题+命格行（品质色）+逐门客明细行；show_diff 时新旧逐门客差值红绿（+绿 -红）
 func _make_luck_card(title: String, luck: Dictionary, pid: String, idx: int, pcfg: Dictionary, slot_name: String, show_diff: bool) -> Control:
 	var card := PanelContainer.new()
-	card.custom_minimum_size = Vector2(340, 220)
+	card.custom_minimum_size = Vector2(0, 200)   # 宽度弹性均分（随弹窗自适应），固定高保卡形
 	card.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	var style = StyleBoxFlat.new()
 	style.bg_color = Color("#262236")
@@ -1371,14 +1373,13 @@ func _auto_divine_step(rolls: int, replaced: int):
 		_pending_luck = luck
 		_show_divine_popup()
 	else:
+		_auto_stats = {"rolls": rolls, "replaced": replaced}   # 【改】实时存进度：hide_view 暂停后 resume 可精确续跑（原仅 better 时存，未 better 就退出会丢进度）
 		_refresh()   # 进度条跳动
 		await c.get_tree().create_timer(0.5).timeout
 		_auto_divine_step(rolls, replaced)
 
 # 自动卜卦暂停后恢复（替换/放弃按钮都走这里）
 func _auto_resume():
-	if _auto_stats.is_empty():
-		return
 	var rolls: int = int(_auto_stats.get("rolls", 0))
 	var replaced: int = int(_auto_stats.get("replaced", 0))
 	_auto_stats = {}
