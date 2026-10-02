@@ -53,6 +53,24 @@ func get_species_cfg(species_id: String) -> Dictionary:
 				return cfg
 	return {}
 
+# 【新增】B14 分组页签列表：按品种配置里的 group 字段去重保序
+# （牧场=杂食/草食/肉食；农场=北田/南田/灌木/东林/西林，各组固定4个品种）
+func get_group_list(kind: String) -> Array:
+	var groups: Array = []
+	for cfg in get_species_list(kind):
+		var gname = String(cfg.get("group", ""))
+		if gname != "" and not groups.has(gname):
+			groups.append(gname)
+	return groups
+
+# 【新增】B14 某一分组下的品种列表（保持配置顺序）
+func get_species_list_by_group(kind: String, group: String) -> Array:
+	var result: Array = []
+	for cfg in get_species_list(kind):
+		if String(cfg.get("group", "")) == group:
+			result.append(cfg)
+	return result
+
 # ============ 解锁推导（身份等级驱动，无需入存档） ============
 # 品种是否已解锁（身份达到品种的解锁等级）
 func is_species_unlocked(species_id: String) -> bool:
@@ -95,6 +113,20 @@ func get_plot(species_id: String, plot_index: int) -> Dictionary:
 # 品种等级上限 = 土地/血统当前等级 × 50
 func get_plot_level_cap(land_level: int) -> int:
 	return land_level * int(get_settings().get("level_per_land", 50))
+
+# 【新增】B14-6 该类商铺赚速加成：该品类所有"已解锁地块"的土地/血统等级之和 × 每级百分比（每块独立升级、独立累计，只算已解锁块）
+func get_shop_pct_bonus(category: String) -> float:
+	if category == "":
+		return 0.0
+	var total_land = 0
+	for kind in ["crops", "animals"]:
+		for cfg in get_species_list(kind):
+			if String(cfg.get("shop_category", "")) != category:
+				continue
+			var sid = String(cfg.get("id", ""))
+			for i in range(get_unlocked_plot_count(sid)):
+				total_land += int(get_plot(sid, i).land)
+	return total_land * float(get_settings().get("land_pct_per_level", 0.25))
 
 # 单块产量/分钟 = 基础产量 × (1 + 土地/血统加成) × (1 + 其他加成[宅院等，后续开发])
 # 基础产量 = 60 + (品种等级-1) × 1；土地/血统加成 = 土地/血统等级 × 25%
@@ -149,14 +181,12 @@ func upgrade_plot_level(species_id: String, plot_index: int) -> Dictionary:
 	plot.level = lv + 1
 	return {"ok": true}
 
-# 升级某块的土地/血统（耗商铺图纸；上限20级）
+# 升级某块的土地/血统（耗商铺图纸；【改】B14-6 取消等级上限，费用递增可无限升）
 func upgrade_plot_land(species_id: String, plot_index: int) -> Dictionary:
 	if plot_index >= get_unlocked_plot_count(species_id):
 		return {"ok": false, "reason": "该地块尚未解锁"}
 	var plot = get_plot(species_id, plot_index)
 	var land = int(plot.land)
-	if land >= int(get_settings().get("max_land_level", 20)):
-		return {"ok": false, "reason": "土地/血统已满级"}
 	var cost = get_land_up_cost(land)
 	if g.items.get("shop_blueprint", 0) < cost:
 		return {"ok": false, "reason": "商铺图纸不足（需要%d张）" % cost}

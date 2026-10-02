@@ -3,6 +3,9 @@
 # 纯逻辑模块：场景节点查找/弹窗挂载/共享工具/跨页调用一律经 c.xxx
 # （c = game_controller 根脚本，data = GameData 数据中枢）
 # UI 由 ManorView 的“宅院”页签触发，复用庄园滚动列表与“等级十连”勾选框
+# 【B15改】技艺弹窗对齐庄园 B14 惯例（2026-10-02 用户要求）：标题去【】居中；十连勾选挪弹窗底部；
+#   卷一/卷二改左文右钮卡片（左=卷名等级+效果 当前→下级 预览，右=升级钮+产物（拥有/需要）红绿在钮下）
+# 【B15-2改】效果文本拆两行（当前一行/下级一行，禁自动换行）；技艺弹窗滚动位置按 tech_id 记忆（升级后/重开不跳顶）
 # ============================================================
 class_name CourtyardView
 extends RefCounted
@@ -10,6 +13,7 @@ extends RefCounted
 var c      # game_controller 根脚本引用
 var data   # GameData 数据中枢引用
 var _batch_checked: bool = false   # 十连「卷一卷二通用」状态（勾选框在弹窗内，这里记住上次选择）
+var _tech_scroll: Dictionary = {}   # 【新增】B15-2 技艺弹窗滚动位置记忆（tech_id → 像素，升级后原地刷新不跳顶）
 
 # 由 game_controller._ready 创建本模块时注入引用
 func _init(p_c):
@@ -60,7 +64,7 @@ func _fill_technique_popup(panel: PanelContainer):
 		child.queue_free()
 
 	var title = Label.new()
-	title.text = "【%s】" % cfg.get("name", tech_id)
+	title.text = "%s" % cfg.get("name", tech_id)   # 【改】B15 去【】，与庄园弹窗标题惯例一致
 	title.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	title.add_theme_font_size_override("font_size", 20)
 	title.add_theme_color_override("font_color", Color("#ffd700"))
@@ -72,13 +76,6 @@ func _fill_technique_popup(panel: PanelContainer):
 	stock.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	vbox.add_child(stock)
 	
-	# 【新增】十连「卷一卷二通用」勾选放在弹窗内：升级按钮在哪，开关就在哪；勾选状态记在 _batch_checked
-	var batch_check = CheckBox.new()
-	batch_check.text = "十连升级"
-	batch_check.button_pressed = _batch_checked
-	batch_check.toggled.connect(_on_batch_toggled)
-	vbox.add_child(batch_check)
-
 	# 弹窗内部使用滚动区，两个项目各两卷都能在小屏手机内查看
 	var scroll = ScrollContainer.new()
 	scroll.custom_minimum_size = Vector2(330, 350)
@@ -92,6 +89,15 @@ func _fill_technique_popup(panel: PanelContainer):
 
 	detail_list.add_child(_build_project_block(cfg, "project1"))
 	detail_list.add_child(_build_project_block(cfg, "project2"))
+	# 【新增】B15-2 恢复上次滚动位置（set_deferred 等本帧布局完再滚，避免被最小尺寸钳回 0）
+	scroll.set_deferred("scroll_vertical", int(_tech_scroll.get(tech_id, 0)))
+
+	# 【改】B15 十连「卷一卷二通用」勾选挪到弹窗底部（与庄园弹窗开关行位置一致）；勾选状态记在 _batch_checked
+	var batch_check = CheckBox.new()
+	batch_check.text = "十连升级"
+	batch_check.button_pressed = _batch_checked
+	batch_check.toggled.connect(_on_batch_toggled)
+	vbox.add_child(batch_check)
 
 
 # 按 id 从宅院配置取技艺，避免弹窗刷新时继续持有旧配置字典
@@ -149,50 +155,62 @@ func _get_members_text(project: Dictionary) -> String:
 			names.append(data.get_friend_config(friend_id).get("name", friend_id))
 	return "、".join(names)
 
-# 构建卷一/卷二升级行：等级、当前效果、产物消耗、升级按钮
+# 【改】B15 卷一/卷二升级卡（对齐庄园弹窗惯例）：左=卷名等级+效果 当前→下级 预览；右="升级"钮+产物（拥有/需要 红绿）在钮下
 func _build_scroll_row(tech: Dictionary, project_key: String, project: Dictionary, volume: String) -> PanelContainer:
 	var tech_id = String(tech.get("id", ""))
 	var level = data.get_courtyard_scroll_level(tech_id, project_key, volume)
 	var is_vol1 = volume == "vol1"
-
-	# 【新增】批次②③④-B6（方案二·用户批准）：卷轴行重构为卡片式两行；返回类型 HBoxContainer→PanelContainer 随之调整
-	var card := PanelContainer.new()
-	var card_sty := StyleBoxFlat.new()
-	card_sty.bg_color = Color("#2a2640")
-	card_sty.set_corner_radius_all(6)
-	card_sty.set_content_margin_all(8)
-	card.add_theme_stylebox_override("panel", card_sty)
-
-	var col := VBoxContainer.new()
-	col.add_theme_constant_override("separation", 4)
-	card.add_child(col)
-
 	var cost = data.get_courtyard_scroll_cost(tech_id, project_key, volume)
 	var product = String(tech.get("product", ""))
 	var vol_name = "卷一" if is_vol1 else "卷二"
 
-	# 上行：效果（占满+自动换行兜底）+ 升级钮
-	var line1 := HBoxContainer.new()
-	line1.add_theme_constant_override("separation", 8)
-	col.add_child(line1)
-	# 【改】卷二解锁限制已作废，两卷都直接显示等级/效果/消耗
-	var info = Label.new()
-	info.size_flags_horizontal = Control.SIZE_EXPAND_FILL
-	info.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
-	info.text = "%s：Lv%d ｜ %s" % [
-		vol_name, level, _get_scroll_effect_text(project, volume, level)]
-	line1.add_child(info)
-	var btn = Button.new()
-	btn.custom_minimum_size = Vector2(82, 34)
-	btn.text = "升级"
-	btn.pressed.connect(_on_upgrade_scroll.bind(tech_id, project_key, volume))
-	line1.add_child(btn)
+	var card := PanelContainer.new()
+	card.add_theme_stylebox_override("panel", _make_card_style())
+	var body := HBoxContainer.new()
+	body.add_theme_constant_override("separation", 8)
+	card.add_child(body)
 
-	# 下行：消耗统一范式（消耗物名字不变色，（拥有/消耗）红绿）
-	c._add_cost_row(col, "消耗：%s" % product, int(data.get_manor_goods_count(product)), int(cost))
+	var left := VBoxContainer.new()
+	left.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	left.add_theme_constant_override("separation", 4)
+	body.add_child(left)
+	var title_lbl = Label.new()
+	title_lbl.text = "%s Lv%d" % [vol_name, level]
+	title_lbl.add_theme_font_size_override("font_size", 15)
+	left.add_child(title_lbl)
+	# 【改】B15-2 效果文本拆两行（当前一行/下级一行），禁自动换行——窄列折行难看（2026-10-02 用户实测反馈）
+	var info = Label.new()
+	info.add_theme_font_size_override("font_size", 13)
+	info.add_theme_color_override("font_color", Color("#bbbbbb"))
+	info.text = _get_scroll_effect_text(project, volume, level)
+	left.add_child(info)
+	var next_lbl = Label.new()
+	next_lbl.add_theme_font_size_override("font_size", 13)
+	next_lbl.add_theme_color_override("font_color", Color("#bbbbbb"))
+	next_lbl.text = "→ %s" % _get_scroll_effect_text(project, volume, level + 1)
+	left.add_child(next_lbl)
+
+	var right := VBoxContainer.new()
+	right.add_theme_constant_override("separation", 2)
+	body.add_child(right)
+	var btn = Button.new()
+	btn.text = "升级"
+	btn.custom_minimum_size = Vector2(90, 44)
+	right.add_child(btn)
+	btn.pressed.connect(_on_upgrade_scroll.bind(tech_id, project_key, volume))
+	c._add_cost_row(right, product, int(data.get_manor_goods_count(product)), int(cost))
 	return card
 
-# 当前卷轴效果文本：只负责显示，实际计算在 CourtyardSystem / HeroData / ShopSystem
+# 【新增】B15 卡片样式：与庄园弹窗升级卡同款（深底#221d33+淡紫描边，见 manor_view._make_upgrade_card_style）
+func _make_card_style() -> StyleBoxFlat:
+	var card_sty := StyleBoxFlat.new()
+	card_sty.bg_color = Color("#221d33")
+	card_sty.border_color = Color("#6a5f9e")
+	card_sty.set_border_width_all(1)
+	card_sty.set_corner_radius_all(6)
+	card_sty.set_content_margin_all(8)
+	return card_sty
+
 func _get_scroll_effect_text(project: Dictionary, volume: String, level: int) -> String:
 	# 效果系数统一读 courtyard.json，避免配置调参后界面文本和实际效果不一致
 	var settings = data.get_courtyard_settings()
@@ -218,6 +236,12 @@ func _on_batch_toggled(pressed: bool):
 
 # 升级卷轴：卷一跟随弹窗内的“卷一十连”勾选；卷二固定只升1级
 func _on_upgrade_scroll(tech_id: String, project_key: String, volume: String):
+	# 【新增】B15-2 升级会原地刷新弹窗，先把滚动位置按技艺 id 存进记忆，刷新后由 _fill_technique_popup 恢复、不跳顶
+	var pop0 = c.get_node_or_null("CourtyardTechPopup")
+	if pop0 != null:
+		var sc0 = pop0.get_node_or_null("VBoxContainer/TechScroll")
+		if sc0 != null:
+			_tech_scroll[tech_id] = sc0.scroll_vertical
 	var result: Dictionary
 	# 十连状态读模块变量（勾选框在弹窗内）
 	if _batch_checked:

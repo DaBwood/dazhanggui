@@ -1505,6 +1505,22 @@ func claim_vip_reward(level: int) -> bool:
 func get_manor_species_list(kind: String):
 	return manor_system.get_species_list(kind)
 
+# 庄园全局参数 settings 段（B14-2 弹窗升级卡读 每级增量/加成/上限 用）
+func get_manor_settings():
+	return manor_system.get_settings()
+
+# 该类商铺赚速加成（B14-6：每品种映射一类商铺，土地/血统每级+25%，每块独立累计，只算已解锁块）
+func get_manor_shop_pct_bonus(category: String) -> float:
+	return manor_system.get_shop_pct_bonus(category)
+
+# 分组页签列表（B14：牧场 杂食/草食/肉食；农场 北田/南田/灌木/东林/西林）
+func get_manor_group_list(kind: String):
+	return manor_system.get_group_list(kind)
+
+# 某分组下的品种列表（B14，每组固定4个）
+func get_manor_species_list_by_group(kind: String, group: String):
+	return manor_system.get_species_list_by_group(kind, group)
+
 # 某品种已解锁的地/圈数量（0~4）
 func get_manor_unlocked_plots(species_id: String):
 	return manor_system.get_unlocked_plot_count(species_id)
