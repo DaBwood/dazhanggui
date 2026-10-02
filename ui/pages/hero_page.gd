@@ -769,9 +769,11 @@ func on_aptitude_skill_upgrade(skill_index: int, mode: String = "single"):
 	if current_hero_id == "" or not data.heroes.has(current_hero_id): return
 	var hero = data.heroes[current_hero_id]
 	var skill = hero.aptitude_skills[skill_index]
+	# 勋章初始技能上限=读取式叠加：存档存基础上限，升级判定与显示读时加藏宝勋章 skill_cap（2026-10-02 用户拍板接入）
+	var cap_max: int = int(skill.max_level) + data.collection_system.get_medal_skill_cap()
 
 	# 已满级
-	if skill.level >= skill.max_level:
+	if skill.level >= cap_max:
 		return
 
 	# 【新增】2026-09-25 极·XX之道：技能带 cost_item 只吃对应职业之道书（不吃资质丹/百业经验）
@@ -779,7 +781,7 @@ func on_aptitude_skill_upgrade(skill_index: int, mode: String = "single"):
 		var book_id: String = str(skill.get("cost_item", ""))
 		var cost_num: int = int(skill.get("cost_num", 300))
 		var stock: int = int(data.items.get(book_id, 0))
-		var can_up: int = 1 if mode == "single" else min(mini(floori(stock / float(cost_num)), skill.max_level - skill.level), 10)
+		var can_up: int = 1 if mode == "single" else min(mini(floori(stock / float(cost_num)), cap_max - skill.level), 10)
 		if can_up > 0:
 			data.items[book_id] = stock - can_up * cost_num
 			skill.level += can_up
@@ -791,7 +793,7 @@ func on_aptitude_skill_upgrade(skill_index: int, mode: String = "single"):
 		return
 
 	var cost_per_level = int(skill.get("aptitude_per_level", 1))  # 每级固定消耗=每级加的资质数
-	var remaining = skill.max_level - skill.level
+	var remaining = cap_max - skill.level
 	var levels_to_upgrade: int = 1 if mode == "single" else 0
 
 	# 百业经验抵扣路径：池够升多少升多少（single=1级，bulk 封顶10级）
@@ -1269,8 +1271,10 @@ func _fill_skill_tab(list):
 	for i in range(h.aptitude_skills.size()):
 		var skill = h.aptitude_skills[i]
 		var per: int = int(skill.get("aptitude_per_level", 1))
-		var is_max: bool = skill.level >= skill.max_level
-		var info: String = "【%s】  Lv.%d/%d\n资质+%d" % [skill.name, skill.level, skill.max_level, skill.level * per]
+		# 满级判定/上限显示与升级判定同口径：基础上限+勋章 skill_cap（读取式，见 on_aptitude_skill_upgrade）
+		var cap_max: int = int(skill.max_level) + data.collection_system.get_medal_skill_cap()
+		var is_max: bool = skill.level >= cap_max
+		var info: String = "【%s】  Lv.%d/%d\n资质+%d" % [skill.name, skill.level, cap_max, skill.level * per]
 		if is_max:
 			info += "（已满级）"
 		else:
@@ -2223,7 +2227,8 @@ func _fill_talent_skill_tab(vb):
 					found = sk
 					break
 			var lv = int(found.level) if found != null else 0
-			var cap = int(found.max_level) if found != null else 200
+			var cap: int = int(found.max_level) if found != null else 200
+			cap += data.collection_system.get_medal_skill_cap()   # 天赋解锁技能也在资质技能栏升级，与技能栏同口径叠加勋章上限
 			row.text = "【%s】Lv.%d/%d  每级%d资质·%d资质丹" % [sname, lv, cap, apt, apt]
 		else:
 			row.text = "【%s】精进%d星解锁（每级%d资质）" % [sname, s, apt]

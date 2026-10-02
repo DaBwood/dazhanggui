@@ -231,16 +231,16 @@ func _build_medal_card(popup: PanelContainer):
 	help_btn.tooltip_text = "点击查看勋章规则"
 	help_btn.pressed.connect(_on_medal_help)
 	head_row.add_child(help_btn)
-	# 当前效果（skill_cap 挂起不接，同酒坊/妙音坊标注）
+	# 当前效果（skill_cap=初始技能等级上限，2026-10-02 已读取式接入资质技能栏/晋升判定/凤魁线）
 	var cur := Label.new()
-	cur.text = "全部商铺赚速 +%d%%　初始技能等级上限 +%d（待接入）" % [int(cs.get_medal_shop_pct() * 100), cs.get_medal_skill_cap()]
+	cur.text = "全部商铺赚速 +%d%%　初始技能等级上限 +%d" % [int(cs.get_medal_shop_pct() * 100), cs.get_medal_skill_cap()]
 	cur.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	vb.add_child(cur)
 	# 下级效果+评分进度（照钓鱼勋章版式）
 	var nxt: Dictionary = cs.get_next_medal_cfg()
 	if not nxt.is_empty():
 		var nxt_lbl := Label.new()
-		nxt_lbl.text = "下级：全部商铺赚速 +%d%%　初始技能等级上限 +%d（待接入）" % [int(float(nxt.get("shop_pct", 0.0)) * 100), int(nxt.get("skill_cap", 0))]
+		nxt_lbl.text = "下级：全部商铺赚速 +%d%%　初始技能等级上限 +%d" % [int(float(nxt.get("shop_pct", 0.0)) * 100), int(nxt.get("skill_cap", 0))]
 		nxt_lbl.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 		nxt_lbl.add_theme_font_size_override("font_size", 12)
 		nxt_lbl.add_theme_color_override("font_color", Color("#7ee787"))

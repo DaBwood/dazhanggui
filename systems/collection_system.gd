@@ -132,8 +132,8 @@ func can_upgrade_medal() -> Dictionary:
 func upgrade_medal() -> Dictionary:
 	var chk: Dictionary = can_upgrade_medal()
 	if not chk.get("ok", false): return chk
-	# skill_cap（初始技能等级上限）挂起不接：配置已带，效果待门客玩法完善时接入
-	# （同酒坊/妙音坊挂标记，2026-09-19 用户拍板；商铺赚速%走 get_medal_shop_pct 读取式已生效）
+	# skill_cap=初始技能等级上限（自带资质+晋升获得+凤魁线，用户拍板"就是这些技能"）：
+	# 读取式接入——升级判定/技能栏显示读时叠加 get_medal_skill_cap()，存档存基础上限零迁移（2026-10-02 勋章批次）
 	medal_lv = clampi(medal_lv + 1, 1, _medal_cfgs().size())
 	return {"ok": true}
 

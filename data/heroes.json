@@ -3597,7 +3597,7 @@
 			"cost_amount": 600,
 			"aptitude_per_level": 6,
 			"tiers": [
-				{"threshold": 5, "quality": 2, "new_skills": [{"name": "惊弦落雁", "aptitude_per_level": 3}]},
+				{"threshold": 5, "quality": 2, "new_skills": [{"name": "出塞远行", "aptitude_per_level": 3}]},
 				{"threshold": 15, "new_skills": [{"name": "献哈达", "aptitude_per_level": 3}]},
 				{"threshold": 30, "new_skills": [{"name": "织梭传艺", "aptitude_per_level": 3}]},
 				{"threshold": 45, "new_skills": [{"name": "昭节映金", "aptitude_per_level": 3}]},
