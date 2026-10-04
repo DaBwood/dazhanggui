@@ -22,6 +22,7 @@ var weekly_merit: Dictionary = {}  # {merit_key: 本周资历}（名流榜批次
 var weekly_key: String = ""        # 当前周键（周一 0 点 UTC+8 界，见 _week_key）
 var daily_publish: int = 0         # 今日已立项次数（每日 0 点重置，UTC+8；上限=基础1+藏品岱宗+雷恩天狼刃）
 var daily_reset_ts: int = 0
+var liked_week: String = ""        # 本周已点赞的周键（赞一次后本周不再渲染赞钮，409 双重点击在客户端堵掉）
 
 var offline_notice: Array = []     # 读档离线补算摘要（进招商页弹一次即清，不落盘）
 # 批次②：真机项目拉取缓存（不落盘，每次进页拉新）+ 补报/发布失败透传
@@ -33,7 +34,7 @@ var _fetching_projects: bool = false
 func get_save_data() -> Dictionary:
 	return {"zs_active": active_projects, "zs_joined": joined_projects,
 		"zs_pending": pending_projects, "zs_weekly": weekly_merit, "zs_weekly_key": weekly_key,
-		"zs_daily_pub": daily_publish, "zs_daily_reset": daily_reset_ts, "zs_ai": ai_cache}
+		"zs_daily_pub": daily_publish, "zs_daily_reset": daily_reset_ts, "zs_ai": ai_cache, "zs_liked": liked_week}
 
 func load_save_data(s: Dictionary):
 	if s.has("zs_active") and s.zs_active is Array: active_projects = s.zs_active
@@ -43,6 +44,7 @@ func load_save_data(s: Dictionary):
 	if s.has("zs_weekly_key"): weekly_key = str(s.zs_weekly_key)
 	if s.has("zs_daily_pub"): daily_publish = int(s.zs_daily_pub)
 	if s.has("zs_daily_reset"): daily_reset_ts = int(s.zs_daily_reset)
+	if s.has("zs_liked"): liked_week = str(s.zs_liked)
 	if s.has("zs_ai") and s.zs_ai is Array: ai_cache = s.zs_ai   # 人机项目落盘：重登后名字/倒计时稳定（否则重roll会误导玩家"项目变了"）
 	check_week_reset()
 	# 离线补算：过期项目直接结算（医馆离线续算同款），摘要暂存供招商页弹出
@@ -371,6 +373,11 @@ func fetch_leaderboard(merit: String, cb: Callable):
 			lb_failed = true
 			cb.call(false))
 
+# 本周是否已点赞（名流榜页签据此不渲染赞钮）
+func get_liked_this_week() -> bool:
+	check_week_reset()
+	return liked_week == weekly_key and weekly_key != ""
+
 # 点赞另一个玩家：服务端唯一约束挡本周重复；成功后五种资历各+10000（经 add_merit 入账并顺带上报）
 func like_player(target: String, cb: Callable):
 	if net == null or net.token == "":
@@ -382,6 +389,7 @@ func like_player(target: String, cb: Callable):
 			var names: Dictionary = get_merit_names()
 			for key in names.keys():
 				add_merit(str(key), int(_st().get("like_merit", 10000)))
+			liked_week = weekly_key   # 本周已赞：客户端不再渲染赞钮（服务端 409 双保险）
 			cb.call(true, "")
 		elif code == -1:
 			cb.call(false, "网络异常，请重试")

@@ -286,7 +286,8 @@ func _build_rank_tab(list: VBoxContainer):
 		info.text = "%d. %s　%s" % [idx + 1, str(row.get("name", "?")), c.format_number(int(row.get("merit", 0)))]
 		line.add_child(info)
 		var uname: String = str(row.get("username", ""))
-		if uname != "" and uname != my_name and (_sys().net != null and _sys().net.token != ""):
+		# 本周已赞则不渲染赞钮：从交互上杜绝重复点赞的 409（服务端 UNIQUE 仍是双保险）
+		if uname != "" and uname != my_name and (_sys().net != null and _sys().net.token != "") and not _sys().get_liked_this_week():
 			var like := Button.new()
 			like.text = "赞"
 			like.custom_minimum_size = Vector2(52, 30)
@@ -304,7 +305,7 @@ func _build_rank_tab(list: VBoxContainer):
 	var tip := Label.new()
 	tip.add_theme_font_size_override("font_size", 12)
 	tip.add_theme_color_override("font_color", Color("#8a84a8"))
-	tip.text = "每周一 0 点重置；点赞每人每周一次"
+	tip.text = "每周一 0 点重置；点赞每人每周一次（本周已点赞）" if _sys().get_liked_this_week() else "每周一 0 点重置；点赞每人每周一次"
 	list.add_child(tip)
 
 func _on_rank_tab(key: String):
