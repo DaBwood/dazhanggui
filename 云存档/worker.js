@@ -227,7 +227,7 @@ export default {
 				const meritCol = { shitu: "merit_shitu", nongshi: "merit_nongshi", jiangzao: "merit_jiangzao", xingshang: "merit_xingshang", junshi: "merit_junshi" }[qs.get("merit") || ""]
 				const weekKey = String(qs.get("week") || "")
 				if (!meritCol || !weekKey) return json({ ok: false, msg: "参数不全" }, 400)
-				const rs = await env.DB.prepare("SELECT name, " + meritCol + " AS merit FROM zhaoshang_weekly WHERE week_key = ? ORDER BY merit DESC LIMIT 50").bind(weekKey).all()
+				const rs = await env.DB.prepare("SELECT username, name, " + meritCol + " AS merit FROM zhaoshang_weekly WHERE week_key = ? ORDER BY merit DESC LIMIT 50").bind(weekKey).all()
 				return json({ ok: true, list: rs.results || [] })
 			}
 			return json({ ok: false, msg: "未知接口" }, 404)

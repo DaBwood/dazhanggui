@@ -14,6 +14,8 @@ var _proj: Dictionary = {}      # 项目内部页当前项目（加入校验用�
 var _remain_labels: Array = []  # 倒计时标签引用 [{lbl,end_ts}]（Timer 每秒就地改字，不整页重建）
 var _tick_timer = null          # 页内 1s Timer（进出复位：hide_view 停止并清引用）
 var _want_join_refresh: bool = false   # 进页签/手动刷新置 true；fetch 成功只允许重建一次（防"成功→重建→再fetch→再成功"死循环）
+var _rank_tab: String = "shitu"        # 名流榜分榜页签（五资历）
+var _want_rank_refresh: bool = false   # 同 join 页签守卫：分榜回包每轮只重建一次
 
 func _init(p_c):
 	super(p_c)
@@ -237,28 +239,87 @@ func _add_join_card(list: VBoxContainer, p: Dictionary, is_ai: bool):
 	btn.pressed.connect(_on_project.bind(p))
 	card.add_child(btn)
 
-# ---------- 页签三：名流榜（批次①：本地本周账+空态，真人榜/点赞批次③） ----------
+# ---------- 页签三：名流榜（批次③：真榜拉取+点赞；每周一 0 点重置） ----------
 func _build_rank_tab(list: VBoxContainer):
-	# 本周榜周一 0 点重置；批次①只显示自己本周五种资历账（真人榜与点赞 Worker 批次③接入）
+	# 成功才自动重建且每轮限一次（同项目招商页守卫；回调晚于离页到达时 get_node_or_null 拒收）
+	_sys().fetch_leaderboard(_rank_tab, func(_ok: bool):
+		if _ok and _tab == "rank" and _want_rank_refresh and c.get_node_or_null(_page_name) != null:
+			_want_rank_refresh = false
+			_refresh())
+	# 五资历分榜页签
+	var subs := HBoxContainer.new()
+	subs.alignment = BoxContainer.ALIGNMENT_CENTER
+	subs.add_theme_constant_override("separation", 6)
+	list.add_child(subs)
+	for key in _sys().get_merit_names().keys():
+		var sb := Button.new()
+		sb.text = _sys().merit_name(str(key))
+		sb.custom_minimum_size = Vector2(88, 34)
+		sb.add_theme_font_size_override("font_size", 13)
+		sb.add_theme_color_override("font_color", Color("#ffd700") if _rank_tab == str(key) else Color("#f2f2f2"))
+		sb.pressed.connect(_on_rank_tab.bind(str(key)))
+		subs.add_child(sb)
+
+	if _sys().lb_failed:
+		var retry := Button.new()
+		retry.text = "重试加载榜单"
+		retry.custom_minimum_size = Vector2(0, 40)
+		retry.pressed.connect(func(): _want_rank_refresh = true; _refresh())
+		list.add_child(retry)
+
+	# 榜单行：名次/名字/资历/点赞（自己不显赞钮）
+	var rows: Array = _sys().lb_cache.get(_rank_tab, [])
+	if rows.is_empty() and not _sys().lb_failed:
+		var loading := Label.new()
+		loading.text = "榜单加载中…（无人上榜时虚位以待）"
+		loading.add_theme_color_override("font_color", Color("#8a84a8"))
+		list.add_child(loading)
+	var my_name: String = _sys().net.username if _sys().net != null else ""
+	for idx in range(rows.size()):
+		var row: Dictionary = rows[idx]
+		var line := HBoxContainer.new()
+		line.add_theme_constant_override("separation", 8)
+		list.add_child(line)
+		var info := Label.new()
+		info.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+		info.text = "%d. %s　%s" % [idx + 1, str(row.get("name", "?")), c.format_number(int(row.get("merit", 0)))]
+		line.add_child(info)
+		var uname: String = str(row.get("username", ""))
+		if uname != "" and uname != my_name and (_sys().net != null and _sys().net.token != ""):
+			var like := Button.new()
+			like.text = "赞"
+			like.custom_minimum_size = Vector2(52, 30)
+			like.add_theme_font_size_override("font_size", 13)
+			like.pressed.connect(_on_like.bind(uname))
+			line.add_child(like)
+
+	# 我的本周（本机记账=已上报口径）+ 重置说明
 	var names: Dictionary = _sys().get_merit_names()
-	for key in names.keys():
-		var row := PanelContainer.new()
-		var sty := StyleBoxFlat.new()
-		sty.bg_color = Color("#221d33")
-		sty.border_color = Color("#6a5f8a")
-		sty.set_border_width_all(1)
-		sty.set_corner_radius_all(6)
-		row.add_theme_stylebox_override("panel", sty)
-		list.add_child(row)
-		var lbl := Label.new()
-		lbl.add_theme_font_size_override("font_size", 15)
-		lbl.text = "%s　本周 +%s" % [str(names[key]), c.format_number(_sys().get_merit(str(key)))]
-		row.add_child(lbl)
-	var empty := Label.new()
-	empty.add_theme_font_size_override("font_size", 14)
-	empty.add_theme_color_override("font_color", Color("#8a84a8"))
-	empty.text = "本周榜虚位以待（名流榜排名批次开放）；每周一 0 点重置"
-	list.add_child(empty)
+	var mine := Label.new()
+	mine.add_theme_font_size_override("font_size", 13)
+	mine.add_theme_color_override("font_color", Color("#c8c3e0"))
+	mine.text = "我的本周：%s +%s（点赞他人五种资历各+%s）" % [_sys().merit_name(_rank_tab),
+		c.format_number(_sys().get_merit(_rank_tab)), c.format_number(int(_sys().get_like_merit()))]
+	list.add_child(mine)
+	var tip := Label.new()
+	tip.add_theme_font_size_override("font_size", 12)
+	tip.add_theme_color_override("font_color", Color("#8a84a8"))
+	tip.text = "每周一 0 点重置；点赞每人每周一次"
+	list.add_child(tip)
+
+func _on_rank_tab(key: String):
+	_rank_tab = key
+	_want_rank_refresh = true
+	_refresh()
+
+func _on_like(target: String):
+	_sys().like_player(target, func(ok: bool, msg: String):
+		if ok:
+			var gain: int = int(_sys().get_like_merit())
+			c._show_success_popup("点赞成功，五种资历各+%s" % c.format_number(gain), 0.0, "ok")
+			_refresh()
+		else:
+			c._show_success_popup(msg, 0.0, "warn"))
 
 # ---------- 签订承包弹窗 ----------
 func _on_sign(p_type: String):
@@ -433,6 +494,7 @@ func _on_join():
 func _on_tab(t: String):
 	_tab = t
 	if t == "join": _want_join_refresh = true   # 主动切进本页签允许成功回包重建一次
+	if t == "rank": _want_rank_refresh = true
 	_refresh()
 
 func _on_join_refresh():

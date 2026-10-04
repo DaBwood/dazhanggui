@@ -54,6 +54,10 @@ func load_save_data(s: Dictionary):
 func _st() -> Dictionary:
 	return g._zhaoshang_configs.get("settings", {})
 
+# 点赞奖励（五种资历各+X；名流榜页签显示用）
+func get_like_merit() -> int:
+	return int(_st().get("like_merit", 10000))
+
 # 单份批文分钟数 / 单次最大份数（签订弹窗 UI 用）
 func get_minutes_per_copy() -> int:
 	return int(_st().get("minutes_per_copy", 180))
@@ -141,10 +145,13 @@ func get_merit(key: String) -> int:
 	return int(weekly_merit.get(key, 0))
 
 # 结算入账（承包到期/参与到期/点赞都走这里；周一重置在周键变更时自然清账）
+# 在线时增量上报 Worker 周榜（服务端累加纯存储）；离线单机赚的资历只进本地账
 func add_merit(key: String, amount: int):
 	if amount <= 0: return
 	check_week_reset()
 	weekly_merit[key] = get_merit(key) + amount
+	if net != null and net.token != "":
+		net.zs_merit({key: amount}, net.username, weekly_key, func(_code: int, _d: Dictionary): pass)
 
 # 资历消耗口（side_skill_system 第六技能升级扣对应职业资历；余额不足返回 false 不扣）
 func spend_merit(key: String, amount: int) -> bool:
@@ -343,6 +350,47 @@ func flush_pending():
 			"type": str(p.get("type", "")), "copies": int(p.get("copies", 1)),
 			"start_ts": int(p.get("start_ts", 0)), "end_ts": int(p.get("end_ts", 0))},
 			cb.bind(p.duplicate()))
+
+# ============ 批次③：周榜上报后的真榜与点赞 ============
+# 分榜缓存：{merit_key: Array}，当前周键内有效；换周/换榜重新拉
+var lb_cache: Dictionary = {}
+var lb_week: String = ""
+var lb_failed: bool = false
+var _fetching_lb: bool = false
+
+func fetch_leaderboard(merit: String, cb: Callable):
+	check_week_reset()
+	if lb_week != weekly_key:   # 换周自然失效
+		lb_cache = {}
+		lb_week = weekly_key
+	if _fetching_lb: return
+	_fetching_lb = true
+	net.zs_leaderboard(merit, weekly_key, func(code: int, d: Dictionary):
+		_fetching_lb = false
+		if code == 200 and bool(d.get("ok", false)):
+			lb_cache[merit] = d.get("list", [])
+			lb_failed = false
+			cb.call(true)
+		else:
+			lb_failed = true
+			cb.call(false))
+
+# 点赞另一个玩家：服务端唯一约束挡本周重复；成功后五种资历各+10000（经 add_merit 入账并顺带上报）
+func like_player(target: String, cb: Callable):
+	if net == null or net.token == "":
+		cb.call(false, "未登录，无法点赞")
+		return
+	check_week_reset()
+	net.zs_like(target, weekly_key, func(code: int, d: Dictionary):
+		if code == 200 and bool(d.get("ok", false)):
+			var names: Dictionary = get_merit_names()
+			for key in names.keys():
+				add_merit(str(key), int(_st().get("like_merit", 10000)))
+			cb.call(true, "")
+		elif code == -1:
+			cb.call(false, "网络异常，请重试")
+		else:
+			cb.call(false, str(d.get("msg", "点赞失败"))))
 
 # ============ 结算节拍（controller on_auto_earn 每秒调用） ============
 func tick() -> Array:
