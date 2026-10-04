@@ -150,3 +150,24 @@ func guild_get(guild_id: String, cb: Callable):
 
 func guild_save(guild_id: String, record: Dictionary, cb: Callable):
 	_request("/guild/save", {"guild_id": guild_id, "record": record}, cb)
+
+# ===== 招商（Worker 三表六接口的客户端封装；批次②发布/加入/补报接线，资历上报/点赞/榜单=批次③） =====
+# merit/like/leaderboard 三个 wrapper 批次③才接线，先就位
+func zs_publish(record: Dictionary, cb: Callable):
+	_request("/zhaoshang/publish", record, cb)
+
+func zs_join(project_id: String, disp_name: String, cb: Callable):
+	_request("/zhaoshang/join", {"project_id": project_id, "name": disp_name}, cb)
+
+func zs_merit(deltas: Dictionary, disp_name: String, week_key: String, cb: Callable):
+	_request("/zhaoshang/merit", {"deltas": deltas, "name": disp_name, "week_key": week_key}, cb)
+
+func zs_like(target: String, week_key: String, cb: Callable):
+	_request("/zhaoshang/like", {"target": target, "week_key": week_key}, cb)
+
+func zs_projects(cb: Callable):
+	_request("/zhaoshang/projects", {}, cb)
+
+func zs_leaderboard(merit: String, week_key: String, cb: Callable):
+	# merit 与 week_key 均为内部键（白名单列名/日期串），无注入面，直接拼 query
+	_request("/zhaoshang/leaderboard?merit=%s&week=%s" % [merit, week_key], {}, cb)

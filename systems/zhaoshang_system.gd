@@ -23,11 +23,16 @@ var weekly_key: String = ""        # 当前周键（周一 0 点 UTC+8 界，见
 var daily_publish: int = 0         # 今日已承包次数（每日 0 点重置，UTC+8）
 var daily_reset_ts: int = 0
 var offline_notice: Array = []     # 读档离线补算摘要（进招商页弹一次即清，不落盘）
+# 批次②：真机项目拉取缓存（不落盘，每次进页拉新）+ 补报/发布失败透传
+var net = null   # NetSystem 由 controller _ready 注入（网络层住 controller 是全局先例，系统不直连）
+var real_projects: Array = []        # Worker 返回的进行中且有空位、排除自己的项目
+var real_projects_failed: bool = false   # 拉取失败=true（断网/Worker 挂），UI 显示重试钮
+var _fetching_projects: bool = false
 
 func get_save_data() -> Dictionary:
 	return {"zs_active": active_projects, "zs_joined": joined_projects,
 		"zs_pending": pending_projects, "zs_weekly": weekly_merit, "zs_weekly_key": weekly_key,
-		"zs_daily_pub": daily_publish, "zs_daily_reset": daily_reset_ts}
+		"zs_daily_pub": daily_publish, "zs_daily_reset": daily_reset_ts, "zs_ai": ai_cache}
 
 func load_save_data(s: Dictionary):
 	if s.has("zs_active") and s.zs_active is Array: active_projects = s.zs_active
@@ -37,6 +42,7 @@ func load_save_data(s: Dictionary):
 	if s.has("zs_weekly_key"): weekly_key = str(s.zs_weekly_key)
 	if s.has("zs_daily_pub"): daily_publish = int(s.zs_daily_pub)
 	if s.has("zs_daily_reset"): daily_reset_ts = int(s.zs_daily_reset)
+	if s.has("zs_ai") and s.zs_ai is Array: ai_cache = s.zs_ai   # 人机项目落盘：重登后名字/倒计时稳定（否则重roll会误导玩家"项目变了"）
 	check_daily_reset()
 	check_week_reset()
 	# 离线补算：过期项目直接结算（医馆离线续算同款），摘要暂存供招商页弹出
@@ -193,15 +199,30 @@ func contract(p_type: String, copies: int) -> Dictionary:
 	var now: int = _now()
 	# 预计资历锁定在承包时刻（每分钟资历×份数×单份分钟）
 	var merit: int = get_merit_per_min() * copies * minutes
-	active_projects.append({"type": p_type, "copies": copies,
-		"start_ts": now, "end_ts": now + copies * minutes * 60, "merit": merit})
+	# id 客户端生成且带时间戳：服务端 ON CONFLICT upsert，补报重试幂等安全
+	var pid: String = "p_%d_%d" % [now, randi() % 100000]
+	var proj: Dictionary = {"id": pid, "type": p_type, "copies": copies,
+		"start_ts": now, "end_ts": now + copies * minutes * 60, "merit": merit}
+	active_projects.append(proj)
 	daily_publish += 1
-	return {"ok": true, "msg": "%s ×%d 已立项" % [str(conf.get("name", p_type)), copies], "merit": merit}
+	return {"ok": true, "msg": "%s ×%d 已立项" % [str(conf.get("name", p_type)), copies], "merit": merit, "project": proj}
 
 # ============ 项目招商（批次①=人机兜底） ============
-# 人机项目：5 个、每种项目 1 个常驻；倒计时每次打开页重新生成（2~6 小时随机），不占真人名额
+# 人机项目：5 个、每种项目 1 个常驻（2~6 小时随机）；内存缓存——页内重建不重roll（owner/倒计时不闪），全过期才重新生成
+var ai_cache: Array = []
+
 func get_ai_projects() -> Array:
 	var now: int = _now()
+	var alive: Array = []
+	for p in ai_cache:
+		if int(p.get("end_ts", 0)) > now:
+			alive.append(p)
+	if alive.is_empty():
+		alive = _gen_ai_projects(now)
+	ai_cache = alive   # 顺带清掉过期项
+	return alive
+
+func _gen_ai_projects(now: int) -> Array:
 	var names: Array = g._zhaoshang_configs.get("ai_names", [])
 	var span: int = maxi(1, int(_st().get("ai_duration_max", 21600)) - int(_st().get("ai_duration_min", 7200)))
 	var out: Array = []
@@ -209,7 +230,7 @@ func get_ai_projects() -> Array:
 		var end_ts: int = now + int(_st().get("ai_duration_min", 7200)) + randi() % span
 		var nm: String = str(names[randi() % names.size()]) if names.size() > 0 else "神秘商贾"
 		out.append({"id": "ai_" + p_type, "is_ai": true, "type": p_type,
-			"owner_name": nm, "end_ts": end_ts, "slots": 5})
+			"owner_name": nm, "end_ts": end_ts, "slots": 4})
 	return out
 
 func has_joined(p_id: String) -> bool:
@@ -220,9 +241,9 @@ func has_joined(p_id: String) -> bool:
 func get_join_check(p: Dictionary) -> Dictionary:
 	var now: int = _now()
 	if int(p.get("end_ts", 0)) <= now: return {"ok": false, "reason": "项目已结束"}
-	if int(p.get("slots", 5)) <= 0: return {"ok": false, "reason": "项目已满员"}
+	if int(p.get("joined", 0)) >= int(p.get("slots", 5)): return {"ok": false, "reason": "项目已满员"}
 	if has_joined(str(p.get("id", ""))): return {"ok": false, "reason": "已加入该项目"}
-	if joined_projects.size() >= get_join_slot_total(): return {"ok": false, "reason": "参与槽位已满"}
+	if joined_projects.size() >= get_join_slot_total(): return {"ok": false, "reason": "参与项目已满（%d/%d）" % [joined_projects.size(), get_join_slot_total()]}
 	return {"ok": true, "reason": ""}
 
 # 加入结算口径：自己每分钟资历 × 剩余分钟（加入时刻锁定）
@@ -238,6 +259,90 @@ func join_project(p: Dictionary) -> Dictionary:
 		"type": str(p.get("type", "")), "end_ts": int(p.get("end_ts", 0)), "merit": merit,
 		"is_ai": bool(p.get("is_ai", false))})
 	return {"ok": true, "msg": "成功加入【%s】" % str(conf.get("name", "项目")), "merit": merit}
+
+# ============ 批次②：Worker 真同步（发布/加入/拉取/补报） ============
+# 未登录（token 空）= 单机玩法：不进招商池也不补报；发布失败两口径按 code 区分——
+#   code==-1（断网/Worker 挂）→ 本地照玩 + 进补报队列，恢复后补报；
+#   4xx/5xx（Worker 明确拒绝）→ 回滚批文并摘项目，on_fail 红字透传（拍板"发布失败→批文回滚+红字"）
+func publish_project(p: Dictionary, on_fail: Callable):
+	if net == null or net.token == "": return
+	net.zs_publish({"id": str(p.get("id", "")), "owner_name": net.username,
+		"type": str(p.get("type", "")), "copies": int(p.get("copies", 1)),
+		"start_ts": int(p.get("start_ts", 0)), "end_ts": int(p.get("end_ts", 0))},
+		func(code: int, d: Dictionary):
+			if code == 200 and bool(d.get("ok", false)):
+				return
+			if code == -1:
+				pending_projects.append(p)
+				on_fail.call("网络异常，项目暂存本地，恢复后自动补报")
+			else:
+				_rollback_project(p)
+				on_fail.call("立项被拒（%s），批文已退回" % str(d.get("msg", "服务器错误"))))
+
+# Worker 拒绝发布时的回滚：摘项目 + 退批文（资历未结算无账可冲）
+func _rollback_project(p: Dictionary):
+	for i in range(active_projects.size()):
+		if str(active_projects[i].get("id", "")) == str(p.get("id", "")):
+			active_projects.remove_at(i)
+			break
+	var conf: Dictionary = get_project_cfg(str(p.get("type", "")))
+	var piwen: String = str(conf.get("piwen", ""))
+	if piwen != "":
+		g.items[piwen] = int(g.items.get(piwen, 0)) + int(p.get("copies", 1))
+
+# 加入真机项目：先本地校验（不占槽），服务器确认成功才入 joined_projects（失败不占槽位，拍板口径）
+# cb(ok: bool, msg: String)；资历按服务器返回 end_ts 锁定剩余分钟（客户端时钟不可信，以服务器为准）
+func join_real(p: Dictionary, cb: Callable):
+	var check: Dictionary = get_join_check(p)
+	if not bool(check.get("ok", false)):
+		cb.call(false, str(check.get("reason", "无法加入")))
+		return
+	net.zs_join(str(p.get("id", "")), net.username,
+		func(code: int, d: Dictionary):
+			if code == 200 and bool(d.get("ok", false)):
+				var end_ts: int = int(d.get("end_ts", p.get("end_ts", 0)))
+				var now: int = _now()
+				var remain_min: int = maxi(1, int(floor((end_ts - now) / 60.0)))
+				var merit: int = get_merit_per_min() * remain_min
+				joined_projects.append({"id": str(p.get("id", "")), "owner_name": str(p.get("owner_name", "")),
+					"type": str(p.get("type", "")), "end_ts": end_ts, "merit": merit, "is_ai": false})
+				cb.call(true, "成功加入")
+			elif code == -1:
+				cb.call(false, "网络异常，请重试")
+			else:
+				cb.call(false, str(d.get("msg", "加入失败"))))
+
+# 拉取真机项目列表（进项目招商页触发；并发守卫防重复请求）；ok=false=断网/Worker 挂，UI 走人机兜底+重试钮
+func fetch_real_projects(cb: Callable):
+	if _fetching_projects: return
+	_fetching_projects = true
+	net.zs_projects(func(code: int, d: Dictionary):
+		_fetching_projects = false
+		if code == 200 and bool(d.get("ok", false)):
+			real_projects = d.get("projects", [])
+			real_projects_failed = false
+			cb.call(true)
+		else:
+			real_projects = []
+			real_projects_failed = true
+			cb.call(false))
+
+# 补报队列：进招商页时清一次；补报用同一幂等 id 重发，成功即从队列摘除
+func flush_pending():
+	if net == null or pending_projects.is_empty() or net.token == "": return
+	var queue: Array = pending_projects.duplicate()
+	for p in queue:
+		# 回调按值捕获项目：循环变量按引用捕获会让所有回调看到最后一项（GDScript 闭包坑）
+		var cb: Callable = func(code: int, d: Dictionary, q: Dictionary):
+			if code == 200 and bool(d.get("ok", false)):
+				for i in range(pending_projects.size()):
+					if str(pending_projects[i].get("id", "")) == str(q.get("id", "")):
+						pending_projects.remove_at(i)
+						break
+		net.zs_publish({"id": str(p.get("id", "")), "owner_name": net.username,
+			"type": str(p.get("type", "")), "copies": int(p.get("copies", 1)),
+			"start_ts": int(p.get("start_ts", 0)), "end_ts": int(p.get("end_ts", 0))},
+			cb.bind(p.duplicate()))
 
 # ============ 结算节拍（controller on_auto_earn 每秒调用） ============
 func tick() -> Array:

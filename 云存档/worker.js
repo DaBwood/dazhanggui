@@ -148,6 +148,88 @@ export default {
 				if (r.meta.changes === 0) return json({ ok: false, msg: "商会不存在" }, 404)
 				return json({ ok: true })
 			}
+			// ---------- 招商：发布项目（幂等：id 由客户端生成，重试/补报重复提交安全） ----------
+			if (path === "/zhaoshang/publish" && request.method === "POST") {
+				const username = await auth(request, env)
+				if (!username) return json({ ok: false, msg: "未登录或会话已过期" }, 401)
+				const body = await request.json()
+				const id = String(body.id || "")
+				if (!id) return json({ ok: false, msg: "缺少项目id" }, 400)
+				const now = Math.floor(Date.now() / 1000)
+				await env.DB.prepare("INSERT INTO zhaoshang_projects (id, owner, owner_name, type, copies, start_ts, end_ts, joiners, created_at) VALUES (?, ?, ?, ?, ?, ?, ?, '[]', ?) ON CONFLICT(id) DO UPDATE SET owner_name = excluded.owner_name, type = excluded.type, copies = excluded.copies, start_ts = excluded.start_ts, end_ts = excluded.end_ts")
+					.bind(id, username, String(body.owner_name || username), String(body.type || ""), Math.max(1, Math.min(4, parseInt(body.copies) || 1)), parseInt(body.start_ts) || now, parseInt(body.end_ts) || now, now).run()
+				return json({ ok: true })
+			}
+			// ---------- 招商：加入项目（读-改-写；单线程朋友局并发可接受） ----------
+			if (path === "/zhaoshang/join" && request.method === "POST") {
+				const username = await auth(request, env)
+				if (!username) return json({ ok: false, msg: "未登录或会话已过期" }, 401)
+				const body = await request.json()
+				const row = await env.DB.prepare("SELECT * FROM zhaoshang_projects WHERE id = ?").bind(String(body.project_id || "")).first()
+				if (!row) return json({ ok: false, msg: "项目不存在" }, 404)
+				const now = Math.floor(Date.now() / 1000)
+				if (parseInt(row.end_ts) <= now) return json({ ok: false, msg: "项目已结束" }, 409)
+				let joiners = []
+				try { joiners = JSON.parse(row.joiners || "[]") } catch (e) { joiners = [] }
+				if (joiners.length >= 4) return json({ ok: false, msg: "项目已满员" }, 409)
+				if (joiners.some(function (j) { return j.user === username })) return json({ ok: false, msg: "已加入该项目" }, 409)
+				joiners.push({ user: username, name: String(body.name || username), ts: now })
+				await env.DB.prepare("UPDATE zhaoshang_projects SET joiners = ? WHERE id = ?").bind(JSON.stringify(joiners), String(body.project_id || "")).run()
+				return json({ ok: true, end_ts: parseInt(row.end_ts), type: row.type })
+			}
+			// ---------- 招商：周资历上报（服务端不解析，只做五列累加；week_key 换周自然开新行） ----------
+			if (path === "/zhaoshang/merit" && request.method === "POST") {
+				const username = await auth(request, env)
+				if (!username) return json({ ok: false, msg: "未登录或会话已过期" }, 401)
+				const body = await request.json()
+				const deltas = body.deltas || {}
+				const weekKey = String(body.week_key || "")
+				if (!weekKey) return json({ ok: false, msg: "缺少周键" }, 400)
+				const num = function (v) { const n = parseInt(v); return isNaN(n) ? 0 : Math.max(0, n) }
+				await env.DB.prepare("INSERT INTO zhaoshang_weekly (username, name, merit_shitu, merit_nongshi, merit_jiangzao, merit_xingshang, merit_junshi, week_key, updated_at) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?) ON CONFLICT(username, week_key) DO UPDATE SET name = excluded.name, merit_shitu = merit_shitu + excluded.merit_shitu, merit_nongshi = merit_nongshi + excluded.merit_nongshi, merit_jiangzao = merit_jiangzao + excluded.merit_jiangzao, merit_xingshang = merit_xingshang + excluded.merit_xingshang, merit_junshi = merit_junshi + excluded.merit_junshi, updated_at = excluded.updated_at")
+					.bind(username, String(body.name || username), num(deltas.shitu), num(deltas.nongshi), num(deltas.jiangzao), num(deltas.xingshang), num(deltas.junshi), weekKey, Date.now()).run()
+				return json({ ok: true })
+			}
+			// ---------- 招商：点赞（唯一约束=每人每周一次，重复点赞由约束挡下） ----------
+			if (path === "/zhaoshang/like" && request.method === "POST") {
+				const username = await auth(request, env)
+				if (!username) return json({ ok: false, msg: "未登录或会话已过期" }, 401)
+				const body = await request.json()
+				const weekKey = String(body.week_key || "")
+				const target = String(body.target || "")
+				if (!weekKey || !target) return json({ ok: false, msg: "参数不全" }, 400)
+				try {
+					await env.DB.prepare("INSERT INTO zhaoshang_likes (liker, target, week_key, created_at) VALUES (?, ?, ?, ?)").bind(username, target, weekKey, Date.now()).run()
+				} catch (e) {
+					return json({ ok: false, msg: "本周已点赞" }, 409)
+				}
+				return json({ ok: true })
+			}
+			// ---------- 招商：进行中且有空位的真机项目（排除自己的；joiners 在服务端数） ----------
+			if (path === "/zhaoshang/projects" && request.method === "GET") {
+				const username = await auth(request, env)
+				if (!username) return json({ ok: false, msg: "未登录或会话已过期" }, 401)
+				const now = Math.floor(Date.now() / 1000)
+				const rs = await env.DB.prepare("SELECT * FROM zhaoshang_projects WHERE end_ts > ? ORDER BY created_at ASC LIMIT 50").bind(now).all()
+				const out = []
+				for (const row of (rs.results || [])) {
+					if (row.owner === username) continue
+					let joiners = []
+					try { joiners = JSON.parse(row.joiners || "[]") } catch (e) { joiners = [] }
+					if (joiners.length >= 4) continue
+					out.push({ id: row.id, owner_name: row.owner_name, type: row.type, copies: parseInt(row.copies), start_ts: parseInt(row.start_ts), end_ts: parseInt(row.end_ts), joined: joiners.length, slots: 4 })
+				}
+				return json({ ok: true, projects: out })
+			}
+			// ---------- 招商：名流榜分榜（merit 列名白名单防注入，top50） ----------
+			if (path === "/zhaoshang/leaderboard" && request.method === "GET") {
+				const qs = new URL(request.url).searchParams
+				const meritCol = { shitu: "merit_shitu", nongshi: "merit_nongshi", jiangzao: "merit_jiangzao", xingshang: "merit_xingshang", junshi: "merit_junshi" }[qs.get("merit") || ""]
+				const weekKey = String(qs.get("week") || "")
+				if (!meritCol || !weekKey) return json({ ok: false, msg: "参数不全" }, 400)
+				const rs = await env.DB.prepare("SELECT name, " + meritCol + " AS merit FROM zhaoshang_weekly WHERE week_key = ? ORDER BY merit DESC LIMIT 50").bind(weekKey).all()
+				return json({ ok: true, list: rs.results || [] })
+			}
 			return json({ ok: false, msg: "未知接口" }, 404)
 		} catch (e) {
 			return json({ ok: false, msg: "服务器错误: " + String(e) }, 500)

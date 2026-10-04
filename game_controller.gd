@@ -158,6 +158,7 @@ func _ready():
 	net = NetSystem.new()
 	net.name = "NetSystem"
 	add_child(net)
+	data.zhaoshang_system.net = net   # 招商系统经注入持有网络层（网络层住 controller 是全局先例；时序安全：net 创建早于任何招商页调用）
 	net_ui = NetUi.new(self)   # 【新增】网络 UI 块（2026-09-19 重构批次A）：登录门/登录弹窗/云存档仲裁/账号面板
 	ui_helpers = UiHelpers.new(self)   # 【新增】UI 助手设施（重构批次B）：弹窗工厂/样式/飘字/数量选择器
 	data.game_saved.connect(net_ui._on_game_saved_upload)

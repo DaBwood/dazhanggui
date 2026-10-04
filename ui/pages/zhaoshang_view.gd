@@ -13,6 +13,7 @@ var _copies: int = 1            # 签订弹窗当前份数（1~max_copies）
 var _proj: Dictionary = {}      # 项目内部页当前项目（加入校验用）
 var _remain_labels: Array = []  # 倒计时标签引用 [{lbl,end_ts}]（Timer 每秒就地改字，不整页重建）
 var _tick_timer = null          # 页内 1s Timer（进出复位：hide_view 停止并清引用）
+var _want_join_refresh: bool = false   # 进页签/手动刷新置 true；fetch 成功只允许重建一次（防"成功→重建→再fetch→再成功"死循环）
 
 func _init(p_c):
 	super(p_c)
@@ -24,6 +25,8 @@ func _sys() -> ZhaoshangSystem:
 
 func show_zhaoshang_view():
 	show_view()
+	_sys().flush_pending()   # 批次②：进页补报断网/Worker挂时暂存的项目（幂等 id 重发）
+	if _tab == "join": _want_join_refresh = true   # 重进页面落在本页签时允许成功回包重建一次
 	# 离线补算摘要：读档时结算的项目在首次进页一次弹出（弹后即清，不落盘）
 	if _sys().offline_notice.size() > 0:
 		var txt: String = ""
@@ -146,6 +149,13 @@ func _build_contract_tab(list: VBoxContainer):
 		row.add_child(remain)
 		_remain_labels.append({"lbl": remain, "end_ts": int(p.get("end_ts", 0))})
 
+	if not _sys().pending_projects.is_empty():
+		var pend := Label.new()
+		pend.add_theme_font_size_override("font_size", 13)
+		pend.add_theme_color_override("font_color", Color("#ffb84d"))
+		pend.text = "有 %d 个项目待补报（联网进入本页自动上报）" % _sys().pending_projects.size()
+		list.add_child(pend)
+
 	if _sys().active_projects.size() == 0:
 		var empty := Label.new()
 		empty.text = "暂无进行中的项目（下方选择项目承包）"
@@ -174,36 +184,58 @@ func _build_contract_tab(list: VBoxContainer):
 	hint.text = "资历产出受自身身份、藏品效果影响；每份批文持续180分钟，结束一次性结算"
 	list.add_child(hint)
 
-# ---------- 页签二：项目招商（批次①=人机兜底） ----------
+# ---------- 页签二：项目招商（真人 Worker 项目 + 人机兜底） ----------
 func _build_join_tab(list: VBoxContainer):
+	# 真机项目：进页拉取（排除自己/满员/已结束）；拉取失败显示重试钮，列表照常用 AI 兜底
+	# 成功才自动重建，且每轮进入只重建一次：成败都重建都会成环（失败环/成功环，批次②两次实测教训）；
+	# 回调晚于用户离开页面到达时必须放弃——get_node_or_null 守卫防"返回后被弹回招商页"
+	_sys().fetch_real_projects(func(_ok: bool):
+		if _ok and _tab == "join" and _want_join_refresh and c.get_node_or_null(_page_name) != null:
+			_want_join_refresh = false
+			_refresh())
+	# 登录后常驻刷新钮（兼作失败重试）；real_projects_failed 仅作内部态，不驱动重建
+	if _sys().net != null and _sys().net.token != "":
+		var retry := Button.new()
+		retry.text = "刷新真人项目"
+		retry.custom_minimum_size = Vector2(0, 44)
+		retry.pressed.connect(_on_join_refresh)
+		list.add_child(retry)
+	for p in _sys().real_projects:
+		_add_join_card(list, p, false)
 	# 人机项目 5 个常驻、每次打开重新生成倒计时；只显示有空位项目（人机恒有空位）
 	for p in _sys().get_ai_projects():
-		var conf: Dictionary = _sys().get_project_cfg(str(p.get("type", "")))
-		var joined: bool = _sys().has_joined(str(p.get("id", "")))
-		var card := PanelContainer.new()
-		var sty := StyleBoxFlat.new()
-		sty.bg_color = Color("#221d33")
-		sty.border_color = Color("#6a5f8a")
-		sty.set_border_width_all(1)
-		sty.set_corner_radius_all(6)
-		card.add_theme_stylebox_override("panel", sty)
-		card.add_theme_constant_override("margin_left", 10)
-		list.add_child(card)
-		var btn := Button.new()
-		btn.custom_minimum_size = Vector2(0, 64)
-		btn.size_flags_horizontal = Control.SIZE_EXPAND_FILL
-		var state: String = "参与中" if joined else "%d/%d" % [1 if joined else 0, int(p.get("slots", 5))]
-		btn.text = "【%s】%s  剩余%s\n立项人：%s   已加入 %s" % [str(conf.get("name", "项目")),
-			_sys().merit_name(str(conf.get("merit", ""))), _fmt_remain(int(p.get("end_ts", 0))),
-			str(p.get("owner_name", "神秘商贾")), state]
-		btn.pressed.connect(_on_project.bind(p))
-		card.add_child(btn)
+		_add_join_card(list, p, true)
 
 	var hint := Label.new()
 	hint.add_theme_font_size_override("font_size", 13)
 	hint.add_theme_color_override("font_color", Color("#8a84a8"))
 	hint.text = "加入后按自己每分钟资历×剩余分钟结算，占用参与槽位至项目结束"
 	list.add_child(hint)
+
+# 项目招商卡（真人/人机共用）：真人标"真人"且人数取服务端 joined；人机人数=自己是否加入
+func _add_join_card(list: VBoxContainer, p: Dictionary, is_ai: bool):
+	var conf: Dictionary = _sys().get_project_cfg(str(p.get("type", "")))
+	var joined: bool = _sys().has_joined(str(p.get("id", "")))
+	var card := PanelContainer.new()
+	var sty := StyleBoxFlat.new()
+	sty.bg_color = Color("#221d33")
+	sty.border_color = Color("#6a5f8a")
+	sty.set_corner_radius_all(6)
+	sty.set_border_width_all(1)
+	card.add_theme_stylebox_override("panel", sty)
+	card.add_theme_constant_override("margin_left", 10)
+	list.add_child(card)
+	var btn := Button.new()
+	btn.custom_minimum_size = Vector2(0, 64)
+	btn.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	var joined_cnt: int = int(p.get("joined", 0)) if not is_ai else (1 if joined else 0)
+	var tag: String = "人机" if is_ai else "真人"
+	var state: String = "参与中" if joined else "%d/%d" % [joined_cnt, int(p.get("slots", 5))]
+	btn.text = "[%s]【%s】%s  剩余%s\n立项人：%s   已加入 %s" % [tag, str(conf.get("name", "项目")),
+		_sys().merit_name(str(conf.get("merit", ""))), _fmt_remain(int(p.get("end_ts", 0))),
+		str(p.get("owner_name", "神秘商贾")), state]
+	btn.pressed.connect(_on_project.bind(p))
+	card.add_child(btn)
 
 # ---------- 页签三：名流榜（批次①：本地本周账+空态，真人榜/点赞批次③） ----------
 func _build_rank_tab(list: VBoxContainer):
@@ -323,6 +355,8 @@ func _on_contract():
 		c._show_success_popup(str(res.get("msg", "")) + "\n预计+%s资历" % c.format_number(int(res.get("merit", 0))), 0.0, "ok")
 		close_popup()
 		_refresh()
+		# 批次②：立项成功即向 Worker 发布；失败两口径由 system 按 code 分流（补报/回滚），红字在此透传
+		_sys().publish_project(res.get("project", {}), func(msg: String): c._show_success_popup(msg, 0.0, "warn"))
 	else:
 		c._show_success_popup(str(res.get("msg", "无法承包")), 0.0, "warn")
 
@@ -377,17 +411,32 @@ func _on_project(p: Dictionary):
 	vbox.add_child(join)
 
 func _on_join():
-	var res: Dictionary = _sys().join_project(_proj)
-	if bool(res.get("ok", false)):
-		c._show_success_popup(str(res.get("msg", "")), 0.0, "ok")
-		close_popup()
-		_refresh()
+	if bool(_proj.get("is_ai", false)):
+		var res: Dictionary = _sys().join_project(_proj)
+		if bool(res.get("ok", false)):
+			c._show_success_popup(str(res.get("msg", "")), 0.0, "ok")
+			close_popup()
+			_refresh()
+		else:
+			c._show_success_popup(str(res.get("msg", "无法加入")), 0.0, "warn")
 	else:
-		c._show_success_popup(str(res.get("msg", "无法加入")), 0.0, "warn")
+		# 真人项目：服务器确认成功才占槽位（弱网不占槽，拍板口径）
+		_sys().join_real(_proj, func(ok: bool, msg: String):
+			if ok:
+				c._show_success_popup(msg, 0.0, "ok")
+				close_popup()
+				_refresh()
+			else:
+				c._show_success_popup(msg, 0.0, "warn"))
 
 # ---------- 通用 ----------
 func _on_tab(t: String):
 	_tab = t
+	if t == "join": _want_join_refresh = true   # 主动切进本页签允许成功回包重建一次
+	_refresh()
+
+func _on_join_refresh():
+	_want_join_refresh = true
 	_refresh()
 
 func _on_rule():
