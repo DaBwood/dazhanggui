@@ -40,12 +40,22 @@ func build_fishing_view(page, vbox):
 	back_btn.pressed.connect(c.hide_view.bind("fishing"))
 	view.add_child(back_btn)
 
+	var title_row := HBoxContainer.new()
+	title_row.alignment = BoxContainer.ALIGNMENT_CENTER
+	title_row.add_theme_constant_override("separation", 8)
+	view.add_child(title_row)
 	var title = Label.new()
 	title.text = "垂钓"
 	title.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	title.add_theme_font_size_override("font_size", 22)
 	title.add_theme_color_override("font_color", Color("#ffd700"))
-	view.add_child(title)
+	title_row.add_child(title)
+	# 【新增】批次②③④-B6：主标题"?"规则钮（B6④拍板口径：任务规则/勋章规则统一进规则弹窗，不上任务/勋章面板）
+	var rule_btn = Button.new()
+	rule_btn.text = "?"
+	rule_btn.custom_minimum_size = Vector2(30, 30)
+	rule_btn.pressed.connect(_on_fishing_rule)
+	title_row.add_child(rule_btn)
 
 	# 时段/天气/地龙信息栏
 	var info = Label.new()
@@ -185,12 +195,6 @@ func _show_medal_popup():
 	head.add_theme_font_size_override("font_size", 18)
 	head.add_theme_color_override("font_color", Color("#e6c07b"))
 	head_row.add_child(head)
-	var help_btn := Button.new()
-	help_btn.text = "?"
-	help_btn.custom_minimum_size = Vector2(24, 24)
-	help_btn.tooltip_text = "点击查看勋章规则"
-	help_btn.pressed.connect(_on_medal_help)
-	head_row.add_child(help_btn)
 	var effect := Label.new()
 	effect.text = "全部商铺赚速 +%d%%　精进技能等级上限 +%d" % [int(fs.get_medal_shop_pct() * 100), fs.get_refine_cap_bonus()]
 	effect.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
@@ -227,10 +231,11 @@ func _show_medal_popup():
 		up_btn.pressed.connect(_on_medal_upgrade)
 		vb.add_child(up_btn)
 
-func _on_medal_help():
-	# 【待Kimi】④此处长说明应迁说明入口（勋章规则长文案现走瞬时提示；另勋章"?"挂在弹窗内，按约定应迁玩法主标题）
-	# 【改】飘字退休：规则说明升级"?"规则弹窗（带遮罩、点外部关、不自动关）
-	c._show_rule_popup("勋章规则", "钓鱼勋章：普通鱼+5、优秀鱼+10、卓越鱼+30、传奇鱼+60、无双/极.无双鱼+100；累计经验只作门槛不消耗。")
+# 【新增】批次②③④-B6：主标题"?"规则弹窗——任务规则与勋章规则合并一处（B6④拍板口径）
+func _on_fishing_rule():
+	c._show_rule_popup("垂钓规则",
+		"任务：最多同时持有3个，钓鱼时有几率触发新任务；接到交付任务后，对应道具才会出现在鱼池中。\n" +
+		"勋章：普通鱼+5、优秀鱼+10、卓越鱼+30、传奇鱼+60、无双/极.无双鱼+100；累计经验只作门槛不消耗。")
 
 func _on_medal_upgrade():
 	var fs = data.fishing_system
@@ -537,13 +542,6 @@ func _on_task_btn():
 	popup.name = "FishingTaskPopup"
 	var vb = popup.get_child(0)
 
-	# 【待Kimi】④此处长说明应迁说明入口（任务规则两行说明）
-	var hint = Label.new()
-	hint.text = "任务最多同时持有3个，钓鱼时有几率触发新任务\n（接到交付任务后，对应道具才会出现在鱼池中）"
-	hint.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
-	hint.add_theme_font_size_override("font_size", 13)
-	hint.add_theme_color_override("font_color", Color("#aaaaaa"))
-	vb.add_child(hint)
 
 	var scroll = ScrollContainer.new()
 	scroll.name = "TaskScroll"

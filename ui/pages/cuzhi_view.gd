@@ -351,23 +351,17 @@ func _show_cricket_detail(item: Dictionary):
 	var q = int(cdata.quality)
 	var max_lv = item.get("max_level", sys.get_cricket_max_level(q))
 	var cost = sys.get_levelup_cost(item.level, q)
-	# 【待Kimi】③升阶材料"拥有数"无现成 getter（cuzhi_caught 实体无数量字段），此处成本着色待 Kimi 定数据口径
+	# 【新增】批次②③④-B6：成本行接线同名促织拥有数+红/金着色（红字不够/金足够，B6③拍板口径；拥有数=cuzhi_system.get_same_name_count）
 	var exp_lbl = Label.new()
 	if item.level >= max_lv:
 		exp_lbl.text = "军衔：已满阶"
+		exp_lbl.add_theme_color_override("font_color", Color("#aaaaaa"))
 	else:
-		exp_lbl.text = "下次升阶需消耗：%d 只同名促织" % cost
+		var lown: int = sys.get_same_name_count(cdata)
+		exp_lbl.text = "下次升阶需消耗：%d 只同名促织（拥有 %d）" % [cost, lown]
+		exp_lbl.add_theme_color_override("font_color", Color("#ff6b6b") if lown < cost else Color("#ffd700"))
 	exp_lbl.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
-	exp_lbl.add_theme_color_override("font_color", Color("#aaaaaa"))
 	vbox.add_child(exp_lbl)
-
-	# 【待Kimi】④此处长说明应迁说明入口（促织详情机制说明：重复转化升阶材料/军衔影响战力）
-	var desc = Label.new()
-	desc.text = "重复捉到同名促织自动转化为升阶材料\n军衔影响促织战力（后续玩法使用）"
-	desc.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
-	desc.add_theme_font_size_override("font_size", 14)
-	desc.add_theme_color_override("font_color", Color("#888888"))
-	vbox.add_child(desc)
 
 
 # ========== 捉促织 ==========

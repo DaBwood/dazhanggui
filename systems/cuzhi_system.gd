@@ -77,6 +77,16 @@ func get_cricket_init_level(quality: int) -> int:
 	return int(info.rank) * 9
 
 
+# 同名促织拥有数（升阶材料口径的显示用；升阶消耗机制未实装，按同名已拥有实体数计——促织架每只都是独立实体）
+func get_same_name_count(cdata: Dictionary) -> int:
+	var target: String = str(cdata.get("name", ""))
+	if target == "": return 0
+	var cnt: int = 0
+	for k in g.cuzhi_caught.keys():
+		if str(_crickets_by_id.get(str(k), {}).get("name", "")) == target:
+			cnt += 1
+	return cnt
+
 func get_levelup_cost(level: int, quality: int) -> int:
 	var init_lv = get_cricket_init_level(quality)
 	var offset = level - init_lv
