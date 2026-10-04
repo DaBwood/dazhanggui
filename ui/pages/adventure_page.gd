@@ -302,6 +302,13 @@ func generate_adventure_page():
 	travel_btn.custom_minimum_size = Vector2(180, 60)
 	travel_btn.pressed.connect(c.show_view.bind("travel"))
 	entry_grid.add_child(travel_btn)
+
+	# 招商入口（闯荡页第 6 钮；全屏页 z35 走 VIEW_LIST 分发）
+	var zhaoshang_btn = Button.new()
+	zhaoshang_btn.text = "招商"
+	zhaoshang_btn.custom_minimum_size = Vector2(180, 60)
+	zhaoshang_btn.pressed.connect(c.show_view.bind("zhaoshang"))
+	entry_grid.add_child(zhaoshang_btn)
 	
 	# --- 【新增】游历子页面 ---
 	var travel_view = VBoxContainer.new()

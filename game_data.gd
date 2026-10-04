@@ -637,11 +637,14 @@ var miaoyin_system   # 【新增】妙音坊玩法系统（逻辑在 systems/mia
 @warning_ignore("unused_private_class_variable")   # 【新增】批次D：配置走 SYSTEM_LIST 动态注册（set 赋值/get 或跨文件读取），分析器扫不到属误报，非真未使用
 var _miaoyin_configs: Dictionary = {}   # 【新增】妙音坊建筑配置（miaoyin_buildings.json；其余五张分表由系统懒加载）
 var xiangfang_system   # 【新增】厢房玩法系统（逻辑在 systems/xiangfang_system.gd，状态内部持有随 get_save_data 落盘）
+var zhaoshang_system   # 招商系统（逻辑在 systems/zhaoshang_system.gd，状态内部持有随 get_save_data 落盘）
 var mingpan_system   # 【新增】命盘系统（逻辑在 systems/mingpan_system.gd，批次①骨架，状态内部持有随 get_save_data 落盘）
 @warning_ignore("unused_private_class_variable")   # 【新增】批次D：配置走 SYSTEM_LIST 动态注册（set 赋值/get 或跨文件读取），分析器扫不到属误报，非真未使用
 var _xiangfang_configs: Dictionary = {}   # 【新增】厢房配置（xiangfang.json：296 家具/20 套装/勋章 15 级/风水概率）
 @warning_ignore("unused_private_class_variable")   # 【新增】批次D：配置走 SYSTEM_LIST 动态注册（set 赋值/get 或跨文件读取），分析器扫不到属误报，非真未使用
 var _mingpan_configs: Dictionary = {}     # 【新增】命盘配置（mingpan.json：5 五行盘/10 槽位/10 品质档/数值 ladder/进度曲线）
+@warning_ignore("unused_private_class_variable")   # 配置走 SYSTEM_LIST 动态注册（set 赋值/get 或跨文件读取），分析器扫不到属误报，非真未使用
+var _zhaoshang_configs: Dictionary = {}   # 招商配置（zhaoshang.json：五项目/批文映射/身份倍数表/VIP表/资历消耗表/人机名库）
 
 # ==================== 初始化 ====================
 # 初始化：创建各子系统（纯逻辑模块，持有本中枢引用），再加载全部配置
@@ -695,6 +698,7 @@ const SYSTEM_LIST: Array = [
 	{"key": "xiangfang_system", "script": "res://systems/xiangfang_system.gd", "cfg_var": "_xiangfang_configs", "cfg": "res://data/xiangfang.json"},
 	{"key": "mingpan_system", "script": "res://systems/mingpan_system.gd", "cfg_var": "_mingpan_configs", "cfg": "res://data/mingpan.json"},
 	{"key": "costume_system", "script": "res://systems/costume_system.gd", "cfg_var": "costume_configs", "cfg": "res://data/costumes.json"},
+	{"key": "zhaoshang_system", "script": "res://systems/zhaoshang_system.gd", "cfg_var": "_zhaoshang_configs", "cfg": "res://data/zhaoshang.json"},
 ]
 
 # 【新增】批次D（2026-09-19 重构）：配置孤儿扫描的特殊加载认领清单——

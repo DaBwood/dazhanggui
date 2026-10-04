@@ -7,6 +7,7 @@
 #   庖丁解牛：厨艺值（inn_system 全局池）曲线 100+(L-1)+int(L/10)，上限300
 #   XX之道：对应职业之道书道具×100/级（士→仕途之道 … 侠→侠义之道），上限200
 # 存储 {hero_id: {技能key: 级}} 随 get_save_data 落盘；hangshi/yinyuan 为占位池（待各自玩法接入产出）
+# 招商项目（zhaoshang）：每门客按职业对应一种项目（士→漕运…侠→军械），上限200，消耗对应类型资历（招商系统产出）
 # ============================================================
 class_name SideSkillSystem
 extends RefCounted
@@ -34,7 +35,7 @@ func load_save_data(s: Dictionary):
 # ============ 配置读取（side_skill.json，代码默认值兜底） ============
 # 技能显示/遍历顺序
 func get_skill_keys() -> Array:
-	return ["shijing", "baigong", "wubao", "paoding", "zhidao"]
+	return ["shijing", "baigong", "wubao", "paoding", "zhidao", "zhaoshang"]
 
 func _cfg(key: String) -> Dictionary:
 	var skills: Dictionary = g._side_skill_configs.get("skills", {})
@@ -93,6 +94,9 @@ func get_next_cost(hero_id: String, key: String) -> Dictionary:
 			cur_name = book_id
 			if g.ITEM_CONFIG.has(book_id):
 				cur_name = str(g.ITEM_CONFIG[book_id].get("name", book_id))
+		"merit":
+			cost = g.zhaoshang_system.get_merit_upgrade_cost(cur)   # 表驱动 100×k^1.887（zhaoshang.json）
+			cur_name = g.zhaoshang_system.merit_name(g.zhaoshang_system.get_career_merit(str(g.heroes.get(hero_id, {}).get("category", ""))))
 	return {"cost": cost, "currency": cur_name}
 
 # 供 hero_page 副业 tab 渲染的行数据
@@ -109,6 +113,10 @@ func get_hero_skill_rows(hero_id: String) -> Array:
 			var book_id := get_career_book(str(g.heroes[hero_id].get("category", "")))
 			if g.ITEM_CONFIG.has(book_id):
 				disp_name = str(g.ITEM_CONFIG[book_id].get("name", disp_name))
+		# 招商项目按职业显示项目名（如 士→漕运代理），消耗=对应资历名
+		if str(conf.get("currency", "")) == "merit":
+			var zs_type: String = g.zhaoshang_system.get_career_project(str(g.heroes[hero_id].get("category", "")))
+			disp_name = str(g.zhaoshang_system.get_project_cfg(zs_type).get("name", disp_name))
 		rows.append({"key": key, "name": disp_name, "level": lv,
 			"max": int(conf.get("max", 200)), "cost": int(cost_info.get("cost", 0)),
 			"currency": str(cost_info.get("currency", ""))})
@@ -129,6 +137,8 @@ func get_stock(hero_id: String, key: String) -> int:
 		"career_book":
 			var book_id := get_career_book(str(g.heroes.get(hero_id, {}).get("category", "")))
 			return int(g.items.get(book_id, 0))
+		"merit":
+			return g.zhaoshang_system.get_merit(g.zhaoshang_system.get_career_merit(str(g.heroes.get(hero_id, {}).get("category", ""))))
 	return 0
 
 # ============ 升级（mode="single" 升1级 / "bulk" 升级10次：资源/上限不够升剩余） ============
@@ -171,4 +181,8 @@ func _spend_one(hero_id: String, key: String, level: int) -> bool:
 			if book == "" or int(g.items.get(book, 0)) < need: return false
 			g.items[book] = int(g.items.get(book, 0)) - need
 			return true
+		"merit":
+			# 每级+1资质入 HeroData 总资质（register_bonus 副业行循环本系统，入列即生效）
+			var mkey: String = g.zhaoshang_system.get_career_merit(str(g.heroes[hero_id].get("category", "")))
+			return g.zhaoshang_system.spend_merit(mkey, g.zhaoshang_system.get_merit_upgrade_cost(level))
 	return false

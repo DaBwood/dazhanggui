@@ -73,6 +73,7 @@ var tavern_view   # 【新增】酒肆玩法视图（商铺地图酒肆店铺「
 var winery_view   # 【新增】酒坊玩法视图（商铺地图酒坊「▶」入口全屏页）
 var miaoyin_view   # 【新增】妙音坊玩法视图（商铺地图妙音坊「▶」入口全屏页）
 var xiangfang_view   # 【新增】厢房视图（府邸「厢房」入口全屏页，Page z35/弹窗 z40 照 BaseView 新模式）
+var zhaoshang_view   # 招商玩法视图（闯荡页入口全屏页，Page z35/弹窗 z40 照 BaseView 模式）
 
 # ==================== 【新增】视图注册清单（2026-09-18 架构重构批次②） ====================
 # 一条 = var 成员名 + 脚本路径 + 通用入口 key；_ready 由本清单循环实例化。
@@ -107,11 +108,12 @@ const VIEW_LIST: Array = [
 	{"var": "winery_view", "script": "res://ui/pages/winery_view.gd", "key": "winery"},
 	{"var": "miaoyin_view", "script": "res://ui/pages/miaoyin_view.gd", "key": "miaoyin"},
 	{"var": "xiangfang_view", "script": "res://ui/pages/xiangfang_view.gd", "key": "xiangfang"},
+	{"var": "zhaoshang_view", "script": "res://ui/pages/zhaoshang_view.gd", "key": "zhaoshang"},
 ]
 
 # 【新增】切回闯荡页需关闭的视图 key 清单（= 原 switch_page 里 16 个手写 hide_xxx_view() 调用清单化，
 # 新可关闭视图在此追加一行即可；顺序无要求）
-const PAGE_CLOSE_LIST: Array = ["exchange", "lottery", "charity", "travel", "manor", "war", "fishing", "cuzhi", "collection", "bank", "mail", "inn", "clinic", "drugshop", "tavern", "winery", "miaoyin"]
+const PAGE_CLOSE_LIST: Array = ["exchange", "lottery", "charity", "travel", "manor", "war", "fishing", "cuzhi", "collection", "bank", "mail", "inn", "clinic", "drugshop", "tavern", "winery", "miaoyin", "zhaoshang"]
 
 func _ready():
 	
@@ -388,6 +390,14 @@ func on_auto_earn():
 	# 【新增】药铺计算队列后台节拍：每秒推一次（时间盒2ms）；页面关闭也持续结算，
 	# 队列进存档、离线暂停，上线后由本节拍续算（体力恢复与收益结算解耦）
 	data.drugshop_system.background_tick(2)
+	# 招商结算节拍：每秒检查到期承包/参与项目，到期入资历池并弹成功窗（多条合并一窗）
+	var zs_settled: Array = data.zhaoshang_system.tick()
+	if zs_settled.size() > 0:
+		var zs_txt: String = ""
+		for s in zs_settled:
+			if zs_txt != "": zs_txt += "\n"
+			zs_txt += data.zhaoshang_system.settle_text(s)
+		_show_success_popup(zs_txt, 0.0, "ok")
 	
 	if _autosave_sec >= AUTOSAVE_INTERVAL:
 		_autosave_sec = 0

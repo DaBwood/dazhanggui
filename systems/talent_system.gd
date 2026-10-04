@@ -364,6 +364,16 @@ func get_copy_level(hero_id: String) -> int:
 	return int(get_copy_stats(hero_id).get("level", 0))
 
 # 虫师技能等级上限加成（cuzhi get_side_max_level 调用）：同职业拥有门客的 cap 求和
+# 招商额外槽位（zhaoshang_system 调用）：全体拥有门客 zhaoshang_extra 按 cond 求和
+# cond=join → 参与槽位+（雷恩·北斗七星）；cond=project → 承包槽位+（雷恩·天狼刃）
+func get_zhaoshang_extra(cond: String) -> int:
+	var total = 0
+	for hid in g.heroes.keys():
+		for e in _active_talent_effects(hid):
+			if str(e.get("kind", "")) == "zhaoshang_extra" and str(e.get("cond", "")) == cond:
+				total += int(get_effect_value(e, hid))
+	return total
+
 func get_worm_skill_cap_bonus(hero_cat: String) -> int:
 	var total = 0
 	for hid in g.heroes.keys():
@@ -443,9 +453,10 @@ func get_token_shared_partner(hero_id: String) -> String:
 	return ""
 
 # 未实装效果类型清单（批次④收口）：活动向 8 种实装前，天赋页当前档灰显"后续版本开放"
+# zhaoshang_extra 已接线（招商批次①：join=参与槽位/北斗七星，project=承包槽位/天狼刃，消费 getter=get_zhaoshang_extra）
 const UNWIRED_TALENT_KINDS: Array = ["friend_activity_talent_pct", "hero_activity_income_pct",
 	"apprentice_quality_prob_pct", "banquet_popularity_pct", "activity_stat_pct", "activity_stat_flat",
-	"zhaoshang_extra", "escort_free"]
+	"escort_free"]
 
 func is_unwired_talent_kind(kind: String) -> bool:
 	return UNWIRED_TALENT_KINDS.has(kind)
