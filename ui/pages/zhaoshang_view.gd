@@ -88,10 +88,11 @@ func _build(page: Panel):
 	var st := Label.new()
 	st.add_theme_font_size_override("font_size", 14)
 	st.add_theme_color_override("font_color", Color("#c8c3e0"))
-	st.text = "每分钟资历 %d ｜ 承包 %d/%d ｜ 参与 %d/%d" % [
+	st.text = "每分钟资历 %d ｜ 承包 %d ｜ 参与 %d/%d ｜ 今日可立项 %d 次" % [
 		_sys().get_merit_per_min(),
-		_sys().active_projects.size(), _sys().get_project_slot_total(),
-		_sys().joined_projects.size(), _sys().get_join_slot_total()]
+		_sys().active_projects.size(),
+		_sys().joined_projects.size(), _sys().get_join_slot_total(),
+		_sys().get_today_publish_left()]
 	vb.add_child(st)
 
 	# 页签栏
@@ -294,7 +295,6 @@ func _build_rank_tab(list: VBoxContainer):
 			line.add_child(like)
 
 	# 我的本周（本机记账=已上报口径）+ 重置说明
-	var names: Dictionary = _sys().get_merit_names()
 	var mine := Label.new()
 	mine.add_theme_font_size_override("font_size", 13)
 	mine.add_theme_color_override("font_color", Color("#c8c3e0"))
@@ -356,6 +356,13 @@ func _fill_sign_popup(popup):
 	name_lbl.text = "【%s】%s" % [str(conf.get("name", "项目")), _sys().merit_name(str(conf.get("merit", "")))]
 	vbox.add_child(name_lbl)
 
+	var vip_hint := Label.new()
+	vip_hint.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	vip_hint.add_theme_font_size_override("font_size", 12)
+	vip_hint.add_theme_color_override("font_color", Color("#8a84a8"))
+	vip_hint.text = "单次最多消耗 %d 份批文（随 VIP 提升）" % _sys().get_max_copies()
+	vbox.add_child(vip_hint)
+
 	var own := Label.new()
 	own.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	own.text = "%s ×%d" % [str(conf.get("piwen_name", "批文")), have]
@@ -400,7 +407,7 @@ func _fill_sign_popup(popup):
 	vbox.add_child(hint)
 
 	var ok := Button.new()
-	ok.text = "承包"
+	ok.text = "承包"   # 剩余 0 也保持可点：失败统一走校验红字（项目惯例，不禁用钮）
 	ok.custom_minimum_size = Vector2(140, 44)
 	ok.size_flags_horizontal = Control.SIZE_SHRINK_CENTER
 	ok.pressed.connect(_on_contract)
@@ -506,8 +513,8 @@ func _on_rule():
 		"承包：消耗批文立项项目，每份批文持续180分钟，份数1~4，结束一次性结算资历。\n" +
 		"结算：每分钟资历=基础60×身份倍数×(1+藏品加成)，承包资历=每分钟×份数×180。\n" +
 		"加入：加入他人项目按自己每分钟资历×剩余分钟结算，占用参与槽位至项目结束。\n" +
-		"槽位：承包槽位=基础1+藏品岱宗+天赋；参与槽位=基础2+天赋。\n" +
-		"次数：每日可承包次数随VIP等级提升，每日0点重置。")
+		"次数：每日可立项=基础1+藏品岱宗+雷恩天狼刃，0点重置；单次立项可消耗批文份数随VIP提升。\n" +
+		"参与槽位=基础2+雷恩北斗七星。")
 
 func _fmt_remain(end_ts: int) -> String:
 	var left: int = maxi(0, end_ts - int(Time.get_unix_time_from_system()))

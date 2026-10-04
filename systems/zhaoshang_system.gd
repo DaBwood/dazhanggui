@@ -20,8 +20,9 @@ var joined_projects: Array = []    # 自己加入的进行中 [{id,owner_name,ty
 var pending_projects: Array = []   # Worker 补报队列（批次②真同步才写入，批次①恒空）
 var weekly_merit: Dictionary = {}  # {merit_key: 本周资历}（名流榜批次③上报，批次①先本地记账）
 var weekly_key: String = ""        # 当前周键（周一 0 点 UTC+8 界，见 _week_key）
-var daily_publish: int = 0         # 今日已承包次数（每日 0 点重置，UTC+8）
+var daily_publish: int = 0         # 今日已立项次数（每日 0 点重置，UTC+8；上限=基础1+藏品岱宗+雷恩天狼刃）
 var daily_reset_ts: int = 0
+
 var offline_notice: Array = []     # 读档离线补算摘要（进招商页弹一次即清，不落盘）
 # 批次②：真机项目拉取缓存（不落盘，每次进页拉新）+ 补报/发布失败透传
 var net = null   # NetSystem 由 controller _ready 注入（网络层住 controller 是全局先例，系统不直连）
@@ -43,7 +44,6 @@ func load_save_data(s: Dictionary):
 	if s.has("zs_daily_pub"): daily_publish = int(s.zs_daily_pub)
 	if s.has("zs_daily_reset"): daily_reset_ts = int(s.zs_daily_reset)
 	if s.has("zs_ai") and s.zs_ai is Array: ai_cache = s.zs_ai   # 人机项目落盘：重登后名字/倒计时稳定（否则重roll会误导玩家"项目变了"）
-	check_daily_reset()
 	check_week_reset()
 	# 离线补算：过期项目直接结算（医馆离线续算同款），摘要暂存供招商页弹出
 	var settled: Array = _settle_expired()
@@ -62,8 +62,11 @@ func get_like_merit() -> int:
 func get_minutes_per_copy() -> int:
 	return int(_st().get("minutes_per_copy", 180))
 
+# 单次立项可消耗批文份数上限 = VIP 表（0~16 级：2~9 份；设计本意，用户 2026-10-04 拍板还原）
 func get_max_copies() -> int:
-	return int(_st().get("max_copies", 4))
+	var arr: Array = _st().get("vip_publish_counts", [])
+	var lv: int = clampi(int(g.vip_level), 0, maxi(0, arr.size() - 1))
+	return int(arr[lv])
 
 func get_projects() -> Dictionary:
 	return g._zhaoshang_configs.get("projects", {})
@@ -162,37 +165,30 @@ func spend_merit(key: String, amount: int) -> bool:
 	return true
 
 # ============ 槽位与次数 ============
-# 承包槽位 = 基础1 + c193岱宗（拥有即+1，不叠星，desc已写明）+ 雷恩·天狼刃（zhaoshang_extra cond=project）
-func get_project_slot_total() -> int:
+# 每日可立项次数 = 基础1（project_slot_base 配置项）+ c193岱宗（拥有即+1，不叠星）+ 雷恩·天狼刃（zhaoshang_extra cond=project）
+# 设计本意（2026-10-04 用户拍板还原）：每日次数=1+藏品+雷恩；VIP 表是单次立项可消耗批文份数上限（见 get_max_copies）
+func get_today_publish_limit() -> int:
 	var total: int = int(_st().get("project_slot_base", 1))
 	if g.collection_system.is_owned("c193"):
 		total += 1
 	total += g.talent_system.get_zhaoshang_extra("project")
 	return total
 
-# 加入槽位 = 基础2 + 雷恩·北斗七星（zhaoshang_extra cond=join）
-func get_join_slot_total() -> int:
-	return int(_st().get("join_slot_base", 2)) + g.talent_system.get_zhaoshang_extra("join")
-
-# 今日承包上限（VIP 表驱动 0~16 级；越界钳表端）
-func get_today_publish_limit() -> int:
-	var arr: Array = _st().get("vip_publish_counts", [])
-	var lv: int = clampi(int(g.vip_level), 0, maxi(0, arr.size() - 1))
-	return int(arr[lv])
-
 func get_today_publish_left() -> int:
 	check_daily_reset()
 	return maxi(0, get_today_publish_limit() - daily_publish)
 
+# 加入槽位 = 基础2 + 雷恩·北斗七星（zhaoshang_extra cond=join）
+func get_join_slot_total() -> int:
+	return int(_st().get("join_slot_base", 2)) + g.talent_system.get_zhaoshang_extra("join")
+
 # ============ 承包（页签一） ============
 func get_contract_check(p_type: String, copies: int) -> Dictionary:
-	check_daily_reset()
 	var conf: Dictionary = get_project_cfg(p_type)
 	if conf.is_empty(): return {"ok": false, "reason": "项目不存在"}
 	var have: int = int(g.items.get(str(conf.get("piwen", "")), 0))
 	if have < copies: return {"ok": false, "reason": "%s不足（拥有%d/%d）" % [str(conf.get("piwen_name", "批文")), have, copies]}
-	if get_today_publish_left() < 1: return {"ok": false, "reason": "今日承包次数已用完"}
-	if active_projects.size() >= get_project_slot_total(): return {"ok": false, "reason": "承包槽位已满"}
+	if get_today_publish_left() < 1: return {"ok": false, "reason": "今日立项次数已用完（基础1+藏品+雷恩）"}
 	return {"ok": true, "reason": ""}
 
 func contract(p_type: String, copies: int) -> Dictionary:
