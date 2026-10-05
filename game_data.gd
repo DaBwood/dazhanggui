@@ -638,6 +638,7 @@ var miaoyin_system   # 【新增】妙音坊玩法系统（逻辑在 systems/mia
 var _miaoyin_configs: Dictionary = {}   # 【新增】妙音坊建筑配置（miaoyin_buildings.json；其余五张分表由系统懒加载）
 var xiangfang_system   # 【新增】厢房玩法系统（逻辑在 systems/xiangfang_system.gd，状态内部持有随 get_save_data 落盘）
 var zhaoshang_system   # 招商系统（逻辑在 systems/zhaoshang_system.gd，状态内部持有随 get_save_data 落盘）
+var haoyou_system   # 好友系统（逻辑在 systems/haoyou_system.gd，游历页社交，状态内部持有随 get_save_data 落盘）
 var mingpan_system   # 【新增】命盘系统（逻辑在 systems/mingpan_system.gd，批次①骨架，状态内部持有随 get_save_data 落盘）
 @warning_ignore("unused_private_class_variable")   # 【新增】批次D：配置走 SYSTEM_LIST 动态注册（set 赋值/get 或跨文件读取），分析器扫不到属误报，非真未使用
 var _xiangfang_configs: Dictionary = {}   # 【新增】厢房配置（xiangfang.json：296 家具/20 套装/勋章 15 级/风水概率）
@@ -645,6 +646,8 @@ var _xiangfang_configs: Dictionary = {}   # 【新增】厢房配置（xiangfang
 var _mingpan_configs: Dictionary = {}     # 【新增】命盘配置（mingpan.json：5 五行盘/10 槽位/10 品质档/数值 ladder/进度曲线）
 @warning_ignore("unused_private_class_variable")   # 配置走 SYSTEM_LIST 动态注册（set 赋值/get 或跨文件读取），分析器扫不到属误报，非真未使用
 var _zhaoshang_configs: Dictionary = {}   # 招商配置（zhaoshang.json：五项目/批文映射/身份倍数表/VIP表/资历消耗表/人机名库）
+@warning_ignore("unused_private_class_variable")   # 配置走 SYSTEM_LIST 动态注册（set 赋值/get 或跨文件读取），分析器扫不到属误报，非真未使用
+var _haoyou_configs: Dictionary = {}   # 好友配置（haoyou.json：好友数/回礼体力丹/赠礼友好/人机名库）
 
 # ==================== 初始化 ====================
 # 初始化：创建各子系统（纯逻辑模块，持有本中枢引用），再加载全部配置
@@ -699,6 +702,7 @@ const SYSTEM_LIST: Array = [
 	{"key": "mingpan_system", "script": "res://systems/mingpan_system.gd", "cfg_var": "_mingpan_configs", "cfg": "res://data/mingpan.json"},
 	{"key": "costume_system", "script": "res://systems/costume_system.gd", "cfg_var": "costume_configs", "cfg": "res://data/costumes.json"},
 	{"key": "zhaoshang_system", "script": "res://systems/zhaoshang_system.gd", "cfg_var": "_zhaoshang_configs", "cfg": "res://data/zhaoshang.json"},
+	{"key": "haoyou_system", "script": "res://systems/haoyou_system.gd", "cfg_var": "_haoyou_configs", "cfg": "res://data/haoyou.json"},
 ]
 
 # 【新增】批次D（2026-09-19 重构）：配置孤儿扫描的特殊加载认领清单——
@@ -1439,6 +1443,38 @@ func do_travel() -> Dictionary:
 # 【新增】一键游历：转发到 TravelSystem.do_travel_all（消耗当前全部体力，返回结构化汇总）
 func do_travel_all() -> Dictionary:
 	return travel_system.do_travel_all()
+
+# ==================== 【转发】好友系统 → systems/haoyou_system.gd ====================
+
+func get_haoyou_friends() -> Array:
+	return haoyou_system.get_friends()
+
+func haoyou_can_send(i: int) -> bool:
+	return haoyou_system.can_send(i)
+
+func haoyou_can_claim(i: int) -> bool:
+	return haoyou_system.can_claim(i)
+
+func haoyou_send_gift(i: int) -> Dictionary:
+	return haoyou_system.send_gift(i)
+
+func haoyou_claim_gift(i: int) -> Dictionary:
+	return haoyou_system.claim_gift(i)
+
+func haoyou_send_all() -> Dictionary:
+	return haoyou_system.send_all()
+
+func haoyou_claim_all() -> Dictionary:
+	return haoyou_system.claim_all()
+
+func get_haoyou_claimable_count() -> int:
+	return haoyou_system.get_claimable_count()
+
+func get_haoyou_sendable_count() -> int:
+	return haoyou_system.get_sendable_count()
+
+func get_haoyou_claim_pills() -> int:
+	return haoyou_system.claim_pill_count()
 
 func _do_travel_location() -> Dictionary:
 	return travel_system._do_travel_location()

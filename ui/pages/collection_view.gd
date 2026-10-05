@@ -459,6 +459,8 @@ func _collection_special_effect(cid: String) -> String:
 			return "特殊效果：%s产量 +%s%%（当前★%d）" % [mk, _fmt_effect_number(per0 * st0), st0]
 		"travel_reputation":
 			return "特殊效果：每次游历声望 +%d（当前★%d）" % [int(per0 * st0), st0]
+		"haoyou_daily_pill":
+			return "特殊效果：好友每日回礼体力丹 +%d/位（当前★%d）" % [int(per0 * st0), st0]
 		"war_points_pct":
 			return "特殊效果：商战获得积分 +%s%%（当前★%d）" % [_fmt_effect_number(per0 * st0), st0]
 		"energy_max_up":
