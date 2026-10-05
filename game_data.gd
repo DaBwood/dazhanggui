@@ -1156,6 +1156,10 @@ func load_game():
 	# 【改】读档循环走 _system_instances（顺序=清单顺序，drugshop 先于 talent 由清单保证）
 	for sys in _system_instances:
 		sys.load_save_data(data)
+	# 【新增】角色名空值兜底：老存档 player_name 为空；load_game 开头的自动生成发生在认领区之前，
+	# 会被旧空值盖掉——认领结束后必须再补一次，否则好友系统按角色名搜索/自报名全部落空
+	if player_name == "":
+		player_name = SURNAMES[randi() % SURNAMES.size()] + NAME_PARTS[randi() % NAME_PARTS.size()]
 
 # ==================== 子系统API转发区 ====================
 # ==================== 【聚合】初始技能等级上限加成（跨三玩法勋章） ====================
