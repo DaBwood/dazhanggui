@@ -73,6 +73,8 @@ func generate_hero_list():
 			var cell = _create_hero_card(hero_id, true)
 			grid.add_child(cell)
 	
+	_ensure_hero_search()   # 【新增】门客搜索行（只创建一次）
+	_apply_hero_search()
 	update_hero_list()
 
 func _create_hero_card(hero_id: String, locked: bool) -> Button:
@@ -2303,3 +2305,36 @@ func _bd_grid(parent: VBoxContainer, rows: Array, is_pct: bool):
 		cell.add_theme_color_override("font_color", Color("#e8e4f3"))
 		cell.custom_minimum_size = Vector2(160, 0)
 		grid.add_child(cell)
+
+# ============ 【新增】门客搜索（物品盒子同款，2026-10-06） ============
+
+# 搜索行：固定在门客页顶部（只创建一次），输入实时过滤门客卡
+func _ensure_hero_search():
+	var hero_pg = c.get_node_or_null("PageContainer/HeroPage")
+	if hero_pg == null or hero_pg.has_node("HeroSearchRow"):
+		return
+	var row := HBoxContainer.new()
+	row.name = "HeroSearchRow"
+	row.set_anchors_preset(Control.PRESET_TOP_WIDE)
+	row.offset_bottom = 40
+	hero_pg.add_child(row)
+	var edit := LineEdit.new()
+	edit.name = "HeroSearchEdit"
+	edit.placeholder_text = "输入门客名字搜索…"
+	edit.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	row.add_child(edit)
+	c._hook_web_cjk_input(edit, "门客名字")   # Web 端中文 IME 引擎级未修，聚焦弹原生 prompt
+	edit.text_changed.connect(func(_t: String): _apply_hero_search())
+	var scroll: ScrollContainer = hero_pg.get_node("HeroScroll")
+	scroll.offset_top = 48   # 给搜索行让位（原锚点 FULL_RECT 顶到 0）
+
+func _apply_hero_search():
+	var grid: GridContainer = c.get_node_or_null("PageContainer/HeroPage/HeroScroll/HeroGrid")
+	var edit: LineEdit = c.get_node_or_null("PageContainer/HeroPage/HeroSearchRow/HeroSearchEdit")
+	if grid == null or edit == null:
+		return
+	var kw := edit.text.strip_edges()
+	for card in grid.get_children():
+		var hid := str(card.name).trim_suffix("_hero_locked").trim_suffix("_hero")
+		var hname := str(data._hero_configs.get(hid, {}).get("name", hid))
+		card.visible = kw == "" or hname.contains(kw)

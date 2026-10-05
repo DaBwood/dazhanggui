@@ -661,3 +661,30 @@ func _check_hero_income_float():
 	for d in changed.values():
 		total_delta += int(d)
 	_show_hero_power_float(total_delta)
+
+# ==================== 【新增】Web 端中文输入统一兜底（2026-10-06） ====================
+# 背景：Godot Web 中文 IME 走组合事件，引擎级未修（官方 issue 91204，4.2 至今 open）；
+# 实验性虚拟键盘骗得出键盘但中文进不了输入框，英文/数字走普通按键所以正常。
+# 方案：Web 端给 LineEdit 挂 focus 兜底——聚焦即弹浏览器原生 prompt（中文走浏览器 IME），
+# 结果写回输入框并触发 text_changed（实时过滤类输入框无需改逻辑）。
+# 判定只用 OS.has_feature("web")：部分手机浏览器触屏检测不可靠，桌面网页弹 prompt 属可接受代价。
+
+# 给输入框挂 Web 中文兜底（title=提示语；非 Web 端调用即空操作）
+# 挂 gui_input 而非 focus_entered：浏览器在 prompt 关闭后会把焦点还给输入框，
+# focus 方案会无限重弹；按下事件不经过聚焦，天然无回环。meta 存上次弹窗时间戳做防重入闸门。
+func _hook_web_cjk_input(edit: LineEdit, title: String) -> void:
+	if not OS.has_feature("web"):
+		return
+	edit.placeholder_text = "点此输入" + title
+	edit.gui_input.connect(func(ev: InputEvent):
+		if not (ev is InputEventMouseButton and ev.pressed):
+			return
+		var now := Time.get_ticks_msec()
+		if now - int(edit.get_meta("cjk_last", 0)) < 500:
+			return   # 同一次点按/焦点归还的重复触发，闸掉
+		edit.set_meta("cjk_last", now)
+		edit.release_focus()   # 阻止 LineEdit 自聚焦弹出那个中文进不来的实验键盘
+		var r = JavaScriptBridge.eval("prompt(%s, '')" % JSON.stringify(title))
+		if r != null:
+			edit.text = str(r)   # 写回触发 text_changed，实时过滤逻辑零改动
+	)

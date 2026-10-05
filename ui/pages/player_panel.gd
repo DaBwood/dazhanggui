@@ -45,6 +45,7 @@ func open_player_panel():
 	name_input.custom_minimum_size = Vector2(180, 36)
 	name_input.placeholder_text = "输入新名字"
 	rename_row.add_child(name_input)
+	c._hook_web_cjk_input(name_input, "新名字")   # Web 端中文 IME 引擎级未修，聚焦弹原生 prompt
 	
 	var rename_btn = Button.new()
 	rename_btn.text = "改名"

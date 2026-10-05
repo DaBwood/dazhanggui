@@ -76,6 +76,7 @@ func _build_search_row(vb: VBoxContainer):
 		edit.custom_minimum_size = Vector2(0, 40)
 		edit.text_submitted.connect(_on_search_submitted)
 		row.add_child(edit)
+		c._hook_web_cjk_input(edit, "角色名")   # Web 端中文 IME 引擎级未修，聚焦弹原生 prompt
 		var btn := Button.new()
 		btn.text = "搜索"
 		btn.custom_minimum_size = Vector2(80, 40)

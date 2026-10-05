@@ -578,6 +578,10 @@ func _add_centered_panel(parent: Control, min_size: Vector2) -> VBoxContainer:
 func _create_base_popup(title_text: String, popup_size: Vector2, _pos: Vector2 = Vector2.ZERO, with_close: bool = true) -> PanelContainer:   # 【改】UI统一批次①：透传 with_close（确认弹窗传false不带右上✕）
 	return ui_helpers._create_base_popup(title_text, popup_size, _pos, with_close)   # 【改】主体迁 ui/ui_helpers.gd（2026-09-19 重构批次B）
 
+# Web 端中文输入兜底委托（实现见 ui_helpers._hook_web_cjk_input）
+func _hook_web_cjk_input(edit: LineEdit, title: String) -> void:
+	ui_helpers._hook_web_cjk_input(edit, title)
+
 func _recenter_popup(panel: Control):
 	ui_helpers._recenter_popup(panel)   # 【改】主体迁 ui/ui_helpers.gd（2026-09-19 重构批次B）
 

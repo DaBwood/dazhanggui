@@ -163,6 +163,7 @@ func _show_join_popup():
 	var name_edit = LineEdit.new()
 	name_edit.placeholder_text = "输入商会名（2~16字）"
 	vb.add_child(name_edit)
+	c._hook_web_cjk_input(name_edit, "商会名")   # Web 端中文 IME 引擎级未修，聚焦弹原生 prompt
 	var create_btn = Button.new()
 	create_btn.text = "创建商会"
 	create_btn.pressed.connect(_on_create.bind(name_edit, popup))
@@ -174,6 +175,7 @@ func _show_join_popup():
 	var id_edit = LineEdit.new()
 	id_edit.placeholder_text = "输入16位邀请码"
 	vb.add_child(id_edit)
+	c._hook_web_cjk_input(id_edit, "邀请码")   # Web 端中文 IME 引擎级未修，聚焦弹原生 prompt
 	var join_btn = Button.new()
 	join_btn.text = "加入商会"
 	join_btn.pressed.connect(_on_join.bind(id_edit, popup))

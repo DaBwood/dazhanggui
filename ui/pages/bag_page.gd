@@ -403,13 +403,20 @@ func _show_hero_box_selector():
 	panel.name = "HeroBoxSelector"
 	var vbox = panel.get_child(0)
 	
+	# 按名字搜索（物品盒子同款）
+	var search = LineEdit.new()
+	search.placeholder_text = "输入门客名字搜索…"
+	vbox.add_child(search)
+	c._hook_web_cjk_input(search, "门客名字")
+	
 	var scroll = ScrollContainer.new()
-	scroll.custom_minimum_size = Vector2(440, 380)
+	scroll.custom_minimum_size = Vector2(440, 336)
 	vbox.add_child(scroll)
 	
 	var list = VBoxContainer.new()
 	scroll.add_child(list)
 	
+	var entries: Array = []
 	var has_unlockable = false
 	for hero_id in data.get_all_hero_ids():
 		if data.heroes.has(hero_id): continue  # 已拥有的跳过
@@ -420,7 +427,9 @@ func _show_hero_box_selector():
 		btn.text = "【%s】%s  |  VIP%d解锁" % [cfg.name, cfg.category, vip_lv]
 		btn.pressed.connect(_on_hero_box_selected.bind(hero_id))
 		list.add_child(btn)
+		entries.append({"btn": btn, "text": cfg.name})
 		has_unlockable = true
+	search.text_changed.connect(func(t: String): _filter_named_buttons(entries, t))
 	
 	if not has_unlockable:
 		var empty = Label.new()
@@ -537,6 +546,7 @@ func _show_item_box_selector(p_qty: int):
 	var search = LineEdit.new()
 	search.placeholder_text = "输入道具名字搜索…"
 	vbox.add_child(search)
+	c._hook_web_cjk_input(search, "道具名字")   # Web 端中文 IME 引擎级未修，聚焦弹原生 prompt
 
 	var scroll = ScrollContainer.new()
 	scroll.custom_minimum_size = Vector2(440, 360)
@@ -593,6 +603,7 @@ func _show_cos_box_selector():
 	var search = LineEdit.new()
 	search.placeholder_text = "输入服装或门客名字搜索…"
 	vbox.add_child(search)
+	c._hook_web_cjk_input(search, "服装或门客名字")   # Web 端中文 IME 引擎级未修，聚焦弹原生 prompt
 	var scroll = ScrollContainer.new()
 	scroll.custom_minimum_size = Vector2(440, 400)
 	vbox.add_child(scroll)
