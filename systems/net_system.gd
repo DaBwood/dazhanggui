@@ -1,5 +1,5 @@
 # ============================================================
-# 网络层（弱联网·云存档）：对接 Cloudflare Worker，注册/登录/上传/下载
+# 网络层（弱联网·云存档）：对接国内轻量服务器（Node 单文件 server.js，接口与 Worker 版逐一对齐）
 # 定位：纯存储转发，服务端不做数值校验（朋友间自娱自乐，开挂随意）
 # 令牌持久化在 user://net_auth.json，登录一次长期有效（服务端会话30天）
 # 部署 Worker 后把 API_BASE 换成你的地址
@@ -7,8 +7,8 @@
 class_name NetSystem
 extends Node
 
-# 【改】部署后填入你的 Worker 地址（https://dazhanggui-save.<你的子域>.workers.dev）
-const API_BASE := "https://dazhanggui-save.dazhanggui.workers.dev"
+# 【改】换服务器时改上面的 API_BASE（IP:端口，HTTP 明文——朋友局体量够用；将来上 Godot 原生 App 无混合内容限制）
+const API_BASE := "https://106.14.118.158:8788"   # 国内轻量服务器·自签名HTTPS——浏览器/手机网页测试必须走这个（Godot Web 强制 isSecureContext + HTTPS页面禁止调HTTP接口）；将来 Godot 原生 App 导出改回 http://106.14.118.158:8787
 
 var username: String = ""
 var token: String = ""
@@ -171,3 +171,30 @@ func zs_projects(cb: Callable):
 func zs_leaderboard(merit: String, week_key: String, cb: Callable):
 	# merit 与 week_key 均为内部键（白名单列名/日期串），无注入面，直接拼 query
 	_request("/zhaoshang/leaderboard?merit=%s&week=%s" % [merit, week_key], {}, cb)
+
+# ==================== 【新增】好友（真人功能；均需登录，未登录由界面禁用入口） ====================
+
+func hy_name_register(display_name: String, cb: Callable = Callable()):
+	# 免回调封装：_request 无条件 cb.call，空 Callable 会崩，给个空操作兜底
+	if not cb.is_valid():
+		cb = func(_code: int, _d: Dictionary): pass
+	_request("/hy/name", {"name": display_name}, cb)
+
+func hy_search(keyword: String, cb: Callable):
+	# keyword 走 query 参数（URL 编码由 _request 统一处理），无注入面
+	_request("/hy/search?keyword=%s" % keyword.uri_encode(), {}, cb)
+
+func hy_profile_save(profile: Dictionary, cb: Callable = Callable()):
+	# 免回调封装：_request 无条件 cb.call，空 Callable 会崩，给个空操作兜底
+	if not cb.is_valid():
+		cb = func(_code: int, _d: Dictionary): pass
+	_request("/hy/profile", {"profile": profile}, cb)
+
+func hy_profile_get(user: String, cb: Callable):
+	_request("/hy/profile/get", {"user": user}, cb)
+
+func hy_like(target: String, day_key: String, cb: Callable):
+	_request("/hy/like", {"target": target, "day": day_key}, cb)
+
+func hy_likes_today(day_key: String, cb: Callable):
+	_request("/hy/likes?day=%s" % day_key, {}, cb)

@@ -3837,9 +3837,9 @@
 				"category": "农"
 			},
 			"special": {
-				"desc": "游历每日领取体力丹每星+1，",
+				"desc": "好友每日回礼基础限领20名，每星额外+3名，",
 				"kind": "haoyou_daily_pill",
-				"per_star": 1,
+				"per_star": 3,
 				"wired": true
 			}
 		},

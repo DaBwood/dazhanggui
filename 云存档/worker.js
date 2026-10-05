@@ -230,6 +230,56 @@ export default {
 				const rs = await env.DB.prepare("SELECT username, name, " + meritCol + " AS merit FROM zhaoshang_weekly WHERE week_key = ? ORDER BY merit DESC LIMIT 50").bind(weekKey).all()
 				return json({ ok: true, list: rs.results || [] })
 			}
+			// ---------- 好友：登记角色名（名录 upsert；进好友页即自报，供他人搜索） ----------
+			if (path === "/hy/name" && request.method === "POST") {
+				const name = String(body.name || "").trim()
+				if (name === "") return json({ ok: false, msg: "角色名不能为空" }, 400)
+				await env.DB.prepare("INSERT INTO hy_names (username, display_name, updated_at) VALUES (?, ?, ?) ON CONFLICT(username) DO UPDATE SET display_name = ?, updated_at = ?").bind(sess.username, name, now, name, now).run()
+				return json({ ok: true })
+			}
+			// ---------- 好友：按角色名搜索（排除自己，LIMIT 由配置封顶防拖库） ----------
+			if (path === "/hy/search" && request.method === "GET") {
+				const qs = new URL(request.url).searchParams
+				const kw = String(qs.get("keyword") || "").trim()
+				if (kw === "") return json({ ok: false, msg: "请输入角色名" }, 400)
+				const rs = await env.DB.prepare("SELECT username, display_name FROM hy_names WHERE display_name LIKE ? AND username != ? ORDER BY updated_at DESC LIMIT ?").bind("%" + kw + "%", sess.username, 20).all()
+				return json({ ok: true, list: rs.results || [] })
+			}
+			// ---------- 好友：拜访档案上传（快照制；整包覆盖，客户端每次进好友页自报） ----------
+			if (path === "/hy/profile" && request.method === "POST") {
+				const profile = JSON.stringify(body.profile || {})
+				if (profile.length > 256 * 1024) return json({ ok: false, msg: "档案过大" }, 400)
+				await env.DB.prepare("INSERT INTO hy_profiles (username, profile, updated_at) VALUES (?, ?, ?) ON CONFLICT(username) DO UPDATE SET profile = ?, updated_at = ?").bind(sess.username, profile, now, profile, now).run()
+				return json({ ok: true })
+			}
+			// ---------- 好友：拜访档案读取（对方没传过=404 暂无档案） ----------
+			if (path === "/hy/profile/get" && request.method === "POST") {
+				const target = String(body.user || "")
+				if (target === "") return json({ ok: false, msg: "参数不全" }, 400)
+				const row = await env.DB.prepare("SELECT profile FROM hy_profiles WHERE username = ?").bind(target).first()
+				if (!row) return json({ ok: false, msg: "暂无档案" }, 404)
+				return json({ ok: true, profile: JSON.parse(row.profile || "{}") })
+			}
+			// ---------- 好友：点赞（唯一约束=每人每目标每天一次，重复点赞由约束挡下返回409） ----------
+			if (path === "/hy/like" && request.method === "POST") {
+				const target = String(body.target || "")
+				const dayKey = String(body.day || "")
+				if (target === "" || dayKey === "") return json({ ok: false, msg: "参数不全" }, 400)
+				try {
+					await env.DB.prepare("INSERT INTO hy_likes (liker, target, day_key, created_at) VALUES (?, ?, ?, ?)").bind(sess.username, target, dayKey, now).run()
+					return json({ ok: true })
+				} catch (e) {
+					return json({ ok: false, msg: "今日已赞过" }, 409)
+				}
+			}
+			// ---------- 好友：我今日已赞清单（多设备对齐，服务器为准） ----------
+			if (path === "/hy/likes" && request.method === "GET") {
+				const qs = new URL(request.url).searchParams
+				const dayKey = String(qs.get("day") || "")
+				if (dayKey === "") return json({ ok: false, msg: "参数不全" }, 400)
+				const rs = await env.DB.prepare("SELECT target FROM hy_likes WHERE liker = ? AND day_key = ?").bind(sess.username, dayKey).all()
+				return json({ ok: true, list: (rs.results || []).map(function (r) { return r.target }) })
+			}
 			return json({ ok: false, msg: "未知接口" }, 404)
 		} catch (e) {
 			return json({ ok: false, msg: "服务器错误: " + String(e) }, 500)

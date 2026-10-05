@@ -1,8 +1,15 @@
 {
 	"settings": {
-		"friend_count": 8,
-		"claim_pill_base": 1,
-		"send_friendly": 1
+		"friend_cap": 50,
+		"initial_ai": 8,
+		"pill_per_friend": 1,
+		"claim_cap_base": 20,
+		"send_friendly": 1,
+		"like_reward": {
+			"jiajibi": 5,
+			"fengshui_fu": 1
+		},
+		"search_limit": 20
 	},
 	"names": [
 		"洛千山",

@@ -64,3 +64,26 @@ CREATE TABLE IF NOT EXISTS zhaoshang_likes (
 	created_at INTEGER NOT NULL,
 	UNIQUE (liker, week_key)
 );
+
+-- 【新增】好友：玩家名录（角色名→账号映射；进好友页自动登记，供按角色名搜索）
+CREATE TABLE IF NOT EXISTS hy_names (
+	username     TEXT PRIMARY KEY,
+	display_name TEXT NOT NULL,
+	updated_at   INTEGER NOT NULL
+);
+
+-- 【新增】好友：拜访档案（养成摘要 JSON，快照制：客户端进好友页自报，好友读取）
+CREATE TABLE IF NOT EXISTS hy_profiles (
+	username   TEXT PRIMARY KEY,
+	profile    TEXT NOT NULL,
+	updated_at INTEGER NOT NULL
+);
+
+-- 【新增】好友：点赞记录（唯一约束=每人每目标每天一次，重复点赞由约束挡下）
+CREATE TABLE IF NOT EXISTS hy_likes (
+	liker      TEXT NOT NULL,
+	target     TEXT NOT NULL,
+	day_key    TEXT NOT NULL,
+	created_at INTEGER NOT NULL,
+	PRIMARY KEY (liker, target, day_key)
+);

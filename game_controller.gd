@@ -52,6 +52,7 @@ var exchange_view   # 闯荡-兑换子视图（门客/挚友/珍兽/系列）
 var lottery_view   # 闯荡-抽奖子视图
 var charity_view   # 闯荡-行善子视图
 var travel_view   # 闯荡-游历子视图
+var haoyou_view   # 好友系统界面（游历/厢房共用）
 var mall_panel   # 商城/充值/VIP弹窗
 var player_panel   # 玩家信息/身份/每日奖励弹窗
 var manor_view   # 庄园视图（第4批新增）
@@ -89,6 +90,7 @@ const VIEW_LIST: Array = [
 	{"var": "lottery_view", "script": "res://ui/pages/lottery_view.gd", "key": "lottery"},
 	{"var": "charity_view", "script": "res://ui/pages/charity_view.gd", "key": "charity"},
 	{"var": "travel_view", "script": "res://ui/pages/travel_view.gd", "key": "travel"},
+	{"var": "haoyou_view", "script": "res://ui/pages/haoyou_view.gd", "key": "haoyou"},
 	{"var": "manor_view", "script": "res://ui/pages/manor_view.gd", "key": "manor"},
 	{"var": "courtyard_view", "script": "res://ui/pages/courtyard_view.gd", "key": "courtyard"},
 	{"var": "war_view", "script": "res://ui/pages/war_view.gd", "key": "war"},

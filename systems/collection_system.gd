@@ -677,9 +677,11 @@ func get_manor_output_pct(kind: String) -> float:
 func get_travel_reputation_bonus() -> int:
 	return int(_owned_special_sum("travel_reputation"))
 
-# 好友每日领礼体力丹（c191 幽恒：每星+1，基础颗数在 haoyou.json settings.claim_pill_base）
-func get_haoyou_pill_bonus() -> int:
-	return int(_owned_special_sum("haoyou_daily_pill"))
+# 好友每日回礼领取名额（c191 幽恒：每星额外+3 名；基础 20 名在 haoyou.json settings.claim_cap_base）
+func get_haoyou_star_count() -> int:
+	if not is_owned("c191"):
+		return 0
+	return get_star("c191")
 
 # 商战积分单品（c068：每星+5%）
 func get_war_points_pct() -> float:

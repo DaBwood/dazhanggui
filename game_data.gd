@@ -1449,23 +1449,14 @@ func do_travel_all() -> Dictionary:
 func get_haoyou_friends() -> Array:
 	return haoyou_system.get_friends()
 
-func haoyou_can_send(i: int) -> bool:
-	return haoyou_system.can_send(i)
+func get_haoyou_friend_cap() -> int:
+	return haoyou_system.friend_cap()
 
-func haoyou_can_claim(i: int) -> bool:
-	return haoyou_system.can_claim(i)
+func get_haoyou_claim_cap() -> int:
+	return haoyou_system.claim_cap()
 
-func haoyou_send_gift(i: int) -> Dictionary:
-	return haoyou_system.send_gift(i)
-
-func haoyou_claim_gift(i: int) -> Dictionary:
-	return haoyou_system.claim_gift(i)
-
-func haoyou_send_all() -> Dictionary:
-	return haoyou_system.send_all()
-
-func haoyou_claim_all() -> Dictionary:
-	return haoyou_system.claim_all()
+func get_haoyou_claimed_count() -> int:
+	return haoyou_system.get_claimed_count()
 
 func get_haoyou_claimable_count() -> int:
 	return haoyou_system.get_claimable_count()
@@ -1473,17 +1464,62 @@ func get_haoyou_claimable_count() -> int:
 func get_haoyou_sendable_count() -> int:
 	return haoyou_system.get_sendable_count()
 
-func get_haoyou_claim_pills() -> int:
-	return haoyou_system.claim_pill_count()
+func get_haoyou_likeable_count() -> int:
+	return haoyou_system.get_likeable_count()
 
-func _do_travel_location() -> Dictionary:
-	return travel_system._do_travel_location()
+func haoyou_can_send(i: int) -> bool:
+	return haoyou_system.can_send(i)
 
-func _do_travel_item() -> Dictionary:
-	return travel_system._do_travel_item()
+func haoyou_can_claim(i: int) -> bool:
+	return haoyou_system.can_claim(i)
 
-func _do_travel_event() -> Dictionary:
-	return travel_system._do_travel_event()
+func haoyou_can_like(i: int) -> bool:
+	return haoyou_system.can_like(i)
+
+func haoyou_send_gift(i: int) -> Dictionary:
+	return haoyou_system.send_gift(i)
+
+func haoyou_claim_gift(i: int) -> Dictionary:
+	return haoyou_system.claim_gift(i)
+
+func haoyou_like_friend(i: int) -> Dictionary:
+	return haoyou_system.like_friend(i)
+
+func haoyou_send_all() -> Dictionary:
+	return haoyou_system.send_all()
+
+func haoyou_claim_all() -> Dictionary:
+	return haoyou_system.claim_all()
+
+func haoyou_like_all() -> Dictionary:
+	return haoyou_system.like_all()
+
+func haoyou_add_ai_friend() -> Dictionary:
+	return haoyou_system.add_ai_friend()
+
+func haoyou_add_real_friend(user: String, p_name: String) -> Dictionary:
+	return haoyou_system.add_real_friend(user, p_name)
+
+func haoyou_remove_friend(i: int) -> Dictionary:
+	return haoyou_system.remove_friend(i)
+
+func haoyou_find_by_user(user: String) -> int:
+	return haoyou_system.find_index_by_user(user)
+
+func haoyou_rollback_like_user(user: String):
+	haoyou_system.rollback_like_user(user)
+
+func haoyou_mark_liked(liked_users: Array):
+	haoyou_system.mark_liked_by_server(liked_users)
+
+func haoyou_today() -> String:
+	return haoyou_system.get_today()
+
+func haoyou_build_profile() -> Dictionary:
+	return haoyou_system.build_visit_profile()
+
+func haoyou_make_ai_profile(friend_name: String) -> Dictionary:
+	return haoyou_system.make_ai_profile(friend_name)
 
 
 # ==================== 【转发】行善系统 → systems/charity_system.gd ====================

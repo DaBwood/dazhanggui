@@ -123,6 +123,11 @@ func _build_home_page(page: Panel):
 	back.custom_minimum_size = Vector2(72, 40)
 	back.pressed.connect(hide_xiangfang_view)
 	top.add_child(back)
+	var hy_btn := Button.new()
+	hy_btn.text = "好友"
+	hy_btn.custom_minimum_size = Vector2(70, 40)
+	hy_btn.pressed.connect(c.haoyou_view.on_entry_pressed)
+	top.add_child(hy_btn)
 	# 【改】批次②③④-B3：弹簧居中标题组，"?"只出现在玩法主标题旁（说明流程/规则）
 	var left_spring := Control.new()
 	left_spring.size_flags_horizontal = Control.SIZE_EXPAND_FILL
