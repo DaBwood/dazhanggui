@@ -219,10 +219,28 @@ func set_council_hero(hero_id: String) -> Dictionary:
 		council.erase(my_user)
 	else:
 		var cfg = g.get_hero_config(hero_id)
-		council[my_user] = {"hero": hero_id, "hero_name": cfg.get("name", hero_id), "career": str(cfg.get("category", "")), "pct": get_hero_shop_pct(hero_id)}
+		var career = str(cfg.get("category", ""))
+		# 每职业委任上限：换任同职业不算新增（剔除自己旧条目再数）
+		var cap = int(get_settings().get("council_career_cap", 8))
+		var used = 0
+		for u2 in council.keys():
+			if u2 == my_user: continue
+			if str(council[u2].get("career", "")) == career:
+				used += 1
+		if used >= cap:
+			return {"ok": false, "reason": "%s类委任已满（%d/%d）" % [career, cap, cap]}
+		council[my_user] = {"hero": hero_id, "hero_name": cfg.get("name", hero_id), "career": career, "pct": get_hero_shop_pct(hero_id)}
 	record["council"] = council
 	guild_council_hero = hero_id
 	return {"ok": true}
+
+# 某职业真人委任占用数（不含人机；上限展示用）
+func get_career_used(career: String) -> int:
+	var n = 0
+	for u in cache.get("council", {}).keys():
+		if str(cache["council"][u].get("career", "")) == career:
+			n += 1
+	return n
 
 # 某职业议事厅总加成（真人+人机）——shop_system 加法链接入用
 func get_career_bonus(career: String) -> float:

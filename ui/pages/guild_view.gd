@@ -301,7 +301,8 @@ func _render_council():
 		var cvb = VBoxContainer.new()
 		card.add_child(cvb)
 		var head = Label.new()
-		head.text = "%s类店铺 +%d%%" % [career, int(gs.get_career_bonus(career) * 100)]
+		head.text = "%s类店铺 +%d%%（委任 %d/%d）" % [career, int(gs.get_career_bonus(career) * 100),
+			gs.get_career_used(career), int(gs.get_settings().get("council_career_cap", 8))]
 		cvb.add_child(head)
 		var lines := []
 		for u in record.get("council", {}).keys():

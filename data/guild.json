@@ -11,7 +11,8 @@
 	"bot_daily_exp": 600,
 	"bot_skill_base": 0.3,
 	"bot_skill_per_day": 0.02,
-	"bot_skill_cap": 2.0
+	"bot_skill_cap": 2.0,
+	"council_career_cap": 8
   },
   "builds": {
 	"primary": {"name": "初级建设", "daily": 4, "yuanbao": 0, "wealth": 100, "contribution": 100, "exp": 100},
