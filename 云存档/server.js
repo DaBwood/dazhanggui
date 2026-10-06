@@ -151,7 +151,14 @@ const routes = {
 		for (const id in db.guilds) {
 			if (db.guilds[id].name === name) return json({ ok: false, msg: "商会名已存在" }, 409)
 		}
-		const id = randomToken().slice(0, 16)   // 16位邀请码
+		// 4位数字邀请码（1000~9999，易读易传播）；1万空间对商会数量足够，冲突重roll（内存表直查）
+		let gid = ""
+		for (let _t = 0; _t < 20; _t++) {
+			gid = String(Math.floor(1000 + Math.random() * 9000))
+			if (!db.guilds[gid]) break
+			gid = ""
+		}
+		if (gid === "") return json({ ok: false, msg: "邀请码生成冲突，请重试" }, 409)
 		const now = Date.now()
 		// 记录结构（客户端约定，服务端只存）：等级/财富/经验/成员/议事厅/人机结算日
 		const record = {
@@ -160,9 +167,9 @@ const routes = {
 			"members": [{ "user": user, "name": user, "role": "owner" }],
 			"council": {}, "bot_settle": "",
 		}
-		db.guilds[id] = { name: name, owner: user, record: JSON.stringify(record), updated_at: now }
+		db.guilds[gid] = { name: name, owner: user, record: JSON.stringify(record), updated_at: now }
 		saveTable("guilds")
-		return json({ ok: true, guild_id: id, record: record })
+		return json({ ok: true, guild_id: gid, record: record })
 	},
 	// ---------- 查询商会 ----------
 	"POST /guild/get": function (body, user) {
@@ -178,6 +185,16 @@ const routes = {
 		if (!row) return json({ ok: false, msg: "商会不存在" }, 404)
 		row.record = recStr
 		row.updated_at = Date.now()
+		saveTable("guilds")
+		return json({ ok: true })
+	},
+	// ---------- 解散商会（仅会长；删整行，成员端靠 guild/get 404 死引用自愈清档） ----------
+	"POST /guild/disband": function (body, user) {
+		const gid = String(body.guild_id || "")
+		const row = db.guilds[gid]
+		if (!row) return json({ ok: false, msg: "商会不存在" }, 404)
+		if (row.owner !== user) return json({ ok: false, msg: "只有会长可以解散商会" }, 403)
+		delete db.guilds[gid]
 		saveTable("guilds")
 		return json({ ok: true })
 	},

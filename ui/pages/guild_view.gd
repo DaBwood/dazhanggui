@@ -108,8 +108,16 @@ func _refresh():
 		close()   # 保险：主界面状态下不应未入会
 		return
 	_set_hint("商会加载中……")
-	c.net.guild_get(data.guild_system.guild_id, func(_code, d):
+	c.net.guild_get(data.guild_system.guild_id, func(code, d):
 		if not d.get("ok", false):
+			if code == 404:
+				# 404=服务端无此商会记录（换服务器/记录被清），本地 guild_id 是死引用：清档自愈回未入会态，否则每次进商会都卡死在本页
+				data.guild_system.guild_id = ""
+				data.save_game()
+				close()
+				c._show_success_popup("原商会记录不存在，请重新创建或加入", 0.0, "warn")
+				_show_join_popup()
+				return
 			_update_header(null)
 			_set_hint("商会加载失败：" + str(d.get("msg", "网络错误")) + "\n点左上角返回后重新进入商会重试")
 			return
@@ -173,7 +181,7 @@ func _show_join_popup():
 	sep.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	vb.add_child(sep)
 	var id_edit = LineEdit.new()
-	id_edit.placeholder_text = "输入16位邀请码"
+	id_edit.placeholder_text = "输入4位数字邀请码"
 	vb.add_child(id_edit)
 	c._hook_web_cjk_input(id_edit, "邀请码")   # Web 端中文 IME 引擎级未修，聚焦弹原生 prompt
 	var join_btn = Button.new()
@@ -203,8 +211,8 @@ func _on_create(name_edit: LineEdit, popup):
 func _on_join(id_edit: LineEdit, popup):
 	var gid = id_edit.text.strip_edges()
 	# 【新增】批次②③④-B7：空邀请码原静默 return，补提示
-	if gid == "":
-		c._show_success_popup("请输入邀请码", 0.0, "ok")   # 【改】飘字退休→ok 弹窗
+	if gid.length() != 4 or not gid.is_valid_int():
+		c._show_success_popup("请输入4位数字邀请码", 0.0, "warn")
 		return
 	c.net.guild_get(gid, func(_code, d):
 		if not d.get("ok", false):
@@ -270,25 +278,45 @@ func _render_council():
 	title.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	title.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
 	list.add_child(title)
+	# 五职业各一张卡：卡头=职业+总加成，卡内=该职业下谁在委任什么门客（真人+人机分行列）
+	var grid = GridContainer.new()
+	grid.columns = 2
+	grid.add_theme_constant_override("h_separation", 8)
+	grid.add_theme_constant_override("v_separation", 8)
+	list.add_child(grid)
 	for career in gs.get_careers():
-		var pct = gs.get_career_bonus(career)
-		var lbl = Label.new()
-		lbl.text = "%s类店铺 +%d%%" % [career, int(pct * 100)]
-		list.add_child(lbl)
-	# 明细
-	var det = Label.new()
-	det.add_theme_color_override("font_color", Color("#888888"))
-	det.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
-	var lines := []
-	for u in record.get("council", {}).keys():
-		var e = record["council"][u]
-		lines.append("%s：%s（%s +%d%%）" % [u, e.get("hero_name", ""), e.get("career", ""), int(float(e.get("pct", 0)) * 100)])
-	for m in record.get("members", []):
-		if m.get("bot", false):
-			lines.append("%s（人机）：%s +%d%%" % [m.get("name", ""), gs.get_bot_career(int(m.get("seed", 0))), int(gs.get_bot_skill_pct(int(m.get("seed", 0)), record) * 100)])
-	det.text = "委任明细：\n" + ("\n".join(lines) if lines.size() > 0 else "（暂无）")
-	list.add_child(det)
-	# 我的委任
+		var card = PanelContainer.new()
+		card.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+		var style = StyleBoxFlat.new()
+		style.bg_color = Color("#221d33")
+		style.set_corner_radius_all(6)
+		style.set_border_width_all(1)
+		style.border_color = Color("#6b5f8e")
+		style.content_margin_left = 8
+		style.content_margin_right = 8
+		style.content_margin_top = 6
+		style.content_margin_bottom = 6
+		card.add_theme_stylebox_override("panel", style)
+		grid.add_child(card)
+		var cvb = VBoxContainer.new()
+		card.add_child(cvb)
+		var head = Label.new()
+		head.text = "%s类店铺 +%d%%" % [career, int(gs.get_career_bonus(career) * 100)]
+		cvb.add_child(head)
+		var lines := []
+		for u in record.get("council", {}).keys():
+			var e = record["council"][u]
+			if str(e.get("career", "")) == career:
+				lines.append("%s：%s +%d%%" % [u, e.get("hero_name", ""), int(float(e.get("pct", 0)) * 100)])
+		for m in record.get("members", []):
+			if m.get("bot", false) and gs.get_bot_career(int(m.get("seed", 0))) == career:
+				lines.append("%s（人机）+%d%%" % [m.get("name", ""), int(gs.get_bot_skill_pct(int(m.get("seed", 0)), record) * 100)])
+		var det = Label.new()
+		det.add_theme_color_override("font_color", Color("#888888"))
+		det.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+		det.text = "\n".join(lines) if lines.size() > 0 else "（暂无委任）"
+		cvb.add_child(det)
+	# 我的委任 + 操作
 	var my = Label.new()
 	my.text = "我的委任：%s" % (data.get_hero_config(gs.guild_council_hero).get("name", "未委任") if gs.guild_council_hero != "" else "未委任")
 	list.add_child(my)
@@ -298,7 +326,6 @@ func _render_council():
 	list.add_child(row)
 	var pick = Button.new()
 	pick.text = "委任/更换门客"
-	# 【改】批次B13：委任钮放大（默认小钮 → 120×44 主操作钮）
 	pick.custom_minimum_size = Vector2(120, 44)
 	pick.add_theme_font_size_override("font_size", 13)
 	pick.pressed.connect(_on_council_pick)
@@ -306,7 +333,6 @@ func _render_council():
 	if gs.guild_council_hero != "":
 		var clear = Button.new()
 		clear.text = "撤回委任"
-		# 【改】批次B13：撤回委任钮放大（默认小钮 → 120×44）
 		clear.custom_minimum_size = Vector2(120, 44)
 		clear.add_theme_font_size_override("font_size", 13)
 		clear.pressed.connect(_on_council_clear)
@@ -327,12 +353,14 @@ func _on_council_pick():
 	for hid in heroes:
 		var cfg = data.get_hero_config(hid)
 		var b = Button.new()
-		b.text = "%s（%s 店铺技能+%d%%）" % [cfg.get("name", hid), cfg.get("career", ""), int(data.guild_system.get_hero_shop_pct(hid) * 100)]
-		b.pressed.connect(func():
-			var r = data.guild_system.set_council_hero(hid)
-			if not r.ok: c._show_success_popup(r.reason, 0.0, "ok")   # 【改】飘字退休→ok 弹窗
+		b.text = "%s（%s 店铺技能+%d%%）" % [cfg.get("name", hid), cfg.get("category", ""), int(data.guild_system.get_hero_shop_pct(hid) * 100)]
+		# 循环变量按引用捕获：回调必须先声明形参接 bind 值，否则所有按钮委任到排序最后一项
+		var cb: Callable = func(pick_id: String):
+			var r = data.guild_system.set_council_hero(pick_id)
+			if not r.ok: c._show_success_popup(r.reason, 0.0, "ok")
 			popup.queue_free()
-			_save_and_render())
+			_save_and_render()
+		b.pressed.connect(cb.bind(hid))
 		lst.add_child(b)
 	c.add_child(popup)
 
@@ -447,6 +475,7 @@ func _render_manage():
 		tip.text = "只有会长/副会长可以管理商会"
 		tip.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 		list.add_child(tip)
+		_add_leave_or_disband(list)
 		return
 	var bots = gs.get_bot_count(record)
 	var room = gs.get_member_cap(int(record.get("level", 1))) - record.get("members", []).size()
@@ -495,6 +524,7 @@ func _render_manage():
 			kick.add_theme_font_size_override("font_size", 13)
 			kick.pressed.connect(_on_kick.bind(str(m.user), str(m.name)))
 			row.add_child(kick)
+	_add_leave_or_disband(list)
 
 func _on_recruit():
 	var r = data.guild_system.recruit_bots()
@@ -521,6 +551,91 @@ func _on_set_vice(username: String):
 		if m.get("user", "") == username:
 			m["role"] = "" if m.get("role", "") == "vice" else "vice"
 	_save_and_render()
+
+# 危险区：成员=退出（自己走人），会长=解散（整会没了）——会长没有"退出"是因为服务端只认 owner 删行
+func _add_leave_or_disband(list):
+	var sep = Label.new()
+	sep.text = "—— 危险区 ——"
+	sep.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	list.add_child(sep)
+	if data.guild_system.cache.get("owner", "") == data.guild_system.my_user:
+		var disband = Button.new()
+		disband.text = "解散商会"
+		disband.pressed.connect(_on_disband)
+		list.add_child(disband)
+	else:
+		var leave = Button.new()
+		leave.text = "退出商会"
+		leave.pressed.connect(_on_leave)
+		list.add_child(leave)
+
+func _on_leave():
+	var popup = c._create_base_popup("退出商会", Vector2(400, 220), Vector2.ZERO, false)
+	popup.name = "GuildLeavePopup"
+	var vb = popup.get_child(0)
+	var lbl = Label.new()
+	lbl.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	lbl.text = "确定退出商会？\n重新加入需要新的邀请码"
+	vb.add_child(lbl)
+	var row = HBoxContainer.new()
+	row.alignment = BoxContainer.ALIGNMENT_CENTER
+	row.add_theme_constant_override("separation", 16)
+	vb.add_child(row)
+	var cancel = Button.new()
+	cancel.text = "取消"
+	cancel.pressed.connect(func(): popup.queue_free())
+	row.add_child(cancel)
+	var ok = Button.new()
+	ok.text = "确定"
+	ok.custom_minimum_size = Vector2(140, 44)
+	ok.pressed.connect(func():
+		var members = data.guild_system.cache.get("members", [])
+		for i in range(members.size()):
+			if members[i].get("user", "") == data.guild_system.my_user:
+				members.remove_at(i)
+				break
+		data.guild_system.cache.get("council", {}).erase(data.guild_system.my_user)
+		c.net.guild_save(data.guild_system.guild_id, data.guild_system.cache, func(_c2, d2):
+			if not d2.get("ok", false):
+				c._show_success_popup("退出失败：" + str(d2.get("msg", "网络错误")), 0.0, "warn")
+				return
+			data.guild_system.guild_id = ""
+			data.save_game()
+			close()
+			c._show_success_popup("已退出商会")))
+	row.add_child(ok)
+	c.add_child(popup)
+
+func _on_disband():
+	var popup = c._create_base_popup("解散商会", Vector2(400, 220), Vector2.ZERO, false)
+	popup.name = "GuildDisbandPopup"
+	var vb = popup.get_child(0)
+	var lbl = Label.new()
+	lbl.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	lbl.text = "确定解散商会？\n全部成员将被移出，不可恢复"
+	vb.add_child(lbl)
+	var row = HBoxContainer.new()
+	row.alignment = BoxContainer.ALIGNMENT_CENTER
+	row.add_theme_constant_override("separation", 16)
+	vb.add_child(row)
+	var cancel = Button.new()
+	cancel.text = "取消"
+	cancel.pressed.connect(func(): popup.queue_free())
+	row.add_child(cancel)
+	var ok = Button.new()
+	ok.text = "确定"
+	ok.custom_minimum_size = Vector2(140, 44)
+	ok.pressed.connect(func():
+		c.net.guild_disband(data.guild_system.guild_id, func(_c2, d2):
+			if not d2.get("ok", false):
+				c._show_success_popup("解散失败：" + str(d2.get("msg", "网络错误")), 0.0, "warn")
+				return
+			data.guild_system.guild_id = ""
+			data.save_game()
+			close()
+			c._show_success_popup("商会已解散")))
+	row.add_child(ok)
+	c.add_child(popup)
 
 func _on_kick(username: String, disp_name: String):
 	var popup = c._create_base_popup("踢出成员", Vector2(400, 220), Vector2.ZERO, false)   # 【改】UI统一批次①：确认弹窗不带右上✕

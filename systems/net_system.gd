@@ -151,6 +151,10 @@ func guild_get(guild_id: String, cb: Callable):
 func guild_save(guild_id: String, record: Dictionary, cb: Callable):
 	_request("/guild/save", {"guild_id": guild_id, "record": record}, cb)
 
+# 解散商会（仅会长；服务端删整行，与 create 配对）
+func guild_disband(guild_id: String, cb: Callable):
+	_request("/guild/disband", {"guild_id": guild_id}, cb)
+
 # ===== 招商（Worker 三表六接口的客户端封装；批次②发布/加入/补报接线，资历上报/点赞/榜单=批次③） =====
 # merit/like/leaderboard 三个 wrapper 批次③才接线，先就位
 func zs_publish(record: Dictionary, cb: Callable):

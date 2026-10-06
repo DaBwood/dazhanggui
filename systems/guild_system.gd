@@ -85,7 +85,18 @@ func _apply_exp(record: Dictionary, amount: float) -> void:
 func set_record(record: Dictionary, username: String) -> void:
 	cache = record
 	my_user = username
+	_heal_council_career()   # 职业字段读错名的旧快照在此自愈，否则该成员加成永远挂不进职业汇总
 	_bot_catchup(cache)
+
+# 旧版委任快照的 career 写成空串（字段名读错）：按全量配置补回职业
+func _heal_council_career() -> void:
+	var council: Dictionary = cache.get("council", {})
+	for u in council.keys():
+		var e: Dictionary = council[u]
+		if str(e.get("career", "")) == "":
+			e["career"] = str(g.get_hero_config(str(e.get("hero", ""))).get("category", ""))
+	if not council.is_empty():
+		cache["council"] = council
 
 # 确保人机建设已补结算到今日（幂等）
 func ensure_fresh() -> Dictionary:
@@ -208,7 +219,7 @@ func set_council_hero(hero_id: String) -> Dictionary:
 		council.erase(my_user)
 	else:
 		var cfg = g.get_hero_config(hero_id)
-		council[my_user] = {"hero": hero_id, "hero_name": cfg.get("name", hero_id), "career": str(cfg.get("career", "")), "pct": get_hero_shop_pct(hero_id)}
+		council[my_user] = {"hero": hero_id, "hero_name": cfg.get("name", hero_id), "career": str(cfg.get("category", "")), "pct": get_hero_shop_pct(hero_id)}
 	record["council"] = council
 	guild_council_hero = hero_id
 	return {"ok": true}
