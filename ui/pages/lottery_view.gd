@@ -20,8 +20,8 @@ func _init(p_c):
 func show_lottery_view():
 	if not c.has_node("PageContainer/AdventurePage"): return
 	var page = c.get_node("PageContainer/AdventurePage")
-	if page.has_node("AdventureVBox"):
-		page.get_node("AdventureVBox").visible = false
+	if page.has_node("AdventureScene/AdventureVBox"): # 【改】场景化批次：主页骨架入 adventure_page.tscn，AdventureVBox 在 AdventureScene 实例下（规范 11.7 全仓同步）
+		page.get_node("AdventureScene/AdventureVBox").visible = false
 	if page.has_node("ExchangeView"):
 		page.get_node("ExchangeView").visible = false
 	if page.has_node("LotteryView"):
@@ -33,8 +33,8 @@ func hide_lottery_view():
 	var page = c.get_node("PageContainer/AdventurePage")
 	if page.has_node("LotteryView"):
 		page.get_node("LotteryView").visible = false
-	if page.has_node("AdventureVBox"):
-		page.get_node("AdventureVBox").visible = true
+	if page.has_node("AdventureScene/AdventureVBox"):
+		page.get_node("AdventureScene/AdventureVBox").visible = true
 
 func update_lottery_view():
 	if not c.has_node("PageContainer/AdventurePage/LotteryView"): return

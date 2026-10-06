@@ -20,7 +20,7 @@ func _init(p_c):
 func show_travel_view():
 	if not c.has_node("PageContainer/AdventurePage/TravelView"): return
 	var page = c.get_node("PageContainer/AdventurePage")
-	page.get_node("AdventureVBox").visible = false
+	page.get_node("AdventureScene/AdventureVBox").visible = false # 【改】场景化批次：主页骨架入 adventure_page.tscn，AdventureVBox 在 AdventureScene 实例下（规范 11.7 全仓同步）
 	if page.has_node("ExchangeView"): page.get_node("ExchangeView").visible = false
 	if page.has_node("LotteryView"): page.get_node("LotteryView").visible = false
 	if page.has_node("CharityView"): page.get_node("CharityView").visible = false
@@ -35,7 +35,7 @@ func hide_travel_view():
 	if not c.has_node("PageContainer/AdventurePage/TravelView"): return
 	var page = c.get_node("PageContainer/AdventurePage")
 	page.get_node("TravelView").visible = false
-	page.get_node("AdventureVBox").visible = true
+	page.get_node("AdventureScene/AdventureVBox").visible = true
 
 func update_travel_view():
 	if not c.has_node("PageContainer/AdventurePage/TravelView"): return

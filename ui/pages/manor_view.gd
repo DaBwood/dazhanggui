@@ -132,7 +132,12 @@ func hide_manor_view():
 	c._safe_close("ManorSpeciesPopup")
 	var page = c.get_node("PageContainer/AdventurePage")
 	page.get_node("ManorView").visible = false
-	page.get_node("AdventureVBox").visible = true
+	# 恢复整层场景实例而非只恢复 AdventureVBox：show 侧 blanket 循环把 AdventureScene 整层隐藏，
+	# Godot 父节点不可见时子节点 visible=true 也不渲染（父隐子不现），只恢复子级会页面空白
+	var scene = page.get_node_or_null("AdventureScene")
+	if scene:
+		scene.visible = true
+	page.get_node("AdventureScene/AdventureVBox").visible = true
 
 # ============ 刷新 ============
 # 重绘当前分页的品种按钮（返回按钮下的仓库总览行已按需求删除）

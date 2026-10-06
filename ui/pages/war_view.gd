@@ -122,7 +122,12 @@ func hide_war_view():
 	if not c.has_node("PageContainer/AdventurePage/WarView"): return
 	var page = c.get_node("PageContainer/AdventurePage")
 	page.get_node("WarView").visible = false
-	page.get_node("AdventureVBox").visible = true
+	# 恢复整层场景实例而非只恢复 AdventureVBox：show 侧 blanket 循环把 AdventureScene 整层隐藏，
+	# Godot 父节点不可见时子节点 visible=true 也不渲染（父隐子不现），只恢复子级会页面空白
+	var scene = page.get_node_or_null("AdventureScene")
+	if scene:
+		scene.visible = true
+	page.get_node("AdventureScene/AdventureVBox").visible = true
 
 # ============ 刷新 ============
 # 重绘货币栏 + 当前页签内容

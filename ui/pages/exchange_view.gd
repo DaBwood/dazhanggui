@@ -37,7 +37,7 @@ func _on_exchange_back_pressed():
 func show_exchange_view():
 	if not c.has_node("PageContainer/AdventurePage"): return
 	var page = c.get_node("PageContainer/AdventurePage")
-	page.get_node("AdventureVBox").visible = false
+	page.get_node("AdventureScene/AdventureVBox").visible = false # 【改】场景化批次：主页骨架入 adventure_page.tscn，AdventureVBox 在 AdventureScene 实例下（规范 11.7 全仓同步）
 	var ev = page.get_node("ExchangeView")
 	ev.visible = true
 	# 每次进入都重置回目录层
@@ -52,7 +52,7 @@ func show_exchange_view():
 func hide_exchange_view():
 	if not c.has_node("PageContainer/AdventurePage"): return
 	var page = c.get_node("PageContainer/AdventurePage")
-	page.get_node("AdventureVBox").visible = true
+	page.get_node("AdventureScene/AdventureVBox").visible = true
 	page.get_node("ExchangeView").visible = false
 	if page.has_node("LotteryView"):
 		page.get_node("LotteryView").visible = false

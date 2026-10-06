@@ -1027,7 +1027,7 @@ func _refresh_nav_visibility():
 func _any_adventure_subview_open() -> bool:
 	# 子视图模块是 RefCounted（启动报 Invalid access 'visible' 定案）：它们打开时统一隐藏页内 AdventureVBox；
 	# cuzhi 例外——全屏面板直接覆盖不藏 vbox，改读模块的 _panel 可见性
-	var adv = get_node_or_null("PageContainer/AdventurePage/AdventureVBox")
+	var adv = get_node_or_null("PageContainer/AdventurePage/AdventureScene/AdventureVBox") # 【改】场景化批次：主页骨架入 adventure_page.tscn，AdventureVBox 在 AdventureScene 实例下（规范 11.7 全仓同步）
 	if adv != null and not adv.visible:
 		return true
 	var cz = _get_view_by_key("cuzhi")

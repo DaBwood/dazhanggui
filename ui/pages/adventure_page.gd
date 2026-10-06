@@ -1,11 +1,16 @@
 # ============================================================
-# 闯荡页主视图（第3批重构：从 game_controller.gd 拆分而来）
+# 闯荡页主视图（第3批重构：从 game_controller.gd 拆分而来；最近批次见档案 §十一）
 # 纯逻辑模块：场景节点查找/弹窗挂载/共享工具/跨页调用一律经 c.xxx
 # （c = game_controller 根脚本，语义与原 controller 内调用完全一致）
 # data = GameData 数据中枢，用法与原来完全一致
 # ============================================================
 class_name AdventurePage
 extends RefCounted
+# 场景化骨架契约（规范 11.1/11.2）：布局唯一真相源=adventure_page.tscn，本脚本只实例化+灌内容
+const ADVENTURE_SCENE := preload("res://ui/pages/adventure_page.tscn")
+# 素材契约：主页底图放 res://assets/adventure/bg.png；缺图节点留空不渲染（不 fallback 他图，保持现状零视觉变更）
+const ADVENTURE_BG_PATH := "res://assets/adventure/bg.png"
+
 
 var c      # game_controller 根脚本引用
 var data   # GameData 数据中枢引用
@@ -64,43 +69,40 @@ func generate_adventure_page():
 	var page = c.get_node("PageContainer/AdventurePage")
 	
 	for child in page.get_children():
-		child.queue_free()
-	
-	page.set_anchors_preset(Control.PRESET_FULL_RECT)
-	
-	var vbox = VBoxContainer.new()
-	vbox.name = "AdventureVBox"
-	vbox.set_anchors_preset(Control.PRESET_FULL_RECT)
-	vbox.alignment = BoxContainer.ALIGNMENT_CENTER
-	vbox.add_theme_constant_override("separation", 20)
-	page.add_child(vbox)
-	
-	var title = Label.new()
-	title.text = "闯荡"
-	title.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
-	title.add_theme_font_size_override("font_size", 24)
-	title.add_theme_color_override("font_color", Color("#ffd700"))
-	vbox.add_child(title)
-	
-	# 【新增】入口按钮 3 列网格（入口多了不再纵向溢出；后续新入口按钮都挂到这个网格里）
-	var entry_grid = GridContainer.new()
-	entry_grid.name = "AdventureEntryGrid"
-	entry_grid.columns = 3
-	entry_grid.size_flags_horizontal = Control.SIZE_SHRINK_CENTER
-	vbox.add_child(entry_grid)
-	# 主页面玩法说明"？"：右上角锚定（用户拍板 2026-10-06）
-	var main_help := Button.new()
-	main_help.text = "?"
-	main_help.custom_minimum_size = Vector2(40, 36)
-	main_help.add_theme_font_size_override("font_size", 16)
-	main_help.anchor_left = 1.0
-	main_help.anchor_right = 1.0
-	main_help.offset_left = -48
-	main_help.offset_right = -8
-	main_help.offset_top = 8
-	main_help.offset_bottom = 44
-	main_help.pressed.connect(func(): _show_adventure_help("闯荡是各玩法的入口：关卡产出闯荡币；兑换/系列/抽奖/行善/游历玩法各异，每个子页右上角都有？说明。"))
-	page.add_child(main_help)
+		child.free()
+
+	page.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT, Control.PRESET_MODE_MINSIZE)
+
+	var inst: Control = ADVENTURE_SCENE.instantiate()
+	page.add_child(inst)
+
+	# 骨架缺件兜底（规范 11.2 铁律3）：tscn 节点被误删时自建并标好容器标志，不阻断运行
+	var vbox := inst.get_node_or_null("AdventureVBox") as VBoxContainer
+	if vbox == null:
+		vbox = VBoxContainer.new()
+		vbox.name = "AdventureVBox"
+		vbox.alignment = BoxContainer.ALIGNMENT_CENTER
+		vbox.add_theme_constant_override("separation", 20)
+		vbox.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+		vbox.size_flags_vertical = Control.SIZE_EXPAND_FILL
+		inst.add_child(vbox)
+	var entry_grid := vbox.get_node_or_null("AdventureEntryGrid") as GridContainer
+	if entry_grid == null:
+		entry_grid = GridContainer.new()
+		entry_grid.name = "AdventureEntryGrid"
+		entry_grid.columns = 3
+		entry_grid.size_flags_horizontal = Control.SIZE_SHRINK_CENTER
+		vbox.add_child(entry_grid)
+	# 主页面玩法说明"？"钮在 tscn 右上角锚定（用户拍板 2026-10-06），脚本只接管信号
+	var main_help := inst.get_node_or_null("MainHelpButton") as Button
+	if main_help:
+		main_help.pressed.connect(func(): _show_adventure_help("闯荡是各玩法的入口：关卡产出闯荡币；兑换/系列/抽奖/行善/游历玩法各异，每个子页右上角都有？说明。"))
+
+	# 底图契约见 ADVENTURE_BG_PATH 注释：缺图不渲染、布局不塌
+	var bg := inst.get_node_or_null("BgImage") as TextureRect
+	if bg and ResourceLoader.exists(ADVENTURE_BG_PATH):
+		bg.texture = load(ADVENTURE_BG_PATH)
+
 	
 	var stage_btn = Button.new()
 	stage_btn.text = "关卡"
