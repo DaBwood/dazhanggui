@@ -32,7 +32,7 @@ func _on_exchange_back_pressed():
 	elif ev.get_node("TokenExchangeView").visible:
 		hide_token_exchange_view()
 	else:
-		hide_exchange_view()
+		c.hide_view("exchange")
 
 func show_exchange_view():
 	if not c.has_node("PageContainer/AdventurePage"): return

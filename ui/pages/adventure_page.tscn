@@ -1,18 +1,14 @@
 [gd_scene format=3 uid="uid://d3f3dfy7ljhl5"]
 
-[ext_resource type="Texture2D" uid="uid://dwpxslipq07gf" path="res://assets/adventure/bg.png" id="1_bg"]
+[ext_resource type="Texture2D" uid="uid://ctmwih8c62l46" path="res://assets/adventure/bg.png" id="1_bg"]
+[ext_resource type="Texture2D" uid="uid://bk6d5qrpfmn87" path="res://assets/adventure/btn_scroll_vertical.png" id="2_skin"]
 
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_banner"]
-bg_color = Color(0.36, 0.06, 0.06, 0.9)
-border_width_left = 2
-border_width_top = 2
-border_width_right = 2
-border_width_bottom = 2
-border_color = Color(0.15, 0.02, 0.02, 1)
-corner_radius_top_left = 3
-corner_radius_top_right = 3
-corner_radius_bottom_right = 3
-corner_radius_bottom_left = 3
+[sub_resource type="StyleBoxTexture" id="StyleBoxTexture_banner"]
+texture = ExtResource("2_skin")
+texture_margin_left = 15.0
+texture_margin_top = 15.0
+texture_margin_right = 15.0
+texture_margin_bottom = 15.0
 
 [node name="AdventureScene" type="Control" unique_id=681575555]
 layout_mode = 3
@@ -81,10 +77,10 @@ offset_right = 922.0
 offset_bottom = 737.5
 theme_override_colors/font_color = Color(0.95, 0.88, 0.7, 1)
 theme_override_font_sizes/font_size = 18
-theme_override_styles/normal = SubResource("StyleBoxFlat_banner")
-theme_override_styles/pressed = SubResource("StyleBoxFlat_banner")
-theme_override_styles/hover = SubResource("StyleBoxFlat_banner")
-theme_override_styles/focus = SubResource("StyleBoxFlat_banner")
+theme_override_styles/normal = SubResource("StyleBoxTexture_banner")
+theme_override_styles/pressed = SubResource("StyleBoxTexture_banner")
+theme_override_styles/hover = SubResource("StyleBoxTexture_banner")
+theme_override_styles/focus = SubResource("StyleBoxTexture_banner")
 text = "关
 卡"
 
@@ -97,10 +93,10 @@ offset_right = 1509.0
 offset_bottom = 511.5
 theme_override_colors/font_color = Color(0.95, 0.88, 0.7, 1)
 theme_override_font_sizes/font_size = 18
-theme_override_styles/normal = SubResource("StyleBoxFlat_banner")
-theme_override_styles/pressed = SubResource("StyleBoxFlat_banner")
-theme_override_styles/hover = SubResource("StyleBoxFlat_banner")
-theme_override_styles/focus = SubResource("StyleBoxFlat_banner")
+theme_override_styles/normal = SubResource("StyleBoxTexture_banner")
+theme_override_styles/pressed = SubResource("StyleBoxTexture_banner")
+theme_override_styles/hover = SubResource("StyleBoxTexture_banner")
+theme_override_styles/focus = SubResource("StyleBoxTexture_banner")
 text = "兑
 换"
 
@@ -113,10 +109,10 @@ offset_right = 1119.0
 offset_bottom = 760.5
 theme_override_colors/font_color = Color(0.95, 0.88, 0.7, 1)
 theme_override_font_sizes/font_size = 18
-theme_override_styles/normal = SubResource("StyleBoxFlat_banner")
-theme_override_styles/pressed = SubResource("StyleBoxFlat_banner")
-theme_override_styles/hover = SubResource("StyleBoxFlat_banner")
-theme_override_styles/focus = SubResource("StyleBoxFlat_banner")
+theme_override_styles/normal = SubResource("StyleBoxTexture_banner")
+theme_override_styles/pressed = SubResource("StyleBoxTexture_banner")
+theme_override_styles/hover = SubResource("StyleBoxTexture_banner")
+theme_override_styles/focus = SubResource("StyleBoxTexture_banner")
 text = "抽
 奖"
 
@@ -129,10 +125,10 @@ offset_right = 1149.0
 offset_bottom = 480.5
 theme_override_colors/font_color = Color(0.95, 0.88, 0.7, 1)
 theme_override_font_sizes/font_size = 18
-theme_override_styles/normal = SubResource("StyleBoxFlat_banner")
-theme_override_styles/pressed = SubResource("StyleBoxFlat_banner")
-theme_override_styles/hover = SubResource("StyleBoxFlat_banner")
-theme_override_styles/focus = SubResource("StyleBoxFlat_banner")
+theme_override_styles/normal = SubResource("StyleBoxTexture_banner")
+theme_override_styles/pressed = SubResource("StyleBoxTexture_banner")
+theme_override_styles/hover = SubResource("StyleBoxTexture_banner")
+theme_override_styles/focus = SubResource("StyleBoxTexture_banner")
 text = "行
 善"
 
@@ -145,10 +141,10 @@ offset_right = 896.0
 offset_bottom = 317.5
 theme_override_colors/font_color = Color(0.95, 0.88, 0.7, 1)
 theme_override_font_sizes/font_size = 18
-theme_override_styles/normal = SubResource("StyleBoxFlat_banner")
-theme_override_styles/pressed = SubResource("StyleBoxFlat_banner")
-theme_override_styles/hover = SubResource("StyleBoxFlat_banner")
-theme_override_styles/focus = SubResource("StyleBoxFlat_banner")
+theme_override_styles/normal = SubResource("StyleBoxTexture_banner")
+theme_override_styles/pressed = SubResource("StyleBoxTexture_banner")
+theme_override_styles/hover = SubResource("StyleBoxTexture_banner")
+theme_override_styles/focus = SubResource("StyleBoxTexture_banner")
 text = "游
 历"
 
@@ -161,10 +157,10 @@ offset_right = 374.0
 offset_bottom = 917.5
 theme_override_colors/font_color = Color(0.95, 0.88, 0.7, 1)
 theme_override_font_sizes/font_size = 18
-theme_override_styles/normal = SubResource("StyleBoxFlat_banner")
-theme_override_styles/pressed = SubResource("StyleBoxFlat_banner")
-theme_override_styles/hover = SubResource("StyleBoxFlat_banner")
-theme_override_styles/focus = SubResource("StyleBoxFlat_banner")
+theme_override_styles/normal = SubResource("StyleBoxTexture_banner")
+theme_override_styles/pressed = SubResource("StyleBoxTexture_banner")
+theme_override_styles/hover = SubResource("StyleBoxTexture_banner")
+theme_override_styles/focus = SubResource("StyleBoxTexture_banner")
 text = "招
 商"
 
@@ -177,10 +173,10 @@ offset_right = 603.0
 offset_bottom = 659.5
 theme_override_colors/font_color = Color(0.95, 0.88, 0.7, 1)
 theme_override_font_sizes/font_size = 18
-theme_override_styles/normal = SubResource("StyleBoxFlat_banner")
-theme_override_styles/pressed = SubResource("StyleBoxFlat_banner")
-theme_override_styles/hover = SubResource("StyleBoxFlat_banner")
-theme_override_styles/focus = SubResource("StyleBoxFlat_banner")
+theme_override_styles/normal = SubResource("StyleBoxTexture_banner")
+theme_override_styles/pressed = SubResource("StyleBoxTexture_banner")
+theme_override_styles/hover = SubResource("StyleBoxTexture_banner")
+theme_override_styles/focus = SubResource("StyleBoxTexture_banner")
 text = "商
 战"
 
@@ -193,10 +189,10 @@ offset_right = 826.0
 offset_bottom = 473.5
 theme_override_colors/font_color = Color(0.95, 0.88, 0.7, 1)
 theme_override_font_sizes/font_size = 18
-theme_override_styles/normal = SubResource("StyleBoxFlat_banner")
-theme_override_styles/pressed = SubResource("StyleBoxFlat_banner")
-theme_override_styles/hover = SubResource("StyleBoxFlat_banner")
-theme_override_styles/focus = SubResource("StyleBoxFlat_banner")
+theme_override_styles/normal = SubResource("StyleBoxTexture_banner")
+theme_override_styles/pressed = SubResource("StyleBoxTexture_banner")
+theme_override_styles/hover = SubResource("StyleBoxTexture_banner")
+theme_override_styles/focus = SubResource("StyleBoxTexture_banner")
 text = "垂
 钓"
 
@@ -209,10 +205,10 @@ offset_right = 325.0
 offset_bottom = 314.5
 theme_override_colors/font_color = Color(0.95, 0.88, 0.7, 1)
 theme_override_font_sizes/font_size = 18
-theme_override_styles/normal = SubResource("StyleBoxFlat_banner")
-theme_override_styles/pressed = SubResource("StyleBoxFlat_banner")
-theme_override_styles/hover = SubResource("StyleBoxFlat_banner")
-theme_override_styles/focus = SubResource("StyleBoxFlat_banner")
+theme_override_styles/normal = SubResource("StyleBoxTexture_banner")
+theme_override_styles/pressed = SubResource("StyleBoxTexture_banner")
+theme_override_styles/hover = SubResource("StyleBoxTexture_banner")
+theme_override_styles/focus = SubResource("StyleBoxTexture_banner")
 text = "庄
 园"
 
@@ -225,10 +221,10 @@ offset_right = 813.0
 offset_bottom = 662.5
 theme_override_colors/font_color = Color(0.95, 0.88, 0.7, 1)
 theme_override_font_sizes/font_size = 18
-theme_override_styles/normal = SubResource("StyleBoxFlat_banner")
-theme_override_styles/pressed = SubResource("StyleBoxFlat_banner")
-theme_override_styles/hover = SubResource("StyleBoxFlat_banner")
-theme_override_styles/focus = SubResource("StyleBoxFlat_banner")
+theme_override_styles/normal = SubResource("StyleBoxTexture_banner")
+theme_override_styles/pressed = SubResource("StyleBoxTexture_banner")
+theme_override_styles/hover = SubResource("StyleBoxTexture_banner")
+theme_override_styles/focus = SubResource("StyleBoxTexture_banner")
 text = "促
 织
 园"
@@ -242,10 +238,10 @@ offset_right = 592.0
 offset_bottom = 465.5
 theme_override_colors/font_color = Color(0.95, 0.88, 0.7, 1)
 theme_override_font_sizes/font_size = 18
-theme_override_styles/normal = SubResource("StyleBoxFlat_banner")
-theme_override_styles/pressed = SubResource("StyleBoxFlat_banner")
-theme_override_styles/hover = SubResource("StyleBoxFlat_banner")
-theme_override_styles/focus = SubResource("StyleBoxFlat_banner")
+theme_override_styles/normal = SubResource("StyleBoxTexture_banner")
+theme_override_styles/pressed = SubResource("StyleBoxTexture_banner")
+theme_override_styles/hover = SubResource("StyleBoxTexture_banner")
+theme_override_styles/focus = SubResource("StyleBoxTexture_banner")
 text = "商
 会"
 
