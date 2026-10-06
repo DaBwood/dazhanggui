@@ -42,7 +42,7 @@ func build_manor_view(page, vbox):
 	manor_btn.text = "庄园"
 	manor_btn.custom_minimum_size = Vector2(180, 60)
 	manor_btn.pressed.connect(c.show_view.bind("manor"))
-	vbox.get_node("AdventureEntryGrid").add_child(manor_btn)
+	vbox.get_node("MapScroll/MapContent/AdventureEntryGrid").add_child(manor_btn) # 【改】地图批次B：入口网格挪进 MapScroll/MapContent（随横版地图滑动），路径同步（规范 11.7）
 	
 	# --- 庄园子页面 ---
 	var view = VBoxContainer.new()

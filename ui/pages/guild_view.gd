@@ -24,7 +24,7 @@ func build_entry(page, vbox):
 	btn.text = "商会"
 	btn.custom_minimum_size = Vector2(180, 60)
 	btn.pressed.connect(open)
-	vbox.get_node("AdventureEntryGrid").add_child(btn)
+	vbox.get_node("MapScroll/MapContent/AdventureEntryGrid").add_child(btn) # 【改】地图批次B：入口网格挪进 MapScroll/MapContent（随横版地图滑动），路径同步（规范 11.7）
 
 # ============ 打开/关闭 ============
 func open():

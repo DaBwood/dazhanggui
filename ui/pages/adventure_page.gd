@@ -8,8 +8,23 @@ class_name AdventurePage
 extends RefCounted
 # 场景化骨架契约（规范 11.1/11.2）：布局唯一真相源=adventure_page.tscn，本脚本只实例化+灌内容
 const ADVENTURE_SCENE := preload("res://ui/pages/adventure_page.tscn")
-# 素材契约：主页底图放 res://assets/adventure/bg.png；缺图节点留空不渲染（不 fallback 他图，保持现状零视觉变更）
+# 素材契约：横版地图放 res://assets/adventure/bg.png（2048×1152 原图直接用，按 1067 高铺宽≈1897≈3.16 屏，零裁切）
 const ADVENTURE_BG_PATH := "res://assets/adventure/bg.png"
+# 地图入口钮摆位：归一化坐标对照带字版招牌标注（2026-10-06），x/y 相对 MapContent 1897×1067；随时可调
+const MAP_ENTRY_POS := {
+	"关卡": Vector2(0.458, 0.80), "兑换": Vector2(0.730, 0.42), "抽奖": Vector2(0.155, 0.50),
+	"行善": Vector2(0.590, 0.41), "游历": Vector2(0.460, 0.26), "招商": Vector2(0.315, 0.82),
+	"商战": Vector2(0.305, 0.66), "垂钓": Vector2(0.210, 0.47), "庄园": Vector2(0.160, 0.24),
+	"促织园": Vector2(0.430, 0.64), "商会": Vector2(0.305, 0.41),
+}
+# 地图钮统一尺寸（内容节点=脚本资产，允许定布局；建筑热点牌匾口径 150×52/16 号字）
+const MAP_ENTRY_SIZE := Vector2(150, 52)
+# 按钮文字→锚点英文名：节点名保持 ASCII（中文节点名在部分工程链路触发 Latin-1 编码报错，2026-10-06 实测）
+const ENTRY_ANCHOR := {
+	"关卡": "PosStage", "兑换": "PosExchange", "抽奖": "PosLottery", "行善": "PosCharity",
+	"游历": "PosTravel", "招商": "PosZhaoshang", "商战": "PosWar", "垂钓": "PosFishing",
+	"庄园": "PosManor", "促织园": "PosCuzhi", "商会": "PosGuild",
+}
 
 
 var c      # game_controller 根脚本引用
@@ -77,31 +92,65 @@ func generate_adventure_page():
 	page.add_child(inst)
 
 	# 骨架缺件兜底（规范 11.2 铁律3）：tscn 节点被误删时自建并标好容器标志，不阻断运行
+	# 结构链：AdventureVBox(VBox)/MapScroll(HScroll)/MapContent(1897×1067)/BgImage+AdventureEntryGrid
 	var vbox := inst.get_node_or_null("AdventureVBox") as VBoxContainer
 	if vbox == null:
 		vbox = VBoxContainer.new()
 		vbox.name = "AdventureVBox"
-		vbox.alignment = BoxContainer.ALIGNMENT_CENTER
-		vbox.add_theme_constant_override("separation", 20)
 		vbox.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 		vbox.size_flags_vertical = Control.SIZE_EXPAND_FILL
 		inst.add_child(vbox)
-	var entry_grid := vbox.get_node_or_null("AdventureEntryGrid") as GridContainer
+	# 自愈：坏 tscn 会把 MapContent 等拍扁成 inst 根孤儿（名带 #，即「Parent path vanished」三提示的实体），
+	# 重建链之前先清——inst 根下除 AdventureVBox/MainHelpButton 外无合法兄弟（好 tscn 此循环零操作）
+	for node in inst.get_children():
+		if node != vbox and node.name != "MainHelpButton":
+			node.free()
+
+	var map_scroll := vbox.get_node_or_null("MapScroll") as ScrollContainer
+	if map_scroll == null:
+		map_scroll = ScrollContainer.new()
+		map_scroll.horizontal_scroll_mode = ScrollContainer.SCROLL_MODE_AUTO
+		map_scroll.vertical_scroll_mode = ScrollContainer.SCROLL_MODE_DISABLED
+		map_scroll.name = "MapScroll"
+		map_scroll.size_flags_vertical = Control.SIZE_EXPAND_FILL
+		vbox.add_child(map_scroll)
+	var map_content := map_scroll.get_node_or_null("MapContent") as Control
+	if map_content == null:
+		map_content = Control.new()
+		map_content.name = "MapContent"
+		map_content.custom_minimum_size = Vector2(1897, 1067)
+		# 横向禁 EXPAND：ScrollContainer 会把带展开旗标的孩子拉到视口宽，滚动余量归 0（同 tscn 注释）
+		map_content.size_flags_vertical = Control.SIZE_EXPAND_FILL
+		map_scroll.add_child(map_content)
+	var entry_grid := map_content.get_node_or_null("AdventureEntryGrid") as Control
 	if entry_grid == null:
-		entry_grid = GridContainer.new()
+		entry_grid = Control.new()
 		entry_grid.name = "AdventureEntryGrid"
-		entry_grid.columns = 3
-		entry_grid.size_flags_horizontal = Control.SIZE_SHRINK_CENTER
-		vbox.add_child(entry_grid)
+		entry_grid.set_anchors_preset(Control.PRESET_FULL_RECT)
+		entry_grid.mouse_filter = Control.MOUSE_FILTER_IGNORE
+		map_content.add_child(entry_grid)
 	# 主页面玩法说明"？"钮在 tscn 右上角锚定（用户拍板 2026-10-06），脚本只接管信号
 	var main_help := inst.get_node_or_null("MainHelpButton") as Button
 	if main_help:
-		main_help.pressed.connect(func(): _show_adventure_help("闯荡是各玩法的入口：关卡产出闯荡币；兑换/系列/抽奖/行善/游历玩法各异，每个子页右上角都有？说明。"))
+		main_help.pressed.connect(func(): _show_adventure_help("闯荡是各玩法的入口：关卡产出闯荡币；兑换/系列/抽奖/行善/游历玩法各异，每个子页右上角都有？说明。左右滑动地图切换城区。"))
 
-	# 底图契约见 ADVENTURE_BG_PATH 注释：缺图不渲染、布局不塌
-	var bg := inst.get_node_or_null("BgImage") as TextureRect
-	if bg and ResourceLoader.exists(ADVENTURE_BG_PATH):
+	# 底图契约见 ADVENTURE_BG_PATH 注释：缺图不渲染、布局不塌；tscn 里 BgImage 缺失时兜底自建（结构坏也保图）
+	var bg := map_content.get_node_or_null("BgImage") as TextureRect
+	if bg == null:
+		bg = TextureRect.new()
+		bg.name = "BgImage"
+		bg.set_anchors_preset(Control.PRESET_FULL_RECT)
+		bg.mouse_filter = Control.MOUSE_FILTER_IGNORE
+		bg.expand_mode = TextureRect.EXPAND_IGNORE_SIZE
+		bg.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_COVERED
+		map_content.add_child(bg)
+		# 自建图必须压底层：后加入的兄弟默认画在上面，会盖住入口钮（干净 tscn 顺序正确无需此步）
+		map_content.move_child(bg, 0)
+	if ResourceLoader.exists(ADVENTURE_BG_PATH):
 		bg.texture = load(ADVENTURE_BG_PATH)
+
+	# 滑动吸附：scroll_ended 只在用户滚动停时发（补间改值不重入，_map_snapping 双保险）
+	map_scroll.scroll_ended.connect(_on_map_scroll_ended)
 
 	
 	var stage_btn = Button.new()
@@ -430,6 +479,60 @@ func generate_adventure_page():
 	# 【新增】商会入口（覆盖层挂在闯荡页上，GuildView 自管理开闭，controller 零改动）
 	guild_view = GuildView.new(c)
 	guild_view.build_entry(page, vbox)
+
+	# 全部入口（含 5 个 builder 挂的）就绪后统一按地图坐标摆位
+	_layout_map_entries(map_content, entry_grid)
+
+	# 结构自检：输出面板打印一次关键事实（布局争议先看这里，定位是结构问题还是坐标问题）
+	print("[AdventureMap] 入口钮=%d 横向滚动余量=%d MapContent=%s" % [
+		entry_grid.get_child_count(),
+		int(map_scroll.get_h_scroll_bar().max_value - map_scroll.get_h_scroll_bar().page),
+		str(map_content.size)])
+
+# 入口摆位：优先读 tscn 里的 Marker2D 锚点（"Pos"+按钮文字，编辑器里可拖着摆）；
+# 锚点缺失时退化到 MAP_ENTRY_POS 归一化表；都未收录的新入口退图下备用排，不丢功能只丢精修
+func _layout_map_entries(map_content: Control, entry_grid: Control) -> void:
+	var map_w := map_content.custom_minimum_size.x
+	var map_h := map_content.custom_minimum_size.y
+	var reserve_i := 0
+	for node in entry_grid.get_children():
+		if not (node is Button):
+			continue
+		node.custom_minimum_size = MAP_ENTRY_SIZE
+		node.size = MAP_ENTRY_SIZE
+		var center := Vector2(-1, -1)
+		var anchor: Node2D = null
+		if ENTRY_ANCHOR.has(node.text):
+			anchor = entry_grid.get_node_or_null(ENTRY_ANCHOR[node.text]) as Node2D
+		if anchor:
+			center = anchor.position
+		elif MAP_ENTRY_POS.has(node.text):
+			var pos: Vector2 = MAP_ENTRY_POS[node.text]
+			center = Vector2(pos.x * map_w, pos.y * map_h)
+		else:
+			center = Vector2((0.10 + reserve_i * 0.09) * map_w, 0.90 * map_h)
+			reserve_i += 1
+		node.position = center - MAP_ENTRY_SIZE / 2.0
+
+var _map_snapping := false
+
+# 横向地图按屏吸附：页宽=滚动视口宽（运行时实际像素，不吃设计尺寸）
+func _on_map_scroll_ended() -> void:
+	if _map_snapping:
+		return
+	var scroll := c.get_node_or_null("PageContainer/AdventurePage/AdventureScene/AdventureVBox/MapScroll") as ScrollContainer
+	if scroll == null:
+		return
+	var page_w := scroll.size.x
+	if page_w <= 0:
+		return
+	var target := int(roundf(scroll.scroll_horizontal / page_w) * page_w)
+	if abs(target - scroll.scroll_horizontal) < 2:
+		return
+	_map_snapping = true
+	var tw := scroll.create_tween()
+	tw.tween_property(scroll, "scroll_horizontal", target, 0.25)
+	tw.finished.connect(func(): _map_snapping = false)
 
 func update_adventure_page():
 	# 页面静态，无需动态更新

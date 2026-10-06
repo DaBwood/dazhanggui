@@ -25,7 +25,7 @@ func build_fishing_view(page, vbox):
 	fish_btn.text = "垂钓"
 	fish_btn.custom_minimum_size = Vector2(180, 60)
 	fish_btn.pressed.connect(c.show_view.bind("fishing"))
-	vbox.get_node("AdventureEntryGrid").add_child(fish_btn)
+	vbox.get_node("MapScroll/MapContent/AdventureEntryGrid").add_child(fish_btn) # 【改】地图批次B：入口网格挪进 MapScroll/MapContent（随横版地图滑动），路径同步（规范 11.7）
 
 	# --- 垂钓子页面 ---
 	var view = VBoxContainer.new()
