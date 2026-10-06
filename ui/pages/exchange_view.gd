@@ -231,7 +231,7 @@ func update_series_exchange_view():
 	if _current_series_index < 0: return
 	var view = c.get_node("PageContainer/AdventurePage/ExchangeView/SeriesExchangeView")
 	var series = data.SERIES_EXCHANGE[_current_series_index]
-	view.get_node("SeriesTitle").text = "—— %s ——" % series.series
+	view.get_node("TopRow/SeriesTitle").text = "—— %s ——" % series.series
 	
 	var list = view.get_node("SeriesExchangeScroll/SeriesExchangeList")
 	for child in list.get_children():

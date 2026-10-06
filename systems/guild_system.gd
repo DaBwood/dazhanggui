@@ -86,7 +86,16 @@ func set_record(record: Dictionary, username: String) -> void:
 	cache = record
 	my_user = username
 	_heal_council_career()   # 职业字段读错名的旧快照在此自愈，否则该成员加成永远挂不进职业汇总
+	_heal_my_display_name()   # 自己成员条的显示名以本端存档为准（服务端只存写入值，旧条目是账号名）
 	_bot_catchup(cache)
+
+# 自己成员条的显示名=本端玩家名；服务端只存客户端写入值，创建/加入旧路径写的是账号名，在此自愈（成员显示名=游戏名拍板 2026-10-06）
+func _heal_my_display_name() -> void:
+	if my_user == "" or str(g.player_name) == "":
+		return
+	for m in cache.get("members", []):
+		if m.get("user", "") == my_user and str(m.get("name", "")) != str(g.player_name):
+			m["name"] = str(g.player_name)
 
 # 旧版委任快照的 career 写成空串（字段名读错）：按全量配置补回职业
 func _heal_council_career() -> void:
@@ -309,26 +318,33 @@ func _record_buy(row_id: String, entry: Dictionary) -> void:
 	guild_buys[row_id] = rec
 
 # 购买：珍兽直发珍兽，其余进背包；限购按 period 日/月
-func buy(row_id: String) -> Dictionary:
+func buy(row_id: String, count: int = 1) -> Dictionary:
 	var entry = _find_shop_row(row_id)
 	if entry.is_empty(): return {"ok": false, "reason": "商品不存在"}
 	var record = ensure_fresh()
 	if record.is_empty(): return {"ok": false, "reason": "商会数据未加载"}
 	if int(record.get("level", 1)) < int(entry.get("level", 1)):
 		return {"ok": false, "reason": "商会等级不足（需要%d级）" % int(entry.level)}
-	if _buy_used(row_id, entry) >= int(entry.get("limit", 0)):
+	if str(entry.get("beast", "")) != "":
+		count = 1   # 珍兽按只入册，一次一只
+	count = max(1, count)
+	var left = int(entry.get("limit", 0)) - _buy_used(row_id, entry)
+	if left <= 0:
 		return {"ok": false, "reason": "已达限购上限"}
-	if guild_contribution < int(entry.get("cost", 0)):
-		return {"ok": false, "reason": "个人贡献不足（需要%d）" % int(entry.cost)}
-	guild_contribution -= int(entry.cost)
+	count = min(count, left)
+	var total_cost = int(entry.get("cost", 0)) * count
+	if guild_contribution < total_cost:
+		return {"ok": false, "reason": "个人贡献不足（需要%d）" % total_cost}
+	guild_contribution -= total_cost
 	if str(entry.get("beast", "")) != "":
 		g.add_beast(str(entry.beast))
 	else:
 		var item_id = str(entry.get("item", ""))
-		g.items[item_id] = g.items.get(item_id, 0) + 1
-	_record_buy(row_id, entry)
+		g.items[item_id] = g.items.get(item_id, 0) + count
+	for i in range(count):
+		_record_buy(row_id, entry)
 	g.save_game()
-	return {"ok": true, "entry": entry}
+	return {"ok": true, "entry": entry, "count": count}
 
 
 # ============================================================

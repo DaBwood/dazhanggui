@@ -35,17 +35,18 @@ func build_fishing_view(page, vbox):
 	view.add_theme_constant_override("separation", 12)
 	page.add_child(view)
 
-	var back_btn = Button.new()
-	back_btn.text = "< 返回"   # 【改】UI统一批次①：返回文案统一 < 返回
-	back_btn.pressed.connect(c.hide_view.bind("fishing"))
-	view.add_child(back_btn)
-
+	# 顶排统一规范（用户拍板 2026-10-06）：<返回(左)+标题(中)+？(右)，规则钮并入本行
 	var title_row := HBoxContainer.new()
 	title_row.alignment = BoxContainer.ALIGNMENT_CENTER
 	title_row.add_theme_constant_override("separation", 8)
 	view.add_child(title_row)
+	var back_btn = Button.new()
+	back_btn.text = "< 返回"
+	back_btn.pressed.connect(c.hide_view.bind("fishing"))
+	title_row.add_child(back_btn)
 	var title = Label.new()
 	title.text = "垂钓"
+	title.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	title.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	title.add_theme_font_size_override("font_size", 22)
 	title.add_theme_color_override("font_color", Color("#ffd700"))

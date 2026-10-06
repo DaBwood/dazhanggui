@@ -55,7 +55,10 @@ func generate_bag_list():
 	# 【修】BagPage 是 0 尺寸空壳（全工程布局由 _apply_portrait_layout 显式摆位，见 game_controller 2373行）
 	# 不能依赖锚点，本页自管：滚动区与底部栏都用显式 position/size，每次生成重算（窗口缩放后下次生成自愈）
 	var vs: Vector2 = c.get_viewport_rect().size
-	var content_h: float = vs.y - 110 - 48   # 110=顶栏50+底栏60（与布局函数同公式），48=本栏高度
+	# 夹心高度与 game_controller 新栏规则一致：顶栏只在府邸/商铺、底栏只在五主页面（可见才算高度）
+	var top_h: float = 50 if (c.has_node("TopBar") and c.get_node("TopBar").visible) else 0
+	var bot_h: float = 60 if (c.has_node("BottomNav") and c.get_node("BottomNav").visible) else 0
+	var content_h: float = vs.y - top_h - bot_h - 48   # 48=本栏高度
 	var bar: HBoxContainer
 	if bag_page.has_node("BagBottomBar"):
 		bar = bag_page.get_node("BagBottomBar")
@@ -73,12 +76,24 @@ func generate_bag_list():
 	for tab in [["item", "物品"], ["compose", "合成"]]:
 		var tb = Button.new()
 		tb.text = tab[1]
-		tb.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+		tb.custom_minimum_size = Vector2(88, 40)
 		tb.mouse_filter = Control.MOUSE_FILTER_PASS   # 滚动穿透，同格子按钮
 		var is_active: bool = _bag_tab == tab[0]
 		tb.add_theme_color_override("font_color", Color(1.0, 0.85, 0.3) if is_active else Color(0.65, 0.65, 0.65))
 		tb.pressed.connect(_on_bag_tab.bind(tab[0]))
 		bar.add_child(tb)
+	# 搜索框：过滤物品名（Web 端中文 IME 引擎级未修，聚焦弹原生 prompt）
+	var search := LineEdit.new()
+	search.name = "BagSearchEdit"
+	search.placeholder_text = "搜索物品…"
+	search.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	search.custom_minimum_size = Vector2(120, 40)
+	c._hook_web_cjk_input(search, "物品名")
+	search.text_changed.connect(func(t: String):
+		_bag_kw = t.strip_edges()
+		var sc: ScrollContainer = bag_page.get_node("BagScroll")
+		_fill_bag_grid(sc.get_node("BagGrid")))
+	bar.add_child(search)
 
 	# 【改】BagScroll 显式铺满内容区（底部给切换栏留48px）；BagGrid 必须放在 BagScroll 内部
 	# 【修】同上：空壳页不能依赖锚点，显式 position/size
@@ -109,6 +124,8 @@ func generate_bag_list():
 	_fill_bag_grid(grid)
 
 # 【新增】底部栏切换
+var _bag_kw := ""
+
 func _on_bag_tab(tab: String):
 	if _bag_tab == tab:
 		return
@@ -124,12 +141,17 @@ func _fill_bag_grid(grid: GridContainer):
 		_fill_compose_grid(grid)
 		return
 
+	# 搜索关键字过滤物品名（空=全部）
+	var kw_lower := _bag_kw.to_lower()
+
 	# 【改】为每种已拥有物品生成简洁按钮，只显示名称；数量0不进背包
 	for item_id in data.ITEM_CONFIG.keys():
 		var cfg = data.ITEM_CONFIG[item_id]
 		
 		# 跳过隐藏道具（如鱼食）
 		if cfg.get("hide_in_bag", false):
+			continue
+		if kw_lower != "" and not str(cfg.get("name", "")).to_lower().contains(kw_lower):
 			continue
 		
 		var count = data.items.get(item_id, 0)

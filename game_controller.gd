@@ -37,6 +37,9 @@ var _game_entered := false   # 【新增】是否已进入游戏（过登录门�
 # ========== 徒弟页面 ==========
 
 var _bars_visible = true  # 【新增】顶栏/底栏显隐状态位：二级页（挚友详情）全屏时=false，_apply_portrait_layout 重排时尊重它
+# 顶栏只在府邸/商铺出现，底栏只在五个主页面出现；其余页面两栏全隐且内容区吃满释放的高度（用户拍板 2026-10-06）
+const TOPBAR_PAGES = ["mansion", "shop"]
+const BOTTOMNAV_PAGES = ["mansion", "shop", "hero", "adventure", "bag"]
 
 # ===== 页面逻辑模块（第3批重构；_ready 中创建，页面经 c 共享本脚本） =====
 var mansion_page   # 府邸页
@@ -330,6 +333,7 @@ func switch_page(page_id: String):
 	if page_id == "friend": update_friend_page()
 	# 高亮当前导航按钮（可选）
 	style_nav_buttons()
+	_apply_portrait_layout()   # 顶栏/底栏按页面显隐（府邸商铺顶栏、五主页底栏）在此生效
 
 func open_popup(panel: Control):
 	_current_popup = panel
@@ -1005,6 +1009,28 @@ func update_adventure_page():
 # ==================== 【新增】视图通用入口（2026-09-18 架构重构批次②） ====================
 # show_view/hide_view 按 VIEW_LIST 的 key 分发到视图同名方法 show_<key>_view / hide_<key>_view；
 # key 与视图方法名的对应关系在 VIEW_LIST 登记时保证；未登记/方法缺失 push_error 报错定位（不静默 nil）
+# 轻量刷新：只重算两栏显隐与 PageContainer 夹心高度；视图开关 hook 用，避免全量重排（2026-10-06 启动卡顿定案）
+func _refresh_nav_visibility():
+	if not has_node("TopBar") or not has_node("BottomNav") or not has_node("PageContainer"):
+		return
+	var vs := get_viewport_rect().size
+	$TopBar.visible = _bars_visible and TOPBAR_PAGES.has(current_page)
+	$BottomNav.visible = _bars_visible and BOTTOMNAV_PAGES.has(current_page) and not _any_adventure_subview_open()
+	var top_h = 50 if $TopBar.visible else 0
+	var bot_h = 60 if $BottomNav.visible else 0
+	$PageContainer.position = Vector2(0, top_h)
+	$PageContainer.size = Vector2(vs.x, max(0, vs.y - top_h - bot_h))
+
+func _any_adventure_subview_open() -> bool:
+	# 子视图模块是 RefCounted（启动报 Invalid access 'visible' 定案）：它们打开时统一隐藏页内 AdventureVBox；
+	# cuzhi 例外——全屏面板直接覆盖不藏 vbox，改读模块的 _panel 可见性
+	var adv = get_node_or_null("PageContainer/AdventurePage/AdventureVBox")
+	if adv != null and not adv.visible:
+		return true
+	var cz = _get_view_by_key("cuzhi")
+	var panel = cz.get("_panel") if cz != null else null
+	return panel is Node and panel.visible
+
 func _get_view_by_key(key: String):
 	for e in VIEW_LIST:
 		if e.get("key", "") == key:
@@ -1019,7 +1045,9 @@ func show_view(key: String, args: Array = []):
 	if not v.has_method("show_" + key + "_view"):
 		push_error("[视图] 方法缺失: show_" + key + "_view（key 与视图方法名中段不一致）")
 		return
-	return v.callv("show_" + key + "_view", args)
+	var r = v.callv("show_" + key + "_view", args)
+	_refresh_nav_visibility()   # 闯荡子视图开关后底栏让位（轻量刷新，不做全量重排）
+	return r
 
 func hide_view(key: String):
 	var v = _get_view_by_key(key)
@@ -1028,7 +1056,9 @@ func hide_view(key: String):
 	if not v.has_method("hide_" + key + "_view"):
 		push_error("[视图] 方法缺失: hide_" + key + "_view（key 与视图方法名中段不一致）")
 		return
-	return v.call("hide_" + key + "_view")
+	var r = v.call("hide_" + key + "_view")
+	_refresh_nav_visibility()   # 闯荡子视图开关后底栏恢复（轻量刷新，不做全量重排）
+	return r
 
 # ==================== 【转发】闯荡-兑换子视图（门客/挚友/珍兽/系列） → pages/exchange_view.gd ====================
 
@@ -1381,6 +1411,7 @@ func _set_bars_visible(p_visible: bool):      # 【改】参数 visible→p_visi
 # 原则：一律显式 position+size，不用锚点预设。
 # （锚点预设会"保持节点当前矩形"，把 0 尺寸焊死——商铺/门客/背包页面空白的根因）
 func _apply_portrait_layout():
+	_refresh_nav_visibility()   # 两栏显隐+夹心高度统一走轻量函数
 	var vs = get_viewport_rect().size   # 逻辑像素（720×1280，stretch 后不受窗口物理大小影响）
 
 	# 根节点、背景、遮罩铺满视口
@@ -1400,7 +1431,6 @@ func _apply_portrait_layout():
 		$TopBar.set_anchors_preset(Control.PRESET_TOP_LEFT)
 		$TopBar.position = Vector2.ZERO
 		$TopBar.size = Vector2(vs.x, 50)
-		$TopBar.visible = _bars_visible  # 【新增】二级页全屏时隐藏顶栏
 
 	# 底栏：底部通栏，高 60，按钮等分
 	if has_node("BottomNav"):
@@ -1412,29 +1442,11 @@ func _apply_portrait_layout():
 			if btn is Button:
 				btn.custom_minimum_size = Vector2(0, 60)
 				btn.size_flags_horizontal = Control.SIZE_EXPAND_FILL
-		$BottomNav.visible = _bars_visible  # 【新增】二级页全屏时隐藏底栏
 
-	# 页面容器：顶栏与底栏之间；各页面显式铺满
+	# 页面容器：夹在可见的顶栏/底栏之间，栏隐了内容区立刻吃满释放的高度
 	if has_node("PageContainer"):
 		$PageContainer.set_anchors_preset(Control.PRESET_TOP_LEFT)
-		# 【改】尊重 _bars_visible：二级页全屏时扩满整个视口，窗口重排不会打回夹心布局
-		if _bars_visible:
-			$PageContainer.position = Vector2(0, 50)
-			$PageContainer.size = Vector2(vs.x, vs.y - 110)
-		else:
-			$PageContainer.position = Vector2.ZERO
-			$PageContainer.size = vs
-	
-	# 页面容器：顶栏与底栏之间；各页面显式铺满
-	if has_node("PageContainer"):
-		$PageContainer.set_anchors_preset(Control.PRESET_TOP_LEFT)
-		# 【改】尊重 _bars_visible：二级页全屏时扩满整个视口，窗口重排不会打回夹心布局
-		if _bars_visible:
-			$PageContainer.position = Vector2(0, 50)
-			$PageContainer.size = Vector2(vs.x, vs.y - 110)
-		else:
-			$PageContainer.position = Vector2.ZERO
-			$PageContainer.size = vs
+		# 夹心高度已在 _refresh_nav_visibility 统一计算
 		# 【新增】各页面显式铺满容器：页面里的 FULL_RECT 滚动区（BagScroll/HeroScroll…）创建瞬间
 		# 就能从父页面拿到正确尺寸，不再依赖"布局恰好在页面生成后重跑"的巧合时序
 		for pg in $PageContainer.get_children():

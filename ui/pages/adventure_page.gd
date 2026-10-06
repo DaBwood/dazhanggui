@@ -18,6 +18,47 @@ func _init(p_c):
 
 # ============ 以下为原 game_controller.gd 搬迁函数（逻辑未改，仅根节点访问加了 c. 前缀） ============
 
+# 子视图顶排统一规范（用户拍板 2026-10-06）：< 返回(左)+玩法标题(中,金)+？(右,弹玩法说明)
+func _adv_top_row(view: Control, back_callable: Callable, title_text: String, help_text: String) -> Label:
+	var row := HBoxContainer.new()
+	row.name = "TopRow"
+	row.add_theme_constant_override("separation", 8)
+	view.add_child(row)
+	var back := Button.new()
+	back.text = "< 返回"
+	back.pressed.connect(back_callable)
+	row.add_child(back)
+	var title := _adv_title_row(row, "TopTitle", help_text)
+	title.text = title_text
+	return title
+
+# 系列页等无独立返回的视图用：标题(中)+？(右)，标题名可定制（SeriesTitle 为外部动态改文案的约定节点名）
+func _adv_title_row(row: Control, title_name: String, help_text: String) -> Label:
+	var title := Label.new()
+	title.name = title_name
+	title.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	title.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	title.add_theme_color_override("font_color", Color("#ffd700"))
+	title.add_theme_font_size_override("font_size", 20)
+	row.add_child(title)
+	var help := Button.new()
+	help.text = "?"
+	help.custom_minimum_size = Vector2(40, 36)
+	help.add_theme_font_size_override("font_size", 16)
+	help.pressed.connect(func(): _show_adventure_help(help_text))
+	row.add_child(help)
+	return title
+
+func _show_adventure_help(help_text: String):
+	var popup = c._create_base_popup("玩法说明", Vector2(440, 0), Vector2.ZERO, false)
+	var vb = popup.get_child(0)
+	var lbl := Label.new()
+	lbl.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	lbl.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+	lbl.text = help_text
+	vb.add_child(lbl)
+	c.add_child(popup)
+
 func generate_adventure_page():
 	if not c.has_node("PageContainer/AdventurePage"): return
 	var page = c.get_node("PageContainer/AdventurePage")
@@ -47,6 +88,19 @@ func generate_adventure_page():
 	entry_grid.columns = 3
 	entry_grid.size_flags_horizontal = Control.SIZE_SHRINK_CENTER
 	vbox.add_child(entry_grid)
+	# 主页面玩法说明"？"：右上角锚定（用户拍板 2026-10-06）
+	var main_help := Button.new()
+	main_help.text = "?"
+	main_help.custom_minimum_size = Vector2(40, 36)
+	main_help.add_theme_font_size_override("font_size", 16)
+	main_help.anchor_left = 1.0
+	main_help.anchor_right = 1.0
+	main_help.offset_left = -48
+	main_help.offset_right = -8
+	main_help.offset_top = 8
+	main_help.offset_bottom = 44
+	main_help.pressed.connect(func(): _show_adventure_help("闯荡是各玩法的入口：关卡产出闯荡币；兑换/系列/抽奖/行善/游历玩法各异，每个子页右上角都有？说明。"))
+	page.add_child(main_help)
 	
 	var stage_btn = Button.new()
 	stage_btn.text = "关卡"
@@ -69,10 +123,7 @@ func generate_adventure_page():
 	exchange_view.add_theme_constant_override("separation", 12)
 	page.add_child(exchange_view)
 	
-	var back_btn = Button.new()
-	back_btn.text = "< 返回"
-	back_btn.pressed.connect(c._on_exchange_back_pressed)
-	exchange_view.add_child(back_btn)
+	_adv_top_row(exchange_view, c._on_exchange_back_pressed, "兑换", "用闯荡币兑换珍兽、令牌与系列奖励；各系列累计的兑换进度通用。")
 	
 	# 入口按钮区
 	var entry_box = VBoxContainer.new()
@@ -163,12 +214,11 @@ func generate_adventure_page():
 	series_view.add_theme_constant_override("separation", 12)
 	exchange_view.add_child(series_view)
 	
-	var series_title = Label.new()
-	series_title.name = "SeriesTitle"
-	series_title.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
-	series_title.add_theme_font_size_override("font_size", 20)
-	series_title.add_theme_color_override("font_color", Color("#ffd700"))
-	series_view.add_child(series_title)
+	var series_top := HBoxContainer.new()
+	series_top.name = "TopRow"
+	series_top.add_theme_constant_override("separation", 8)
+	series_view.add_child(series_top)
+	_adv_title_row(series_top, "SeriesTitle", "完成系列关卡任务领取系列点；系列点跨系列通用，在兑换页消费。")
 	
 	var series_scroll = ScrollContainer.new()
 	series_scroll.name = "SeriesExchangeScroll"
@@ -197,10 +247,7 @@ func generate_adventure_page():
 	lottery_view.add_theme_constant_override("separation", 16)
 	page.add_child(lottery_view)
 	
-	var lot_back_btn = Button.new()
-	lot_back_btn.text = "< 返回"   # 【改】UI统一批次①：返回文案统一 < 返回
-	lot_back_btn.pressed.connect(c.hide_view.bind("lottery"))
-	lottery_view.add_child(lot_back_btn)
+	_adv_top_row(lottery_view, c.hide_view.bind("lottery"), "抽奖", "消耗抽奖券抽取奖励：单抽、十连、百连依档九折。")
 	
 	var lot_res = Label.new()
 	lot_res.name = "LotteryRes"
@@ -256,10 +303,7 @@ func generate_adventure_page():
 	charity_view.add_theme_constant_override("separation", 12)
 	page.add_child(charity_view)
 	
-	var c_back = Button.new()
-	c_back.text = "< 返回"   # 【改】UI统一批次①：返回文案统一 < 返回
-	c_back.pressed.connect(c.hide_view.bind("charity"))
-	charity_view.add_child(c_back)
+	_adv_top_row(charity_view, c.hide_view.bind("charity"), "行善", "在各地点行善积累进度，进度达标领奖；勾选十连批量行善。")
 	
 	var c_info = Label.new()
 	c_info.name = "CharityInfo"
@@ -318,10 +362,7 @@ func generate_adventure_page():
 	travel_view.add_theme_constant_override("separation", 12)
 	page.add_child(travel_view)
 	
-	var t_back = Button.new()
-	t_back.text = "< 返回"   # 【改】UI统一批次①：返回文案统一 < 返回
-	t_back.pressed.connect(c.hide_view.bind("travel"))
-	travel_view.add_child(t_back)
+	_adv_top_row(travel_view, c.hide_view.bind("travel"), "游历", "游历消耗体力，获得声望与随机奖励。")
 	
 	# 体力/声望显示
 	var t_info = Label.new()

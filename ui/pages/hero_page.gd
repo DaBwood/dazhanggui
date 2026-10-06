@@ -31,6 +31,11 @@ var _sel_idx: Dictionary = {"skill": 0, "shop": 0, "costume": 0, "halo": 0}
 # 【第35节】各页签按钮排滚动位置记忆（点按钮/升级触发重建时不跳回最左）
 var _btn_scroll: Dictionary = {"skill": 0, "shop": 0, "costume": 0, "halo": 0}
 
+# 门客列表过滤：职业页签（""=全部）+ 搜索关键字（放大镜弹窗写入）
+var _hero_career := ""
+var _hero_kw := ""
+var _hero_career_btns := {}   # 职业→按钮，用于高亮当前页签
+
 
 # 由 game_controller._ready 创建本模块时注入引用
 func _init(p_c):
@@ -73,7 +78,7 @@ func generate_hero_list():
 			var cell = _create_hero_card(hero_id, true)
 			grid.add_child(cell)
 	
-	_ensure_hero_search()   # 【新增】门客搜索行（只创建一次）
+	_ensure_hero_filter_bar()   # 顶栏隐藏后露出的底条：职业页签+放大镜搜索
 	_apply_hero_search()
 	update_hero_list()
 
@@ -2309,32 +2314,91 @@ func _bd_grid(parent: VBoxContainer, rows: Array, is_pct: bool):
 # ============ 【新增】门客搜索（物品盒子同款，2026-10-06） ============
 
 # 搜索行：固定在门客页顶部（只创建一次），输入实时过滤门客卡
-func _ensure_hero_search():
+# 底条=职业页签（全部/士农工商侠）+放大镜（弹搜索框）；此前这里是无内容空条（顶栏隐藏后露出）
+func _ensure_hero_filter_bar():
 	var hero_pg = c.get_node_or_null("PageContainer/HeroPage")
-	if hero_pg == null or hero_pg.has_node("HeroSearchRow"):
+	if hero_pg == null:
 		return
-	var row := HBoxContainer.new()
-	row.name = "HeroSearchRow"
-	row.set_anchors_preset(Control.PRESET_TOP_WIDE)
-	row.offset_bottom = 40
-	hero_pg.add_child(row)
-	var edit := LineEdit.new()
-	edit.name = "HeroSearchEdit"
-	edit.placeholder_text = "输入门客名字搜索…"
-	edit.size_flags_horizontal = Control.SIZE_EXPAND_FILL
-	row.add_child(edit)
-	c._hook_web_cjk_input(edit, "门客名字")   # Web 端中文 IME 引擎级未修，聚焦弹原生 prompt
-	edit.text_changed.connect(func(_t: String): _apply_hero_search())
 	var scroll: ScrollContainer = hero_pg.get_node("HeroScroll")
-	scroll.offset_top = 48   # 给搜索行让位（原锚点 FULL_RECT 顶到 0）
+	if hero_pg.has_node("HeroFilterBar"):
+		return
+	var bar := HBoxContainer.new()
+	bar.name = "HeroFilterBar"
+	bar.set_anchors_preset(Control.PRESET_BOTTOM_WIDE)
+	bar.offset_top = -44
+	bar.alignment = BoxContainer.ALIGNMENT_CENTER
+	bar.add_theme_constant_override("separation", 6)
+	hero_pg.add_child(bar)
+	var careers := ["", "士", "农", "工", "商", "侠"]
+	for i in range(careers.size()):
+		var b := Button.new()
+		b.text = "全部" if careers[i] == "" else careers[i]
+		b.custom_minimum_size = Vector2(46, 34)
+		b.add_theme_font_size_override("font_size", 13)
+		var career: String = careers[i]
+		b.pressed.connect(func(): _set_hero_career(career))
+		_hero_career_btns[career] = b
+		bar.add_child(b)
+		if career == _hero_career:
+			b.modulate = Color(1.3, 1.15, 0.7)
+	var sp := Control.new()
+	sp.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	bar.add_child(sp)
+	var mag := Button.new()
+	mag.text = "🔍"
+	mag.custom_minimum_size = Vector2(44, 34)
+	mag.add_theme_font_size_override("font_size", 15)
+	mag.pressed.connect(_on_hero_search_popup)
+	bar.add_child(mag)
+	# 列表区让出底条高度
+	scroll.offset_top = 0
+	scroll.offset_bottom = -44
+
+func _set_hero_career(career: String):
+	_hero_career = career
+	for k in _hero_career_btns.keys():
+		_hero_career_btns[k].modulate = Color(1.3, 1.15, 0.7) if k == career else Color.WHITE
+	_apply_hero_search()
+
+func _on_hero_search_popup():
+	var popup = c._create_base_popup("搜索门客", Vector2(400, 0), Vector2.ZERO, false)
+	var vb = popup.get_child(0)
+	var edit := LineEdit.new()
+	edit.placeholder_text = "输入门客名字…"
+	edit.text = _hero_kw
+	edit.custom_minimum_size = Vector2(280, 40)
+	c._hook_web_cjk_input(edit, "门客名字")   # Web 端中文 IME 引擎级未修，聚焦弹原生 prompt
+	edit.text_changed.connect(func(t: String):
+		_hero_kw = t.strip_edges()
+		_apply_hero_search())
+	vb.add_child(edit)
+	var row := HBoxContainer.new()
+	row.alignment = BoxContainer.ALIGNMENT_CENTER
+	row.add_theme_constant_override("separation", 12)
+	vb.add_child(row)
+	var clear := Button.new()
+	clear.text = "清空"
+	clear.pressed.connect(func():
+		_hero_kw = ""
+		edit.text = ""
+		_apply_hero_search())
+	row.add_child(clear)
+	var done := Button.new()
+	done.text = "完成"
+	done.pressed.connect(func(): popup.queue_free())
+	row.add_child(done)
+	c.add_child(popup)
 
 func _apply_hero_search():
 	var grid: GridContainer = c.get_node_or_null("PageContainer/HeroPage/HeroScroll/HeroGrid")
-	var edit: LineEdit = c.get_node_or_null("PageContainer/HeroPage/HeroSearchRow/HeroSearchEdit")
-	if grid == null or edit == null:
+	if grid == null:
 		return
-	var kw := edit.text.strip_edges()
 	for card in grid.get_children():
 		var hid := str(card.name).trim_suffix("_hero_locked").trim_suffix("_hero")
-		var hname := str(data._hero_configs.get(hid, {}).get("name", hid))
-		card.visible = kw == "" or hname.contains(kw)
+		var cfg: Dictionary = data._hero_configs.get(hid, {})
+		var hit := true
+		if _hero_career != "" and str(cfg.get("category", "")) != _hero_career:
+			hit = false
+		if hit and _hero_kw != "" and not str(cfg.get("name", hid)).contains(_hero_kw):
+			hit = false
+		card.visible = hit

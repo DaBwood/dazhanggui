@@ -27,6 +27,16 @@ func _init(p_c):
 
 # ============ 构建（由 adventure_page.generate_adventure_page 经中枢转发调用） ============
 # 在闯荡页注入"商战"入口按钮和商战子视图（模式同行善/游历/庄园）
+func _show_war_help():
+	var popup = c._create_base_popup("玩法说明", Vector2(440, 0), Vector2.ZERO, false)
+	var vb = popup.get_child(0)
+	var lbl := Label.new()
+	lbl.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	lbl.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+	lbl.text = "商战：挑战其他掌柜的店铺布阵，胜利获得商战积分与税引。"
+	vb.add_child(lbl)
+	c.add_child(popup)
+
 func build_war_view(page, vbox):
 	# --- 商战入口 ---
 	var war_btn = Button.new()
@@ -43,10 +53,28 @@ func build_war_view(page, vbox):
 	view.add_theme_constant_override("separation", 10)
 	page.add_child(view)
 	
+	# 顶排统一规范（用户拍板 2026-10-06）：<返回(左)+玩法标题(中)+？(右)
+	var top := HBoxContainer.new()
+	top.name = "TopRow"
+	top.add_theme_constant_override("separation", 8)
+	view.add_child(top)
 	var back_btn = Button.new()
-	back_btn.text = "< 返回"   # 【改】UI统一批次①：返回文案统一 < 返回
+	back_btn.text = "< 返回"
 	back_btn.pressed.connect(c.hide_view.bind("war"))
-	view.add_child(back_btn)
+	top.add_child(back_btn)
+	var title := Label.new()
+	title.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	title.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	title.add_theme_color_override("font_color", Color("#ffd700"))
+	title.add_theme_font_size_override("font_size", 20)
+	title.text = "商战"
+	top.add_child(title)
+	var help := Button.new()
+	help.text = "?"
+	help.custom_minimum_size = Vector2(40, 36)
+	help.add_theme_font_size_override("font_size", 16)
+	help.pressed.connect(_show_war_help)
+	top.add_child(help)
 	
 	# 货币栏：商战积分 / 商战税引
 	var res_lbl = Label.new()

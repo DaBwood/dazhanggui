@@ -102,6 +102,16 @@ func show_cuzhi_view():
 func hide_cuzhi_view():
 	_panel.visible = false
 
+func _show_cuzhi_help():
+	var popup = c._create_base_popup("玩法说明", Vector2(440, 0), Vector2.ZERO, false)
+	var vb = popup.get_child(0)
+	var lbl := Label.new()
+	lbl.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	lbl.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+	lbl.text = "促织园：促织架查看收藏；捉促织消耗促织笼捕捉；促织庙消耗缘分提升门客；虫师培养虫书；促织堂培育促织；特惠商城购买促织笼。"
+	vb.add_child(lbl)
+	c.add_child(popup)
+
 # ========== 主界面 ==========
 func _build_main_view() -> Control:
 	var root = Control.new()
@@ -154,6 +164,13 @@ func _build_main_view() -> Control:
 	back.size = Vector2(120, 40)
 	back.pressed.connect(hide_cuzhi_view)
 	root.add_child(back)
+	var help := Button.new()
+	help.text = "?"
+	help.position = Vector2(520, 20)
+	help.size = Vector2(60, 40)
+	help.add_theme_font_size_override("font_size", 18)
+	help.pressed.connect(_show_cuzhi_help)
+	root.add_child(help)
 
 	return root
 

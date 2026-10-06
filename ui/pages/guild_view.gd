@@ -227,7 +227,7 @@ func _on_join(id_edit: LineEdit, popup):
 			if not m.get("bot", false) and m.get("user", "") == c.net.username:
 				c._show_success_popup("你已在该商会中", 0.0, "ok")   # 【改】飘字退休→ok 弹窗
 				return
-		record["members"].append({"user": c.net.username, "name": c.net.username, "role": ""})
+		record["members"].append({"user": c.net.username, "name": data.player_name, "role": ""})
 		c.net.guild_save(gid, record, func(_c2, d2):
 			if not d2.get("ok", false):
 				c._show_success_popup("加入失败，请重试", 0.0, "warn")   # 【改】飘字退休→warn 弹窗
@@ -273,6 +273,10 @@ func _render_council():
 	var list = _list()
 	var gs = data.guild_system
 	var record = gs.cache
+	# council 的 key 是账号，显示走成员表的显示名（自愈后=游戏名），查不到回退账号
+	var member_names := {}
+	for m in record.get("members", []):
+		member_names[str(m.get("user", ""))] = str(m.get("name", m.get("user", "")))
 	var title = Label.new()
 	title.text = "—— 各职业店铺加成（全体成员的委任按职业汇总，加法并入店铺赚速） ——"
 	title.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
@@ -301,6 +305,7 @@ func _render_council():
 		var cvb = VBoxContainer.new()
 		card.add_child(cvb)
 		var head = Label.new()
+		head.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 		head.text = "%s类店铺 +%d%%（委任 %d/%d）" % [career, int(gs.get_career_bonus(career) * 100),
 			gs.get_career_used(career), int(gs.get_settings().get("council_career_cap", 8))]
 		cvb.add_child(head)
@@ -308,11 +313,12 @@ func _render_council():
 		for u in record.get("council", {}).keys():
 			var e = record["council"][u]
 			if str(e.get("career", "")) == career:
-				lines.append("%s：%s +%d%%" % [u, e.get("hero_name", ""), int(float(e.get("pct", 0)) * 100)])
+				lines.append("%s：%s +%d%%" % [member_names.get(u, u), e.get("hero_name", ""), int(float(e.get("pct", 0)) * 100)])
 		for m in record.get("members", []):
 			if m.get("bot", false) and gs.get_bot_career(int(m.get("seed", 0))) == career:
 				lines.append("%s（人机）+%d%%" % [m.get("name", ""), int(gs.get_bot_skill_pct(int(m.get("seed", 0)), record) * 100)])
 		var det = Label.new()
+		det.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 		det.add_theme_color_override("font_color", Color("#888888"))
 		det.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
 		det.text = "\n".join(lines) if lines.size() > 0 else "（暂无委任）"
@@ -421,50 +427,136 @@ func _render_shop():
 	_add_shop_section(list, "—— 每月限购 ——", gs.get_shop_monthly(), lv)
 	var tip = Label.new()
 	tip.add_theme_color_override("font_color", Color("#888888"))
+	tip.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	tip.text = "货币：个人贡献（建设商会获得）"
 	list.add_child(tip)
+
+func _shop_item_name(e) -> String:
+	if str(e.get("beast", "")) != "":
+		return str(data._beast_configs.get(str(e.beast), {}).get("name", e.beast))
+	return str(data.ITEM_CONFIG.get(str(e.item), {}).get("name", e.item))
 
 func _add_shop_section(list, section_name: String, entries: Array, guild_lv: int):
 	var t = Label.new()
 	t.text = section_name
 	t.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	list.add_child(t)
+	# 每商品一张卡（布局同议事厅职业卡）：名字点击弹描述，底钮显示单价贡献、点击弹数量选择器
+	var grid = GridContainer.new()
+	grid.columns = 2
+	grid.add_theme_constant_override("h_separation", 8)
+	grid.add_theme_constant_override("v_separation", 8)
+	list.add_child(grid)
 	for e in entries:
 		var locked = guild_lv < int(e.get("level", 1))
-		var row = HBoxContainer.new()
-		row.add_theme_constant_override("separation", 8)
-		list.add_child(row)
-		var info = Label.new()
-		info.size_flags_horizontal = Control.SIZE_EXPAND_FILL
-		var used = data.guild_system._buy_used(str(e.row), e)
-		var name_txt: String
-		if str(e.get("beast", "")) != "":
-			name_txt = str(data._beast_configs.get(str(e.beast), {}).get("name", e.beast))
-		else:
-			name_txt = str(data.ITEM_CONFIG.get(str(e.item), {}).get("name", e.item))
-		# 【改】批次②③④-B7：贡献消耗从混排行拆出走新范式 _add_cost_row；"已购 x/y"是限购进度非消耗，保持原色（用户拍板 2026-09-26）
-		info.text = "%s ｜ 已购 %d/%d%s" % [name_txt, used, int(e.limit), "（%d级解锁）" % int(e.level) if locked else ""]
-		row.add_child(info)
-		var contrib_row: HBoxContainer = c._add_cost_row(row, "贡献", data.guild_system.guild_contribution, int(e.cost))
-		contrib_row.size_flags_horizontal = Control.SIZE_SHRINK_BEGIN
+		var row_id = str(e.row)
+		var card = PanelContainer.new()
+		card.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+		var style = StyleBoxFlat.new()
+		style.bg_color = Color("#221d33")
+		style.set_corner_radius_all(6)
+		style.set_border_width_all(1)
+		style.border_color = Color("#6b5f8e")
+		style.content_margin_left = 8
+		style.content_margin_right = 8
+		style.content_margin_top = 6
+		style.content_margin_bottom = 6
+		card.add_theme_stylebox_override("panel", style)
+		grid.add_child(card)
+		var cvb = VBoxContainer.new()
+		card.add_child(cvb)
+		var name_lbl = Label.new()
+		name_lbl.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+		name_lbl.mouse_filter = Control.MOUSE_FILTER_STOP   # 默认 IGNORE 接不到 gui_input
+		name_lbl.text = _shop_item_name(e)
+		# 循环变量按引用捕获：回调先声明形参（事件+商品），商品经 bind 传入
+		var desc_cb: Callable = func(ev, ent):
+			if ev is InputEventMouseButton and ev.pressed and ev.button_index == MOUSE_BUTTON_LEFT:
+				_show_shop_desc(ent)
+		name_lbl.gui_input.connect(desc_cb.bind(e))
+		cvb.add_child(name_lbl)
+		var used = data.guild_system._buy_used(row_id, e)
+		var sub = Label.new()
+		sub.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+		sub.add_theme_color_override("font_color", Color("#888888"))
+		sub.text = "已购 %d/%d%s" % [used, int(e.limit), "（%d级解锁）" % int(e.level) if locked else ""]
+		cvb.add_child(sub)
+		var hold = Label.new()
+		hold.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+		hold.add_theme_color_override("font_color", Color("#888888"))
+		hold.text = "持有贡献：%s" % c.format_number(data.guild_system.guild_contribution)
+		cvb.add_child(hold)
 		var btn = Button.new()
-		btn.text = "兑换"
-		# 【改】批次B13：兑换钮放大（默认小钮 → 120×44 主操作钮）
-		btn.custom_minimum_size = Vector2(120, 44)
-		btn.add_theme_font_size_override("font_size", 13)
+		btn.text = "%d 贡献" % int(e.cost)
+		btn.custom_minimum_size = Vector2(120, 40)
 		btn.disabled = locked
-		btn.pressed.connect(_on_buy.bind(str(e.row)))
-		row.add_child(btn)
+		btn.pressed.connect(_on_shop_buy.bind(row_id))
+		cvb.add_child(btn)
 
-func _on_buy(row_id: String):
-	var r = data.guild_system.buy(row_id)
-	if not r.ok:
-		c._show_success_popup(r.reason, 0.0, "ok")   # 【改】飘字退休→ok 弹窗
+func _show_shop_desc(e):
+	var popup = c._create_base_popup("道具详情", Vector2(400, 0), Vector2.ZERO, false)
+	var vb = popup.get_child(0)
+	var title = Label.new()
+	title.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	var desc = Label.new()
+	desc.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	desc.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+	if str(e.get("beast", "")) != "":
+		var bcfg = data._beast_configs.get(str(e.beast), {})
+		title.text = str(bcfg.get("name", e.beast))
+		desc.text = "珍兽 ｜ 品质：%s ｜ 资质：%d" % [bcfg.get("quality", ""), int(bcfg.get("aptitude", 0))]
+	else:
+		var icfg = data.ITEM_CONFIG.get(str(e.item), {})
+		title.text = str(icfg.get("name", e.item))
+		desc.text = str(icfg.get("desc", "暂无描述"))
+	vb.add_child(title)
+	vb.add_child(desc)
+	c.add_child(popup)
+
+# 数量上限=min(限购余量, 贡献可买数)；珍兽恒 1
+func _on_shop_buy(row_id: String):
+	var gs = data.guild_system
+	var entry = gs._find_shop_row(row_id)
+	if entry.is_empty(): return
+	var left = int(entry.get("limit", 0)) - gs._buy_used(row_id, entry)
+	if left <= 0:
+		c._show_success_popup("已达限购上限", 0.0, "warn")
 		return
-	# 【改】成功反馈铺开：兑换成功弹窗
-	c._show_success_popup("兑换成功")
-	_update_header(data.guild_system.cache)
-	_render()
+	var afford = int(gs.guild_contribution / max(1, int(entry.get("cost", 1))))
+	if afford <= 0:
+		c._show_success_popup("个人贡献不足（需要%d）" % int(entry.cost), 0.0, "warn")
+		return
+	var max_n = max(1, min(left, afford))
+	if str(entry.get("beast", "")) != "":
+		max_n = 1
+	var popup = c._create_base_popup("兑换数量", Vector2(400, 0), Vector2.ZERO, false)
+	var vb = popup.get_child(0)
+	var name_lbl = Label.new()
+	name_lbl.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	name_lbl.text = _shop_item_name(entry)
+	vb.add_child(name_lbl)
+	var pair = c._create_slider_spin_pair(vb, max_n, 1)
+	var total_lbl = Label.new()
+	total_lbl.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	var upd = func():
+		total_lbl.text = "共需贡献：%d（持有 %d）" % [int(pair.spin.value) * int(entry.cost), gs.guild_contribution]
+	pair.spin.value_changed.connect(func(_v): upd.call())
+	upd.call()
+	vb.add_child(total_lbl)
+	var ok = Button.new()
+	ok.text = "兑换"
+	ok.custom_minimum_size = Vector2(120, 40)
+	ok.pressed.connect(func():
+		var r = gs.buy(row_id, int(pair.spin.value))
+		if not r.ok:
+			c._show_success_popup(r.reason, 0.0, "ok")
+			return
+		popup.queue_free()
+		c._show_success_popup("兑换成功 x%d" % int(r.get("count", 1)))
+		_update_header(gs.cache)
+		_render())
+	vb.add_child(ok)
+	c.add_child(popup)
 
 # ============ 管理（招募人机/任命副会长/踢人） ============
 func _render_manage():

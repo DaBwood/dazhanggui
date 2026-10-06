@@ -1,0 +1,43 @@
+[gd_scene format=3 uid="uid://cwknagoo33gju"]
+
+[node name="StagePage" type="Control" unique_id=617887106]
+layout_mode = 3
+anchors_preset = 0
+offset_right = 600.0
+offset_bottom = 1067.0
+
+[node name="TopRow" type="HBoxContainer" parent="." unique_id=1549164623]
+layout_mode = 1
+anchors_preset = 10
+anchor_right = 1.0
+offset_bottom = 36.0
+grow_horizontal = 2
+
+[node name="BackButton" type="Button" parent="TopRow" unique_id=221200214]
+layout_mode = 2
+text = "< 返回"
+
+[node name="TitleLabel" type="Label" parent="TopRow" unique_id=1966217001]
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_colors/font_color = Color(0.77254903, 0.7137255, 0.019607844, 1)
+theme_override_font_sizes/font_size = 20
+text = "关卡"
+horizontal_alignment = 1
+
+[node name="HelpButton" type="Button" parent="TopRow" unique_id=866401349]
+custom_minimum_size = Vector2(40, 36)
+layout_mode = 2
+text = "?"
+
+[node name="StageScroll" type="ScrollContainer" parent="." unique_id=404505046]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_top = 48.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="StageListVBox" type="VBoxContainer" parent="StageScroll" unique_id=345839022]
+layout_mode = 2
