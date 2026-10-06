@@ -91,68 +91,26 @@ func generate_adventure_page():
 	var inst: Control = ADVENTURE_SCENE.instantiate()
 	page.add_child(inst)
 
-	# 骨架缺件兜底（规范 11.2 铁律3）：tscn 节点被误删时自建并标好容器标志，不阻断运行
-	# 结构链：AdventureVBox(VBox)/MapScroll(HScroll)/MapContent(1897×1067)/BgImage+AdventureEntryGrid
-	var vbox := inst.get_node_or_null("AdventureVBox") as VBoxContainer
-	if vbox == null:
-		vbox = VBoxContainer.new()
-		vbox.name = "AdventureVBox"
-		vbox.size_flags_horizontal = Control.SIZE_EXPAND_FILL
-		vbox.size_flags_vertical = Control.SIZE_EXPAND_FILL
-		inst.add_child(vbox)
-	# 自愈：坏 tscn 会把 MapContent 等拍扁成 inst 根孤儿（名带 #，即「Parent path vanished」三提示的实体），
-	# 重建链之前先清——inst 根下除 AdventureVBox/MainHelpButton 外无合法兄弟（好 tscn 此循环零操作）
-	for node in inst.get_children():
-		if node != vbox and node.name != "MainHelpButton":
-			node.free()
+	# 结构硬校验：缺件即报错中断（用户拍板 2026-10-06 废兜底自愈——结构正确时冗余、错误时掩盖真因；
+	# fail-loud 优于静默恢复，报错信息直接给出缺失路径）
+	var vbox := inst.get_node("AdventureVBox") as VBoxContainer
+	var map_scroll := vbox.get_node("MapScroll") as ScrollContainer
+	var map_content := map_scroll.get_node("MapContent") as Control
+	var entry_grid := map_content.get_node("AdventureEntryGrid") as Control
+	_map_scroll = map_scroll
 
-	var map_scroll := vbox.get_node_or_null("MapScroll") as ScrollContainer
-	if map_scroll == null:
-		map_scroll = ScrollContainer.new()
-		map_scroll.horizontal_scroll_mode = ScrollContainer.SCROLL_MODE_AUTO
-		map_scroll.vertical_scroll_mode = ScrollContainer.SCROLL_MODE_DISABLED
-		map_scroll.name = "MapScroll"
-		map_scroll.size_flags_vertical = Control.SIZE_EXPAND_FILL
-		vbox.add_child(map_scroll)
-	var map_content := map_scroll.get_node_or_null("MapContent") as Control
-	if map_content == null:
-		map_content = Control.new()
-		map_content.name = "MapContent"
-		map_content.custom_minimum_size = Vector2(1897, 1067)
-		# 横向禁 EXPAND：ScrollContainer 会把带展开旗标的孩子拉到视口宽，滚动余量归 0（同 tscn 注释）
-		map_content.size_flags_vertical = Control.SIZE_EXPAND_FILL
-		map_scroll.add_child(map_content)
-	var entry_grid := map_content.get_node_or_null("AdventureEntryGrid") as Control
-	if entry_grid == null:
-		entry_grid = Control.new()
-		entry_grid.name = "AdventureEntryGrid"
-		entry_grid.set_anchors_preset(Control.PRESET_FULL_RECT)
-		entry_grid.mouse_filter = Control.MOUSE_FILTER_IGNORE
-		map_content.add_child(entry_grid)
 	# 主页面玩法说明"？"钮在 tscn 右上角锚定（用户拍板 2026-10-06），脚本只接管信号
-	var main_help := inst.get_node_or_null("MainHelpButton") as Button
-	if main_help:
-		main_help.pressed.connect(func(): _show_adventure_help("闯荡是各玩法的入口：关卡产出闯荡币；兑换/系列/抽奖/行善/游历玩法各异，每个子页右上角都有？说明。左右滑动地图切换城区。"))
+	var main_help := inst.get_node("MainHelpButton") as Button
+	main_help.pressed.connect(func(): _show_adventure_help("闯荡是各玩法的入口：关卡产出闯荡币；兑换/系列/抽奖/行善/游历玩法各异，每个子页右上角都有？说明。左右滑动地图切换城区。"))
 
-	# 底图契约见 ADVENTURE_BG_PATH 注释：缺图不渲染、布局不塌；tscn 里 BgImage 缺失时兜底自建（结构坏也保图）
-	var bg := map_content.get_node_or_null("BgImage") as TextureRect
-	if bg == null:
-		bg = TextureRect.new()
-		bg.name = "BgImage"
-		bg.set_anchors_preset(Control.PRESET_FULL_RECT)
-		bg.mouse_filter = Control.MOUSE_FILTER_IGNORE
-		bg.expand_mode = TextureRect.EXPAND_IGNORE_SIZE
-		bg.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_COVERED
-		map_content.add_child(bg)
-		# 自建图必须压底层：后加入的兄弟默认画在上面，会盖住入口钮（干净 tscn 顺序正确无需此步）
-		map_content.move_child(bg, 0)
+	# 底图契约见 ADVENTURE_BG_PATH 注释：缺图不渲染、布局不塌
+	var bg := map_content.get_node("BgImage") as TextureRect
 	if ResourceLoader.exists(ADVENTURE_BG_PATH):
 		bg.texture = load(ADVENTURE_BG_PATH)
 
 	# 滑动吸附：scroll_ended 只在用户滚动停时发（补间改值不重入，_map_snapping 双保险）
 	map_scroll.scroll_ended.connect(_on_map_scroll_ended)
 
-	
 	var stage_btn = Button.new()
 	stage_btn.text = "关卡"
 	stage_btn.custom_minimum_size = Vector2(180, 60)
@@ -515,23 +473,21 @@ func _layout_map_entries(map_content: Control, entry_grid: Control) -> void:
 		node.position = center - MAP_ENTRY_SIZE / 2.0
 
 var _map_snapping := false
+var _map_scroll: ScrollContainer = null
 
-# 横向地图按屏吸附：页宽=滚动视口宽（运行时实际像素，不吃设计尺寸）
+# 横向地图按屏吸附：页宽=滚动视口宽（运行时实际像素，不吃设计尺寸）；滚动器引用由 generate 注入
 func _on_map_scroll_ended() -> void:
-	if _map_snapping:
+	if _map_snapping or _map_scroll == null:
 		return
-	var scroll := c.get_node_or_null("PageContainer/AdventurePage/AdventureScene/AdventureVBox/MapScroll") as ScrollContainer
-	if scroll == null:
-		return
-	var page_w := scroll.size.x
+	var page_w := _map_scroll.size.x
 	if page_w <= 0:
 		return
-	var target := int(roundf(scroll.scroll_horizontal / page_w) * page_w)
-	if abs(target - scroll.scroll_horizontal) < 2:
+	var target := int(roundf(_map_scroll.scroll_horizontal / page_w) * page_w)
+	if abs(target - _map_scroll.scroll_horizontal) < 2:
 		return
 	_map_snapping = true
-	var tw := scroll.create_tween()
-	tw.tween_property(scroll, "scroll_horizontal", target, 0.25)
+	var tw := _map_scroll.create_tween()
+	tw.tween_property(_map_scroll, "scroll_horizontal", target, 0.25)
 	tw.finished.connect(func(): _map_snapping = false)
 
 func update_adventure_page():

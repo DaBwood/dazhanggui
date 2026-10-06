@@ -32,13 +32,13 @@ size_flags_vertical = 3
 horizontal_scroll_mode = 1
 vertical_scroll_mode = 0
 
-[node name="MapContent" type="Control" parent="MapScroll"]
+[node name="MapContent" type="Control" parent="AdventureVBox/MapScroll"]
 custom_minimum_size = Vector2(1897, 1067)
 layout_mode = 2
 ; 滚动轴禁止 EXPAND：ScrollContainer 会把带展开旗标的孩子拉到视口宽，滚动余量归 0（2026-10-06 实测）
 size_flags_vertical = 3
 
-[node name="BgImage" type="TextureRect" parent="MapScroll/MapContent"]
+[node name="BgImage" type="TextureRect" parent="AdventureVBox/MapScroll/MapContent"]
 layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
@@ -49,7 +49,7 @@ mouse_filter = 2
 expand_mode = 1
 stretch_mode = 6
 
-[node name="AdventureEntryGrid" type="Control" parent="MapScroll/MapContent"]
+[node name="AdventureEntryGrid" type="Control" parent="AdventureVBox/MapScroll/MapContent"]
 layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
@@ -58,37 +58,37 @@ grow_horizontal = 2
 grow_vertical = 2
 mouse_filter = 2
 
-[node name="PosStage" type="Marker2D" parent="MapScroll/MapContent/AdventureEntryGrid"]
+[node name="PosStage" type="Marker2D" parent="AdventureVBox/MapScroll/MapContent/AdventureEntryGrid"]
 position = Vector2(869, 854)
 
-[node name="PosExchange" type="Marker2D" parent="MapScroll/MapContent/AdventureEntryGrid"]
+[node name="PosExchange" type="Marker2D" parent="AdventureVBox/MapScroll/MapContent/AdventureEntryGrid"]
 position = Vector2(1385, 448)
 
-[node name="PosLottery" type="Marker2D" parent="MapScroll/MapContent/AdventureEntryGrid"]
+[node name="PosLottery" type="Marker2D" parent="AdventureVBox/MapScroll/MapContent/AdventureEntryGrid"]
 position = Vector2(294, 534)
 
-[node name="PosCharity" type="Marker2D" parent="MapScroll/MapContent/AdventureEntryGrid"]
+[node name="PosCharity" type="Marker2D" parent="AdventureVBox/MapScroll/MapContent/AdventureEntryGrid"]
 position = Vector2(1119, 437)
 
-[node name="PosTravel" type="Marker2D" parent="MapScroll/MapContent/AdventureEntryGrid"]
+[node name="PosTravel" type="Marker2D" parent="AdventureVBox/MapScroll/MapContent/AdventureEntryGrid"]
 position = Vector2(873, 277)
 
-[node name="PosZhaoshang" type="Marker2D" parent="MapScroll/MapContent/AdventureEntryGrid"]
+[node name="PosZhaoshang" type="Marker2D" parent="AdventureVBox/MapScroll/MapContent/AdventureEntryGrid"]
 position = Vector2(598, 875)
 
-[node name="PosWar" type="Marker2D" parent="MapScroll/MapContent/AdventureEntryGrid"]
+[node name="PosWar" type="Marker2D" parent="AdventureVBox/MapScroll/MapContent/AdventureEntryGrid"]
 position = Vector2(579, 704)
 
-[node name="PosFishing" type="Marker2D" parent="MapScroll/MapContent/AdventureEntryGrid"]
+[node name="PosFishing" type="Marker2D" parent="AdventureVBox/MapScroll/MapContent/AdventureEntryGrid"]
 position = Vector2(398, 501)
 
-[node name="PosManor" type="Marker2D" parent="MapScroll/MapContent/AdventureEntryGrid"]
+[node name="PosManor" type="Marker2D" parent="AdventureVBox/MapScroll/MapContent/AdventureEntryGrid"]
 position = Vector2(304, 256)
 
-[node name="PosCuzhi" type="Marker2D" parent="MapScroll/MapContent/AdventureEntryGrid"]
+[node name="PosCuzhi" type="Marker2D" parent="AdventureVBox/MapScroll/MapContent/AdventureEntryGrid"]
 position = Vector2(816, 683)
 
-[node name="PosGuild" type="Marker2D" parent="MapScroll/MapContent/AdventureEntryGrid"]
+[node name="PosGuild" type="Marker2D" parent="AdventureVBox/MapScroll/MapContent/AdventureEntryGrid"]
 position = Vector2(579, 437)
 
 [node name="MainHelpButton" type="Button" parent="."]
