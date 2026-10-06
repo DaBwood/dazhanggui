@@ -57,6 +57,7 @@ func generate_stage_page():
 	vbox.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	vbox.add_theme_constant_override("separation", 12)
 
+
 	# 标题
 	var title = Label.new()
 	title.name = "StageTitle"
