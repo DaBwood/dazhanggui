@@ -24,9 +24,10 @@ func generate_stage_page():
 	if not c.has_node("PageContainer/StagePage"): return
 	var page = c.get_node("PageContainer/StagePage")
 
-	# 清空旧内容
+	# 清空旧内容：用 free() 立即释放而非 queue_free——延迟到帧末会让同名新实例被自动改名（StageScene2），
+	# 导致 update_stage_page 按名查找路径断裂、页面看起来"只剩顶排"（2026-10-06 实测空页定案）
 	for child in page.get_children():
-		child.queue_free()
+		child.free()
 
 	# 【改】让 StagePage 填满整个 PageContainer
 	page.set_anchors_preset(Control.PRESET_FULL_RECT)
@@ -39,8 +40,16 @@ func generate_stage_page():
 	inst.get_node("TopRow/BackButton").pressed.connect(func(): c.switch_page("adventure"))
 	inst.get_node("TopRow/HelpButton").pressed.connect(func(): c._show_success_popup("挑战关卡获得闯荡币与道具；章节通关解锁下一章，失败会给出战力提示。"))
 
-	# 动态内容灌进场景占位容器（节点名保持旧契约，update_stage_page 按名查找）
-	var vbox = inst.get_node("StageScroll/StageListVBox")
+	# 动态内容灌进场景占位容器（节点名保持旧契约，update_stage_page 按名查找）；
+	# 容错：场景文件缺 StageListVBox 时自建补上（旧版 tscn 直接可用，不阻断）
+	var vbox: VBoxContainer
+	if inst.has_node("StageScroll/StageListVBox"):
+		vbox = inst.get_node("StageScroll/StageListVBox")
+	else:
+		vbox = VBoxContainer.new()
+		vbox.name = "StageListVBox"
+		vbox.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+		inst.get_node("StageScroll").add_child(vbox)
 	vbox.add_theme_constant_override("separation", 12)
 
 	# 标题
