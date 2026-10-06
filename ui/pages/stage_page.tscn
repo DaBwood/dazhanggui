@@ -1,5 +1,28 @@
 [gd_scene format=3 uid="uid://cwknagoo33gju"]
 
+[sub_resource type="StyleBoxFlat" id="labelbg"]
+bg_color = Color(0.13, 0.1, 0.07, 0.8)
+border_color = Color(0.82, 0.7, 0.45, 0.9)
+border_width_left = 2
+border_width_top = 2
+border_width_right = 2
+border_width_bottom = 2
+corner_radius_top_left = 10
+corner_radius_top_right = 10
+corner_radius_bottom_left = 10
+corner_radius_bottom_right = 10
+shadow_color = Color(0, 0, 0, 0.4)
+shadow_size = 2
+
+[sub_resource type="StyleBoxFlat" id="btn_n"]
+bg_color = Color(0, 0, 0, 0)
+
+[sub_resource type="StyleBoxFlat" id="btn_h"]
+bg_color = Color(1, 1, 1, 0.14)
+
+[sub_resource type="StyleBoxFlat" id="btn_p"]
+bg_color = Color(1, 1, 1, 0.28)
+
 [node name="StagePage" type="Control" unique_id=617887106]
 layout_mode = 3
 anchors_preset = 15
@@ -10,16 +33,44 @@ grow_vertical = 2
 size_flags_horizontal = 3
 size_flags_vertical = 3
 
+[node name="BgImage" type="TextureRect" parent="." unique_id=883000001]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+expand_mode = 1
+stretch_mode = 6
+
+[node name="TopBg" type="ColorRect" parent="." unique_id=883000015]
+layout_mode = 1
+anchors_preset = 10
+anchor_right = 1.0
+offset_bottom = 46.0
+grow_horizontal = 2
+mouse_filter = 2
+color = Color(0, 0, 0, 0.42)
+
 [node name="TopRow" type="HBoxContainer" parent="." unique_id=1549164623]
 layout_mode = 1
 anchors_preset = 10
 anchor_right = 1.0
-offset_bottom = 36.0
+offset_bottom = 40.0
 grow_horizontal = 2
+theme_override_constants/separation = 10
 
 [node name="BackButton" type="Button" parent="TopRow" unique_id=221200214]
 layout_mode = 2
 text = "< 返回"
+
+[node name="TopMoney" type="Label" parent="TopRow" unique_id=883000022]
+custom_minimum_size = Vector2(88, 0)
+layout_mode = 2
+theme_override_colors/font_color = Color(0.95, 0.95, 0.95, 1)
+theme_override_font_sizes/font_size = 15
+text = "铜钱：0"
 
 [node name="TitleLabel" type="Label" parent="TopRow" unique_id=1966217001]
 layout_mode = 2
@@ -29,19 +80,238 @@ theme_override_font_sizes/font_size = 20
 text = "闯关"
 horizontal_alignment = 1
 
+[node name="TopExp" type="Label" parent="TopRow" unique_id=883000023]
+custom_minimum_size = Vector2(88, 0)
+layout_mode = 2
+theme_override_colors/font_color = Color(0.6, 0.9, 0.6, 1)
+theme_override_font_sizes/font_size = 15
+text = "阅历：0"
+
 [node name="HelpButton" type="Button" parent="TopRow" unique_id=866401349]
 custom_minimum_size = Vector2(40, 36)
 layout_mode = 2
 text = "?"
 
-[node name="StageScroll" type="ScrollContainer" parent="." unique_id=404505046]
+[node name="StageHead" type="HBoxContainer" parent="." unique_id=883000002]
+layout_mode = 1
+anchors_preset = 10
+anchor_right = 1.0
+offset_left = 16.0
+offset_top = 56.0
+offset_right = -16.0
+offset_bottom = 148.0
+grow_horizontal = 2
+theme_override_constants/separation = 10
+
+[node name="StageBadge" type="VBoxContainer" parent="StageHead" unique_id=883000024]
+layout_mode = 2
+size_flags_vertical = 4
+theme_override_constants/separation = 2
+
+[node name="GateIcon" type="TextureRect" parent="StageHead/StageBadge" unique_id=883000014]
+custom_minimum_size = Vector2(48, 48)
+layout_mode = 2
+mouse_filter = 2
+expand_mode = 1
+stretch_mode = 5
+
+[node name="StageTitle" type="Label" parent="StageHead/StageBadge" unique_id=883000003]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.28, 0.17, 0.06, 1)
+theme_override_font_sizes/font_size = 20
+text = "1-1"
+horizontal_alignment = 1
+
+[node name="ProgressTrack" type="Control" parent="StageHead" unique_id=883000006]
+custom_minimum_size = Vector2(380, 36)
+layout_mode = 2
+size_flags_horizontal = 1
+size_flags_vertical = 4
+mouse_filter = 2
+
+[node name="BossSlot" type="Control" parent="StageHead" unique_id=883000025]
+custom_minimum_size = Vector2(64, 80)
+layout_mode = 2
+size_flags_vertical = 4
+mouse_filter = 2
+
+[node name="BossAvatar" type="TextureRect" parent="StageHead/BossSlot" unique_id=883000007]
+visible = false
 layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
-offset_top = 48.0
 grow_horizontal = 2
 grow_vertical = 2
+mouse_filter = 2
+expand_mode = 1
+stretch_mode = 5
 
-[node name="StageListVBox" type="VBoxContainer" parent="StageScroll" unique_id=345839022]
-layout_mode = 2
+[node name="BossCarriage" type="TextureRect" parent="." unique_id=883000026]
+visible = false
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.40
+anchor_right = 0.5
+anchor_bottom = 0.40
+offset_left = -130.0
+offset_top = -170.0
+offset_right = 130.0
+offset_bottom = 170.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+expand_mode = 1
+stretch_mode = 5
+
+[node name="BossCarriageLabel" type="Label" parent="." unique_id=883000027]
+visible = false
+layout_mode = 1
+anchor_left = 0.5
+anchor_top = 0.40
+anchor_right = 0.5
+anchor_bottom = 0.40
+offset_left = -150.0
+offset_top = 40.0
+offset_right = 150.0
+offset_bottom = 66.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+theme_override_colors/font_color = Color(0.92, 0.85, 0.68, 1)
+theme_override_font_sizes/font_size = 16
+theme_override_styles/normal = SubResource("labelbg")
+text = "头目赚钱：0"
+horizontal_alignment = 1
+
+[node name="Carriage" type="TextureRect" parent="." unique_id=883000010]
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.70
+anchor_right = 0.5
+anchor_bottom = 0.70
+offset_left = -160.0
+offset_top = -160.0
+offset_right = 160.0
+offset_bottom = 160.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+expand_mode = 1
+stretch_mode = 5
+
+[node name="CarriageLabel" type="Label" parent="." unique_id=883000019]
+layout_mode = 1
+anchor_left = 0.5
+anchor_top = 0.70
+anchor_right = 0.5
+anchor_bottom = 0.70
+offset_left = -150.0
+offset_top = 56.0
+offset_right = 150.0
+offset_bottom = 82.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+theme_override_colors/font_color = Color(0.92, 0.85, 0.68, 1)
+theme_override_font_sizes/font_size = 16
+theme_override_styles/normal = SubResource("labelbg")
+text = "门客赚钱：0"
+horizontal_alignment = 1
+
+[node name="AutoTradeBtn" type="Button" parent="." unique_id=883000011]
+custom_minimum_size = Vector2(84, 84)
+layout_mode = 1
+anchors_preset = 2
+anchor_top = 1.0
+anchor_bottom = 1.0
+offset_left = 16.0
+offset_top = -128.0
+offset_right = 100.0
+offset_bottom = -44.0
+grow_vertical = 0
+focus_mode = 0
+theme_override_styles/normal = SubResource("btn_n")
+theme_override_styles/hover = SubResource("btn_h")
+theme_override_styles/pressed = SubResource("btn_p")
+toggle_mode = true
+
+[node name="AutoTradeIcon" type="TextureRect" parent="AutoTradeBtn" unique_id=883000020]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+expand_mode = 1
+stretch_mode = 6
+
+[node name="AutoTradeLabel" type="Label" parent="." unique_id=883000017]
+layout_mode = 1
+anchors_preset = 2
+anchor_top = 1.0
+anchor_bottom = 1.0
+offset_left = 8.0
+offset_top = -58.0
+offset_right = 108.0
+offset_bottom = -24.0
+grow_vertical = 0
+mouse_filter = 2
+theme_override_colors/font_color = Color(0.95, 0.95, 0.95, 1)
+theme_override_font_sizes/font_size = 15
+theme_override_styles/normal = SubResource("labelbg")
+text = "一键贸易"
+horizontal_alignment = 1
+
+[node name="TradeBtn" type="Button" parent="." unique_id=883000012]
+custom_minimum_size = Vector2(100, 100)
+layout_mode = 1
+anchors_preset = 3
+anchor_left = 1.0
+anchor_top = 1.0
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = -116.0
+offset_top = -144.0
+offset_right = -16.0
+offset_bottom = -44.0
+grow_horizontal = 0
+grow_vertical = 0
+focus_mode = 0
+theme_override_styles/normal = SubResource("btn_n")
+theme_override_styles/hover = SubResource("btn_h")
+theme_override_styles/pressed = SubResource("btn_p")
+
+[node name="TradeIcon" type="TextureRect" parent="TradeBtn" unique_id=883000021]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+expand_mode = 1
+stretch_mode = 6
+
+[node name="TradeLabel" type="Label" parent="." unique_id=883000018]
+layout_mode = 1
+anchors_preset = 3
+anchor_left = 1.0
+anchor_top = 1.0
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = -116.0
+offset_top = -58.0
+offset_right = -16.0
+offset_bottom = -24.0
+grow_horizontal = 0
+grow_vertical = 0
+mouse_filter = 2
+theme_override_colors/font_color = Color(0.95, 0.95, 0.95, 1)
+theme_override_font_sizes/font_size = 15
+theme_override_styles/normal = SubResource("labelbg")
+text = "铜钱：0"
+horizontal_alignment = 1

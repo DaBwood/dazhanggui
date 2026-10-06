@@ -388,6 +388,9 @@ func on_auto_earn():
 	if data.stage_auto_trade:
 		_on_stage_auto_trade_tick(data.stage_auto_trade_tick())
 	update_all_ui()
+	# 【新增】关卡页实时刷新：页内常驻实时铜钱/阅历，挂每秒节拍+页面守卫（2026-10-06 关卡页改版）
+	if current_page == "stage":
+		update_stage_page()
 	# 【新增】定期自动存档：每 AUTOSAVE_INTERVAL 秒写一次盘（手机 Web 端收不到退出通知，靠它兜底进度）
 	_autosave_sec += 1
 	
