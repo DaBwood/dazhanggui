@@ -1,7 +1,7 @@
 # ============================================================
 # 垂钓页视图（第8批新增：闯荡页【垂钓】子视图）
 # 纯代码 UI 模块：var c（game_controller 根脚本）、var data（GameData 中枢）
-# 结构：入口按钮挂 AdventureEntryGrid；FishingView 子视图挂 AdventurePage 下
+# 结构（v2）：入口钮已进 adventure_page.tscn；FishingView 子视图挂 AdventurePage 下
 # 红点：任务/图鉴按钮右上角红点（显式 size/position，不用当帧 size 做定位依据）
 # 弹窗刷新：任务/图鉴弹窗领取后原地重填列表并保留滚动位置；奖励弹窗后添加，保证在最上层
 # ============================================================
@@ -19,14 +19,7 @@ func _init(p_c):
 	data = p_c.data
 
 # ============ 构建（由 adventure_page.generate_adventure_page 挂接） ============
-func build_fishing_view(page, vbox):
-	# --- 垂钓入口按钮 ---
-	var fish_btn = Button.new()
-	fish_btn.text = "垂钓"
-	fish_btn.custom_minimum_size = Vector2(180, 60)
-	fish_btn.pressed.connect(c.show_view.bind("fishing"))
-	vbox.get_node("MapScroll/MapContent/AdventureEntryGrid").add_child(fish_btn) # 【改】地图批次B：入口网格挪进 MapScroll/MapContent（随横版地图滑动），路径同步（规范 11.7）
-
+func build_fishing_view(page, _vbox):
 	# --- 垂钓子页面 ---
 	var view = VBoxContainer.new()
 	view.name = "FishingView"

@@ -1,6 +1,20 @@
-[gd_scene format=3]
+[gd_scene format=3 uid="uid://d3f3dfy7ljhl5"]
 
-[node name="AdventureScene" type="Control"]
+[ext_resource type="Texture2D" uid="uid://dwpxslipq07gf" path="res://assets/adventure/bg.png" id="1_bg"]
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_banner"]
+bg_color = Color(0.36, 0.06, 0.06, 0.9)
+border_width_left = 2
+border_width_top = 2
+border_width_right = 2
+border_width_bottom = 2
+border_color = Color(0.15, 0.02, 0.02, 1)
+corner_radius_top_left = 3
+corner_radius_top_right = 3
+corner_radius_bottom_right = 3
+corner_radius_bottom_left = 3
+
+[node name="AdventureScene" type="Control" unique_id=681575555]
 layout_mode = 3
 anchors_preset = 15
 anchor_right = 1.0
@@ -10,7 +24,7 @@ grow_vertical = 2
 size_flags_horizontal = 3
 size_flags_vertical = 3
 
-[node name="AdventureVBox" type="VBoxContainer" parent="."]
+[node name="AdventureVBox" type="VBoxContainer" parent="." unique_id=492532960]
 layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
@@ -19,26 +33,25 @@ grow_horizontal = 2
 grow_vertical = 2
 theme_override_constants/separation = 12
 
-[node name="TitleLabel" type="Label" parent="AdventureVBox"]
+[node name="TitleLabel" type="Label" parent="AdventureVBox" unique_id=873763286]
 layout_mode = 2
 theme_override_colors/font_color = Color(1, 0.84313726, 0, 1)
 theme_override_font_sizes/font_size = 24
 text = "闯荡"
 horizontal_alignment = 1
 
-[node name="MapScroll" type="ScrollContainer" parent="AdventureVBox"]
+[node name="MapScroll" type="ScrollContainer" parent="AdventureVBox" unique_id=1168269349]
+clip_contents = false
 layout_mode = 2
 size_flags_vertical = 3
-horizontal_scroll_mode = 1
 vertical_scroll_mode = 0
 
-[node name="MapContent" type="Control" parent="AdventureVBox/MapScroll"]
+[node name="MapContent" type="Control" parent="AdventureVBox/MapScroll" unique_id=1711667466]
 custom_minimum_size = Vector2(1897, 1067)
 layout_mode = 2
-; 滚动轴禁止 EXPAND：ScrollContainer 会把带展开旗标的孩子拉到视口宽，滚动余量归 0（2026-10-06 实测）
 size_flags_vertical = 3
 
-[node name="BgImage" type="TextureRect" parent="AdventureVBox/MapScroll/MapContent"]
+[node name="BgImage" type="TextureRect" parent="AdventureVBox/MapScroll/MapContent" unique_id=490228248]
 layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
@@ -46,10 +59,11 @@ anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
 mouse_filter = 2
+texture = ExtResource("1_bg")
 expand_mode = 1
 stretch_mode = 6
 
-[node name="AdventureEntryGrid" type="Control" parent="AdventureVBox/MapScroll/MapContent"]
+[node name="AdventureEntryGrid" type="Control" parent="AdventureVBox/MapScroll/MapContent" unique_id=1487940699]
 layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
@@ -58,49 +72,193 @@ grow_horizontal = 2
 grow_vertical = 2
 mouse_filter = 2
 
-[node name="PosStage" type="Marker2D" parent="AdventureVBox/MapScroll/MapContent/AdventureEntryGrid"]
-position = Vector2(869, 854)
+[node name="EntryStage" type="Button" parent="AdventureVBox/MapScroll/MapContent/AdventureEntryGrid" unique_id=133714115]
+custom_minimum_size = Vector2(50, 120)
+layout_mode = 0
+offset_left = 872.0
+offset_top = 617.5
+offset_right = 922.0
+offset_bottom = 737.5
+theme_override_colors/font_color = Color(0.95, 0.88, 0.7, 1)
+theme_override_font_sizes/font_size = 18
+theme_override_styles/normal = SubResource("StyleBoxFlat_banner")
+theme_override_styles/pressed = SubResource("StyleBoxFlat_banner")
+theme_override_styles/hover = SubResource("StyleBoxFlat_banner")
+theme_override_styles/focus = SubResource("StyleBoxFlat_banner")
+text = "关
+卡"
 
-[node name="PosExchange" type="Marker2D" parent="AdventureVBox/MapScroll/MapContent/AdventureEntryGrid"]
-position = Vector2(1385, 448)
+[node name="EntryExchange" type="Button" parent="AdventureVBox/MapScroll/MapContent/AdventureEntryGrid" unique_id=1853407269]
+custom_minimum_size = Vector2(50, 120)
+layout_mode = 0
+offset_left = 1459.0
+offset_top = 391.5
+offset_right = 1509.0
+offset_bottom = 511.5
+theme_override_colors/font_color = Color(0.95, 0.88, 0.7, 1)
+theme_override_font_sizes/font_size = 18
+theme_override_styles/normal = SubResource("StyleBoxFlat_banner")
+theme_override_styles/pressed = SubResource("StyleBoxFlat_banner")
+theme_override_styles/hover = SubResource("StyleBoxFlat_banner")
+theme_override_styles/focus = SubResource("StyleBoxFlat_banner")
+text = "兑
+换"
 
-[node name="PosLottery" type="Marker2D" parent="AdventureVBox/MapScroll/MapContent/AdventureEntryGrid"]
-position = Vector2(294, 534)
+[node name="EntryLottery" type="Button" parent="AdventureVBox/MapScroll/MapContent/AdventureEntryGrid" unique_id=612494455]
+custom_minimum_size = Vector2(50, 120)
+layout_mode = 0
+offset_left = 1069.0
+offset_top = 640.5
+offset_right = 1119.0
+offset_bottom = 760.5
+theme_override_colors/font_color = Color(0.95, 0.88, 0.7, 1)
+theme_override_font_sizes/font_size = 18
+theme_override_styles/normal = SubResource("StyleBoxFlat_banner")
+theme_override_styles/pressed = SubResource("StyleBoxFlat_banner")
+theme_override_styles/hover = SubResource("StyleBoxFlat_banner")
+theme_override_styles/focus = SubResource("StyleBoxFlat_banner")
+text = "抽
+奖"
 
-[node name="PosCharity" type="Marker2D" parent="AdventureVBox/MapScroll/MapContent/AdventureEntryGrid"]
-position = Vector2(1119, 437)
+[node name="EntryCharity" type="Button" parent="AdventureVBox/MapScroll/MapContent/AdventureEntryGrid" unique_id=445487827]
+custom_minimum_size = Vector2(50, 120)
+layout_mode = 0
+offset_left = 1099.0
+offset_top = 360.5
+offset_right = 1149.0
+offset_bottom = 480.5
+theme_override_colors/font_color = Color(0.95, 0.88, 0.7, 1)
+theme_override_font_sizes/font_size = 18
+theme_override_styles/normal = SubResource("StyleBoxFlat_banner")
+theme_override_styles/pressed = SubResource("StyleBoxFlat_banner")
+theme_override_styles/hover = SubResource("StyleBoxFlat_banner")
+theme_override_styles/focus = SubResource("StyleBoxFlat_banner")
+text = "行
+善"
 
-[node name="PosTravel" type="Marker2D" parent="AdventureVBox/MapScroll/MapContent/AdventureEntryGrid"]
-position = Vector2(873, 277)
+[node name="EntryTravel" type="Button" parent="AdventureVBox/MapScroll/MapContent/AdventureEntryGrid" unique_id=1541210801]
+custom_minimum_size = Vector2(50, 120)
+layout_mode = 0
+offset_left = 846.0
+offset_top = 197.5
+offset_right = 896.0
+offset_bottom = 317.5
+theme_override_colors/font_color = Color(0.95, 0.88, 0.7, 1)
+theme_override_font_sizes/font_size = 18
+theme_override_styles/normal = SubResource("StyleBoxFlat_banner")
+theme_override_styles/pressed = SubResource("StyleBoxFlat_banner")
+theme_override_styles/hover = SubResource("StyleBoxFlat_banner")
+theme_override_styles/focus = SubResource("StyleBoxFlat_banner")
+text = "游
+历"
 
-[node name="PosZhaoshang" type="Marker2D" parent="AdventureVBox/MapScroll/MapContent/AdventureEntryGrid"]
-position = Vector2(598, 875)
+[node name="EntryZhaoshang" type="Button" parent="AdventureVBox/MapScroll/MapContent/AdventureEntryGrid" unique_id=540668220]
+custom_minimum_size = Vector2(50, 120)
+layout_mode = 0
+offset_left = 324.0
+offset_top = 797.5
+offset_right = 374.0
+offset_bottom = 917.5
+theme_override_colors/font_color = Color(0.95, 0.88, 0.7, 1)
+theme_override_font_sizes/font_size = 18
+theme_override_styles/normal = SubResource("StyleBoxFlat_banner")
+theme_override_styles/pressed = SubResource("StyleBoxFlat_banner")
+theme_override_styles/hover = SubResource("StyleBoxFlat_banner")
+theme_override_styles/focus = SubResource("StyleBoxFlat_banner")
+text = "招
+商"
 
-[node name="PosWar" type="Marker2D" parent="AdventureVBox/MapScroll/MapContent/AdventureEntryGrid"]
-position = Vector2(579, 704)
+[node name="EntryWar" type="Button" parent="AdventureVBox/MapScroll/MapContent/AdventureEntryGrid" unique_id=717337756]
+custom_minimum_size = Vector2(50, 120)
+layout_mode = 0
+offset_left = 553.0
+offset_top = 539.5
+offset_right = 603.0
+offset_bottom = 659.5
+theme_override_colors/font_color = Color(0.95, 0.88, 0.7, 1)
+theme_override_font_sizes/font_size = 18
+theme_override_styles/normal = SubResource("StyleBoxFlat_banner")
+theme_override_styles/pressed = SubResource("StyleBoxFlat_banner")
+theme_override_styles/hover = SubResource("StyleBoxFlat_banner")
+theme_override_styles/focus = SubResource("StyleBoxFlat_banner")
+text = "商
+战"
 
-[node name="PosFishing" type="Marker2D" parent="AdventureVBox/MapScroll/MapContent/AdventureEntryGrid"]
-position = Vector2(398, 501)
+[node name="EntryFishing" type="Button" parent="AdventureVBox/MapScroll/MapContent/AdventureEntryGrid" unique_id=1289284796]
+custom_minimum_size = Vector2(50, 120)
+layout_mode = 0
+offset_left = 776.0
+offset_top = 353.5
+offset_right = 826.0
+offset_bottom = 473.5
+theme_override_colors/font_color = Color(0.95, 0.88, 0.7, 1)
+theme_override_font_sizes/font_size = 18
+theme_override_styles/normal = SubResource("StyleBoxFlat_banner")
+theme_override_styles/pressed = SubResource("StyleBoxFlat_banner")
+theme_override_styles/hover = SubResource("StyleBoxFlat_banner")
+theme_override_styles/focus = SubResource("StyleBoxFlat_banner")
+text = "垂
+钓"
 
-[node name="PosManor" type="Marker2D" parent="AdventureVBox/MapScroll/MapContent/AdventureEntryGrid"]
-position = Vector2(304, 256)
+[node name="EntryManor" type="Button" parent="AdventureVBox/MapScroll/MapContent/AdventureEntryGrid" unique_id=1501077126]
+custom_minimum_size = Vector2(50, 120)
+layout_mode = 0
+offset_left = 275.0
+offset_top = 194.5
+offset_right = 325.0
+offset_bottom = 314.5
+theme_override_colors/font_color = Color(0.95, 0.88, 0.7, 1)
+theme_override_font_sizes/font_size = 18
+theme_override_styles/normal = SubResource("StyleBoxFlat_banner")
+theme_override_styles/pressed = SubResource("StyleBoxFlat_banner")
+theme_override_styles/hover = SubResource("StyleBoxFlat_banner")
+theme_override_styles/focus = SubResource("StyleBoxFlat_banner")
+text = "庄
+园"
 
-[node name="PosCuzhi" type="Marker2D" parent="AdventureVBox/MapScroll/MapContent/AdventureEntryGrid"]
-position = Vector2(816, 683)
+[node name="EntryCuzhi" type="Button" parent="AdventureVBox/MapScroll/MapContent/AdventureEntryGrid" unique_id=2016428004]
+custom_minimum_size = Vector2(50, 120)
+layout_mode = 0
+offset_left = 763.0
+offset_top = 542.5
+offset_right = 813.0
+offset_bottom = 662.5
+theme_override_colors/font_color = Color(0.95, 0.88, 0.7, 1)
+theme_override_font_sizes/font_size = 18
+theme_override_styles/normal = SubResource("StyleBoxFlat_banner")
+theme_override_styles/pressed = SubResource("StyleBoxFlat_banner")
+theme_override_styles/hover = SubResource("StyleBoxFlat_banner")
+theme_override_styles/focus = SubResource("StyleBoxFlat_banner")
+text = "促
+织
+园"
 
-[node name="PosGuild" type="Marker2D" parent="AdventureVBox/MapScroll/MapContent/AdventureEntryGrid"]
-position = Vector2(579, 437)
+[node name="EntryGuild" type="Button" parent="AdventureVBox/MapScroll/MapContent/AdventureEntryGrid" unique_id=2009311177]
+custom_minimum_size = Vector2(50, 120)
+layout_mode = 0
+offset_left = 542.0
+offset_top = 345.5
+offset_right = 592.0
+offset_bottom = 465.5
+theme_override_colors/font_color = Color(0.95, 0.88, 0.7, 1)
+theme_override_font_sizes/font_size = 18
+theme_override_styles/normal = SubResource("StyleBoxFlat_banner")
+theme_override_styles/pressed = SubResource("StyleBoxFlat_banner")
+theme_override_styles/hover = SubResource("StyleBoxFlat_banner")
+theme_override_styles/focus = SubResource("StyleBoxFlat_banner")
+text = "商
+会"
 
-[node name="MainHelpButton" type="Button" parent="."]
+[node name="MainHelpButton" type="Button" parent="." unique_id=902766231]
+custom_minimum_size = Vector2(40, 36)
 layout_mode = 1
 anchors_preset = 1
 anchor_left = 1.0
 anchor_right = 1.0
 offset_left = -48.0
-offset_right = -8.0
 offset_top = 8.0
+offset_right = -8.0
 offset_bottom = 44.0
 grow_horizontal = 0
-custom_minimum_size = Vector2(40, 36)
 theme_override_font_sizes/font_size = 16
 text = "?"

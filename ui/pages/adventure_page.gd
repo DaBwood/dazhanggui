@@ -10,22 +10,6 @@ extends RefCounted
 const ADVENTURE_SCENE := preload("res://ui/pages/adventure_page.tscn")
 # 素材契约：横版地图放 res://assets/adventure/bg.png（2048×1152 原图直接用，按 1067 高铺宽≈1897≈3.16 屏，零裁切）
 const ADVENTURE_BG_PATH := "res://assets/adventure/bg.png"
-# 地图入口钮摆位：归一化坐标对照带字版招牌标注（2026-10-06），x/y 相对 MapContent 1897×1067；随时可调
-const MAP_ENTRY_POS := {
-	"关卡": Vector2(0.458, 0.80), "兑换": Vector2(0.730, 0.42), "抽奖": Vector2(0.155, 0.50),
-	"行善": Vector2(0.590, 0.41), "游历": Vector2(0.460, 0.26), "招商": Vector2(0.315, 0.82),
-	"商战": Vector2(0.305, 0.66), "垂钓": Vector2(0.210, 0.47), "庄园": Vector2(0.160, 0.24),
-	"促织园": Vector2(0.430, 0.64), "商会": Vector2(0.305, 0.41),
-}
-# 地图钮统一尺寸（内容节点=脚本资产，允许定布局；建筑热点牌匾口径 150×52/16 号字）
-const MAP_ENTRY_SIZE := Vector2(150, 52)
-# 按钮文字→锚点英文名：节点名保持 ASCII（中文节点名在部分工程链路触发 Latin-1 编码报错，2026-10-06 实测）
-const ENTRY_ANCHOR := {
-	"关卡": "PosStage", "兑换": "PosExchange", "抽奖": "PosLottery", "行善": "PosCharity",
-	"游历": "PosTravel", "招商": "PosZhaoshang", "商战": "PosWar", "垂钓": "PosFishing",
-	"庄园": "PosManor", "促织园": "PosCuzhi", "商会": "PosGuild",
-}
-
 
 var c      # game_controller 根脚本引用
 var data   # GameData 数据中枢引用
@@ -95,6 +79,8 @@ func generate_adventure_page():
 	# fail-loud 优于静默恢复，报错信息直接给出缺失路径）
 	var vbox := inst.get_node("AdventureVBox") as VBoxContainer
 	var map_scroll := vbox.get_node("MapScroll") as ScrollContainer
+	# 编辑器里 clip_contents=false 全图可视可拖（tscn 设置）；运行时必须恢复裁剪，否则地图溢出视口
+	map_scroll.clip_contents = true
 	var map_content := map_scroll.get_node("MapContent") as Control
 	var entry_grid := map_content.get_node("AdventureEntryGrid") as Control
 	_map_scroll = map_scroll
@@ -111,18 +97,7 @@ func generate_adventure_page():
 	# 滑动吸附：scroll_ended 只在用户滚动停时发（补间改值不重入，_map_snapping 双保险）
 	map_scroll.scroll_ended.connect(_on_map_scroll_ended)
 
-	var stage_btn = Button.new()
-	stage_btn.text = "关卡"
-	stage_btn.custom_minimum_size = Vector2(180, 60)
-	stage_btn.pressed.connect(c.switch_page.bind("stage"))
-	entry_grid.add_child(stage_btn)
 	
-	var exchange_btn = Button.new()
-	exchange_btn.name = "ExchangeBtn"
-	exchange_btn.text = "兑换"
-	exchange_btn.custom_minimum_size = Vector2(180, 60)
-	exchange_btn.pressed.connect(c.show_view.bind("exchange"))
-	entry_grid.add_child(exchange_btn)
 	
 	# 兑换子页面（目录：珍兽兑换 / 门客帖兑换）
 	var exchange_view = VBoxContainer.new()
@@ -241,12 +216,6 @@ func generate_adventure_page():
 	series_scroll.add_child(series_list)
 	
 	# --- 抽奖入口 ---
-	var lottery_btn = Button.new()
-	lottery_btn.name = "LotteryBtn"
-	lottery_btn.text = "抽奖"
-	lottery_btn.custom_minimum_size = Vector2(180, 60)
-	lottery_btn.pressed.connect(c.show_view.bind("lottery"))
-	entry_grid.add_child(lottery_btn)
 	
 	# --- 抽奖子页面 ---
 	var lottery_view = VBoxContainer.new()
@@ -298,11 +267,6 @@ func generate_adventure_page():
 	lot_result_scroll.add_child(lot_result_list)
 	
 	# --- 行善入口 ---
-	var charity_btn = Button.new()
-	charity_btn.text = "行善"
-	charity_btn.custom_minimum_size = Vector2(180, 60)
-	charity_btn.pressed.connect(c.show_view.bind("charity"))
-	entry_grid.add_child(charity_btn)
 	
 	# --- 行善子页面 ---
 	var charity_view = VBoxContainer.new()
@@ -350,18 +314,6 @@ func generate_adventure_page():
 	c_scroll.add_child(c_list)
 	
 	# --- 【新增】游历入口（与行善并列） ---
-	var travel_btn = Button.new()
-	travel_btn.text = "游历"
-	travel_btn.custom_minimum_size = Vector2(180, 60)
-	travel_btn.pressed.connect(c.show_view.bind("travel"))
-	entry_grid.add_child(travel_btn)
-
-	# 招商入口（闯荡页第 6 钮；全屏页 z35 走 VIEW_LIST 分发）
-	var zhaoshang_btn = Button.new()
-	zhaoshang_btn.text = "招商"
-	zhaoshang_btn.custom_minimum_size = Vector2(180, 60)
-	zhaoshang_btn.pressed.connect(c.show_view.bind("zhaoshang"))
-	entry_grid.add_child(zhaoshang_btn)
 	
 	# --- 【新增】游历子页面 ---
 	var travel_view = VBoxContainer.new()
@@ -438,8 +390,24 @@ func generate_adventure_page():
 	guild_view = GuildView.new(c)
 	guild_view.build_entry(page, vbox)
 
-	# 全部入口（含 5 个 builder 挂的）就绪后统一按地图坐标摆位
-	_layout_map_entries(map_content, entry_grid)
+	# 入口钮 v2 范式：按钮本体在 tscn（位置/竖排文字/皮肤归编辑器拖改），脚本只做硬校验+接线
+	# （RefCounted 接不了 tscn 信号，接线留在脚本侧；成员变量 lambda 调用时才解析，声明顺序无关）
+	var entry_wiring := {
+		"EntryStage": func(): c.switch_page("stage"),
+		"EntryExchange": func(): c.show_view("exchange"),
+		"EntryLottery": func(): c.show_view("lottery"),
+		"EntryCharity": func(): c.show_view("charity"),
+		"EntryTravel": func(): c.show_view("travel"),
+		"EntryZhaoshang": func(): c.show_view("zhaoshang"),
+		"EntryManor": func(): c.show_view("manor"),
+		"EntryWar": func(): c.show_view("war"),
+		"EntryFishing": func(): c.show_view("fishing"),
+		"EntryCuzhi": func(): c.cuzhi_view.show_cuzhi_view(),
+		"EntryGuild": func(): guild_view.open(),
+	}
+	for entry_name in entry_wiring:
+		var entry_btn := entry_grid.get_node(entry_name) as Button
+		entry_btn.pressed.connect(entry_wiring[entry_name])
 
 	# 结构自检：输出面板打印一次关键事实（布局争议先看这里，定位是结构问题还是坐标问题）
 	print("[AdventureMap] 入口钮=%d 横向滚动余量=%d MapContent=%s" % [
@@ -447,30 +415,6 @@ func generate_adventure_page():
 		int(map_scroll.get_h_scroll_bar().max_value - map_scroll.get_h_scroll_bar().page),
 		str(map_content.size)])
 
-# 入口摆位：优先读 tscn 里的 Marker2D 锚点（"Pos"+按钮文字，编辑器里可拖着摆）；
-# 锚点缺失时退化到 MAP_ENTRY_POS 归一化表；都未收录的新入口退图下备用排，不丢功能只丢精修
-func _layout_map_entries(map_content: Control, entry_grid: Control) -> void:
-	var map_w := map_content.custom_minimum_size.x
-	var map_h := map_content.custom_minimum_size.y
-	var reserve_i := 0
-	for node in entry_grid.get_children():
-		if not (node is Button):
-			continue
-		node.custom_minimum_size = MAP_ENTRY_SIZE
-		node.size = MAP_ENTRY_SIZE
-		var center := Vector2(-1, -1)
-		var anchor: Node2D = null
-		if ENTRY_ANCHOR.has(node.text):
-			anchor = entry_grid.get_node_or_null(ENTRY_ANCHOR[node.text]) as Node2D
-		if anchor:
-			center = anchor.position
-		elif MAP_ENTRY_POS.has(node.text):
-			var pos: Vector2 = MAP_ENTRY_POS[node.text]
-			center = Vector2(pos.x * map_w, pos.y * map_h)
-		else:
-			center = Vector2((0.10 + reserve_i * 0.09) * map_w, 0.90 * map_h)
-			reserve_i += 1
-		node.position = center - MAP_ENTRY_SIZE / 2.0
 
 var _map_snapping := false
 var _map_scroll: ScrollContainer = null

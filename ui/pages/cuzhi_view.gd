@@ -47,14 +47,7 @@ func _init(p_c):
 	sys = data.cuzhi_system
 
 # ========== 构建入口（由 adventure_page 调用）==========
-func build_cuzhi_view(page: Control, vbox: VBoxContainer):
-	# 创建入口按钮
-	var cuzhi_btn = Button.new()
-	cuzhi_btn.text = "促织园"
-	cuzhi_btn.custom_minimum_size = Vector2(180, 60)
-	cuzhi_btn.pressed.connect(show_cuzhi_view)
-	vbox.get_node("MapScroll/MapContent/AdventureEntryGrid").add_child(cuzhi_btn) # 【改】地图批次B：入口网格挪进 MapScroll/MapContent（随横版地图滑动），路径同步（规范 11.7）
-
+func build_cuzhi_view(page: Control, _vbox: VBoxContainer):
 	# 创建促织园主面板
 	_panel = Panel.new()
 	_panel.name = "CuzhiView"

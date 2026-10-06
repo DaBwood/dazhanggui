@@ -37,13 +37,7 @@ func _show_war_help():
 	vb.add_child(lbl)
 	c.add_child(popup)
 
-func build_war_view(page, vbox):
-	# --- 商战入口 ---
-	var war_btn = Button.new()
-	war_btn.text = "商战"
-	war_btn.custom_minimum_size = Vector2(180, 60)
-	war_btn.pressed.connect(c.show_view.bind("war"))
-	vbox.get_node("MapScroll/MapContent/AdventureEntryGrid").add_child(war_btn) # 【改】地图批次B：入口网格挪进 MapScroll/MapContent（随横版地图滑动），路径同步（规范 11.7）
+func build_war_view(page, _vbox):
 	
 	# --- 商战子页面 ---
 	var view = VBoxContainer.new()

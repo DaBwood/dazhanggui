@@ -36,13 +36,7 @@ func _show_manor_help():
 	vb.add_child(lbl)
 	c.add_child(popup)
 
-func build_manor_view(page, vbox):
-	# --- 庄园入口（与行善/游历并列） ---
-	var manor_btn = Button.new()
-	manor_btn.text = "庄园"
-	manor_btn.custom_minimum_size = Vector2(180, 60)
-	manor_btn.pressed.connect(c.show_view.bind("manor"))
-	vbox.get_node("MapScroll/MapContent/AdventureEntryGrid").add_child(manor_btn) # 【改】地图批次B：入口网格挪进 MapScroll/MapContent（随横版地图滑动），路径同步（规范 11.7）
+func build_manor_view(page, _vbox):
 	
 	# --- 庄园子页面 ---
 	var view = VBoxContainer.new()

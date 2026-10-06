@@ -17,14 +17,9 @@ func _init(p_c):
 	c = p_c
 	data = p_c.data
 
-# 闯荡页入口网格加"商会"按钮
-func build_entry(page, vbox):
+# v2 范式：商会入口钮已进 adventure_page.tscn（EntryGuild），本函数只登记宿主页供 open 弹层定位
+func build_entry(page, _vbox):
 	_page = page
-	var btn = Button.new()
-	btn.text = "商会"
-	btn.custom_minimum_size = Vector2(180, 60)
-	btn.pressed.connect(open)
-	vbox.get_node("MapScroll/MapContent/AdventureEntryGrid").add_child(btn) # 【改】地图批次B：入口网格挪进 MapScroll/MapContent（随横版地图滑动），路径同步（规范 11.7）
 
 # ============ 打开/关闭 ============
 func open():
