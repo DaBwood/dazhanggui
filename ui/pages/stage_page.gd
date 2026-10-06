@@ -29,27 +29,32 @@ func generate_stage_page():
 	for child in page.get_children():
 		child.free()
 
-	# 【改】让 StagePage 填满整个 PageContainer
-	page.set_anchors_preset(Control.PRESET_FULL_RECT)
+	# 【改】让 StagePage 填满整个 PageContainer；PRESET_MODE_MINSIZE=偏移清零，结果与父级尺寸无关（构建期锚定反推偏移坑两轮定案）
+	page.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT, Control.PRESET_MODE_MINSIZE)
 
-	# 骨架来自场景文件：顶排（返回/标题/？）+滚动区；实例显式铺满（场景根尺寸只是编辑器里的设计框架）
+	# 骨架来自场景文件：顶排（返回/标题/？）+滚动区；先挂父级再锚定，偏移显式清零铺满
 	var inst = STAGE_SCENE.instantiate()
 	inst.name = "StageScene"
-	inst.set_anchors_preset(Control.PRESET_FULL_RECT)
 	page.add_child(inst)
+	inst.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT, Control.PRESET_MODE_MINSIZE)
 	inst.get_node("TopRow/BackButton").pressed.connect(func(): c.switch_page("adventure"))
 	inst.get_node("TopRow/HelpButton").pressed.connect(func(): c._show_success_popup("挑战关卡获得闯荡币与道具；章节通关解锁下一章，失败会给出战力提示。"))
 
+	# 滚动区锚定与占位容器尺寸由脚本钉死：用户工程里的 tscn 锚定数值被编辑过（实测 StageScroll 高度塌成 0），
+	# 布局真相归脚本，场景文件只负责皮肤与节点结构
+	var scroll: ScrollContainer = inst.get_node("StageScroll")
+	scroll.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT, Control.PRESET_MODE_MINSIZE)
+	scroll.offset_top = 48
 	# 动态内容灌进场景占位容器（节点名保持旧契约，update_stage_page 按名查找）；
-	# 容错：场景文件缺 StageListVBox 时自建补上（旧版 tscn 直接可用，不阻断）
+	# 容错：场景文件缺 StageListVBox 时自建补上
 	var vbox: VBoxContainer
 	if inst.has_node("StageScroll/StageListVBox"):
 		vbox = inst.get_node("StageScroll/StageListVBox")
 	else:
 		vbox = VBoxContainer.new()
 		vbox.name = "StageListVBox"
-		vbox.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 		inst.get_node("StageScroll").add_child(vbox)
+	vbox.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	vbox.add_theme_constant_override("separation", 12)
 
 	# 标题
