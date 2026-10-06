@@ -2335,11 +2335,10 @@ func _ensure_hero_filter_bar():
 		b.text = "全部" if careers[i] == "" else careers[i]
 		b.custom_minimum_size = Vector2(46, 34)
 		b.add_theme_font_size_override("font_size", 13)
-		var career: String = careers[i]
-		b.pressed.connect(func(): _set_hero_career(career))
-		_hero_career_btns[career] = b
+		b.pressed.connect(_set_hero_career.bind(careers[i]))
+		_hero_career_btns[careers[i]] = b
 		bar.add_child(b)
-		if career == _hero_career:
+		if careers[i] == _hero_career:
 			b.modulate = Color(1.3, 1.15, 0.7)
 	var sp := Control.new()
 	sp.size_flags_horizontal = Control.SIZE_EXPAND_FILL
