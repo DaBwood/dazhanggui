@@ -110,6 +110,7 @@ func generate_shop_list():
 			# 特色玩法入口图标（用户 2026-10-07 素材，替换统一 ▶ 文字钮；丢图回退 ▶ 文字不变）
 			var icon_path: String = BUILDING_IMG_DIR + "play_" + shop_id + ".png"
 			if ResourceLoader.exists(icon_path):
+				play.flat = true   # 按钮自带灰底边框会在图标外圈露黑边（用户 14:02 实测）
 				play.text = ""
 				# 4.7.1 Button 无 icon_max_width（实测报错）；源图 1536~1760px 直挂会铺满屏——
 				# 运行时等比缩到 68px（显示 34px 的 2 倍冗余）再挂，expand_icon 适配按钮尺寸

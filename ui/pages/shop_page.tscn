@@ -80,8 +80,8 @@ offset_left = 40.5
 offset_top = 32.5
 offset_right = 124.5
 offset_bottom = 62.5
-theme_override_styles/panel = SubResource("SF_plate")
 mouse_filter = 2
+theme_override_styles/panel = SubResource("SF_plate")
 
 [node name="PlateVBox" type="VBoxContainer" parent="ShopVBox/MapScroll/MapContent/ShopEntryGrid/bld_hq/NamePlate" unique_id=881586872]
 layout_mode = 2
@@ -99,15 +99,15 @@ vertical_alignment = 1
 
 [node name="StaffRow" type="HBoxContainer" parent="ShopVBox/MapScroll/MapContent/ShopEntryGrid/bld_hq/NamePlate/PlateVBox" unique_id=881587146]
 layout_mode = 2
-alignment = 1
 theme_override_constants/separation = 3
+alignment = 1
 
 [node name="StaffIcon" type="TextureRect" parent="ShopVBox/MapScroll/MapContent/ShopEntryGrid/bld_hq/NamePlate/PlateVBox/StaffRow" unique_id=881587283]
 custom_minimum_size = Vector2(15, 15)
 layout_mode = 2
+mouse_filter = 2
 expand_mode = 1
 stretch_mode = 5
-mouse_filter = 2
 
 [node name="StaffNum" type="Label" parent="ShopVBox/MapScroll/MapContent/ShopEntryGrid/bld_hq/NamePlate/PlateVBox/StaffRow" unique_id=881587420]
 layout_mode = 2
@@ -128,10 +128,10 @@ flat = true
 
 [node name="PlayBtn" type="Button" parent="ShopVBox/MapScroll/MapContent/ShopEntryGrid/bld_hq" unique_id=881577008]
 layout_mode = 0
-offset_left = 282.0
-offset_top = -13.0
-offset_right = 330.0
-offset_bottom = 35.0
+offset_left = 229.0
+offset_top = -21.5
+offset_right = 321.0
+offset_bottom = 75.5
 
 [node name="bld_ke_zhan" type="Panel" parent="ShopVBox/MapScroll/MapContent/ShopEntryGrid" unique_id=881577145]
 layout_mode = 0
@@ -147,8 +147,8 @@ offset_left = 43.0
 offset_top = 32.5
 offset_right = 127.0
 offset_bottom = 62.5
-theme_override_styles/panel = SubResource("SF_plate")
 mouse_filter = 2
+theme_override_styles/panel = SubResource("SF_plate")
 
 [node name="PlateVBox" type="VBoxContainer" parent="ShopVBox/MapScroll/MapContent/ShopEntryGrid/bld_ke_zhan/NamePlate" unique_id=881587694]
 layout_mode = 2
@@ -166,15 +166,15 @@ vertical_alignment = 1
 
 [node name="StaffRow" type="HBoxContainer" parent="ShopVBox/MapScroll/MapContent/ShopEntryGrid/bld_ke_zhan/NamePlate/PlateVBox" unique_id=881587968]
 layout_mode = 2
-alignment = 1
 theme_override_constants/separation = 3
+alignment = 1
 
 [node name="StaffIcon" type="TextureRect" parent="ShopVBox/MapScroll/MapContent/ShopEntryGrid/bld_ke_zhan/NamePlate/PlateVBox/StaffRow" unique_id=881588105]
 custom_minimum_size = Vector2(15, 15)
 layout_mode = 2
+mouse_filter = 2
 expand_mode = 1
 stretch_mode = 5
-mouse_filter = 2
 
 [node name="StaffNum" type="Label" parent="ShopVBox/MapScroll/MapContent/ShopEntryGrid/bld_ke_zhan/NamePlate/PlateVBox/StaffRow" unique_id=881588242]
 layout_mode = 2
@@ -200,10 +200,10 @@ flat = true
 
 [node name="PlayBtn" type="Button" parent="ShopVBox/MapScroll/MapContent/ShopEntryGrid/bld_ke_zhan" unique_id=881577556]
 layout_mode = 0
-offset_left = 210.0
-offset_top = 35.0
-offset_right = 258.0
-offset_bottom = 83.0
+offset_left = 178.0
+offset_top = -5.5
+offset_right = 272.0
+offset_bottom = 88.5
 
 [node name="bld_yi_guan" type="Panel" parent="ShopVBox/MapScroll/MapContent/ShopEntryGrid" unique_id=881577693]
 layout_mode = 0
@@ -219,8 +219,8 @@ offset_left = 43.0
 offset_top = 31.0
 offset_right = 127.0
 offset_bottom = 61.0
-theme_override_styles/panel = SubResource("SF_plate")
 mouse_filter = 2
+theme_override_styles/panel = SubResource("SF_plate")
 
 [node name="PlateVBox" type="VBoxContainer" parent="ShopVBox/MapScroll/MapContent/ShopEntryGrid/bld_yi_guan/NamePlate" unique_id=881588516]
 layout_mode = 2
@@ -238,15 +238,15 @@ vertical_alignment = 1
 
 [node name="StaffRow" type="HBoxContainer" parent="ShopVBox/MapScroll/MapContent/ShopEntryGrid/bld_yi_guan/NamePlate/PlateVBox" unique_id=881588790]
 layout_mode = 2
-alignment = 1
 theme_override_constants/separation = 3
+alignment = 1
 
 [node name="StaffIcon" type="TextureRect" parent="ShopVBox/MapScroll/MapContent/ShopEntryGrid/bld_yi_guan/NamePlate/PlateVBox/StaffRow" unique_id=881588927]
 custom_minimum_size = Vector2(15, 15)
 layout_mode = 2
+mouse_filter = 2
 expand_mode = 1
 stretch_mode = 5
-mouse_filter = 2
 
 [node name="StaffNum" type="Label" parent="ShopVBox/MapScroll/MapContent/ShopEntryGrid/bld_yi_guan/NamePlate/PlateVBox/StaffRow" unique_id=881589064]
 layout_mode = 2
@@ -297,8 +297,8 @@ offset_left = 43.0
 offset_top = 31.0
 offset_right = 127.0
 offset_bottom = 61.0
-theme_override_styles/panel = SubResource("SF_plate")
 mouse_filter = 2
+theme_override_styles/panel = SubResource("SF_plate")
 
 [node name="PlateVBox" type="VBoxContainer" parent="ShopVBox/MapScroll/MapContent/ShopEntryGrid/bld_shuoshu_tan/NamePlate" unique_id=881589338]
 layout_mode = 2
@@ -316,15 +316,15 @@ vertical_alignment = 1
 
 [node name="StaffRow" type="HBoxContainer" parent="ShopVBox/MapScroll/MapContent/ShopEntryGrid/bld_shuoshu_tan/NamePlate/PlateVBox" unique_id=881589612]
 layout_mode = 2
-alignment = 1
 theme_override_constants/separation = 3
+alignment = 1
 
 [node name="StaffIcon" type="TextureRect" parent="ShopVBox/MapScroll/MapContent/ShopEntryGrid/bld_shuoshu_tan/NamePlate/PlateVBox/StaffRow" unique_id=881589749]
 custom_minimum_size = Vector2(15, 15)
 layout_mode = 2
+mouse_filter = 2
 expand_mode = 1
 stretch_mode = 5
-mouse_filter = 2
 
 [node name="StaffNum" type="Label" parent="ShopVBox/MapScroll/MapContent/ShopEntryGrid/bld_shuoshu_tan/NamePlate/PlateVBox/StaffRow" unique_id=881589886]
 layout_mode = 2
@@ -357,8 +357,8 @@ offset_left = 8.0
 offset_top = 60.0
 offset_right = 92.0
 offset_bottom = 90.0
-theme_override_styles/panel = SubResource("SF_plate")
 mouse_filter = 2
+theme_override_styles/panel = SubResource("SF_plate")
 
 [node name="PlateVBox" type="VBoxContainer" parent="ShopVBox/MapScroll/MapContent/ShopEntryGrid/bld_xiangliao_pu/NamePlate" unique_id=881590160]
 layout_mode = 2
@@ -376,15 +376,15 @@ vertical_alignment = 1
 
 [node name="StaffRow" type="HBoxContainer" parent="ShopVBox/MapScroll/MapContent/ShopEntryGrid/bld_xiangliao_pu/NamePlate/PlateVBox" unique_id=881590434]
 layout_mode = 2
-alignment = 1
 theme_override_constants/separation = 3
+alignment = 1
 
 [node name="StaffIcon" type="TextureRect" parent="ShopVBox/MapScroll/MapContent/ShopEntryGrid/bld_xiangliao_pu/NamePlate/PlateVBox/StaffRow" unique_id=881590571]
 custom_minimum_size = Vector2(15, 15)
 layout_mode = 2
+mouse_filter = 2
 expand_mode = 1
 stretch_mode = 5
-mouse_filter = 2
 
 [node name="StaffNum" type="Label" parent="ShopVBox/MapScroll/MapContent/ShopEntryGrid/bld_xiangliao_pu/NamePlate/PlateVBox/StaffRow" unique_id=881590708]
 layout_mode = 2
@@ -405,10 +405,10 @@ flat = true
 
 [node name="bld_dang_pu" type="Panel" parent="ShopVBox/MapScroll/MapContent/ShopEntryGrid" unique_id=881579200]
 layout_mode = 0
-offset_left = 1574.7
-offset_top = 844.9
-offset_right = 1744.7
-offset_bottom = 936.9
+offset_left = 955.0
+offset_top = 55.0
+offset_right = 1125.0
+offset_bottom = 147.0
 theme_override_styles/panel = SubResource("SE_build")
 
 [node name="NamePlate" type="PanelContainer" parent="ShopVBox/MapScroll/MapContent/ShopEntryGrid/bld_dang_pu" unique_id=881590845]
@@ -417,8 +417,8 @@ offset_left = 43.0
 offset_top = 31.0
 offset_right = 127.0
 offset_bottom = 61.0
-theme_override_styles/panel = SubResource("SF_plate")
 mouse_filter = 2
+theme_override_styles/panel = SubResource("SF_plate")
 
 [node name="PlateVBox" type="VBoxContainer" parent="ShopVBox/MapScroll/MapContent/ShopEntryGrid/bld_dang_pu/NamePlate" unique_id=881590982]
 layout_mode = 2
@@ -436,15 +436,15 @@ vertical_alignment = 1
 
 [node name="StaffRow" type="HBoxContainer" parent="ShopVBox/MapScroll/MapContent/ShopEntryGrid/bld_dang_pu/NamePlate/PlateVBox" unique_id=881591256]
 layout_mode = 2
-alignment = 1
 theme_override_constants/separation = 3
+alignment = 1
 
 [node name="StaffIcon" type="TextureRect" parent="ShopVBox/MapScroll/MapContent/ShopEntryGrid/bld_dang_pu/NamePlate/PlateVBox/StaffRow" unique_id=881591393]
 custom_minimum_size = Vector2(15, 15)
 layout_mode = 2
+mouse_filter = 2
 expand_mode = 1
 stretch_mode = 5
-mouse_filter = 2
 
 [node name="StaffNum" type="Label" parent="ShopVBox/MapScroll/MapContent/ShopEntryGrid/bld_dang_pu/NamePlate/PlateVBox/StaffRow" unique_id=881591530]
 layout_mode = 2
@@ -457,10 +457,8 @@ vertical_alignment = 1
 
 [node name="BuildingBtn" type="Button" parent="ShopVBox/MapScroll/MapContent/ShopEntryGrid/bld_dang_pu" unique_id=881579474]
 layout_mode = 0
-offset_left = 0.0
-offset_top = 0.0
 offset_right = 170.0
-offset_bottom = 92.0
+offset_bottom = 188.0
 flat = true
 
 [node name="bld_yao_pu" type="Panel" parent="ShopVBox/MapScroll/MapContent/ShopEntryGrid" unique_id=881579611]
@@ -477,8 +475,8 @@ offset_left = 43.0
 offset_top = 31.0
 offset_right = 127.0
 offset_bottom = 61.0
-theme_override_styles/panel = SubResource("SF_plate")
 mouse_filter = 2
+theme_override_styles/panel = SubResource("SF_plate")
 
 [node name="PlateVBox" type="VBoxContainer" parent="ShopVBox/MapScroll/MapContent/ShopEntryGrid/bld_yao_pu/NamePlate" unique_id=881591804]
 layout_mode = 2
@@ -496,15 +494,15 @@ vertical_alignment = 1
 
 [node name="StaffRow" type="HBoxContainer" parent="ShopVBox/MapScroll/MapContent/ShopEntryGrid/bld_yao_pu/NamePlate/PlateVBox" unique_id=881592078]
 layout_mode = 2
-alignment = 1
 theme_override_constants/separation = 3
+alignment = 1
 
 [node name="StaffIcon" type="TextureRect" parent="ShopVBox/MapScroll/MapContent/ShopEntryGrid/bld_yao_pu/NamePlate/PlateVBox/StaffRow" unique_id=881592215]
 custom_minimum_size = Vector2(15, 15)
 layout_mode = 2
+mouse_filter = 2
 expand_mode = 1
 stretch_mode = 5
-mouse_filter = 2
 
 [node name="StaffNum" type="Label" parent="ShopVBox/MapScroll/MapContent/ShopEntryGrid/bld_yao_pu/NamePlate/PlateVBox/StaffRow" unique_id=881592352]
 layout_mode = 2
@@ -555,8 +553,8 @@ offset_left = 38.0
 offset_top = 30.0
 offset_right = 122.0
 offset_bottom = 60.0
-theme_override_styles/panel = SubResource("SF_plate")
 mouse_filter = 2
+theme_override_styles/panel = SubResource("SF_plate")
 
 [node name="PlateVBox" type="VBoxContainer" parent="ShopVBox/MapScroll/MapContent/ShopEntryGrid/bld_jiu_si/NamePlate" unique_id=881592626]
 layout_mode = 2
@@ -574,15 +572,15 @@ vertical_alignment = 1
 
 [node name="StaffRow" type="HBoxContainer" parent="ShopVBox/MapScroll/MapContent/ShopEntryGrid/bld_jiu_si/NamePlate/PlateVBox" unique_id=881592900]
 layout_mode = 2
-alignment = 1
 theme_override_constants/separation = 3
+alignment = 1
 
 [node name="StaffIcon" type="TextureRect" parent="ShopVBox/MapScroll/MapContent/ShopEntryGrid/bld_jiu_si/NamePlate/PlateVBox/StaffRow" unique_id=881593037]
 custom_minimum_size = Vector2(15, 15)
 layout_mode = 2
+mouse_filter = 2
 expand_mode = 1
 stretch_mode = 5
-mouse_filter = 2
 
 [node name="StaffNum" type="Label" parent="ShopVBox/MapScroll/MapContent/ShopEntryGrid/bld_jiu_si/NamePlate/PlateVBox/StaffRow" unique_id=881593174]
 layout_mode = 2
@@ -633,8 +631,8 @@ offset_left = 46.0
 offset_top = 43.0
 offset_right = 130.0
 offset_bottom = 73.0
-theme_override_styles/panel = SubResource("SF_plate")
 mouse_filter = 2
+theme_override_styles/panel = SubResource("SF_plate")
 
 [node name="PlateVBox" type="VBoxContainer" parent="ShopVBox/MapScroll/MapContent/ShopEntryGrid/bld_yi_zhan/NamePlate" unique_id=881593448]
 layout_mode = 2
@@ -652,15 +650,15 @@ vertical_alignment = 1
 
 [node name="StaffRow" type="HBoxContainer" parent="ShopVBox/MapScroll/MapContent/ShopEntryGrid/bld_yi_zhan/NamePlate/PlateVBox" unique_id=881593722]
 layout_mode = 2
-alignment = 1
 theme_override_constants/separation = 3
+alignment = 1
 
 [node name="StaffIcon" type="TextureRect" parent="ShopVBox/MapScroll/MapContent/ShopEntryGrid/bld_yi_zhan/NamePlate/PlateVBox/StaffRow" unique_id=881593859]
 custom_minimum_size = Vector2(15, 15)
 layout_mode = 2
+mouse_filter = 2
 expand_mode = 1
 stretch_mode = 5
-mouse_filter = 2
 
 [node name="StaffNum" type="Label" parent="ShopVBox/MapScroll/MapContent/ShopEntryGrid/bld_yi_zhan/NamePlate/PlateVBox/StaffRow" unique_id=881593996]
 layout_mode = 2
@@ -693,8 +691,8 @@ offset_left = 10.5
 offset_top = 55.0
 offset_right = 94.5
 offset_bottom = 85.0
-theme_override_styles/panel = SubResource("SF_plate")
 mouse_filter = 2
+theme_override_styles/panel = SubResource("SF_plate")
 
 [node name="PlateVBox" type="VBoxContainer" parent="ShopVBox/MapScroll/MapContent/ShopEntryGrid/bld_miaoyin_fang/NamePlate" unique_id=881594270]
 layout_mode = 2
@@ -712,15 +710,15 @@ vertical_alignment = 1
 
 [node name="StaffRow" type="HBoxContainer" parent="ShopVBox/MapScroll/MapContent/ShopEntryGrid/bld_miaoyin_fang/NamePlate/PlateVBox" unique_id=881594544]
 layout_mode = 2
-alignment = 1
 theme_override_constants/separation = 3
+alignment = 1
 
 [node name="StaffIcon" type="TextureRect" parent="ShopVBox/MapScroll/MapContent/ShopEntryGrid/bld_miaoyin_fang/NamePlate/PlateVBox/StaffRow" unique_id=881594681]
 custom_minimum_size = Vector2(15, 15)
 layout_mode = 2
+mouse_filter = 2
 expand_mode = 1
 stretch_mode = 5
-mouse_filter = 2
 
 [node name="StaffNum" type="Label" parent="ShopVBox/MapScroll/MapContent/ShopEntryGrid/bld_miaoyin_fang/NamePlate/PlateVBox/StaffRow" unique_id=881594818]
 layout_mode = 2
@@ -760,8 +758,8 @@ offset_left = 8.0
 offset_top = 60.0
 offset_right = 92.0
 offset_bottom = 90.0
-theme_override_styles/panel = SubResource("SF_plate")
 mouse_filter = 2
+theme_override_styles/panel = SubResource("SF_plate")
 
 [node name="PlateVBox" type="VBoxContainer" parent="ShopVBox/MapScroll/MapContent/ShopEntryGrid/bld_jiu_fang/NamePlate" unique_id=881595092]
 layout_mode = 2
@@ -779,15 +777,15 @@ vertical_alignment = 1
 
 [node name="StaffRow" type="HBoxContainer" parent="ShopVBox/MapScroll/MapContent/ShopEntryGrid/bld_jiu_fang/NamePlate/PlateVBox" unique_id=881595366]
 layout_mode = 2
-alignment = 1
 theme_override_constants/separation = 3
+alignment = 1
 
 [node name="StaffIcon" type="TextureRect" parent="ShopVBox/MapScroll/MapContent/ShopEntryGrid/bld_jiu_fang/NamePlate/PlateVBox/StaffRow" unique_id=881595503]
 custom_minimum_size = Vector2(15, 15)
 layout_mode = 2
+mouse_filter = 2
 expand_mode = 1
 stretch_mode = 5
-mouse_filter = 2
 
 [node name="StaffNum" type="Label" parent="ShopVBox/MapScroll/MapContent/ShopEntryGrid/bld_jiu_fang/NamePlate/PlateVBox/StaffRow" unique_id=881595640]
 layout_mode = 2
@@ -827,8 +825,8 @@ offset_left = 43.0
 offset_top = 31.0
 offset_right = 127.0
 offset_bottom = 61.0
-theme_override_styles/panel = SubResource("SF_plate")
 mouse_filter = 2
+theme_override_styles/panel = SubResource("SF_plate")
 
 [node name="PlateVBox" type="VBoxContainer" parent="ShopVBox/MapScroll/MapContent/ShopEntryGrid/bld_changle_fang/NamePlate" unique_id=881595914]
 layout_mode = 2
@@ -846,15 +844,15 @@ vertical_alignment = 1
 
 [node name="StaffRow" type="HBoxContainer" parent="ShopVBox/MapScroll/MapContent/ShopEntryGrid/bld_changle_fang/NamePlate/PlateVBox" unique_id=881596188]
 layout_mode = 2
-alignment = 1
 theme_override_constants/separation = 3
+alignment = 1
 
 [node name="StaffIcon" type="TextureRect" parent="ShopVBox/MapScroll/MapContent/ShopEntryGrid/bld_changle_fang/NamePlate/PlateVBox/StaffRow" unique_id=881596325]
 custom_minimum_size = Vector2(15, 15)
 layout_mode = 2
+mouse_filter = 2
 expand_mode = 1
 stretch_mode = 5
-mouse_filter = 2
 
 [node name="StaffNum" type="Label" parent="ShopVBox/MapScroll/MapContent/ShopEntryGrid/bld_changle_fang/NamePlate/PlateVBox/StaffRow" unique_id=881596462]
 layout_mode = 2
@@ -887,8 +885,8 @@ offset_left = 43.0
 offset_top = 31.0
 offset_right = 127.0
 offset_bottom = 61.0
-theme_override_styles/panel = SubResource("SF_plate")
 mouse_filter = 2
+theme_override_styles/panel = SubResource("SF_plate")
 
 [node name="PlateVBox" type="VBoxContainer" parent="ShopVBox/MapScroll/MapContent/ShopEntryGrid/bld_chengyi_pu/NamePlate" unique_id=881596736]
 layout_mode = 2
@@ -906,15 +904,15 @@ vertical_alignment = 1
 
 [node name="StaffRow" type="HBoxContainer" parent="ShopVBox/MapScroll/MapContent/ShopEntryGrid/bld_chengyi_pu/NamePlate/PlateVBox" unique_id=881597010]
 layout_mode = 2
-alignment = 1
 theme_override_constants/separation = 3
+alignment = 1
 
 [node name="StaffIcon" type="TextureRect" parent="ShopVBox/MapScroll/MapContent/ShopEntryGrid/bld_chengyi_pu/NamePlate/PlateVBox/StaffRow" unique_id=881597147]
 custom_minimum_size = Vector2(15, 15)
 layout_mode = 2
+mouse_filter = 2
 expand_mode = 1
 stretch_mode = 5
-mouse_filter = 2
 
 [node name="StaffNum" type="Label" parent="ShopVBox/MapScroll/MapContent/ShopEntryGrid/bld_chengyi_pu/NamePlate/PlateVBox/StaffRow" unique_id=881597284]
 layout_mode = 2
@@ -947,8 +945,8 @@ offset_left = 43.0
 offset_top = 31.0
 offset_right = 127.0
 offset_bottom = 61.0
-theme_override_styles/panel = SubResource("SF_plate")
 mouse_filter = 2
+theme_override_styles/panel = SubResource("SF_plate")
 
 [node name="PlateVBox" type="VBoxContainer" parent="ShopVBox/MapScroll/MapContent/ShopEntryGrid/bld_suanming_tan/NamePlate" unique_id=881597558]
 layout_mode = 2
@@ -966,15 +964,15 @@ vertical_alignment = 1
 
 [node name="StaffRow" type="HBoxContainer" parent="ShopVBox/MapScroll/MapContent/ShopEntryGrid/bld_suanming_tan/NamePlate/PlateVBox" unique_id=881597832]
 layout_mode = 2
-alignment = 1
 theme_override_constants/separation = 3
+alignment = 1
 
 [node name="StaffIcon" type="TextureRect" parent="ShopVBox/MapScroll/MapContent/ShopEntryGrid/bld_suanming_tan/NamePlate/PlateVBox/StaffRow" unique_id=881597969]
 custom_minimum_size = Vector2(15, 15)
 layout_mode = 2
+mouse_filter = 2
 expand_mode = 1
 stretch_mode = 5
-mouse_filter = 2
 
 [node name="StaffNum" type="Label" parent="ShopVBox/MapScroll/MapContent/ShopEntryGrid/bld_suanming_tan/NamePlate/PlateVBox/StaffRow" unique_id=881598106]
 layout_mode = 2
@@ -1007,8 +1005,8 @@ offset_left = 43.0
 offset_top = 31.0
 offset_right = 127.0
 offset_bottom = 61.0
-theme_override_styles/panel = SubResource("SF_plate")
 mouse_filter = 2
+theme_override_styles/panel = SubResource("SF_plate")
 
 [node name="PlateVBox" type="VBoxContainer" parent="ShopVBox/MapScroll/MapContent/ShopEntryGrid/bld_chuan_wu/NamePlate" unique_id=881598380]
 layout_mode = 2
@@ -1026,15 +1024,15 @@ vertical_alignment = 1
 
 [node name="StaffRow" type="HBoxContainer" parent="ShopVBox/MapScroll/MapContent/ShopEntryGrid/bld_chuan_wu/NamePlate/PlateVBox" unique_id=881598654]
 layout_mode = 2
-alignment = 1
 theme_override_constants/separation = 3
+alignment = 1
 
 [node name="StaffIcon" type="TextureRect" parent="ShopVBox/MapScroll/MapContent/ShopEntryGrid/bld_chuan_wu/NamePlate/PlateVBox/StaffRow" unique_id=881598791]
 custom_minimum_size = Vector2(15, 15)
 layout_mode = 2
+mouse_filter = 2
 expand_mode = 1
 stretch_mode = 5
-mouse_filter = 2
 
 [node name="StaffNum" type="Label" parent="ShopVBox/MapScroll/MapContent/ShopEntryGrid/bld_chuan_wu/NamePlate/PlateVBox/StaffRow" unique_id=881598928]
 layout_mode = 2
@@ -1067,8 +1065,8 @@ offset_left = 43.0
 offset_top = 31.0
 offset_right = 127.0
 offset_bottom = 61.0
-theme_override_styles/panel = SubResource("SF_plate")
 mouse_filter = 2
+theme_override_styles/panel = SubResource("SF_plate")
 
 [node name="PlateVBox" type="VBoxContainer" parent="ShopVBox/MapScroll/MapContent/ShopEntryGrid/bld_chema_hang/NamePlate" unique_id=881599202]
 layout_mode = 2
@@ -1086,15 +1084,15 @@ vertical_alignment = 1
 
 [node name="StaffRow" type="HBoxContainer" parent="ShopVBox/MapScroll/MapContent/ShopEntryGrid/bld_chema_hang/NamePlate/PlateVBox" unique_id=881599476]
 layout_mode = 2
-alignment = 1
 theme_override_constants/separation = 3
+alignment = 1
 
 [node name="StaffIcon" type="TextureRect" parent="ShopVBox/MapScroll/MapContent/ShopEntryGrid/bld_chema_hang/NamePlate/PlateVBox/StaffRow" unique_id=881599613]
 custom_minimum_size = Vector2(15, 15)
 layout_mode = 2
+mouse_filter = 2
 expand_mode = 1
 stretch_mode = 5
-mouse_filter = 2
 
 [node name="StaffNum" type="Label" parent="ShopVBox/MapScroll/MapContent/ShopEntryGrid/bld_chema_hang/NamePlate/PlateVBox/StaffRow" unique_id=881599750]
 layout_mode = 2
@@ -1127,8 +1125,8 @@ offset_left = 43.0
 offset_top = 31.0
 offset_right = 127.0
 offset_bottom = 61.0
-theme_override_styles/panel = SubResource("SF_plate")
 mouse_filter = 2
+theme_override_styles/panel = SubResource("SF_plate")
 
 [node name="PlateVBox" type="VBoxContainer" parent="ShopVBox/MapScroll/MapContent/ShopEntryGrid/bld_cha_si/NamePlate" unique_id=881600024]
 layout_mode = 2
@@ -1146,15 +1144,15 @@ vertical_alignment = 1
 
 [node name="StaffRow" type="HBoxContainer" parent="ShopVBox/MapScroll/MapContent/ShopEntryGrid/bld_cha_si/NamePlate/PlateVBox" unique_id=881600298]
 layout_mode = 2
-alignment = 1
 theme_override_constants/separation = 3
+alignment = 1
 
 [node name="StaffIcon" type="TextureRect" parent="ShopVBox/MapScroll/MapContent/ShopEntryGrid/bld_cha_si/NamePlate/PlateVBox/StaffRow" unique_id=881600435]
 custom_minimum_size = Vector2(15, 15)
 layout_mode = 2
+mouse_filter = 2
 expand_mode = 1
 stretch_mode = 5
-mouse_filter = 2
 
 [node name="StaffNum" type="Label" parent="ShopVBox/MapScroll/MapContent/ShopEntryGrid/bld_cha_si/NamePlate/PlateVBox/StaffRow" unique_id=881600572]
 layout_mode = 2
@@ -1187,8 +1185,8 @@ offset_left = 43.0
 offset_top = 31.0
 offset_right = 127.0
 offset_bottom = 61.0
-theme_override_styles/panel = SubResource("SF_plate")
 mouse_filter = 2
+theme_override_styles/panel = SubResource("SF_plate")
 
 [node name="PlateVBox" type="VBoxContainer" parent="ShopVBox/MapScroll/MapContent/ShopEntryGrid/bld_xi_lou/NamePlate" unique_id=881600846]
 layout_mode = 2
@@ -1206,15 +1204,15 @@ vertical_alignment = 1
 
 [node name="StaffRow" type="HBoxContainer" parent="ShopVBox/MapScroll/MapContent/ShopEntryGrid/bld_xi_lou/NamePlate/PlateVBox" unique_id=881601120]
 layout_mode = 2
-alignment = 1
 theme_override_constants/separation = 3
+alignment = 1
 
 [node name="StaffIcon" type="TextureRect" parent="ShopVBox/MapScroll/MapContent/ShopEntryGrid/bld_xi_lou/NamePlate/PlateVBox/StaffRow" unique_id=881601257]
 custom_minimum_size = Vector2(15, 15)
 layout_mode = 2
+mouse_filter = 2
 expand_mode = 1
 stretch_mode = 5
-mouse_filter = 2
 
 [node name="StaffNum" type="Label" parent="ShopVBox/MapScroll/MapContent/ShopEntryGrid/bld_xi_lou/NamePlate/PlateVBox/StaffRow" unique_id=881601394]
 layout_mode = 2
@@ -1247,8 +1245,8 @@ offset_left = 43.0
 offset_top = 31.0
 offset_right = 127.0
 offset_bottom = 61.0
-theme_override_styles/panel = SubResource("SF_plate")
 mouse_filter = 2
+theme_override_styles/panel = SubResource("SF_plate")
 
 [node name="PlateVBox" type="VBoxContainer" parent="ShopVBox/MapScroll/MapContent/ShopEntryGrid/bld_zao_tang/NamePlate" unique_id=881601668]
 layout_mode = 2
@@ -1266,15 +1264,15 @@ vertical_alignment = 1
 
 [node name="StaffRow" type="HBoxContainer" parent="ShopVBox/MapScroll/MapContent/ShopEntryGrid/bld_zao_tang/NamePlate/PlateVBox" unique_id=881601942]
 layout_mode = 2
-alignment = 1
 theme_override_constants/separation = 3
+alignment = 1
 
 [node name="StaffIcon" type="TextureRect" parent="ShopVBox/MapScroll/MapContent/ShopEntryGrid/bld_zao_tang/NamePlate/PlateVBox/StaffRow" unique_id=881602079]
 custom_minimum_size = Vector2(15, 15)
 layout_mode = 2
+mouse_filter = 2
 expand_mode = 1
 stretch_mode = 5
-mouse_filter = 2
 
 [node name="StaffNum" type="Label" parent="ShopVBox/MapScroll/MapContent/ShopEntryGrid/bld_zao_tang/NamePlate/PlateVBox/StaffRow" unique_id=881602216]
 layout_mode = 2
@@ -1307,8 +1305,8 @@ offset_left = 43.0
 offset_top = 31.0
 offset_right = 127.0
 offset_bottom = 61.0
-theme_override_styles/panel = SubResource("SF_plate")
 mouse_filter = 2
+theme_override_styles/panel = SubResource("SF_plate")
 
 [node name="PlateVBox" type="VBoxContainer" parent="ShopVBox/MapScroll/MapContent/ShopEntryGrid/bld_biao_ju/NamePlate" unique_id=881602490]
 layout_mode = 2
@@ -1326,15 +1324,15 @@ vertical_alignment = 1
 
 [node name="StaffRow" type="HBoxContainer" parent="ShopVBox/MapScroll/MapContent/ShopEntryGrid/bld_biao_ju/NamePlate/PlateVBox" unique_id=881602764]
 layout_mode = 2
-alignment = 1
 theme_override_constants/separation = 3
+alignment = 1
 
 [node name="StaffIcon" type="TextureRect" parent="ShopVBox/MapScroll/MapContent/ShopEntryGrid/bld_biao_ju/NamePlate/PlateVBox/StaffRow" unique_id=881602901]
 custom_minimum_size = Vector2(15, 15)
 layout_mode = 2
+mouse_filter = 2
 expand_mode = 1
 stretch_mode = 5
-mouse_filter = 2
 
 [node name="StaffNum" type="Label" parent="ShopVBox/MapScroll/MapContent/ShopEntryGrid/bld_biao_ju/NamePlate/PlateVBox/StaffRow" unique_id=881603038]
 layout_mode = 2
@@ -1367,8 +1365,8 @@ offset_left = 43.0
 offset_top = 31.0
 offset_right = 127.0
 offset_bottom = 61.0
-theme_override_styles/panel = SubResource("SF_plate")
 mouse_filter = 2
+theme_override_styles/panel = SubResource("SF_plate")
 
 [node name="PlateVBox" type="VBoxContainer" parent="ShopVBox/MapScroll/MapContent/ShopEntryGrid/bld_yao_chang/NamePlate" unique_id=881603312]
 layout_mode = 2
@@ -1386,15 +1384,15 @@ vertical_alignment = 1
 
 [node name="StaffRow" type="HBoxContainer" parent="ShopVBox/MapScroll/MapContent/ShopEntryGrid/bld_yao_chang/NamePlate/PlateVBox" unique_id=881603586]
 layout_mode = 2
-alignment = 1
 theme_override_constants/separation = 3
+alignment = 1
 
 [node name="StaffIcon" type="TextureRect" parent="ShopVBox/MapScroll/MapContent/ShopEntryGrid/bld_yao_chang/NamePlate/PlateVBox/StaffRow" unique_id=881603723]
 custom_minimum_size = Vector2(15, 15)
 layout_mode = 2
+mouse_filter = 2
 expand_mode = 1
 stretch_mode = 5
-mouse_filter = 2
 
 [node name="StaffNum" type="Label" parent="ShopVBox/MapScroll/MapContent/ShopEntryGrid/bld_yao_chang/NamePlate/PlateVBox/StaffRow" unique_id=881603860]
 layout_mode = 2
@@ -1411,4 +1409,3 @@ offset_top = 11.0
 offset_right = 271.0
 offset_bottom = 194.0
 flat = true
-
