@@ -1,0 +1,75 @@
+[gd_scene format=3 uid="uid://c2h0qp7k1x9wb"]
+
+[ext_resource type="Texture2D" uid="uid://qgix7bixbxee" path="res://assets/shops/map_bg.png" id="1_bg"]
+
+[node name="ShopScene" type="Control" unique_id=881575501]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+
+[node name="ShopVBox" type="VBoxContainer" parent="." unique_id=492532961]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_constants/separation = 12
+
+[node name="TitleLabel" type="Label" parent="ShopVBox" unique_id=873763281]
+layout_mode = 2
+theme_override_colors/font_color = Color(1, 0.84313726, 0, 1)
+theme_override_font_sizes/font_size = 24
+text = "商铺"
+horizontal_alignment = 1
+
+[node name="MapScroll" type="ScrollContainer" parent="ShopVBox" unique_id=1168269341]
+clip_contents = false
+layout_mode = 2
+size_flags_vertical = 3
+vertical_scroll_mode = 0
+
+[node name="MapContent" type="Control" parent="ShopVBox/MapScroll" unique_id=1711667461]
+custom_minimum_size = Vector2(3353, 1067)
+layout_mode = 2
+size_flags_vertical = 3
+
+[node name="BgImage" type="TextureRect" parent="ShopVBox/MapScroll/MapContent" unique_id=490228241]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+texture = ExtResource("1_bg")
+expand_mode = 1
+stretch_mode = 6
+
+[node name="ShopEntryGrid" type="Control" parent="ShopVBox/MapScroll/MapContent" unique_id=1487940691]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+
+[node name="MainHelpButton" type="Button" parent="." unique_id=902766201]
+custom_minimum_size = Vector2(40, 36)
+layout_mode = 1
+anchors_preset = 1
+anchor_left = 1.0
+anchor_right = 1.0
+offset_left = -48.0
+offset_top = 8.0
+offset_right = -8.0
+offset_bottom = 44.0
+grow_horizontal = 0
+theme_override_font_sizes/font_size = 16
+text = "?"

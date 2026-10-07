@@ -1338,22 +1338,11 @@ func _build_scene_shell():
 	pc.name = "PageContainer"
 	add_child(pc)
 
-	# 商铺页（三十六节批次1：列表→长地图）：纵 ScrollContainer + 超高 Control 内容节点，
-	# 建筑=坐标显式摆放的 Panel（代码布局老套路，命盘同法）；钱庄(总部)从顶部横幅迁入地图 C 位
-	# （generate_shop_list 要求 ShopScroll/ShopList 必须存在，不能省）
+	# 商铺页：空宿主容器（场景化批次2，口径同闯荡页——骨架在 shop_page.tscn，generate 时实例化）；
+	# generate_shop_list 只要求 ShopPage 宿主存在
 	var shop_pg = Control.new()
 	shop_pg.name = "ShopPage"
 	pc.add_child(shop_pg)
-	var shop_scroll = ScrollContainer.new()
-	shop_scroll.horizontal_scroll_mode = ScrollContainer.SCROLL_MODE_AUTO   # 【改】横版地图：横向可滚（触屏拖动浏览）
-	shop_scroll.vertical_scroll_mode = ScrollContainer.SCROLL_MODE_DISABLED   # 【新增】纵向锁死，建筑单行排布
-	shop_scroll.name = "ShopScroll"
-	shop_scroll.set_anchors_preset(Control.PRESET_FULL_RECT)
-	shop_scroll.offset_top = 8   # 【改】72→8：钱庄横幅已迁入地图，只留小边距
-	shop_pg.add_child(shop_scroll)
-	var shop_list = Control.new()   # 【改】GridContainer→Control：地图内容节点，子建筑按坐标显式摆放
-	shop_list.name = "ShopList"
-	shop_scroll.add_child(shop_list)
 
 	# 门客页：滚动容器（网格由 hero_page 代码填充）
 	# （generate_hero_list 直接 get_node("HeroScroll")，不能省）
@@ -1461,14 +1450,6 @@ func _apply_portrait_layout():
 			pg.size = $PageContainer.size
 	
 	
-	# 商铺页内部：钱庄入口顶部通栏(高64) + 店铺列表铺满剩余
-	if has_node("PageContainer/ShopPage/ShopScroll"):
-		var shop_scroll = $PageContainer/ShopPage/ShopScroll
-		shop_scroll.set_anchors_preset(Control.PRESET_TOP_LEFT)
-		shop_scroll.position = Vector2(0, 8)   # 【改】72→8：钱庄横幅已迁入地图
-		shop_scroll.size = Vector2(vs.x, vs.y - 118)   # 【改】118 = 顶栏50 + 留白8 + 底栏60（原182=50+72+60）
-		generate_shop_list()   # 【新增】窗口尺寸变化时重建地图：地图尺寸随可视高度自适应（2026-09-11 拍板），只生成一次会在改窗口后错位
-
 	# 门客页 / 背包页的滚动区铺满整页
 	# 【改】门客页滚动区左右留 12px 边距，卡片品质边框不再贴屏边被截断
 	for path in ["PageContainer/HeroPage/HeroScroll", "PageContainer/BagPage/BagScroll"]:
