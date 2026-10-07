@@ -79,6 +79,22 @@ func _show_login_gate():
 	else:
 		_show_login_popup()
 
+# 进场闸门：先拉商会共享记录再进游戏——赚速公式（含离线结算，shop_system.calculate_offline_income）
+# 实读 guild_system.cache，后进=离线结算缺商会份+顶栏赚速跳变飘字（2026-10-07 用户实测两症定案）；拉取失败不挡进场
+func _enter_game_when_guild_ready(after: Callable = Callable()) -> void:
+	var gid: String = c.data.guild_system.guild_id
+	if gid == "":
+		c._enter_game()
+		if after.is_valid():
+			after.call()
+		return
+	c.net.guild_get(gid, func(_code, d):
+		if d.get("ok", false):
+			c.data.guild_system.set_record(d.get("record", {}), c.net.username)
+		c._enter_game()
+		if after.is_valid():
+			after.call())
+
 # 【新增】离线模式进游戏：不登录，用默认本地档，不与云端同步（云连不上时的保底入口）
 func _enter_offline():
 	c._safe_close("LoginPopup")
@@ -173,17 +189,20 @@ func _on_net_download_result(ok: bool, has_save: bool, save_text: String, update
 				_show_login_gate()
 			return
 		if not has_save or save_text.is_empty():
-			c._enter_game()   # 云端确认无档：本地（或新档）直接进，安全（玩家已在门后显式点过进入）
+			_enter_game_when_guild_ready()   # 云端确认无档：本地（或新档）直接进，安全（玩家已在门后显式点过进入）
 			return
 
 		var info = _read_local_save_info()
 		if not info.exists:
 			# 本机无档：云端落盘直接用（原 pending 行为）
 			var f0 = FileAccess.open(c.data.save_path, FileAccess.WRITE)
-			if f0:
-				f0.store_string(save_text)
-				f0.close()
-			c._enter_game()
+			if f0 == null:
+				# 写不进去就绝不进游戏：空档进游戏 30 秒自动上传会把云端好档顶掉（丢档事故同因）
+				c._show_success_popup("云端存档落盘失败：本地写入被拒", 0.0, "warn")
+				return
+			f0.store_string(save_text)
+			f0.close()
+			_enter_game_when_guild_ready()
 			return
 		var cloud_save_id := ""
 		var parsed = JSON.parse_string(save_text)
@@ -192,16 +211,18 @@ func _on_net_download_result(ok: bool, has_save: bool, save_text: String, update
 		if cloud_save_id == "" or cloud_save_id != info.save_id:
 			# 血缘不同（或云端旧档缺ID无法判定）：先进游戏（本地档），弹窗让玩家选；选恢复云端则写档重载
 			_upload_paused = true   # 先暂停再进游戏：_enter_game 会立即存档触发上传，而弹窗此刻还没建、存在性判据兜不住
-			c._enter_game()
-			_show_cloud_restore_popup(save_text, updated_at)
+			_enter_game_when_guild_ready(func(): _show_cloud_restore_popup(save_text, updated_at))
 			return
 		# 同一血缘：新的那份赢，无需弹窗
 		if updated_at / 1000.0 > info.last_logout + 5:
 			var f1 = FileAccess.open(c.data.save_path, FileAccess.WRITE)
-			if f1:
-				f1.store_string(save_text)
-				f1.close()
-		c._enter_game()
+			if f1 == null:
+				# 落盘失败绝不带病进游戏：否则本地旧档会被当"新档"继续用（静默失败=选云端最终本地的表象）
+				c._show_success_popup("云端存档落盘失败：本地写入被拒", 0.0, "warn")
+				return
+			f1.store_string(save_text)
+			f1.close()
+		_enter_game_when_guild_ready()
 		return
 	if not ok:
 		if was_manual: c._show_success_popup("网络错误，稍后再试", 3.0, "warn")   # 【改】飘字退休→warn 弹窗
@@ -312,9 +333,12 @@ func _show_cloud_restore_popup(save_text: String, updated_at: int):
 		_upload_paused = false   # 已做选择，恢复/保留都不再挡上传
 		# 【改】写当前账号档（原来写 data.SAVE_PATH 常量，恢复的档会进错文件）
 		var f = FileAccess.open(c.data.save_path, FileAccess.WRITE)
-		if f:
-			f.store_string(save_text)
-			f.close()
+		if f == null:
+			# 写不进去就绝不重载：重载会按本地旧档进游戏，玩家以为恢复了云端实则本地
+			c._show_success_popup("恢复失败：存档写入被拒，未做任何改动", 0.0, "warn")
+			return
+		f.store_string(save_text)
+		f.close()
 		c.get_tree().reload_current_scene()
 	)
 	row.add_child(confirm)
