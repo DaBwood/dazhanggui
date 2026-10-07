@@ -16,6 +16,7 @@ var c   # game_controller 根脚本（无类型，与 pages 模块一致；c.dat
 var _web_login_cb = null          # 【新增】Web 登录表单 JS 回调引用（JavaScriptBridge 回调是 RefCounted，必须持有否则被释放后回调失效）
 var _manual_download := false     # 【新增】标记本次下载是手动触发（恢复按钮），用于给提示
 var _net_login_pending := false   # 【新增】登录流程中：正等云端存档查询结果来决定用哪份档
+var _upload_paused := false       # 【新增】冲突仲裁未决期间暂停自动上传（弹窗未建时存在性判据兜不住这扇窗，先存档后弹窗会把云端新档顶掉）
 
 func _init(p_c):
 	c = p_c
@@ -119,6 +120,8 @@ func _on_net_auth_expired():
 
 # 【新增】本地存档写盘 → 自动上传云端（未登录静默跳过；上传失败不打扰，下次自动存再传）
 func _on_game_saved_upload(save_text: String):
+	if _upload_paused:
+		return   # 冲突仲裁未决：此时"保留本地"还没被玩家确认，一上传就永久覆盖云端新档
 	if c.get_node_or_null("CloudRestorePopup") != null:
 		return   # 存档弹窗开着：暂停上传，等玩家选完/点完
 	if c.net != null and c.net.token != "":
@@ -188,6 +191,7 @@ func _on_net_download_result(ok: bool, has_save: bool, save_text: String, update
 			cloud_save_id = str(parsed.get("save_id", ""))
 		if cloud_save_id == "" or cloud_save_id != info.save_id:
 			# 血缘不同（或云端旧档缺ID无法判定）：先进游戏（本地档），弹窗让玩家选；选恢复云端则写档重载
+			_upload_paused = true   # 先暂停再进游戏：_enter_game 会立即存档触发上传，而弹窗此刻还没建、存在性判据兜不住
 			c._enter_game()
 			_show_cloud_restore_popup(save_text, updated_at)
 			return
@@ -305,6 +309,7 @@ func _show_cloud_restore_popup(save_text: String, updated_at: int):
 	confirm.text = "恢复云端（覆盖本地）"
 	confirm.custom_minimum_size = Vector2(180, 44)
 	confirm.pressed.connect(func():
+		_upload_paused = false   # 已做选择，恢复/保留都不再挡上传
 		# 【改】写当前账号档（原来写 data.SAVE_PATH 常量，恢复的档会进错文件）
 		var f = FileAccess.open(c.data.save_path, FileAccess.WRITE)
 		if f:
@@ -316,7 +321,10 @@ func _show_cloud_restore_popup(save_text: String, updated_at: int):
 	var cancel = Button.new()
 	cancel.text = "保留本地（覆盖云端）"
 	cancel.custom_minimum_size = Vector2(180, 44)
-	cancel.pressed.connect(func(): c._safe_close("CloudRestorePopup"))
+	cancel.pressed.connect(func():
+		_upload_paused = false   # 玩家确认保留本地：之后的自动存档恢复上传，本地档覆盖云端是玩家显式选择
+		c._safe_close("CloudRestorePopup")
+	)
 	row.add_child(cancel)
 
 func _on_account_btn_pressed():

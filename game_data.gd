@@ -19,7 +19,7 @@ func set_save_path_for(p_username: String) -> void:
 	if p_username == "":
 		save_path = SAVE_PATH
 		return
-	save_path = "user://save_%s.json" % p_username
+	save_path = "user://save_%s.json" % p_username.validate_filename()   # 【修】双保险：服务端白名单之外，旧异常账号档名兜底（/ 等字符会让该账号自己的存档路径非法）
 	if FileAccess.file_exists(save_path):
 		return
 	if FileAccess.file_exists(SAVE_PATH):

@@ -49,6 +49,8 @@ func get_save_data() -> Dictionary:
 		"fishing_fish_dev": g.fishing_fish_dev,             # 渔获养成 {渔获id: {tier, skills:{索引:等级}, xp:{索引:当前经验}}}
 		"fishing_dilong_spent": g.fishing_dilong_spent,       # 【新增】地龙累计消耗（保底进度）
 		"fishing_chilong_spent": g.fishing_chilong_spent,     # 【新增】赤龙累计消耗（保底进度）
+		"fishing_medal_lv": medal_lv,                             # 勋章等级/累计经验本系统自持——读档侧认领这两个键，漏写即每次读档清零
+		"fishing_medal_exp": exp_total,
 	}
 
 # 从扁平存档表认领本系统字段（老存档缺字段则保持初始值，自动兼容）

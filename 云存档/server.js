@@ -112,6 +112,7 @@ const routes = {
 		const username = String(body.username || "").trim()
 		const password = String(body.password || "")
 		if (username.length < 2 || username.length > 16) return json({ ok: false, msg: "用户名需2~16个字符" }, 400)
+		if (!/^[\w\u4e00-\u9fa5]{2,16}$/.test(username)) return json({ ok: false, msg: "用户名只允许中英文、数字、下划线" }, 400)
 		if (password.length < 4) return json({ ok: false, msg: "密码至少4位" }, 400)
 		if (db.users[username]) return json({ ok: false, msg: "用户名已被注册" }, 409)
 		const salt = randomToken()
@@ -183,6 +184,11 @@ const routes = {
 		if (recStr.length > MAX_GUILD_SIZE) return json({ ok: false, msg: "商会记录超过1MB上限" }, 400)
 		const row = db.guilds[String(body.guild_id || "")]
 		if (!row) return json({ ok: false, msg: "商会不存在" }, 404)
+		// 权限闸：只有会长或成员能回写（disband 有 owner 校验，此处此前漏了——实测任意登录用户可整包改写任意商会）
+		let rec = {}
+		try { rec = JSON.parse(row.record || "{}") } catch (e) { rec = {} }
+		if (rec.owner !== user && !(rec.members || []).some(function (m) { return m.user === user }))
+			return json({ ok: false, msg: "不是该商会成员，无权回写" }, 403)
 		row.record = recStr
 		row.updated_at = Date.now()
 		saveTable("guilds")
