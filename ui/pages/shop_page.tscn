@@ -1,8 +1,21 @@
-[gd_scene format=3 uid="uid://c2h0qp7k1x9wb"]
+[gd_scene format=3 uid="uid://c2h0qp7k1yawb"]
 
-[ext_resource type="Texture2D" uid="uid://qgix7bixbxee" path="res://assets/shops/map_bg.png" id="1_bg"]
+[ext_resource type="Texture2D" uid="uid://drj00065nclo4" path="res://assets/shops/map_bg.png" id="1_bg"]
 
-[node name="ShopScene" type="Control" unique_id=881575501]
+[sub_resource type="StyleBoxEmpty" id="SE_build"]
+
+[sub_resource type="StyleBoxFlat" id="SF_plate"]
+content_margin_left = 10.0
+content_margin_top = 3.0
+content_margin_right = 10.0
+content_margin_bottom = 3.0
+bg_color = Color(0.09, 0.07, 0.05, 0.72)
+corner_radius_top_left = 6
+corner_radius_top_right = 6
+corner_radius_bottom_right = 6
+corner_radius_bottom_left = 6
+
+[node name="ShopScene" type="Control" unique_id=881575638]
 layout_mode = 3
 anchors_preset = 15
 anchor_right = 1.0
@@ -12,7 +25,7 @@ grow_vertical = 2
 size_flags_horizontal = 3
 size_flags_vertical = 3
 
-[node name="ShopVBox" type="VBoxContainer" parent="." unique_id=492532961]
+[node name="ShopVBox" type="VBoxContainer" parent="." unique_id=881575775]
 layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
@@ -21,25 +34,25 @@ grow_horizontal = 2
 grow_vertical = 2
 theme_override_constants/separation = 12
 
-[node name="TitleLabel" type="Label" parent="ShopVBox" unique_id=873763281]
+[node name="TitleLabel" type="Label" parent="ShopVBox" unique_id=881575912]
 layout_mode = 2
 theme_override_colors/font_color = Color(1, 0.84313726, 0, 1)
 theme_override_font_sizes/font_size = 24
 text = "商铺"
 horizontal_alignment = 1
 
-[node name="MapScroll" type="ScrollContainer" parent="ShopVBox" unique_id=1168269341]
+[node name="MapScroll" type="ScrollContainer" parent="ShopVBox" unique_id=881576049]
 clip_contents = false
 layout_mode = 2
 size_flags_vertical = 3
 vertical_scroll_mode = 0
 
-[node name="MapContent" type="Control" parent="ShopVBox/MapScroll" unique_id=1711667461]
+[node name="MapContent" type="Control" parent="ShopVBox/MapScroll" unique_id=881576186]
 custom_minimum_size = Vector2(3353, 1067)
 layout_mode = 2
 size_flags_vertical = 3
 
-[node name="BgImage" type="TextureRect" parent="ShopVBox/MapScroll/MapContent" unique_id=490228241]
+[node name="BgImage" type="TextureRect" parent="ShopVBox/MapScroll/MapContent" unique_id=881576323]
 layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
@@ -51,7 +64,7 @@ texture = ExtResource("1_bg")
 expand_mode = 1
 stretch_mode = 6
 
-[node name="ShopEntryGrid" type="Control" parent="ShopVBox/MapScroll/MapContent" unique_id=1487940691]
+[node name="ShopEntryGrid" type="Control" parent="ShopVBox/MapScroll/MapContent" unique_id=881576460]
 layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
@@ -60,7 +73,723 @@ grow_horizontal = 2
 grow_vertical = 2
 mouse_filter = 2
 
-[node name="MainHelpButton" type="Button" parent="." unique_id=902766201]
+[node name="bld_hq" type="Panel" parent="ShopVBox/MapScroll/MapContent/ShopEntryGrid" unique_id=881576597]
+layout_mode = 0
+offset_left = 124.0
+offset_top = 276.5
+offset_right = 289.0
+offset_bottom = 371.5
+theme_override_styles/panel = SubResource("SE_build")
+
+[node name="NamePlate" type="Label" parent="ShopVBox/MapScroll/MapContent/ShopEntryGrid/bld_hq" unique_id=881576734]
+layout_mode = 0
+offset_left = 40.5
+offset_top = 32.5
+offset_right = 124.5
+offset_bottom = 62.5
+theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
+theme_override_constants/outline_size = 3
+theme_override_font_sizes/font_size = 15
+theme_override_styles/normal = SubResource("SF_plate")
+text = "【钱庄】"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="BuildingBtn" type="Button" parent="ShopVBox/MapScroll/MapContent/ShopEntryGrid/bld_hq" unique_id=881576871]
+layout_mode = 0
+offset_left = -4.0
+offset_top = 90.0
+offset_right = 238.0
+offset_bottom = 270.0
+flat = true
+
+[node name="PlayBtn" type="Button" parent="ShopVBox/MapScroll/MapContent/ShopEntryGrid/bld_hq" unique_id=881577008]
+layout_mode = 0
+offset_left = 282.0
+offset_top = -13.0
+offset_right = 306.0
+offset_bottom = 21.0
+
+[node name="bld_ke_zhan" type="Panel" parent="ShopVBox/MapScroll/MapContent/ShopEntryGrid" unique_id=881577145]
+layout_mode = 0
+offset_left = 433.0
+offset_top = 254.5
+offset_right = 603.0
+offset_bottom = 349.5
+theme_override_styles/panel = SubResource("SE_build")
+
+[node name="NamePlate" type="Label" parent="ShopVBox/MapScroll/MapContent/ShopEntryGrid/bld_ke_zhan" unique_id=881577282]
+layout_mode = 0
+offset_left = 43.0
+offset_top = 32.5
+offset_right = 127.0
+offset_bottom = 62.5
+theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
+theme_override_constants/outline_size = 3
+theme_override_font_sizes/font_size = 15
+theme_override_styles/normal = SubResource("SF_plate")
+text = "【客栈】"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="BuildingBtn" type="Button" parent="ShopVBox/MapScroll/MapContent/ShopEntryGrid/bld_ke_zhan" unique_id=881577419]
+layout_mode = 1
+anchors_preset = -1
+anchor_left = 0.5
+anchor_top = 1.4790001
+anchor_right = 0.5
+anchor_bottom = 1.4790001
+offset_left = -66.0
+offset_top = -102.505005
+offset_right = 85.0
+offset_bottom = 102.494995
+flat = true
+
+[node name="PlayBtn" type="Button" parent="ShopVBox/MapScroll/MapContent/ShopEntryGrid/bld_ke_zhan" unique_id=881577556]
+layout_mode = 0
+offset_left = 210.0
+offset_top = 35.0
+offset_right = 234.0
+offset_bottom = 65.0
+
+[node name="bld_yi_guan" type="Panel" parent="ShopVBox/MapScroll/MapContent/ShopEntryGrid" unique_id=881577693]
+layout_mode = 0
+offset_left = 406.0
+offset_top = 614.5
+offset_right = 576.0
+offset_bottom = 706.5
+theme_override_styles/panel = SubResource("SE_build")
+
+[node name="NamePlate" type="Label" parent="ShopVBox/MapScroll/MapContent/ShopEntryGrid/bld_yi_guan" unique_id=881577830]
+layout_mode = 0
+offset_left = 43.0
+offset_top = 31.0
+offset_right = 127.0
+offset_bottom = 61.0
+theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
+theme_override_constants/outline_size = 3
+theme_override_font_sizes/font_size = 15
+theme_override_styles/normal = SubResource("SF_plate")
+text = "【医馆】"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="BuildingBtn" type="Button" parent="ShopVBox/MapScroll/MapContent/ShopEntryGrid/bld_yi_guan" unique_id=881577967]
+layout_mode = 0
+offset_left = 23.0
+offset_top = 45.0
+offset_right = 193.0
+offset_bottom = 246.0
+flat = true
+
+[node name="PlayBtn" type="Button" parent="ShopVBox/MapScroll/MapContent/ShopEntryGrid/bld_yi_guan" unique_id=881578104]
+layout_mode = 0
+offset_left = 168.0
+offset_top = 12.0
+offset_right = 192.0
+offset_bottom = 36.0
+
+[node name="PlayDot" type="Label" parent="ShopVBox/MapScroll/MapContent/ShopEntryGrid/bld_yi_guan/PlayBtn" unique_id=881578241]
+visible = false
+layout_mode = 0
+offset_left = 14.0
+offset_top = -7.0
+offset_right = 30.0
+offset_bottom = 13.0
+theme_override_colors/font_color = Color(0.90588236, 0.29803923, 0.23529412, 1)
+theme_override_font_sizes/font_size = 14
+text = "●"
+
+[node name="bld_shuoshu_tan" type="Panel" parent="ShopVBox/MapScroll/MapContent/ShopEntryGrid" unique_id=881578378]
+layout_mode = 0
+offset_left = 568.0
+offset_top = 59.5
+offset_right = 738.0
+offset_bottom = 151.5
+theme_override_styles/panel = SubResource("SE_build")
+
+[node name="NamePlate" type="Label" parent="ShopVBox/MapScroll/MapContent/ShopEntryGrid/bld_shuoshu_tan" unique_id=881578515]
+layout_mode = 0
+offset_left = 43.0
+offset_top = 31.0
+offset_right = 127.0
+offset_bottom = 61.0
+theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
+theme_override_constants/outline_size = 3
+theme_override_font_sizes/font_size = 15
+theme_override_styles/normal = SubResource("SF_plate")
+text = "【说书摊】"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="BuildingBtn" type="Button" parent="ShopVBox/MapScroll/MapContent/ShopEntryGrid/bld_shuoshu_tan" unique_id=881578652]
+layout_mode = 0
+offset_left = 24.0
+offset_top = 37.0
+offset_right = 194.0
+offset_bottom = 177.0
+flat = true
+
+[node name="bld_xiangliao_pu" type="Panel" parent="ShopVBox/MapScroll/MapContent/ShopEntryGrid" unique_id=881578789]
+layout_mode = 0
+offset_left = 698.0
+offset_top = 222.5
+offset_right = 798.0
+offset_bottom = 372.5
+theme_override_styles/panel = SubResource("SE_build")
+
+[node name="NamePlate" type="Label" parent="ShopVBox/MapScroll/MapContent/ShopEntryGrid/bld_xiangliao_pu" unique_id=881578926]
+layout_mode = 0
+offset_left = 8.0
+offset_top = 60.0
+offset_right = 92.0
+offset_bottom = 90.0
+theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
+theme_override_constants/outline_size = 3
+theme_override_font_sizes/font_size = 15
+theme_override_styles/normal = SubResource("SF_plate")
+text = "【香料铺】"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="BuildingBtn" type="Button" parent="ShopVBox/MapScroll/MapContent/ShopEntryGrid/bld_xiangliao_pu" unique_id=881579063]
+layout_mode = 0
+offset_left = -18.0
+offset_top = 61.0
+offset_right = 125.0
+offset_bottom = 251.0
+flat = true
+
+[node name="bld_dang_pu" type="Panel" parent="ShopVBox/MapScroll/MapContent/ShopEntryGrid" unique_id=881579200]
+layout_mode = 0
+offset_left = 1574.7
+offset_top = 844.9
+offset_right = 1744.7
+offset_bottom = 936.9
+theme_override_styles/panel = SubResource("SE_build")
+
+[node name="NamePlate" type="Label" parent="ShopVBox/MapScroll/MapContent/ShopEntryGrid/bld_dang_pu" unique_id=881579337]
+layout_mode = 0
+offset_left = -619.69995
+offset_top = -768.4
+offset_right = -535.69995
+offset_bottom = -738.4
+theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
+theme_override_constants/outline_size = 3
+theme_override_font_sizes/font_size = 15
+theme_override_styles/normal = SubResource("SF_plate")
+text = "【当铺】"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="BuildingBtn" type="Button" parent="ShopVBox/MapScroll/MapContent/ShopEntryGrid/bld_dang_pu" unique_id=881579474]
+layout_mode = 0
+offset_left = -641.69995
+offset_top = -786.4
+offset_right = -471.69995
+offset_bottom = -625.4
+flat = true
+
+[node name="bld_yao_pu" type="Panel" parent="ShopVBox/MapScroll/MapContent/ShopEntryGrid" unique_id=881579611]
+layout_mode = 0
+offset_left = 929.0
+offset_top = 650.5
+offset_right = 1099.0
+offset_bottom = 742.5
+theme_override_styles/panel = SubResource("SE_build")
+
+[node name="NamePlate" type="Label" parent="ShopVBox/MapScroll/MapContent/ShopEntryGrid/bld_yao_pu" unique_id=881579748]
+layout_mode = 0
+offset_left = 43.0
+offset_top = 31.0
+offset_right = 127.0
+offset_bottom = 61.0
+theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
+theme_override_constants/outline_size = 3
+theme_override_font_sizes/font_size = 15
+theme_override_styles/normal = SubResource("SF_plate")
+text = "【药铺】"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="BuildingBtn" type="Button" parent="ShopVBox/MapScroll/MapContent/ShopEntryGrid/bld_yao_pu" unique_id=881579885]
+layout_mode = 0
+offset_left = 13.0
+offset_top = 26.00003
+offset_right = 182.0
+offset_bottom = 328.00003
+flat = true
+
+[node name="PlayBtn" type="Button" parent="ShopVBox/MapScroll/MapContent/ShopEntryGrid/bld_yao_pu" unique_id=881580022]
+layout_mode = 0
+offset_left = -39.0
+offset_top = 18.0
+offset_right = -15.0
+offset_bottom = 42.0
+
+[node name="PlayDot" type="Label" parent="ShopVBox/MapScroll/MapContent/ShopEntryGrid/bld_yao_pu/PlayBtn" unique_id=881580159]
+visible = false
+layout_mode = 0
+offset_left = 14.0
+offset_top = -7.0
+offset_right = 30.0
+offset_bottom = 13.0
+theme_override_colors/font_color = Color(0.90588236, 0.29803923, 0.23529412, 1)
+theme_override_font_sizes/font_size = 14
+text = "●"
+
+[node name="bld_jiu_si" type="Panel" parent="ShopVBox/MapScroll/MapContent/ShopEntryGrid" unique_id=881580296]
+layout_mode = 0
+offset_left = 1097.0
+offset_top = 229.5
+offset_right = 1257.0
+offset_bottom = 319.5
+theme_override_styles/panel = SubResource("SE_build")
+
+[node name="NamePlate" type="Label" parent="ShopVBox/MapScroll/MapContent/ShopEntryGrid/bld_jiu_si" unique_id=881580433]
+layout_mode = 0
+offset_left = 38.0
+offset_top = 30.0
+offset_right = 122.0
+offset_bottom = 60.0
+theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
+theme_override_constants/outline_size = 3
+theme_override_font_sizes/font_size = 15
+theme_override_styles/normal = SubResource("SF_plate")
+text = "【酒肆】"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="BuildingBtn" type="Button" parent="ShopVBox/MapScroll/MapContent/ShopEntryGrid/bld_jiu_si" unique_id=881580570]
+layout_mode = 0
+offset_left = 9.0
+offset_top = 27.0
+offset_right = 169.0
+offset_bottom = 262.0
+flat = true
+
+[node name="PlayBtn" type="Button" parent="ShopVBox/MapScroll/MapContent/ShopEntryGrid/bld_jiu_si" unique_id=881580707]
+layout_mode = 0
+offset_left = -35.0
+offset_top = 36.0
+offset_right = -11.0
+offset_bottom = 60.0
+
+[node name="PlayDot" type="Label" parent="ShopVBox/MapScroll/MapContent/ShopEntryGrid/bld_jiu_si/PlayBtn" unique_id=881580844]
+visible = false
+layout_mode = 0
+offset_left = 14.0
+offset_top = -7.0
+offset_right = 30.0
+offset_bottom = 13.0
+theme_override_colors/font_color = Color(0.90588236, 0.29803923, 0.23529412, 1)
+theme_override_font_sizes/font_size = 14
+text = "●"
+
+[node name="bld_yi_zhan" type="Panel" parent="ShopVBox/MapScroll/MapContent/ShopEntryGrid" unique_id=881580981]
+layout_mode = 0
+offset_left = 1229.0
+offset_top = -5.5
+offset_right = 1399.0
+offset_bottom = 86.5
+theme_override_styles/panel = SubResource("SE_build")
+
+[node name="NamePlate" type="Label" parent="ShopVBox/MapScroll/MapContent/ShopEntryGrid/bld_yi_zhan" unique_id=881581118]
+layout_mode = 0
+offset_left = 46.0
+offset_top = 43.0
+offset_right = 130.0
+offset_bottom = 73.0
+theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
+theme_override_constants/outline_size = 3
+theme_override_font_sizes/font_size = 15
+theme_override_styles/normal = SubResource("SF_plate")
+text = "【驿站】"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="BuildingBtn" type="Button" parent="ShopVBox/MapScroll/MapContent/ShopEntryGrid/bld_yi_zhan" unique_id=881581255]
+layout_mode = 0
+offset_left = -2.0
+offset_top = 41.0
+offset_right = 176.0
+offset_bottom = 239.0
+flat = true
+
+[node name="bld_miaoyin_fang" type="Panel" parent="ShopVBox/MapScroll/MapContent/ShopEntryGrid" unique_id=881581392]
+layout_mode = 0
+offset_left = 1464.0
+offset_top = 215.5
+offset_right = 1569.0
+offset_bottom = 355.5
+theme_override_styles/panel = SubResource("SE_build")
+
+[node name="NamePlate" type="Label" parent="ShopVBox/MapScroll/MapContent/ShopEntryGrid/bld_miaoyin_fang" unique_id=881581529]
+layout_mode = 0
+offset_left = 10.5
+offset_top = 55.0
+offset_right = 94.5
+offset_bottom = 85.0
+theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
+theme_override_constants/outline_size = 3
+theme_override_font_sizes/font_size = 15
+theme_override_styles/normal = SubResource("SF_plate")
+text = "【妙音坊】"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="BuildingBtn" type="Button" parent="ShopVBox/MapScroll/MapContent/ShopEntryGrid/bld_miaoyin_fang" unique_id=881581666]
+layout_mode = 0
+offset_left = -45.0
+offset_top = 39.0
+offset_right = 208.0
+offset_bottom = 308.0
+flat = true
+
+[node name="PlayBtn" type="Button" parent="ShopVBox/MapScroll/MapContent/ShopEntryGrid/bld_miaoyin_fang" unique_id=881581803]
+layout_mode = 0
+offset_left = -92.0
+offset_top = 56.0
+offset_right = -68.0
+offset_bottom = 80.0
+
+[node name="bld_jiu_fang" type="Panel" parent="ShopVBox/MapScroll/MapContent/ShopEntryGrid" unique_id=881581940]
+layout_mode = 0
+offset_left = 1401.0
+offset_top = 612.5
+offset_right = 1501.0
+offset_bottom = 762.5
+theme_override_styles/panel = SubResource("SE_build")
+
+[node name="NamePlate" type="Label" parent="ShopVBox/MapScroll/MapContent/ShopEntryGrid/bld_jiu_fang" unique_id=881582077]
+layout_mode = 0
+offset_left = 8.0
+offset_top = 60.0
+offset_right = 92.0
+offset_bottom = 90.0
+theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
+theme_override_constants/outline_size = 3
+theme_override_font_sizes/font_size = 15
+theme_override_styles/normal = SubResource("SF_plate")
+text = "【酒坊】"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="BuildingBtn" type="Button" parent="ShopVBox/MapScroll/MapContent/ShopEntryGrid/bld_jiu_fang" unique_id=881582214]
+layout_mode = 0
+offset_left = -61.0
+offset_top = 37.0
+offset_right = 124.0
+offset_bottom = 264.0
+flat = true
+
+[node name="PlayBtn" type="Button" parent="ShopVBox/MapScroll/MapContent/ShopEntryGrid/bld_jiu_fang" unique_id=881582351]
+layout_mode = 0
+offset_left = -93.0
+offset_top = 47.0
+offset_right = -69.0
+offset_bottom = 71.0
+
+[node name="bld_changle_fang" type="Panel" parent="ShopVBox/MapScroll/MapContent/ShopEntryGrid" unique_id=881582488]
+layout_mode = 0
+offset_left = 1545.0
+offset_top = 11.5
+offset_right = 1715.0
+offset_bottom = 103.5
+theme_override_styles/panel = SubResource("SE_build")
+
+[node name="NamePlate" type="Label" parent="ShopVBox/MapScroll/MapContent/ShopEntryGrid/bld_changle_fang" unique_id=881582625]
+layout_mode = 0
+offset_left = 43.0
+offset_top = 31.0
+offset_right = 127.0
+offset_bottom = 61.0
+theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
+theme_override_constants/outline_size = 3
+theme_override_font_sizes/font_size = 15
+theme_override_styles/normal = SubResource("SF_plate")
+text = "【长乐坊】"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="BuildingBtn" type="Button" parent="ShopVBox/MapScroll/MapContent/ShopEntryGrid/bld_changle_fang" unique_id=881582762]
+layout_mode = 0
+offset_left = 11.0
+offset_top = 27.0
+offset_right = 215.0
+offset_bottom = 209.0
+flat = true
+
+[node name="bld_chengyi_pu" type="Panel" parent="ShopVBox/MapScroll/MapContent/ShopEntryGrid" unique_id=881582899]
+layout_mode = 0
+offset_left = 1560.0
+offset_top = 670.5
+offset_right = 1730.0
+offset_bottom = 762.5
+theme_override_styles/panel = SubResource("SE_build")
+
+[node name="NamePlate" type="Label" parent="ShopVBox/MapScroll/MapContent/ShopEntryGrid/bld_chengyi_pu" unique_id=881583036]
+layout_mode = 0
+offset_left = 43.0
+offset_top = 31.0
+offset_right = 127.0
+offset_bottom = 61.0
+theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
+theme_override_constants/outline_size = 3
+theme_override_font_sizes/font_size = 15
+theme_override_styles/normal = SubResource("SF_plate")
+text = "【成衣铺】"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="BuildingBtn" type="Button" parent="ShopVBox/MapScroll/MapContent/ShopEntryGrid/bld_chengyi_pu" unique_id=881583173]
+layout_mode = 0
+offset_left = 14.0
+offset_top = 26.0
+offset_right = 219.0
+offset_bottom = 250.0
+flat = true
+
+[node name="bld_suanming_tan" type="Panel" parent="ShopVBox/MapScroll/MapContent/ShopEntryGrid" unique_id=881583310]
+layout_mode = 0
+offset_left = 1706.0
+offset_top = 455.5
+offset_right = 1876.0
+offset_bottom = 547.5
+theme_override_styles/panel = SubResource("SE_build")
+
+[node name="NamePlate" type="Label" parent="ShopVBox/MapScroll/MapContent/ShopEntryGrid/bld_suanming_tan" unique_id=881583447]
+layout_mode = 0
+offset_left = 43.0
+offset_top = 31.0
+offset_right = 127.0
+offset_bottom = 61.0
+theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
+theme_override_constants/outline_size = 3
+theme_override_font_sizes/font_size = 15
+theme_override_styles/normal = SubResource("SF_plate")
+text = "【算命摊】"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="BuildingBtn" type="Button" parent="ShopVBox/MapScroll/MapContent/ShopEntryGrid/bld_suanming_tan" unique_id=881583584]
+layout_mode = 0
+offset_left = 15.0
+offset_top = 33.0
+offset_right = 151.0
+offset_bottom = 158.0
+flat = true
+
+[node name="bld_chuan_wu" type="Panel" parent="ShopVBox/MapScroll/MapContent/ShopEntryGrid" unique_id=881583721]
+layout_mode = 0
+offset_left = 2078.0
+offset_top = 85.5
+offset_right = 2248.0
+offset_bottom = 177.5
+theme_override_styles/panel = SubResource("SE_build")
+
+[node name="NamePlate" type="Label" parent="ShopVBox/MapScroll/MapContent/ShopEntryGrid/bld_chuan_wu" unique_id=881583858]
+layout_mode = 0
+offset_left = 43.0
+offset_top = 31.0
+offset_right = 127.0
+offset_bottom = 61.0
+theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
+theme_override_constants/outline_size = 3
+theme_override_font_sizes/font_size = 15
+theme_override_styles/normal = SubResource("SF_plate")
+text = "【船坞】"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="BuildingBtn" type="Button" parent="ShopVBox/MapScroll/MapContent/ShopEntryGrid/bld_chuan_wu" unique_id=881583995]
+layout_mode = 0
+offset_left = -67.0
+offset_top = 26.0
+offset_right = 304.0
+offset_bottom = 178.0
+flat = true
+
+[node name="bld_chema_hang" type="Panel" parent="ShopVBox/MapScroll/MapContent/ShopEntryGrid" unique_id=881584132]
+layout_mode = 0
+offset_left = 2077.0
+offset_top = 728.5
+offset_right = 2247.0
+offset_bottom = 820.5
+theme_override_styles/panel = SubResource("SE_build")
+
+[node name="NamePlate" type="Label" parent="ShopVBox/MapScroll/MapContent/ShopEntryGrid/bld_chema_hang" unique_id=881584269]
+layout_mode = 0
+offset_left = 43.0
+offset_top = 31.0
+offset_right = 127.0
+offset_bottom = 61.0
+theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
+theme_override_constants/outline_size = 3
+theme_override_font_sizes/font_size = 15
+theme_override_styles/normal = SubResource("SF_plate")
+text = "【车马行】"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="BuildingBtn" type="Button" parent="ShopVBox/MapScroll/MapContent/ShopEntryGrid/bld_chema_hang" unique_id=881584406]
+layout_mode = 0
+offset_left = -25.0
+offset_top = 30.0
+offset_right = 247.0
+offset_bottom = 223.0
+flat = true
+
+[node name="bld_cha_si" type="Panel" parent="ShopVBox/MapScroll/MapContent/ShopEntryGrid" unique_id=881584543]
+layout_mode = 0
+offset_left = 2522.0
+offset_top = 515.5
+offset_right = 2692.0
+offset_bottom = 607.5
+theme_override_styles/panel = SubResource("SE_build")
+
+[node name="NamePlate" type="Label" parent="ShopVBox/MapScroll/MapContent/ShopEntryGrid/bld_cha_si" unique_id=881584680]
+layout_mode = 0
+offset_left = 43.0
+offset_top = 31.0
+offset_right = 127.0
+offset_bottom = 61.0
+theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
+theme_override_constants/outline_size = 3
+theme_override_font_sizes/font_size = 15
+theme_override_styles/normal = SubResource("SF_plate")
+text = "【茶肆】"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="BuildingBtn" type="Button" parent="ShopVBox/MapScroll/MapContent/ShopEntryGrid/bld_cha_si" unique_id=881584817]
+layout_mode = 0
+offset_left = -23.0
+offset_top = 27.0
+offset_right = 192.0
+offset_bottom = 217.0
+flat = true
+
+[node name="bld_xi_lou" type="Panel" parent="ShopVBox/MapScroll/MapContent/ShopEntryGrid" unique_id=881584954]
+layout_mode = 0
+offset_left = 2617.0
+offset_top = 87.5
+offset_right = 2787.0
+offset_bottom = 179.5
+theme_override_styles/panel = SubResource("SE_build")
+
+[node name="NamePlate" type="Label" parent="ShopVBox/MapScroll/MapContent/ShopEntryGrid/bld_xi_lou" unique_id=881585091]
+layout_mode = 0
+offset_left = 43.0
+offset_top = 31.0
+offset_right = 127.0
+offset_bottom = 61.0
+theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
+theme_override_constants/outline_size = 3
+theme_override_font_sizes/font_size = 15
+theme_override_styles/normal = SubResource("SF_plate")
+text = "【戏楼】"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="BuildingBtn" type="Button" parent="ShopVBox/MapScroll/MapContent/ShopEntryGrid/bld_xi_lou" unique_id=881585228]
+layout_mode = 0
+offset_left = -17.0
+offset_top = 25.0
+offset_right = 183.0
+offset_bottom = 201.0
+flat = true
+
+[node name="bld_zao_tang" type="Panel" parent="ShopVBox/MapScroll/MapContent/ShopEntryGrid" unique_id=881585365]
+layout_mode = 0
+offset_left = 2794.0
+offset_top = 604.5
+offset_right = 2964.0
+offset_bottom = 696.5
+theme_override_styles/panel = SubResource("SE_build")
+
+[node name="NamePlate" type="Label" parent="ShopVBox/MapScroll/MapContent/ShopEntryGrid/bld_zao_tang" unique_id=881585502]
+layout_mode = 0
+offset_left = 43.0
+offset_top = 31.0
+offset_right = 127.0
+offset_bottom = 61.0
+theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
+theme_override_constants/outline_size = 3
+theme_override_font_sizes/font_size = 15
+theme_override_styles/normal = SubResource("SF_plate")
+text = "【澡堂】"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="BuildingBtn" type="Button" parent="ShopVBox/MapScroll/MapContent/ShopEntryGrid/bld_zao_tang" unique_id=881585639]
+layout_mode = 0
+offset_left = -25.0
+offset_top = 28.0
+offset_right = 173.0
+offset_bottom = 228.0
+flat = true
+
+[node name="bld_biao_ju" type="Panel" parent="ShopVBox/MapScroll/MapContent/ShopEntryGrid" unique_id=881585776]
+layout_mode = 0
+offset_left = 3063.0
+offset_top = 63.5
+offset_right = 3233.0
+offset_bottom = 155.5
+theme_override_styles/panel = SubResource("SE_build")
+
+[node name="NamePlate" type="Label" parent="ShopVBox/MapScroll/MapContent/ShopEntryGrid/bld_biao_ju" unique_id=881585913]
+layout_mode = 0
+offset_left = 43.0
+offset_top = 31.0
+offset_right = 127.0
+offset_bottom = 61.0
+theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
+theme_override_constants/outline_size = 3
+theme_override_font_sizes/font_size = 15
+theme_override_styles/normal = SubResource("SF_plate")
+text = "【镖局】"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="BuildingBtn" type="Button" parent="ShopVBox/MapScroll/MapContent/ShopEntryGrid/bld_biao_ju" unique_id=881586050]
+layout_mode = 0
+offset_left = -67.0
+offset_top = 20.0
+offset_right = 239.0
+offset_bottom = 251.0
+flat = true
+
+[node name="bld_yao_chang" type="Panel" parent="ShopVBox/MapScroll/MapContent/ShopEntryGrid" unique_id=881586187]
+layout_mode = 0
+offset_left = 3082.0
+offset_top = 642.5
+offset_right = 3252.0
+offset_bottom = 734.5
+theme_override_styles/panel = SubResource("SE_build")
+
+[node name="NamePlate" type="Label" parent="ShopVBox/MapScroll/MapContent/ShopEntryGrid/bld_yao_chang" unique_id=881586324]
+layout_mode = 0
+offset_left = 43.0
+offset_top = 31.0
+offset_right = 127.0
+offset_bottom = 61.0
+theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
+theme_override_constants/outline_size = 3
+theme_override_font_sizes/font_size = 15
+theme_override_styles/normal = SubResource("SF_plate")
+text = "【窑厂】"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="BuildingBtn" type="Button" parent="ShopVBox/MapScroll/MapContent/ShopEntryGrid/bld_yao_chang" unique_id=881586461]
+layout_mode = 0
+offset_top = 11.0
+offset_right = 271.0
+offset_bottom = 194.0
+flat = true
+
+[node name="MainHelpButton" type="Button" parent="." unique_id=881586598]
 custom_minimum_size = Vector2(40, 36)
 layout_mode = 1
 anchors_preset = 1

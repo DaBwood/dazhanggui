@@ -22,11 +22,11 @@ func _init(p_c):
 # ============ 场景化批次2：商铺页骨架化（2026-10-07，模板=闯荡页批次1/3 v2 范式） ============
 # 布局唯一真相源=shop_page.tscn（骨架/底图/入口层/帮助钮），本脚本只实例化+灌内容（21 栋建筑）
 # 底图契约：res://assets/shops/map_bg.png（3630×1155 新街市图，2026-10-07 用户重绘），
-#   按 1067 设计高零变形铺宽 3353≈5.6 屏横滑，点击/竖牌坐标全部走 SHOP_POS 比例对位表
+#   按 1067 设计高零变形铺宽 3353≈5.6 屏横滑；21 栋建筑=bld_* 静态节点（tscn 摆位），脚本只接线+灌状态
 const SHOP_SCENE := preload("res://ui/pages/shop_page.tscn")
 const BUILDING_IMG_DIR := "res://assets/shops/"
 const MAP_BG_IMG := "res://assets/shops/map_bg.png"
-const MAP_SIZE := Vector2(3353, 1067)   # 设计尺寸=MapContent 最小尺寸（新图比例按 1067 高推导）
+const MAP_SIZE := Vector2(3353, 1067)   # 设计尺寸=MapContent 最小尺寸（新图比例按 1067 高推导）；仅自检打印用，布局勿依赖
 # 特色玩法七店（钱庄=总部 hq 在地图"最左最中间"；其余 6 店挂 24×24 玩法入口占位钮，批次2+ 逐个接通）
 const PLAY_SHOPS := ["hq", "ke_zhan", "yi_guan", "yao_pu", "jiu_fang", "jiu_si", "miaoyin_fang"]
 
@@ -43,42 +43,8 @@ const PLAY_SHOP_VIEWS := {
 }
 # 地图侧有红点的店铺（红点 Label 恒创建、visible 随条件切，update_entry_buttons 靠 has_node("PlayBtn/PlayDot") 找到它）
 const PLAY_SHOP_DOTS := ["yi_guan", "yao_pu", "jiu_si"]
-const DEFAULT_PLATE := Vector2(170, 92)   # 默认横牌（固定设计尺寸下不再随窗口缩放）
-# 画中建筑对位表（比例坐标 0~1，店块中心）：新图 21 店全量覆盖，无网格回退——
-# 2026-10-07 AI 按新图目测填首版，沿用老约定"用户圈图报店名，逐步迭代修正"
-const SHOP_POS := {
-	"hq": Vector2(0.116, 0.216),   # 钱庄：左区主楼（ grand 门脸+灯笼 ）
-	"jiu_si": Vector2(0.207, 0.104),   # 酒肆：红枫酒楼
-	"miaoyin_fang": Vector2(0.283, 0.176),   # 妙音坊：鼓面亭阁
-	"ke_zhan": Vector2(0.198, 0.371),   # 客栈：左区大宅
-	"yao_pu": Vector2(0.075, 0.431),   # 药铺：左区沿街铺面
-	"shuoshu_tan": Vector2(0.088, 0.526),   # 说书摊：铺前空场
-	"yi_guan": Vector2(0.148, 0.721),   # 医馆：左下院落
-	"biao_ju": Vector2(0.247, 0.90),   # 镖局：台阶大宅（深门大院）
-	"xiangliao_pu": Vector2(0.306, 0.792),   # 香料铺： Pagoda 塔楼
-	"xi_lou": Vector2(0.471, 0.372),   # 戏楼：中区大红楼
-	"changle_fang": Vector2(0.375, 0.363),   # 长乐坊：红楼左栋
-	"jiu_fang": Vector2(0.503, 0.110),   # 酒坊：水畔石塔（地标）
-	"chuan_wu": Vector2(0.628, 0.187),   # 船坞：水上吊脚仓
-	"cha_si": Vector2(0.685, 0.155),   # 茶肆：水岸青瓦茶屋
-	"chengyi_pu": Vector2(0.940, 0.130),   # 成衣铺：右上宅院
-	"yao_chang": Vector2(0.858, 0.662),   # 窑厂：带烟囱作坊
-	"zao_tang": Vector2(0.955, 0.78),   # 澡堂：右下独院
-	"suanming_tan": Vector2(0.435, 0.65),   # 算命摊：集市伞摊群中
-	"dang_pu": Vector2(0.495, 0.835),   # 当铺：下区蓝瓦宅（高门挡户）
-	"yi_zhan": Vector2(0.70, 0.735),   # 驿站：右区大棚客舍
-	"chema_hang": Vector2(0.40, 0.80),   # 车马行：下区街面小宅
-}
-# 店块形状覆盖表（默认横牌 170×92）：塔楼/竖长画建筑用竖牌贴合楼形
-const SHOP_SIZE := {
-	"jiu_fang": Vector2(100, 150),   # 酒坊：石塔竖牌
-	"xiangliao_pu": Vector2(100, 150),   # 香料铺：塔楼竖牌
-	"miaoyin_fang": Vector2(105, 140),   # 妙音坊：亭阁竖牌
-	"hq": Vector2(165, 95),   # 钱庄：门脸横牌（压主楼入口）
-	"ke_zhan": Vector2(170, 95),   # 客栈：宅门横牌
-	"jiu_si": Vector2(160, 90),   # 酒肆：酒楼横牌
-}
-
+# 店位/店牌尺寸已迁 shop_page.tscn（bld_* 节点 offset 为唯一真相源，2026-10-07 用户拍板"按钮进 tscn 纯化"）；
+# 调店位=编辑器里拖 bld_* 节点，勿回改脚本
 func generate_shop_list():
 	if not c.has_node("PageContainer/ShopPage"): return
 	var page = c.get_node("PageContainer/ShopPage")
@@ -126,12 +92,33 @@ func generate_shop_list():
 	# 滑动吸附（口径同闯荡页）：scroll_ended 只在用户滚动停时发，补间改值不重入
 	map_scroll.scroll_ended.connect(_on_map_scroll_ended)
 
-	# 21 栋建筑：SHOP_POS 比例对位 × 设计尺寸（新图全量覆盖，无网格回退）；
-	# 建筑是状态驱动的动态牌（解锁态/红点/文字板随刷新变），按 v2 范式留在脚本侧灌内容
+	# 21 栋建筑=tscn 静态节点 bld_*（布局唯一真相源在 shop_page.tscn）；脚本只接线+灌状态
 	for shop_id in ["hq"] + data.SHOP_ORDER:
-		var sz: Vector2 = SHOP_SIZE.get(shop_id, DEFAULT_PLATE)
-		var pos := Vector2(SHOP_POS[shop_id].x * MAP_SIZE.x - sz.x * 0.5, SHOP_POS[shop_id].y * MAP_SIZE.y - sz.y * 0.5)
-		_add_building(entry_grid, shop_id, pos, sz)
+		var bld := entry_grid.get_node("bld_" + shop_id) as Panel
+		bld.set_meta("shop_id", shop_id)
+		# 单栋图丢图即用（png 缺失=透明底，用户 09-12 拍板不显示黑框）
+		var img_path: String = BUILDING_IMG_DIR + shop_id + ".png"
+		if ResourceLoader.exists(img_path):
+			var st := StyleBoxTexture.new()
+			st.texture = load(img_path)
+			bld.add_theme_stylebox_override("panel", st)
+		var btn := bld.get_node("BuildingBtn") as Button
+		if shop_id == "hq":
+			btn.pressed.connect(c.open_hq_panel)
+		else:
+			btn.pressed.connect(on_shop_entry_pressed.bind(shop_id))
+		# 玩法入口钮（▶ 仅 PLAY_SHOPS 七店有节点）：特色玩法表驱动接线，hq▶=bank 视图
+		if bld.has_node("PlayBtn"):
+			var play := bld.get_node("PlayBtn") as Button
+			if PLAY_SHOP_VIEWS.has(shop_id):
+				play.pressed.connect(c.show_view.bind(PLAY_SHOP_VIEWS[shop_id]))
+			else:
+				var nm: String = "钱庄"
+				if shop_id != "hq":
+					nm = str(data.get_shop_config(shop_id).get("name", ""))
+				play.pressed.connect(func(): c._show_success_popup("【%s】特色玩法开发中，敬请期待" % nm, 0.0, "ok"))
+	# 初始状态灌一次（文字板/解锁色/红点），后续随 update_entry_buttons 刷新
+	update_entry_buttons()
 
 	# 结构自检：输出面板打印一次关键事实（布局争议先看这里，定位是结构问题还是坐标问题）
 	print("[ShopMap] 建筑=%d 横向滚动余量=%d MapContent=%s" % [
@@ -148,87 +135,6 @@ func _set_plate_text(bld: Panel, txt: String):
 	plate.size = Vector2(w, 30)
 	plate.position = Vector2((bld.size.x - w) * 0.5, (bld.size.y - 30) * 0.5)
 
-# 【新增】单栋建筑：半透明底（图/色块，压在街景图上保证文字可读）+ 全幅 Button（点击进店铺/解锁）+ 玩法入口小钮（24×24，特色店才有）
-func _add_building(content: Control, shop_id: String, pos: Vector2, bld_size: Vector2):
-	var bld := Panel.new()
-	bld.name = "bld_" + shop_id
-	bld.position = pos
-	bld.size = bld_size   # 固定设计尺寸牌面（MAP_SIZE 常量表推导，窗口变化不重建）
-	bld.set_meta("shop_id", shop_id)   # 刷新文字按 meta 取，不解析节点名（新规：引用先验证）
-	# 底图：丢图即用；默认透明底——只显示名字（用户 09-12 拍板：黑框压画不好看），
-	# 文字可读性靠 Button 侧黑描边（见下）
-	var img_path: String = BUILDING_IMG_DIR + shop_id + ".png"
-	if ResourceLoader.exists(img_path):
-		var st := StyleBoxTexture.new()
-		st.texture = load(img_path)
-		bld.add_theme_stylebox_override("panel", st)
-	else:
-		bld.add_theme_stylebox_override("panel", StyleBoxEmpty.new())
-	content.add_child(bld)
-	# 全幅透明点击区（flat 无底色无字，专职点按）
-	var btn := Button.new()
-	btn.name = "BuildingBtn"
-	btn.flat = true
-	btn.position = Vector2.ZERO
-	btn.size = bld_size
-	# 【新增】NamePlate 文字板：字底一块小圆角半透明底板（不是整片黑框），居中托名字
-	var plate := Label.new()
-	plate.name = "NamePlate"
-	plate.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
-	plate.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
-	plate.add_theme_font_size_override("font_size", 15)
-	plate.add_theme_color_override("font_outline_color", Color(0, 0, 0))
-	plate.add_theme_constant_override("outline_size", 3)
-	var ps := StyleBoxFlat.new()
-	ps.bg_color = Color(0.09, 0.07, 0.05, 0.72)   # 深褐半透明：压花画可读又不遮建筑
-	ps.set_corner_radius_all(6)
-	ps.content_margin_left = 10
-	ps.content_margin_right = 10
-	ps.content_margin_top = 3
-	ps.content_margin_bottom = 3
-	plate.add_theme_stylebox_override("normal", ps)
-	bld.add_child(plate)
-	# 生成即写名字（不再依赖 update_entry_buttons 兜底）
-	if shop_id == "hq":
-		_set_plate_text(bld, "【钱庄】")
-	else:
-		var cfg0: Dictionary = data.get_shop_config(shop_id)
-		_set_plate_text(bld, "【%s】" % cfg0.get("name", shop_id))
-	if shop_id == "hq":
-		btn.pressed.connect(c.open_hq_panel)
-	else:
-		btn.pressed.connect(on_shop_entry_pressed.bind(shop_id))
-	bld.add_child(btn)
-	# 特色玩法入口占位钮：批次2+ 逐个接通玩法页，现在点击提示开发中
-	if PLAY_SHOPS.has(shop_id):
-		var play := Button.new()
-		play.name = "PlayBtn"
-		play.text = "▶"
-		play.position = Vector2(bld_size.x - 30, 6)
-		play.size = Vector2(24, 24)
-		var play_shop_name: String = "钱庄"
-		if shop_id != "hq":
-			play_shop_name = str(data.get_shop_config(shop_id).get("name", ""))
-		if PLAY_SHOP_VIEWS.has(shop_id):
-			# 【改】批次C：if/elif 链 → 表驱动；红点 Label 对 PLAY_SHOP_DOTS 内店铺恒创建（visible 随条件），
-			# 与旧行为一致——update_entry_buttons 靠 has_node("PlayBtn/PlayDot") 找它做后续刷新
-			play.pressed.connect(c.show_view.bind(PLAY_SHOP_VIEWS[shop_id]))
-			if PLAY_SHOP_DOTS.has(shop_id):
-				var dot := Label.new()
-				dot.name = "PlayDot"
-				dot.text = "●"
-				dot.add_theme_color_override("font_color", Color("#e74c3c"))
-				dot.add_theme_font_size_override("font_size", 14)
-				dot.position = Vector2(14, -7)   # 「▶」钮右上角（父钮 24×24，红点按常量定位）
-				dot.mouse_filter = Control.MOUSE_FILTER_IGNORE
-				dot.visible = _play_dot_visible(shop_id)
-				play.add_child(dot)
-		else:
-			play.pressed.connect(func(): c._show_success_popup("【%s】特色玩法开发中，敬请期待" % play_shop_name, 0.0, "ok"))   # 【改】飘字退休→ok 弹窗
-		bld.add_child(play)
-
-# 【新增】批次C：地图侧「▶」红点唯一条件（各玩法内部红点互不穿透，2026-09-16 口径）——
-# 医馆/药铺=病人满；酒肆=有可升级或可解锁设施；其余玩法无地图侧红点（页内展示）
 func _play_dot_visible(shop_id: String) -> bool:
 	match shop_id:
 		"yi_guan":
@@ -491,7 +397,7 @@ func update_entry_buttons():
 	for bld in content.get_children():
 		if not (bld is Panel) or not bld.has_meta("shop_id"): continue
 		var shop_id: String = bld.get_meta("shop_id")
-		var btn: Button = bld.get_node("BuildingBtn")
+		var btn := bld.get_node("BuildingBtn") as Button
 		# 【新增】2026-09-16 药铺「▶」病人满红点随 UI 刷新（自然恢复满/用药超出后，任意 update_all_ui 汇流时点亮）
 		if shop_id == "yao_pu" and bld.has_node("PlayBtn/PlayDot"):
 			bld.get_node("PlayBtn/PlayDot").visible = data.drugshop_system.is_patients_full()
