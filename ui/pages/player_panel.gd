@@ -216,8 +216,10 @@ func _on_rename_confirmed(input: LineEdit):
 	var new_name = input.text.strip_edges()
 	if data.rename_player(new_name):
 		# 更新左上角名字
-		if c.has_node("TopBar/AvatarBox/PlayerNameBtn"):
-			c.get_node("TopBar/AvatarBox/PlayerNameBtn").text = data.player_name
+		# 名字钮在顶栏皮肤批次挪进 AvatarBox/LeftBox/NameRow，find_child 免路径再漂移；owned=false=代码建的节点无 owner
+		var name_btn := c.find_child("PlayerNameBtn", true, false) as Button
+		if name_btn:
+			name_btn.text = data.player_name
 		_close_player_panel()
 		# 【改】成功反馈铺开：改名成功弹窗
 		c._show_success_popup("改名成功")

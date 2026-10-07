@@ -248,7 +248,6 @@ func _enter_game():
 	
 	_apply_portrait_layout()
 	
-	data.mail_system.add_mail("test2", "测试", "合成材料", {"small_aptitude_pill": 40, "canpo_zhuiyu": 60, "treasure_box": 3})
 
 # 登录门/离线进入/同步遮罩/令牌失效处理 → ui/net_ui.gd（2026-09-19 重构批次A迁出，经 net_ui 调用）
 
@@ -1583,7 +1582,7 @@ func _build_scene_shell():
 	top_bg.mouse_filter = Control.MOUSE_FILTER_IGNORE   # 纯装饰，不吃点击
 	top_bg.set_anchors_preset(Control.PRESET_TOP_LEFT)
 	top_bg.position = Vector2.ZERO
-	top_bg.size = Vector2(get_viewport_rect().size.x, 50)
+	top_bg.size = Vector2(get_viewport_rect().size.x, TOP_BAR_H)   # 栏高单一来源（TOP_BAR_H），与 _apply_portrait_layout 同口径，首帧硬编码 50 曾造成初值/布局两套真值
 	add_child(top_bg)
 	move_child(top_bg, $Overlay.get_index())   # 页面之上、弹窗遮罩之下
 	move_child($TopBar, $Overlay.get_index())  # 控件在背景条之上、遮罩之下
