@@ -82,7 +82,8 @@ func _show_login_gate():
 # 进场闸门：先拉商会共享记录再进游戏——赚速公式（含离线结算，shop_system.calculate_offline_income）
 # 实读 guild_system.cache，后进=离线结算缺商会份+顶栏赚速跳变飘字（2026-10-07 用户实测两症定案）；拉取失败不挡进场
 func _enter_game_when_guild_ready(after: Callable = Callable()) -> void:
-	var gid: String = c.data.guild_system.guild_id
+	# 档还没 load 进内存（load_game 在 _enter_game 里才跑，闸门先于它），guild_id 只能从存档文件原文读
+	var gid := _read_guild_id_from_local_save()
 	if gid == "":
 		c._enter_game()
 		if after.is_valid():
@@ -94,6 +95,18 @@ func _enter_game_when_guild_ready(after: Callable = Callable()) -> void:
 		c._enter_game()
 		if after.is_valid():
 			after.call())
+
+
+# 读本地存档顶层的 guild_id（各系统字段扁平 merge 进顶层，见 game_data.save_game 的 _system_instances 循环）
+func _read_guild_id_from_local_save() -> String:
+	var f = FileAccess.open(c.data.save_path, FileAccess.READ)
+	if f == null:
+		return ""
+	var parsed = JSON.parse_string(f.get_as_text())
+	f.close()
+	if parsed is Dictionary:
+		return str(parsed.get("guild_id", ""))
+	return ""
 
 # 【新增】离线模式进游戏：不登录，用默认本地档，不与云端同步（云连不上时的保底入口）
 func _enter_offline():
