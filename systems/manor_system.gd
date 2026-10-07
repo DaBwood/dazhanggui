@@ -103,7 +103,10 @@ func _get_plots(species_id: String) -> Array:
 		for i in range(get_plots_per_species()):
 			arr.append({"level": 1, "land": 0})
 		g.manor_plots[species_id] = arr
-	return g.manor_plots[species_id]
+	var plots: Array = g.manor_plots[species_id]
+	while plots.size() < get_plots_per_species():
+		plots.append({"level": 1, "land": 0})   # 配置把 plots_per_species 调大后老档短数组补齐，否则 get_plot 按新下标越界崩（DeepSeek 审查4.5）
+	return plots
 
 # 取某一块的数据（{"level": 品种等级, "land": 土地/血统等级}）
 func get_plot(species_id: String, plot_index: int) -> Dictionary:

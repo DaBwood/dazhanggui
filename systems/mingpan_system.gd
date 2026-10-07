@@ -342,9 +342,13 @@ func get_hero_totals() -> Dictionary:
 # 某门客命格资质总和（外圈槽 heroes[hid] 求和）
 func get_hero_aptitude(hero_id: String) -> int:
 	var total: int = 0
+	var outer_n: int = int(_cfg().get("settings", {}).get("outer_slots", 6))
 	for pid in plates.keys():
-		for idx in get_plate_slots(str(pid)).values():
-			var heroes: Dictionary = (idx as Dictionary).get("heroes", {})
+		var slots: Dictionary = get_plate_slots(str(pid))
+		for idx in slots.keys():
+			if int(idx) >= outer_n:
+				continue   # 内圈槽装的是赚钱%（get_hero_pct 的口），混进资质和会虚高（DeepSeek 审查4.1）
+			var heroes: Dictionary = (slots[idx] as Dictionary).get("heroes", {})
 			if heroes is Dictionary:
 				total += int(heroes.get(hero_id, 0))
 	return total

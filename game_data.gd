@@ -745,6 +745,71 @@ func _validate_registrations() -> void:
 # 参数：label=构成面板行名；kind="apt"资质/"pct"百分比(小数制)/"flat"固定收入；
 #       fn=Callable(g, hero_id)->数值；beast=true 标记珍兽系来源（亲和转移的无兽试算时剔除）。
 # 行序 = 构成面板显示顺序（沿用面板上线时行序）。行内注释保留原聚合器的关键口径说明。
+# 存档读写对自检（仅编辑器期，审查§7.1 落地）："只读不写"=读档清零（钓鱼勋章同款事故），"只写不读"=死写入。
+# 认领侧必须是**根级**读取：按各系统 load_save_data 的真实参数名（s/d/data）做接收者感知匹配，
+# 且 has()/get()/[] 三种读法都认——否则嵌套条目（如 mail 的 m.has("id"）或 s["plates"] 下标读）会被误报。
+const SAVE_CHECK_IGNORE := {
+	"beast_fruit": "旧档根级迁移：新档走 items 键，load 一次性并入后不再需要根级",
+	"aroma_fruit": "同上，奇香果旧档迁移",
+}
+func _selfcheck_save_key_pairs() -> void:
+	if not OS.has_feature("editor"):
+		return
+	var written := {}
+	var claimed := {}
+	var claimants := {}
+	for sys in _system_instances:
+		if sys == null:
+			continue
+		for k in sys.get_save_data().keys():
+			written[str(k)] = true
+		var script: Script = sys.get_script()
+		if script == null or script.resource_path == "" or script.source_code.is_empty():
+			continue
+		var pm := RegEx.new()
+		if pm.compile("func load_save_data\\s*\\(\\s*(\\w+)") != OK:
+			continue
+		var mm := pm.search(script.source_code)
+		if mm == null:
+			continue
+		var pname := mm.get_string(1)
+		var p0 := script.source_code.find("func load_save_data")
+		var rest0 := script.source_code.substr(p0)
+		var nxt0 := rest0.find("\nfunc ", 5)
+		var body0 := rest0 if nxt0 < 0 else rest0.substr(0, nxt0)
+		# 三种根级读法都认：s.has("k")/s.get("k") 字面、下标 s["k"]、属性 s.k（嵌套段的取法，如 var d = s.mingpan）
+		var rx := RegEx.new()
+		if rx.compile("\\b" + pname + "\\s*(?:\\.\\s*(?:has|get)\\(\\s*|\\[\\s*)\"([^\"]+)\"|\\b" + pname + "\\.(\\w+)\\s*(?!\\()") != OK:
+			continue
+		for m in rx.search_all(body0):
+			var k1 := m.get_string(1)
+			if k1 == "":
+				k1 = m.get_string(2)
+			claimed[k1] = true
+			if not claimants.has(k1):
+				claimants[k1] = script.resource_path
+	# save_game 顶层字面键（核心字段不走系统 get_save_data，由 save_game 自己写）
+	var own: Script = get_script()
+	if own != null and not own.source_code.is_empty():
+		var p1 := own.source_code.find("func save_game")
+		if p1 >= 0:
+			var rest1 := own.source_code.substr(p1)
+			var nxt1 := rest1.find("\nfunc ", 5)
+			var body1 := rest1 if nxt1 < 0 else rest1.substr(0, nxt1)
+			var rx2 := RegEx.new()
+			if rx2.compile("\\[\"([a-zA-Z0-9_]+)\"\\]") == OK:
+				for m2 in rx2.search_all(body1):
+					written[m2.get_string(1)] = true
+	for k2 in claimed.keys():
+		if SAVE_CHECK_IGNORE.has(k2):
+			continue
+		if not written.has(k2):
+			push_error("[存档自检] 键只读不写=" + str(k2) + "（" + str(claimants[k2]) + " 认领但无人写——读档即清零）")
+	for k3 in written.keys():
+		if not claimed.has(k3):
+			push_warning("[存档自检] 键只写不读=" + str(k3) + "（死写入：无 load_save_data 用字面键认领，确认是否 has 以外方式读）")
+
+
 func _register_hero_bonuses() -> void:
 	HeroData.clear_bonus_registry()
 	# ── 资质 apt ──
@@ -855,6 +920,7 @@ func _init():
 	# 【改】校验必须在配置加载后跑：加载前配置变量全是声明默认值（裸声明 var 默认 null），
 	# 会误报"配置为空"（2026-09-18 costume_configs 踩过）；此时为空才真=JSON 缺失
 	_validate_registrations()
+	_selfcheck_save_key_pairs()   # 仅编辑器期跑（函数首行有 OS.has_feature 闸）
 	# 【新增】2026-09-25 架构批次A：门客加成源注册表（HeroData 聚合器/构成面板的唯一来源清单）
 	_register_hero_bonuses()
 

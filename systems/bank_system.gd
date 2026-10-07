@@ -68,7 +68,7 @@ func get_counter_unlock_cost() -> int:
 	return int(_st().get("counter_unlock_cost", 5000))
 
 func can_unlock_more() -> bool:
-	return get_counter_count() < get_counter_total()
+	return get_counter_count() < get_max_unlockable()   # 上限取等级/元宝双轨（get_max_unlockable），不再只看绝对数30——校验归系统层，unlock_counter 自守（DeepSeek 审查4.4）
 
 # 等级上限：钱庄店铺(hq.level)每2级+1个解锁额度（1级5个、3级6个、5级7个……），封顶30
 # +卡交互（用户拍板）：等级到了花元宝新增柜台；等级不到点+提示升级地图上的钱庄店铺
@@ -106,6 +106,7 @@ func assign_hero(idx: int, hero_id: String) -> bool:
 	if idx < 0 or idx >= get_counter_count(): return false
 	if not g.heroes.has(hero_id): return false
 	if is_hero_assigned(hero_id): return false   # 已委任其他柜台：拒绝（旧档重复占位用户自行卸任）
+	if str(counters[idx].get("hero_id", "")) != "": return false   # 已占用柜台禁止静默顶掉（会吞其累积计时）；换任走卸任（自动结算）再委任
 	counters[idx] = {"hero_id": hero_id, "start_time": Time.get_unix_time_from_system()}
 	return true
 

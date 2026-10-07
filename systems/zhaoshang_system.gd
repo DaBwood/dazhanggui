@@ -67,6 +67,8 @@ func get_minutes_per_copy() -> int:
 # 单次立项可消耗批文份数上限 = VIP 表（0~16 级：2~9 份；设计本意，用户 2026-10-04 拍板还原）
 func get_max_copies() -> int:
 	var arr: Array = _st().get("vip_publish_counts", [])
+	if arr.is_empty():
+		return 0   # 表缺失/空时按 0 份兜底，防 arr[0] 越界崩（DeepSeek 审查4.6，当前配置不触发=防御）
 	var lv: int = clampi(int(g.vip_level), 0, maxi(0, arr.size() - 1))
 	return int(arr[lv])
 

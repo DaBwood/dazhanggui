@@ -58,7 +58,7 @@ func get_apprentice_slot_count() -> int:
 func is_apprentice_slot_unlocked(slot: int) -> bool:
 	return slot >= 0 and slot < get_apprentice_slot_count()
 
-# 懒结算槽位活力：每分钟恢复1点，500只是自动恢复的上限（道具可超上限）
+# 懒结算槽位活力：恢复间隔吃藏品（c224，下限10秒），自动恢复上限吃 c229（道具可超上限）
 func _settle_slot_vigor(slot: int):
 	var now = Time.get_unix_time_from_system()
 	var last = g.apprentice_vigor_time[slot]
@@ -74,7 +74,7 @@ func _settle_slot_vigor(slot: int):
 	if regen > 0:
 		g.apprentice_vigor[slot] = min(g.collection_system.get_vigor_max(), g.apprentice_vigor[slot] + regen)   # 【改】四批：同上
 		@warning_ignore("narrowing_conversion")
-		g.apprentice_vigor_time[slot] = last + regen * 60
+		g.apprentice_vigor_time[slot] = last + regen * g.collection_system.get_vigor_regen_seconds()   # 【修】时间戳口径=份数×实际间隔（原写死×60：装缩间隔藏品后时间戳被推未来→恢复停摆，DeepSeek 审查4.3）
 
 # 获取槽位当前活力（先结算恢复）
 func get_slot_vigor(slot: int) -> int:
