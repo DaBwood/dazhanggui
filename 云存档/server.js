@@ -134,6 +134,13 @@ const routes = {
 		const save = body.save
 		if (typeof save !== "string" || save.length === 0) return json({ ok: false, msg: "存档内容为空" }, 400)
 		if (save.length > MAX_SAVE_SIZE) return json({ ok: false, msg: "存档超过8MB上限" }, 400)
+		// 版本闸：客户端每次保存都盖新时间戳，时间戳判不了旧——只能靠存档内单调 revision 拒旧
+		// （"另一个窗口挂着旧档自动上传顶掉新档"的唯一根治，2026-10-07 双窗口复测定案）
+		let incoming = 0
+		try { incoming = parseInt(JSON.parse(save).revision, 10) || 0 } catch (e) { incoming = 0 }
+		let stored = 0
+		try { stored = parseInt(JSON.parse(db.saves[user].save_json).revision, 10) || 0 } catch (e) { stored = 0 }
+		if (incoming < stored) return json({ ok: false, msg: "stale", server_revision: stored }, 409)
 		const now = Date.now()
 		db.saves[user] = { save_json: save, updated_at: now }
 		saveTable("saves")

@@ -39,6 +39,7 @@ func set_save_path_for(p_username: String) -> void:
 
 var _load_done := false   # 【新增】丢档根修标记（2026-09-26）：load_game 跑过才允许写盘，杜绝登录门期间空白新档覆盖真实存档
 var save_id: String = ""   # 【新增】存档血缘ID：同一份档的所有分支同一个ID，不同档不同ID；存档冲突判定用（名字可改不可靠、时间偏向本地）
+var save_revision: int = 0   # 存档版本号：save_game 每次单调+1，云端 /upload 版本闸拒旧档的唯一依据（时间戳判不了旧——每次保存都盖新时间戳）
 
 const OFFLINE_RATE = 0.8
 
@@ -1133,6 +1134,8 @@ func save_game():
 		"last_login_time": last_login_time,
 		"last_logout_time": last_logout_time,
 	}
+	save_revision += 1
+	save_data["revision"] = save_revision   # 版本闸依据：单调递增，云端据它拒旧档
 	# 【改】存档循环走 _system_instances（SYSTEM_LIST 驱动，2026-09-18 架构重构批次①）；
 	# 各子系统把自己的字段合并进来（新系统加存档字段=清单登记一行+改它自己的 get_save_data）
 	for sys in _system_instances:
@@ -1217,6 +1220,7 @@ func load_game():
 	if data.has("last_logout_time"): last_logout_time = data.last_logout_time
 	if data.has("save_id") and str(data.save_id) != "":
 		save_id = str(data.save_id)
+	if data.has("revision"): save_revision = int(data.revision)
 	
 	# ===== 各子系统认领自己的字段（含旧存档兼容逻辑） =====
 	# 【改】读档循环走 _system_instances（顺序=清单顺序，drugshop 先于 talent 由清单保证）

@@ -17,6 +17,7 @@ var _quantity_item_id: String = ""   # 数量选择器当前操作的道具ID
 
 # 【新增】自动存档计数（秒）
 var _autosave_sec: int = 0
+var _suppress_exit_save := false   # 恢复云端 reload 前置位：挡住 tree_exiting 的退出存档（on_exit），防旧内存档盖掉刚写入的云端档
 # 【新增】Web 端页面隐藏回调引用（JavaScriptBridge 回调是 RefCounted，必须持有引用否则被释放后回调失效）
 var _web_hide_cb = null
 #按钮信号连接
@@ -170,6 +171,7 @@ func _ready():
 	net.login_result.connect(net_ui._on_net_login_result)
 	net.download_result.connect(net_ui._on_net_download_result)
 	net.auth_expired.connect(net_ui._on_net_auth_expired)   # 【新增】令牌被服务端判失效：提示重新登录（防静默失联）
+	net.stale_rejected.connect(net_ui._on_stale_rejected)   # 409 版本闸：他端先存→拉云端弹恢复窗
 
 	
 	# 【新增】2026-09-08 丢档事故后写死：无论有无令牌一律先过登录门。
@@ -643,6 +645,8 @@ func _on_popup_tree_exiting(mask):
 	ui_helpers._on_popup_tree_exiting(mask)   # 【改】主体迁 ui/ui_helpers.gd（2026-09-19 重构批次B）
 
 func on_exit():
+	if _suppress_exit_save:
+		return   # 恢复云端触发的 reload：内存还是旧档，回写会盖掉 net_ui 刚写入的云端档（2026-10-07 双窗口复测定案，tree_exiting 每次 reload 都触发）
 	# 正常退出：记录下线时间，然后存档
 	@warning_ignore("narrowing_conversion")
 	data.last_logout_time = Time.get_unix_time_from_system()

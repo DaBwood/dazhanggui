@@ -17,6 +17,8 @@ var _web_login_cb = null          # 【新增】Web 登录表单 JS 回调引用
 var _manual_download := false     # 【新增】标记本次下载是手动触发（恢复按钮），用于给提示
 var _net_login_pending := false   # 【新增】登录流程中：正等云端存档查询结果来决定用哪份档
 var _upload_paused := false       # 【新增】冲突仲裁未决期间暂停自动上传（弹窗未建时存在性判据兜不住这扇窗，先存档后弹窗会把云端新档顶掉）
+var _stale_probe := false         # 版本闸拒收后的云端探测：下载结果走强制恢复弹窗分支
+var _server_revision := 0         # 服务端版本号：弹窗"保留本地"时抬本地版本用
 
 func _init(p_c):
 	c = p_c
@@ -237,6 +239,12 @@ func _on_net_download_result(ok: bool, has_save: bool, save_text: String, update
 			f1.close()
 		_enter_game_when_guild_ready()
 		return
+	if _stale_probe:
+		_stale_probe = false
+		if not ok or not has_save or save_text.is_empty():
+			return   # 探测失败不弹窗：上传保持暂停，下次自动存档再撞闸再探（避免刷窗）
+		_show_cloud_restore_popup(save_text, updated_at)
+		return
 	if not ok:
 		if was_manual: c._show_success_popup("网络错误，稍后再试", 3.0, "warn")   # 【改】飘字退休→warn 弹窗
 		return
@@ -258,6 +266,17 @@ func _on_net_download_result(ok: bool, has_save: bool, save_text: String, update
 
 # 【新增】对账失败弹窗：停在门口（盖过同步遮罩），绝不静默带空档进游戏。
 # 重试=重新走下载仲裁；离线进入=玩家知悉"本地档将自动上传覆盖云端"风险后的显式选择
+# 服务端版本闸拒收：本地 revision 落后=他端先存。暂停上传→拉云端→强制走恢复弹窗（版本号是权威，不看 updated_at）；
+# 弹窗已开则跳过，防每次自动存档都刷一次窗
+func _on_stale_rejected(rev: int) -> void:
+	if c.get_node_or_null("CloudRestorePopup") != null:
+		return
+	_upload_paused = true
+	_server_revision = rev
+	_stale_probe = true
+	c.net.download_save()
+
+
 func _show_sync_fail_popup():
 	if c.has_node("SyncFailPopup"): return
 	var popup = c._create_base_popup("云端同步失败", Vector2(480, 280))
@@ -343,10 +362,13 @@ func _show_cloud_restore_popup(save_text: String, updated_at: int):
 	confirm.text = "恢复云端（覆盖本地）"
 	confirm.custom_minimum_size = Vector2(180, 44)
 	confirm.pressed.connect(func():
-		_upload_paused = false   # 已做选择，恢复/保留都不再挡上传
+		# 先挂退出禁存再写档：controller.on_exit 挂在 tree_exiting 上，reload 拆场景时会把内存旧档回写本地，
+		# 盖掉刚写入的云端档——该窗口确定必现，不挡=恢复必败（2026-10-07 双窗口复测定案）
+		c._suppress_exit_save = true
 		# 【改】写当前账号档（原来写 data.SAVE_PATH 常量，恢复的档会进错文件）
 		var f = FileAccess.open(c.data.save_path, FileAccess.WRITE)
 		if f == null:
+			c._suppress_exit_save = false   # 写失败不重载，退出存档闸恢复正常
 			# 写不进去就绝不重载：重载会按本地旧档进游戏，玩家以为恢复了云端实则本地
 			c._show_success_popup("恢复失败：存档写入被拒，未做任何改动", 0.0, "warn")
 			return
@@ -360,6 +382,10 @@ func _show_cloud_restore_popup(save_text: String, updated_at: int):
 	cancel.custom_minimum_size = Vector2(180, 44)
 	cancel.pressed.connect(func():
 		_upload_paused = false   # 玩家确认保留本地：之后的自动存档恢复上传，本地档覆盖云端是玩家显式选择
+		if _server_revision > 0:
+			# 版本闸下"保留本地"必须抬高本地版本号再传，否则下次上传还被 409 拒成死循环；玩家显式选择=本地为权威
+			c.data.save_revision = _server_revision + 1
+			_server_revision = 0
 		c._safe_close("CloudRestorePopup")
 	)
 	row.add_child(cancel)

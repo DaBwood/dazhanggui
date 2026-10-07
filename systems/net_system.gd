@@ -16,6 +16,7 @@ signal auth_expired()                 # 【新增】令牌被服务端判失效�
 
 signal login_result(ok: bool, msg: String)                 # 登录/注册结果（msg 为失败原因或成功提示）
 signal upload_result(ok: bool)                             # 存档上传结果（静默处理，UI不强制消费）
+signal stale_rejected(server_revision: int)   # 409 版本闸拒收：本地 revision 落后（他端先存）
 signal download_result(ok: bool, has_save: bool, save_text: String, updated_at: int)   # 存档下载结果
 
 func _ready():
@@ -116,6 +117,10 @@ func upload_save(save_text: String):
 			clear_auth()
 			auth_expired.emit()
 			upload_result.emit(false)
+			return
+		if code == 409:
+			# 版本闸拒收：别傻等下次重试——那只会每 30 秒再撞一次闸；交给 UI 拉云端弹恢复窗
+			stale_rejected.emit(int(d.get("server_revision", 0)))
 			return
 		if code == 200 and d.get("ok", false):
 			upload_result.emit(true)
