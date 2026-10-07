@@ -127,11 +127,16 @@ offset_bottom = 270.0
 flat = true
 
 [node name="PlayBtn" type="Button" parent="ShopVBox/MapScroll/MapContent/ShopEntryGrid/bld_hq" unique_id=881577008]
-layout_mode = 0
-offset_left = 229.0
-offset_top = -21.5
-offset_right = 321.0
-offset_bottom = 75.5
+layout_mode = 1
+anchors_preset = -1
+anchor_left = 1.6760001
+anchor_top = 0.27400002
+anchor_right = 1.6760001
+anchor_bottom = 0.27400002
+offset_left = -47.54001
+offset_top = -47.530003
+offset_right = 47.45999
+offset_bottom = 47.469997
 
 [node name="bld_ke_zhan" type="Panel" parent="ShopVBox/MapScroll/MapContent/ShopEntryGrid" unique_id=881577145]
 layout_mode = 0
@@ -199,11 +204,16 @@ offset_bottom = 102.494995
 flat = true
 
 [node name="PlayBtn" type="Button" parent="ShopVBox/MapScroll/MapContent/ShopEntryGrid/bld_ke_zhan" unique_id=881577556]
-layout_mode = 0
-offset_left = 178.0
-offset_top = -5.5
-offset_right = 272.0
-offset_bottom = 88.5
+layout_mode = 1
+anchors_preset = -1
+anchor_left = 1.3260001
+anchor_top = 0.44200003
+anchor_right = 1.3260001
+anchor_bottom = 0.44200003
+offset_left = -47.420013
+offset_top = -47.49
+offset_right = 47.579987
+offset_bottom = 47.51
 
 [node name="bld_yi_guan" type="Panel" parent="ShopVBox/MapScroll/MapContent/ShopEntryGrid" unique_id=881577693]
 layout_mode = 0
@@ -266,11 +276,16 @@ offset_bottom = 246.0
 flat = true
 
 [node name="PlayBtn" type="Button" parent="ShopVBox/MapScroll/MapContent/ShopEntryGrid/bld_yi_guan" unique_id=881578104]
-layout_mode = 0
-offset_left = 168.0
-offset_top = 12.0
-offset_right = 216.0
-offset_bottom = 60.0
+layout_mode = 1
+anchors_preset = -1
+anchor_left = 1.268
+anchor_top = 0.647
+anchor_right = 1.268
+anchor_bottom = 0.647
+offset_left = -51.559998
+offset_top = -82.024
+offset_right = 43.440002
+offset_bottom = 12.975998
 
 [node name="PlayDot" type="Label" parent="ShopVBox/MapScroll/MapContent/ShopEntryGrid/bld_yi_guan/PlayBtn" unique_id=881578241]
 visible = false
@@ -523,10 +538,10 @@ flat = true
 
 [node name="PlayBtn" type="Button" parent="ShopVBox/MapScroll/MapContent/ShopEntryGrid/bld_yao_pu" unique_id=881580022]
 layout_mode = 0
-offset_left = -39.0
-offset_top = 18.0
-offset_right = 9.0
-offset_bottom = 66.0
+offset_left = -78.0
+offset_top = -11.5
+offset_right = 17.0
+offset_bottom = 83.5
 
 [node name="PlayDot" type="Label" parent="ShopVBox/MapScroll/MapContent/ShopEntryGrid/bld_yao_pu/PlayBtn" unique_id=881580159]
 visible = false
@@ -601,10 +616,10 @@ flat = true
 
 [node name="PlayBtn" type="Button" parent="ShopVBox/MapScroll/MapContent/ShopEntryGrid/bld_jiu_si" unique_id=881580707]
 layout_mode = 0
-offset_left = -35.0
-offset_top = 36.0
-offset_right = 13.0
-offset_bottom = 84.0
+offset_left = -86.0
+offset_top = 20.5
+offset_right = 9.0
+offset_bottom = 115.5
 
 [node name="PlayDot" type="Label" parent="ShopVBox/MapScroll/MapContent/ShopEntryGrid/bld_jiu_si/PlayBtn" unique_id=881580844]
 visible = false
@@ -739,10 +754,10 @@ flat = true
 
 [node name="PlayBtn" type="Button" parent="ShopVBox/MapScroll/MapContent/ShopEntryGrid/bld_miaoyin_fang" unique_id=881581803]
 layout_mode = 0
-offset_left = -92.0
-offset_top = 56.0
-offset_right = -44.0
-offset_bottom = 104.0
+offset_left = -125.0
+offset_top = 24.5
+offset_right = -30.0
+offset_bottom = 119.5
 
 [node name="bld_jiu_fang" type="Panel" parent="ShopVBox/MapScroll/MapContent/ShopEntryGrid" unique_id=881581940]
 layout_mode = 0
@@ -806,10 +821,10 @@ flat = true
 
 [node name="PlayBtn" type="Button" parent="ShopVBox/MapScroll/MapContent/ShopEntryGrid/bld_jiu_fang" unique_id=881582351]
 layout_mode = 0
-offset_left = -93.0
-offset_top = 47.0
-offset_right = -45.0
-offset_bottom = 95.0
+offset_left = -137.0
+offset_top = 0.5
+offset_right = -42.0
+offset_bottom = 95.5
 
 [node name="bld_changle_fang" type="Panel" parent="ShopVBox/MapScroll/MapContent/ShopEntryGrid" unique_id=881582488]
 layout_mode = 0
