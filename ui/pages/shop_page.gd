@@ -20,19 +20,15 @@ func _init(p_c):
 # ============ 以下为原 game_controller.gd 搬迁函数（逻辑未改，仅根节点访问加了 c. 前缀） ============
 
 # ============ 场景化批次2：商铺页骨架化（2026-10-07，模板=闯荡页批次1/3 v2 范式） ============
-# 布局唯一真相源=shop_page.tscn（骨架/底图/入口层/帮助钮），本脚本只实例化+灌内容（21 栋建筑）
+# 布局唯一真相源=shop_page.tscn（骨架/底图/入口层；帮助钮 2026-10-07 已拆），本脚本只实例化+灌内容（21 栋建筑）
 # 底图契约：res://assets/shops/map_bg.png（3630×1155 新街市图，2026-10-07 用户重绘），
 #   按 1067 设计高零变形铺宽 3353≈5.6 屏横滑；21 栋建筑=bld_* 静态节点（tscn 摆位），脚本只接线+灌状态
 const SHOP_SCENE := preload("res://ui/pages/shop_page.tscn")
 const BUILDING_IMG_DIR := "res://assets/shops/"
 const STAFF_ICON_IMG := "res://assets/shops/staff.png"   # 伙计图标（用户交付，缺失=只显数字）
 const MAP_BG_IMG := "res://assets/shops/map_bg.png"
-const MAP_SIZE := Vector2(3353, 1067)   # 设计尺寸=MapContent 最小尺寸（新图比例按 1067 高推导）；仅自检打印用，布局勿依赖
-# 特色玩法七店（钱庄=总部 hq 在地图"最左最中间"；其余 6 店挂 24×24 玩法入口占位钮，批次2+ 逐个接通）
-const PLAY_SHOPS := ["hq", "ke_zhan", "yi_guan", "yao_pu", "jiu_fang", "jiu_si", "miaoyin_fang"]
-
-# 【新增】批次C（2026-09-19 重构）：特色玩法「▶」入口的视图映射——表驱动替代 7 段 if/elif 链，
-# 新增带入口的店铺=这里加一行。红点哪些店铺有（PLAY_SHOP_DOTS）与可见条件（_play_dot_visible）集中管理
+# 特色玩法七店（钱庄=总部 hq；▶ 入口节点在 tscn，has_node 判定）——视图映射表驱动，
+# 新增带入口店铺=PLAY_SHOP_VIEWS 加一行。红点可见条件集中管理在 _play_dot_visible（医馆/药铺/酒肆）
 const PLAY_SHOP_VIEWS := {
 	"hq": "bank",               # 钱庄：柜台委任/百业经验/筹算值/信誉值
 	"ke_zhan": "inn",           # 客栈：营业/菜谱/庖丁解牛/兑换商店
@@ -43,7 +39,6 @@ const PLAY_SHOP_VIEWS := {
 	"jiu_si": "tavern",         # 酒肆：叫号接待/收益罐/餐饮娱乐设施
 }
 # 地图侧有红点的店铺（红点 Label 恒创建、visible 随条件切，update_entry_buttons 靠 has_node("PlayBtn/PlayDot") 找到它）
-const PLAY_SHOP_DOTS := ["yi_guan", "yao_pu", "jiu_si"]
 # 店位/店牌尺寸已迁 shop_page.tscn（bld_* 节点 offset 为唯一真相源，2026-10-07 用户拍板"按钮进 tscn 纯化"）；
 # 调店位=编辑器里拖 bld_* 节点，勿回改脚本
 func generate_shop_list():
@@ -104,7 +99,7 @@ func generate_shop_list():
 			btn.pressed.connect(c.open_hq_panel)
 		else:
 			btn.pressed.connect(on_shop_entry_pressed.bind(shop_id))
-		# 玩法入口钮（▶ 仅 PLAY_SHOPS 七店有节点）：特色玩法表驱动接线，hq▶=bank 视图
+		# 玩法入口钮（▶ 仅特色玩法七店有 tscn 节点，has_node 判定）：表驱动接线，hq▶=bank 视图
 		if bld.has_node("PlayBtn"):
 			var play := bld.get_node("PlayBtn") as Button
 			# 特色玩法入口图标（用户 2026-10-07 素材，替换统一 ▶ 文字钮；丢图回退 ▶ 文字不变）
