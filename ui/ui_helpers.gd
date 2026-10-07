@@ -207,19 +207,43 @@ func apply_theme():
 		lbl.add_theme_font_size_override("font_size", 18)
 		lbl.add_theme_color_override("font_color", Color("#f2e9e4"))
 
+# 底栏皮肤样式盒缓存：style_nav_buttons 每次切页都跑，静态材质只建一次
+#（DeepSeek 复核点：原先每切页重建 5×5=25 个 StyleBoxFlat）
+var _nav_transparent_sb: StyleBoxFlat = null
+var _nav_hover_sb: StyleBoxFlat = null
+var _nav_pressed_sb: StyleBoxFlat = null
+
+func _ensure_nav_styleboxes():
+	if _nav_transparent_sb != null:
+		return
+	_nav_transparent_sb = StyleBoxFlat.new()
+	_nav_hover_sb = StyleBoxFlat.new()
+	_nav_pressed_sb = StyleBoxFlat.new()
+	# hover/pressed 全透明：按钮格（≈116×96）比图标（82）大一圈，任何矩形光晕都会
+	# 在图标外冒黑边且重心偏移（用户实测）；点击反馈交给「切页后选中图标变亮」
+	for sb in [_nav_transparent_sb, _nav_hover_sb, _nav_pressed_sb]:
+		sb.bg_color = Color(0, 0, 0, 0)
+
 func style_nav_buttons():
 	if not c.has_node("BottomNav"): return
+	_ensure_nav_styleboxes()
 	for btn in c.get_node("BottomNav").get_children():
 		if btn is Button:
+			# 木纹由 BottomNavBg 提供，按钮五态全透明（hover/pressed 光晕下线，理由见 _ensure_nav_styleboxes）
+			btn.add_theme_stylebox_override("normal", _nav_transparent_sb)
+			btn.add_theme_stylebox_override("hover", _nav_hover_sb)
+			btn.add_theme_stylebox_override("pressed", _nav_pressed_sb)
+			btn.add_theme_stylebox_override("focus", _nav_transparent_sb)
+			btn.add_theme_stylebox_override("disabled", _nav_transparent_sb)
 			if  (c.current_page == "mansion" and btn.name == "NavMansionBtn") or \
 				(c.current_page == "shop" and btn.name == "NavShopBtn") or \
 				(c.current_page == "hero" and btn.name == "NavHeroBtn") or \
 				(c.current_page == "stage" and btn.name == "NavStageBtn") or \
 				(c.current_page == "adventure" and btn.name == "NavAdventureBtn") or \
 				(c.current_page == "bag" and btn.name == "NavBagBtn"):
-				btn.modulate = Color("#e0c070")  # 高亮
+				btn.modulate = Color(1, 1, 1)  # 高亮：原色
 			else:
-				btn.modulate = Color("#c9a959")  # 普通
+				btn.modulate = Color(0.62, 0.60, 0.56)  # 普通：压暗
 
 func style_button(btn: Button):
 	# 【改】批次②③④-B12：按钮统一改暗紫底+细描边+圆角，避免大面积金色显得拥挤、廉价

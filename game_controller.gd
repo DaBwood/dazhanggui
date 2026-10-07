@@ -205,17 +205,19 @@ func _enter_game():
 	# 初始化左上角头像+名字
 	_init_avatar_box()
 
-	# 【新增】铜钱旁加号按钮
+	# 【新增】货币区旁加号按钮（顶栏皮肤：木板底上扁平绿“+”，参考图二右侧）；
+	# 顶栏货币区已拆成 图标+数值 对（无 Label 节点），加号直接 append 即最右
 	if has_node("TopBar") and not $TopBar.has_node("MoneyPlusBtn"):
 		var plus_btn = Button.new()
 		plus_btn.name = "MoneyPlusBtn"
 		plus_btn.text = "+"
+		plus_btn.flat = true
+		plus_btn.add_theme_color_override("font_color", Color("#7ee787"))
+		plus_btn.add_theme_color_override("font_hover_color", Color("#aaffa0"))
 		plus_btn.custom_minimum_size = Vector2(28, 28)
 		plus_btn.add_theme_font_size_override("font_size", 16)
 		plus_btn.pressed.connect(on_money_plus_clicked)
 		$TopBar.add_child(plus_btn)
-		if $TopBar is Container and $TopBar.has_node("Label"):
-			$TopBar.move_child(plus_btn, $TopBar.get_node("Label").get_index() + 1)
 
 	#连接信号
 	connect_signals()
@@ -468,16 +470,16 @@ func update_all_ui():
 	_check_income_float()   # 【新增】全局赚速飘字：任何操作后汇流到此，diff≠0 即弹
 
 func update_money_label():
-	var text = "🥈 %s  |  🥇：%s  |  VIP%d  |  赚速：%s/秒" % [
-		format_number(data.money),
-		format_number(data.yuanbao),
-		data.get_vip_level(),  # ← 使用函数获取实时等级
-		format_number(data.get_total_auto_income())
-	]
-	if has_node("TopBar/Label"):
-		$TopBar/Label.text = text
-	elif has_node("Label"):
-		$Label.text = text
+	# 顶栏皮肤 v2（2026-10-07，图四口径）：右区上排银两/元宝「图标+数值」对、下排赚速；
+	# 左区 VIP/身份牌匾随数据刷新（节点缺失静默跳过）
+	if has_node("TopBar/RightBox/CurrencyRow/SilverSlot/Inner/MoneyLabel"):
+		$TopBar/RightBox/CurrencyRow/SilverSlot/Inner/MoneyLabel.text = format_number(data.money)
+		$TopBar/RightBox/CurrencyRow/YuanbaoSlot/Inner/YuanbaoLabel.text = format_number(data.yuanbao)
+		$TopBar/RightBox/RateLabel.text = "赚速：%s/秒" % format_number(data.get_total_auto_income())
+	# 左区 VIP/身份牌匾随数据刷新（节点由 _init_avatar_box 建，缺失静默跳过）
+	if has_node("TopBar/AvatarBox/LeftBox/NameRow/VipLabel"):
+		$TopBar/AvatarBox/LeftBox/NameRow/VipLabel.text = "VIP%d" % data.get_vip_level()
+		$TopBar/AvatarBox/LeftBox/TitleLabel.text = "汴梁%d级大掌柜" % data.identity_level
 
 # 【新增】全局赚速提升飘字（2026-09-11 定稿，2026-09-16 重新接入——曾被后交付的整文件覆盖丢失）：
 # 中央对比方案——中枢快照 + update_all_ui 汇流。所有养成系统操作后都汇流 update_all_ui
@@ -526,20 +528,33 @@ func _format_gains(gains: Dictionary) -> String:
 func _init_avatar_box():
 	if not has_node("TopBar"): return
 	if $TopBar.has_node("AvatarBox"): return
-	
+	# 顶栏皮肤 v2（图四口径）：圆头像 + 右列[名字+VIP 行 / 身份牌匾行]
 	var box = HBoxContainer.new()
 	box.name = "AvatarBox"
-	box.add_theme_constant_override("separation", 12)
-	
-	var avatar = PanelContainer.new()
-	avatar.name = "Avatar"
-	avatar.custom_minimum_size = Vector2(32, 32)
-	var style = StyleBoxFlat.new()
-	style.bg_color = Color("#c9a959")
-	style.set_corner_radius_all(16)
-	avatar.add_theme_stylebox_override("panel", style)
-	box.add_child(avatar)
-	
+	box.alignment = BoxContainer.ALIGNMENT_CENTER
+	box.add_theme_constant_override("separation", 6)
+	# 圆形金环头像：圆+环在素材流水线烘焙（avatar_default.png 带透明角），这里直接用
+	var portrait = TextureRect.new()
+	portrait.name = "Portrait"
+	portrait.custom_minimum_size = Vector2(56, 56)
+	portrait.expand = true
+	portrait.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_CENTERED
+	# 头像可点进身份面板（用户口径，与名字按钮同入口）；TextureRect 默认收点击，接 gui_input 即可
+	portrait.gui_input.connect(_on_portrait_gui_input)
+	if ResourceLoader.exists(AVATAR_DEFAULT):
+		portrait.texture = load(AVATAR_DEFAULT)
+	else:
+		portrait.visible = false   # 素材契约：丢图隐藏，名字列不塌
+	box.add_child(portrait)
+	var left_box = VBoxContainer.new()
+	left_box.name = "LeftBox"
+	left_box.add_theme_constant_override("separation", 2)
+	left_box.alignment = BoxContainer.ALIGNMENT_CENTER
+	box.add_child(left_box)
+	var name_row = HBoxContainer.new()
+	name_row.name = "NameRow"
+	name_row.add_theme_constant_override("separation", 4)
+	left_box.add_child(name_row)
 	var name_btn = Button.new()
 	name_btn.name = "PlayerNameBtn"
 	name_btn.text = data.player_name
@@ -547,10 +562,34 @@ func _init_avatar_box():
 	name_btn.add_theme_color_override("font_color", Color("#f2e9e4"))
 	name_btn.add_theme_font_size_override("font_size", 16)
 	name_btn.pressed.connect(open_player_panel)
-	box.add_child(name_btn)
-	
+	name_row.add_child(name_btn)
+	var vip_label = Label.new()
+	vip_label.name = "VipLabel"
+	vip_label.add_theme_color_override("font_color", Color("#e8c56b"))
+	name_row.add_child(vip_label)
+	var title_label = Label.new()
+	title_label.name = "TitleLabel"
+	# 身份牌匾：红底金字条（图四）；「汴梁」为静态风味城名，级数取 identity_level 实字段
+	var plate := StyleBoxFlat.new()
+	plate.bg_color = Color("#a03028")
+	plate.border_color = Color("#d4a94e")
+	plate.set_border_width_all(1)
+	plate.set_corner_radius_all(4)
+	plate.content_margin_left = 6
+	plate.content_margin_right = 6
+	plate.content_margin_top = 1
+	plate.content_margin_bottom = 1
+	title_label.add_theme_stylebox_override("normal", plate)
+	title_label.add_theme_font_size_override("font_size", 12)
+	title_label.add_theme_color_override("font_color", Color("#f2d98c"))
+	left_box.add_child(title_label)
 	$TopBar.add_child(box)
-	$TopBar.move_child(box, 0)
+	$TopBar.move_child(box, 0)   # 头像组固定在顶栏最左
+
+# 头像点击进入身份面板（与 PlayerNameBtn 同入口）
+func _on_portrait_gui_input(event):
+	if event is InputEventMouseButton and event.pressed:
+		open_player_panel()
 
 func on_apprentice():
 	switch_page("apprentice")
@@ -1019,12 +1058,15 @@ func _refresh_nav_visibility():
 	var vs := get_viewport_rect().size
 	$TopBar.visible = _bars_visible and TOPBAR_PAGES.has(current_page)
 	$BottomNav.visible = _bars_visible and BOTTOMNAV_PAGES.has(current_page) and not _any_adventure_subview_open()
-	var top_h = 50 if $TopBar.visible else 0
-	var bot_h = 60 if $BottomNav.visible else 0
+	var top_h = TOP_BAR_H if $TopBar.visible else 0   # 栏高成对常量，单一来源
+	var bot_h = NAV_BAR_H if $BottomNav.visible else 0
 	$PageContainer.position = Vector2(0, top_h)
 	$PageContainer.size = Vector2(vs.x, max(0, vs.y - top_h - bot_h))
 	# 顶栏背景条跟随显隐（遮页面顶缘用；顶栏藏时条也必须藏，否则非白名单页留黑条）
 	$TopBarBg.visible = $TopBar.visible
+	# 底栏木纹条同理跟随（同理由：条在页面之上，藏导航必须连条藏）
+	if has_node("BottomNavBg"):
+		$BottomNavBg.visible = $BottomNav.visible
 
 func _any_adventure_subview_open() -> bool:
 	# 子视图模块是 RefCounted（启动报 Invalid access 'visible' 定案）：它们打开时统一隐藏页内 AdventureVBox；
@@ -1306,10 +1348,70 @@ func on_mail():
 
 # ── 静态文字集中在这里，按你游戏内实际显示核对 ──
 const NAV_LABELS = ["府邸", "商铺", "门客", "闯荡", "背包"]   # 底栏5键（门客/闯荡/背包已和截图核对，前两个按页面注释推断）
+# ── 顶/底栏皮肤素材（2026-10-07 批次，assets/nav/ 同名文件；缺图按素材契约静默降级）──
+# 栏高成对常量：同值散落 3 处（shell/_refresh_nav_visibility/_apply_portrait_layout），必须单一来源否则三明治错位
+const TOP_BAR_H := 72   # 顶栏两排槽 34+34+间距 2=70，72 是容纳下限
+const NAV_BAR_H := 96   # 底栏=木板条完整金框比例（3904:640→600 宽自然 98 高，96 近似不裁框）
+const TOP_BAR_BG := "res://assets/nav/bar_top.png"
+const NAV_BAR_BG := "res://assets/nav/bar_bottom.png"
+const AVATAR_DEFAULT := "res://assets/nav/avatar_default.png"   # 圆形金环头像（抠图流水线烘焙，非方形原图）
+const SLOT_INSET := "res://assets/nav/slot_inset.png"   # 下沉圆角槽九贴片（内阴影+下缘高光已在图里烘焙）
+const NAV_BTN_ICONS := {
+	"NavMansionBtn": "res://assets/nav/btn_mansion.png",
+	"NavShopBtn": "res://assets/nav/btn_shop.png",
+	"NavHeroBtn": "res://assets/nav/btn_hero.png",
+	"NavAdventureBtn": "res://assets/nav/btn_adventure.png",
+	"NavBagBtn": "res://assets/nav/btn_bag.png",
+}
+const TOPBAR_ICON_PATHS := {
+	"silver": "res://assets/nav/icon_silver.png",
+	"yuanbao": "res://assets/nav/icon_yuanbao.png",
+}
 const RECHARGE_TAB_LABELS = ["元宝", "每日礼包", "特惠礼包"]    # 充值页3个页签
 const TXT_VIP_TITLE = "VIP 特权"
 const TXT_HQ_CLICK = "💰 点击赚钱"
 const TXT_BATCH_HIRE = "十连招募"
+
+# 下沉插槽九贴片（2026-10-07 v3）：StyleBoxFlat 无内阴影概念，凿槽质感只能贴片；
+# 角部 24px 留给九切片不拉伸，槽体横向随意拉（图六/七的银两/元宝/赚速条共用此样式）
+func _inset_slot_stylebox() -> StyleBoxTexture:
+	var sb := StyleBoxTexture.new()
+	if ResourceLoader.exists(SLOT_INSET):
+		sb.texture = load(SLOT_INSET)
+	# 帽区必须小于槽高的一半：纵向 24+24>34 时上下帽在绘制空间重叠互压（DeepSeek 复核+实机糊角证实）；
+	# 横向 24 保住圆角帽，槽体横向仍可拉伸。内容边距 16>横向帽 15，文字不压斜角
+	sb.set_texture_margin(SIDE_TOP, 8)
+	sb.set_texture_margin(SIDE_BOTTOM, 8)
+	sb.set_texture_margin(SIDE_LEFT, 24)
+	sb.set_texture_margin(SIDE_RIGHT, 24)
+	sb.content_margin_left = 16
+	sb.content_margin_right = 16
+	# 纵向 2：货币图标放大到 30 显示后，30+2+2 恰好住进 34 高的槽
+	sb.content_margin_top = 2
+	sb.content_margin_bottom = 2
+	return sb
+
+# 顶栏货币图标（2026-10-07 皮肤批次）：实物图按键控透明底，运行时缩到 52px——
+# 4.7.1 无 icon_max_width（实测报错，shop_page 同案），只能改图本身；丢图隐藏，数值不塌
+func _make_currency_icon(kind: String) -> TextureRect:
+	var icon = TextureRect.new()
+	icon.name = kind.capitalize() + "Icon"
+	icon.custom_minimum_size = Vector2(40, 30)
+	icon.expand = true
+	icon.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_CENTERED
+	var path: String = TOPBAR_ICON_PATHS.get(kind, "")
+	if path != "" and ResourceLoader.exists(path):
+		var tex := load(path) as Texture2D
+		if tex and tex.get_image():
+			var img := tex.get_image()
+			# 银两/元宝是宽形锭，按 max 边缩会被压成小个子（用户：「再长一些宽一些」）；
+			# 按高度缩到 30 显示（60tex），宽体自然撑开
+			var s: float = 60.0 / img.get_height()
+			img.resize(int(img.get_width() * s), int(img.get_height() * s), Image.INTERPOLATE_LANCZOS)
+			icon.texture = ImageTexture.create_from_image(img)
+	else:
+		icon.visible = false
+	return icon
 
 # ============ 建结构 ============
 func _build_scene_shell():
@@ -1324,13 +1426,62 @@ func _build_scene_shell():
 	add_child(bg)
 
 	# ── 顶栏（AvatarBox/加号按钮由后续代码自己加）──
+	# 顶栏皮肤 v2（2026-10-07，用户反馈对照图四重排）：左=圆头像+名字/VIP+身份牌匾（_init_avatar_box），
+	# 右=上排银两/元宝、下排赚速；两排布局是高 50→64 的原因（TOP_BAR_H）
 	var top_bar = HBoxContainer.new()
 	top_bar.name = "TopBar"
-	top_bar.add_theme_constant_override("separation", 12)
+	top_bar.custom_minimum_size = Vector2(0, TOP_BAR_H)
+	top_bar.add_theme_constant_override("separation", 8)
 	add_child(top_bar)
-	var top_label = Label.new()
-	top_label.name = "Label"
-	top_bar.add_child(top_label)
+	var top_spacer = Control.new()   # 左组（AvatarBox）与右区之间撑开，右区整体靠右
+	top_spacer.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	top_bar.add_child(top_spacer)
+	var right_box = VBoxContainer.new()
+	right_box.name = "RightBox"
+	right_box.add_theme_constant_override("separation", 2)
+	right_box.alignment = BoxContainer.ALIGNMENT_CENTER
+	top_bar.add_child(right_box)
+	var currency_row = HBoxContainer.new()
+	currency_row.name = "CurrencyRow"
+	currency_row.add_theme_constant_override("separation", 6)
+	currency_row.alignment = BoxContainer.ALIGNMENT_END   # 整排靠右，对标图四
+	right_box.add_child(currency_row)
+	# 货币区=「下沉槽+实物图标+数值」（图六/七口径）；图标丢图按素材契约隐藏，数值不塌
+	var silver_slot = PanelContainer.new()
+	silver_slot.name = "SilverSlot"
+	silver_slot.custom_minimum_size = Vector2(130, 34)   # 最小宽兜底+呼吸量：槽贴内容太紧会显挤（用户实测）
+	silver_slot.mouse_filter = Control.MOUSE_FILTER_IGNORE   # 纯装饰容器，不吃点击
+	silver_slot.add_theme_stylebox_override("panel", _inset_slot_stylebox())
+	currency_row.add_child(silver_slot)
+	var silver_inner = HBoxContainer.new()
+	silver_inner.name = "Inner"   # 必须命名：update_money_label 按路径寻址，匿名节点路径会漂移
+	silver_inner.add_theme_constant_override("separation", 4)
+	silver_slot.add_child(silver_inner)
+	silver_inner.add_child(_make_currency_icon("silver"))
+	var money_label = Label.new()
+	money_label.name = "MoneyLabel"
+	silver_inner.add_child(money_label)
+	var yuanbao_slot = PanelContainer.new()
+	yuanbao_slot.name = "YuanbaoSlot"
+	yuanbao_slot.custom_minimum_size = Vector2(114, 34)
+	yuanbao_slot.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	yuanbao_slot.add_theme_stylebox_override("panel", _inset_slot_stylebox())
+	currency_row.add_child(yuanbao_slot)
+	var yuanbao_inner = HBoxContainer.new()
+	yuanbao_inner.name = "Inner"   # 同上：路径寻址要求命名
+	yuanbao_inner.add_theme_constant_override("separation", 4)
+	yuanbao_slot.add_child(yuanbao_inner)
+	yuanbao_inner.add_child(_make_currency_icon("yuanbao"))
+	var yuanbao_label = Label.new()
+	yuanbao_label.name = "YuanbaoLabel"
+	yuanbao_inner.add_child(yuanbao_label)
+	var rate_label = Label.new()
+	rate_label.name = "RateLabel"
+	rate_label.custom_minimum_size = Vector2(0, 34)
+	rate_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER   # 用户口径：赚速在槽内居中
+	rate_label.size_flags_horizontal = Control.SIZE_EXPAND_FILL   # 行宽吃满右区，与货币排右缘对齐
+	rate_label.add_theme_stylebox_override("normal", _inset_slot_stylebox())
+	right_box.add_child(rate_label)
 	var item_label = Label.new()   # 场景遗留节点，代码未引用，保留兼容
 	item_label.name = "ItemLabel"
 	top_bar.add_child(item_label)
@@ -1368,6 +1519,15 @@ func _build_scene_shell():
 	# （FriendPage / ApprenticePage 由各自模块代码创建，此处不建）
 
 	# ── 底部导航（5键等分；文字见顶部常量）──
+	# 木纹底条独立成节点：BottomNav 是 HBoxContainer，背景图若塞进去会被当单元格参与排布
+	var nav_bg = TextureRect.new()
+	nav_bg.name = "BottomNavBg"
+	if ResourceLoader.exists(NAV_BAR_BG):
+		nav_bg.texture = load(NAV_BAR_BG)
+	nav_bg.expand = true
+	nav_bg.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_COVERED
+	nav_bg.mouse_filter = Control.MOUSE_FILTER_IGNORE   # 纯装饰，不吃点击
+	add_child(nav_bg)
 	var nav = HBoxContainer.new()
 	nav.name = "BottomNav"
 	nav.add_theme_constant_override("separation", 4)
@@ -1377,8 +1537,21 @@ func _build_scene_shell():
 		var btn = Button.new()
 		btn.name = nav_names[i]
 		btn.text = NAV_LABELS[i]
-		btn.custom_minimum_size = Vector2(0, 60)   # 只定高度不定宽度
+		btn.custom_minimum_size = Vector2(0, NAV_BAR_H)   # 只定高度不定宽度
 		btn.size_flags_horizontal = Control.SIZE_EXPAND_FILL   # 宽度等分
+		# 皮肤钮（范式§十一.9 同款）：图自带烙字，text 清空只留图标；4.7.1 无 icon_max_width
+		#（实测报错，shop_page 同案），故运行时缩放；丢图回退文字标签
+		var icon_path: String = NAV_BTN_ICONS.get(nav_names[i], "")
+		if icon_path != "" and ResourceLoader.exists(icon_path):
+			btn.text = ""
+			var icon_tex := load(icon_path) as Texture2D
+			if icon_tex and icon_tex.get_image():
+				var icon_img := icon_tex.get_image()
+				# 图标边长=栏高-14：图标收进木板金框内（图一口径；顶满 96 会盖掉框线=用户「对不上」），
+				# 左右留缝；不 expand 不拉伸（expand 拉胖立绘，无 expand 时纹理原尺寸居中=显示尺寸）
+				var icon_s: float = float(NAV_BAR_H - 14) / max(icon_img.get_width(), icon_img.get_height())
+				icon_img.resize(int(icon_img.get_width() * icon_s), int(icon_img.get_height() * icon_s), Image.INTERPOLATE_LANCZOS)
+				btn.icon = ImageTexture.create_from_image(icon_img)
 		nav.add_child(btn)
 
 	# ── 遮罩（弹窗弹出时挡住背景点击）──
@@ -1400,9 +1573,14 @@ func _build_scene_shell():
 
 	# 顶栏背景条+置顶（2026-10-07 用户拍板）：顶栏原本创建在 PageContainer 之前被页面盖住
 	#（底栏能遮顶栏不能遮=z 序），背景条放页面之上/遮罩之下，顶栏控件移到背景条之上
-	var top_bg = ColorRect.new()
+	# 顶栏皮肤：素色条换竹瓦木条纹理，节点名/矩形不动，引用零连带
+	var top_bg = TextureRect.new()
 	top_bg.name = "TopBarBg"
-	top_bg.color = Color(0.09, 0.07, 0.05, 1.0)
+	if ResourceLoader.exists(TOP_BAR_BG):
+		top_bg.texture = load(TOP_BAR_BG)
+	top_bg.expand = true
+	top_bg.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_COVERED
+	top_bg.mouse_filter = Control.MOUSE_FILTER_IGNORE   # 纯装饰，不吃点击
 	top_bg.set_anchors_preset(Control.PRESET_TOP_LEFT)
 	top_bg.position = Vector2.ZERO
 	top_bg.size = Vector2(get_viewport_rect().size.x, 50)
@@ -1434,24 +1612,30 @@ func _apply_portrait_layout():
 			n.position = Vector2.ZERO
 			n.size = vs
 
-	# 顶栏：顶部通栏，高 50
+	# 顶栏：顶部通栏（高=TOP_BAR_H，两排内容）
 	if has_node("TopBar"):
 		$TopBar.custom_minimum_size = Vector2.ZERO
 		$TopBar.set_anchors_preset(Control.PRESET_TOP_LEFT)
 		$TopBar.position = Vector2.ZERO
-		$TopBar.size = Vector2(vs.x, 50)
-		$TopBarBg.size = Vector2(vs.x, 50)   # 背景条与顶栏同矩形
+		$TopBar.size = Vector2(vs.x, TOP_BAR_H)
+		$TopBarBg.size = Vector2(vs.x, TOP_BAR_H)   # 背景条与顶栏同矩形
 
-	# 底栏：底部通栏，高 60，按钮等分
+	# 底栏：底部通栏（高=NAV_BAR_H=木板条完整金框比例），按钮等分
 	if has_node("BottomNav"):
 		$BottomNav.custom_minimum_size = Vector2.ZERO
 		$BottomNav.set_anchors_preset(Control.PRESET_TOP_LEFT)
-		$BottomNav.position = Vector2(0, vs.y - 60)
-		$BottomNav.size = Vector2(vs.x, 60)
+		$BottomNav.position = Vector2(0, vs.y - NAV_BAR_H)
+		$BottomNav.size = Vector2(vs.x, NAV_BAR_H)
 		for btn in $BottomNav.get_children():
 			if btn is Button:
-				btn.custom_minimum_size = Vector2(0, 60)
+				btn.custom_minimum_size = Vector2(0, NAV_BAR_H)
 				btn.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+
+	# 底栏木纹条与 BottomNav 同矩形（背景条是独立兄弟节点，不随 HBox 排布）
+	if has_node("BottomNavBg"):
+		$BottomNavBg.set_anchors_preset(Control.PRESET_TOP_LEFT)
+		$BottomNavBg.position = Vector2(0, vs.y - NAV_BAR_H)
+		$BottomNavBg.size = Vector2(vs.x, NAV_BAR_H)
 
 	# 页面容器：夹在可见的顶栏/底栏之间，栏隐了内容区立刻吃满释放的高度
 	if has_node("PageContainer"):
