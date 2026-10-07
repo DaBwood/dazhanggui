@@ -529,6 +529,9 @@ func update_shop_panel():
 # 内容边距涨不开、框只能缩在文字后（2026-10-07 用户实测）——尺寸归零触发容器回弹到 内容+边距 最小尺寸再居中
 func _fit_plate(bld: Control, plate: PanelContainer) -> void:
 	plate.size = Vector2.ZERO
+	# 统一最小牌面：字号/文字长短不一导致框被拉得忽粗忽细（用户 15:44 实测"丑丑的"），
+	# 牌面尺寸收敛到同一档后手绘框粗细一致；文字少出的空间由 VBox 居中吸收
+	plate.size = Vector2(max(plate.size.x, 148.0), max(plate.size.y, 88.0))
 	plate.position = Vector2((bld.size.x - plate.size.x) * 0.5, (bld.size.y - plate.size.y) * 0.5)
 
 var _map_snapping := false
