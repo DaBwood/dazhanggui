@@ -1023,6 +1023,8 @@ func _refresh_nav_visibility():
 	var bot_h = 60 if $BottomNav.visible else 0
 	$PageContainer.position = Vector2(0, top_h)
 	$PageContainer.size = Vector2(vs.x, max(0, vs.y - top_h - bot_h))
+	# 顶栏背景条跟随显隐（遮页面顶缘用；顶栏藏时条也必须藏，否则非白名单页留黑条）
+	$TopBarBg.visible = $TopBar.visible
 
 func _any_adventure_subview_open() -> bool:
 	# 子视图模块是 RefCounted（启动报 Invalid access 'visible' 定案）：它们打开时统一隐藏页内 AdventureVBox；
@@ -1396,6 +1398,18 @@ func _build_scene_shell():
 	timer.autostart = true
 	add_child(timer)
 
+	# 顶栏背景条+置顶（2026-10-07 用户拍板）：顶栏原本创建在 PageContainer 之前被页面盖住
+	#（底栏能遮顶栏不能遮=z 序），背景条放页面之上/遮罩之下，顶栏控件移到背景条之上
+	var top_bg = ColorRect.new()
+	top_bg.name = "TopBarBg"
+	top_bg.color = Color(0.09, 0.07, 0.05, 1.0)
+	top_bg.set_anchors_preset(Control.PRESET_TOP_LEFT)
+	top_bg.position = Vector2.ZERO
+	top_bg.size = Vector2(get_viewport_rect().size.x, 50)
+	add_child(top_bg)
+	move_child(top_bg, $Overlay.get_index())   # 页面之上、弹窗遮罩之下
+	move_child($TopBar, $Overlay.get_index())  # 控件在背景条之上、遮罩之下
+
 # 【新增】顶栏/底栏显隐开关：进入二级页隐藏（全屏），返回时恢复
 # 只改状态位再触发重排，实际矩形计算全在 _apply_portrait_layout 里（单一事实来源）
 func _set_bars_visible(p_visible: bool):      # 【改】参数 visible→p_visible，遮蔽基类 CanvasItem.visible 属性报警告
@@ -1426,6 +1440,7 @@ func _apply_portrait_layout():
 		$TopBar.set_anchors_preset(Control.PRESET_TOP_LEFT)
 		$TopBar.position = Vector2.ZERO
 		$TopBar.size = Vector2(vs.x, 50)
+		$TopBarBg.size = Vector2(vs.x, 50)   # 背景条与顶栏同矩形
 
 	# 底栏：底部通栏，高 60，按钮等分
 	if has_node("BottomNav"):

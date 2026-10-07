@@ -421,6 +421,7 @@ func update_entry_buttons():
 			staff_row.visible = false   # 钱庄无伙计编制
 			btn.modulate = Color.WHITE
 			btn.disabled = false
+			_fit_plate(bld, plate)
 			continue
 		var cfg = data.get_shop_config(shop_id)
 		if cfg.is_empty(): continue
@@ -444,6 +445,7 @@ func update_entry_buttons():
 			staff_row.visible = false
 			btn.modulate = Color(0.85, 0.85, 0.85, 0.95)
 			btn.disabled = false   # 【改】锁定也可点：点击弹"通关第X章解锁"提示（on_shop_entry_pressed else 分支），disabled 会让玩家点不动、条件无处可查
+		_fit_plate(bld, plate)
 
 func update_hq_panel():
 	if c.has_node("HQPanel/VBoxContainer/PopupTitle"):
@@ -522,6 +524,12 @@ func update_shop_panel():
 			btn.text = "派遣"
 			btn.disabled = false
 			btn.pressed.connect(_show_hero_assign_selector.bind(slot))
+
+# 牌匾自适应：v4 改造的 NamePlate 沿用了旧 Label 的定死 offset（84×30），容器被钉住，
+# 内容边距涨不开、框只能缩在文字后（2026-10-07 用户实测）——尺寸归零触发容器回弹到 内容+边距 最小尺寸再居中
+func _fit_plate(bld: Control, plate: PanelContainer) -> void:
+	plate.size = Vector2.ZERO
+	plate.position = Vector2((bld.size.x - plate.size.x) * 0.5, (bld.size.y - plate.size.y) * 0.5)
 
 var _map_snapping := false
 var _map_scroll: ScrollContainer = null
