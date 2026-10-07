@@ -245,16 +245,3 @@ theme_override_styles/focus = SubResource("StyleBoxTexture_banner")
 text = "商
 会"
 
-[node name="MainHelpButton" type="Button" parent="." unique_id=902766231]
-custom_minimum_size = Vector2(40, 36)
-layout_mode = 1
-anchors_preset = 1
-anchor_left = 1.0
-anchor_right = 1.0
-offset_left = -48.0
-offset_top = 8.0
-offset_right = -8.0
-offset_bottom = 44.0
-grow_horizontal = 0
-theme_override_font_sizes/font_size = 16
-text = "?"

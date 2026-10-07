@@ -34,13 +34,6 @@ grow_horizontal = 2
 grow_vertical = 2
 theme_override_constants/separation = 12
 
-[node name="TitleLabel" type="Label" parent="ShopVBox" unique_id=881575912]
-layout_mode = 2
-theme_override_colors/font_color = Color(1, 0.84313726, 0, 1)
-theme_override_font_sizes/font_size = 24
-text = "商铺"
-horizontal_alignment = 1
-
 [node name="MapScroll" type="ScrollContainer" parent="ShopVBox" unique_id=881576049]
 clip_contents = false
 layout_mode = 2
@@ -81,18 +74,48 @@ offset_right = 289.0
 offset_bottom = 371.5
 theme_override_styles/panel = SubResource("SE_build")
 
-[node name="NamePlate" type="Label" parent="ShopVBox/MapScroll/MapContent/ShopEntryGrid/bld_hq" unique_id=881576734]
+[node name="NamePlate" type="PanelContainer" parent="ShopVBox/MapScroll/MapContent/ShopEntryGrid/bld_hq" unique_id=881586735]
 layout_mode = 0
 offset_left = 40.5
 offset_top = 32.5
 offset_right = 124.5
 offset_bottom = 62.5
+theme_override_styles/panel = SubResource("SF_plate")
+mouse_filter = 2
+
+[node name="PlateVBox" type="VBoxContainer" parent="ShopVBox/MapScroll/MapContent/ShopEntryGrid/bld_hq/NamePlate" unique_id=881586872]
+layout_mode = 2
+theme_override_constants/separation = 2
+
+[node name="NameLine" type="Label" parent="ShopVBox/MapScroll/MapContent/ShopEntryGrid/bld_hq/NamePlate/PlateVBox" unique_id=881587009]
+layout_mode = 2
+theme_override_colors/font_color = Color(1, 0.84, 0, 1)
 theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
 theme_override_constants/outline_size = 3
-theme_override_font_sizes/font_size = 15
-theme_override_styles/normal = SubResource("SF_plate")
-text = "【钱庄】"
+theme_override_font_sizes/font_size = 14
+text = "钱庄"
 horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="StaffRow" type="HBoxContainer" parent="ShopVBox/MapScroll/MapContent/ShopEntryGrid/bld_hq/NamePlate/PlateVBox" unique_id=881587146]
+layout_mode = 2
+alignment = 1
+theme_override_constants/separation = 3
+
+[node name="StaffIcon" type="TextureRect" parent="ShopVBox/MapScroll/MapContent/ShopEntryGrid/bld_hq/NamePlate/PlateVBox/StaffRow" unique_id=881587283]
+custom_minimum_size = Vector2(15, 15)
+layout_mode = 2
+expand_mode = 1
+stretch_mode = 5
+mouse_filter = 2
+
+[node name="StaffNum" type="Label" parent="ShopVBox/MapScroll/MapContent/ShopEntryGrid/bld_hq/NamePlate/PlateVBox/StaffRow" unique_id=881587420]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.95, 0.9, 0.75, 1)
+theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
+theme_override_constants/outline_size = 2
+theme_override_font_sizes/font_size = 13
+text = "0"
 vertical_alignment = 1
 
 [node name="BuildingBtn" type="Button" parent="ShopVBox/MapScroll/MapContent/ShopEntryGrid/bld_hq" unique_id=881576871]
@@ -107,8 +130,8 @@ flat = true
 layout_mode = 0
 offset_left = 282.0
 offset_top = -13.0
-offset_right = 306.0
-offset_bottom = 21.0
+offset_right = 330.0
+offset_bottom = 35.0
 
 [node name="bld_ke_zhan" type="Panel" parent="ShopVBox/MapScroll/MapContent/ShopEntryGrid" unique_id=881577145]
 layout_mode = 0
@@ -118,18 +141,48 @@ offset_right = 603.0
 offset_bottom = 349.5
 theme_override_styles/panel = SubResource("SE_build")
 
-[node name="NamePlate" type="Label" parent="ShopVBox/MapScroll/MapContent/ShopEntryGrid/bld_ke_zhan" unique_id=881577282]
+[node name="NamePlate" type="PanelContainer" parent="ShopVBox/MapScroll/MapContent/ShopEntryGrid/bld_ke_zhan" unique_id=881587557]
 layout_mode = 0
 offset_left = 43.0
 offset_top = 32.5
 offset_right = 127.0
 offset_bottom = 62.5
+theme_override_styles/panel = SubResource("SF_plate")
+mouse_filter = 2
+
+[node name="PlateVBox" type="VBoxContainer" parent="ShopVBox/MapScroll/MapContent/ShopEntryGrid/bld_ke_zhan/NamePlate" unique_id=881587694]
+layout_mode = 2
+theme_override_constants/separation = 2
+
+[node name="NameLine" type="Label" parent="ShopVBox/MapScroll/MapContent/ShopEntryGrid/bld_ke_zhan/NamePlate/PlateVBox" unique_id=881587831]
+layout_mode = 2
+theme_override_colors/font_color = Color(1, 0.84, 0, 1)
 theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
 theme_override_constants/outline_size = 3
-theme_override_font_sizes/font_size = 15
-theme_override_styles/normal = SubResource("SF_plate")
-text = "【客栈】"
+theme_override_font_sizes/font_size = 14
+text = "ke_zhan"
 horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="StaffRow" type="HBoxContainer" parent="ShopVBox/MapScroll/MapContent/ShopEntryGrid/bld_ke_zhan/NamePlate/PlateVBox" unique_id=881587968]
+layout_mode = 2
+alignment = 1
+theme_override_constants/separation = 3
+
+[node name="StaffIcon" type="TextureRect" parent="ShopVBox/MapScroll/MapContent/ShopEntryGrid/bld_ke_zhan/NamePlate/PlateVBox/StaffRow" unique_id=881588105]
+custom_minimum_size = Vector2(15, 15)
+layout_mode = 2
+expand_mode = 1
+stretch_mode = 5
+mouse_filter = 2
+
+[node name="StaffNum" type="Label" parent="ShopVBox/MapScroll/MapContent/ShopEntryGrid/bld_ke_zhan/NamePlate/PlateVBox/StaffRow" unique_id=881588242]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.95, 0.9, 0.75, 1)
+theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
+theme_override_constants/outline_size = 2
+theme_override_font_sizes/font_size = 13
+text = "0"
 vertical_alignment = 1
 
 [node name="BuildingBtn" type="Button" parent="ShopVBox/MapScroll/MapContent/ShopEntryGrid/bld_ke_zhan" unique_id=881577419]
@@ -149,8 +202,8 @@ flat = true
 layout_mode = 0
 offset_left = 210.0
 offset_top = 35.0
-offset_right = 234.0
-offset_bottom = 65.0
+offset_right = 258.0
+offset_bottom = 83.0
 
 [node name="bld_yi_guan" type="Panel" parent="ShopVBox/MapScroll/MapContent/ShopEntryGrid" unique_id=881577693]
 layout_mode = 0
@@ -160,18 +213,48 @@ offset_right = 576.0
 offset_bottom = 706.5
 theme_override_styles/panel = SubResource("SE_build")
 
-[node name="NamePlate" type="Label" parent="ShopVBox/MapScroll/MapContent/ShopEntryGrid/bld_yi_guan" unique_id=881577830]
+[node name="NamePlate" type="PanelContainer" parent="ShopVBox/MapScroll/MapContent/ShopEntryGrid/bld_yi_guan" unique_id=881588379]
 layout_mode = 0
 offset_left = 43.0
 offset_top = 31.0
 offset_right = 127.0
 offset_bottom = 61.0
+theme_override_styles/panel = SubResource("SF_plate")
+mouse_filter = 2
+
+[node name="PlateVBox" type="VBoxContainer" parent="ShopVBox/MapScroll/MapContent/ShopEntryGrid/bld_yi_guan/NamePlate" unique_id=881588516]
+layout_mode = 2
+theme_override_constants/separation = 2
+
+[node name="NameLine" type="Label" parent="ShopVBox/MapScroll/MapContent/ShopEntryGrid/bld_yi_guan/NamePlate/PlateVBox" unique_id=881588653]
+layout_mode = 2
+theme_override_colors/font_color = Color(1, 0.84, 0, 1)
 theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
 theme_override_constants/outline_size = 3
-theme_override_font_sizes/font_size = 15
-theme_override_styles/normal = SubResource("SF_plate")
-text = "【医馆】"
+theme_override_font_sizes/font_size = 14
+text = "yi_guan"
 horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="StaffRow" type="HBoxContainer" parent="ShopVBox/MapScroll/MapContent/ShopEntryGrid/bld_yi_guan/NamePlate/PlateVBox" unique_id=881588790]
+layout_mode = 2
+alignment = 1
+theme_override_constants/separation = 3
+
+[node name="StaffIcon" type="TextureRect" parent="ShopVBox/MapScroll/MapContent/ShopEntryGrid/bld_yi_guan/NamePlate/PlateVBox/StaffRow" unique_id=881588927]
+custom_minimum_size = Vector2(15, 15)
+layout_mode = 2
+expand_mode = 1
+stretch_mode = 5
+mouse_filter = 2
+
+[node name="StaffNum" type="Label" parent="ShopVBox/MapScroll/MapContent/ShopEntryGrid/bld_yi_guan/NamePlate/PlateVBox/StaffRow" unique_id=881589064]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.95, 0.9, 0.75, 1)
+theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
+theme_override_constants/outline_size = 2
+theme_override_font_sizes/font_size = 13
+text = "0"
 vertical_alignment = 1
 
 [node name="BuildingBtn" type="Button" parent="ShopVBox/MapScroll/MapContent/ShopEntryGrid/bld_yi_guan" unique_id=881577967]
@@ -186,15 +269,15 @@ flat = true
 layout_mode = 0
 offset_left = 168.0
 offset_top = 12.0
-offset_right = 192.0
-offset_bottom = 36.0
+offset_right = 216.0
+offset_bottom = 60.0
 
 [node name="PlayDot" type="Label" parent="ShopVBox/MapScroll/MapContent/ShopEntryGrid/bld_yi_guan/PlayBtn" unique_id=881578241]
 visible = false
 layout_mode = 0
-offset_left = 14.0
+offset_left = 34.0
 offset_top = -7.0
-offset_right = 30.0
+offset_right = 50.0
 offset_bottom = 13.0
 theme_override_colors/font_color = Color(0.90588236, 0.29803923, 0.23529412, 1)
 theme_override_font_sizes/font_size = 14
@@ -208,18 +291,48 @@ offset_right = 738.0
 offset_bottom = 151.5
 theme_override_styles/panel = SubResource("SE_build")
 
-[node name="NamePlate" type="Label" parent="ShopVBox/MapScroll/MapContent/ShopEntryGrid/bld_shuoshu_tan" unique_id=881578515]
+[node name="NamePlate" type="PanelContainer" parent="ShopVBox/MapScroll/MapContent/ShopEntryGrid/bld_shuoshu_tan" unique_id=881589201]
 layout_mode = 0
 offset_left = 43.0
 offset_top = 31.0
 offset_right = 127.0
 offset_bottom = 61.0
+theme_override_styles/panel = SubResource("SF_plate")
+mouse_filter = 2
+
+[node name="PlateVBox" type="VBoxContainer" parent="ShopVBox/MapScroll/MapContent/ShopEntryGrid/bld_shuoshu_tan/NamePlate" unique_id=881589338]
+layout_mode = 2
+theme_override_constants/separation = 2
+
+[node name="NameLine" type="Label" parent="ShopVBox/MapScroll/MapContent/ShopEntryGrid/bld_shuoshu_tan/NamePlate/PlateVBox" unique_id=881589475]
+layout_mode = 2
+theme_override_colors/font_color = Color(1, 0.84, 0, 1)
 theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
 theme_override_constants/outline_size = 3
-theme_override_font_sizes/font_size = 15
-theme_override_styles/normal = SubResource("SF_plate")
-text = "【说书摊】"
+theme_override_font_sizes/font_size = 14
+text = "shuoshu_tan"
 horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="StaffRow" type="HBoxContainer" parent="ShopVBox/MapScroll/MapContent/ShopEntryGrid/bld_shuoshu_tan/NamePlate/PlateVBox" unique_id=881589612]
+layout_mode = 2
+alignment = 1
+theme_override_constants/separation = 3
+
+[node name="StaffIcon" type="TextureRect" parent="ShopVBox/MapScroll/MapContent/ShopEntryGrid/bld_shuoshu_tan/NamePlate/PlateVBox/StaffRow" unique_id=881589749]
+custom_minimum_size = Vector2(15, 15)
+layout_mode = 2
+expand_mode = 1
+stretch_mode = 5
+mouse_filter = 2
+
+[node name="StaffNum" type="Label" parent="ShopVBox/MapScroll/MapContent/ShopEntryGrid/bld_shuoshu_tan/NamePlate/PlateVBox/StaffRow" unique_id=881589886]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.95, 0.9, 0.75, 1)
+theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
+theme_override_constants/outline_size = 2
+theme_override_font_sizes/font_size = 13
+text = "0"
 vertical_alignment = 1
 
 [node name="BuildingBtn" type="Button" parent="ShopVBox/MapScroll/MapContent/ShopEntryGrid/bld_shuoshu_tan" unique_id=881578652]
@@ -238,18 +351,48 @@ offset_right = 798.0
 offset_bottom = 372.5
 theme_override_styles/panel = SubResource("SE_build")
 
-[node name="NamePlate" type="Label" parent="ShopVBox/MapScroll/MapContent/ShopEntryGrid/bld_xiangliao_pu" unique_id=881578926]
+[node name="NamePlate" type="PanelContainer" parent="ShopVBox/MapScroll/MapContent/ShopEntryGrid/bld_xiangliao_pu" unique_id=881590023]
 layout_mode = 0
 offset_left = 8.0
 offset_top = 60.0
 offset_right = 92.0
 offset_bottom = 90.0
+theme_override_styles/panel = SubResource("SF_plate")
+mouse_filter = 2
+
+[node name="PlateVBox" type="VBoxContainer" parent="ShopVBox/MapScroll/MapContent/ShopEntryGrid/bld_xiangliao_pu/NamePlate" unique_id=881590160]
+layout_mode = 2
+theme_override_constants/separation = 2
+
+[node name="NameLine" type="Label" parent="ShopVBox/MapScroll/MapContent/ShopEntryGrid/bld_xiangliao_pu/NamePlate/PlateVBox" unique_id=881590297]
+layout_mode = 2
+theme_override_colors/font_color = Color(1, 0.84, 0, 1)
 theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
 theme_override_constants/outline_size = 3
-theme_override_font_sizes/font_size = 15
-theme_override_styles/normal = SubResource("SF_plate")
-text = "【香料铺】"
+theme_override_font_sizes/font_size = 14
+text = "xiangliao_pu"
 horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="StaffRow" type="HBoxContainer" parent="ShopVBox/MapScroll/MapContent/ShopEntryGrid/bld_xiangliao_pu/NamePlate/PlateVBox" unique_id=881590434]
+layout_mode = 2
+alignment = 1
+theme_override_constants/separation = 3
+
+[node name="StaffIcon" type="TextureRect" parent="ShopVBox/MapScroll/MapContent/ShopEntryGrid/bld_xiangliao_pu/NamePlate/PlateVBox/StaffRow" unique_id=881590571]
+custom_minimum_size = Vector2(15, 15)
+layout_mode = 2
+expand_mode = 1
+stretch_mode = 5
+mouse_filter = 2
+
+[node name="StaffNum" type="Label" parent="ShopVBox/MapScroll/MapContent/ShopEntryGrid/bld_xiangliao_pu/NamePlate/PlateVBox/StaffRow" unique_id=881590708]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.95, 0.9, 0.75, 1)
+theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
+theme_override_constants/outline_size = 2
+theme_override_font_sizes/font_size = 13
+text = "0"
 vertical_alignment = 1
 
 [node name="BuildingBtn" type="Button" parent="ShopVBox/MapScroll/MapContent/ShopEntryGrid/bld_xiangliao_pu" unique_id=881579063]
@@ -268,26 +411,56 @@ offset_right = 1744.7
 offset_bottom = 936.9
 theme_override_styles/panel = SubResource("SE_build")
 
-[node name="NamePlate" type="Label" parent="ShopVBox/MapScroll/MapContent/ShopEntryGrid/bld_dang_pu" unique_id=881579337]
+[node name="NamePlate" type="PanelContainer" parent="ShopVBox/MapScroll/MapContent/ShopEntryGrid/bld_dang_pu" unique_id=881590845]
 layout_mode = 0
-offset_left = -619.69995
-offset_top = -768.4
-offset_right = -535.69995
-offset_bottom = -738.4
+offset_left = 43.0
+offset_top = 31.0
+offset_right = 127.0
+offset_bottom = 61.0
+theme_override_styles/panel = SubResource("SF_plate")
+mouse_filter = 2
+
+[node name="PlateVBox" type="VBoxContainer" parent="ShopVBox/MapScroll/MapContent/ShopEntryGrid/bld_dang_pu/NamePlate" unique_id=881590982]
+layout_mode = 2
+theme_override_constants/separation = 2
+
+[node name="NameLine" type="Label" parent="ShopVBox/MapScroll/MapContent/ShopEntryGrid/bld_dang_pu/NamePlate/PlateVBox" unique_id=881591119]
+layout_mode = 2
+theme_override_colors/font_color = Color(1, 0.84, 0, 1)
 theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
 theme_override_constants/outline_size = 3
-theme_override_font_sizes/font_size = 15
-theme_override_styles/normal = SubResource("SF_plate")
-text = "【当铺】"
+theme_override_font_sizes/font_size = 14
+text = "dang_pu"
 horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="StaffRow" type="HBoxContainer" parent="ShopVBox/MapScroll/MapContent/ShopEntryGrid/bld_dang_pu/NamePlate/PlateVBox" unique_id=881591256]
+layout_mode = 2
+alignment = 1
+theme_override_constants/separation = 3
+
+[node name="StaffIcon" type="TextureRect" parent="ShopVBox/MapScroll/MapContent/ShopEntryGrid/bld_dang_pu/NamePlate/PlateVBox/StaffRow" unique_id=881591393]
+custom_minimum_size = Vector2(15, 15)
+layout_mode = 2
+expand_mode = 1
+stretch_mode = 5
+mouse_filter = 2
+
+[node name="StaffNum" type="Label" parent="ShopVBox/MapScroll/MapContent/ShopEntryGrid/bld_dang_pu/NamePlate/PlateVBox/StaffRow" unique_id=881591530]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.95, 0.9, 0.75, 1)
+theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
+theme_override_constants/outline_size = 2
+theme_override_font_sizes/font_size = 13
+text = "0"
 vertical_alignment = 1
 
 [node name="BuildingBtn" type="Button" parent="ShopVBox/MapScroll/MapContent/ShopEntryGrid/bld_dang_pu" unique_id=881579474]
 layout_mode = 0
-offset_left = -641.69995
-offset_top = -786.4
-offset_right = -471.69995
-offset_bottom = -625.4
+offset_left = 0.0
+offset_top = 0.0
+offset_right = 170.0
+offset_bottom = 92.0
 flat = true
 
 [node name="bld_yao_pu" type="Panel" parent="ShopVBox/MapScroll/MapContent/ShopEntryGrid" unique_id=881579611]
@@ -298,18 +471,48 @@ offset_right = 1099.0
 offset_bottom = 742.5
 theme_override_styles/panel = SubResource("SE_build")
 
-[node name="NamePlate" type="Label" parent="ShopVBox/MapScroll/MapContent/ShopEntryGrid/bld_yao_pu" unique_id=881579748]
+[node name="NamePlate" type="PanelContainer" parent="ShopVBox/MapScroll/MapContent/ShopEntryGrid/bld_yao_pu" unique_id=881591667]
 layout_mode = 0
 offset_left = 43.0
 offset_top = 31.0
 offset_right = 127.0
 offset_bottom = 61.0
+theme_override_styles/panel = SubResource("SF_plate")
+mouse_filter = 2
+
+[node name="PlateVBox" type="VBoxContainer" parent="ShopVBox/MapScroll/MapContent/ShopEntryGrid/bld_yao_pu/NamePlate" unique_id=881591804]
+layout_mode = 2
+theme_override_constants/separation = 2
+
+[node name="NameLine" type="Label" parent="ShopVBox/MapScroll/MapContent/ShopEntryGrid/bld_yao_pu/NamePlate/PlateVBox" unique_id=881591941]
+layout_mode = 2
+theme_override_colors/font_color = Color(1, 0.84, 0, 1)
 theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
 theme_override_constants/outline_size = 3
-theme_override_font_sizes/font_size = 15
-theme_override_styles/normal = SubResource("SF_plate")
-text = "【药铺】"
+theme_override_font_sizes/font_size = 14
+text = "yao_pu"
 horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="StaffRow" type="HBoxContainer" parent="ShopVBox/MapScroll/MapContent/ShopEntryGrid/bld_yao_pu/NamePlate/PlateVBox" unique_id=881592078]
+layout_mode = 2
+alignment = 1
+theme_override_constants/separation = 3
+
+[node name="StaffIcon" type="TextureRect" parent="ShopVBox/MapScroll/MapContent/ShopEntryGrid/bld_yao_pu/NamePlate/PlateVBox/StaffRow" unique_id=881592215]
+custom_minimum_size = Vector2(15, 15)
+layout_mode = 2
+expand_mode = 1
+stretch_mode = 5
+mouse_filter = 2
+
+[node name="StaffNum" type="Label" parent="ShopVBox/MapScroll/MapContent/ShopEntryGrid/bld_yao_pu/NamePlate/PlateVBox/StaffRow" unique_id=881592352]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.95, 0.9, 0.75, 1)
+theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
+theme_override_constants/outline_size = 2
+theme_override_font_sizes/font_size = 13
+text = "0"
 vertical_alignment = 1
 
 [node name="BuildingBtn" type="Button" parent="ShopVBox/MapScroll/MapContent/ShopEntryGrid/bld_yao_pu" unique_id=881579885]
@@ -324,15 +527,15 @@ flat = true
 layout_mode = 0
 offset_left = -39.0
 offset_top = 18.0
-offset_right = -15.0
-offset_bottom = 42.0
+offset_right = 9.0
+offset_bottom = 66.0
 
 [node name="PlayDot" type="Label" parent="ShopVBox/MapScroll/MapContent/ShopEntryGrid/bld_yao_pu/PlayBtn" unique_id=881580159]
 visible = false
 layout_mode = 0
-offset_left = 14.0
+offset_left = 34.0
 offset_top = -7.0
-offset_right = 30.0
+offset_right = 50.0
 offset_bottom = 13.0
 theme_override_colors/font_color = Color(0.90588236, 0.29803923, 0.23529412, 1)
 theme_override_font_sizes/font_size = 14
@@ -346,18 +549,48 @@ offset_right = 1257.0
 offset_bottom = 319.5
 theme_override_styles/panel = SubResource("SE_build")
 
-[node name="NamePlate" type="Label" parent="ShopVBox/MapScroll/MapContent/ShopEntryGrid/bld_jiu_si" unique_id=881580433]
+[node name="NamePlate" type="PanelContainer" parent="ShopVBox/MapScroll/MapContent/ShopEntryGrid/bld_jiu_si" unique_id=881592489]
 layout_mode = 0
 offset_left = 38.0
 offset_top = 30.0
 offset_right = 122.0
 offset_bottom = 60.0
+theme_override_styles/panel = SubResource("SF_plate")
+mouse_filter = 2
+
+[node name="PlateVBox" type="VBoxContainer" parent="ShopVBox/MapScroll/MapContent/ShopEntryGrid/bld_jiu_si/NamePlate" unique_id=881592626]
+layout_mode = 2
+theme_override_constants/separation = 2
+
+[node name="NameLine" type="Label" parent="ShopVBox/MapScroll/MapContent/ShopEntryGrid/bld_jiu_si/NamePlate/PlateVBox" unique_id=881592763]
+layout_mode = 2
+theme_override_colors/font_color = Color(1, 0.84, 0, 1)
 theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
 theme_override_constants/outline_size = 3
-theme_override_font_sizes/font_size = 15
-theme_override_styles/normal = SubResource("SF_plate")
-text = "【酒肆】"
+theme_override_font_sizes/font_size = 14
+text = "jiu_si"
 horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="StaffRow" type="HBoxContainer" parent="ShopVBox/MapScroll/MapContent/ShopEntryGrid/bld_jiu_si/NamePlate/PlateVBox" unique_id=881592900]
+layout_mode = 2
+alignment = 1
+theme_override_constants/separation = 3
+
+[node name="StaffIcon" type="TextureRect" parent="ShopVBox/MapScroll/MapContent/ShopEntryGrid/bld_jiu_si/NamePlate/PlateVBox/StaffRow" unique_id=881593037]
+custom_minimum_size = Vector2(15, 15)
+layout_mode = 2
+expand_mode = 1
+stretch_mode = 5
+mouse_filter = 2
+
+[node name="StaffNum" type="Label" parent="ShopVBox/MapScroll/MapContent/ShopEntryGrid/bld_jiu_si/NamePlate/PlateVBox/StaffRow" unique_id=881593174]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.95, 0.9, 0.75, 1)
+theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
+theme_override_constants/outline_size = 2
+theme_override_font_sizes/font_size = 13
+text = "0"
 vertical_alignment = 1
 
 [node name="BuildingBtn" type="Button" parent="ShopVBox/MapScroll/MapContent/ShopEntryGrid/bld_jiu_si" unique_id=881580570]
@@ -372,15 +605,15 @@ flat = true
 layout_mode = 0
 offset_left = -35.0
 offset_top = 36.0
-offset_right = -11.0
-offset_bottom = 60.0
+offset_right = 13.0
+offset_bottom = 84.0
 
 [node name="PlayDot" type="Label" parent="ShopVBox/MapScroll/MapContent/ShopEntryGrid/bld_jiu_si/PlayBtn" unique_id=881580844]
 visible = false
 layout_mode = 0
-offset_left = 14.0
+offset_left = 34.0
 offset_top = -7.0
-offset_right = 30.0
+offset_right = 50.0
 offset_bottom = 13.0
 theme_override_colors/font_color = Color(0.90588236, 0.29803923, 0.23529412, 1)
 theme_override_font_sizes/font_size = 14
@@ -394,18 +627,48 @@ offset_right = 1399.0
 offset_bottom = 86.5
 theme_override_styles/panel = SubResource("SE_build")
 
-[node name="NamePlate" type="Label" parent="ShopVBox/MapScroll/MapContent/ShopEntryGrid/bld_yi_zhan" unique_id=881581118]
+[node name="NamePlate" type="PanelContainer" parent="ShopVBox/MapScroll/MapContent/ShopEntryGrid/bld_yi_zhan" unique_id=881593311]
 layout_mode = 0
 offset_left = 46.0
 offset_top = 43.0
 offset_right = 130.0
 offset_bottom = 73.0
+theme_override_styles/panel = SubResource("SF_plate")
+mouse_filter = 2
+
+[node name="PlateVBox" type="VBoxContainer" parent="ShopVBox/MapScroll/MapContent/ShopEntryGrid/bld_yi_zhan/NamePlate" unique_id=881593448]
+layout_mode = 2
+theme_override_constants/separation = 2
+
+[node name="NameLine" type="Label" parent="ShopVBox/MapScroll/MapContent/ShopEntryGrid/bld_yi_zhan/NamePlate/PlateVBox" unique_id=881593585]
+layout_mode = 2
+theme_override_colors/font_color = Color(1, 0.84, 0, 1)
 theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
 theme_override_constants/outline_size = 3
-theme_override_font_sizes/font_size = 15
-theme_override_styles/normal = SubResource("SF_plate")
-text = "【驿站】"
+theme_override_font_sizes/font_size = 14
+text = "yi_zhan"
 horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="StaffRow" type="HBoxContainer" parent="ShopVBox/MapScroll/MapContent/ShopEntryGrid/bld_yi_zhan/NamePlate/PlateVBox" unique_id=881593722]
+layout_mode = 2
+alignment = 1
+theme_override_constants/separation = 3
+
+[node name="StaffIcon" type="TextureRect" parent="ShopVBox/MapScroll/MapContent/ShopEntryGrid/bld_yi_zhan/NamePlate/PlateVBox/StaffRow" unique_id=881593859]
+custom_minimum_size = Vector2(15, 15)
+layout_mode = 2
+expand_mode = 1
+stretch_mode = 5
+mouse_filter = 2
+
+[node name="StaffNum" type="Label" parent="ShopVBox/MapScroll/MapContent/ShopEntryGrid/bld_yi_zhan/NamePlate/PlateVBox/StaffRow" unique_id=881593996]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.95, 0.9, 0.75, 1)
+theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
+theme_override_constants/outline_size = 2
+theme_override_font_sizes/font_size = 13
+text = "0"
 vertical_alignment = 1
 
 [node name="BuildingBtn" type="Button" parent="ShopVBox/MapScroll/MapContent/ShopEntryGrid/bld_yi_zhan" unique_id=881581255]
@@ -424,18 +687,48 @@ offset_right = 1569.0
 offset_bottom = 355.5
 theme_override_styles/panel = SubResource("SE_build")
 
-[node name="NamePlate" type="Label" parent="ShopVBox/MapScroll/MapContent/ShopEntryGrid/bld_miaoyin_fang" unique_id=881581529]
+[node name="NamePlate" type="PanelContainer" parent="ShopVBox/MapScroll/MapContent/ShopEntryGrid/bld_miaoyin_fang" unique_id=881594133]
 layout_mode = 0
 offset_left = 10.5
 offset_top = 55.0
 offset_right = 94.5
 offset_bottom = 85.0
+theme_override_styles/panel = SubResource("SF_plate")
+mouse_filter = 2
+
+[node name="PlateVBox" type="VBoxContainer" parent="ShopVBox/MapScroll/MapContent/ShopEntryGrid/bld_miaoyin_fang/NamePlate" unique_id=881594270]
+layout_mode = 2
+theme_override_constants/separation = 2
+
+[node name="NameLine" type="Label" parent="ShopVBox/MapScroll/MapContent/ShopEntryGrid/bld_miaoyin_fang/NamePlate/PlateVBox" unique_id=881594407]
+layout_mode = 2
+theme_override_colors/font_color = Color(1, 0.84, 0, 1)
 theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
 theme_override_constants/outline_size = 3
-theme_override_font_sizes/font_size = 15
-theme_override_styles/normal = SubResource("SF_plate")
-text = "【妙音坊】"
+theme_override_font_sizes/font_size = 14
+text = "miaoyin_fang"
 horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="StaffRow" type="HBoxContainer" parent="ShopVBox/MapScroll/MapContent/ShopEntryGrid/bld_miaoyin_fang/NamePlate/PlateVBox" unique_id=881594544]
+layout_mode = 2
+alignment = 1
+theme_override_constants/separation = 3
+
+[node name="StaffIcon" type="TextureRect" parent="ShopVBox/MapScroll/MapContent/ShopEntryGrid/bld_miaoyin_fang/NamePlate/PlateVBox/StaffRow" unique_id=881594681]
+custom_minimum_size = Vector2(15, 15)
+layout_mode = 2
+expand_mode = 1
+stretch_mode = 5
+mouse_filter = 2
+
+[node name="StaffNum" type="Label" parent="ShopVBox/MapScroll/MapContent/ShopEntryGrid/bld_miaoyin_fang/NamePlate/PlateVBox/StaffRow" unique_id=881594818]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.95, 0.9, 0.75, 1)
+theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
+theme_override_constants/outline_size = 2
+theme_override_font_sizes/font_size = 13
+text = "0"
 vertical_alignment = 1
 
 [node name="BuildingBtn" type="Button" parent="ShopVBox/MapScroll/MapContent/ShopEntryGrid/bld_miaoyin_fang" unique_id=881581666]
@@ -450,8 +743,8 @@ flat = true
 layout_mode = 0
 offset_left = -92.0
 offset_top = 56.0
-offset_right = -68.0
-offset_bottom = 80.0
+offset_right = -44.0
+offset_bottom = 104.0
 
 [node name="bld_jiu_fang" type="Panel" parent="ShopVBox/MapScroll/MapContent/ShopEntryGrid" unique_id=881581940]
 layout_mode = 0
@@ -461,18 +754,48 @@ offset_right = 1501.0
 offset_bottom = 762.5
 theme_override_styles/panel = SubResource("SE_build")
 
-[node name="NamePlate" type="Label" parent="ShopVBox/MapScroll/MapContent/ShopEntryGrid/bld_jiu_fang" unique_id=881582077]
+[node name="NamePlate" type="PanelContainer" parent="ShopVBox/MapScroll/MapContent/ShopEntryGrid/bld_jiu_fang" unique_id=881594955]
 layout_mode = 0
 offset_left = 8.0
 offset_top = 60.0
 offset_right = 92.0
 offset_bottom = 90.0
+theme_override_styles/panel = SubResource("SF_plate")
+mouse_filter = 2
+
+[node name="PlateVBox" type="VBoxContainer" parent="ShopVBox/MapScroll/MapContent/ShopEntryGrid/bld_jiu_fang/NamePlate" unique_id=881595092]
+layout_mode = 2
+theme_override_constants/separation = 2
+
+[node name="NameLine" type="Label" parent="ShopVBox/MapScroll/MapContent/ShopEntryGrid/bld_jiu_fang/NamePlate/PlateVBox" unique_id=881595229]
+layout_mode = 2
+theme_override_colors/font_color = Color(1, 0.84, 0, 1)
 theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
 theme_override_constants/outline_size = 3
-theme_override_font_sizes/font_size = 15
-theme_override_styles/normal = SubResource("SF_plate")
-text = "【酒坊】"
+theme_override_font_sizes/font_size = 14
+text = "jiu_fang"
 horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="StaffRow" type="HBoxContainer" parent="ShopVBox/MapScroll/MapContent/ShopEntryGrid/bld_jiu_fang/NamePlate/PlateVBox" unique_id=881595366]
+layout_mode = 2
+alignment = 1
+theme_override_constants/separation = 3
+
+[node name="StaffIcon" type="TextureRect" parent="ShopVBox/MapScroll/MapContent/ShopEntryGrid/bld_jiu_fang/NamePlate/PlateVBox/StaffRow" unique_id=881595503]
+custom_minimum_size = Vector2(15, 15)
+layout_mode = 2
+expand_mode = 1
+stretch_mode = 5
+mouse_filter = 2
+
+[node name="StaffNum" type="Label" parent="ShopVBox/MapScroll/MapContent/ShopEntryGrid/bld_jiu_fang/NamePlate/PlateVBox/StaffRow" unique_id=881595640]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.95, 0.9, 0.75, 1)
+theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
+theme_override_constants/outline_size = 2
+theme_override_font_sizes/font_size = 13
+text = "0"
 vertical_alignment = 1
 
 [node name="BuildingBtn" type="Button" parent="ShopVBox/MapScroll/MapContent/ShopEntryGrid/bld_jiu_fang" unique_id=881582214]
@@ -487,8 +810,8 @@ flat = true
 layout_mode = 0
 offset_left = -93.0
 offset_top = 47.0
-offset_right = -69.0
-offset_bottom = 71.0
+offset_right = -45.0
+offset_bottom = 95.0
 
 [node name="bld_changle_fang" type="Panel" parent="ShopVBox/MapScroll/MapContent/ShopEntryGrid" unique_id=881582488]
 layout_mode = 0
@@ -498,18 +821,48 @@ offset_right = 1715.0
 offset_bottom = 103.5
 theme_override_styles/panel = SubResource("SE_build")
 
-[node name="NamePlate" type="Label" parent="ShopVBox/MapScroll/MapContent/ShopEntryGrid/bld_changle_fang" unique_id=881582625]
+[node name="NamePlate" type="PanelContainer" parent="ShopVBox/MapScroll/MapContent/ShopEntryGrid/bld_changle_fang" unique_id=881595777]
 layout_mode = 0
 offset_left = 43.0
 offset_top = 31.0
 offset_right = 127.0
 offset_bottom = 61.0
+theme_override_styles/panel = SubResource("SF_plate")
+mouse_filter = 2
+
+[node name="PlateVBox" type="VBoxContainer" parent="ShopVBox/MapScroll/MapContent/ShopEntryGrid/bld_changle_fang/NamePlate" unique_id=881595914]
+layout_mode = 2
+theme_override_constants/separation = 2
+
+[node name="NameLine" type="Label" parent="ShopVBox/MapScroll/MapContent/ShopEntryGrid/bld_changle_fang/NamePlate/PlateVBox" unique_id=881596051]
+layout_mode = 2
+theme_override_colors/font_color = Color(1, 0.84, 0, 1)
 theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
 theme_override_constants/outline_size = 3
-theme_override_font_sizes/font_size = 15
-theme_override_styles/normal = SubResource("SF_plate")
-text = "【长乐坊】"
+theme_override_font_sizes/font_size = 14
+text = "changle_fang"
 horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="StaffRow" type="HBoxContainer" parent="ShopVBox/MapScroll/MapContent/ShopEntryGrid/bld_changle_fang/NamePlate/PlateVBox" unique_id=881596188]
+layout_mode = 2
+alignment = 1
+theme_override_constants/separation = 3
+
+[node name="StaffIcon" type="TextureRect" parent="ShopVBox/MapScroll/MapContent/ShopEntryGrid/bld_changle_fang/NamePlate/PlateVBox/StaffRow" unique_id=881596325]
+custom_minimum_size = Vector2(15, 15)
+layout_mode = 2
+expand_mode = 1
+stretch_mode = 5
+mouse_filter = 2
+
+[node name="StaffNum" type="Label" parent="ShopVBox/MapScroll/MapContent/ShopEntryGrid/bld_changle_fang/NamePlate/PlateVBox/StaffRow" unique_id=881596462]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.95, 0.9, 0.75, 1)
+theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
+theme_override_constants/outline_size = 2
+theme_override_font_sizes/font_size = 13
+text = "0"
 vertical_alignment = 1
 
 [node name="BuildingBtn" type="Button" parent="ShopVBox/MapScroll/MapContent/ShopEntryGrid/bld_changle_fang" unique_id=881582762]
@@ -528,18 +881,48 @@ offset_right = 1730.0
 offset_bottom = 762.5
 theme_override_styles/panel = SubResource("SE_build")
 
-[node name="NamePlate" type="Label" parent="ShopVBox/MapScroll/MapContent/ShopEntryGrid/bld_chengyi_pu" unique_id=881583036]
+[node name="NamePlate" type="PanelContainer" parent="ShopVBox/MapScroll/MapContent/ShopEntryGrid/bld_chengyi_pu" unique_id=881596599]
 layout_mode = 0
 offset_left = 43.0
 offset_top = 31.0
 offset_right = 127.0
 offset_bottom = 61.0
+theme_override_styles/panel = SubResource("SF_plate")
+mouse_filter = 2
+
+[node name="PlateVBox" type="VBoxContainer" parent="ShopVBox/MapScroll/MapContent/ShopEntryGrid/bld_chengyi_pu/NamePlate" unique_id=881596736]
+layout_mode = 2
+theme_override_constants/separation = 2
+
+[node name="NameLine" type="Label" parent="ShopVBox/MapScroll/MapContent/ShopEntryGrid/bld_chengyi_pu/NamePlate/PlateVBox" unique_id=881596873]
+layout_mode = 2
+theme_override_colors/font_color = Color(1, 0.84, 0, 1)
 theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
 theme_override_constants/outline_size = 3
-theme_override_font_sizes/font_size = 15
-theme_override_styles/normal = SubResource("SF_plate")
-text = "【成衣铺】"
+theme_override_font_sizes/font_size = 14
+text = "chengyi_pu"
 horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="StaffRow" type="HBoxContainer" parent="ShopVBox/MapScroll/MapContent/ShopEntryGrid/bld_chengyi_pu/NamePlate/PlateVBox" unique_id=881597010]
+layout_mode = 2
+alignment = 1
+theme_override_constants/separation = 3
+
+[node name="StaffIcon" type="TextureRect" parent="ShopVBox/MapScroll/MapContent/ShopEntryGrid/bld_chengyi_pu/NamePlate/PlateVBox/StaffRow" unique_id=881597147]
+custom_minimum_size = Vector2(15, 15)
+layout_mode = 2
+expand_mode = 1
+stretch_mode = 5
+mouse_filter = 2
+
+[node name="StaffNum" type="Label" parent="ShopVBox/MapScroll/MapContent/ShopEntryGrid/bld_chengyi_pu/NamePlate/PlateVBox/StaffRow" unique_id=881597284]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.95, 0.9, 0.75, 1)
+theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
+theme_override_constants/outline_size = 2
+theme_override_font_sizes/font_size = 13
+text = "0"
 vertical_alignment = 1
 
 [node name="BuildingBtn" type="Button" parent="ShopVBox/MapScroll/MapContent/ShopEntryGrid/bld_chengyi_pu" unique_id=881583173]
@@ -558,18 +941,48 @@ offset_right = 1876.0
 offset_bottom = 547.5
 theme_override_styles/panel = SubResource("SE_build")
 
-[node name="NamePlate" type="Label" parent="ShopVBox/MapScroll/MapContent/ShopEntryGrid/bld_suanming_tan" unique_id=881583447]
+[node name="NamePlate" type="PanelContainer" parent="ShopVBox/MapScroll/MapContent/ShopEntryGrid/bld_suanming_tan" unique_id=881597421]
 layout_mode = 0
 offset_left = 43.0
 offset_top = 31.0
 offset_right = 127.0
 offset_bottom = 61.0
+theme_override_styles/panel = SubResource("SF_plate")
+mouse_filter = 2
+
+[node name="PlateVBox" type="VBoxContainer" parent="ShopVBox/MapScroll/MapContent/ShopEntryGrid/bld_suanming_tan/NamePlate" unique_id=881597558]
+layout_mode = 2
+theme_override_constants/separation = 2
+
+[node name="NameLine" type="Label" parent="ShopVBox/MapScroll/MapContent/ShopEntryGrid/bld_suanming_tan/NamePlate/PlateVBox" unique_id=881597695]
+layout_mode = 2
+theme_override_colors/font_color = Color(1, 0.84, 0, 1)
 theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
 theme_override_constants/outline_size = 3
-theme_override_font_sizes/font_size = 15
-theme_override_styles/normal = SubResource("SF_plate")
-text = "【算命摊】"
+theme_override_font_sizes/font_size = 14
+text = "suanming_tan"
 horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="StaffRow" type="HBoxContainer" parent="ShopVBox/MapScroll/MapContent/ShopEntryGrid/bld_suanming_tan/NamePlate/PlateVBox" unique_id=881597832]
+layout_mode = 2
+alignment = 1
+theme_override_constants/separation = 3
+
+[node name="StaffIcon" type="TextureRect" parent="ShopVBox/MapScroll/MapContent/ShopEntryGrid/bld_suanming_tan/NamePlate/PlateVBox/StaffRow" unique_id=881597969]
+custom_minimum_size = Vector2(15, 15)
+layout_mode = 2
+expand_mode = 1
+stretch_mode = 5
+mouse_filter = 2
+
+[node name="StaffNum" type="Label" parent="ShopVBox/MapScroll/MapContent/ShopEntryGrid/bld_suanming_tan/NamePlate/PlateVBox/StaffRow" unique_id=881598106]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.95, 0.9, 0.75, 1)
+theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
+theme_override_constants/outline_size = 2
+theme_override_font_sizes/font_size = 13
+text = "0"
 vertical_alignment = 1
 
 [node name="BuildingBtn" type="Button" parent="ShopVBox/MapScroll/MapContent/ShopEntryGrid/bld_suanming_tan" unique_id=881583584]
@@ -588,18 +1001,48 @@ offset_right = 2248.0
 offset_bottom = 177.5
 theme_override_styles/panel = SubResource("SE_build")
 
-[node name="NamePlate" type="Label" parent="ShopVBox/MapScroll/MapContent/ShopEntryGrid/bld_chuan_wu" unique_id=881583858]
+[node name="NamePlate" type="PanelContainer" parent="ShopVBox/MapScroll/MapContent/ShopEntryGrid/bld_chuan_wu" unique_id=881598243]
 layout_mode = 0
 offset_left = 43.0
 offset_top = 31.0
 offset_right = 127.0
 offset_bottom = 61.0
+theme_override_styles/panel = SubResource("SF_plate")
+mouse_filter = 2
+
+[node name="PlateVBox" type="VBoxContainer" parent="ShopVBox/MapScroll/MapContent/ShopEntryGrid/bld_chuan_wu/NamePlate" unique_id=881598380]
+layout_mode = 2
+theme_override_constants/separation = 2
+
+[node name="NameLine" type="Label" parent="ShopVBox/MapScroll/MapContent/ShopEntryGrid/bld_chuan_wu/NamePlate/PlateVBox" unique_id=881598517]
+layout_mode = 2
+theme_override_colors/font_color = Color(1, 0.84, 0, 1)
 theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
 theme_override_constants/outline_size = 3
-theme_override_font_sizes/font_size = 15
-theme_override_styles/normal = SubResource("SF_plate")
-text = "【船坞】"
+theme_override_font_sizes/font_size = 14
+text = "chuan_wu"
 horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="StaffRow" type="HBoxContainer" parent="ShopVBox/MapScroll/MapContent/ShopEntryGrid/bld_chuan_wu/NamePlate/PlateVBox" unique_id=881598654]
+layout_mode = 2
+alignment = 1
+theme_override_constants/separation = 3
+
+[node name="StaffIcon" type="TextureRect" parent="ShopVBox/MapScroll/MapContent/ShopEntryGrid/bld_chuan_wu/NamePlate/PlateVBox/StaffRow" unique_id=881598791]
+custom_minimum_size = Vector2(15, 15)
+layout_mode = 2
+expand_mode = 1
+stretch_mode = 5
+mouse_filter = 2
+
+[node name="StaffNum" type="Label" parent="ShopVBox/MapScroll/MapContent/ShopEntryGrid/bld_chuan_wu/NamePlate/PlateVBox/StaffRow" unique_id=881598928]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.95, 0.9, 0.75, 1)
+theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
+theme_override_constants/outline_size = 2
+theme_override_font_sizes/font_size = 13
+text = "0"
 vertical_alignment = 1
 
 [node name="BuildingBtn" type="Button" parent="ShopVBox/MapScroll/MapContent/ShopEntryGrid/bld_chuan_wu" unique_id=881583995]
@@ -618,18 +1061,48 @@ offset_right = 2247.0
 offset_bottom = 820.5
 theme_override_styles/panel = SubResource("SE_build")
 
-[node name="NamePlate" type="Label" parent="ShopVBox/MapScroll/MapContent/ShopEntryGrid/bld_chema_hang" unique_id=881584269]
+[node name="NamePlate" type="PanelContainer" parent="ShopVBox/MapScroll/MapContent/ShopEntryGrid/bld_chema_hang" unique_id=881599065]
 layout_mode = 0
 offset_left = 43.0
 offset_top = 31.0
 offset_right = 127.0
 offset_bottom = 61.0
+theme_override_styles/panel = SubResource("SF_plate")
+mouse_filter = 2
+
+[node name="PlateVBox" type="VBoxContainer" parent="ShopVBox/MapScroll/MapContent/ShopEntryGrid/bld_chema_hang/NamePlate" unique_id=881599202]
+layout_mode = 2
+theme_override_constants/separation = 2
+
+[node name="NameLine" type="Label" parent="ShopVBox/MapScroll/MapContent/ShopEntryGrid/bld_chema_hang/NamePlate/PlateVBox" unique_id=881599339]
+layout_mode = 2
+theme_override_colors/font_color = Color(1, 0.84, 0, 1)
 theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
 theme_override_constants/outline_size = 3
-theme_override_font_sizes/font_size = 15
-theme_override_styles/normal = SubResource("SF_plate")
-text = "【车马行】"
+theme_override_font_sizes/font_size = 14
+text = "chema_hang"
 horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="StaffRow" type="HBoxContainer" parent="ShopVBox/MapScroll/MapContent/ShopEntryGrid/bld_chema_hang/NamePlate/PlateVBox" unique_id=881599476]
+layout_mode = 2
+alignment = 1
+theme_override_constants/separation = 3
+
+[node name="StaffIcon" type="TextureRect" parent="ShopVBox/MapScroll/MapContent/ShopEntryGrid/bld_chema_hang/NamePlate/PlateVBox/StaffRow" unique_id=881599613]
+custom_minimum_size = Vector2(15, 15)
+layout_mode = 2
+expand_mode = 1
+stretch_mode = 5
+mouse_filter = 2
+
+[node name="StaffNum" type="Label" parent="ShopVBox/MapScroll/MapContent/ShopEntryGrid/bld_chema_hang/NamePlate/PlateVBox/StaffRow" unique_id=881599750]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.95, 0.9, 0.75, 1)
+theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
+theme_override_constants/outline_size = 2
+theme_override_font_sizes/font_size = 13
+text = "0"
 vertical_alignment = 1
 
 [node name="BuildingBtn" type="Button" parent="ShopVBox/MapScroll/MapContent/ShopEntryGrid/bld_chema_hang" unique_id=881584406]
@@ -648,18 +1121,48 @@ offset_right = 2692.0
 offset_bottom = 607.5
 theme_override_styles/panel = SubResource("SE_build")
 
-[node name="NamePlate" type="Label" parent="ShopVBox/MapScroll/MapContent/ShopEntryGrid/bld_cha_si" unique_id=881584680]
+[node name="NamePlate" type="PanelContainer" parent="ShopVBox/MapScroll/MapContent/ShopEntryGrid/bld_cha_si" unique_id=881599887]
 layout_mode = 0
 offset_left = 43.0
 offset_top = 31.0
 offset_right = 127.0
 offset_bottom = 61.0
+theme_override_styles/panel = SubResource("SF_plate")
+mouse_filter = 2
+
+[node name="PlateVBox" type="VBoxContainer" parent="ShopVBox/MapScroll/MapContent/ShopEntryGrid/bld_cha_si/NamePlate" unique_id=881600024]
+layout_mode = 2
+theme_override_constants/separation = 2
+
+[node name="NameLine" type="Label" parent="ShopVBox/MapScroll/MapContent/ShopEntryGrid/bld_cha_si/NamePlate/PlateVBox" unique_id=881600161]
+layout_mode = 2
+theme_override_colors/font_color = Color(1, 0.84, 0, 1)
 theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
 theme_override_constants/outline_size = 3
-theme_override_font_sizes/font_size = 15
-theme_override_styles/normal = SubResource("SF_plate")
-text = "【茶肆】"
+theme_override_font_sizes/font_size = 14
+text = "cha_si"
 horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="StaffRow" type="HBoxContainer" parent="ShopVBox/MapScroll/MapContent/ShopEntryGrid/bld_cha_si/NamePlate/PlateVBox" unique_id=881600298]
+layout_mode = 2
+alignment = 1
+theme_override_constants/separation = 3
+
+[node name="StaffIcon" type="TextureRect" parent="ShopVBox/MapScroll/MapContent/ShopEntryGrid/bld_cha_si/NamePlate/PlateVBox/StaffRow" unique_id=881600435]
+custom_minimum_size = Vector2(15, 15)
+layout_mode = 2
+expand_mode = 1
+stretch_mode = 5
+mouse_filter = 2
+
+[node name="StaffNum" type="Label" parent="ShopVBox/MapScroll/MapContent/ShopEntryGrid/bld_cha_si/NamePlate/PlateVBox/StaffRow" unique_id=881600572]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.95, 0.9, 0.75, 1)
+theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
+theme_override_constants/outline_size = 2
+theme_override_font_sizes/font_size = 13
+text = "0"
 vertical_alignment = 1
 
 [node name="BuildingBtn" type="Button" parent="ShopVBox/MapScroll/MapContent/ShopEntryGrid/bld_cha_si" unique_id=881584817]
@@ -678,18 +1181,48 @@ offset_right = 2787.0
 offset_bottom = 179.5
 theme_override_styles/panel = SubResource("SE_build")
 
-[node name="NamePlate" type="Label" parent="ShopVBox/MapScroll/MapContent/ShopEntryGrid/bld_xi_lou" unique_id=881585091]
+[node name="NamePlate" type="PanelContainer" parent="ShopVBox/MapScroll/MapContent/ShopEntryGrid/bld_xi_lou" unique_id=881600709]
 layout_mode = 0
 offset_left = 43.0
 offset_top = 31.0
 offset_right = 127.0
 offset_bottom = 61.0
+theme_override_styles/panel = SubResource("SF_plate")
+mouse_filter = 2
+
+[node name="PlateVBox" type="VBoxContainer" parent="ShopVBox/MapScroll/MapContent/ShopEntryGrid/bld_xi_lou/NamePlate" unique_id=881600846]
+layout_mode = 2
+theme_override_constants/separation = 2
+
+[node name="NameLine" type="Label" parent="ShopVBox/MapScroll/MapContent/ShopEntryGrid/bld_xi_lou/NamePlate/PlateVBox" unique_id=881600983]
+layout_mode = 2
+theme_override_colors/font_color = Color(1, 0.84, 0, 1)
 theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
 theme_override_constants/outline_size = 3
-theme_override_font_sizes/font_size = 15
-theme_override_styles/normal = SubResource("SF_plate")
-text = "【戏楼】"
+theme_override_font_sizes/font_size = 14
+text = "xi_lou"
 horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="StaffRow" type="HBoxContainer" parent="ShopVBox/MapScroll/MapContent/ShopEntryGrid/bld_xi_lou/NamePlate/PlateVBox" unique_id=881601120]
+layout_mode = 2
+alignment = 1
+theme_override_constants/separation = 3
+
+[node name="StaffIcon" type="TextureRect" parent="ShopVBox/MapScroll/MapContent/ShopEntryGrid/bld_xi_lou/NamePlate/PlateVBox/StaffRow" unique_id=881601257]
+custom_minimum_size = Vector2(15, 15)
+layout_mode = 2
+expand_mode = 1
+stretch_mode = 5
+mouse_filter = 2
+
+[node name="StaffNum" type="Label" parent="ShopVBox/MapScroll/MapContent/ShopEntryGrid/bld_xi_lou/NamePlate/PlateVBox/StaffRow" unique_id=881601394]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.95, 0.9, 0.75, 1)
+theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
+theme_override_constants/outline_size = 2
+theme_override_font_sizes/font_size = 13
+text = "0"
 vertical_alignment = 1
 
 [node name="BuildingBtn" type="Button" parent="ShopVBox/MapScroll/MapContent/ShopEntryGrid/bld_xi_lou" unique_id=881585228]
@@ -708,18 +1241,48 @@ offset_right = 2964.0
 offset_bottom = 696.5
 theme_override_styles/panel = SubResource("SE_build")
 
-[node name="NamePlate" type="Label" parent="ShopVBox/MapScroll/MapContent/ShopEntryGrid/bld_zao_tang" unique_id=881585502]
+[node name="NamePlate" type="PanelContainer" parent="ShopVBox/MapScroll/MapContent/ShopEntryGrid/bld_zao_tang" unique_id=881601531]
 layout_mode = 0
 offset_left = 43.0
 offset_top = 31.0
 offset_right = 127.0
 offset_bottom = 61.0
+theme_override_styles/panel = SubResource("SF_plate")
+mouse_filter = 2
+
+[node name="PlateVBox" type="VBoxContainer" parent="ShopVBox/MapScroll/MapContent/ShopEntryGrid/bld_zao_tang/NamePlate" unique_id=881601668]
+layout_mode = 2
+theme_override_constants/separation = 2
+
+[node name="NameLine" type="Label" parent="ShopVBox/MapScroll/MapContent/ShopEntryGrid/bld_zao_tang/NamePlate/PlateVBox" unique_id=881601805]
+layout_mode = 2
+theme_override_colors/font_color = Color(1, 0.84, 0, 1)
 theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
 theme_override_constants/outline_size = 3
-theme_override_font_sizes/font_size = 15
-theme_override_styles/normal = SubResource("SF_plate")
-text = "【澡堂】"
+theme_override_font_sizes/font_size = 14
+text = "zao_tang"
 horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="StaffRow" type="HBoxContainer" parent="ShopVBox/MapScroll/MapContent/ShopEntryGrid/bld_zao_tang/NamePlate/PlateVBox" unique_id=881601942]
+layout_mode = 2
+alignment = 1
+theme_override_constants/separation = 3
+
+[node name="StaffIcon" type="TextureRect" parent="ShopVBox/MapScroll/MapContent/ShopEntryGrid/bld_zao_tang/NamePlate/PlateVBox/StaffRow" unique_id=881602079]
+custom_minimum_size = Vector2(15, 15)
+layout_mode = 2
+expand_mode = 1
+stretch_mode = 5
+mouse_filter = 2
+
+[node name="StaffNum" type="Label" parent="ShopVBox/MapScroll/MapContent/ShopEntryGrid/bld_zao_tang/NamePlate/PlateVBox/StaffRow" unique_id=881602216]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.95, 0.9, 0.75, 1)
+theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
+theme_override_constants/outline_size = 2
+theme_override_font_sizes/font_size = 13
+text = "0"
 vertical_alignment = 1
 
 [node name="BuildingBtn" type="Button" parent="ShopVBox/MapScroll/MapContent/ShopEntryGrid/bld_zao_tang" unique_id=881585639]
@@ -738,18 +1301,48 @@ offset_right = 3233.0
 offset_bottom = 155.5
 theme_override_styles/panel = SubResource("SE_build")
 
-[node name="NamePlate" type="Label" parent="ShopVBox/MapScroll/MapContent/ShopEntryGrid/bld_biao_ju" unique_id=881585913]
+[node name="NamePlate" type="PanelContainer" parent="ShopVBox/MapScroll/MapContent/ShopEntryGrid/bld_biao_ju" unique_id=881602353]
 layout_mode = 0
 offset_left = 43.0
 offset_top = 31.0
 offset_right = 127.0
 offset_bottom = 61.0
+theme_override_styles/panel = SubResource("SF_plate")
+mouse_filter = 2
+
+[node name="PlateVBox" type="VBoxContainer" parent="ShopVBox/MapScroll/MapContent/ShopEntryGrid/bld_biao_ju/NamePlate" unique_id=881602490]
+layout_mode = 2
+theme_override_constants/separation = 2
+
+[node name="NameLine" type="Label" parent="ShopVBox/MapScroll/MapContent/ShopEntryGrid/bld_biao_ju/NamePlate/PlateVBox" unique_id=881602627]
+layout_mode = 2
+theme_override_colors/font_color = Color(1, 0.84, 0, 1)
 theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
 theme_override_constants/outline_size = 3
-theme_override_font_sizes/font_size = 15
-theme_override_styles/normal = SubResource("SF_plate")
-text = "【镖局】"
+theme_override_font_sizes/font_size = 14
+text = "biao_ju"
 horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="StaffRow" type="HBoxContainer" parent="ShopVBox/MapScroll/MapContent/ShopEntryGrid/bld_biao_ju/NamePlate/PlateVBox" unique_id=881602764]
+layout_mode = 2
+alignment = 1
+theme_override_constants/separation = 3
+
+[node name="StaffIcon" type="TextureRect" parent="ShopVBox/MapScroll/MapContent/ShopEntryGrid/bld_biao_ju/NamePlate/PlateVBox/StaffRow" unique_id=881602901]
+custom_minimum_size = Vector2(15, 15)
+layout_mode = 2
+expand_mode = 1
+stretch_mode = 5
+mouse_filter = 2
+
+[node name="StaffNum" type="Label" parent="ShopVBox/MapScroll/MapContent/ShopEntryGrid/bld_biao_ju/NamePlate/PlateVBox/StaffRow" unique_id=881603038]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.95, 0.9, 0.75, 1)
+theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
+theme_override_constants/outline_size = 2
+theme_override_font_sizes/font_size = 13
+text = "0"
 vertical_alignment = 1
 
 [node name="BuildingBtn" type="Button" parent="ShopVBox/MapScroll/MapContent/ShopEntryGrid/bld_biao_ju" unique_id=881586050]
@@ -768,18 +1361,48 @@ offset_right = 3252.0
 offset_bottom = 734.5
 theme_override_styles/panel = SubResource("SE_build")
 
-[node name="NamePlate" type="Label" parent="ShopVBox/MapScroll/MapContent/ShopEntryGrid/bld_yao_chang" unique_id=881586324]
+[node name="NamePlate" type="PanelContainer" parent="ShopVBox/MapScroll/MapContent/ShopEntryGrid/bld_yao_chang" unique_id=881603175]
 layout_mode = 0
 offset_left = 43.0
 offset_top = 31.0
 offset_right = 127.0
 offset_bottom = 61.0
+theme_override_styles/panel = SubResource("SF_plate")
+mouse_filter = 2
+
+[node name="PlateVBox" type="VBoxContainer" parent="ShopVBox/MapScroll/MapContent/ShopEntryGrid/bld_yao_chang/NamePlate" unique_id=881603312]
+layout_mode = 2
+theme_override_constants/separation = 2
+
+[node name="NameLine" type="Label" parent="ShopVBox/MapScroll/MapContent/ShopEntryGrid/bld_yao_chang/NamePlate/PlateVBox" unique_id=881603449]
+layout_mode = 2
+theme_override_colors/font_color = Color(1, 0.84, 0, 1)
 theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
 theme_override_constants/outline_size = 3
-theme_override_font_sizes/font_size = 15
-theme_override_styles/normal = SubResource("SF_plate")
-text = "【窑厂】"
+theme_override_font_sizes/font_size = 14
+text = "yao_chang"
 horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="StaffRow" type="HBoxContainer" parent="ShopVBox/MapScroll/MapContent/ShopEntryGrid/bld_yao_chang/NamePlate/PlateVBox" unique_id=881603586]
+layout_mode = 2
+alignment = 1
+theme_override_constants/separation = 3
+
+[node name="StaffIcon" type="TextureRect" parent="ShopVBox/MapScroll/MapContent/ShopEntryGrid/bld_yao_chang/NamePlate/PlateVBox/StaffRow" unique_id=881603723]
+custom_minimum_size = Vector2(15, 15)
+layout_mode = 2
+expand_mode = 1
+stretch_mode = 5
+mouse_filter = 2
+
+[node name="StaffNum" type="Label" parent="ShopVBox/MapScroll/MapContent/ShopEntryGrid/bld_yao_chang/NamePlate/PlateVBox/StaffRow" unique_id=881603860]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.95, 0.9, 0.75, 1)
+theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
+theme_override_constants/outline_size = 2
+theme_override_font_sizes/font_size = 13
+text = "0"
 vertical_alignment = 1
 
 [node name="BuildingBtn" type="Button" parent="ShopVBox/MapScroll/MapContent/ShopEntryGrid/bld_yao_chang" unique_id=881586461]
@@ -789,16 +1412,3 @@ offset_right = 271.0
 offset_bottom = 194.0
 flat = true
 
-[node name="MainHelpButton" type="Button" parent="." unique_id=881586598]
-custom_minimum_size = Vector2(40, 36)
-layout_mode = 1
-anchors_preset = 1
-anchor_left = 1.0
-anchor_right = 1.0
-offset_left = -48.0
-offset_top = 8.0
-offset_right = -8.0
-offset_bottom = 44.0
-grow_horizontal = 0
-theme_override_font_sizes/font_size = 16
-text = "?"

@@ -25,6 +25,7 @@ func _init(p_c):
 #   按 1067 设计高零变形铺宽 3353≈5.6 屏横滑；21 栋建筑=bld_* 静态节点（tscn 摆位），脚本只接线+灌状态
 const SHOP_SCENE := preload("res://ui/pages/shop_page.tscn")
 const BUILDING_IMG_DIR := "res://assets/shops/"
+const STAFF_ICON_IMG := "res://assets/shops/staff.png"   # 伙计图标（用户交付，缺失=只显数字）
 const MAP_BG_IMG := "res://assets/shops/map_bg.png"
 const MAP_SIZE := Vector2(3353, 1067)   # 设计尺寸=MapContent 最小尺寸（新图比例按 1067 高推导）；仅自检打印用，布局勿依赖
 # 特色玩法七店（钱庄=总部 hq 在地图"最左最中间"；其余 6 店挂 24×24 玩法入口占位钮，批次2+ 逐个接通）
@@ -66,10 +67,6 @@ func generate_shop_list():
 	var entry_grid := map_content.get_node("ShopEntryGrid") as Control
 	_map_scroll = map_scroll
 
-	# 帮助钮在 tscn 右上角锚定（口径同闯荡页），脚本只接管信号
-	var main_help := inst.get_node("MainHelpButton") as Button
-	main_help.pressed.connect(func(): _show_shop_help())
-
 	# 拖动条隐身（用户拍板不要拖动条）：主题清空 HScrollBar 全部样式+图标，跨版本免 API 依赖
 	#（get_h_scrollbar 在 4.7.1 报 Nonexistent function，不纠缠节点 API）
 	var th := Theme.new()
@@ -110,6 +107,20 @@ func generate_shop_list():
 		# 玩法入口钮（▶ 仅 PLAY_SHOPS 七店有节点）：特色玩法表驱动接线，hq▶=bank 视图
 		if bld.has_node("PlayBtn"):
 			var play := bld.get_node("PlayBtn") as Button
+			# 特色玩法入口图标（用户 2026-10-07 素材，替换统一 ▶ 文字钮；丢图回退 ▶ 文字不变）
+			var icon_path: String = BUILDING_IMG_DIR + "play_" + shop_id + ".png"
+			if ResourceLoader.exists(icon_path):
+				play.text = ""
+				# 4.7.1 Button 无 icon_max_width（实测报错）；源图 1536~1760px 直挂会铺满屏——
+				# 运行时等比缩到 68px（显示 34px 的 2 倍冗余）再挂，expand_icon 适配按钮尺寸
+				# 经导入纹理取图再缩放：Image.load 直读 res:// 导出会废且编辑器告警（2026-10-07 实测 7 条），Texture2D.get_image 双安全
+				var icon_tex := load(icon_path) as Texture2D
+				if icon_tex and icon_tex.get_image():
+					var icon_img := icon_tex.get_image()
+					var s: float = 56.0 / max(icon_img.get_width(), icon_img.get_height())
+					icon_img.resize(int(icon_img.get_width() * s), int(icon_img.get_height() * s), Image.INTERPOLATE_LANCZOS)
+					play.icon = ImageTexture.create_from_image(icon_img)
+				play.expand_icon = true
 			if PLAY_SHOP_VIEWS.has(shop_id):
 				play.pressed.connect(c.show_view.bind(PLAY_SHOP_VIEWS[shop_id]))
 			else:
@@ -128,13 +139,6 @@ func generate_shop_list():
 
 
 # 【新增】店名文字板文案：板宽按字数估算、店块内居中（Label 尺寸当帧不可知，显式定）
-func _set_plate_text(bld: Panel, txt: String):
-	var plate: Label = bld.get_node("NamePlate")
-	plate.text = txt
-	var w := float(txt.length()) * 15.0 + 24.0
-	plate.size = Vector2(w, 30)
-	plate.position = Vector2((bld.size.x - w) * 0.5, (bld.size.y - 30) * 0.5)
-
 func _play_dot_visible(shop_id: String) -> bool:
 	match shop_id:
 		"yi_guan":
@@ -407,25 +411,36 @@ func update_entry_buttons():
 			# 【新增】2026-09-16 酒肆「▶」红点随 UI 刷新（设施可升级/可解锁点亮）
 		if shop_id == "jiu_si" and bld.has_node("PlayBtn/PlayDot"):
 			bld.get_node("PlayBtn/PlayDot").visible = data.tavern_system.has_upgradeable_facility() or data.tavern_system.has_unlockable_facility()
+		# 名字牌双行格式（用户 2026-10-07 截图拍板，取代 09-12 纯名字牌）：上行 店名+等级 金字 / 下行 伙计图标+数量；牌结构见 shop_page.tscn
+		var plate := bld.get_node("NamePlate") as PanelContainer
+		var name_line := plate.get_node("PlateVBox/NameLine") as Label
+		var staff_row := plate.get_node("PlateVBox/StaffRow") as HBoxContainer
 		if shop_id == "hq":
-			_set_plate_text(bld, "【钱庄】")   # 【改】纯名字牌（用户 09-12 拍板不显示信息）
+			name_line.text = "钱庄%d级" % int(data.hq.get("level", 1))
+			staff_row.visible = false   # 钱庄无伙计编制
 			btn.modulate = Color.WHITE
 			btn.disabled = false
 			continue
 		var cfg = data.get_shop_config(shop_id)
 		if cfg.is_empty(): continue
-		# 文字两行，单行太长会撑出视口
+		# 伙计图标丢图即用：res://assets/shops/staff.png（用户交付素材，缺失则只显数字）
+		var staff_icon := staff_row.get_node("StaffIcon") as TextureRect
+		if staff_icon.texture == null and ResourceLoader.exists(STAFF_ICON_IMG):
+			staff_icon.texture = load(STAFF_ICON_IMG)
 		if data.shops.has(shop_id):
-			# 【改】纯名字牌（用户 09-12 拍板）：详细收益信息在店铺面板里看，地图只导航
-			_set_plate_text(bld, "【%s】" % data.shops[shop_id].get("name", cfg.get("name", "?")))
+			name_line.text = "%s%d级" % [data.shops[shop_id].get("name", cfg.get("name", "?")), int(data.shops[shop_id].get("level", 1))]
+			staff_row.get_node("StaffNum").text = str(int(data.shops[shop_id].get("staff", 0)))
+			staff_row.visible = true
 			btn.modulate = Color.WHITE
 			btn.disabled = false
 		elif data.can_unlock_shop(shop_id):
-			_set_plate_text(bld, "【%s】" % cfg.name)
+			name_line.text = str(cfg.name)
+			staff_row.visible = false
 			btn.modulate = Color("#e0c070")   # 可解锁：金色
 			btn.disabled = false
 		else:
-			_set_plate_text(bld, "【%s】🔒" % cfg.name)   # 【改】加锁标+亮灰（2026-09-12）
+			name_line.text = "%s🔒" % cfg.name   # 加锁标+亮灰（2026-09-12 口径沿用）
+			staff_row.visible = false
 			btn.modulate = Color(0.85, 0.85, 0.85, 0.95)
 			btn.disabled = false   # 【改】锁定也可点：点击弹"通关第X章解锁"提示（on_shop_entry_pressed else 分支），disabled 会让玩家点不动、条件无处可查
 
@@ -524,13 +539,3 @@ func _on_map_scroll_ended() -> void:
 	var tw := _map_scroll.create_tween()
 	tw.tween_property(_map_scroll, "scroll_horizontal", target, 0.25)
 	tw.finished.connect(func(): _map_snapping = false)
-
-func _show_shop_help():
-	var popup = c._create_base_popup("玩法说明", Vector2(440, 0), Vector2.ZERO, false)
-	var vb = popup.get_child(0)
-	var lbl := Label.new()
-	lbl.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
-	lbl.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
-	lbl.text = "商铺是赚钱主力：21 家店通关章节依次解锁，点击建筑打开店铺面板分配门客；店名金色=可解锁、亮灰加锁=未解锁（点击看条件）；「▶」进特色玩法（钱庄/客栈/医馆/药铺/酒坊/妙音坊/酒肆），红点=店内有事待办。左右滑动地图逛全城。"
-	vb.add_child(lbl)
-	c.add_child(popup)

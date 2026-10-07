@@ -85,10 +85,6 @@ func generate_adventure_page():
 	var entry_grid := map_content.get_node("AdventureEntryGrid") as Control
 	_map_scroll = map_scroll
 
-	# 主页面玩法说明"？"钮在 tscn 右上角锚定（用户拍板 2026-10-06），脚本只接管信号
-	var main_help := inst.get_node("MainHelpButton") as Button
-	main_help.pressed.connect(func(): _show_adventure_help("闯荡是各玩法的入口：关卡产出闯荡币；兑换/系列/抽奖/行善/游历玩法各异，每个子页右上角都有？说明。左右滑动地图切换城区。"))
-
 	# 底图契约见 ADVENTURE_BG_PATH 注释：缺图不渲染、布局不塌
 	var bg := map_content.get_node("BgImage") as TextureRect
 	if ResourceLoader.exists(ADVENTURE_BG_PATH):
