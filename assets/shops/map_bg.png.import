@@ -3,19 +3,21 @@
 importer="texture"
 type="CompressedTexture2D"
 uid="uid://drj00065nclo4"
-path="res://.godot/imported/map_bg.png-5a915bd880248700c390ea7af8d3bea3.ctex"
+path.s3tc="res://.godot/imported/map_bg.png-5a915bd880248700c390ea7af8d3bea3.s3tc.ctex"
+path.etc2="res://.godot/imported/map_bg.png-5a915bd880248700c390ea7af8d3bea3.etc2.ctex"
 metadata={
-"vram_texture": false
+"imported_formats": ["s3tc_bptc", "etc2_astc"],
+"vram_texture": true
 }
 
 [deps]
 
 source_file="res://assets/shops/map_bg.png"
-dest_files=["res://.godot/imported/map_bg.png-5a915bd880248700c390ea7af8d3bea3.ctex"]
+dest_files=["res://.godot/imported/map_bg.png-5a915bd880248700c390ea7af8d3bea3.s3tc.ctex", "res://.godot/imported/map_bg.png-5a915bd880248700c390ea7af8d3bea3.etc2.ctex"]
 
 [params]
 
-compress/mode=0
+compress/mode=2
 compress/high_quality=false
 compress/lossy_quality=0.7
 compress/uastc_level=0

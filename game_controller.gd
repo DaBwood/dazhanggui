@@ -125,7 +125,7 @@ func _ready():
 	
 	# Web 端访问不到系统字体，中文会变豆腐块；显式指定全局回退字体
 	# （走 fallback 通道，桌面端拉丁字符仍是原字体，显示不变）
-	ThemeDB.fallback_font = load("res://fonts/msyh.ttc")
+	ThemeDB.fallback_font = load("res://fonts/NotoSansSC-Subset.otf")   # 【改】msyh.ttc 19.7MB 且授权禁分发→Noto 常用区子集（tools/subset_font.py 产出，玩家自定义名字也覆盖）
 	
 	_build_scene_shell()          # 【新增】代码建壳，必须是第一行
 

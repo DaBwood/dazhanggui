@@ -3,19 +3,21 @@
 importer="texture"
 type="CompressedTexture2D"
 uid="uid://ctmwih8c62l46"
-path="res://.godot/imported/bg.png-8a95c59419a10493db3917fc07be5024.ctex"
+path.s3tc="res://.godot/imported/bg.png-8a95c59419a10493db3917fc07be5024.s3tc.ctex"
+path.etc2="res://.godot/imported/bg.png-8a95c59419a10493db3917fc07be5024.etc2.ctex"
 metadata={
-"vram_texture": false
+"imported_formats": ["s3tc_bptc", "etc2_astc"],
+"vram_texture": true
 }
 
 [deps]
 
 source_file="res://assets/adventure/bg.png"
-dest_files=["res://.godot/imported/bg.png-8a95c59419a10493db3917fc07be5024.ctex"]
+dest_files=["res://.godot/imported/bg.png-8a95c59419a10493db3917fc07be5024.s3tc.ctex", "res://.godot/imported/bg.png-8a95c59419a10493db3917fc07be5024.etc2.ctex"]
 
 [params]
 
-compress/mode=0
+compress/mode=2
 compress/high_quality=false
 compress/lossy_quality=0.7
 compress/uastc_level=0

@@ -27,7 +27,7 @@ window/handheld/orientation=1
 
 [gui]
 
-theme/custom_font="uid://c7gma1rwqnkdn"
+theme/custom_font="uid://30dqaewj82nn"
 
 [physics]
 
@@ -37,3 +37,4 @@ theme/custom_font="uid://c7gma1rwqnkdn"
 
 rendering_device/driver.windows="d3d12"
 renderer/rendering_method="mobile"
+textures/vram_compression/import_etc2_astc=true

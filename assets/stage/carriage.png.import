@@ -3,19 +3,21 @@
 importer="texture"
 type="CompressedTexture2D"
 uid="uid://q6kfnliim508"
-path="res://.godot/imported/carriage.png-b2d9230b36b528a6bae0e81a81bd374e.ctex"
+path.s3tc="res://.godot/imported/carriage.png-b2d9230b36b528a6bae0e81a81bd374e.s3tc.ctex"
+path.etc2="res://.godot/imported/carriage.png-b2d9230b36b528a6bae0e81a81bd374e.etc2.ctex"
 metadata={
-"vram_texture": false
+"imported_formats": ["s3tc_bptc", "etc2_astc"],
+"vram_texture": true
 }
 
 [deps]
 
 source_file="res://assets/stage/carriage.png"
-dest_files=["res://.godot/imported/carriage.png-b2d9230b36b528a6bae0e81a81bd374e.ctex"]
+dest_files=["res://.godot/imported/carriage.png-b2d9230b36b528a6bae0e81a81bd374e.s3tc.ctex", "res://.godot/imported/carriage.png-b2d9230b36b528a6bae0e81a81bd374e.etc2.ctex"]
 
 [params]
 
-compress/mode=0
+compress/mode=2
 compress/high_quality=false
 compress/lossy_quality=0.7
 compress/uastc_level=0
