@@ -1050,7 +1050,7 @@ func _show_results(results: Array):
 		if e.get("type") == "item":
 			var iname = data.ITEM_CONFIG.get(e.get("item", ""), {}).get("name", e.get("item", ""))
 			txt = "%s×%d" % [iname, int(e.get("count", 0))]
-		label.text = "🎁 " + txt
+		label.text = txt
 		list.add_child(label)
 	c.add_child(panel)
 	# 【新增】UI统一批次①：底部【确定】关闭钮移除（右上✕接管），"关闭后刷新本体"改挂弹窗销毁钩子

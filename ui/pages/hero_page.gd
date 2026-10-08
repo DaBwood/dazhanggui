@@ -2344,7 +2344,7 @@ func _ensure_hero_filter_bar():
 	sp.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	bar.add_child(sp)
 	var mag := Button.new()
-	mag.text = "🔍"
+	mag.text = "搜索"
 	mag.custom_minimum_size = Vector2(44, 34)
 	mag.add_theme_font_size_override("font_size", 15)
 	mag.pressed.connect(_on_hero_search_popup)

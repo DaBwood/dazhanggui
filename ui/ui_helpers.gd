@@ -85,7 +85,7 @@ func _create_base_popup(title_text: String, popup_size: Vector2, _pos: Vector2 =
 		panel.add_child(x_layer)
 		var close_x = Button.new()
 		close_x.name = "PopupCloseX"
-		close_x.text = "✕"
+		close_x.text = "×"   # 【改】✕(U+2715) 不在 Noto Sans SC 字形内，×(U+00D7 Latin-1) 才有——关闭钮的 X 不用赌源字体覆盖
 		close_x.set_anchors_preset(Control.PRESET_TOP_RIGHT)
 		close_x.position = Vector2(-44, 8)   # 相对右上角：右留8px、上留8px
 		close_x.size = Vector2(36, 36)

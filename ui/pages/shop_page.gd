@@ -436,7 +436,7 @@ func update_entry_buttons():
 			btn.modulate = Color("#e0c070")   # 可解锁：金色
 			btn.disabled = false
 		else:
-			name_line.text = "%s🔒" % cfg.name   # 加锁标+亮灰（2026-09-12 口径沿用）
+			name_line.text = "%s〔锁〕" % cfg.name   # 加锁标+亮灰（2026-09-12 口径沿用）
 			staff_row.visible = false
 			btn.modulate = Color(0.85, 0.85, 0.85, 0.95)
 			btn.disabled = false   # 【改】锁定也可点：点击弹"通关第X章解锁"提示（on_shop_entry_pressed else 分支），disabled 会让玩家点不动、条件无处可查
@@ -451,7 +451,7 @@ func update_hq_panel():
 		var bonus = data.get_global_bonus_percent() * 100
 		c.get_node("HQPanel/VBoxContainer/HQInfo").text = "挂机 %s/秒  |  点击 +%s  |  全局加成 +%d%%" % [c.format_number(auto), c.format_number(data.hq.click_income), bonus]
 	if c.has_node("HQPanel/VBoxContainer/HBoxContainer/HQUpgradeBtn"):
-		c.get_node("HQPanel/VBoxContainer/HBoxContainer/HQUpgradeBtn").text = "🔨 升级（%d图纸）" % data.hq.upgrade_cost
+		c.get_node("HQPanel/VBoxContainer/HBoxContainer/HQUpgradeBtn").text = "升级（%d图纸）" % data.hq.upgrade_cost
 
 func update_shop_panel():
 	if c.current_shop_id == "": return
@@ -465,7 +465,7 @@ func update_shop_panel():
 		var income = data.get_shop_auto_income(c.current_shop_id)
 		c.get_node("ShopPanel/VBoxContainer/ShopInfo").text = "赚速 %s/秒  |  店员 %d人" % [c.format_number(income), s.staff]
 	if c.has_node("ShopPanel/VBoxContainer/HBoxContainer/ShopUpgradeBtn"):
-		c.get_node("ShopPanel/VBoxContainer/HBoxContainer/ShopUpgradeBtn").text = "🔨 升级（%d道具）" % s.upgrade_cost
+		c.get_node("ShopPanel/VBoxContainer/HBoxContainer/ShopUpgradeBtn").text = "升级（%d道具）" % s.upgrade_cost
 	if c.has_node("ShopPanel/VBoxContainer/HBoxContainer/ShopHireBtn"):
 		var batch = false
 		if c.has_node("ShopPanel/VBoxContainer/HBoxContainer/BatchHireCheck"):
@@ -477,9 +477,9 @@ func update_shop_panel():
 			for i in range(10):
 				total_cost += temp_cost
 				temp_cost = int(ceil(temp_cost * 1.01))
-			c.get_node("ShopPanel/VBoxContainer/HBoxContainer/ShopHireBtn").text = "👤 招募（%s铜钱）" % c.format_number(total_cost)
+			c.get_node("ShopPanel/VBoxContainer/HBoxContainer/ShopHireBtn").text = "招募（%s铜钱）" % c.format_number(total_cost)
 		else:
-			c.get_node("ShopPanel/VBoxContainer/HBoxContainer/ShopHireBtn").text = "👤 招募（%s铜钱）" % c.format_number(cost)
+			c.get_node("ShopPanel/VBoxContainer/HBoxContainer/ShopHireBtn").text = "招募（%s铜钱）" % c.format_number(cost)
 	
 	
 	# 更新槽位内容

@@ -274,7 +274,7 @@ func _update_daily_gift_page():
 
 	# 标题
 	var title = Label.new()
-	title.text = "🎁 每日礼包"
+	title.text = "每日礼包"
 	title.add_theme_font_size_override("font_size", 24)
 	title.add_theme_color_override("font_color", Color("#ffd700"))
 	title.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
@@ -387,7 +387,7 @@ func _update_vip_panel():
 
 	if vbox.has_node("VIPExpInfo"):
 		if current_level >= 16:
-			vbox.get_node("VIPExpInfo").text = "已满级 🎉"
+			vbox.get_node("VIPExpInfo").text = "已满级"
 		else:
 			vbox.get_node("VIPExpInfo").text = "经验：%s / %s" % [c.format_number(current_exp), c.format_number(next_exp)]
 

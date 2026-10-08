@@ -1372,7 +1372,7 @@ const TOPBAR_ICON_PATHS := {
 }
 const RECHARGE_TAB_LABELS = ["元宝", "每日礼包", "特惠礼包"]    # 充值页3个页签
 const TXT_VIP_TITLE = "VIP 特权"
-const TXT_HQ_CLICK = "💰 点击赚钱"
+const TXT_HQ_CLICK = "点击赚钱"
 const TXT_BATCH_HIRE = "十连招募"
 
 # 下沉插槽九贴片（2026-10-07 v3）：StyleBoxFlat 无内阴影概念，凿槽质感只能贴片；
