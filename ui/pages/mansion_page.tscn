@@ -1,0 +1,199 @@
+[gd_scene format=3 uid="uid://dvg8h40wxe36a"]
+
+[ext_resource type="Texture2D" uid="uid://r2olfgt7cwdb" path="res://assets/mansion/map_bg.png" id="1_bg"]
+[ext_resource type="Texture2D" uid="uid://bk6d5qrpfmn87" path="res://assets/adventure/btn_scroll_vertical.png" id="2_skin"]
+
+[sub_resource type="StyleBoxTexture" id="StyleBoxTexture_banner"]
+texture = ExtResource("2_skin")
+texture_margin_left = 15.0
+texture_margin_top = 15.0
+texture_margin_right = 15.0
+texture_margin_bottom = 15.0
+
+[node name="MansionScene" type="Control" unique_id=1082451597]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+
+[node name="MansionVBox" type="VBoxContainer" parent="." unique_id=970993070]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_constants/separation = 12
+
+[node name="TopGrid" type="GridContainer" parent="MansionVBox" unique_id=1079929566]
+layout_mode = 2
+size_flags_horizontal = 4
+theme_override_constants/h_separation = 10
+theme_override_constants/v_separation = 10
+columns = 3
+
+[node name="MapScroll" type="ScrollContainer" parent="MansionVBox" unique_id=1828348249]
+clip_contents = false
+layout_mode = 2
+size_flags_vertical = 3
+vertical_scroll_mode = 0
+
+[node name="MapContent" type="Control" parent="MansionVBox/MapScroll" unique_id=594683755]
+custom_minimum_size = Vector2(2201, 1067)
+layout_mode = 2
+size_flags_vertical = 3
+
+[node name="BgImage" type="TextureRect" parent="MansionVBox/MapScroll/MapContent" unique_id=911622429]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+texture = ExtResource("1_bg")
+expand_mode = 1
+stretch_mode = 6
+
+[node name="MansionEntryGrid" type="Control" parent="MansionVBox/MapScroll/MapContent" unique_id=929035446]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+
+[node name="EntryZhenshou" type="Button" parent="MansionVBox/MapScroll/MapContent/MansionEntryGrid" unique_id=1643599605]
+custom_minimum_size = Vector2(50, 120)
+layout_mode = 0
+offset_left = 258.0
+offset_top = 512.0
+offset_right = 308.0
+offset_bottom = 632.0
+theme_override_colors/font_color = Color(0.95, 0.88, 0.7, 1)
+theme_override_font_sizes/font_size = 18
+theme_override_styles/normal = SubResource("StyleBoxTexture_banner")
+theme_override_styles/pressed = SubResource("StyleBoxTexture_banner")
+theme_override_styles/hover = SubResource("StyleBoxTexture_banner")
+theme_override_styles/focus = SubResource("StyleBoxTexture_banner")
+text = "珍
+兽"
+
+[node name="EntryXiufang" type="Button" parent="MansionVBox/MapScroll/MapContent/MansionEntryGrid" unique_id=557163618]
+custom_minimum_size = Vector2(50, 120)
+layout_mode = 0
+offset_left = 437.0
+offset_top = 350.0
+offset_right = 487.0
+offset_bottom = 470.0
+theme_override_colors/font_color = Color(0.95, 0.88, 0.7, 1)
+theme_override_font_sizes/font_size = 18
+theme_override_styles/normal = SubResource("StyleBoxTexture_banner")
+theme_override_styles/pressed = SubResource("StyleBoxTexture_banner")
+theme_override_styles/hover = SubResource("StyleBoxTexture_banner")
+theme_override_styles/focus = SubResource("StyleBoxTexture_banner")
+text = "绣
+房"
+
+[node name="EntryCollection" type="Button" parent="MansionVBox/MapScroll/MapContent/MansionEntryGrid" unique_id=1668911921]
+custom_minimum_size = Vector2(50, 120)
+layout_mode = 0
+offset_left = 781.0
+offset_top = 341.0
+offset_right = 831.0
+offset_bottom = 461.0
+theme_override_colors/font_color = Color(0.95, 0.88, 0.7, 1)
+theme_override_font_sizes/font_size = 18
+theme_override_styles/normal = SubResource("StyleBoxTexture_banner")
+theme_override_styles/pressed = SubResource("StyleBoxTexture_banner")
+theme_override_styles/hover = SubResource("StyleBoxTexture_banner")
+theme_override_styles/focus = SubResource("StyleBoxTexture_banner")
+text = "藏
+品"
+
+[node name="EntryXiangfang" type="Button" parent="MansionVBox/MapScroll/MapContent/MansionEntryGrid" unique_id=1943844282]
+custom_minimum_size = Vector2(50, 120)
+layout_mode = 0
+offset_left = 1363.0
+offset_top = 440.0
+offset_right = 1413.0
+offset_bottom = 560.0
+theme_override_colors/font_color = Color(0.95, 0.88, 0.7, 1)
+theme_override_font_sizes/font_size = 18
+theme_override_styles/normal = SubResource("StyleBoxTexture_banner")
+theme_override_styles/pressed = SubResource("StyleBoxTexture_banner")
+theme_override_styles/hover = SubResource("StyleBoxTexture_banner")
+theme_override_styles/focus = SubResource("StyleBoxTexture_banner")
+text = "厢
+房"
+
+[node name="EntryXunzhen" type="Button" parent="MansionVBox/MapScroll/MapContent/MansionEntryGrid" unique_id=660869642]
+custom_minimum_size = Vector2(50, 180)
+layout_mode = 0
+offset_left = 1876.0
+offset_top = 335.0
+offset_right = 1926.0
+offset_bottom = 515.0
+theme_override_colors/font_color = Color(0.95, 0.88, 0.7, 1)
+theme_override_font_sizes/font_size = 18
+theme_override_styles/normal = SubResource("StyleBoxTexture_banner")
+theme_override_styles/pressed = SubResource("StyleBoxTexture_banner")
+theme_override_styles/hover = SubResource("StyleBoxTexture_banner")
+theme_override_styles/focus = SubResource("StyleBoxTexture_banner")
+text = "寻
+珍
+探
+宝"
+
+[node name="EntryFriend" type="Button" parent="MansionVBox/MapScroll/MapContent/MansionEntryGrid" unique_id=818328487]
+custom_minimum_size = Vector2(50, 120)
+layout_mode = 0
+offset_left = 1103.0
+offset_top = 581.0
+offset_right = 1153.0
+offset_bottom = 701.0
+theme_override_colors/font_color = Color(0.95, 0.88, 0.7, 1)
+theme_override_font_sizes/font_size = 18
+theme_override_styles/normal = SubResource("StyleBoxTexture_banner")
+theme_override_styles/pressed = SubResource("StyleBoxTexture_banner")
+theme_override_styles/hover = SubResource("StyleBoxTexture_banner")
+theme_override_styles/focus = SubResource("StyleBoxTexture_banner")
+text = "挚
+友"
+
+[node name="EntryShanzhuang" type="Button" parent="MansionVBox/MapScroll/MapContent/MansionEntryGrid" unique_id=1341597418]
+custom_minimum_size = Vector2(50, 120)
+layout_mode = 0
+offset_left = 1583.0
+offset_top = 393.0
+offset_right = 1633.0
+offset_bottom = 513.0
+theme_override_colors/font_color = Color(0.95, 0.88, 0.7, 1)
+theme_override_font_sizes/font_size = 18
+theme_override_styles/normal = SubResource("StyleBoxTexture_banner")
+theme_override_styles/pressed = SubResource("StyleBoxTexture_banner")
+theme_override_styles/hover = SubResource("StyleBoxTexture_banner")
+theme_override_styles/focus = SubResource("StyleBoxTexture_banner")
+text = "山
+庄"
+
+[node name="EntryTudi" type="Button" parent="MansionVBox/MapScroll/MapContent/MansionEntryGrid" unique_id=1506794211]
+custom_minimum_size = Vector2(50, 120)
+layout_mode = 0
+offset_left = 1492.0
+offset_top = 683.0
+offset_right = 1542.0
+offset_bottom = 803.0
+theme_override_colors/font_color = Color(0.95, 0.88, 0.7, 1)
+theme_override_font_sizes/font_size = 18
+theme_override_styles/normal = SubResource("StyleBoxTexture_banner")
+theme_override_styles/pressed = SubResource("StyleBoxTexture_banner")
+theme_override_styles/hover = SubResource("StyleBoxTexture_banner")
+theme_override_styles/focus = SubResource("StyleBoxTexture_banner")
+text = "徒
+弟"

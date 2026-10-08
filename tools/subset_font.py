@@ -11,7 +11,7 @@ import os, sys, subprocess
 
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 UNICODES = ("U+0020-007E,U+0080-00FF,U+2000-206F,U+2190-21FF,U+2200-22FF,U+2300-23FF,"
-            "U+2460-24FF,U+2500-257F,U+25A0-25FF,U+2600-26FF,U+2700-27BF,"
+            "U+2460-24FF,U+2500-257F,U+25A0-25FF,U+2600-26FF,U+2700-27BF,U+2B00-2BFF,"
             "U+3000-303F,U+4E00-9FA5,U+FF00-FFEF")
 
 

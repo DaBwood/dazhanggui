@@ -1,20 +1,20 @@
 [gd_scene format=3 uid="uid://c2h0qp7k1yawb"]
 
 [ext_resource type="Texture2D" uid="uid://drj00065nclo4" path="res://assets/shops/map_bg.png" id="1_bg"]
-[ext_resource type="Texture2D" uid="uid://crs0ropou850c" path="res://assets/shops/plate_frame.png" id="2_plate"]
+[ext_resource type="Texture2D" path="res://assets/shops/nameplate_flat_horizontal.png" id="2_plate"]
 
 [sub_resource type="StyleBoxEmpty" id="SE_build"]
 
 [sub_resource type="StyleBoxTexture" id="SF_plate"]
-content_margin_left = 44.0
-content_margin_top = 26.0
-content_margin_right = 44.0
-content_margin_bottom = 26.0
+content_margin_left = 20.0
+content_margin_top = 9.0
+content_margin_right = 20.0
+content_margin_bottom = 9.0
 texture = ExtResource("2_plate")
-texture_margin_left = 30.0
-texture_margin_top = 32.0
-texture_margin_right = 30.0
-texture_margin_bottom = 32.0
+texture_margin_left = 4.0
+texture_margin_top = 4.0
+texture_margin_right = 4.0
+texture_margin_bottom = 4.0
 
 [node name="ShopScene" type="Control" unique_id=881575638]
 layout_mode = 3
@@ -91,7 +91,7 @@ alignment = 1
 
 [node name="NameLine" type="Label" parent="ShopVBox/MapScroll/MapContent/ShopEntryGrid/bld_hq/NamePlate/PlateVBox" unique_id=881587009]
 layout_mode = 2
-theme_override_colors/font_color = Color(0.4, 0.29, 0.16, 1)
+theme_override_colors/font_color = Color(0.95, 0.93, 0.86, 1)
 theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
 theme_override_constants/outline_size = 0
 theme_override_font_sizes/font_size = 19
@@ -113,7 +113,7 @@ stretch_mode = 5
 
 [node name="StaffNum" type="Label" parent="ShopVBox/MapScroll/MapContent/ShopEntryGrid/bld_hq/NamePlate/PlateVBox/StaffRow" unique_id=881587420]
 layout_mode = 2
-theme_override_colors/font_color = Color(0.47, 0.38, 0.26, 1)
+theme_override_colors/font_color = Color(0.88, 0.85, 0.77, 1)
 theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
 theme_override_constants/outline_size = 0
 theme_override_font_sizes/font_size = 16
@@ -164,7 +164,7 @@ alignment = 1
 
 [node name="NameLine" type="Label" parent="ShopVBox/MapScroll/MapContent/ShopEntryGrid/bld_ke_zhan/NamePlate/PlateVBox" unique_id=881587831]
 layout_mode = 2
-theme_override_colors/font_color = Color(0.4, 0.29, 0.16, 1)
+theme_override_colors/font_color = Color(0.95, 0.93, 0.86, 1)
 theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
 theme_override_constants/outline_size = 0
 theme_override_font_sizes/font_size = 19
@@ -186,7 +186,7 @@ stretch_mode = 5
 
 [node name="StaffNum" type="Label" parent="ShopVBox/MapScroll/MapContent/ShopEntryGrid/bld_ke_zhan/NamePlate/PlateVBox/StaffRow" unique_id=881588242]
 layout_mode = 2
-theme_override_colors/font_color = Color(0.47, 0.38, 0.26, 1)
+theme_override_colors/font_color = Color(0.88, 0.85, 0.77, 1)
 theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
 theme_override_constants/outline_size = 0
 theme_override_font_sizes/font_size = 16
@@ -242,7 +242,7 @@ alignment = 1
 
 [node name="NameLine" type="Label" parent="ShopVBox/MapScroll/MapContent/ShopEntryGrid/bld_yi_guan/NamePlate/PlateVBox" unique_id=881588653]
 layout_mode = 2
-theme_override_colors/font_color = Color(0.4, 0.29, 0.16, 1)
+theme_override_colors/font_color = Color(0.95, 0.93, 0.86, 1)
 theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
 theme_override_constants/outline_size = 0
 theme_override_font_sizes/font_size = 19
@@ -264,7 +264,7 @@ stretch_mode = 5
 
 [node name="StaffNum" type="Label" parent="ShopVBox/MapScroll/MapContent/ShopEntryGrid/bld_yi_guan/NamePlate/PlateVBox/StaffRow" unique_id=881589064]
 layout_mode = 2
-theme_override_colors/font_color = Color(0.47, 0.38, 0.26, 1)
+theme_override_colors/font_color = Color(0.88, 0.85, 0.77, 1)
 theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
 theme_override_constants/outline_size = 0
 theme_override_font_sizes/font_size = 16
@@ -326,7 +326,7 @@ alignment = 1
 
 [node name="NameLine" type="Label" parent="ShopVBox/MapScroll/MapContent/ShopEntryGrid/bld_shuoshu_tan/NamePlate/PlateVBox" unique_id=881589475]
 layout_mode = 2
-theme_override_colors/font_color = Color(0.4, 0.29, 0.16, 1)
+theme_override_colors/font_color = Color(0.95, 0.93, 0.86, 1)
 theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
 theme_override_constants/outline_size = 0
 theme_override_font_sizes/font_size = 19
@@ -348,7 +348,7 @@ stretch_mode = 5
 
 [node name="StaffNum" type="Label" parent="ShopVBox/MapScroll/MapContent/ShopEntryGrid/bld_shuoshu_tan/NamePlate/PlateVBox/StaffRow" unique_id=881589886]
 layout_mode = 2
-theme_override_colors/font_color = Color(0.47, 0.38, 0.26, 1)
+theme_override_colors/font_color = Color(0.88, 0.85, 0.77, 1)
 theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
 theme_override_constants/outline_size = 0
 theme_override_font_sizes/font_size = 16
@@ -387,7 +387,7 @@ alignment = 1
 
 [node name="NameLine" type="Label" parent="ShopVBox/MapScroll/MapContent/ShopEntryGrid/bld_xiangliao_pu/NamePlate/PlateVBox" unique_id=881590297]
 layout_mode = 2
-theme_override_colors/font_color = Color(0.4, 0.29, 0.16, 1)
+theme_override_colors/font_color = Color(0.95, 0.93, 0.86, 1)
 theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
 theme_override_constants/outline_size = 0
 theme_override_font_sizes/font_size = 19
@@ -409,7 +409,7 @@ stretch_mode = 5
 
 [node name="StaffNum" type="Label" parent="ShopVBox/MapScroll/MapContent/ShopEntryGrid/bld_xiangliao_pu/NamePlate/PlateVBox/StaffRow" unique_id=881590708]
 layout_mode = 2
-theme_override_colors/font_color = Color(0.47, 0.38, 0.26, 1)
+theme_override_colors/font_color = Color(0.88, 0.85, 0.77, 1)
 theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
 theme_override_constants/outline_size = 0
 theme_override_font_sizes/font_size = 16
@@ -448,7 +448,7 @@ alignment = 1
 
 [node name="NameLine" type="Label" parent="ShopVBox/MapScroll/MapContent/ShopEntryGrid/bld_dang_pu/NamePlate/PlateVBox" unique_id=881591119]
 layout_mode = 2
-theme_override_colors/font_color = Color(0.4, 0.29, 0.16, 1)
+theme_override_colors/font_color = Color(0.95, 0.93, 0.86, 1)
 theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
 theme_override_constants/outline_size = 0
 theme_override_font_sizes/font_size = 19
@@ -470,7 +470,7 @@ stretch_mode = 5
 
 [node name="StaffNum" type="Label" parent="ShopVBox/MapScroll/MapContent/ShopEntryGrid/bld_dang_pu/NamePlate/PlateVBox/StaffRow" unique_id=881591530]
 layout_mode = 2
-theme_override_colors/font_color = Color(0.47, 0.38, 0.26, 1)
+theme_override_colors/font_color = Color(0.88, 0.85, 0.77, 1)
 theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
 theme_override_constants/outline_size = 0
 theme_override_font_sizes/font_size = 16
@@ -507,7 +507,7 @@ alignment = 1
 
 [node name="NameLine" type="Label" parent="ShopVBox/MapScroll/MapContent/ShopEntryGrid/bld_yao_pu/NamePlate/PlateVBox" unique_id=881591941]
 layout_mode = 2
-theme_override_colors/font_color = Color(0.4, 0.29, 0.16, 1)
+theme_override_colors/font_color = Color(0.95, 0.93, 0.86, 1)
 theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
 theme_override_constants/outline_size = 0
 theme_override_font_sizes/font_size = 19
@@ -529,7 +529,7 @@ stretch_mode = 5
 
 [node name="StaffNum" type="Label" parent="ShopVBox/MapScroll/MapContent/ShopEntryGrid/bld_yao_pu/NamePlate/PlateVBox/StaffRow" unique_id=881592352]
 layout_mode = 2
-theme_override_colors/font_color = Color(0.47, 0.38, 0.26, 1)
+theme_override_colors/font_color = Color(0.88, 0.85, 0.77, 1)
 theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
 theme_override_constants/outline_size = 0
 theme_override_font_sizes/font_size = 16
@@ -586,7 +586,7 @@ alignment = 1
 
 [node name="NameLine" type="Label" parent="ShopVBox/MapScroll/MapContent/ShopEntryGrid/bld_jiu_si/NamePlate/PlateVBox" unique_id=881592763]
 layout_mode = 2
-theme_override_colors/font_color = Color(0.4, 0.29, 0.16, 1)
+theme_override_colors/font_color = Color(0.95, 0.93, 0.86, 1)
 theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
 theme_override_constants/outline_size = 0
 theme_override_font_sizes/font_size = 19
@@ -608,7 +608,7 @@ stretch_mode = 5
 
 [node name="StaffNum" type="Label" parent="ShopVBox/MapScroll/MapContent/ShopEntryGrid/bld_jiu_si/NamePlate/PlateVBox/StaffRow" unique_id=881593174]
 layout_mode = 2
-theme_override_colors/font_color = Color(0.47, 0.38, 0.26, 1)
+theme_override_colors/font_color = Color(0.88, 0.85, 0.77, 1)
 theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
 theme_override_constants/outline_size = 0
 theme_override_font_sizes/font_size = 16
@@ -665,7 +665,7 @@ alignment = 1
 
 [node name="NameLine" type="Label" parent="ShopVBox/MapScroll/MapContent/ShopEntryGrid/bld_yi_zhan/NamePlate/PlateVBox" unique_id=881593585]
 layout_mode = 2
-theme_override_colors/font_color = Color(0.4, 0.29, 0.16, 1)
+theme_override_colors/font_color = Color(0.95, 0.93, 0.86, 1)
 theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
 theme_override_constants/outline_size = 0
 theme_override_font_sizes/font_size = 19
@@ -687,7 +687,7 @@ stretch_mode = 5
 
 [node name="StaffNum" type="Label" parent="ShopVBox/MapScroll/MapContent/ShopEntryGrid/bld_yi_zhan/NamePlate/PlateVBox/StaffRow" unique_id=881593996]
 layout_mode = 2
-theme_override_colors/font_color = Color(0.47, 0.38, 0.26, 1)
+theme_override_colors/font_color = Color(0.88, 0.85, 0.77, 1)
 theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
 theme_override_constants/outline_size = 0
 theme_override_font_sizes/font_size = 16
@@ -726,7 +726,7 @@ alignment = 1
 
 [node name="NameLine" type="Label" parent="ShopVBox/MapScroll/MapContent/ShopEntryGrid/bld_miaoyin_fang/NamePlate/PlateVBox" unique_id=881594407]
 layout_mode = 2
-theme_override_colors/font_color = Color(0.4, 0.29, 0.16, 1)
+theme_override_colors/font_color = Color(0.95, 0.93, 0.86, 1)
 theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
 theme_override_constants/outline_size = 0
 theme_override_font_sizes/font_size = 19
@@ -748,7 +748,7 @@ stretch_mode = 5
 
 [node name="StaffNum" type="Label" parent="ShopVBox/MapScroll/MapContent/ShopEntryGrid/bld_miaoyin_fang/NamePlate/PlateVBox/StaffRow" unique_id=881594818]
 layout_mode = 2
-theme_override_colors/font_color = Color(0.47, 0.38, 0.26, 1)
+theme_override_colors/font_color = Color(0.88, 0.85, 0.77, 1)
 theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
 theme_override_constants/outline_size = 0
 theme_override_font_sizes/font_size = 16
@@ -794,7 +794,7 @@ alignment = 1
 
 [node name="NameLine" type="Label" parent="ShopVBox/MapScroll/MapContent/ShopEntryGrid/bld_jiu_fang/NamePlate/PlateVBox" unique_id=881595229]
 layout_mode = 2
-theme_override_colors/font_color = Color(0.4, 0.29, 0.16, 1)
+theme_override_colors/font_color = Color(0.95, 0.93, 0.86, 1)
 theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
 theme_override_constants/outline_size = 0
 theme_override_font_sizes/font_size = 19
@@ -816,7 +816,7 @@ stretch_mode = 5
 
 [node name="StaffNum" type="Label" parent="ShopVBox/MapScroll/MapContent/ShopEntryGrid/bld_jiu_fang/NamePlate/PlateVBox/StaffRow" unique_id=881595640]
 layout_mode = 2
-theme_override_colors/font_color = Color(0.47, 0.38, 0.26, 1)
+theme_override_colors/font_color = Color(0.88, 0.85, 0.77, 1)
 theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
 theme_override_constants/outline_size = 0
 theme_override_font_sizes/font_size = 16
@@ -862,7 +862,7 @@ alignment = 1
 
 [node name="NameLine" type="Label" parent="ShopVBox/MapScroll/MapContent/ShopEntryGrid/bld_changle_fang/NamePlate/PlateVBox" unique_id=881596051]
 layout_mode = 2
-theme_override_colors/font_color = Color(0.4, 0.29, 0.16, 1)
+theme_override_colors/font_color = Color(0.95, 0.93, 0.86, 1)
 theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
 theme_override_constants/outline_size = 0
 theme_override_font_sizes/font_size = 19
@@ -884,7 +884,7 @@ stretch_mode = 5
 
 [node name="StaffNum" type="Label" parent="ShopVBox/MapScroll/MapContent/ShopEntryGrid/bld_changle_fang/NamePlate/PlateVBox/StaffRow" unique_id=881596462]
 layout_mode = 2
-theme_override_colors/font_color = Color(0.47, 0.38, 0.26, 1)
+theme_override_colors/font_color = Color(0.88, 0.85, 0.77, 1)
 theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
 theme_override_constants/outline_size = 0
 theme_override_font_sizes/font_size = 16
@@ -923,7 +923,7 @@ alignment = 1
 
 [node name="NameLine" type="Label" parent="ShopVBox/MapScroll/MapContent/ShopEntryGrid/bld_chengyi_pu/NamePlate/PlateVBox" unique_id=881596873]
 layout_mode = 2
-theme_override_colors/font_color = Color(0.4, 0.29, 0.16, 1)
+theme_override_colors/font_color = Color(0.95, 0.93, 0.86, 1)
 theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
 theme_override_constants/outline_size = 0
 theme_override_font_sizes/font_size = 19
@@ -945,7 +945,7 @@ stretch_mode = 5
 
 [node name="StaffNum" type="Label" parent="ShopVBox/MapScroll/MapContent/ShopEntryGrid/bld_chengyi_pu/NamePlate/PlateVBox/StaffRow" unique_id=881597284]
 layout_mode = 2
-theme_override_colors/font_color = Color(0.47, 0.38, 0.26, 1)
+theme_override_colors/font_color = Color(0.88, 0.85, 0.77, 1)
 theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
 theme_override_constants/outline_size = 0
 theme_override_font_sizes/font_size = 16
@@ -984,7 +984,7 @@ alignment = 1
 
 [node name="NameLine" type="Label" parent="ShopVBox/MapScroll/MapContent/ShopEntryGrid/bld_suanming_tan/NamePlate/PlateVBox" unique_id=881597695]
 layout_mode = 2
-theme_override_colors/font_color = Color(0.4, 0.29, 0.16, 1)
+theme_override_colors/font_color = Color(0.95, 0.93, 0.86, 1)
 theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
 theme_override_constants/outline_size = 0
 theme_override_font_sizes/font_size = 19
@@ -1006,7 +1006,7 @@ stretch_mode = 5
 
 [node name="StaffNum" type="Label" parent="ShopVBox/MapScroll/MapContent/ShopEntryGrid/bld_suanming_tan/NamePlate/PlateVBox/StaffRow" unique_id=881598106]
 layout_mode = 2
-theme_override_colors/font_color = Color(0.47, 0.38, 0.26, 1)
+theme_override_colors/font_color = Color(0.88, 0.85, 0.77, 1)
 theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
 theme_override_constants/outline_size = 0
 theme_override_font_sizes/font_size = 16
@@ -1045,7 +1045,7 @@ alignment = 1
 
 [node name="NameLine" type="Label" parent="ShopVBox/MapScroll/MapContent/ShopEntryGrid/bld_chuan_wu/NamePlate/PlateVBox" unique_id=881598517]
 layout_mode = 2
-theme_override_colors/font_color = Color(0.4, 0.29, 0.16, 1)
+theme_override_colors/font_color = Color(0.95, 0.93, 0.86, 1)
 theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
 theme_override_constants/outline_size = 0
 theme_override_font_sizes/font_size = 19
@@ -1067,7 +1067,7 @@ stretch_mode = 5
 
 [node name="StaffNum" type="Label" parent="ShopVBox/MapScroll/MapContent/ShopEntryGrid/bld_chuan_wu/NamePlate/PlateVBox/StaffRow" unique_id=881598928]
 layout_mode = 2
-theme_override_colors/font_color = Color(0.47, 0.38, 0.26, 1)
+theme_override_colors/font_color = Color(0.88, 0.85, 0.77, 1)
 theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
 theme_override_constants/outline_size = 0
 theme_override_font_sizes/font_size = 16
@@ -1106,7 +1106,7 @@ alignment = 1
 
 [node name="NameLine" type="Label" parent="ShopVBox/MapScroll/MapContent/ShopEntryGrid/bld_chema_hang/NamePlate/PlateVBox" unique_id=881599339]
 layout_mode = 2
-theme_override_colors/font_color = Color(0.4, 0.29, 0.16, 1)
+theme_override_colors/font_color = Color(0.95, 0.93, 0.86, 1)
 theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
 theme_override_constants/outline_size = 0
 theme_override_font_sizes/font_size = 19
@@ -1128,7 +1128,7 @@ stretch_mode = 5
 
 [node name="StaffNum" type="Label" parent="ShopVBox/MapScroll/MapContent/ShopEntryGrid/bld_chema_hang/NamePlate/PlateVBox/StaffRow" unique_id=881599750]
 layout_mode = 2
-theme_override_colors/font_color = Color(0.47, 0.38, 0.26, 1)
+theme_override_colors/font_color = Color(0.88, 0.85, 0.77, 1)
 theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
 theme_override_constants/outline_size = 0
 theme_override_font_sizes/font_size = 16
@@ -1167,7 +1167,7 @@ alignment = 1
 
 [node name="NameLine" type="Label" parent="ShopVBox/MapScroll/MapContent/ShopEntryGrid/bld_cha_si/NamePlate/PlateVBox" unique_id=881600161]
 layout_mode = 2
-theme_override_colors/font_color = Color(0.4, 0.29, 0.16, 1)
+theme_override_colors/font_color = Color(0.95, 0.93, 0.86, 1)
 theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
 theme_override_constants/outline_size = 0
 theme_override_font_sizes/font_size = 19
@@ -1189,7 +1189,7 @@ stretch_mode = 5
 
 [node name="StaffNum" type="Label" parent="ShopVBox/MapScroll/MapContent/ShopEntryGrid/bld_cha_si/NamePlate/PlateVBox/StaffRow" unique_id=881600572]
 layout_mode = 2
-theme_override_colors/font_color = Color(0.47, 0.38, 0.26, 1)
+theme_override_colors/font_color = Color(0.88, 0.85, 0.77, 1)
 theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
 theme_override_constants/outline_size = 0
 theme_override_font_sizes/font_size = 16
@@ -1228,7 +1228,7 @@ alignment = 1
 
 [node name="NameLine" type="Label" parent="ShopVBox/MapScroll/MapContent/ShopEntryGrid/bld_xi_lou/NamePlate/PlateVBox" unique_id=881600983]
 layout_mode = 2
-theme_override_colors/font_color = Color(0.4, 0.29, 0.16, 1)
+theme_override_colors/font_color = Color(0.95, 0.93, 0.86, 1)
 theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
 theme_override_constants/outline_size = 0
 theme_override_font_sizes/font_size = 19
@@ -1250,7 +1250,7 @@ stretch_mode = 5
 
 [node name="StaffNum" type="Label" parent="ShopVBox/MapScroll/MapContent/ShopEntryGrid/bld_xi_lou/NamePlate/PlateVBox/StaffRow" unique_id=881601394]
 layout_mode = 2
-theme_override_colors/font_color = Color(0.47, 0.38, 0.26, 1)
+theme_override_colors/font_color = Color(0.88, 0.85, 0.77, 1)
 theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
 theme_override_constants/outline_size = 0
 theme_override_font_sizes/font_size = 16
@@ -1289,7 +1289,7 @@ alignment = 1
 
 [node name="NameLine" type="Label" parent="ShopVBox/MapScroll/MapContent/ShopEntryGrid/bld_zao_tang/NamePlate/PlateVBox" unique_id=881601805]
 layout_mode = 2
-theme_override_colors/font_color = Color(0.4, 0.29, 0.16, 1)
+theme_override_colors/font_color = Color(0.95, 0.93, 0.86, 1)
 theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
 theme_override_constants/outline_size = 0
 theme_override_font_sizes/font_size = 19
@@ -1311,7 +1311,7 @@ stretch_mode = 5
 
 [node name="StaffNum" type="Label" parent="ShopVBox/MapScroll/MapContent/ShopEntryGrid/bld_zao_tang/NamePlate/PlateVBox/StaffRow" unique_id=881602216]
 layout_mode = 2
-theme_override_colors/font_color = Color(0.47, 0.38, 0.26, 1)
+theme_override_colors/font_color = Color(0.88, 0.85, 0.77, 1)
 theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
 theme_override_constants/outline_size = 0
 theme_override_font_sizes/font_size = 16
@@ -1350,7 +1350,7 @@ alignment = 1
 
 [node name="NameLine" type="Label" parent="ShopVBox/MapScroll/MapContent/ShopEntryGrid/bld_biao_ju/NamePlate/PlateVBox" unique_id=881602627]
 layout_mode = 2
-theme_override_colors/font_color = Color(0.4, 0.29, 0.16, 1)
+theme_override_colors/font_color = Color(0.95, 0.93, 0.86, 1)
 theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
 theme_override_constants/outline_size = 0
 theme_override_font_sizes/font_size = 19
@@ -1372,7 +1372,7 @@ stretch_mode = 5
 
 [node name="StaffNum" type="Label" parent="ShopVBox/MapScroll/MapContent/ShopEntryGrid/bld_biao_ju/NamePlate/PlateVBox/StaffRow" unique_id=881603038]
 layout_mode = 2
-theme_override_colors/font_color = Color(0.47, 0.38, 0.26, 1)
+theme_override_colors/font_color = Color(0.88, 0.85, 0.77, 1)
 theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
 theme_override_constants/outline_size = 0
 theme_override_font_sizes/font_size = 16
@@ -1411,7 +1411,7 @@ alignment = 1
 
 [node name="NameLine" type="Label" parent="ShopVBox/MapScroll/MapContent/ShopEntryGrid/bld_yao_chang/NamePlate/PlateVBox" unique_id=881603449]
 layout_mode = 2
-theme_override_colors/font_color = Color(0.4, 0.29, 0.16, 1)
+theme_override_colors/font_color = Color(0.95, 0.93, 0.86, 1)
 theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
 theme_override_constants/outline_size = 0
 theme_override_font_sizes/font_size = 19
@@ -1433,7 +1433,7 @@ stretch_mode = 5
 
 [node name="StaffNum" type="Label" parent="ShopVBox/MapScroll/MapContent/ShopEntryGrid/bld_yao_chang/NamePlate/PlateVBox/StaffRow" unique_id=881603860]
 layout_mode = 2
-theme_override_colors/font_color = Color(0.47, 0.38, 0.26, 1)
+theme_override_colors/font_color = Color(0.88, 0.85, 0.77, 1)
 theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
 theme_override_constants/outline_size = 0
 theme_override_font_sizes/font_size = 16
