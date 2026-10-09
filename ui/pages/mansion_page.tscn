@@ -205,19 +205,17 @@ custom_maximum_size = Vector2(-1, 70)
 layout_mode = 1
 anchors_preset = -1
 anchor_right = 1.0
-offset_left = 18.0
-offset_top = 10.0
-offset_right = -10.0
-offset_bottom = 136.0
+offset_top = 20.0
+offset_bottom = 90.0
 grow_horizontal = 2
 mouse_filter = 2
-theme_override_constants/separation = 8
+theme_override_constants/separation = 25
 alignment = 1
 
 [node name="Row1" type="HBoxContainer" parent="TopGrid" unique_id=1170961205]
 layout_mode = 2
 mouse_filter = 2
-theme_override_constants/separation = 8
+theme_override_constants/separation = 12
 alignment = 1
 
 [node name="BtnShop" type="Button" parent="TopGrid/Row1" unique_id=997280441]
