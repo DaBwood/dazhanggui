@@ -32,10 +32,10 @@ func get_goal_list() -> Array:
 	return g._goal_configs.get("goals", [])
 
 # ============ 计数 ============
-# 取某统计项当前值（首充特殊：vip_exp>0 即视为已充值，老玩家自动达成）
+# 取某统计项当前值（首充领取式 2026-10-09：仅"领取"动作置 1，不再看 vip_exp——老玩家走弹窗补领，无迁移代码）
 func get_stat(stat: String) -> int:
 	if stat == "recharge_done":
-		return 1 if (g.vip_exp > 0 or int(g.goal_stats.get("recharge_done", 0)) > 0) else 0
+		return 1 if int(g.goal_stats.get("recharge_done", 0)) > 0 else 0
 	return int(g.goal_stats.get(stat, 0))
 
 # 累加某统计项（各业务系统在行为成功后调用）

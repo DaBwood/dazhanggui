@@ -45,6 +45,7 @@ func _wire_top_grid(box: Control):
 	# 预留：三日榜/招财密卷，统一"后续版本开放"
 	for node_name in ["BtnRank", "BtnScroll"]:
 		box.find_child(node_name, true, false).pressed.connect(_show_reserved_popup)
+	box.find_child("BtnFirst", true, false).pressed.connect(show_first_recharge_popup)
 	# 挚友目标：全部达成后按钮本身不再显示（Grid 按格填充，无整行显隐）
 	var goals = box.find_child("BtnGoals", true, false)
 	goals.visible = not data.all_friend_goals_done()
@@ -104,6 +105,48 @@ func show_friend_goals_popup():
 
 	# 关闭按钮：回调里释放整个弹窗
 	c.add_child(panel)
+
+# 首充弹窗：充值任意金额领挚友·李师师+门客·武镖师；未充→前往充值，已充未领→领取
+# 口径（用户 2026-10-09 拍板②）：vip_exp>0 且未领取=待领取态，老玩家可补领，无迁移代码
+func show_first_recharge_popup():
+	var claimed = int(data.goal_stats.get("recharge_done", 0)) > 0
+	var panel = c._create_base_popup("首充豪礼", Vector2(440, 300))
+	var vbox = panel.get_child(0)
+	var tip = Label.new()
+	tip.text = "充值任意金额，即可领取挚友·李师师 与 门客·武镖师！"
+	tip.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	tip.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+	vbox.add_child(tip)
+	var row = HBoxContainer.new()
+	row.alignment = BoxContainer.ALIGNMENT_CENTER
+	vbox.add_child(row)
+	if claimed:
+		var done = Label.new()
+		done.text = "已领取"
+		row.add_child(done)
+	elif data.vip_exp > 0:
+		var claim_btn = Button.new()
+		claim_btn.text = "领取"
+		claim_btn.pressed.connect(func():
+			panel.queue_free()
+			_claim_first_recharge())
+		row.add_child(claim_btn)
+	else:
+		var go_btn = Button.new()
+		go_btn.text = "前往充值"
+		go_btn.pressed.connect(func():
+			panel.queue_free()
+			c.on_recharge())
+		row.add_child(go_btn)
+	c.add_child(panel)
+
+# 首充领取：置领取标记→挚友目标系统发李师师（已拥有自动跳过）→门客系统发武镖师（幂等）→存档
+func _claim_first_recharge():
+	data.goal_stats["recharge_done"] = 1
+	data.goal_system.check_goals()
+	data.hero_system.unlock_hero("wu_biaoshi")
+	data.save_game()
+	c._show_success_popup("首充奖励已发放", 0.0, "ok")
 
 # 进府邸时重建（刷新挚友目标显隐/邮件藏品红点；进页重建是原页面既有口径）
 func update_mansion_list():
