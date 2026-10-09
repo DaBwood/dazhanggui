@@ -383,10 +383,6 @@ func on_auto_earn():
 	# 旧病根：计时器 autostart 随场景即跑，门期间满30秒就用空白新档自动存档覆盖真实存档
 	data.money += data.get_total_auto_income()
 	data.settle_manor()   # 【第4批新增】庄园每秒懒结算产量入仓库
-	# 【第6批新增】每秒检查挚友目标，达成即自动解锁并弹提示（各玩法的计数钩子在 data 层，这里统一反馈）
-	var unlocked = data.check_friend_goals()
-	for fname in unlocked:
-		_show_success_popup("达成挚友目标，解锁挚友【%s】！" % fname, 4.0, "ok")
 	# 【新增】一键贸易节拍：勾选期间每秒自动贸易一次；挂在本函数故离开关卡页也持续跑
 	if data.stage_auto_trade:
 		_on_stage_auto_trade_tick(data.stage_auto_trade_tick())
