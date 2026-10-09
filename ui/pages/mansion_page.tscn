@@ -2,6 +2,13 @@
 
 [ext_resource type="Texture2D" uid="uid://r2olfgt7cwdb" path="res://assets/mansion/map_bg.png" id="1_bg"]
 [ext_resource type="Texture2D" uid="uid://bk6d5qrpfmn87" path="res://assets/adventure/btn_scroll_vertical.png" id="2_skin"]
+[ext_resource type="Texture2D" uid="uid://bgyynuxe208wn" path="res://assets/mansion/icon_goals.png" id="i_goals"]
+[ext_resource type="Texture2D" uid="uid://dexbxo350d0o0" path="res://assets/mansion/icon_lottery.png" id="i_lottery"]
+[ext_resource type="Texture2D" uid="uid://ne6kbgyailjl" path="res://assets/mansion/icon_rank.png" id="i_rank"]
+[ext_resource type="Texture2D" uid="uid://b8eluth6ef2ei" path="res://assets/mansion/icon_recharge.png" id="i_recharge"]
+[ext_resource type="Texture2D" uid="uid://clhhvtsd2sjgh" path="res://assets/mansion/icon_scroll.png" id="i_scroll"]
+[ext_resource type="Texture2D" uid="uid://4feajip3yg5b" path="res://assets/mansion/icon_shop.png" id="i_shop"]
+[ext_resource type="Texture2D" uid="uid://ba28gnvcpwb5q" path="res://assets/mansion/icon_vip.png" id="i_vip"]
 
 [sub_resource type="StyleBoxTexture" id="StyleBoxTexture_banner"]
 texture = ExtResource("2_skin")
@@ -9,6 +16,8 @@ texture_margin_left = 15.0
 texture_margin_top = 15.0
 texture_margin_right = 15.0
 texture_margin_bottom = 15.0
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_t"]
 
 [node name="MansionScene" type="Control" unique_id=1082451597]
 layout_mode = 3
@@ -191,19 +200,132 @@ theme_override_styles/focus = SubResource("StyleBoxTexture_banner")
 text = "徒
 弟"
 
-; 顶网格置顶浮层：必须在 VBox 之外——MapScroll 采纳 MapContent 1067 高 min-size 撑爆 VBox 最小高度，
-; 双锚定容器超限向上溢出，网格若在 VBox 内会被顶出屏幕（2026-10-09 实测定案，全局 y=-69）
-; 顶网格=VBox(组居中锚 0.5)+脚本建两个居中 HBox 行：钮缩到贴合内容（图标+文字块即点击区，
-; 行间空白不吃点击）；必须在 VBox 之外——MapScroll 采纳 MapContent 1067 高 min-size 撑爆 VBox 最小
-; 高度，双锚定容器超限向上溢出会把网格顶出屏幕（2026-10-09 实测定案，全局 y=-69）
-[node name="TopGrid" type="VBoxContainer" parent="."]
+[node name="TopGrid" type="VBoxContainer" parent="." unique_id=1936868179]
 layout_mode = 1
-anchor_left = 0.5
-anchor_right = 0.5
-offset_left = -290.0
-offset_right = 290.0
+anchors_preset = 10
+anchor_right = 1.0
+offset_left = 10.0
+offset_right = -10.0
 offset_bottom = 200.0
 grow_horizontal = 2
 mouse_filter = 2
 theme_override_constants/separation = 8
 alignment = 1
+
+[node name="Row1" type="HBoxContainer" parent="TopGrid" unique_id=1170961205]
+layout_mode = 2
+mouse_filter = 2
+theme_override_constants/separation = 8
+alignment = 1
+
+[node name="BtnShop" type="Button" parent="TopGrid/Row1" unique_id=1058676538]
+custom_minimum_size = Vector2(80, 104)
+layout_mode = 2
+theme_override_colors/font_color = Color(0.95, 0.93, 0.88, 1)
+theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
+theme_override_constants/outline_size = 2
+theme_override_font_sizes/font_size = 18
+theme_override_styles/normal = SubResource("StyleBoxEmpty_t")
+theme_override_styles/pressed = SubResource("StyleBoxEmpty_t")
+theme_override_styles/hover = SubResource("StyleBoxEmpty_t")
+theme_override_styles/focus = SubResource("StyleBoxEmpty_t")
+text = "商城"
+icon = ExtResource("i_shop")
+icon_alignment = 1
+
+[node name="BtnVip" type="Button" parent="TopGrid/Row1" unique_id=341787914]
+custom_minimum_size = Vector2(80, 104)
+layout_mode = 2
+theme_override_colors/font_color = Color(0.95, 0.93, 0.88, 1)
+theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
+theme_override_constants/outline_size = 2
+theme_override_font_sizes/font_size = 18
+theme_override_styles/normal = SubResource("StyleBoxEmpty_t")
+theme_override_styles/pressed = SubResource("StyleBoxEmpty_t")
+theme_override_styles/hover = SubResource("StyleBoxEmpty_t")
+theme_override_styles/focus = SubResource("StyleBoxEmpty_t")
+text = "VIP"
+icon = ExtResource("i_vip")
+vertical_icon_alignment = 0
+
+[node name="BtnRecharge" type="Button" parent="TopGrid/Row1" unique_id=1217217084]
+custom_minimum_size = Vector2(80, 104)
+layout_mode = 2
+theme_override_colors/font_color = Color(0.95, 0.93, 0.88, 1)
+theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
+theme_override_constants/outline_size = 2
+theme_override_font_sizes/font_size = 18
+theme_override_styles/normal = SubResource("StyleBoxEmpty_t")
+theme_override_styles/pressed = SubResource("StyleBoxEmpty_t")
+theme_override_styles/hover = SubResource("StyleBoxEmpty_t")
+theme_override_styles/focus = SubResource("StyleBoxEmpty_t")
+text = "充值豪礼"
+icon = ExtResource("i_recharge")
+vertical_icon_alignment = 0
+
+[node name="BtnLottery" type="Button" parent="TopGrid/Row1" unique_id=904015635]
+custom_minimum_size = Vector2(80, 104)
+layout_mode = 2
+theme_override_colors/font_color = Color(0.95, 0.93, 0.88, 1)
+theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
+theme_override_constants/outline_size = 2
+theme_override_font_sizes/font_size = 18
+theme_override_styles/normal = SubResource("StyleBoxEmpty_t")
+theme_override_styles/pressed = SubResource("StyleBoxEmpty_t")
+theme_override_styles/hover = SubResource("StyleBoxEmpty_t")
+theme_override_styles/focus = SubResource("StyleBoxEmpty_t")
+text = "幸运夺宝"
+icon = ExtResource("i_lottery")
+vertical_icon_alignment = 0
+
+[node name="BtnRank" type="Button" parent="TopGrid/Row1" unique_id=1554262432]
+custom_minimum_size = Vector2(80, 104)
+layout_mode = 2
+theme_override_colors/font_color = Color(0.95, 0.93, 0.88, 1)
+theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
+theme_override_constants/outline_size = 2
+theme_override_font_sizes/font_size = 18
+theme_override_styles/normal = SubResource("StyleBoxEmpty_t")
+theme_override_styles/pressed = SubResource("StyleBoxEmpty_t")
+theme_override_styles/hover = SubResource("StyleBoxEmpty_t")
+theme_override_styles/focus = SubResource("StyleBoxEmpty_t")
+text = "三日榜"
+icon = ExtResource("i_rank")
+vertical_icon_alignment = 0
+
+[node name="BtnScroll" type="Button" parent="TopGrid/Row1" unique_id=1834096599]
+custom_minimum_size = Vector2(80, 104)
+layout_mode = 2
+theme_override_colors/font_color = Color(0.95, 0.93, 0.88, 1)
+theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
+theme_override_constants/outline_size = 2
+theme_override_font_sizes/font_size = 18
+theme_override_styles/normal = SubResource("StyleBoxEmpty_t")
+theme_override_styles/pressed = SubResource("StyleBoxEmpty_t")
+theme_override_styles/hover = SubResource("StyleBoxEmpty_t")
+theme_override_styles/focus = SubResource("StyleBoxEmpty_t")
+text = "招财密卷"
+icon = ExtResource("i_scroll")
+vertical_icon_alignment = 0
+
+[node name="Row2" type="HBoxContainer" parent="TopGrid" unique_id=615501824]
+visible = false
+layout_mode = 2
+mouse_filter = 2
+theme_override_constants/separation = 8
+alignment = 1
+
+[node name="BtnGoals" type="Button" parent="TopGrid/Row2" unique_id=1008943768]
+custom_minimum_size = Vector2(80, 104)
+layout_mode = 2
+theme_override_colors/font_color = Color(0.95, 0.93, 0.88, 1)
+theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
+theme_override_constants/outline_size = 2
+theme_override_font_sizes/font_size = 18
+theme_override_styles/normal = SubResource("StyleBoxEmpty_t")
+theme_override_styles/pressed = SubResource("StyleBoxEmpty_t")
+theme_override_styles/hover = SubResource("StyleBoxEmpty_t")
+theme_override_styles/focus = SubResource("StyleBoxEmpty_t")
+text = "挚友目标"
+icon = ExtResource("i_goals")
+vertical_icon_alignment = 0
