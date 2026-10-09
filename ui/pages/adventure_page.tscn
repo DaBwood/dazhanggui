@@ -100,21 +100,6 @@ theme_override_styles/focus = SubResource("StyleBoxTexture_banner")
 text = "兑
 换"
 
-[node name="EntryLottery" type="Button" parent="AdventureVBox/MapScroll/MapContent/AdventureEntryGrid" unique_id=612494455]
-custom_minimum_size = Vector2(50, 120)
-layout_mode = 0
-offset_left = 1069.0
-offset_top = 640.5
-offset_right = 1119.0
-offset_bottom = 760.5
-theme_override_colors/font_color = Color(0.95, 0.88, 0.7, 1)
-theme_override_font_sizes/font_size = 18
-theme_override_styles/normal = SubResource("StyleBoxTexture_banner")
-theme_override_styles/pressed = SubResource("StyleBoxTexture_banner")
-theme_override_styles/hover = SubResource("StyleBoxTexture_banner")
-theme_override_styles/focus = SubResource("StyleBoxTexture_banner")
-text = "抽
-奖"
 
 [node name="EntryCharity" type="Button" parent="AdventureVBox/MapScroll/MapContent/AdventureEntryGrid" unique_id=445487827]
 custom_minimum_size = Vector2(50, 120)

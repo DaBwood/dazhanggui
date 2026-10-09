@@ -18,27 +18,18 @@ func _init(p_c):
 # ============ 以下为原 game_controller.gd 搬迁函数（逻辑未改，仅根节点访问加了 c. 前缀） ============
 
 func show_lottery_view():
-	if not c.has_node("PageContainer/AdventurePage"): return
-	var page = c.get_node("PageContainer/AdventurePage")
-	if page.has_node("AdventureScene/AdventureVBox"): # 【改】场景化批次：主页骨架入 adventure_page.tscn，AdventureVBox 在 AdventureScene 实例下（规范 11.7 全仓同步）
-		page.get_node("AdventureScene/AdventureVBox").visible = false
-	if page.has_node("ExchangeView"):
-		page.get_node("ExchangeView").visible = false
-	if page.has_node("LotteryView"):
-		page.get_node("LotteryView").visible = true
-		update_lottery_view()
-
+	if not c.has_node("LotteryView"):
+		return
+	# 浮层挂 controller 根：直接显隐即可；原挂闯荡页时才需要互斥隐藏兄弟节点
+	var view = c.get_node("LotteryView")
+	view.visible = true
+	update_lottery_view()
 func hide_lottery_view():
-	if not c.has_node("PageContainer/AdventurePage"): return
-	var page = c.get_node("PageContainer/AdventurePage")
-	if page.has_node("LotteryView"):
-		page.get_node("LotteryView").visible = false
-	if page.has_node("AdventureScene/AdventureVBox"):
-		page.get_node("AdventureScene/AdventureVBox").visible = true
-
+	if c.has_node("LotteryView"):
+		c.get_node("LotteryView").visible = false
 func update_lottery_view():
-	if not c.has_node("PageContainer/AdventurePage/LotteryView"): return
-	var view = c.get_node("PageContainer/AdventurePage/LotteryView")
+	if not c.has_node("LotteryView"): return
+	var view = c.get_node("LotteryView")
 	view.get_node("LotteryRes").text = "抽奖券：%d  |  元宝：%s  |  累计：%d/500" % [
 		data.lottery_ticket, c.format_number(data.yuanbao), data.lottery_draw_count
 	]
@@ -72,7 +63,7 @@ func _do_lottery_draw(draw_count: int, ticket_need: int, use_yuanbao: bool):
 		_show_lottery_results(result.results)
 		c.update_all_ui()
 		c.update_bag_list()
-		if c.has_node("PageContainer/AdventurePage/LotteryView"):
+		if c.has_node("LotteryView"):
 			update_lottery_view()
 	else:
 		c._show_success_popup(result.reason, 0.0, "ok")   # 【改】飘字退休→ok 弹窗

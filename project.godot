@@ -10,7 +10,7 @@ config_version=5
 
 [application]
 
-config/name="大掌柜"
+config/name="dazhanggui"
 run/main_scene="uid://ppwrhv7ag3ag"
 config/features=PackedStringArray("4.7", "Mobile")
 config/icon="uid://daabjbo6mg710"

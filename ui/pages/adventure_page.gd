@@ -219,7 +219,10 @@ func generate_adventure_page():
 	lottery_view.set_anchors_preset(Control.PRESET_FULL_RECT)
 	lottery_view.visible = false
 	lottery_view.add_theme_constant_override("separation", 16)
-	page.add_child(lottery_view)
+	# 抽奖视图挂 controller 根作全屏浮层：府邸"幸运夺宝"也要唤出，挂本页下会在府邸被父页隐藏（挪入口必挪挂载点）
+	if c.has_node("LotteryView"):
+		c.get_node("LotteryView").free()
+	c.add_child(lottery_view)
 	
 	_adv_top_row(lottery_view, c.hide_view.bind("lottery"), "抽奖", "消耗抽奖券抽取奖励：单抽、十连、百连依档九折。")
 	
@@ -391,7 +394,6 @@ func generate_adventure_page():
 	var entry_wiring := {
 		"EntryStage": func(): c.switch_page("stage"),
 		"EntryExchange": func(): c.show_view("exchange"),
-		"EntryLottery": func(): c.show_view("lottery"),
 		"EntryCharity": func(): c.show_view("charity"),
 		"EntryTravel": func(): c.show_view("travel"),
 		"EntryZhaoshang": func(): c.show_view("zhaoshang"),
