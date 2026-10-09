@@ -47,19 +47,8 @@ func add_stat(stat: String, delta: int = 1):
 func is_goal_done(goal: Dictionary) -> bool:
 	return get_stat(goal.get("stat", "")) >= int(goal.get("need", 1))
 
-# 全部目标是否达成（府邸"挚友目标"区整块隐藏的依据）
-func all_goals_done() -> bool:
-	for goal in get_goal_list():
-		if not is_goal_done(goal): return false
-	return true
-
 # 检查并自动解锁已达成的挚友，返回本次新解锁的挚友名列表（供弹窗提示）
 # 已拥有的挚友跳过（通过其他途径获得也算达成）
-func check_goals() -> Array:
-	# 领取式时代（2026-10-09）自动发放已退役：挚友发放唯一入口=claim_goal（手动领取）。
-	# 本壳保留给遗留的每秒 tick 调用方（main 上无此调用方，在用户本地——查到后应移除调用）。
-	return []
-
 # ============ 领取式（2026-10-09 用户定稿：除首充李师师走首充弹窗外，其余挚友手动领取） ============
 # 单目标是否已领取
 func is_goal_claimed(goal: Dictionary) -> bool:
