@@ -277,7 +277,7 @@ anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
 mouse_filter = 2
-theme_override_constants/separation = 2
+theme_override_constants/separation = -10
 alignment = 1
 
 [node name="Icon" type="TextureRect" parent="TopGrid/Grid/BtnVip/Box" unique_id=1234290422]
@@ -317,7 +317,7 @@ anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
 mouse_filter = 2
-theme_override_constants/separation = 2
+theme_override_constants/separation = -10
 alignment = 1
 
 [node name="Icon" type="TextureRect" parent="TopGrid/Grid/BtnRecharge/Box" unique_id=2134218133]
@@ -357,7 +357,7 @@ anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
 mouse_filter = 2
-theme_override_constants/separation = 2
+theme_override_constants/separation = -10
 alignment = 1
 
 [node name="Icon" type="TextureRect" parent="TopGrid/Grid/BtnLottery/Box" unique_id=18701668]
@@ -397,7 +397,7 @@ anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
 mouse_filter = 2
-theme_override_constants/separation = 2
+theme_override_constants/separation = -10
 alignment = 1
 
 [node name="Icon" type="TextureRect" parent="TopGrid/Grid/BtnRank/Box" unique_id=1883577856]
@@ -437,7 +437,7 @@ anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
 mouse_filter = 2
-theme_override_constants/separation = 2
+theme_override_constants/separation = -10
 alignment = 1
 
 [node name="Icon" type="TextureRect" parent="TopGrid/Grid/BtnScroll/Box" unique_id=477960160]
@@ -477,7 +477,7 @@ anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
 mouse_filter = 2
-theme_override_constants/separation = 2
+theme_override_constants/separation = -10
 alignment = 1
 
 [node name="Icon" type="TextureRect" parent="TopGrid/Grid/BtnGoals/Box" unique_id=650734264]
