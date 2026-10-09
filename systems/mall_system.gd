@@ -73,7 +73,7 @@ func do_recharge(amount: int) -> bool:
 	g.yuanbao += amount * 10
 	g.vip_exp += amount * 10
 	g.vip_level = get_vip_level()  # 根据经验重新计算等级
-	g.goal_system.add_stat("recharge_done")
+	# 首充 recharge_done 不再随充值累加——改由领取动作置 1（2026-10-09 领取式改造，见 mansion_page._claim_first_recharge）
 	return true
 
 # ========== VIP 等级函数 ==========
