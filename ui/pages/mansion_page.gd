@@ -30,6 +30,7 @@ func generate_mansion_list():
 		c.push_error("mansion_page: TopGrid 未找到，检查 mansion_page.tscn 结构")
 		return
 	_wire_top_grid(top)
+	_wire_side_dock(scene)
 	_wire_map_entries(scene)
 
 # 顶网格接线：按钮结构在 tscn 静态摆位，这里只连信号 + 挚友目标行显隐
@@ -71,6 +72,39 @@ func _wire_map_entries(scene: Control):
 	# 预留牌（绣房/山庄/寻珍探宝）：功能未做，统一"后续版本开放"
 	for node_name in ["EntryXiufang", "EntryShanzhuang", "EntryXunzhen"]:
 		grid.get_node(node_name).pressed.connect(_show_reserved_popup)
+
+# 左侧系统抽屉：低频系统收拢到边缘唤出，避免挤占顶部活动宫格
+func _wire_side_dock(scene: Control):
+	var dock = scene.get_node("SideDock")
+	dock.get_node("SideHandle").pressed.connect(_toggle_side_panel)
+	var box = dock.get_node("SidePanel/SidePanelBox")
+	box.get_node("BtnSideMail").pressed.connect(Callable(c, "on_mail"))
+	box.get_node("BtnSideNotice").pressed.connect(_show_reserved_popup)
+	box.get_node("BtnSideSettings").pressed.connect(_show_settings_popup)
+
+func _toggle_side_panel():
+	var dock = c.get_node("PageContainer/MansionPage/MansionScene/SideDock")
+	var panel = dock.get_node("SidePanel")
+	panel.visible = not panel.visible
+	dock.get_node("SideHandle").text = "◀" if panel.visible else "▶"
+
+# 设置只承接账号/退出；身份面板回到改名/晋升/身份奖励主业
+func _show_settings_popup():
+	c._safe_close("SettingsPopup")
+	var popup = c._create_base_popup("设置", Vector2(360, 220))
+	popup.name = "SettingsPopup"
+	var vbox = popup.get_child(0)
+	var account_btn = Button.new()
+	account_btn.text = "账号"
+	account_btn.custom_minimum_size = Vector2(180, 44)
+	account_btn.pressed.connect(c.show_account_popup)
+	vbox.add_child(account_btn)
+	var exit_btn = Button.new()
+	exit_btn.text = "退出"
+	exit_btn.custom_minimum_size = Vector2(180, 44)
+	exit_btn.pressed.connect(c.show_exit_confirm)
+	vbox.add_child(exit_btn)
+	c.add_child(popup)
 
 func _make_red_dot(pos: Vector2) -> Label:
 	var dot = Label.new()

@@ -1276,7 +1276,7 @@ func _on_promote_identity():
 func _on_claim_daily_reward():
 	return player_panel._on_claim_daily_reward()
 
-# 【新增】个人面板里的账号/退出按钮入口（原顶栏按钮，竖屏被截断后移入个人面板）
+# 【新增】府邸左侧设置抽屉的账号入口（账号/退出已从身份面板迁出，身份面板回到养成主业）
 func show_account_popup():
 	return net_ui._on_account_btn_pressed()   # 【改】账号面板迁 ui/net_ui.gd（2026-09-19 重构批次A）
 

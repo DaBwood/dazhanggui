@@ -10,6 +10,9 @@
 [ext_resource type="Texture2D" uid="uid://4feajip3yg5b" path="res://assets/mansion/icon_shop.png" id="i_shop"]
 [ext_resource type="Texture2D" uid="uid://ba28gnvcpwb5q" path="res://assets/mansion/icon_vip.png" id="i_vip"]
 [ext_resource type="Texture2D" path="res://assets/mansion/icon_firstrecharge.png" id="i_first"]
+[ext_resource type="Texture2D" path="res://assets/mansion/icon_mail.png" id="i_mail"]
+[ext_resource type="Texture2D" path="res://assets/mansion/icon_notice.png" id="i_notice"]
+[ext_resource type="Texture2D" path="res://assets/mansion/icon_settings.png" id="i_settings"]
 
 [sub_resource type="StyleBoxTexture" id="StyleBoxTexture_banner"]
 texture = ExtResource("2_skin")
@@ -19,6 +22,21 @@ texture_margin_right = 15.0
 texture_margin_bottom = 15.0
 
 [sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_t"]
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_side_handle"]
+bg_color = Color(0, 0, 0, 0.58)
+corner_radius_top_right = 8
+corner_radius_bottom_right = 8
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_side_panel"]
+bg_color = Color(0, 0, 0, 0.58)
+border_color = Color(0.2, 0.16, 0.12, 0.85)
+border_width_left = 1
+border_width_top = 1
+border_width_right = 1
+border_width_bottom = 1
+corner_radius_top_right = 8
+corner_radius_bottom_right = 8
 
 [node name="MansionScene" type="Control" unique_id=1082451597]
 layout_mode = 3
@@ -539,3 +557,158 @@ theme_override_font_sizes/font_size = 20
 horizontal_alignment = 1
 mouse_filter = 2
 text = "首充"
+[node name="SideDock" type="Control" parent="."]
+layout_mode = 1
+anchors_preset = -1
+anchor_top = 0.5
+anchor_bottom = 0.5
+offset_top = -130.0
+offset_right = 104.0
+offset_bottom = 130.0
+grow_vertical = 2
+mouse_filter = 2
+
+[node name="SideHandle" type="Button" parent="SideDock"]
+custom_minimum_size = Vector2(28, 56)
+layout_mode = 0
+offset_left = 0.0
+offset_right = 28.0
+offset_top = 102.0
+offset_bottom = 158.0
+theme_override_colors/font_color = Color(0.95, 0.86, 0.45, 1)
+theme_override_styles/normal = SubResource("StyleBoxFlat_side_handle")
+theme_override_styles/pressed = SubResource("StyleBoxFlat_side_handle")
+theme_override_styles/hover = SubResource("StyleBoxFlat_side_handle")
+theme_override_styles/focus = SubResource("StyleBoxFlat_side_handle")
+text = "▶"
+
+[node name="SidePanel" type="PanelContainer" parent="SideDock"]
+visible = false
+layout_mode = 0
+offset_left = 28.0
+offset_right = 104.0
+offset_top = 0.0
+offset_bottom = 260.0
+theme_override_styles/panel = SubResource("StyleBoxFlat_side_panel")
+
+[node name="SidePanelBox" type="VBoxContainer" parent="SideDock/SidePanel"]
+layout_mode = 2
+theme_override_constants/separation = 6
+alignment = 1
+
+[node name="BtnSideMail" type="Button" parent="SideDock/SidePanel/SidePanelBox"]
+custom_minimum_size = Vector2(72, 78)
+layout_mode = 2
+size_flags_horizontal = 4
+theme_override_styles/normal = SubResource("StyleBoxEmpty_t")
+theme_override_styles/pressed = SubResource("StyleBoxEmpty_t")
+theme_override_styles/hover = SubResource("StyleBoxEmpty_t")
+theme_override_styles/focus = SubResource("StyleBoxEmpty_t")
+
+[node name="Box" type="VBoxContainer" parent="SideDock/SidePanel/SidePanelBox/BtnSideMail"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+theme_override_constants/separation = -8
+alignment = 1
+
+[node name="Icon" type="TextureRect" parent="SideDock/SidePanel/SidePanelBox/BtnSideMail/Box"]
+custom_minimum_size = Vector2(44, 44)
+layout_mode = 2
+size_flags_horizontal = 4
+mouse_filter = 2
+texture = ExtResource("i_mail")
+expand_mode = 1
+stretch_mode = 5
+
+[node name="Label" type="Label" parent="SideDock/SidePanel/SidePanelBox/BtnSideMail/Box"]
+layout_mode = 2
+size_flags_horizontal = 4
+theme_override_colors/font_color = Color(0.95, 0.93, 0.88, 1)
+theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
+theme_override_constants/outline_size = 4
+theme_override_font_sizes/font_size = 18
+text = "邮件"
+horizontal_alignment = 1
+
+[node name="BtnSideNotice" type="Button" parent="SideDock/SidePanel/SidePanelBox"]
+custom_minimum_size = Vector2(72, 78)
+layout_mode = 2
+size_flags_horizontal = 4
+theme_override_styles/normal = SubResource("StyleBoxEmpty_t")
+theme_override_styles/pressed = SubResource("StyleBoxEmpty_t")
+theme_override_styles/hover = SubResource("StyleBoxEmpty_t")
+theme_override_styles/focus = SubResource("StyleBoxEmpty_t")
+
+[node name="Box" type="VBoxContainer" parent="SideDock/SidePanel/SidePanelBox/BtnSideNotice"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+theme_override_constants/separation = -8
+alignment = 1
+
+[node name="Icon" type="TextureRect" parent="SideDock/SidePanel/SidePanelBox/BtnSideNotice/Box"]
+custom_minimum_size = Vector2(44, 44)
+layout_mode = 2
+size_flags_horizontal = 4
+mouse_filter = 2
+texture = ExtResource("i_notice")
+expand_mode = 1
+stretch_mode = 5
+
+[node name="Label" type="Label" parent="SideDock/SidePanel/SidePanelBox/BtnSideNotice/Box"]
+layout_mode = 2
+size_flags_horizontal = 4
+theme_override_colors/font_color = Color(0.95, 0.93, 0.88, 1)
+theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
+theme_override_constants/outline_size = 4
+theme_override_font_sizes/font_size = 18
+text = "公告"
+horizontal_alignment = 1
+
+[node name="BtnSideSettings" type="Button" parent="SideDock/SidePanel/SidePanelBox"]
+custom_minimum_size = Vector2(72, 78)
+layout_mode = 2
+size_flags_horizontal = 4
+theme_override_styles/normal = SubResource("StyleBoxEmpty_t")
+theme_override_styles/pressed = SubResource("StyleBoxEmpty_t")
+theme_override_styles/hover = SubResource("StyleBoxEmpty_t")
+theme_override_styles/focus = SubResource("StyleBoxEmpty_t")
+
+[node name="Box" type="VBoxContainer" parent="SideDock/SidePanel/SidePanelBox/BtnSideSettings"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+theme_override_constants/separation = -8
+alignment = 1
+
+[node name="Icon" type="TextureRect" parent="SideDock/SidePanel/SidePanelBox/BtnSideSettings/Box"]
+custom_minimum_size = Vector2(44, 44)
+layout_mode = 2
+size_flags_horizontal = 4
+mouse_filter = 2
+texture = ExtResource("i_settings")
+expand_mode = 1
+stretch_mode = 5
+
+[node name="Label" type="Label" parent="SideDock/SidePanel/SidePanelBox/BtnSideSettings/Box"]
+layout_mode = 2
+size_flags_horizontal = 4
+theme_override_colors/font_color = Color(0.95, 0.93, 0.88, 1)
+theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
+theme_override_constants/outline_size = 4
+theme_override_font_sizes/font_size = 18
+text = "设置"
+horizontal_alignment = 1
