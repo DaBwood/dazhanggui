@@ -201,8 +201,8 @@ text = "徒
 弟"
 
 [node name="TopGrid" type="VBoxContainer" parent="." unique_id=1936868179]
-layout_mode = 1
 custom_maximum_size = Vector2(-1, 70)
+layout_mode = 1
 anchors_preset = -1
 anchor_right = 1.0
 offset_top = 20.0
@@ -212,13 +212,14 @@ mouse_filter = 2
 theme_override_constants/separation = 0
 alignment = 1
 
-[node name="Grid" type="GridContainer" parent="TopGrid"]
+[node name="Grid" type="GridContainer" parent="TopGrid" unique_id=794968016]
 layout_mode = 2
 size_flags_horizontal = 4
 mouse_filter = 2
-theme_override_constants/h_separation = 10
-theme_override_constants/v_separation = 8
+theme_override_constants/h_separation = 15
+theme_override_constants/v_separation = -5
 columns = 6
+
 [node name="BtnShop" type="Button" parent="TopGrid/Grid" unique_id=997280441]
 custom_minimum_size = Vector2(80, 96)
 layout_mode = 2
