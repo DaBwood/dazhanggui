@@ -65,6 +65,30 @@ func check_goals() -> Array:
 				newly.append(get_friend_name(fid))
 	return newly
 
+# ============ 领取式（2026-10-09 用户定稿：除首充李师师走首充弹窗外，其余挚友手动领取） ============
+# 单目标是否已领取
+func is_goal_claimed(goal: Dictionary) -> bool:
+	return int(g.goal_stats.get("claimed_" + goal.get("friend", ""), 0)) > 0
+
+# 单目标是否可领取（达成+未领取+未拥有）
+func is_goal_claimable(goal: Dictionary) -> bool:
+	return (not is_goal_claimed(goal)) and (not g.friends.has(goal.get("friend", ""))) and is_goal_done(goal)
+
+# 领取：置 claimed 标记并发挚友（幂等：不可领取时返回 false）
+func claim_goal(goal: Dictionary) -> bool:
+	if not is_goal_claimable(goal):
+		return false
+	g.goal_stats["claimed_" + goal.get("friend", "")] = 1
+	return g.unlock_friend(goal.get("friend", ""))
+
+# 全部目标已领取（或已拥有）——挚友目标入口隐藏依据
+func all_goals_claimed() -> bool:
+	for goal in get_goal_list():
+		var fid = goal.get("friend", "")
+		if g.friends.has(fid): continue
+		if not is_goal_claimed(goal): return false
+	return true
+
 # 挚友显示名（查 friends.json 配置，兜底返回 id）
 func get_friend_name(friend_id: String) -> String:
 	return g._friend_configs.get(friend_id, {}).get("name", friend_id)

@@ -46,9 +46,11 @@ func _wire_top_grid(box: Control):
 	for node_name in ["BtnRank", "BtnScroll"]:
 		box.find_child(node_name, true, false).pressed.connect(_show_reserved_popup)
 	box.find_child("BtnFirst", true, false).pressed.connect(show_first_recharge_popup)
+	# 首充入口：已领取则隐藏（重进页面不复活）
+	box.find_child("BtnFirst", true, false).visible = int(data.goal_stats.get("recharge_done", 0)) == 0
 	# 挚友目标：全部达成后按钮本身不再显示（Grid 按格填充，无整行显隐）
 	var goals = box.find_child("BtnGoals", true, false)
-	goals.visible = not data.all_friend_goals_done()
+	goals.visible = not data.goal_system.all_goals_claimed()
 	goals.pressed.connect(Callable(c, "on_friend_goals"))
 
 # 地图 8 牌：坐标在 tscn 静态摆位（位置=设计数据，用户可在编辑器直接拖），脚本只接线
@@ -87,21 +89,36 @@ func show_friend_goals_popup():
 	var panel = c._create_base_popup("挚友目标", Vector2(520, 380))
 	var vbox = panel.get_child(0)   # 基础弹窗的内容容器就是面板的第一个子节点
 
-	# 目标列表走中枢转发器，字段名与 goals.json 一致：friend / stat / need / desc
+	# 领取式挚友目标：已领取 ✅ / 可领取 🎁+领取钮 / 进行中 ⬜；李师师只能走首充弹窗领取（此处不给钮）
 	for goal in data.get_friend_goal_list():
 		var fid = goal.get("friend", "")
 		var need = int(goal.get("need", 1))
 		var cur = data.get_friend_goal_stat(goal.get("stat", ""))
-		var done = data.is_friend_goal_done(goal)
 		var fname = data.get_goal_friend_name(fid)
+		var gs = data.goal_system
 
+		var row = HBoxContainer.new()
+		row.alignment = BoxContainer.ALIGNMENT_CENTER
+		vbox.add_child(row)
 		var label = Label.new()
-		label.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
-		if done:
-			label.text = "✅ %s：已达成（%d/%d）" % [fname, min(cur, need), need]
+		label.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+		if gs.is_goal_claimed(goal):
+			label.text = "✅ %s：已领取" % fname
+		elif gs.is_goal_done(goal):
+			label.text = "🎁 %s：%s（%d/%d）" % [fname, goal.get("desc", "目标"), min(cur, need), need]
 		else:
 			label.text = "⬜ %s：%s（%d/%d）" % [fname, goal.get("desc", "目标"), min(cur, need), need]
-		vbox.add_child(label)
+		row.add_child(label)
+		if fid != "li_shishi" and gs.is_goal_claimable(goal):
+			var btn = Button.new()
+			btn.text = "领取"
+			btn.pressed.connect(func():
+				if gs.claim_goal(goal):
+					panel.queue_free()
+					data.save_game()
+					c._show_success_popup("%s 已加入挚友" % fname, 0.0, "ok")
+					_refresh_goals_entry())
+			row.add_child(btn)
 
 	# 关闭按钮：回调里释放整个弹窗
 	c.add_child(panel)
@@ -140,13 +157,24 @@ func show_first_recharge_popup():
 		row.add_child(go_btn)
 	c.add_child(panel)
 
-# 首充领取：置领取标记→挚友目标系统发李师师（已拥有自动跳过）→门客系统发武镖师（幂等）→存档
+# 首充领取：置领取标记→挚友目标系统发李师师（已拥有自动跳过）→门客系统发武镖师（幂等）→存档→入口当场消失
 func _claim_first_recharge():
 	data.goal_stats["recharge_done"] = 1
-	data.goal_system.check_goals()
+	for goal in data.get_friend_goal_list():
+		if goal.get("friend", "") == "li_shishi":
+			data.goal_system.claim_goal(goal)
 	data.hero_system.unlock_hero("wu_biaoshi")
 	data.save_game()
+	var btn = c.get_node_or_null("PageContainer/MansionPage/MansionScene/TopGrid/Grid/BtnFirst")
+	if btn:
+		btn.visible = false
 	c._show_success_popup("首充奖励已发放", 0.0, "ok")
+
+# 领取后刷新挚友目标入口显隐（全部领完即消失）
+func _refresh_goals_entry():
+	var goals = c.get_node_or_null("PageContainer/MansionPage/MansionScene/TopGrid/Grid/BtnGoals")
+	if goals:
+		goals.visible = not data.goal_system.all_goals_claimed()
 
 # 进府邸时重建（刷新挚友目标显隐/邮件藏品红点；进页重建是原页面既有口径）
 func update_mansion_list():
