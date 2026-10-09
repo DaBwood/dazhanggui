@@ -76,7 +76,7 @@ layout_mode = 0
 offset_left = 258.0
 offset_top = 512.0
 offset_right = 308.0
-offset_bottom = 632.0
+offset_bottom = 204.0
 theme_override_colors/font_color = Color(0.95, 0.88, 0.7, 1)
 theme_override_font_sizes/font_size = 18
 theme_override_styles/normal = SubResource("StyleBoxTexture_banner")
@@ -218,96 +218,102 @@ mouse_filter = 2
 theme_override_constants/separation = 8
 alignment = 1
 
-[node name="BtnShop" type="Button" parent="TopGrid/Row1" unique_id=1058676538]
-custom_minimum_size = Vector2(80, 104)
+[node name="BtnShop" type="Button" parent="TopGrid/Row1"]
+custom_minimum_size = Vector2(80, 96)
 layout_mode = 2
 theme_override_colors/font_color = Color(0.95, 0.93, 0.88, 1)
 theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
-theme_override_constants/outline_size = 2
-theme_override_font_sizes/font_size = 18
+theme_override_constants/outline_size = 5
+theme_override_constants/h_separation = -1
+theme_override_font_sizes/font_size = 20
 theme_override_styles/normal = SubResource("StyleBoxEmpty_t")
-theme_override_styles/pressed = SubResource("StyleBoxEmpty_t")
 theme_override_styles/hover = SubResource("StyleBoxEmpty_t")
+theme_override_styles/pressed = SubResource("StyleBoxEmpty_t")
 theme_override_styles/focus = SubResource("StyleBoxEmpty_t")
-text = "商城"
 icon = ExtResource("i_shop")
 icon_alignment = 1
-
-[node name="BtnVip" type="Button" parent="TopGrid/Row1" unique_id=341787914]
-custom_minimum_size = Vector2(80, 104)
+vertical_icon_alignment = 0
+text = "商城"
+[node name="BtnVip" type="Button" parent="TopGrid/Row1"]
+custom_minimum_size = Vector2(80, 96)
 layout_mode = 2
 theme_override_colors/font_color = Color(0.95, 0.93, 0.88, 1)
 theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
-theme_override_constants/outline_size = 2
-theme_override_font_sizes/font_size = 18
+theme_override_constants/outline_size = 5
+theme_override_constants/h_separation = -1
+theme_override_font_sizes/font_size = 20
 theme_override_styles/normal = SubResource("StyleBoxEmpty_t")
-theme_override_styles/pressed = SubResource("StyleBoxEmpty_t")
 theme_override_styles/hover = SubResource("StyleBoxEmpty_t")
+theme_override_styles/pressed = SubResource("StyleBoxEmpty_t")
 theme_override_styles/focus = SubResource("StyleBoxEmpty_t")
-text = "VIP"
 icon = ExtResource("i_vip")
+icon_alignment = 1
 vertical_icon_alignment = 0
-
-[node name="BtnRecharge" type="Button" parent="TopGrid/Row1" unique_id=1217217084]
-custom_minimum_size = Vector2(80, 104)
+text = "VIP"
+[node name="BtnRecharge" type="Button" parent="TopGrid/Row1"]
+custom_minimum_size = Vector2(80, 96)
 layout_mode = 2
 theme_override_colors/font_color = Color(0.95, 0.93, 0.88, 1)
 theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
-theme_override_constants/outline_size = 2
-theme_override_font_sizes/font_size = 18
+theme_override_constants/outline_size = 5
+theme_override_constants/h_separation = -1
+theme_override_font_sizes/font_size = 20
 theme_override_styles/normal = SubResource("StyleBoxEmpty_t")
-theme_override_styles/pressed = SubResource("StyleBoxEmpty_t")
 theme_override_styles/hover = SubResource("StyleBoxEmpty_t")
+theme_override_styles/pressed = SubResource("StyleBoxEmpty_t")
 theme_override_styles/focus = SubResource("StyleBoxEmpty_t")
-text = "充值豪礼"
 icon = ExtResource("i_recharge")
+icon_alignment = 1
 vertical_icon_alignment = 0
-
-[node name="BtnLottery" type="Button" parent="TopGrid/Row1" unique_id=904015635]
-custom_minimum_size = Vector2(80, 104)
+text = "充值豪礼"
+[node name="BtnLottery" type="Button" parent="TopGrid/Row1"]
+custom_minimum_size = Vector2(80, 96)
 layout_mode = 2
 theme_override_colors/font_color = Color(0.95, 0.93, 0.88, 1)
 theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
-theme_override_constants/outline_size = 2
-theme_override_font_sizes/font_size = 18
+theme_override_constants/outline_size = 5
+theme_override_constants/h_separation = -1
+theme_override_font_sizes/font_size = 20
 theme_override_styles/normal = SubResource("StyleBoxEmpty_t")
-theme_override_styles/pressed = SubResource("StyleBoxEmpty_t")
 theme_override_styles/hover = SubResource("StyleBoxEmpty_t")
+theme_override_styles/pressed = SubResource("StyleBoxEmpty_t")
 theme_override_styles/focus = SubResource("StyleBoxEmpty_t")
-text = "幸运夺宝"
 icon = ExtResource("i_lottery")
+icon_alignment = 1
 vertical_icon_alignment = 0
-
-[node name="BtnRank" type="Button" parent="TopGrid/Row1" unique_id=1554262432]
-custom_minimum_size = Vector2(80, 104)
+text = "幸运夺宝"
+[node name="BtnRank" type="Button" parent="TopGrid/Row1"]
+custom_minimum_size = Vector2(80, 96)
 layout_mode = 2
 theme_override_colors/font_color = Color(0.95, 0.93, 0.88, 1)
 theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
-theme_override_constants/outline_size = 2
-theme_override_font_sizes/font_size = 18
+theme_override_constants/outline_size = 5
+theme_override_constants/h_separation = -1
+theme_override_font_sizes/font_size = 20
 theme_override_styles/normal = SubResource("StyleBoxEmpty_t")
-theme_override_styles/pressed = SubResource("StyleBoxEmpty_t")
 theme_override_styles/hover = SubResource("StyleBoxEmpty_t")
+theme_override_styles/pressed = SubResource("StyleBoxEmpty_t")
 theme_override_styles/focus = SubResource("StyleBoxEmpty_t")
-text = "三日榜"
 icon = ExtResource("i_rank")
+icon_alignment = 1
 vertical_icon_alignment = 0
-
-[node name="BtnScroll" type="Button" parent="TopGrid/Row1" unique_id=1834096599]
-custom_minimum_size = Vector2(80, 104)
+text = "三日榜"
+[node name="BtnScroll" type="Button" parent="TopGrid/Row1"]
+custom_minimum_size = Vector2(80, 96)
 layout_mode = 2
 theme_override_colors/font_color = Color(0.95, 0.93, 0.88, 1)
 theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
-theme_override_constants/outline_size = 2
-theme_override_font_sizes/font_size = 18
+theme_override_constants/outline_size = 5
+theme_override_constants/h_separation = -1
+theme_override_font_sizes/font_size = 20
 theme_override_styles/normal = SubResource("StyleBoxEmpty_t")
-theme_override_styles/pressed = SubResource("StyleBoxEmpty_t")
 theme_override_styles/hover = SubResource("StyleBoxEmpty_t")
+theme_override_styles/pressed = SubResource("StyleBoxEmpty_t")
 theme_override_styles/focus = SubResource("StyleBoxEmpty_t")
-text = "招财密卷"
 icon = ExtResource("i_scroll")
+icon_alignment = 1
 vertical_icon_alignment = 0
-
+text = "招财密卷"
 [node name="Row2" type="HBoxContainer" parent="TopGrid" unique_id=615501824]
 visible = false
 layout_mode = 2
@@ -315,17 +321,19 @@ mouse_filter = 2
 theme_override_constants/separation = 8
 alignment = 1
 
-[node name="BtnGoals" type="Button" parent="TopGrid/Row2" unique_id=1008943768]
-custom_minimum_size = Vector2(80, 104)
+[node name="BtnGoals" type="Button" parent="TopGrid/Row2"]
+custom_minimum_size = Vector2(80, 96)
 layout_mode = 2
 theme_override_colors/font_color = Color(0.95, 0.93, 0.88, 1)
 theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
-theme_override_constants/outline_size = 2
-theme_override_font_sizes/font_size = 18
+theme_override_constants/outline_size = 5
+theme_override_constants/h_separation = -1
+theme_override_font_sizes/font_size = 20
 theme_override_styles/normal = SubResource("StyleBoxEmpty_t")
-theme_override_styles/pressed = SubResource("StyleBoxEmpty_t")
 theme_override_styles/hover = SubResource("StyleBoxEmpty_t")
+theme_override_styles/pressed = SubResource("StyleBoxEmpty_t")
 theme_override_styles/focus = SubResource("StyleBoxEmpty_t")
-text = "挚友目标"
 icon = ExtResource("i_goals")
+icon_alignment = 1
 vertical_icon_alignment = 0
+text = "挚友目标"
