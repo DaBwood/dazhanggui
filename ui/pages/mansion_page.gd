@@ -45,9 +45,10 @@ func _wire_top_grid(box: Control):
 	# 预留：三日榜/招财密卷，统一"后续版本开放"
 	for node_name in ["BtnRank", "BtnScroll"]:
 		box.find_child(node_name, true, false).pressed.connect(_show_reserved_popup)
-	# 挚友目标：全部达成后整行不再显示
-	box.get_node("Row2").visible = not data.all_friend_goals_done()
-	box.get_node("Row2/BtnGoals").pressed.connect(Callable(c, "on_friend_goals"))
+	# 挚友目标：全部达成后按钮本身不再显示（Grid 按格填充，无整行显隐）
+	var goals = box.find_child("BtnGoals", true, false)
+	goals.visible = not data.all_friend_goals_done()
+	goals.pressed.connect(Callable(c, "on_friend_goals"))
 
 # 地图 8 牌：坐标在 tscn 静态摆位（位置=设计数据，用户可在编辑器直接拖），脚本只接线
 func _wire_map_entries(scene: Control):
