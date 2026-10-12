@@ -1,0 +1,254 @@
+[gd_scene format=3]
+
+[ext_resource type="Texture" path="res://assets/heroes/filter_all.png" id="icon_all"]
+[ext_resource type="Texture" path="res://assets/heroes/career_shi.png" id="icon_shi"]
+[ext_resource type="Texture" path="res://assets/heroes/career_nong.png" id="icon_nong"]
+[ext_resource type="Texture" path="res://assets/heroes/career_gong.png" id="icon_gong"]
+[ext_resource type="Texture" path="res://assets/heroes/career_shang.png" id="icon_shang"]
+[ext_resource type="Texture" path="res://assets/heroes/career_xia.png" id="icon_xia"]
+[ext_resource type="Texture" path="res://assets/heroes/btn_myth.png" id="icon_myth"]
+
+[sub_resource type="StyleBoxFlat" id="style_trans"]
+bg_color = Color(0, 0, 0, 0)
+
+[node name="HeroScene" type="Control"]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="HeroTopBar" type="HBoxContainer" parent="."]
+layout_mode = 1
+anchors_preset = 10
+anchor_right = 1.0
+offset_left = 16.0
+offset_top = 8.0
+offset_right = -16.0
+offset_bottom = 40.0
+grow_horizontal = 2
+theme_override_constants/separation = 24
+
+[node name="CountLabel" type="Label" parent="HeroTopBar"]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.92, 0.85, 0.65, 1)
+theme_override_font_sizes/font_size = 20
+
+[node name="TotalLabel" type="Label" parent="HeroTopBar"]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.92, 0.85, 0.65, 1)
+theme_override_font_sizes/font_size = 20
+
+[node name="HeroScroll" type="ScrollContainer" parent="."]
+layout_mode = 1
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = 12.0
+offset_top = 40.0
+offset_right = -12.0
+offset_bottom = -80.0
+grow_horizontal = 2
+grow_vertical = 2
+vertical_scroll_mode = 3
+
+[node name="HeroGrid" type="GridContainer" parent="HeroScroll"]
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_constants/h_separation = 12
+theme_override_constants/v_separation = 12
+columns = 3
+
+[node name="HeroFilterBar" type="HBoxContainer" parent="."]
+layout_mode = 1
+anchor_top = 1.0
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_top = -80.0
+grow_horizontal = 2
+grow_vertical = 0
+theme_override_constants/separation = 12
+alignment = 1
+
+[node name="CareerBtn_全部" type="Button" parent="HeroFilterBar"]
+custom_minimum_size = Vector2(48, 48)
+layout_mode = 2
+focus_mode = 0
+theme_override_styles/normal = SubResource("style_trans")
+theme_override_styles/hover = SubResource("style_trans")
+theme_override_styles/pressed = SubResource("style_trans")
+theme_override_styles/focus = SubResource("style_trans")
+
+[node name="Icon" type="TextureRect" parent="HeroFilterBar/CareerBtn_全部"]
+layout_mode = 0
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = 4.0
+offset_top = 4.0
+offset_right = -4.0
+offset_bottom = -4.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+texture = ExtResource("icon_all")
+expand_mode = 1
+stretch_mode = 5
+
+[node name="CareerBtn_士" type="Button" parent="HeroFilterBar"]
+custom_minimum_size = Vector2(48, 48)
+layout_mode = 2
+focus_mode = 0
+theme_override_styles/normal = SubResource("style_trans")
+theme_override_styles/hover = SubResource("style_trans")
+theme_override_styles/pressed = SubResource("style_trans")
+theme_override_styles/focus = SubResource("style_trans")
+
+[node name="Icon" type="TextureRect" parent="HeroFilterBar/CareerBtn_士"]
+layout_mode = 0
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = 4.0
+offset_top = 4.0
+offset_right = -4.0
+offset_bottom = -4.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+texture = ExtResource("icon_shi")
+expand_mode = 1
+stretch_mode = 5
+
+[node name="CareerBtn_农" type="Button" parent="HeroFilterBar"]
+custom_minimum_size = Vector2(48, 48)
+layout_mode = 2
+focus_mode = 0
+theme_override_styles/normal = SubResource("style_trans")
+theme_override_styles/hover = SubResource("style_trans")
+theme_override_styles/pressed = SubResource("style_trans")
+theme_override_styles/focus = SubResource("style_trans")
+
+[node name="Icon" type="TextureRect" parent="HeroFilterBar/CareerBtn_农"]
+layout_mode = 0
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = 4.0
+offset_top = 4.0
+offset_right = -4.0
+offset_bottom = -4.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+texture = ExtResource("icon_nong")
+expand_mode = 1
+stretch_mode = 5
+
+[node name="CareerBtn_工" type="Button" parent="HeroFilterBar"]
+custom_minimum_size = Vector2(48, 48)
+layout_mode = 2
+focus_mode = 0
+theme_override_styles/normal = SubResource("style_trans")
+theme_override_styles/hover = SubResource("style_trans")
+theme_override_styles/pressed = SubResource("style_trans")
+theme_override_styles/focus = SubResource("style_trans")
+
+[node name="Icon" type="TextureRect" parent="HeroFilterBar/CareerBtn_工"]
+layout_mode = 0
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = 4.0
+offset_top = 4.0
+offset_right = -4.0
+offset_bottom = -4.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+texture = ExtResource("icon_gong")
+expand_mode = 1
+stretch_mode = 5
+
+[node name="CareerBtn_商" type="Button" parent="HeroFilterBar"]
+custom_minimum_size = Vector2(48, 48)
+layout_mode = 2
+focus_mode = 0
+theme_override_styles/normal = SubResource("style_trans")
+theme_override_styles/hover = SubResource("style_trans")
+theme_override_styles/pressed = SubResource("style_trans")
+theme_override_styles/focus = SubResource("style_trans")
+
+[node name="Icon" type="TextureRect" parent="HeroFilterBar/CareerBtn_商"]
+layout_mode = 0
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = 4.0
+offset_top = 4.0
+offset_right = -4.0
+offset_bottom = -4.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+texture = ExtResource("icon_shang")
+expand_mode = 1
+stretch_mode = 5
+
+[node name="CareerBtn_侠" type="Button" parent="HeroFilterBar"]
+custom_minimum_size = Vector2(48, 48)
+layout_mode = 2
+focus_mode = 0
+theme_override_styles/normal = SubResource("style_trans")
+theme_override_styles/hover = SubResource("style_trans")
+theme_override_styles/pressed = SubResource("style_trans")
+theme_override_styles/focus = SubResource("style_trans")
+
+[node name="Icon" type="TextureRect" parent="HeroFilterBar/CareerBtn_侠"]
+layout_mode = 0
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = 4.0
+offset_top = 4.0
+offset_right = -4.0
+offset_bottom = -4.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+texture = ExtResource("icon_xia")
+expand_mode = 1
+stretch_mode = 5
+
+[node name="MythBtn" type="Button" parent="HeroFilterBar"]
+custom_minimum_size = Vector2(72, 64)
+layout_mode = 2
+focus_mode = 0
+theme_override_styles/normal = SubResource("style_trans")
+theme_override_styles/hover = SubResource("style_trans")
+theme_override_styles/pressed = SubResource("style_trans")
+theme_override_styles/focus = SubResource("style_trans")
+
+[node name="MythIcon" type="TextureRect" parent="HeroFilterBar/MythBtn"]
+layout_mode = 0
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = 8.0
+offset_top = 0.0
+offset_right = -8.0
+offset_bottom = -10.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+texture = ExtResource("icon_myth")
+expand_mode = 1
+stretch_mode = 5
+
+[node name="MythLabel" type="Label" parent="HeroFilterBar/MythBtn"]
+layout_mode = 0
+anchor_top = 1.0
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_top = -22.0
+grow_horizontal = 2
+grow_vertical = 0
+mouse_filter = 2
+theme_override_colors/font_color = Color(0.95, 0.86, 0.6, 1)
+theme_override_font_sizes/font_size = 18
+text = "神话门客"
+horizontal_alignment = 1
+vertical_alignment = 1

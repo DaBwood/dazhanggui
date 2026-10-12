@@ -1496,15 +1496,10 @@ func _build_scene_shell():
 	shop_pg.name = "ShopPage"
 	pc.add_child(shop_pg)
 
-	# 门客页：滚动容器（网格由 hero_page 代码填充）
-	# （generate_hero_list 直接 get_node("HeroScroll")，不能省）
+	# 门客页：空宿主容器（场景化批次1，口径同商铺/闯荡——骨架在 hero_page.tscn，generate 时实例化）
 	var hero_pg = Control.new()
 	hero_pg.name = "HeroPage"
 	pc.add_child(hero_pg)
-	var hero_scroll = ScrollContainer.new()
-	hero_scroll.name = "HeroScroll"
-	hero_scroll.set_anchors_preset(Control.PRESET_FULL_RECT)
-	hero_pg.add_child(hero_scroll)
 
 	# 背包/府邸/珍兽/闯荡：空容器，内容由各页面模块代码生成
 	for page_name in ["BagPage", "MansionPage", "BeastPage", "AdventurePage"]:
@@ -1648,19 +1643,12 @@ func _apply_portrait_layout():
 			pg.size = $PageContainer.size
 	
 	
-	# 门客页 / 背包页的滚动区铺满整页
-	# 【改】门客页滚动区左右留 12px 边距，卡片品质边框不再贴屏边被截断
-	for path in ["PageContainer/HeroPage/HeroScroll", "PageContainer/BagPage/BagScroll"]:
-		if has_node(path):
-			var sc = get_node(path)
-			sc.set_anchors_preset(Control.PRESET_TOP_LEFT)
-			if path.ends_with("HeroScroll"):
-				# 门客页：顶部统计条占 40、底部职业页签条占 64，滚动区上下让位
-				sc.position = Vector2(12, 40)
-				sc.size = Vector2(vs.x - 24, vs.y - 110 - 40 - 64)
-			else:
-				sc.position = Vector2.ZERO
-				sc.size = Vector2(vs.x, vs.y - 110)
+	# 背包页滚动区铺满整页（门客页已场景化：HeroScroll 布局由 hero_page.tscn 锚点自持，不在此列）
+	if has_node("PageContainer/BagPage/BagScroll"):
+		var sc = get_node("PageContainer/BagPage/BagScroll")
+		sc.set_anchors_preset(Control.PRESET_TOP_LEFT)
+		sc.position = Vector2.ZERO
+		sc.size = Vector2(vs.x, vs.y - 110)
 
 # 【新增】无双促织盒子使用入口（由 bag_page 调用）
 func show_wushuang_box_selector():

@@ -7,9 +7,10 @@
 class_name HeroPage
 extends RefCounted
 
-# 门客列表主题素材契约（assets/heroes/，缺素材时各控件有文字/色块退化）
-const HERO_UI_DIR := "res://assets/heroes/"
-const HERO_CAREER_ICON := {"士": "career_shi", "农": "career_nong", "工": "career_gong", "商": "career_shang", "侠": "career_xia"}
+# ── 场景化批次1（2026-10-12，模板=商铺/闯荡批次）：骨架入 hero_page.tscn，卡片=hero_card.tscn 子场景 ──
+# 布局唯一真相源=hero_page.tscn（顶栏/过滤栏/滚动区摆位），本脚本只实例化+灌数据
+const HERO_SCENE := preload("res://ui/pages/hero_page.tscn")
+const CARD_SCENE := preload("res://ui/pages/hero_card.tscn")
 var c      # game_controller 根脚本引用
 var data   # GameData 数据中枢引用
 
@@ -50,210 +51,49 @@ func _init(p_c):
 # ============ 以下为原 game_controller.gd 搬迁函数（逻辑未改，仅根节点访问加了 c. 前缀） ============
 
 func generate_hero_list():
+	# 配置空兜底（原实现口径）
 	if data._hero_configs.is_empty():
 		print("警告：门客配置为空，尝试重新加载...")
 		data._load_all_configs()
-	
-	if not c.has_node("PageContainer/HeroPage"): return
-	var scroll = c.get_node("PageContainer/HeroPage/HeroScroll")
-	for child in scroll.get_children():
-		scroll.remove_child(child) 
-		child.queue_free()
-	
-	# 固定 3 列，卡片定高=滚动区高/3：一页最多 3 行
-	var grid = GridContainer.new()
-	grid.name = "HeroGrid"
-	grid.columns = 3
-	grid.add_theme_constant_override("h_separation", 12)
-	grid.add_theme_constant_override("v_separation", 12)
-	grid.size_flags_horizontal = Control.SIZE_EXPAND_FILL
-	scroll.add_child(grid)
-	scroll.vertical_scroll_mode = ScrollContainer.SCROLL_MODE_SHOW_NEVER   # 藏滚动条，拖动/滚轮仍可用
-	var card_h := int((scroll.size.y - 24) / 3)
-	
-	# 1. 已解锁门客
+	# 宿主空壳由 controller 建；骨架场景每次重建（free 口径，防重进残留）
+	var page = c.get_node("PageContainer/HeroPage")   # 结构硬校验：宿主缺失=报错（废兜底自愈口径）
+	for child in page.get_children():
+		child.free()
+	page.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT, Control.PRESET_MODE_MINSIZE)
+	var inst: Control = HERO_SCENE.instantiate()
+	page.add_child(inst)
+	# 结构硬校验：缺件即中断，错误不静默
+	var scroll := inst.get_node("HeroScroll") as ScrollContainer
+	var grid := scroll.get_node("HeroGrid") as GridContainer
+	var bar := inst.get_node("HeroFilterBar") as HBoxContainer
+	# 页签接线（按钮名=跨文件契约；高亮初值走 _set_hero_career 统一入口）
+	for career in ["", "士", "农", "工", "商", "侠"]:
+		var key: String = "全部" if career == "" else career
+		var b := bar.get_node("CareerBtn_" + key) as Button
+		b.pressed.connect(_set_hero_career.bind(career))
+		_hero_career_btns[career] = b
+	bar.get_node("MythBtn").pressed.connect(func(): c._show_success_popup("神话门客后续版本开放", 0, "info"))
+	# 卡片定高=滚动区高/3（一页最多 3 行，用户拍板口径）
+	var zone_h := scroll.size.y
+	if zone_h < 100:   # 首帧布局未就绪兜底（正常路径不触发）
+		zone_h = page.size.y - 120
+	var card_h := int((zone_h - 24) / 3)
 	for hero_id in data.heroes.keys():
-		var cell = _create_hero_card(hero_id, false)
+		var cell: Button = CARD_SCENE.instantiate()
 		cell.custom_minimum_size.y = card_h
-		grid.add_child(cell)
-	
-	# 2. 未解锁的VIP门客
-	for hero_id in data.get_all_hero_ids():
-		if not data.heroes.has(hero_id):
-			var cell = _create_hero_card(hero_id, true)
-			cell.custom_minimum_size.y = card_h
-			grid.add_child(cell)
-	
-	_ensure_hero_filter_bar()   # 顶栏隐藏后露出的底条：职业页签+放大镜搜索
-	_apply_hero_filter()
+		grid.add_child(cell)   # 先入树触发 _ready（@onready 就位），再灌数据
+		cell.bind_data(hero_id, data, false)
+		cell.pressed.connect(open_hero_detail.bind(hero_id))
+	for cfg_id in data._hero_configs.keys():
+		if not data.heroes.has(cfg_id):
+			var locked_cell: Button = CARD_SCENE.instantiate()
+			locked_cell.custom_minimum_size.y = card_h
+			grid.add_child(locked_cell)   # 先入树触发 _ready，再灌数据
+			locked_cell.bind_data(cfg_id, data, true)
+			locked_cell.pressed.connect(_on_locked_hero_clicked.bind(cfg_id))
+	_set_hero_career(_hero_career)
 	update_hero_list()
 
-func _create_hero_card(hero_id: String, locked: bool) -> Button:
-	var cell := Button.new()
-	cell.name = hero_id + ("_hero_locked" if locked else "_hero")
-	cell.custom_minimum_size = Vector2(180, 240)
-	cell.size_flags_horizontal = Control.SIZE_EXPAND_FILL
-	cell.focus_mode = Control.FOCUS_NONE
-	cell.clip_contents = true   # 立绘铺满+棱形角标出血，统一由卡片裁圆角
-	cell.mouse_default_cursor_shape = Control.CURSOR_POINTING_HAND
-	var base := StyleBoxFlat.new()
-	base.bg_color = Color("#232035")
-	base.set_border_width_all(2)
-	base.border_color = Color(0.5, 0.5, 0.55)
-	base.set_corner_radius_all(8)
-	cell.add_theme_stylebox_override("normal", base)
-	cell.add_theme_stylebox_override("hover", base)
-	cell.add_theme_stylebox_override("pressed", base)
-	cell.set_meta("hero_id", hero_id)
-
-	# 立绘主题底图：全卡铺满，素材缺失时露卡底色
-	var art := TextureRect.new()
-	art.name = "Portrait"
-	art.anchor_left = 0.0
-	art.anchor_top = 0.0
-	art.anchor_right = 1.0
-	art.anchor_bottom = 1.0
-	art.offset_left = 3
-	art.offset_top = 3
-	art.offset_right = -3
-	art.offset_bottom = -3
-	art.expand_mode = TextureRect.EXPAND_IGNORE_SIZE
-	art.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_COVERED
-	art.mouse_filter = Control.MOUSE_FILTER_IGNORE
-	var p_path := "res://assets/portraits/heroes/%s.png" % hero_id
-	if ResourceLoader.exists(p_path):
-		art.texture = load(p_path)
-	cell.add_child(art)
-
-	# 左上棱形等级牌：菱形本体旋转，数字保持横排
-	var dia := Panel.new()
-	dia.name = "LvDiamond"
-	dia.position = Vector2(15, 3)
-	dia.size = Vector2(22, 22)
-	dia.rotation = PI / 4.0
-	dia.mouse_filter = Control.MOUSE_FILTER_IGNORE
-	var d_sty := StyleBoxFlat.new()
-	d_sty.bg_color = Color(0.08, 0.08, 0.12, 0.88)
-	d_sty.border_color = Color(0.95, 0.9, 0.72)
-	d_sty.set_border_width_all(1)
-	dia.add_theme_stylebox_override("panel", d_sty)
-	cell.add_child(dia)
-	var lv := Label.new()
-	lv.name = "LvLabel"
-	lv.position = Vector2(3, 7)
-	lv.size = Vector2(46, 14)
-	lv.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
-	lv.add_theme_font_size_override("font_size", 14)
-	lv.add_theme_color_override("font_color", Color(1, 0.95, 0.8))
-	lv.mouse_filter = Control.MOUSE_FILTER_IGNORE
-	cell.add_child(lv)
-
-	# 右上名字竖签：红笔刷底图叠竖排名字，素材缺失退化为红底块
-	var tag := TextureRect.new()
-	tag.name = "NameTag"
-	tag.anchor_left = 1.0
-	tag.anchor_right = 1.0
-	tag.offset_left = -30
-	tag.offset_right = -4
-	tag.offset_top = 4
-	tag.offset_bottom = 112
-	tag.expand_mode = TextureRect.EXPAND_IGNORE_SIZE
-	tag.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_CENTERED
-	tag.mouse_filter = Control.MOUSE_FILTER_IGNORE
-	var tag_tex := _load_hero_ui_icon("name_tag")
-	if tag_tex != null:
-		tag.texture = tag_tex
-	cell.add_child(tag)
-	var nm := Label.new()
-	nm.name = "NameLabel"
-	nm.anchor_left = 1.0
-	nm.anchor_right = 1.0
-	nm.offset_left = -30
-	nm.offset_right = -4
-	nm.offset_top = 4
-	nm.offset_bottom = 112
-	nm.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
-	nm.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
-	nm.add_theme_font_size_override("font_size", 16)
-	nm.add_theme_color_override("font_color", Color(1, 1, 1))
-	nm.mouse_filter = Control.MOUSE_FILTER_IGNORE
-	if tag_tex == null:
-		var nm_sty := StyleBoxFlat.new()
-		nm_sty.bg_color = Color(0.6, 0.1, 0.1, 0.92)
-		nm_sty.set_corner_radius_all(4)
-		nm.add_theme_stylebox_override("normal", nm_sty)
-	cell.add_child(nm)
-
-	# 左下职业小圆标（缺图退化为职业字）
-	var job := TextureRect.new()
-	job.name = "CareerIcon"
-	job.anchor_top = 1.0
-	job.anchor_bottom = 1.0
-	job.offset_left = 6
-	job.offset_top = -32
-	job.offset_right = 30
-	job.offset_bottom = -8
-	job.expand_mode = TextureRect.EXPAND_IGNORE_SIZE
-	job.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_CENTERED
-	job.mouse_filter = Control.MOUSE_FILTER_IGNORE
-	var job_tex: Texture2D = null
-	var cfg0 = data.get_hero_config(hero_id)
-	if cfg0:
-		job_tex = _load_hero_ui_icon(str(HERO_CAREER_ICON.get(str(cfg0.get("category", "")), "")))
-	if job_tex != null:
-		job.texture = job_tex
-	cell.add_child(job)
-	var job_fb := Label.new()
-	job_fb.name = "CareerFallback"
-	job_fb.anchor_top = 1.0
-	job_fb.anchor_bottom = 1.0
-	job_fb.offset_left = 6
-	job_fb.offset_top = -32
-	job_fb.offset_right = 30
-	job_fb.offset_bottom = -8
-	job_fb.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
-	job_fb.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
-	job_fb.add_theme_font_size_override("font_size", 14)
-	job_fb.add_theme_color_override("font_color", Color(1, 1, 1))
-	job_fb.mouse_filter = Control.MOUSE_FILTER_IGNORE
-	job_fb.visible = (job_tex == null)
-	if cfg0:
-		job_fb.text = str(cfg0.get("category", ""))
-	cell.add_child(job_fb)
-
-	# 职业右侧半透明黑底精进星条
-	var strip := Panel.new()
-	strip.name = "StarStrip"
-	strip.anchor_left = 0.0
-	strip.anchor_right = 1.0
-	strip.anchor_top = 1.0
-	strip.anchor_bottom = 1.0
-	strip.offset_left = 34
-	strip.offset_right = -6
-	strip.offset_top = -32
-	strip.offset_bottom = -8
-	strip.mouse_filter = Control.MOUSE_FILTER_IGNORE
-	var s_sty := StyleBoxFlat.new()
-	s_sty.bg_color = Color(0, 0, 0, 0.55)
-	s_sty.set_corner_radius_all(4)
-	strip.add_theme_stylebox_override("panel", s_sty)
-	cell.add_child(strip)
-	var st := Label.new()
-	st.name = "StatusLabel"
-	st.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
-	st.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
-	st.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
-	st.add_theme_font_size_override("font_size", 15)
-	st.add_theme_color_override("font_color", Color(1, 0.84, 0.3))
-	st.mouse_filter = Control.MOUSE_FILTER_IGNORE
-	strip.add_child(st)
-	# 手机端：STOP 会拦截触摸滚动，PASS 让滑动穿透到 ScrollContainer（原实现口径）
-	cell.mouse_filter = Control.MOUSE_FILTER_PASS
-	if locked:
-		cell.pressed.connect(_on_locked_hero_clicked.bind(hero_id))
-	else:
-		cell.pressed.connect(open_hero_detail.bind(hero_id))
-	return cell
 func _on_locked_hero_clicked(hero_id: String):
 	var vip_level = data.get_hero_unlock_vip(hero_id)
 	var cfg = data.get_hero_config(hero_id)
@@ -1011,55 +851,17 @@ func open_hero_detail(hero_id: String):
 	open_hero_panel(hero_id)
 
 func update_hero_list():
-	if not c.has_node("PageContainer/HeroPage/HeroScroll/HeroGrid"): return
-	var grid = c.get_node("PageContainer/HeroPage/HeroScroll/HeroGrid")
+	var grid: GridContainer = c.get_node_or_null("PageContainer/HeroPage/HeroScene/HeroScroll/HeroGrid")
+	if grid == null:
+		return
 	_refresh_hero_top_bar()
 	for cell in grid.get_children():
-		if not cell is Button: continue
-		var hero_id = str(cell.get_meta("hero_id", str(cell.name).replace("_hero_locked", "").replace("_hero", "")))
-		var lv_lbl = cell.get_node_or_null("LvLabel")
-		var nm_lbl = cell.get_node_or_null("NameLabel")
-		var st_lbl = cell.get_node_or_null("StatusLabel")
-		var h = null
-		if data.heroes.has(hero_id):
-			h = data.heroes[hero_id]
-			cell.modulate = Color.WHITE
-		elif data.get_hero_config(hero_id) != null:
-			h = data.get_hero_config(hero_id)
-			cell.modulate = Color(0.5, 0.5, 0.5, 0.7)
-		else:
+		if not cell.has_method("bind_data"):
 			continue
-		var locked: bool = not data.heroes.has(hero_id)
-		if lv_lbl:
-			var show_lv = int(h.level)
-			if not locked:
-				var copy_lv = data.talent_system.get_copy_level(hero_id)
-				if copy_lv > 0:
-					show_lv = maxi(show_lv, copy_lv)
-			lv_lbl.text = str(show_lv)
-		if nm_lbl:
-			var parts := PackedStringArray()
-			for ch in str(h.name):
-				parts.append(ch)
-			nm_lbl.text = "\n".join(parts)
-		if st_lbl:
-			if locked:
-				st_lbl.text = "VIP%d解锁" % data.get_hero_unlock_vip(hero_id)
-				st_lbl.add_theme_color_override("font_color", Color(0.82, 0.82, 0.88))
-			else:
-				st_lbl.text = data.talent_system.get_star_text(hero_id)
-				st_lbl.add_theme_color_override("font_color", Color(1, 0.84, 0.3))
-		var q_col = Color(HeroData.get_quality_color(int(h.get("quality", 0))))
-		var card_sty = StyleBoxFlat.new()
-		card_sty.bg_color = Color("#232035")
-		card_sty.border_color = q_col
-		card_sty.set_border_width_all(2)
-		card_sty.set_corner_radius_all(8)
-		cell.add_theme_stylebox_override("normal", card_sty)
-		cell.add_theme_stylebox_override("hover", card_sty)
-		cell.add_theme_stylebox_override("pressed", card_sty)
+		var hid := str(cell.get_meta("hero_id", ""))
+		cell.bind_data(hid, data, not data.heroes.has(hid))
+	_sort_hero_grid(grid)
 
-	_sort_hero_grid(grid)   # 每次刷新后按实时赚速重排卡片顺序
 func _sort_hero_grid(grid):
 	var unlocked = []   # 已解锁：[cell, 品质, 实时赚速]
 	var locked = []     # 未解锁VIP门客：保持原相对顺序
@@ -2438,124 +2240,8 @@ func _bd_grid(parent: VBoxContainer, rows: Array, is_pct: bool):
 
 # 搜索行：固定在门客页顶部（只创建一次），输入实时过滤门客卡
 # 底条=职业页签（全部/士农工商侠）+放大镜（弹搜索框）；此前这里是无内容空条（顶栏隐藏后露出）
-func _ensure_hero_filter_bar():
-	var hero_pg = c.get_node_or_null("PageContainer/HeroPage")
-	if hero_pg == null:
-		return
-	_ensure_hero_top_bar()
-	if hero_pg.has_node("HeroFilterBar"):
-		return
-	var bar := HBoxContainer.new()
-	bar.name = "HeroFilterBar"
-	bar.set_anchors_preset(Control.PRESET_BOTTOM_WIDE)
-	bar.offset_top = -80
-	bar.alignment = BoxContainer.ALIGNMENT_CENTER
-	bar.add_theme_constant_override("separation", 12)
-	hero_pg.add_child(bar)
-	# 页签顺序：全/士/农/工/商/侠（用户定序）
-	var careers := ["", "士", "农", "工", "商", "侠"]
-	for i in range(careers.size()):
-		var b := Button.new()
-		b.custom_minimum_size = Vector2(48, 48)
-		b.focus_mode = Control.FOCUS_NONE
-		# 圆标四角透明，Button 默认底透出成黑边，四态全透
-		for sty in ["normal", "hover", "pressed", "focus"]:
-			var b_sty := StyleBoxFlat.new()
-			b_sty.bg_color = Color(0, 0, 0, 0)
-			b.add_theme_stylebox_override(sty, b_sty)
-		var tex := _load_hero_ui_icon("filter_all" if careers[i] == "" else HERO_CAREER_ICON[careers[i]])
-		if tex != null:
-			# 图标走 TextureRect 子节点定绘制区，绕开 Button 图标渲染（expand/边距/上限）的尺寸不确定性
-			var bi := TextureRect.new()
-			bi.anchor_left = 0.5
-			bi.anchor_top = 0.5
-			bi.anchor_right = 0.5
-			bi.anchor_bottom = 0.5
-			bi.offset_left = -20
-			bi.offset_top = -20
-			bi.offset_right = 20
-			bi.offset_bottom = 20
-			bi.expand_mode = TextureRect.EXPAND_IGNORE_SIZE
-			bi.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_CENTERED
-			bi.texture = tex
-			bi.mouse_filter = Control.MOUSE_FILTER_IGNORE
-			b.add_child(bi)
-		else:
-			b.text = "全部" if careers[i] == "" else careers[i]
-			b.add_theme_font_size_override("font_size", 14)
-		b.pressed.connect(_set_hero_career.bind(careers[i]))
-		_hero_career_btns[careers[i]] = b
-		bar.add_child(b)
-	# 神话门客入口（素材已就位，玩法预留）：字压图 box——限高 60，标签压图标下缘省空间
-	var myth := Button.new()
-	myth.name = "MythBtn"
-	myth.custom_minimum_size = Vector2(72, 64)
-	myth.focus_mode = Control.FOCUS_NONE
-	# 图标带透明区，Button 默认底透出成黑边，四态全透
-	for sty in ["normal", "hover", "pressed", "focus"]:
-		var m_sty := StyleBoxFlat.new()
-		m_sty.bg_color = Color(0, 0, 0, 0)
-		myth.add_theme_stylebox_override(sty, m_sty)
-	var mi := TextureRect.new()
-	mi.anchor_left = 0.0
-	mi.anchor_top = 0.0
-	mi.anchor_right = 1.0
-	mi.anchor_bottom = 1.0
-	mi.offset_left = 8
-	mi.offset_top = 0
-	mi.offset_right = -8
-	mi.offset_bottom = -10
-	mi.expand_mode = TextureRect.EXPAND_IGNORE_SIZE
-	mi.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_CENTERED
-	var myth_tex := _load_hero_ui_icon("btn_myth")
-	if myth_tex != null:
-		mi.texture = myth_tex
-	mi.mouse_filter = Control.MOUSE_FILTER_IGNORE
-	myth.add_child(mi)
-	var ml := Label.new()
-	ml.text = "神话门客"
-	ml.anchor_left = 0.0
-	ml.anchor_top = 1.0
-	ml.anchor_right = 1.0
-	ml.anchor_bottom = 1.0
-	ml.offset_top = -22
-	ml.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
-	ml.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
-	ml.add_theme_font_size_override("font_size", 18)
-	ml.add_theme_color_override("font_color", Color(0.95, 0.86, 0.6))
-	ml.mouse_filter = Control.MOUSE_FILTER_IGNORE
-	myth.add_child(ml)
-	myth.pressed.connect(func(): c._show_success_popup("神话门客后续版本开放", 0, "info"))
-	bar.add_child(myth)
-
-func _ensure_hero_top_bar():
-	var hero_pg = c.get_node_or_null("PageContainer/HeroPage")
-	if hero_pg == null:
-		return
-	if hero_pg.has_node("HeroTopBar"):
-		return
-	var top := HBoxContainer.new()
-	top.name = "HeroTopBar"
-	top.anchor_right = 1.0
-	top.offset_left = 16
-	top.offset_right = -16
-	top.offset_top = 8
-	top.offset_bottom = 34
-	top.add_theme_constant_override("separation", 24)
-	hero_pg.add_child(top)
-	var cnt := Label.new()
-	cnt.name = "CountLabel"
-	cnt.add_theme_font_size_override("font_size", 20)
-	cnt.add_theme_color_override("font_color", Color(0.92, 0.85, 0.65))
-	top.add_child(cnt)
-	var tot := Label.new()
-	tot.name = "TotalLabel"
-	tot.add_theme_font_size_override("font_size", 20)
-	tot.add_theme_color_override("font_color", Color(0.92, 0.85, 0.65))
-	top.add_child(tot)
-
 func _refresh_hero_top_bar():
-	var top = c.get_node_or_null("PageContainer/HeroPage/HeroTopBar")
+	var top = c.get_node_or_null("PageContainer/HeroPage/HeroScene/HeroTopBar")
 	if top == null:
 		return
 	var cnt = top.get_node_or_null("CountLabel")
@@ -2565,12 +2251,6 @@ func _refresh_hero_top_bar():
 	if tot:
 		tot.text = "门客总赚钱：%s" % c.format_number(data.get_heroes_total_income())
 
-func _load_hero_ui_icon(file: String) -> Texture2D:
-	var p := HERO_UI_DIR + file + ".png"
-	if ResourceLoader.exists(p):
-		return load(p) as Texture2D
-	return null
-
 func _set_hero_career(career: String):
 	_hero_career = career
 	for k in _hero_career_btns.keys():
@@ -2578,7 +2258,7 @@ func _set_hero_career(career: String):
 	_apply_hero_filter()
 
 func _apply_hero_filter():
-	var grid: GridContainer = c.get_node_or_null("PageContainer/HeroPage/HeroScroll/HeroGrid")
+	var grid: GridContainer = c.get_node_or_null("PageContainer/HeroPage/HeroScene/HeroScroll/HeroGrid")
 	if grid == null:
 		return
 	for card in grid.get_children():
