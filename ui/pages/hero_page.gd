@@ -271,7 +271,7 @@ func update_hero_panel():
 
 	
 	# 信物槽（tscn 壳；无信物隐藏槽位；李白专用信物剑图标）
-	var token_slot2 = sys_row.get_node("SlotToken")
+	var token_slot2 = c.get_node("HeroPanel/TokenSlot")
 	var token_b2 = token_slot2.get_node("Btn")
 	for conn in token_b2.pressed.get_connections():
 		token_b2.pressed.disconnect(conn.callable)
