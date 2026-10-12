@@ -1038,6 +1038,7 @@ func _render_skill_detail(list: VBoxContainer, item: Dictionary) -> void:
 				elif pill_lbl is CheckBox:
 					pill_lbl.add_theme_icon_override("checked", load("res://assets/common/check_on.png"))
 					pill_lbl.add_theme_icon_override("unchecked", load("res://assets/common/check_off.png"))
+					pill_lbl.add_theme_constant_override("icon_max_width", 20)
 
 			chk_col.add_child(pill_row)
 			var baiye_need: int = per_level * data.hero_system.get_baiye_per_pill()
@@ -1054,6 +1055,7 @@ func _render_skill_detail(list: VBoxContainer, item: Dictionary) -> void:
 				elif baiye_lbl is CheckBox:
 					baiye_lbl.add_theme_icon_override("checked", load("res://assets/common/check_on.png"))
 					baiye_lbl.add_theme_icon_override("unchecked", load("res://assets/common/check_off.png"))
+					baiye_lbl.add_theme_constant_override("icon_max_width", 20)
 
 			chk_col.add_child(baiye_row)
 		elif item.has("own"):
@@ -1066,12 +1068,12 @@ func _render_skill_detail(list: VBoxContainer, item: Dictionary) -> void:
 					var _oc: Color = own_lbl.get_theme_color("font_color")
 					if _oc.g > _oc.r and _oc.g > 0.3:
 						own_lbl.add_theme_color_override("font_color", Color(0.04, 0.6, 0.16))
-		# 【新增】可选"?"说明钮（光环.极档：升级钮上方，点击显示各门客对应技能等级需求）
-		if item.has("on_hint"):
 				elif own_lbl is CheckBox:
 					own_lbl.add_theme_icon_override("checked", load("res://assets/common/check_on.png"))
 					own_lbl.add_theme_icon_override("unchecked", load("res://assets/common/check_off.png"))
-
+					own_lbl.add_theme_constant_override("icon_max_width", 20)
+		# 【新增】可选"?"说明钮（光环.极档：升级钮上方，点击显示各门客对应技能等级需求）
+		if item.has("on_hint"):
 			var hbtn := Button.new()
 			hbtn.text = "i"   # 【改】2026-09-26 用户约定：门客面板补充信息入口用 i
 			hbtn.custom_minimum_size = Vector2(84, 20)
@@ -1564,6 +1566,9 @@ func _show_cuzhi_action_panel(cid: String):
 		check_bf.text = ""   # 【改】批次②③④-B9：勾选框只保留勾选态，道具名/消耗数走统一消耗行
 		# 【修复】根据上次选择恢复勾选状态
 		check_bf.button_pressed = not _cuzhi_last_use_jinghua
+		check_bf.add_theme_icon_override("checked", load("res://assets/common/check_on.png"))
+		check_bf.add_theme_icon_override("unchecked", load("res://assets/common/check_off.png"))
+		check_bf.add_theme_constant_override("icon_max_width", 20)
 		check_box.add_child(check_bf)
 		c._add_cost_row(check_box, "珍兽果", int(bf_have), int(cost_bf))   # 【改】批次②③④-B9：默认道具名 + （拥有/消耗）红绿数字
 		
@@ -1571,6 +1576,9 @@ func _show_cuzhi_action_panel(cid: String):
 		check_jh.name = "CheckJinghua"
 		check_jh.text = ""   # 【改】批次②③④-B9：勾选框只保留勾选态，道具名/消耗数走统一消耗行
 		check_jh.button_pressed = _cuzhi_last_use_jinghua
+		check_jh.add_theme_icon_override("checked", load("res://assets/common/check_on.png"))
+		check_jh.add_theme_icon_override("unchecked", load("res://assets/common/check_off.png"))
+		check_jh.add_theme_constant_override("icon_max_width", 20)
 		check_box.add_child(check_jh)
 		c._add_cost_row(check_box, "促织精华", int(jh_have), int(cost_jh))   # 【改】批次②③④-B9：默认道具名 + （拥有/消耗）红绿数字
 		
@@ -1781,6 +1789,9 @@ func _show_guardian_panel():
 	var batch_check = CheckBox.new()
 	batch_check.text = "十连"
 	batch_check.button_pressed = _guardian_batch   # 【新增】恢复上次勾选状态
+	batch_check.add_theme_icon_override("checked", load("res://assets/common/check_on.png"))
+	batch_check.add_theme_icon_override("unchecked", load("res://assets/common/check_off.png"))
+	batch_check.add_theme_constant_override("icon_max_width", 20)
 	batch_check.toggled.connect(func(pressed): _guardian_batch = pressed)  # 【新增】记录变化
 	up_box.add_child(batch_check)
 	

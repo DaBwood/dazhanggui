@@ -8,6 +8,8 @@
 [ext_resource type="Texture2D" uid="uid://cqrlkqbn2ilyh" path="res://assets/heroes/income_plate.png" id="income_plate"]
 [ext_resource type="Texture2D" uid="uid://wjils6fd2eis" path="res://assets/heroes/plate_levelup.png" id="plate_levelup"]
 [ext_resource type="Texture2D" uid="uid://dha3qpytud548" path="res://assets/heroes/plate_promo_libai.png" id="plate_promo"]
+[ext_resource type="Texture2D" path="res://assets/common/check_on.png" id="check_on"]
+[ext_resource type="Texture2D" path="res://assets/common/check_off.png" id="check_off"]
 
 [sub_resource type="StyleBoxFlat" id="panel_sty"]
 bg_color = Color(0.117647, 0.105882, 0.180392, 1)
@@ -70,8 +72,6 @@ corner_radius_top_right = 4
 corner_radius_bottom_right = 4
 corner_radius_bottom_left = 4
 
-[ext_resource type="Texture" path="res://assets/common/check_on.png" id="check_on"]
-[ext_resource type="Texture" path="res://assets/common/check_off.png" id="check_off"]
 [node name="HeroPanel" type="Panel" unique_id=1893611471]
 z_index = 10
 offset_right = 600.0
@@ -362,6 +362,7 @@ offset_top = 236.0
 offset_right = 140.0
 offset_bottom = 266.0
 theme_override_colors/font_color = Color(1, 1, 1, 1)
+theme_override_constants/icon_max_width = 20
 theme_override_font_sizes/font_size = 14
 theme_override_styles/normal = SubResource("check_sty")
 theme_override_styles/pressed = SubResource("check_sty")
