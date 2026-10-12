@@ -1,7 +1,6 @@
 [gd_scene format=3 uid="uid://c4bgrrg6egw0"]
 
-[ext_resource type="Texture" path="res://assets/heroes/bg_hero.png" id="bg_hero"]
-
+[ext_resource type="Texture2D" uid="uid://luns22cujci0" path="res://assets/heroes/bg_hero.png" id="bg_hero"]
 [ext_resource type="Texture2D" uid="uid://bpoxjpxi1su04" path="res://assets/heroes/icon_huanzhuang.png" id="icon_huanzhuang"]
 [ext_resource type="Texture2D" uid="uid://dtjl7bxh73b1x" path="res://assets/heroes/icon_shenfen.png" id="icon_shenfen"]
 [ext_resource type="Texture2D" uid="uid://pg882fg641pp" path="res://assets/heroes/icon_tianfu.png" id="icon_tianfu"]
@@ -9,9 +8,22 @@
 [ext_resource type="Texture2D" uid="uid://cqrlkqbn2ilyh" path="res://assets/heroes/income_plate.png" id="income_plate"]
 [ext_resource type="Texture2D" uid="uid://wjils6fd2eis" path="res://assets/heroes/plate_levelup.png" id="plate_levelup"]
 [ext_resource type="Texture2D" uid="uid://dha3qpytud548" path="res://assets/heroes/plate_promo_libai.png" id="plate_promo"]
+[ext_resource type="Texture2D" uid="uid://g10wml3tidig" path="res://assets/heroes/slot_label.png" id="slot_label"]
 
 [sub_resource type="StyleBoxFlat" id="panel_sty"]
 bg_color = Color(0.117647, 0.105882, 0.180392, 1)
+
+[sub_resource type="StyleBoxFlat" id="btn_brown_sty"]
+bg_color = Color(0.4, 0.29, 0.18, 1)
+border_width_left = 2
+border_width_top = 2
+border_width_right = 2
+border_width_bottom = 2
+border_color = Color(0.68, 0.54, 0.35, 1)
+corner_radius_top_left = 6
+corner_radius_top_right = 6
+corner_radius_bottom_right = 6
+corner_radius_bottom_left = 6
 
 [sub_resource type="StyleBoxFlat" id="style_trans"]
 bg_color = Color(0, 0, 0, 0)
@@ -35,13 +47,27 @@ corner_radius_top_right = 3
 corner_radius_bottom_right = 3
 corner_radius_bottom_left = 3
 
+[sub_resource type="StyleBoxFlat" id="check_sty"]
+bg_color = Color(0, 0, 0, 0.4)
+corner_radius_top_left = 4
+corner_radius_top_right = 4
+corner_radius_bottom_right = 4
+corner_radius_bottom_left = 4
+
+[sub_resource type="StyleBoxTexture" id="slotlabel_sty"]
+texture = ExtResource("slot_label")
+texture_margin_left = 10.0
+texture_margin_top = 4.0
+texture_margin_right = 10.0
+texture_margin_bottom = 4.0
+
 [node name="HeroPanel" type="Panel" unique_id=1893611471]
 z_index = 10
 offset_right = 600.0
 offset_bottom = 1067.0
 theme_override_styles/panel = SubResource("panel_sty")
 
-[node name="BgImage" type="TextureRect" parent="."]
+[node name="BgImage" type="TextureRect" parent="." unique_id=308497084]
 layout_mode = 0
 anchor_right = 1.0
 anchor_bottom = 1.0
@@ -55,25 +81,29 @@ stretch_mode = 6
 [node name="Portrait" type="TextureRect" parent="." unique_id=714712820]
 layout_mode = 0
 offset_right = 600.0
-offset_bottom = 700.0
+offset_bottom = 797.0
 mouse_filter = 2
 expand_mode = 1
-stretch_mode = 5
+stretch_mode = 6
 
 [node name="HeroCloseBtn" type="Button" parent="." unique_id=672105695]
 layout_mode = 0
-offset_left = 12.0
-offset_top = 12.0
-offset_right = 132.0
-offset_bottom = 60.0
+offset_right = 100.0
+offset_bottom = 40.0
+theme_override_colors/font_color = Color(0.95, 0.9, 0.8, 1)
+theme_override_font_sizes/font_size = 16
+theme_override_styles/normal = SubResource("btn_brown_sty")
+theme_override_styles/pressed = SubResource("btn_brown_sty")
+theme_override_styles/hover = SubResource("btn_brown_sty")
+theme_override_styles/focus = SubResource("btn_brown_sty")
 text = "< 门客培养"
 
 [node name="ShenfenBtn" type="Button" parent="." unique_id=703206214]
 layout_mode = 0
-offset_left = 462.0
-offset_top = 62.0
-offset_right = 534.0
-offset_bottom = 134.0
+offset_left = 480.0
+offset_top = 50.0
+offset_right = 552.0
+offset_bottom = 122.0
 theme_override_styles/normal = SubResource("style_trans")
 theme_override_styles/pressed = SubResource("style_trans")
 theme_override_styles/hover = SubResource("style_trans")
@@ -92,10 +122,10 @@ stretch_mode = 5
 
 [node name="TokenSlot" type="VBoxContainer" parent="." unique_id=236634850]
 layout_mode = 0
-offset_left = 466.0
-offset_top = 146.0
-offset_right = 538.0
-offset_bottom = 241.0
+offset_left = 480.0
+offset_top = 150.0
+offset_right = 552.0
+offset_bottom = 245.0
 theme_override_constants/separation = 2
 
 [node name="Btn" type="Button" parent="TokenSlot" unique_id=1003553454]
@@ -118,44 +148,39 @@ mouse_filter = 2
 expand_mode = 1
 stretch_mode = 5
 
-[node name="Label" type="Label" parent="TokenSlot" unique_id=534148484]
-custom_minimum_size = Vector2(0, 20)
-layout_mode = 2
-theme_override_colors/font_color = Color(0.92, 0.88, 0.8, 1)
-theme_override_font_sizes/font_size = 13
-text = "信物"
-horizontal_alignment = 1
-
 [node name="BannerBox" type="Control" parent="." unique_id=1473254963]
 anchors_preset = 0
-offset_left = 12.0
-offset_top = 84.0
-offset_right = 148.0
-offset_bottom = 560.0
+offset_left = 46.0
+offset_top = 107.0
+offset_right = 149.0
+offset_bottom = 379.0
 
 [node name="HeroBanner" type="TextureRect" parent="BannerBox" unique_id=1659586682]
-layout_mode = 0
-offset_right = 136.0
-offset_bottom = 476.0
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
 mouse_filter = 2
 expand_mode = 1
 stretch_mode = 5
 
 [node name="HeroName" type="Label" parent="BannerBox" unique_id=924843338]
 layout_mode = 0
-offset_top = 150.0
-offset_right = 136.0
-offset_bottom = 186.0
+offset_top = 104.0
+offset_right = 112.0
+offset_bottom = 136.0
 theme_override_colors/font_color = Color(1, 1, 1, 1)
-theme_override_font_sizes/font_size = 20
+theme_override_font_sizes/font_size = 22
 horizontal_alignment = 1
 vertical_alignment = 1
 
 [node name="HeroStars" type="Label" parent="BannerBox" unique_id=170443326]
 layout_mode = 0
-offset_top = 188.0
-offset_right = 136.0
-offset_bottom = 214.0
+offset_top = 138.0
+offset_right = 112.0
+offset_bottom = 162.0
 theme_override_colors/font_color = Color(1, 0.84, 0, 1)
 theme_override_font_sizes/font_size = 16
 horizontal_alignment = 1
@@ -312,7 +337,22 @@ layout_mode = 0
 offset_top = 236.0
 offset_right = 140.0
 offset_bottom = 266.0
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+theme_override_font_sizes/font_size = 14
+theme_override_styles/normal = SubResource("check_sty")
+theme_override_styles/pressed = SubResource("check_sty")
+theme_override_styles/hover = SubResource("check_sty")
 text = "连续十次"
+
+[node name="LevelUpInfo" type="Label" parent="RightArtBar" unique_id=2082862528]
+layout_mode = 0
+offset_top = 272.0
+offset_right = 140.0
+offset_bottom = 294.0
+theme_override_colors/font_color = Color(0.9, 0.82, 0.6, 1)
+theme_override_font_sizes/font_size = 13
+horizontal_alignment = 1
+vertical_alignment = 1
 
 [node name="IncomePlate" type="TextureRect" parent="." unique_id=1966619782]
 layout_mode = 0
@@ -376,6 +416,7 @@ custom_minimum_size = Vector2(0, 20)
 layout_mode = 2
 theme_override_colors/font_color = Color(0.92, 0.88, 0.8, 1)
 theme_override_font_sizes/font_size = 13
+theme_override_styles/normal = SubResource("slotlabel_sty")
 text = "珍兽"
 horizontal_alignment = 1
 
@@ -408,6 +449,7 @@ custom_minimum_size = Vector2(0, 20)
 layout_mode = 2
 theme_override_colors/font_color = Color(0.92, 0.88, 0.8, 1)
 theme_override_font_sizes/font_size = 13
+theme_override_styles/normal = SubResource("slotlabel_sty")
 text = "渔获"
 horizontal_alignment = 1
 
@@ -440,6 +482,7 @@ custom_minimum_size = Vector2(0, 20)
 layout_mode = 2
 theme_override_colors/font_color = Color(0.92, 0.88, 0.8, 1)
 theme_override_font_sizes/font_size = 13
+theme_override_styles/normal = SubResource("slotlabel_sty")
 text = "促织"
 horizontal_alignment = 1
 
@@ -472,14 +515,15 @@ custom_minimum_size = Vector2(0, 20)
 layout_mode = 2
 theme_override_colors/font_color = Color(0.92, 0.88, 0.8, 1)
 theme_override_font_sizes/font_size = 13
+theme_override_styles/normal = SubResource("slotlabel_sty")
 text = "守护灵"
 horizontal_alignment = 1
 
 [node name="StatsBar" type="HBoxContainer" parent="." unique_id=265570157]
 layout_mode = 0
-offset_top = 833.0
+offset_top = 797.0
 offset_right = 600.0
-offset_bottom = 867.0
+offset_bottom = 833.0
 theme_override_constants/separation = 18
 
 [node name="StatLevel" type="Label" parent="StatsBar" unique_id=1014049904]
@@ -512,9 +556,9 @@ text = "i"
 
 [node name="SkillTabBar" type="HBoxContainer" parent="." unique_id=1037817391]
 layout_mode = 0
-offset_top = 797.0
+offset_top = 833.0
 offset_right = 600.0
-offset_bottom = 833.0
+offset_bottom = 867.0
 theme_override_constants/separation = 8
 
 [node name="TabSkill" type="Button" parent="SkillTabBar" unique_id=1624388763]

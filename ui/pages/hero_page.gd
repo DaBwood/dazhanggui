@@ -131,11 +131,6 @@ func _ensure_hero_panel_scene():
 	var panel: Panel = HERO_PANEL_SCENE.instantiate()
 	panel.set_meta("scene_built", true)
 	c.add_child(panel)
-	# 弹窗按视口铺满：父级锚点只到内容区（~525 高），tscn 内是 600×1067 设计尺寸，运行时必须钉视口尺寸（原实现 vw 口径）
-	var vw: Vector2 = c.get_viewport_rect().size
-	panel.set_anchors_preset(Control.PRESET_TOP_LEFT)
-	panel.position = Vector2.ZERO
-	panel.size = vw
 	# 信号接线+tab_id meta（tscn 纯结构，接线归脚本；节点名=跨文件契约）
 	panel.get_node("HeroCloseBtn").pressed.connect(close_hero_panel)
 	panel.get_node("StatsBar/AttrInfoBtn").pressed.connect(_show_attr_breakdown)
@@ -154,6 +149,13 @@ func update_hero_panel():
 	var total_aptitude = HeroData.get_total_aptitude(data, current_hero_id)   # 面板资质 = 总资质（含珍兽），与赚速同口径
 	# 立绘底图（详情页全幅版；缺素材露面板底色）
 	var panel = c.get_node("HeroPanel")
+	# 设计稿 600×1067 等比缩放居中适配视口（编辑器手调=运行时所见，修"调了没用"根因）
+	var vw_fit: Vector2 = c.get_viewport_rect().size
+	var design := Vector2(600, 1067)
+	panel.size = design
+	var fit_s: float = min(vw_fit.x / design.x, vw_fit.y / design.y)
+	panel.scale = Vector2(fit_s, fit_s)
+	panel.position = (vw_fit - design * fit_s) * 0.5
 	if panel.has_node("Portrait"):
 		var art = panel.get_node("Portrait")
 		art.texture = null
@@ -174,8 +176,11 @@ func update_hero_panel():
 			panel.get_node("BannerBox/HeroBanner").texture = load(banner_path)
 	if panel.has_node("BannerBox/HeroName"):
 		var name_lbl = panel.get_node("BannerBox/HeroName")
-		name_lbl.text = str(h.name)
-		name_lbl.add_theme_color_override("font_color", Color(HeroData.get_quality_color(hero_q)))
+		var name_parts := PackedStringArray()
+		for ch in str(h.name):
+			name_parts.append(ch)
+		name_lbl.text = "\n".join(name_parts)
+		name_lbl.add_theme_color_override("font_color", Color.WHITE)
 	if panel.has_node("BannerBox/HeroStars"):
 		panel.get_node("BannerBox/HeroStars").text = star_txt
 	# 中央赚钱大数字（牌上"赚钱"二字为 art）
@@ -254,16 +259,16 @@ func update_hero_panel():
 		guardian_b.pressed.disconnect(conn.callable)
 	guardian_b.text = "+"
 	guardian_slot.get_node("Btn/Icon").texture = null
-	# 【改】品质四档：无双档 3 才显示守护灵
+	# 守护灵：无双档解锁（早先约定口径；卓越档李白本就不显示——口径问题先商量再动）
 	var is_wushuang = h.get("quality", 0) == 3
 	guardian_slot.visible = is_wushuang
 	if is_wushuang:
 		data.guardian_system.init_guardian(current_hero_id)
-		var gs = data.guardian_system.get_guardian(current_hero_id)
+		var gs: Dictionary = data.guardian_system.get_guardian(current_hero_id)
 		guardian_b.text = ""
 		if ResourceLoader.exists("res://assets/heroes/icon_guardian.png"):
 			guardian_slot.get_node("Btn/Icon").texture = load("res://assets/heroes/icon_guardian.png")
-		guardian_slot.get_node("Label").text = "Lv.%d" % gs.level
+		guardian_slot.get_node("Label").text = "Lv.%d" % int(gs.get("level", 1))
 		guardian_b.pressed.connect(_on_guardian_btn_clicked)
 	else:
 		guardian_slot.get_node("Label").text = "守护灵"
@@ -280,7 +285,11 @@ func update_hero_panel():
 	if data.token_system.has_token(current_hero_id):
 		var t_cfg = data.token_system.get_token_cfg(current_hero_id)
 		token_b2.text = ""
-		token_slot2.get_node("Label").text = t_cfg.get("token_name", "信物")
+		# 有图标=无框（参考图口径：信物图标直接悬浮）
+		var t_trans := StyleBoxFlat.new()
+		t_trans.bg_color = Color(0, 0, 0, 0)
+		for st_name in ["normal", "hover", "pressed", "focus"]:
+			token_b2.add_theme_stylebox_override(st_name, t_trans)
 		if current_hero_id == "li_bai" and ResourceLoader.exists("res://assets/heroes/token_libai.png"):
 			token_slot2.get_node("Btn/Icon").texture = load("res://assets/heroes/token_libai.png")
 		token_slot2.visible = true
@@ -319,7 +328,7 @@ func update_hero_panel():
 			promo_btn.pressed.connect(promo._on_fengkui_btn_clicked)
 		elif simple_ready or h.has("promotion"):
 			var promo_name: String = str(sp_cfg.get("name", "晋升")) if simple_ready else str(h.promotion.get("name", "晋升"))
-			promo_btn.text = promo_name   # 【改】2026-09-24 按钮名=晋升玩法名（赋诗/落雁/军旅），去"赋诗晋升"特判
+			promo_btn.text = ""   # 字牌 art 自带玩法名，按钮仅作点击层
 			promo_btn.visible = true
 			var pp = c.get_node("HeroPanel/RightArtBar/PromoPlate")
 			if promo_name == "赋诗" and ResourceLoader.exists("res://assets/heroes/plate_promo_libai.png"):
@@ -410,7 +419,7 @@ func update_hero_panel():
 		lv_btn.pressed.connect(promo._on_copy_talent_btn_clicked)
 	elif need_bt:
 		# 到达突破节点：按钮显示 突破+风雅颂数量，隐藏勾选框
-		lv_btn.text = "突破\n%d" % bt_cost
+		lv_btn.text = ""   # 突破字牌 art 自带词，消耗见下方阅历
 		# 【改】批次②③④-B9：按钮内嵌成本不适用统一消耗行，按 B6 边界保持整钮红绿
 		lv_btn.add_theme_color_override("font_color", c._cost_color(int(data.items.get("fengyasong", 0)), int(bt_cost)))
 		batch_check.visible = false
@@ -422,7 +431,7 @@ func update_hero_panel():
 			lv_btn.pressed.connect(on_hero_breakthrough)
 	else:
 		# 【改】消耗数字交给统一函数：未勾选显示下一级消耗，勾选十连显示十连总价
-		lv_btn.text = _get_level_up_btn_text(h)
+		lv_btn.text = ""   # 升级字牌 art 自带词，消耗见下方阅历
 		# 【改】批次②③④-B9：按钮内嵌成本不适用统一消耗行，按 B6 边界保持整钮红绿
 		lv_btn.add_theme_color_override("font_color", c._cost_color(int(data.items.get("experience", 0)), _get_level_up_cost(h)))
 		batch_check.visible = true
@@ -433,6 +442,13 @@ func update_hero_panel():
 		if not lv_btn.pressed.is_connected(on_hero_level_upgrade):
 			lv_btn.pressed.connect(on_hero_level_upgrade)
 	
+	# 升级阅历：拥有/消耗（升级牌下方独立显示，随十连勾选联动）
+	if c.has_node("HeroPanel/RightArtBar/LevelUpInfo"):
+		var lv_info = c.get_node("HeroPanel/RightArtBar/LevelUpInfo")
+		var own_exp: int = int(data.items.get("experience", 0))
+		var need_exp: int = _get_level_up_cost(h)
+		lv_info.text = "阅历：%s/%s" % [c.format_number(own_exp), c.format_number(need_exp)]
+		lv_info.add_theme_color_override("font_color", c._cost_color(own_exp, need_exp))
 	if not c.has_node("HeroPanel/ScrollContainer/SkillList"): return
 	var list = c.get_node("HeroPanel/ScrollContainer/SkillList")
 	
