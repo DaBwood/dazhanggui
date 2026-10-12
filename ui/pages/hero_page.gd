@@ -7,6 +7,9 @@
 class_name HeroPage
 extends RefCounted
 
+# 门客列表主题素材契约（assets/heroes/，缺素材时各控件有文字/色块退化）
+const HERO_UI_DIR := "res://assets/heroes/"
+const HERO_CAREER_ICON := {"士": "career_shi", "农": "career_nong", "工": "career_gong", "商": "career_shang", "侠": "career_xia"}
 var c      # game_controller 根脚本引用
 var data   # GameData 数据中枢引用
 
@@ -31,9 +34,8 @@ var _sel_idx: Dictionary = {"skill": 0, "shop": 0, "costume": 0, "halo": 0}
 # 【第35节】各页签按钮排滚动位置记忆（点按钮/升级触发重建时不跳回最左）
 var _btn_scroll: Dictionary = {"skill": 0, "shop": 0, "costume": 0, "halo": 0}
 
-# 门客列表过滤：职业页签（""=全部）+ 搜索关键字（放大镜弹窗写入）
+# 门客列表过滤：职业页签（""=全部）
 var _hero_career := ""
-var _hero_kw := ""
 var _hero_career_btns := {}   # 职业→按钮，用于高亮当前页签
 
 
@@ -58,7 +60,7 @@ func generate_hero_list():
 		scroll.remove_child(child) 
 		child.queue_free()
 	
-	# 创建网格
+	# 固定 3 列，卡片定高=滚动区高/3：一页最多 3 行
 	var grid = GridContainer.new()
 	grid.name = "HeroGrid"
 	grid.columns = 3
@@ -66,61 +68,179 @@ func generate_hero_list():
 	grid.add_theme_constant_override("v_separation", 12)
 	grid.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	scroll.add_child(grid)
+	scroll.vertical_scroll_mode = ScrollContainer.SCROLL_MODE_SHOW_NEVER   # 藏滚动条，拖动/滚轮仍可用
+	var card_h := int((scroll.size.y - 24) / 3)
 	
 	# 1. 已解锁门客
 	for hero_id in data.heroes.keys():
 		var cell = _create_hero_card(hero_id, false)
+		cell.custom_minimum_size.y = card_h
 		grid.add_child(cell)
 	
 	# 2. 未解锁的VIP门客
 	for hero_id in data.get_all_hero_ids():
 		if not data.heroes.has(hero_id):
 			var cell = _create_hero_card(hero_id, true)
+			cell.custom_minimum_size.y = card_h
 			grid.add_child(cell)
 	
 	_ensure_hero_filter_bar()   # 顶栏隐藏后露出的底条：职业页签+放大镜搜索
-	_apply_hero_search()
+	_apply_hero_filter()
 	update_hero_list()
 
 func _create_hero_card(hero_id: String, locked: bool) -> Button:
-	var cell = Button.new()
+	var cell := Button.new()
 	cell.name = hero_id + ("_hero_locked" if locked else "_hero")
 	cell.custom_minimum_size = Vector2(180, 240)
 	cell.size_flags_horizontal = Control.SIZE_EXPAND_FILL
-	# 【修】手机端：按钮默认 STOP 拦截触摸滚动，改 PASS 让滑动事件穿透到 ScrollContainer
-	cell.mouse_filter = Control.MOUSE_FILTER_PASS
-	
-	var vbox = VBoxContainer.new()
-	vbox.alignment = BoxContainer.ALIGNMENT_CENTER
-	vbox.add_theme_constant_override("separation", 6)
-	cell.add_child(vbox)
-	
-	var name_lbl = Label.new()
-	name_lbl.name = "NameLabel"
-	name_lbl.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
-	name_lbl.add_theme_font_size_override("font_size", 16)
-	vbox.add_child(name_lbl)
-	
-	var income_lbl = Label.new()
-	income_lbl.name = "IncomeLabel"
-	income_lbl.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
-	income_lbl.add_theme_font_size_override("font_size", 16)
-	vbox.add_child(income_lbl)
-	
-	var status_lbl = Label.new()
-	status_lbl.name = "StatusLabel"
-	status_lbl.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
-	status_lbl.add_theme_font_size_override("font_size", 16)
-	vbox.add_child(status_lbl)
-	
-	if locked:
-		cell.modulate = Color(0.5, 0.5, 0.5, 0.7)
-		cell.pressed.connect(_on_locked_hero_clicked.bind(hero_id))
-	else:
-		cell.pressed.connect(open_hero_detail.bind(hero_id))
-	
-	return cell
+	cell.focus_mode = Control.FOCUS_NONE
+	cell.clip_contents = true   # 立绘铺满+棱形角标出血，统一由卡片裁圆角
+	cell.mouse_default_cursor_shape = Control.CURSOR_POINTING_HAND
+	var base := StyleBoxFlat.new()
+	base.bg_color = Color("#232035")
+	base.set_border_width_all(2)
+	base.border_color = Color(0.5, 0.5, 0.55)
+	base.set_corner_radius_all(8)
+	cell.add_theme_stylebox_override("normal", base)
+	cell.add_theme_stylebox_override("hover", base)
+	cell.add_theme_stylebox_override("pressed", base)
+	cell.set_meta("hero_id", hero_id)
 
+	# 立绘主题底图：全卡铺满，素材缺失时露卡底色
+	var art := TextureRect.new()
+	art.name = "Portrait"
+	art.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT, Control.PRESET_MODE_MINSIZE, 3)
+	art.expand_mode = TextureRect.EXPAND_IGNORE_SIZE
+	art.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_COVERED
+	art.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	var p_path := "res://assets/portraits/heroes/%s.png" % hero_id
+	if ResourceLoader.exists(p_path):
+		art.texture = load(p_path)
+	cell.add_child(art)
+
+	# 左上棱形等级牌：菱形本体旋转，数字保持横排
+	var dia := Panel.new()
+	dia.name = "LvDiamond"
+	dia.position = Vector2(15, 3)
+	dia.size = Vector2(22, 22)
+	dia.rotation = PI / 4.0
+	dia.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	var d_sty := StyleBoxFlat.new()
+	d_sty.bg_color = Color(0.08, 0.08, 0.12, 0.88)
+	d_sty.border_color = Color(0.95, 0.9, 0.72)
+	d_sty.set_border_width_all(1)
+	dia.add_theme_stylebox_override("panel", d_sty)
+	cell.add_child(dia)
+	var lv := Label.new()
+	lv.name = "LvLabel"
+	lv.position = Vector2(3, 7)
+	lv.size = Vector2(46, 14)
+	lv.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	lv.add_theme_font_size_override("font_size", 14)
+	lv.add_theme_color_override("font_color", Color(1, 0.95, 0.8))
+	lv.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	cell.add_child(lv)
+
+	# 右上名字竖签：红笔刷底图叠竖排名字，素材缺失退化为红底块
+	var tag := TextureRect.new()
+	tag.name = "NameTag"
+	tag.anchor_left = 1.0
+	tag.anchor_right = 1.0
+	tag.offset_left = -30
+	tag.offset_right = -4
+	tag.offset_top = 4
+	tag.offset_bottom = 112
+	tag.expand_mode = TextureRect.EXPAND_IGNORE_SIZE
+	tag.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_CENTERED
+	tag.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	var tag_tex := _load_hero_ui_icon("name_tag")
+	if tag_tex != null:
+		tag.texture = tag_tex
+	cell.add_child(tag)
+	var nm := Label.new()
+	nm.name = "NameLabel"
+	nm.anchor_left = 1.0
+	nm.anchor_right = 1.0
+	nm.offset_left = -30
+	nm.offset_right = -4
+	nm.offset_top = 4
+	nm.offset_bottom = 112
+	nm.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	nm.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
+	nm.add_theme_font_size_override("font_size", 16)
+	nm.add_theme_color_override("font_color", Color(1, 1, 1))
+	nm.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	if tag_tex == null:
+		var nm_sty := StyleBoxFlat.new()
+		nm_sty.bg_color = Color(0.6, 0.1, 0.1, 0.92)
+		nm_sty.set_corner_radius_all(4)
+		nm.add_theme_stylebox_override("normal", nm_sty)
+	cell.add_child(nm)
+
+	# 左下职业小圆标（缺图退化为职业字）
+	var job := TextureRect.new()
+	job.name = "CareerIcon"
+	job.anchor_top = 1.0
+	job.anchor_bottom = 1.0
+	job.offset_left = 6
+	job.offset_top = -32
+	job.offset_right = 30
+	job.offset_bottom = -8
+	job.expand_mode = TextureRect.EXPAND_IGNORE_SIZE
+	job.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_CENTERED
+	job.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	var job_tex: Texture2D = null
+	var cfg0 = data.get_hero_config(hero_id)
+	if cfg0:
+		job_tex = _load_hero_ui_icon(str(HERO_CAREER_ICON.get(str(cfg0.get("category", "")), "")))
+	if job_tex != null:
+		job.texture = job_tex
+	cell.add_child(job)
+	var job_fb := Label.new()
+	job_fb.name = "CareerFallback"
+	job_fb.anchor_top = 1.0
+	job_fb.anchor_bottom = 1.0
+	job_fb.offset_left = 6
+	job_fb.offset_top = -32
+	job_fb.offset_right = 30
+	job_fb.offset_bottom = -8
+	job_fb.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	job_fb.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
+	job_fb.add_theme_font_size_override("font_size", 14)
+	job_fb.add_theme_color_override("font_color", Color(1, 1, 1))
+	job_fb.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	job_fb.visible = (job_tex == null)
+	if cfg0:
+		job_fb.text = str(cfg0.get("category", ""))
+	cell.add_child(job_fb)
+
+	# 职业右侧半透明黑底精进星条
+	var strip := Panel.new()
+	strip.name = "StarStrip"
+	strip.anchor_left = 0.0
+	strip.anchor_right = 1.0
+	strip.anchor_top = 1.0
+	strip.anchor_bottom = 1.0
+	strip.offset_left = 34
+	strip.offset_right = -6
+	strip.offset_top = -32
+	strip.offset_bottom = -8
+	strip.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	var s_sty := StyleBoxFlat.new()
+	s_sty.bg_color = Color(0, 0, 0, 0.55)
+	s_sty.set_corner_radius_all(4)
+	strip.add_theme_stylebox_override("panel", s_sty)
+	cell.add_child(strip)
+	var st := Label.new()
+	st.name = "StatusLabel"
+	st.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
+	st.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	st.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
+	st.add_theme_font_size_override("font_size", 15)
+	st.add_theme_color_override("font_color", Color(1, 0.84, 0.3))
+	st.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	strip.add_child(st)
+	return cell
 func _on_locked_hero_clicked(hero_id: String):
 	var vip_level = data.get_hero_unlock_vip(hero_id)
 	var cfg = data.get_hero_config(hero_id)
@@ -880,63 +1000,53 @@ func open_hero_detail(hero_id: String):
 func update_hero_list():
 	if not c.has_node("PageContainer/HeroPage/HeroScroll/HeroGrid"): return
 	var grid = c.get_node("PageContainer/HeroPage/HeroScroll/HeroGrid")
-	
+	_refresh_hero_top_bar()
 	for cell in grid.get_children():
 		if not cell is Button: continue
-		
-		var hero_id = cell.name.replace("_hero_locked", "").replace("_hero", "")
-		
-		var name_lbl = cell.find_child("NameLabel", true, false)
-		var income_lbl = cell.find_child("IncomeLabel", true, false)
-		var status_lbl = cell.find_child("StatusLabel", true, false)
-		
+		var hero_id = str(cell.get_meta("hero_id", str(cell.name).replace("_hero_locked", "").replace("_hero", "")))
+		var lv_lbl = cell.get_node_or_null("LvLabel")
+		var nm_lbl = cell.get_node_or_null("NameLabel")
+		var st_lbl = cell.get_node_or_null("StatusLabel")
 		var h = null
-		var income = 0
-		var status = ""
-		
 		if data.heroes.has(hero_id):
 			h = data.heroes[hero_id]
-			status = data.talent_system.get_star_text(hero_id)
-			income = data.get_hero_income(hero_id)
 			cell.modulate = Color.WHITE
-		elif not data.heroes.has(hero_id) and data.get_hero_config(hero_id) != null:
+		elif data.get_hero_config(hero_id) != null:
 			h = data.get_hero_config(hero_id)
-			var vip_level = data.get_hero_unlock_vip(hero_id)
-			status = "VIP%d解锁" % vip_level
 			cell.modulate = Color(0.5, 0.5, 0.5, 0.7)
 		else:
 			continue
-		
-		if name_lbl:
-			# 【改】copy_max_level 持有者列表同步显示有效等级（未拥有门客按配置原等级）
-			var show_lv2 = int(h.level)
-			if data.heroes.has(hero_id):
-				var copy_lv2 = data.talent_system.get_copy_level(hero_id)
-				if copy_lv2 > 0:
-					show_lv2 = maxi(show_lv2, copy_lv2)
-			name_lbl.text = "【%s】Lv.%d | %s" % [h.name, show_lv2, h.category]
-			# 【新增】门客名字按品质着色（传奇橙#e67e22/无双红#e74c3c，普通白）
-			name_lbl.add_theme_color_override("font_color", Color(HeroData.get_quality_color(int(h.get("quality", 0)))))
-		if income_lbl:
-			income_lbl.text = "%s/秒" % c.format_number(income)
-		if status_lbl:
-			status_lbl.text = status
-		
-		# 【新增】卡片边框按品质着色（普通/卓越紫、传奇橙、无双红；locked 卡整体灰显自然压暗）
+		var locked: bool = not data.heroes.has(hero_id)
+		if lv_lbl:
+			var show_lv = int(h.level)
+			if not locked:
+				var copy_lv = data.talent_system.get_copy_level(hero_id)
+				if copy_lv > 0:
+					show_lv = maxi(show_lv, copy_lv)
+			lv_lbl.text = str(show_lv)
+		if nm_lbl:
+			var parts := PackedStringArray()
+			for ch in str(h.name):
+				parts.append(ch)
+			nm_lbl.text = "\n".join(parts)
+		if st_lbl:
+			if locked:
+				st_lbl.text = "VIP%d解锁" % data.get_hero_unlock_vip(hero_id)
+				st_lbl.add_theme_color_override("font_color", Color(0.82, 0.82, 0.88))
+			else:
+				st_lbl.text = data.talent_system.get_star_text(hero_id)
+				st_lbl.add_theme_color_override("font_color", Color(1, 0.84, 0.3))
 		var q_col = Color(HeroData.get_quality_color(int(h.get("quality", 0))))
 		var card_sty = StyleBoxFlat.new()
 		card_sty.bg_color = Color("#232035")
 		card_sty.border_color = q_col
 		card_sty.set_border_width_all(2)
-		card_sty.set_corner_radius_all(6)
+		card_sty.set_corner_radius_all(8)
 		cell.add_theme_stylebox_override("normal", card_sty)
 		cell.add_theme_stylebox_override("hover", card_sty)
 		cell.add_theme_stylebox_override("pressed", card_sty)
-	
-	_sort_hero_grid(grid)   # 【新增】每次刷新后按实时赚速重排卡片顺序
 
-# 【新增】门客网格按赚速降序重排：已解锁按实时赚速从高到低，未解锁VIP门客保持原相对顺序排在最后
-# 赚速会随升级/今日新菜等变化，所以在 update_hero_list 每次刷新时调用，保证顺序始终最新
+	_sort_hero_grid(grid)   # 每次刷新后按实时赚速重排卡片顺序
 func _sort_hero_grid(grid):
 	var unlocked = []   # 已解锁：[cell, 品质, 实时赚速]
 	var locked = []     # 未解锁VIP门客：保持原相对顺序
@@ -2319,85 +2429,123 @@ func _ensure_hero_filter_bar():
 	var hero_pg = c.get_node_or_null("PageContainer/HeroPage")
 	if hero_pg == null:
 		return
-	var scroll: ScrollContainer = hero_pg.get_node("HeroScroll")
+	_ensure_hero_top_bar()
 	if hero_pg.has_node("HeroFilterBar"):
 		return
 	var bar := HBoxContainer.new()
 	bar.name = "HeroFilterBar"
 	bar.set_anchors_preset(Control.PRESET_BOTTOM_WIDE)
-	bar.offset_top = -44
+	bar.offset_top = -72
 	bar.alignment = BoxContainer.ALIGNMENT_CENTER
-	bar.add_theme_constant_override("separation", 6)
+	bar.add_theme_constant_override("separation", 12)
 	hero_pg.add_child(bar)
-	var careers := ["", "士", "农", "工", "商", "侠"]
+	# 页签顺序照参考图：全/侠/农/工/商/士
+	var careers := ["", "侠", "农", "工", "商", "士"]
 	for i in range(careers.size()):
 		var b := Button.new()
-		b.text = "全部" if careers[i] == "" else careers[i]
-		b.custom_minimum_size = Vector2(46, 34)
-		b.add_theme_font_size_override("font_size", 13)
+		b.custom_minimum_size = Vector2(48, 48)
+		b.focus_mode = Control.FOCUS_NONE
+		# 圆标四角透明，Button 默认底透出成黑边，四态全透
+		for sty in ["normal", "hover", "pressed", "focus"]:
+			var b_sty := StyleBoxFlat.new()
+			b_sty.bg_color = Color(0, 0, 0, 0)
+			b.add_theme_stylebox_override(sty, b_sty)
+		var tex := _load_hero_ui_icon("filter_all" if careers[i] == "" else HERO_CAREER_ICON[careers[i]])
+		if tex != null:
+			b.icon = tex
+			b.expand_icon = true
+			b.add_theme_constant_override("icon_max_width", 42)   # 统一图标宽，stylebox/素材差异不再影响尺寸
+		else:
+			b.text = "全部" if careers[i] == "" else careers[i]
+			b.add_theme_font_size_override("font_size", 14)
 		b.pressed.connect(_set_hero_career.bind(careers[i]))
 		_hero_career_btns[careers[i]] = b
 		bar.add_child(b)
-		if careers[i] == _hero_career:
-			b.modulate = Color(1.3, 1.15, 0.7)
-	var sp := Control.new()
-	sp.size_flags_horizontal = Control.SIZE_EXPAND_FILL
-	bar.add_child(sp)
-	var mag := Button.new()
-	mag.text = "搜索"
-	mag.custom_minimum_size = Vector2(44, 34)
-	mag.add_theme_font_size_override("font_size", 15)
-	mag.pressed.connect(_on_hero_search_popup)
-	bar.add_child(mag)
-	# 列表区让出底条高度
-	scroll.offset_top = 0
-	scroll.offset_bottom = -44
+	# 神话门客入口（素材已就位，玩法预留）
+	var myth := Button.new()
+	myth.name = "MythBtn"
+	myth.custom_minimum_size = Vector2(72, 70)
+	myth.focus_mode = Control.FOCUS_NONE
+	# 图标带透明区，Button 默认深色底会透出成黑边，背景全透
+	for sty in ["normal", "hover", "pressed", "focus"]:
+		var m_sty := StyleBoxFlat.new()
+		m_sty.bg_color = Color(0, 0, 0, 0)
+		myth.add_theme_stylebox_override(sty, m_sty)
+	var mv := VBoxContainer.new()
+	mv.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	mv.alignment = BoxContainer.ALIGNMENT_CENTER
+	var mi := TextureRect.new()
+	mi.expand_mode = TextureRect.EXPAND_IGNORE_SIZE
+	mi.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_CENTERED
+	mi.custom_minimum_size = Vector2(62, 52)
+	var myth_tex := _load_hero_ui_icon("btn_myth")
+	if myth_tex != null:
+		mi.texture = myth_tex
+	mv.add_child(mi)
+	var ml := Label.new()
+	ml.text = "神话门客"
+	ml.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	ml.add_theme_font_size_override("font_size", 20)
+	ml.add_theme_color_override("font_color", Color(0.9, 0.8, 0.55))
+	mv.add_child(ml)
+	myth.add_child(mv)
+	myth.pressed.connect(func(): c._show_success_popup("神话门客后续版本开放", 0, "info"))
+	bar.add_child(myth)
+
+func _ensure_hero_top_bar():
+	var hero_pg = c.get_node_or_null("PageContainer/HeroPage")
+	if hero_pg == null:
+		return
+	if hero_pg.has_node("HeroTopBar"):
+		return
+	var top := HBoxContainer.new()
+	top.name = "HeroTopBar"
+	top.anchor_right = 1.0
+	top.offset_left = 16
+	top.offset_right = -16
+	top.offset_top = 8
+	top.offset_bottom = 34
+	top.add_theme_constant_override("separation", 24)
+	hero_pg.add_child(top)
+	var cnt := Label.new()
+	cnt.name = "CountLabel"
+	cnt.add_theme_font_size_override("font_size", 20)
+	cnt.add_theme_color_override("font_color", Color(0.92, 0.85, 0.65))
+	top.add_child(cnt)
+	var tot := Label.new()
+	tot.name = "TotalLabel"
+	tot.add_theme_font_size_override("font_size", 20)
+	tot.add_theme_color_override("font_color", Color(0.92, 0.85, 0.65))
+	top.add_child(tot)
+
+func _refresh_hero_top_bar():
+	var top = c.get_node_or_null("PageContainer/HeroPage/HeroTopBar")
+	if top == null:
+		return
+	var cnt = top.get_node_or_null("CountLabel")
+	if cnt:
+		cnt.text = "门客数量：%d" % data.heroes.size()
+	var tot = top.get_node_or_null("TotalLabel")
+	if tot:
+		tot.text = "门客总赚钱：%s" % c.format_number(data.get_heroes_total_income())
+
+func _load_hero_ui_icon(file: String) -> Texture2D:
+	var p := HERO_UI_DIR + file + ".png"
+	if ResourceLoader.exists(p):
+		return load(p) as Texture2D
+	return null
 
 func _set_hero_career(career: String):
 	_hero_career = career
 	for k in _hero_career_btns.keys():
-		_hero_career_btns[k].modulate = Color(1.3, 1.15, 0.7) if k == career else Color.WHITE
-	_apply_hero_search()
+		_hero_career_btns[k].modulate = Color(1.25, 1.18, 0.85) if k == career else Color(1, 1, 1, 0.55)
+	_apply_hero_filter()
 
-func _on_hero_search_popup():
-	var popup = c._create_base_popup("搜索门客", Vector2(400, 0), Vector2.ZERO, false)
-	var vb = popup.get_child(0)
-	var edit := LineEdit.new()
-	edit.placeholder_text = "输入门客名字…"
-	edit.text = _hero_kw
-	edit.custom_minimum_size = Vector2(280, 40)
-	c._hook_web_cjk_input(edit, "门客名字")   # Web 端中文 IME 引擎级未修，聚焦弹原生 prompt
-	edit.text_changed.connect(func(t: String):
-		_hero_kw = t.strip_edges()
-		_apply_hero_search())
-	vb.add_child(edit)
-	var row := HBoxContainer.new()
-	row.alignment = BoxContainer.ALIGNMENT_CENTER
-	row.add_theme_constant_override("separation", 12)
-	vb.add_child(row)
-	var clear := Button.new()
-	clear.text = "清空"
-	clear.pressed.connect(func():
-		_hero_kw = ""
-		edit.text = ""
-		_apply_hero_search())
-	row.add_child(clear)
-	var done := Button.new()
-	done.text = "完成"
-	done.pressed.connect(func(): popup.queue_free())
-	row.add_child(done)
-	c.add_child(popup)
-
-func _apply_hero_search():
+func _apply_hero_filter():
 	var grid: GridContainer = c.get_node_or_null("PageContainer/HeroPage/HeroScroll/HeroGrid")
 	if grid == null:
 		return
 	for card in grid.get_children():
-		var hid := str(card.name).trim_suffix("_hero_locked").trim_suffix("_hero")
+		var hid := str(card.get_meta("hero_id", str(card.name).trim_suffix("_hero_locked").trim_suffix("_hero")))
 		var cfg: Dictionary = data._hero_configs.get(hid, {})
-		var hit := true
-		if _hero_career != "" and str(cfg.get("category", "")) != _hero_career:
-			hit = false
-		if hit and _hero_kw != "" and not str(cfg.get("name", hid)).contains(_hero_kw):
-			hit = false
-		card.visible = hit
+		card.visible = (_hero_career == "" or str(cfg.get("category", "")) == _hero_career)

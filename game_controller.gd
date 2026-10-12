@@ -1655,8 +1655,9 @@ func _apply_portrait_layout():
 			var sc = get_node(path)
 			sc.set_anchors_preset(Control.PRESET_TOP_LEFT)
 			if path.ends_with("HeroScroll"):
-				sc.position = Vector2(12, 0)
-				sc.size = Vector2(vs.x - 24, vs.y - 110)
+				# 门客页：顶部统计条占 40、底部职业页签条占 64，滚动区上下让位
+				sc.position = Vector2(12, 40)
+				sc.size = Vector2(vs.x - 24, vs.y - 110 - 40 - 64)
 			else:
 				sc.position = Vector2.ZERO
 				sc.size = Vector2(vs.x, vs.y - 110)
