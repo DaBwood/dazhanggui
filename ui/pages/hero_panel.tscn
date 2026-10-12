@@ -1,19 +1,25 @@
-[gd_scene format=3]
+[gd_scene format=3 uid="uid://b6wq11ey0jn7f"]
 
-[ext_resource type="Texture" path="res://assets/heroes/icon_shenfen.png" id="icon_shenfen"]
-[ext_resource type="Texture" path="res://assets/heroes/icon_huanzhuang.png" id="icon_huanzhuang"]
-[ext_resource type="Texture" path="res://assets/heroes/icon_tianfu.png" id="icon_tianfu"]
-[ext_resource type="Texture" path="res://assets/heroes/icon_yuanfen.png" id="icon_yuanfen"]
-[ext_resource type="Texture" path="res://assets/heroes/plate_levelup.png" id="plate_levelup"]
-[ext_resource type="Texture" path="res://assets/heroes/plate_break.png" id="plate_break"]
-[ext_resource type="Texture" path="res://assets/heroes/plate_promo_libai.png" id="plate_promo"]
-[ext_resource type="Texture" path="res://assets/heroes/income_plate.png" id="income_plate"]
+[ext_resource type="Texture2D" uid="uid://bpoxjpxi1su04" path="res://assets/heroes/icon_huanzhuang.png" id="icon_huanzhuang"]
+[ext_resource type="Texture2D" uid="uid://dtjl7bxh73b1x" path="res://assets/heroes/icon_shenfen.png" id="icon_shenfen"]
+[ext_resource type="Texture2D" uid="uid://pg882fg641pp" path="res://assets/heroes/icon_tianfu.png" id="icon_tianfu"]
+[ext_resource type="Texture2D" uid="uid://beguw6saob5sg" path="res://assets/heroes/icon_yuanfen.png" id="icon_yuanfen"]
+[ext_resource type="Texture2D" uid="uid://cqrlkqbn2ilyh" path="res://assets/heroes/income_plate.png" id="income_plate"]
+[ext_resource type="Texture2D" uid="uid://wjils6fd2eis" path="res://assets/heroes/plate_levelup.png" id="plate_levelup"]
+[ext_resource type="Texture2D" uid="uid://dha3qpytud548" path="res://assets/heroes/plate_promo_libai.png" id="plate_promo"]
 
 [sub_resource type="StyleBoxFlat" id="panel_sty"]
 bg_color = Color(0.117647, 0.105882, 0.180392, 1)
 
 [sub_resource type="StyleBoxFlat" id="style_trans"]
 bg_color = Color(0, 0, 0, 0)
+
+[sub_resource type="StyleBoxFlat" id="label_sty"]
+bg_color = Color(0, 0, 0, 0.45)
+corner_radius_top_left = 3
+corner_radius_top_right = 3
+corner_radius_bottom_right = 3
+corner_radius_bottom_left = 3
 
 [sub_resource type="StyleBoxFlat" id="slot_sty"]
 bg_color = Color(0.16, 0.15, 0.22, 0.9)
@@ -27,21 +33,13 @@ corner_radius_top_right = 36
 corner_radius_bottom_right = 36
 corner_radius_bottom_left = 36
 
-[sub_resource type="StyleBoxFlat" id="label_sty"]
-bg_color = Color(0, 0, 0, 0.45)
-corner_radius_top_left = 3
-corner_radius_top_right = 3
-corner_radius_bottom_right = 3
-corner_radius_bottom_left = 3
-
-[node name="HeroPanel" type="Panel"]
-visible = false
+[node name="HeroPanel" type="Panel" unique_id=1315757794]
 z_index = 10
 offset_right = 600.0
 offset_bottom = 1067.0
 theme_override_styles/panel = SubResource("panel_sty")
 
-[node name="Portrait" type="TextureRect" parent="."]
+[node name="Portrait" type="TextureRect" parent="." unique_id=1675268489]
 layout_mode = 0
 anchor_right = 1.0
 anchor_bottom = 1.0
@@ -51,7 +49,7 @@ mouse_filter = 2
 expand_mode = 1
 stretch_mode = 5
 
-[node name="HeroCloseBtn" type="Button" parent="."]
+[node name="HeroCloseBtn" type="Button" parent="." unique_id=220965334]
 layout_mode = 0
 offset_left = 10.0
 offset_top = 10.0
@@ -59,21 +57,22 @@ offset_right = 110.0
 offset_bottom = 50.0
 text = "< 门客培养"
 
-[node name="ShenfenBtn" type="Button" parent="."]
-layout_mode = 0
+[node name="ShenfenBtn" type="Button" parent="." unique_id=909379956]
+layout_mode = 1
+anchors_preset = 1
 anchor_left = 1.0
 anchor_right = 1.0
-offset_left = -76.0
-offset_top = 10.0
-offset_right = -10.0
-offset_bottom = 76.0
+offset_left = -95.0
+offset_top = 51.0
+offset_right = -29.0
+offset_bottom = 117.0
 grow_horizontal = 0
 theme_override_styles/normal = SubResource("style_trans")
-theme_override_styles/hover = SubResource("style_trans")
 theme_override_styles/pressed = SubResource("style_trans")
+theme_override_styles/hover = SubResource("style_trans")
 theme_override_styles/focus = SubResource("style_trans")
 
-[node name="ShenfenIcon" type="TextureRect" parent="ShenfenBtn"]
+[node name="ShenfenIcon" type="TextureRect" parent="ShenfenBtn" unique_id=1381656232]
 layout_mode = 0
 anchor_right = 1.0
 anchor_bottom = 1.0
@@ -88,14 +87,14 @@ texture = ExtResource("icon_shenfen")
 expand_mode = 1
 stretch_mode = 5
 
-[node name="BannerBox" type="Control" parent="."]
-layout_mode = 0
+[node name="BannerBox" type="Control" parent="." unique_id=1502691341]
+anchors_preset = 0
 offset_left = 14.0
 offset_top = 84.0
 offset_right = 148.0
 offset_bottom = 470.0
 
-[node name="HeroBanner" type="TextureRect" parent="BannerBox"]
+[node name="HeroBanner" type="TextureRect" parent="BannerBox" unique_id=2064876485]
 layout_mode = 0
 anchor_right = 1.0
 anchor_bottom = 1.0
@@ -105,31 +104,29 @@ mouse_filter = 2
 expand_mode = 1
 stretch_mode = 5
 
-[node name="HeroName" type="Label" parent="BannerBox"]
+[node name="HeroName" type="Label" parent="BannerBox" unique_id=2001520374]
 layout_mode = 0
 anchor_right = 1.0
 offset_top = 110.0
 offset_bottom = 144.0
 grow_horizontal = 2
-mouse_filter = 2
 theme_override_colors/font_color = Color(1, 1, 1, 1)
 theme_override_font_sizes/font_size = 20
 horizontal_alignment = 1
 vertical_alignment = 1
 
-[node name="HeroStars" type="Label" parent="BannerBox"]
+[node name="HeroStars" type="Label" parent="BannerBox" unique_id=1419604704]
 layout_mode = 0
 anchor_right = 1.0
 offset_top = 146.0
 offset_bottom = 174.0
 grow_horizontal = 2
-mouse_filter = 2
 theme_override_colors/font_color = Color(1, 0.84, 0, 1)
 theme_override_font_sizes/font_size = 16
 horizontal_alignment = 1
 vertical_alignment = 1
 
-[node name="LeftBar" type="VBoxContainer" parent="."]
+[node name="LeftBar" type="VBoxContainer" parent="." unique_id=828177882]
 layout_mode = 0
 offset_left = 10.0
 offset_top = 482.0
@@ -137,15 +134,15 @@ offset_right = 86.0
 offset_bottom = 656.0
 theme_override_constants/separation = 6
 
-[node name="CostumeBtn" type="Button" parent="LeftBar"]
+[node name="CostumeBtn" type="Button" parent="LeftBar" unique_id=128689874]
 custom_minimum_size = Vector2(68, 54)
 layout_mode = 2
 theme_override_styles/normal = SubResource("style_trans")
-theme_override_styles/hover = SubResource("style_trans")
 theme_override_styles/pressed = SubResource("style_trans")
+theme_override_styles/hover = SubResource("style_trans")
 theme_override_styles/focus = SubResource("style_trans")
 
-[node name="Icon" type="TextureRect" parent="LeftBar/CostumeBtn"]
+[node name="Icon" type="TextureRect" parent="LeftBar/CostumeBtn" unique_id=166518034]
 layout_mode = 0
 anchor_right = 1.0
 anchor_bottom = 1.0
@@ -160,7 +157,7 @@ texture = ExtResource("icon_huanzhuang")
 expand_mode = 1
 stretch_mode = 5
 
-[node name="Label" type="Label" parent="LeftBar/CostumeBtn"]
+[node name="Label" type="Label" parent="LeftBar/CostumeBtn" unique_id=1407442449]
 layout_mode = 0
 anchor_top = 1.0
 anchor_right = 1.0
@@ -168,7 +165,6 @@ anchor_bottom = 1.0
 offset_top = -17.0
 grow_horizontal = 2
 grow_vertical = 0
-mouse_filter = 2
 theme_override_colors/font_color = Color(1, 1, 1, 1)
 theme_override_font_sizes/font_size = 12
 theme_override_styles/normal = SubResource("label_sty")
@@ -176,15 +172,15 @@ text = "换装"
 horizontal_alignment = 1
 vertical_alignment = 1
 
-[node name="TalentBtn" type="Button" parent="LeftBar"]
+[node name="TalentBtn" type="Button" parent="LeftBar" unique_id=2095752066]
 custom_minimum_size = Vector2(68, 54)
 layout_mode = 2
 theme_override_styles/normal = SubResource("style_trans")
-theme_override_styles/hover = SubResource("style_trans")
 theme_override_styles/pressed = SubResource("style_trans")
+theme_override_styles/hover = SubResource("style_trans")
 theme_override_styles/focus = SubResource("style_trans")
 
-[node name="Icon" type="TextureRect" parent="LeftBar/TalentBtn"]
+[node name="Icon" type="TextureRect" parent="LeftBar/TalentBtn" unique_id=1100874052]
 layout_mode = 0
 anchor_right = 1.0
 anchor_bottom = 1.0
@@ -199,7 +195,7 @@ texture = ExtResource("icon_tianfu")
 expand_mode = 1
 stretch_mode = 5
 
-[node name="Label" type="Label" parent="LeftBar/TalentBtn"]
+[node name="Label" type="Label" parent="LeftBar/TalentBtn" unique_id=1728439311]
 layout_mode = 0
 anchor_top = 1.0
 anchor_right = 1.0
@@ -207,7 +203,6 @@ anchor_bottom = 1.0
 offset_top = -17.0
 grow_horizontal = 2
 grow_vertical = 0
-mouse_filter = 2
 theme_override_colors/font_color = Color(1, 1, 1, 1)
 theme_override_font_sizes/font_size = 12
 theme_override_styles/normal = SubResource("label_sty")
@@ -215,15 +210,15 @@ text = "天赋"
 horizontal_alignment = 1
 vertical_alignment = 1
 
-[node name="FateBtn" type="Button" parent="LeftBar"]
+[node name="FateBtn" type="Button" parent="LeftBar" unique_id=825599484]
 custom_minimum_size = Vector2(68, 54)
 layout_mode = 2
 theme_override_styles/normal = SubResource("style_trans")
-theme_override_styles/hover = SubResource("style_trans")
 theme_override_styles/pressed = SubResource("style_trans")
+theme_override_styles/hover = SubResource("style_trans")
 theme_override_styles/focus = SubResource("style_trans")
 
-[node name="Icon" type="TextureRect" parent="LeftBar/FateBtn"]
+[node name="Icon" type="TextureRect" parent="LeftBar/FateBtn" unique_id=976374931]
 layout_mode = 0
 anchor_right = 1.0
 anchor_bottom = 1.0
@@ -238,7 +233,7 @@ texture = ExtResource("icon_yuanfen")
 expand_mode = 1
 stretch_mode = 5
 
-[node name="Label" type="Label" parent="LeftBar/FateBtn"]
+[node name="Label" type="Label" parent="LeftBar/FateBtn" unique_id=1315447048]
 layout_mode = 0
 anchor_top = 1.0
 anchor_right = 1.0
@@ -246,7 +241,6 @@ anchor_bottom = 1.0
 offset_top = -17.0
 grow_horizontal = 2
 grow_vertical = 0
-mouse_filter = 2
 theme_override_colors/font_color = Color(1, 1, 1, 1)
 theme_override_font_sizes/font_size = 12
 theme_override_styles/normal = SubResource("label_sty")
@@ -254,17 +248,18 @@ text = "缘分"
 horizontal_alignment = 1
 vertical_alignment = 1
 
-[node name="RightArtBar" type="Control" parent="."]
-layout_mode = 0
+[node name="RightArtBar" type="Control" parent="." unique_id=1306314435]
+layout_mode = 1
+anchors_preset = 1
 anchor_left = 1.0
 anchor_right = 1.0
-offset_left = -170.0
-offset_top = 88.0
-offset_right = -16.0
-offset_bottom = 380.0
+offset_left = -118.0
+offset_top = 503.0
+offset_right = 36.0
+offset_bottom = 795.0
 grow_horizontal = 0
 
-[node name="PromoPlate" type="TextureRect" parent="RightArtBar"]
+[node name="PromoPlate" type="TextureRect" parent="RightArtBar" unique_id=1555058177]
 layout_mode = 0
 offset_right = 116.0
 offset_bottom = 112.0
@@ -273,16 +268,16 @@ texture = ExtResource("plate_promo")
 expand_mode = 1
 stretch_mode = 5
 
-[node name="PromoBtn" type="Button" parent="RightArtBar"]
+[node name="PromoBtn" type="Button" parent="RightArtBar" unique_id=1012032321]
 layout_mode = 0
 offset_right = 116.0
 offset_bottom = 112.0
 theme_override_styles/normal = SubResource("style_trans")
-theme_override_styles/hover = SubResource("style_trans")
 theme_override_styles/pressed = SubResource("style_trans")
+theme_override_styles/hover = SubResource("style_trans")
 theme_override_styles/focus = SubResource("style_trans")
 
-[node name="LevelPlate" type="TextureRect" parent="RightArtBar"]
+[node name="LevelPlate" type="TextureRect" parent="RightArtBar" unique_id=965799591]
 layout_mode = 0
 offset_top = 124.0
 offset_right = 116.0
@@ -292,117 +287,123 @@ texture = ExtResource("plate_levelup")
 expand_mode = 1
 stretch_mode = 5
 
-[node name="LevelUpBtn" type="Button" parent="RightArtBar"]
+[node name="LevelUpBtn" type="Button" parent="RightArtBar" unique_id=1878011273]
 layout_mode = 0
 offset_top = 124.0
 offset_right = 116.0
 offset_bottom = 236.0
 theme_override_styles/normal = SubResource("style_trans")
-theme_override_styles/hover = SubResource("style_trans")
 theme_override_styles/pressed = SubResource("style_trans")
+theme_override_styles/hover = SubResource("style_trans")
 theme_override_styles/focus = SubResource("style_trans")
 
-[node name="BatchCheck" type="CheckBox" parent="RightArtBar"]
+[node name="BatchCheck" type="CheckBox" parent="RightArtBar" unique_id=541572398]
 layout_mode = 0
 offset_top = 248.0
 offset_right = 150.0
 offset_bottom = 280.0
 text = "连续十次"
 
-[node name="IncomePlate" type="TextureRect" parent="."]
-layout_mode = 0
+[node name="IncomePlate" type="TextureRect" parent="." unique_id=515837476]
+custom_maximum_size = Vector2(300, 50)
+layout_mode = 1
+anchors_preset = 13
 anchor_left = 0.5
 anchor_right = 0.5
 anchor_bottom = 1.0
-offset_left = -190.0
-offset_top = -590.0
-offset_right = 190.0
-offset_bottom = -530.0
+offset_left = -177.0
+offset_top = 596.0
+offset_right = 203.0
+offset_bottom = -421.0
 grow_horizontal = 2
-grow_vertical = 0
+grow_vertical = 2
 mouse_filter = 2
 texture = ExtResource("income_plate")
 expand_mode = 1
 stretch_mode = 6
 
-[node name="HeroIncome" type="Label" parent="IncomePlate"]
+[node name="HeroIncome" type="Label" parent="IncomePlate" unique_id=1724864633]
 layout_mode = 0
 anchor_left = 0.42
 anchor_right = 0.97
 anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
-mouse_filter = 2
 theme_override_colors/font_color = Color(1, 1, 1, 1)
 theme_override_font_sizes/font_size = 22
 horizontal_alignment = 1
 vertical_alignment = 1
 
-[node name="StatsBar" type="HBoxContainer" parent="."]
-layout_mode = 0
+[node name="StatsBar" type="HBoxContainer" parent="." unique_id=981033710]
+custom_maximum_size = Vector2(-1, 50)
+layout_mode = 1
+anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
-offset_left = 100.0
-offset_top = -426.0
-offset_right = -16.0
-offset_bottom = -390.0
+offset_left = 17.0
+offset_top = 747.0
+offset_right = -99.0
+offset_bottom = -270.0
 grow_horizontal = 2
-grow_vertical = 0
+grow_vertical = 2
 theme_override_constants/separation = 18
 
-[node name="StatLevel" type="Label" parent="StatsBar"]
+[node name="StatLevel" type="Label" parent="StatsBar" unique_id=1539582531]
 layout_mode = 2
 theme_override_colors/font_color = Color(0.92, 0.88, 0.8, 1)
 theme_override_font_sizes/font_size = 15
 
-[node name="StatJob" type="Label" parent="StatsBar"]
+[node name="StatJob" type="Label" parent="StatsBar" unique_id=969116499]
 layout_mode = 2
 theme_override_colors/font_color = Color(0.92, 0.88, 0.8, 1)
 theme_override_font_sizes/font_size = 15
 
-[node name="StatApt" type="Label" parent="StatsBar"]
+[node name="StatApt" type="Label" parent="StatsBar" unique_id=1127078151]
 layout_mode = 2
 theme_override_colors/font_color = Color(0.92, 0.88, 0.8, 1)
 theme_override_font_sizes/font_size = 15
 
-[node name="StatsSpacer" type="Control" parent="StatsBar"]
+[node name="StatsSpacer" type="Control" parent="StatsBar" unique_id=681170135]
+custom_maximum_size = Vector2(-1, 50)
 layout_mode = 2
 size_flags_horizontal = 3
 
-[node name="AttrInfoBtn" type="Button" parent="StatsBar"]
+[node name="AttrInfoBtn" type="Button" parent="StatsBar" unique_id=93940486]
 custom_minimum_size = Vector2(26, 26)
 layout_mode = 2
 theme_override_font_sizes/font_size = 14
 text = "i"
 
-[node name="SysRow" type="HBoxContainer" parent="."]
-layout_mode = 0
+[node name="SysRow" type="HBoxContainer" parent="." unique_id=674805541]
+custom_maximum_size = Vector2(-1, 80)
+layout_mode = 1
+anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
-offset_left = 20.0
-offset_top = -540.0
-offset_right = -20.0
-offset_bottom = -436.0
+offset_left = -60.0
+offset_top = 662.0
+offset_right = -100.0
+offset_bottom = -325.0
 grow_horizontal = 2
-grow_vertical = 0
+grow_vertical = 2
 theme_override_constants/separation = 16
 alignment = 1
 
-[node name="SlotToken" type="VBoxContainer" parent="SysRow"]
+[node name="SlotToken" type="VBoxContainer" parent="SysRow" unique_id=210740850]
 layout_mode = 2
 theme_override_constants/separation = 2
 
-[node name="Btn" type="Button" parent="SysRow/SlotToken"]
+[node name="Btn" type="Button" parent="SysRow/SlotToken" unique_id=1234387194]
 custom_minimum_size = Vector2(72, 72)
 layout_mode = 2
-theme_override_styles/normal = SubResource("slot_sty")
-theme_override_styles/hover = SubResource("slot_sty")
-theme_override_styles/pressed = SubResource("slot_sty")
-theme_override_styles/focus = SubResource("slot_sty")
 theme_override_font_sizes/font_size = 24
+theme_override_styles/normal = SubResource("slot_sty")
+theme_override_styles/pressed = SubResource("slot_sty")
+theme_override_styles/hover = SubResource("slot_sty")
+theme_override_styles/focus = SubResource("slot_sty")
 text = "+"
 
-[node name="Icon" type="TextureRect" parent="SysRow/SlotToken/Btn"]
+[node name="Icon" type="TextureRect" parent="SysRow/SlotToken/Btn" unique_id=1704372480]
 layout_mode = 0
 anchor_right = 1.0
 anchor_bottom = 1.0
@@ -416,7 +417,7 @@ mouse_filter = 2
 expand_mode = 1
 stretch_mode = 5
 
-[node name="Label" type="Label" parent="SysRow/SlotToken"]
+[node name="Label" type="Label" parent="SysRow/SlotToken" unique_id=43905366]
 custom_minimum_size = Vector2(0, 20)
 layout_mode = 2
 theme_override_colors/font_color = Color(0.92, 0.88, 0.8, 1)
@@ -424,21 +425,21 @@ theme_override_font_sizes/font_size = 13
 text = "信物"
 horizontal_alignment = 1
 
-[node name="SlotBeast" type="VBoxContainer" parent="SysRow"]
+[node name="SlotBeast" type="VBoxContainer" parent="SysRow" unique_id=1495761942]
 layout_mode = 2
 theme_override_constants/separation = 2
 
-[node name="Btn" type="Button" parent="SysRow/SlotBeast"]
+[node name="Btn" type="Button" parent="SysRow/SlotBeast" unique_id=1194996525]
 custom_minimum_size = Vector2(72, 72)
 layout_mode = 2
-theme_override_styles/normal = SubResource("slot_sty")
-theme_override_styles/hover = SubResource("slot_sty")
-theme_override_styles/pressed = SubResource("slot_sty")
-theme_override_styles/focus = SubResource("slot_sty")
 theme_override_font_sizes/font_size = 24
+theme_override_styles/normal = SubResource("slot_sty")
+theme_override_styles/pressed = SubResource("slot_sty")
+theme_override_styles/hover = SubResource("slot_sty")
+theme_override_styles/focus = SubResource("slot_sty")
 text = "+"
 
-[node name="Icon" type="TextureRect" parent="SysRow/SlotBeast/Btn"]
+[node name="Icon" type="TextureRect" parent="SysRow/SlotBeast/Btn" unique_id=1686821815]
 layout_mode = 0
 anchor_right = 1.0
 anchor_bottom = 1.0
@@ -452,7 +453,7 @@ mouse_filter = 2
 expand_mode = 1
 stretch_mode = 5
 
-[node name="Label" type="Label" parent="SysRow/SlotBeast"]
+[node name="Label" type="Label" parent="SysRow/SlotBeast" unique_id=1895293528]
 custom_minimum_size = Vector2(0, 20)
 layout_mode = 2
 theme_override_colors/font_color = Color(0.92, 0.88, 0.8, 1)
@@ -460,21 +461,21 @@ theme_override_font_sizes/font_size = 13
 text = "珍兽"
 horizontal_alignment = 1
 
-[node name="SlotFish" type="VBoxContainer" parent="SysRow"]
+[node name="SlotFish" type="VBoxContainer" parent="SysRow" unique_id=1731137464]
 layout_mode = 2
 theme_override_constants/separation = 2
 
-[node name="Btn" type="Button" parent="SysRow/SlotFish"]
+[node name="Btn" type="Button" parent="SysRow/SlotFish" unique_id=394402857]
 custom_minimum_size = Vector2(72, 72)
 layout_mode = 2
-theme_override_styles/normal = SubResource("slot_sty")
-theme_override_styles/hover = SubResource("slot_sty")
-theme_override_styles/pressed = SubResource("slot_sty")
-theme_override_styles/focus = SubResource("slot_sty")
 theme_override_font_sizes/font_size = 24
+theme_override_styles/normal = SubResource("slot_sty")
+theme_override_styles/pressed = SubResource("slot_sty")
+theme_override_styles/hover = SubResource("slot_sty")
+theme_override_styles/focus = SubResource("slot_sty")
 text = "+"
 
-[node name="Icon" type="TextureRect" parent="SysRow/SlotFish/Btn"]
+[node name="Icon" type="TextureRect" parent="SysRow/SlotFish/Btn" unique_id=481818252]
 layout_mode = 0
 anchor_right = 1.0
 anchor_bottom = 1.0
@@ -488,7 +489,7 @@ mouse_filter = 2
 expand_mode = 1
 stretch_mode = 5
 
-[node name="Label" type="Label" parent="SysRow/SlotFish"]
+[node name="Label" type="Label" parent="SysRow/SlotFish" unique_id=236127313]
 custom_minimum_size = Vector2(0, 20)
 layout_mode = 2
 theme_override_colors/font_color = Color(0.92, 0.88, 0.8, 1)
@@ -496,21 +497,21 @@ theme_override_font_sizes/font_size = 13
 text = "渔获"
 horizontal_alignment = 1
 
-[node name="SlotCuzhi" type="VBoxContainer" parent="SysRow"]
+[node name="SlotCuzhi" type="VBoxContainer" parent="SysRow" unique_id=1285775526]
 layout_mode = 2
 theme_override_constants/separation = 2
 
-[node name="Btn" type="Button" parent="SysRow/SlotCuzhi"]
+[node name="Btn" type="Button" parent="SysRow/SlotCuzhi" unique_id=816968519]
 custom_minimum_size = Vector2(72, 72)
 layout_mode = 2
-theme_override_styles/normal = SubResource("slot_sty")
-theme_override_styles/hover = SubResource("slot_sty")
-theme_override_styles/pressed = SubResource("slot_sty")
-theme_override_styles/focus = SubResource("slot_sty")
 theme_override_font_sizes/font_size = 24
+theme_override_styles/normal = SubResource("slot_sty")
+theme_override_styles/pressed = SubResource("slot_sty")
+theme_override_styles/hover = SubResource("slot_sty")
+theme_override_styles/focus = SubResource("slot_sty")
 text = "+"
 
-[node name="Icon" type="TextureRect" parent="SysRow/SlotCuzhi/Btn"]
+[node name="Icon" type="TextureRect" parent="SysRow/SlotCuzhi/Btn" unique_id=349693179]
 layout_mode = 0
 anchor_right = 1.0
 anchor_bottom = 1.0
@@ -524,7 +525,7 @@ mouse_filter = 2
 expand_mode = 1
 stretch_mode = 5
 
-[node name="Label" type="Label" parent="SysRow/SlotCuzhi"]
+[node name="Label" type="Label" parent="SysRow/SlotCuzhi" unique_id=43700034]
 custom_minimum_size = Vector2(0, 20)
 layout_mode = 2
 theme_override_colors/font_color = Color(0.92, 0.88, 0.8, 1)
@@ -532,21 +533,21 @@ theme_override_font_sizes/font_size = 13
 text = "促织"
 horizontal_alignment = 1
 
-[node name="SlotGuardian" type="VBoxContainer" parent="SysRow"]
+[node name="SlotGuardian" type="VBoxContainer" parent="SysRow" unique_id=452167198]
 layout_mode = 2
 theme_override_constants/separation = 2
 
-[node name="Btn" type="Button" parent="SysRow/SlotGuardian"]
+[node name="Btn" type="Button" parent="SysRow/SlotGuardian" unique_id=899527266]
 custom_minimum_size = Vector2(72, 72)
 layout_mode = 2
-theme_override_styles/normal = SubResource("slot_sty")
-theme_override_styles/hover = SubResource("slot_sty")
-theme_override_styles/pressed = SubResource("slot_sty")
-theme_override_styles/focus = SubResource("slot_sty")
 theme_override_font_sizes/font_size = 24
+theme_override_styles/normal = SubResource("slot_sty")
+theme_override_styles/pressed = SubResource("slot_sty")
+theme_override_styles/hover = SubResource("slot_sty")
+theme_override_styles/focus = SubResource("slot_sty")
 text = "+"
 
-[node name="Icon" type="TextureRect" parent="SysRow/SlotGuardian/Btn"]
+[node name="Icon" type="TextureRect" parent="SysRow/SlotGuardian/Btn" unique_id=1501167234]
 layout_mode = 0
 anchor_right = 1.0
 anchor_bottom = 1.0
@@ -560,7 +561,7 @@ mouse_filter = 2
 expand_mode = 1
 stretch_mode = 5
 
-[node name="Label" type="Label" parent="SysRow/SlotGuardian"]
+[node name="Label" type="Label" parent="SysRow/SlotGuardian" unique_id=1341710083]
 custom_minimum_size = Vector2(0, 20)
 layout_mode = 2
 theme_override_colors/font_color = Color(0.92, 0.88, 0.8, 1)
@@ -568,50 +569,51 @@ theme_override_font_sizes/font_size = 13
 text = "守护灵"
 horizontal_alignment = 1
 
-[node name="SkillTabBar" type="HBoxContainer" parent="."]
+[node name="SkillTabBar" type="HBoxContainer" parent="." unique_id=724352707]
+custom_maximum_size = Vector2(-1, 50)
 layout_mode = 0
 anchor_right = 1.0
 anchor_bottom = 1.0
 offset_left = 20.0
-offset_top = -380.0
+offset_top = 817.0
 offset_right = -20.0
-offset_bottom = -344.0
+offset_bottom = -200.0
 grow_horizontal = 2
 grow_vertical = 0
 theme_override_constants/separation = 8
 
-[node name="TabSkill" type="Button" parent="SkillTabBar"]
+[node name="TabSkill" type="Button" parent="SkillTabBar" unique_id=1215619940]
 custom_minimum_size = Vector2(110, 36)
 layout_mode = 2
 text = "技能"
 
-[node name="TabShop" type="Button" parent="SkillTabBar"]
+[node name="TabShop" type="Button" parent="SkillTabBar" unique_id=503752106]
 custom_minimum_size = Vector2(110, 36)
 layout_mode = 2
 text = "副业"
 
-[node name="TabCostume" type="Button" parent="SkillTabBar"]
+[node name="TabCostume" type="Button" parent="SkillTabBar" unique_id=1742275211]
 custom_minimum_size = Vector2(110, 36)
 layout_mode = 2
 text = "服装"
 
-[node name="TabAura" type="Button" parent="SkillTabBar"]
+[node name="TabAura" type="Button" parent="SkillTabBar" unique_id=9085300]
 custom_minimum_size = Vector2(110, 36)
 layout_mode = 2
 text = "光环"
 
-[node name="ScrollContainer" type="ScrollContainer" parent="."]
-layout_mode = 0
+[node name="ScrollContainer" type="ScrollContainer" parent="." unique_id=1185537537]
+custom_maximum_size = Vector2(600, 200)
+layout_mode = 1
+anchors_preset = 12
+anchor_top = 1.0
 anchor_right = 1.0
 anchor_bottom = 1.0
-offset_left = 20.0
-offset_top = -340.0
-offset_right = -20.0
-offset_bottom = -16.0
+offset_top = -200.0
 grow_horizontal = 2
-grow_vertical = 2
+grow_vertical = 0
 
-[node name="SkillList" type="VBoxContainer" parent="ScrollContainer"]
+[node name="SkillList" type="VBoxContainer" parent="ScrollContainer" unique_id=829611958]
 layout_mode = 2
 size_flags_horizontal = 3
 theme_override_constants/separation = 8
