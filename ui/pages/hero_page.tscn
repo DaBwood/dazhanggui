@@ -1,5 +1,7 @@
 [gd_scene format=3]
 
+[ext_resource type="Texture" path="res://assets/heroes/bg_hero.png" id="bg_hero"]
+
 [ext_resource type="Texture" path="res://assets/heroes/filter_all.png" id="icon_all"]
 [ext_resource type="Texture" path="res://assets/heroes/career_shi.png" id="icon_shi"]
 [ext_resource type="Texture" path="res://assets/heroes/career_nong.png" id="icon_nong"]
@@ -18,6 +20,17 @@ anchor_right = 1.0
 anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
+
+[node name="BgImage" type="TextureRect" parent="."]
+layout_mode = 0
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+texture = ExtResource("bg_hero")
+expand_mode = 1
+stretch_mode = 6
 
 [node name="HeroTopBar" type="HBoxContainer" parent="."]
 layout_mode = 1

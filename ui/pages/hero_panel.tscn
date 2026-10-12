@@ -1,5 +1,7 @@
 [gd_scene format=3 uid="uid://c4bgrrg6egw0"]
 
+[ext_resource type="Texture" path="res://assets/heroes/bg_hero.png" id="bg_hero"]
+
 [ext_resource type="Texture2D" uid="uid://bpoxjpxi1su04" path="res://assets/heroes/icon_huanzhuang.png" id="icon_huanzhuang"]
 [ext_resource type="Texture2D" uid="uid://dtjl7bxh73b1x" path="res://assets/heroes/icon_shenfen.png" id="icon_shenfen"]
 [ext_resource type="Texture2D" uid="uid://pg882fg641pp" path="res://assets/heroes/icon_tianfu.png" id="icon_tianfu"]
@@ -38,6 +40,17 @@ z_index = 10
 offset_right = 600.0
 offset_bottom = 1067.0
 theme_override_styles/panel = SubResource("panel_sty")
+
+[node name="BgImage" type="TextureRect" parent="."]
+layout_mode = 0
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+texture = ExtResource("bg_hero")
+expand_mode = 1
+stretch_mode = 6
 
 [node name="Portrait" type="TextureRect" parent="." unique_id=714712820]
 layout_mode = 0
