@@ -247,6 +247,12 @@ func _create_hero_card(hero_id: String, locked: bool) -> Button:
 	st.add_theme_color_override("font_color", Color(1, 0.84, 0.3))
 	st.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	strip.add_child(st)
+	# 手机端：STOP 会拦截触摸滚动，PASS 让滑动穿透到 ScrollContainer（原实现口径）
+	cell.mouse_filter = Control.MOUSE_FILTER_PASS
+	if locked:
+		cell.pressed.connect(_on_locked_hero_clicked.bind(hero_id))
+	else:
+		cell.pressed.connect(open_hero_detail.bind(hero_id))
 	return cell
 func _on_locked_hero_clicked(hero_id: String):
 	var vip_level = data.get_hero_unlock_vip(hero_id)
