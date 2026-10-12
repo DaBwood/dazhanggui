@@ -1,0 +1,617 @@
+[gd_scene format=3]
+
+[ext_resource type="Texture" path="res://assets/heroes/icon_shenfen.png" id="icon_shenfen"]
+[ext_resource type="Texture" path="res://assets/heroes/icon_huanzhuang.png" id="icon_huanzhuang"]
+[ext_resource type="Texture" path="res://assets/heroes/icon_tianfu.png" id="icon_tianfu"]
+[ext_resource type="Texture" path="res://assets/heroes/icon_yuanfen.png" id="icon_yuanfen"]
+[ext_resource type="Texture" path="res://assets/heroes/plate_levelup.png" id="plate_levelup"]
+[ext_resource type="Texture" path="res://assets/heroes/plate_break.png" id="plate_break"]
+[ext_resource type="Texture" path="res://assets/heroes/plate_promo_libai.png" id="plate_promo"]
+[ext_resource type="Texture" path="res://assets/heroes/income_plate.png" id="income_plate"]
+
+[sub_resource type="StyleBoxFlat" id="panel_sty"]
+bg_color = Color(0.117647, 0.105882, 0.180392, 1)
+
+[sub_resource type="StyleBoxFlat" id="style_trans"]
+bg_color = Color(0, 0, 0, 0)
+
+[sub_resource type="StyleBoxFlat" id="slot_sty"]
+bg_color = Color(0.16, 0.15, 0.22, 0.9)
+border_width_left = 2
+border_width_top = 2
+border_width_right = 2
+border_width_bottom = 2
+border_color = Color(0.75, 0.68, 0.45, 1)
+corner_radius_top_left = 36
+corner_radius_top_right = 36
+corner_radius_bottom_right = 36
+corner_radius_bottom_left = 36
+
+[sub_resource type="StyleBoxFlat" id="label_sty"]
+bg_color = Color(0, 0, 0, 0.45)
+corner_radius_top_left = 3
+corner_radius_top_right = 3
+corner_radius_bottom_right = 3
+corner_radius_bottom_left = 3
+
+[node name="HeroPanel" type="Panel"]
+visible = false
+z_index = 10
+offset_right = 600.0
+offset_bottom = 1067.0
+theme_override_styles/panel = SubResource("panel_sty")
+
+[node name="Portrait" type="TextureRect" parent="."]
+layout_mode = 0
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+expand_mode = 1
+stretch_mode = 5
+
+[node name="HeroCloseBtn" type="Button" parent="."]
+layout_mode = 0
+offset_left = 10.0
+offset_top = 10.0
+offset_right = 110.0
+offset_bottom = 50.0
+text = "< 门客培养"
+
+[node name="ShenfenBtn" type="Button" parent="."]
+layout_mode = 0
+anchor_left = 1.0
+anchor_right = 1.0
+offset_left = -76.0
+offset_top = 10.0
+offset_right = -10.0
+offset_bottom = 76.0
+grow_horizontal = 0
+theme_override_styles/normal = SubResource("style_trans")
+theme_override_styles/hover = SubResource("style_trans")
+theme_override_styles/pressed = SubResource("style_trans")
+theme_override_styles/focus = SubResource("style_trans")
+
+[node name="ShenfenIcon" type="TextureRect" parent="ShenfenBtn"]
+layout_mode = 0
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = 4.0
+offset_top = 4.0
+offset_right = -4.0
+offset_bottom = -4.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+texture = ExtResource("icon_shenfen")
+expand_mode = 1
+stretch_mode = 5
+
+[node name="BannerBox" type="Control" parent="."]
+layout_mode = 0
+offset_left = 14.0
+offset_top = 84.0
+offset_right = 148.0
+offset_bottom = 470.0
+
+[node name="HeroBanner" type="TextureRect" parent="BannerBox"]
+layout_mode = 0
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+expand_mode = 1
+stretch_mode = 5
+
+[node name="HeroName" type="Label" parent="BannerBox"]
+layout_mode = 0
+anchor_right = 1.0
+offset_top = 110.0
+offset_bottom = 144.0
+grow_horizontal = 2
+mouse_filter = 2
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+theme_override_font_sizes/font_size = 20
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="HeroStars" type="Label" parent="BannerBox"]
+layout_mode = 0
+anchor_right = 1.0
+offset_top = 146.0
+offset_bottom = 174.0
+grow_horizontal = 2
+mouse_filter = 2
+theme_override_colors/font_color = Color(1, 0.84, 0, 1)
+theme_override_font_sizes/font_size = 16
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="LeftBar" type="VBoxContainer" parent="."]
+layout_mode = 0
+offset_left = 10.0
+offset_top = 482.0
+offset_right = 86.0
+offset_bottom = 656.0
+theme_override_constants/separation = 6
+
+[node name="CostumeBtn" type="Button" parent="LeftBar"]
+custom_minimum_size = Vector2(68, 54)
+layout_mode = 2
+theme_override_styles/normal = SubResource("style_trans")
+theme_override_styles/hover = SubResource("style_trans")
+theme_override_styles/pressed = SubResource("style_trans")
+theme_override_styles/focus = SubResource("style_trans")
+
+[node name="Icon" type="TextureRect" parent="LeftBar/CostumeBtn"]
+layout_mode = 0
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = 6.0
+offset_top = 2.0
+offset_right = -6.0
+offset_bottom = -14.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+texture = ExtResource("icon_huanzhuang")
+expand_mode = 1
+stretch_mode = 5
+
+[node name="Label" type="Label" parent="LeftBar/CostumeBtn"]
+layout_mode = 0
+anchor_top = 1.0
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_top = -17.0
+grow_horizontal = 2
+grow_vertical = 0
+mouse_filter = 2
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+theme_override_font_sizes/font_size = 12
+theme_override_styles/normal = SubResource("label_sty")
+text = "换装"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="TalentBtn" type="Button" parent="LeftBar"]
+custom_minimum_size = Vector2(68, 54)
+layout_mode = 2
+theme_override_styles/normal = SubResource("style_trans")
+theme_override_styles/hover = SubResource("style_trans")
+theme_override_styles/pressed = SubResource("style_trans")
+theme_override_styles/focus = SubResource("style_trans")
+
+[node name="Icon" type="TextureRect" parent="LeftBar/TalentBtn"]
+layout_mode = 0
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = 6.0
+offset_top = 2.0
+offset_right = -6.0
+offset_bottom = -14.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+texture = ExtResource("icon_tianfu")
+expand_mode = 1
+stretch_mode = 5
+
+[node name="Label" type="Label" parent="LeftBar/TalentBtn"]
+layout_mode = 0
+anchor_top = 1.0
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_top = -17.0
+grow_horizontal = 2
+grow_vertical = 0
+mouse_filter = 2
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+theme_override_font_sizes/font_size = 12
+theme_override_styles/normal = SubResource("label_sty")
+text = "天赋"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="FateBtn" type="Button" parent="LeftBar"]
+custom_minimum_size = Vector2(68, 54)
+layout_mode = 2
+theme_override_styles/normal = SubResource("style_trans")
+theme_override_styles/hover = SubResource("style_trans")
+theme_override_styles/pressed = SubResource("style_trans")
+theme_override_styles/focus = SubResource("style_trans")
+
+[node name="Icon" type="TextureRect" parent="LeftBar/FateBtn"]
+layout_mode = 0
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = 6.0
+offset_top = 2.0
+offset_right = -6.0
+offset_bottom = -14.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+texture = ExtResource("icon_yuanfen")
+expand_mode = 1
+stretch_mode = 5
+
+[node name="Label" type="Label" parent="LeftBar/FateBtn"]
+layout_mode = 0
+anchor_top = 1.0
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_top = -17.0
+grow_horizontal = 2
+grow_vertical = 0
+mouse_filter = 2
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+theme_override_font_sizes/font_size = 12
+theme_override_styles/normal = SubResource("label_sty")
+text = "缘分"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="RightArtBar" type="Control" parent="."]
+layout_mode = 0
+anchor_left = 1.0
+anchor_right = 1.0
+offset_left = -170.0
+offset_top = 88.0
+offset_right = -16.0
+offset_bottom = 380.0
+grow_horizontal = 0
+
+[node name="PromoPlate" type="TextureRect" parent="RightArtBar"]
+layout_mode = 0
+offset_right = 116.0
+offset_bottom = 112.0
+mouse_filter = 2
+texture = ExtResource("plate_promo")
+expand_mode = 1
+stretch_mode = 5
+
+[node name="PromoBtn" type="Button" parent="RightArtBar"]
+layout_mode = 0
+offset_right = 116.0
+offset_bottom = 112.0
+theme_override_styles/normal = SubResource("style_trans")
+theme_override_styles/hover = SubResource("style_trans")
+theme_override_styles/pressed = SubResource("style_trans")
+theme_override_styles/focus = SubResource("style_trans")
+
+[node name="LevelPlate" type="TextureRect" parent="RightArtBar"]
+layout_mode = 0
+offset_top = 124.0
+offset_right = 116.0
+offset_bottom = 236.0
+mouse_filter = 2
+texture = ExtResource("plate_levelup")
+expand_mode = 1
+stretch_mode = 5
+
+[node name="LevelUpBtn" type="Button" parent="RightArtBar"]
+layout_mode = 0
+offset_top = 124.0
+offset_right = 116.0
+offset_bottom = 236.0
+theme_override_styles/normal = SubResource("style_trans")
+theme_override_styles/hover = SubResource("style_trans")
+theme_override_styles/pressed = SubResource("style_trans")
+theme_override_styles/focus = SubResource("style_trans")
+
+[node name="BatchCheck" type="CheckBox" parent="RightArtBar"]
+layout_mode = 0
+offset_top = 248.0
+offset_right = 150.0
+offset_bottom = 280.0
+text = "连续十次"
+
+[node name="IncomePlate" type="TextureRect" parent="."]
+layout_mode = 0
+anchor_left = 0.5
+anchor_right = 0.5
+anchor_bottom = 1.0
+offset_left = -190.0
+offset_top = -590.0
+offset_right = 190.0
+offset_bottom = -530.0
+grow_horizontal = 2
+grow_vertical = 0
+mouse_filter = 2
+texture = ExtResource("income_plate")
+expand_mode = 1
+stretch_mode = 6
+
+[node name="HeroIncome" type="Label" parent="IncomePlate"]
+layout_mode = 0
+anchor_left = 0.42
+anchor_right = 0.97
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+theme_override_font_sizes/font_size = 22
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="StatsBar" type="HBoxContainer" parent="."]
+layout_mode = 0
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = 100.0
+offset_top = -426.0
+offset_right = -16.0
+offset_bottom = -390.0
+grow_horizontal = 2
+grow_vertical = 0
+theme_override_constants/separation = 18
+
+[node name="StatLevel" type="Label" parent="StatsBar"]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.92, 0.88, 0.8, 1)
+theme_override_font_sizes/font_size = 15
+
+[node name="StatJob" type="Label" parent="StatsBar"]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.92, 0.88, 0.8, 1)
+theme_override_font_sizes/font_size = 15
+
+[node name="StatApt" type="Label" parent="StatsBar"]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.92, 0.88, 0.8, 1)
+theme_override_font_sizes/font_size = 15
+
+[node name="StatsSpacer" type="Control" parent="StatsBar"]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="AttrInfoBtn" type="Button" parent="StatsBar"]
+custom_minimum_size = Vector2(26, 26)
+layout_mode = 2
+theme_override_font_sizes/font_size = 14
+text = "i"
+
+[node name="SysRow" type="HBoxContainer" parent="."]
+layout_mode = 0
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = 20.0
+offset_top = -540.0
+offset_right = -20.0
+offset_bottom = -436.0
+grow_horizontal = 2
+grow_vertical = 0
+theme_override_constants/separation = 16
+alignment = 1
+
+[node name="SlotToken" type="VBoxContainer" parent="SysRow"]
+layout_mode = 2
+theme_override_constants/separation = 2
+
+[node name="Btn" type="Button" parent="SysRow/SlotToken"]
+custom_minimum_size = Vector2(72, 72)
+layout_mode = 2
+theme_override_styles/normal = SubResource("slot_sty")
+theme_override_styles/hover = SubResource("slot_sty")
+theme_override_styles/pressed = SubResource("slot_sty")
+theme_override_styles/focus = SubResource("slot_sty")
+theme_override_font_sizes/font_size = 24
+text = "+"
+
+[node name="Icon" type="TextureRect" parent="SysRow/SlotToken/Btn"]
+layout_mode = 0
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = 3.0
+offset_top = 3.0
+offset_right = -3.0
+offset_bottom = -3.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+expand_mode = 1
+stretch_mode = 5
+
+[node name="Label" type="Label" parent="SysRow/SlotToken"]
+custom_minimum_size = Vector2(0, 20)
+layout_mode = 2
+theme_override_colors/font_color = Color(0.92, 0.88, 0.8, 1)
+theme_override_font_sizes/font_size = 13
+text = "信物"
+horizontal_alignment = 1
+
+[node name="SlotBeast" type="VBoxContainer" parent="SysRow"]
+layout_mode = 2
+theme_override_constants/separation = 2
+
+[node name="Btn" type="Button" parent="SysRow/SlotBeast"]
+custom_minimum_size = Vector2(72, 72)
+layout_mode = 2
+theme_override_styles/normal = SubResource("slot_sty")
+theme_override_styles/hover = SubResource("slot_sty")
+theme_override_styles/pressed = SubResource("slot_sty")
+theme_override_styles/focus = SubResource("slot_sty")
+theme_override_font_sizes/font_size = 24
+text = "+"
+
+[node name="Icon" type="TextureRect" parent="SysRow/SlotBeast/Btn"]
+layout_mode = 0
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = 3.0
+offset_top = 3.0
+offset_right = -3.0
+offset_bottom = -3.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+expand_mode = 1
+stretch_mode = 5
+
+[node name="Label" type="Label" parent="SysRow/SlotBeast"]
+custom_minimum_size = Vector2(0, 20)
+layout_mode = 2
+theme_override_colors/font_color = Color(0.92, 0.88, 0.8, 1)
+theme_override_font_sizes/font_size = 13
+text = "珍兽"
+horizontal_alignment = 1
+
+[node name="SlotFish" type="VBoxContainer" parent="SysRow"]
+layout_mode = 2
+theme_override_constants/separation = 2
+
+[node name="Btn" type="Button" parent="SysRow/SlotFish"]
+custom_minimum_size = Vector2(72, 72)
+layout_mode = 2
+theme_override_styles/normal = SubResource("slot_sty")
+theme_override_styles/hover = SubResource("slot_sty")
+theme_override_styles/pressed = SubResource("slot_sty")
+theme_override_styles/focus = SubResource("slot_sty")
+theme_override_font_sizes/font_size = 24
+text = "+"
+
+[node name="Icon" type="TextureRect" parent="SysRow/SlotFish/Btn"]
+layout_mode = 0
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = 3.0
+offset_top = 3.0
+offset_right = -3.0
+offset_bottom = -3.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+expand_mode = 1
+stretch_mode = 5
+
+[node name="Label" type="Label" parent="SysRow/SlotFish"]
+custom_minimum_size = Vector2(0, 20)
+layout_mode = 2
+theme_override_colors/font_color = Color(0.92, 0.88, 0.8, 1)
+theme_override_font_sizes/font_size = 13
+text = "渔获"
+horizontal_alignment = 1
+
+[node name="SlotCuzhi" type="VBoxContainer" parent="SysRow"]
+layout_mode = 2
+theme_override_constants/separation = 2
+
+[node name="Btn" type="Button" parent="SysRow/SlotCuzhi"]
+custom_minimum_size = Vector2(72, 72)
+layout_mode = 2
+theme_override_styles/normal = SubResource("slot_sty")
+theme_override_styles/hover = SubResource("slot_sty")
+theme_override_styles/pressed = SubResource("slot_sty")
+theme_override_styles/focus = SubResource("slot_sty")
+theme_override_font_sizes/font_size = 24
+text = "+"
+
+[node name="Icon" type="TextureRect" parent="SysRow/SlotCuzhi/Btn"]
+layout_mode = 0
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = 3.0
+offset_top = 3.0
+offset_right = -3.0
+offset_bottom = -3.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+expand_mode = 1
+stretch_mode = 5
+
+[node name="Label" type="Label" parent="SysRow/SlotCuzhi"]
+custom_minimum_size = Vector2(0, 20)
+layout_mode = 2
+theme_override_colors/font_color = Color(0.92, 0.88, 0.8, 1)
+theme_override_font_sizes/font_size = 13
+text = "促织"
+horizontal_alignment = 1
+
+[node name="SlotGuardian" type="VBoxContainer" parent="SysRow"]
+layout_mode = 2
+theme_override_constants/separation = 2
+
+[node name="Btn" type="Button" parent="SysRow/SlotGuardian"]
+custom_minimum_size = Vector2(72, 72)
+layout_mode = 2
+theme_override_styles/normal = SubResource("slot_sty")
+theme_override_styles/hover = SubResource("slot_sty")
+theme_override_styles/pressed = SubResource("slot_sty")
+theme_override_styles/focus = SubResource("slot_sty")
+theme_override_font_sizes/font_size = 24
+text = "+"
+
+[node name="Icon" type="TextureRect" parent="SysRow/SlotGuardian/Btn"]
+layout_mode = 0
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = 3.0
+offset_top = 3.0
+offset_right = -3.0
+offset_bottom = -3.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+expand_mode = 1
+stretch_mode = 5
+
+[node name="Label" type="Label" parent="SysRow/SlotGuardian"]
+custom_minimum_size = Vector2(0, 20)
+layout_mode = 2
+theme_override_colors/font_color = Color(0.92, 0.88, 0.8, 1)
+theme_override_font_sizes/font_size = 13
+text = "守护灵"
+horizontal_alignment = 1
+
+[node name="SkillTabBar" type="HBoxContainer" parent="."]
+layout_mode = 0
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = 20.0
+offset_top = -380.0
+offset_right = -20.0
+offset_bottom = -344.0
+grow_horizontal = 2
+grow_vertical = 0
+theme_override_constants/separation = 8
+
+[node name="TabSkill" type="Button" parent="SkillTabBar"]
+custom_minimum_size = Vector2(110, 36)
+layout_mode = 2
+text = "技能"
+
+[node name="TabShop" type="Button" parent="SkillTabBar"]
+custom_minimum_size = Vector2(110, 36)
+layout_mode = 2
+text = "副业"
+
+[node name="TabCostume" type="Button" parent="SkillTabBar"]
+custom_minimum_size = Vector2(110, 36)
+layout_mode = 2
+text = "服装"
+
+[node name="TabAura" type="Button" parent="SkillTabBar"]
+custom_minimum_size = Vector2(110, 36)
+layout_mode = 2
+text = "光环"
+
+[node name="ScrollContainer" type="ScrollContainer" parent="."]
+layout_mode = 0
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = 20.0
+offset_top = -340.0
+offset_right = -20.0
+offset_bottom = -16.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="SkillList" type="VBoxContainer" parent="ScrollContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_constants/separation = 8

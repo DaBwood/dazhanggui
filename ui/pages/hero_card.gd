@@ -8,6 +8,7 @@ const ICON_DIR := "res://assets/heroes/"
 const CAREER_ICON := {"士": "career_shi", "农": "career_nong", "工": "career_gong", "商": "career_shang", "侠": "career_xia"}
 
 @onready var portrait: TextureRect = $Portrait
+@onready var bg_panel: Panel = $BgPanel
 @onready var lv_label: Label = $LvLabel
 @onready var name_label: Label = $NameLabel
 @onready var career_icon: TextureRect = $CareerIcon
@@ -18,11 +19,19 @@ func bind_data(hero_id: String, data, locked: bool) -> void:
 	set_meta("hero_id", hero_id)
 	set_meta("locked", locked)
 	var cfg = data.get_hero_config(hero_id)
-	# 立绘铺满（缺素材露卡底色）
-	var p_path := "res://assets/portraits/heroes/%s.png" % hero_id
+	# 卡片=免抠立绘（heroes_card 优先）+ 当前品质纯色底
+	var p_card := "res://assets/portraits/heroes_card/%s.png" % hero_id
+	var p_full := "res://assets/portraits/heroes/%s.png" % hero_id
 	portrait.texture = null
-	if ResourceLoader.exists(p_path):
-		portrait.texture = load(p_path)
+	if ResourceLoader.exists(p_card):
+		portrait.texture = load(p_card)
+	elif ResourceLoader.exists(p_full):
+		portrait.texture = load(p_full)
+	var q_col = Color(HeroData.get_quality_color(int(data.heroes[hero_id].get("quality", 0)) if data.heroes.has(hero_id) else 0))
+	var bg_sty := StyleBoxFlat.new()
+	bg_sty.bg_color = q_col
+	bg_sty.set_corner_radius_all(6)
+	bg_panel.add_theme_stylebox_override("panel", bg_sty)
 	modulate = Color(0.5, 0.5, 0.5, 0.7) if locked else Color.WHITE
 	# 等级（精进满级口径：copy_max_level 参与展示）
 	var show_lv := 1

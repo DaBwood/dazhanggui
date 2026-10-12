@@ -11,6 +11,7 @@ extends RefCounted
 # 布局唯一真相源=hero_page.tscn（顶栏/过滤栏/滚动区摆位），本脚本只实例化+灌数据
 const HERO_SCENE := preload("res://ui/pages/hero_page.tscn")
 const CARD_SCENE := preload("res://ui/pages/hero_card.tscn")
+const HERO_PANEL_SCENE := preload("res://ui/pages/hero_panel.tscn")
 var c      # game_controller 根脚本引用
 var data   # GameData 数据中枢引用
 
@@ -103,7 +104,7 @@ func _on_locked_hero_clicked(hero_id: String):
 func open_hero_panel(hero_id: String):
 	current_hero_id = hero_id
 	current_skill_tab = "skill"   # 【v4】切换门客时标签重置回技能页，避免串数据误会
-	_ensure_hero_panel_code()   # 【第8批新增】首次打开时把场景旧面板替换为代码构建的全屏面板
+	_ensure_hero_panel_scene()   # 【第8批新增】首次打开时把场景旧面板替换为代码构建的全屏面板
 	if c.has_node("HeroPanel"):
 		c.open_popup(c.get_node("HeroPanel"))
 		update_hero_panel()
@@ -120,346 +121,176 @@ func close_hero_panel():
 #   右列：赋诗/晋升按钮（有才显示）在上，升级区在下，固定于技能栏上方
 #   底部：全宽技能列表（资质/店铺技能）
 # 所有子节点名与场景版一致，update_hero_panel 等逻辑零改动
-func _ensure_hero_panel_code():
-	# 已经是代码构建版则直接复用
-	if c.has_node("HeroPanel") and c.get_node("HeroPanel").has_meta("code_built"):
+func _ensure_hero_panel_scene():
+	if c.has_node("HeroPanel") and c.get_node("HeroPanel").has_meta("scene_built"):
 		return
-	# 移除场景旧面板（remove_child+free 立即生效，避免 queue_free 当帧重名冲突）
 	if c.has_node("HeroPanel"):
 		var old_panel = c.get_node("HeroPanel")
 		c.remove_child(old_panel)
 		old_panel.free()
-	var vw = c.get_viewport_rect().size
-	# 全屏面板
-	var panel = Panel.new()
-	panel.name = "HeroPanel"
-	panel.set_meta("code_built", true)
-	panel.visible = false
-	# 【关键】z_index=10：压过 Overlay/BottomNav（默认0），又低于 _create_base_popup 弹窗的30
-	panel.z_index = 10
-	var style = StyleBoxFlat.new()
-	style.bg_color = Color("#1e1b2e")
-	panel.add_theme_stylebox_override("panel", style)
+	var panel: Panel = HERO_PANEL_SCENE.instantiate()
+	panel.set_meta("scene_built", true)
 	c.add_child(panel)
-	# 显式锚点+位置+尺寸三保险（先锚点再显式position/size，防止编辑器残留锚点干扰）
+	# 弹窗按视口铺满：父级锚点只到内容区（~525 高），tscn 内是 600×1067 设计尺寸，运行时必须钉视口尺寸（原实现 vw 口径）
+	var vw: Vector2 = c.get_viewport_rect().size
+	panel.set_anchors_preset(Control.PRESET_TOP_LEFT)
 	panel.position = Vector2.ZERO
 	panel.size = vw
-
-	# 门客名（顶部整行居中）
-	var name_lbl = Label.new()
-	name_lbl.name = "HeroName"
-	name_lbl.position = Vector2(0, 10)
-	name_lbl.size = Vector2(vw.x, 30)
-	name_lbl.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
-	name_lbl.add_theme_font_size_override("font_size", 20)
-	name_lbl.add_theme_color_override("font_color", Color("#ffd700"))
-	panel.add_child(name_lbl)
-
-	# 赚速/资质（名称下方，整行居中）
-	# 【改】改 HBox 行：资质文本后加"?"小钮（门客属性构成弹窗入口，2026-09-25 用户拍板）
-	var income_row = HBoxContainer.new()
-	income_row.name = "HeroIncomeRow"
-	income_row.position = Vector2(0, 50)
-	income_row.size = Vector2(vw.x, 26)
-	income_row.alignment = BoxContainer.ALIGNMENT_CENTER
-	income_row.add_theme_constant_override("separation", 6)
-	panel.add_child(income_row)
-	var income_lbl = Label.new()
-	income_lbl.name = "HeroIncome"
-	income_row.add_child(income_lbl)
-	var attr_btn = Button.new()
-	attr_btn.name = "AttrInfoBtn"
-	attr_btn.text = "i"   # 【改】2026-09-26 用户约定：门客面板补充信息入口用 i，"?"只用于玩法主标题规则说明
-	attr_btn.custom_minimum_size = Vector2(26, 24)
-	attr_btn.add_theme_font_size_override("font_size", 14)
-	attr_btn.pressed.connect(_show_attr_breakdown)
-	income_row.add_child(attr_btn)
-
-	# 返回按钮（左上）【改】UI统一批A：全屏页定规统一 < 返回（与挚友详情/批次①全屏页口径一致），原右上 X 作废
-	var close_btn = Button.new()
-	close_btn.name = "HeroCloseBtn"
-	close_btn.text = "< 返回"
-	close_btn.position = Vector2(10, 10)
-	close_btn.size = Vector2(90, 40)
-	close_btn.pressed.connect(close_hero_panel)
-	panel.add_child(close_btn)
-
-	# 【v3新增】赋诗/晋升按钮（右列上方；默认隐藏，update_hero_panel 按门客有无晋升内容控制显隐和文本）
-	var promo_btn = Button.new()
-	promo_btn.name = "PromoBtn"
-	promo_btn.position = Vector2(vw.x - 150, 120)
-	promo_btn.size = Vector2(130, 44)
-	promo_btn.visible = false
-	promo_btn.add_theme_font_size_override("font_size", 16)
-	panel.add_child(promo_btn)
-	
-	# 【新增】信物按钮（赋诗按钮上方；仅获得信物的门客显示，显隐由 update_hero_panel 控制）
-	var token_btn = Button.new()
-	token_btn.name = "TokenBtn"
-	token_btn.position = Vector2(vw.x - 150, 62)
-	token_btn.size = Vector2(130, 44)
-	token_btn.add_theme_font_size_override("font_size", 16)
-	token_btn.visible = false
-	panel.add_child(token_btn)
-	
-	# 升级区（右列下方，固定在技能栏上方；无赋诗时上方留空，预留门客立绘位）
-	var level_box = HBoxContainer.new()
-	level_box.name = "LevelUpBox"
-	level_box.position = Vector2(vw.x - 150, 180)
-	level_box.add_theme_constant_override("separation", 12)
-	panel.add_child(level_box)
-	var lv_info = Label.new()
-	lv_info.name = "LevelUpInfo"
-	# 【v3】消耗数字改到升级按钮内部显示，文本标签隐藏（节点保留，防旧引用报错）
-	lv_info.visible = false
-	level_box.add_child(lv_info)
-	var lv_btn_box = VBoxContainer.new()
-	lv_btn_box.name = "LevelUpBtnBox"
-	lv_btn_box.add_theme_constant_override("separation", 4)
-	level_box.add_child(lv_btn_box)
-	var lv_btn = Button.new()
-	lv_btn.name = "LevelUpBtn"
-	lv_btn.custom_minimum_size = Vector2(130, 48)
-	lv_btn_box.add_child(lv_btn)
-	var batch_check = CheckBox.new()
-	batch_check.name = "BatchCheck"
-	batch_check.text = "十连"
-	lv_btn_box.add_child(batch_check)
-	# 【新增】勾选/取消十连时刷新升级按钮上的消耗数字（单级↔十连总价）
-	batch_check.toggled.connect(func(_on): update_hero_panel())
-
-	# 【v4】技能栏标签页（技能/副业/服装/光环；服装光环待开发，先占位）
-	var tab_bar = HBoxContainer.new()
-	tab_bar.name = "SkillTabBar"
-	tab_bar.position = Vector2(20, 310)
-	tab_bar.add_theme_constant_override("separation", 8)
-	panel.add_child(tab_bar)
-	# 标签定义：[节点名, 显示文本, 标签id]；后续新增标签页在此追加一行即可
-	var tabs = [["TabSkill", "技能", "skill"], ["TabShop", "副业", "shop"], ["TabCostume", "服装", "costume"], ["TabAura", "光环", "halo"]]
-	for t in tabs:
-		var tab_btn = Button.new()
-		tab_btn.name = t[0]
-		tab_btn.text = t[1]
-		tab_btn.custom_minimum_size = Vector2(110, 36)
-		tab_btn.set_meta("tab_id", t[2])   # 高亮时按 meta 识别当前页
-		tab_btn.pressed.connect(_on_skill_tab_clicked.bind(t[2]))
-		tab_bar.add_child(tab_btn)
-
-	# 技能列表（底部全宽滚动区，内容随标签页切换）
-	var scroll = ScrollContainer.new()
-	scroll.name = "ScrollContainer"
-	scroll.position = Vector2(20, 350)
-	scroll.size = Vector2(vw.x - 40, vw.y - 370)
-	panel.add_child(scroll)
-	var skill_list = VBoxContainer.new()
-	skill_list.name = "SkillList"
-	skill_list.size_flags_horizontal = Control.SIZE_EXPAND_FILL
-	skill_list.add_theme_constant_override("separation", 8)
-	scroll.add_child(skill_list)
+	# 信号接线+tab_id meta（tscn 纯结构，接线归脚本；节点名=跨文件契约）
+	panel.get_node("HeroCloseBtn").pressed.connect(close_hero_panel)
+	panel.get_node("StatsBar/AttrInfoBtn").pressed.connect(_show_attr_breakdown)
+	panel.get_node("RightArtBar/BatchCheck").toggled.connect(func(_on): update_hero_panel())
+	panel.get_node("ShenfenBtn").pressed.connect(func(): c._show_success_popup("身份系统后续版本开放", 0, "info"))
+	var tab_ids := {"TabSkill": "skill", "TabShop": "shop", "TabCostume": "costume", "TabAura": "halo"}
+	for tab_name in tab_ids:
+		var tab_btn := panel.get_node("SkillTabBar/" + tab_name) as Button
+		tab_btn.set_meta("tab_id", tab_ids[tab_name])   # update 高亮按 meta 识别当前页
+		tab_btn.pressed.connect(_on_skill_tab_clicked.bind(tab_ids[tab_name]))
 
 func update_hero_panel():
 	if current_hero_id == "" or not data.heroes.has(current_hero_id): return
 	var h = data.heroes[current_hero_id]
 	var income = data.get_hero_income(current_hero_id)
 	var total_aptitude = HeroData.get_total_aptitude(data, current_hero_id)   # 面板资质 = 总资质（含珍兽），与赚速同口径
-	# 【改】品质四档全显示徽标（含优秀蓝档；条件 quality>0 → has("quality")）
-	var quality_tag = ""
-	if h.has("quality"):
-		quality_tag = "[%s]" % HeroData.get_quality_name(h.quality)
-	
-	if c.has_node("HeroPanel/HeroName"):
-		# 【新增】标题追加天赋星级（★×N；0星不显示）
-		var star_txt = data.talent_system.get_star_text(current_hero_id)
-		# 【改】copy_max_level 持有者（王昭君·宁胡和议/花木兰·替父从军）：显示有效等级=max(自身, 复制等级)，与赚钱口径一致
-		var show_lv = int(h.level)
-		var copy_lv = data.talent_system.get_copy_level(current_hero_id)
-		if copy_lv > 0:
-			show_lv = maxi(show_lv, copy_lv)
-		c.get_node("HeroPanel/HeroName").text = "【%s】%s %s Lv.%d%s" % [h.name, h.category, quality_tag, show_lv, (" " + star_txt) if star_txt != "" else ""]
-		# 【改】2026-09-24 门客名按品质着色（原为固定金色）：优秀蓝/卓越紫/传奇橙/无双红，与列表卡/图鉴同款
-		c.get_node("HeroPanel/HeroName").add_theme_color_override("font_color", Color(HeroData.get_quality_color(int(h.get("quality", 0)))))
-	if c.has_node("HeroPanel/HeroIncomeRow/HeroIncome"):   # 【改】资质行已改 HBox（带"?"钮），路径同步加层
-		# 【改】口径对齐：门客个体=赚钱（全局汇总才叫赚速）
-		c.get_node("HeroPanel/HeroIncomeRow/HeroIncome").text = "赚钱：%s/秒  资质：%d" % [c.format_number(income), total_aptitude]
-	
+	# 立绘底图（详情页全幅版；缺素材露面板底色）
+	var panel = c.get_node("HeroPanel")
+	if panel.has_node("Portrait"):
+		var art = panel.get_node("Portrait")
+		art.texture = null
+		var p_path := "res://assets/portraits/heroes/%s.png" % current_hero_id
+		if ResourceLoader.exists(p_path):
+			art.texture = load(p_path)
+	var star_txt = data.talent_system.get_star_text(current_hero_id)
+	# 【改】copy_max_level 持有者：显示有效等级=max(自身, 复制等级)，与赚钱口径一致
+	var show_lv = int(h.level)
+	var copy_lv = data.talent_system.get_copy_level(current_hero_id)
+	if copy_lv > 0:
+		show_lv = maxi(show_lv, copy_lv)
+	# 品质竖签（档位词在 art 上）+ 门客名（品质色）+ 精进星
+	var hero_q := int(h.get("quality", 0))
+	if panel.has_node("BannerBox/HeroBanner"):
+		var banner_path := "res://assets/heroes/banner_q%d.png" % hero_q
+		if ResourceLoader.exists(banner_path):
+			panel.get_node("BannerBox/HeroBanner").texture = load(banner_path)
+	if panel.has_node("BannerBox/HeroName"):
+		var name_lbl = panel.get_node("BannerBox/HeroName")
+		name_lbl.text = str(h.name)
+		name_lbl.add_theme_color_override("font_color", Color(HeroData.get_quality_color(hero_q)))
+	if panel.has_node("BannerBox/HeroStars"):
+		panel.get_node("BannerBox/HeroStars").text = star_txt
+	# 中央赚钱大数字（牌上"赚钱"二字为 art）
+	if panel.has_node("IncomePlate/HeroIncome"):
+		panel.get_node("IncomePlate/HeroIncome").text = c.format_number(income)
+	# 底部统计条（交情无数据字段，未上）
+	if panel.has_node("StatsBar/StatLevel"):
+		panel.get_node("StatsBar/StatLevel").text = "等级：%d" % show_lv
+	if panel.has_node("StatsBar/StatJob"):
+		panel.get_node("StatsBar/StatJob").text = "职业：%s" % str(h.category)
+	if panel.has_node("StatsBar/StatApt"):
+		panel.get_node("StatsBar/StatApt").text = "资质：%d" % total_aptitude
 	# 清理旧布局（如果有）
 	if c.has_node("HeroPanel/BeastInfoBox"):
 		c.get_node("HeroPanel/BeastInfoBox").queue_free()
 	
-# ========== 左列按钮：第1行 服装；第2行 缘分；第3行 珍兽+渔获 并排 ==========
+	# ========== 左列图文钮（壳在 hero_panel.tscn，只灌信号：换装/天赋/缘分）==========
 	var beast_id = data.heroes[current_hero_id].get("equipped_beast", "")
 	var beast_idx = data.heroes[current_hero_id].get("equipped_beast_index", 0)
-	# 【修复】显式固定尺寸：新建 Button 当帧 size 为 (0,0)，不能用 size 做定位依据
-	var btn_size = Vector2(120, 40)
-	
-	# 【服装系统】服装按钮（左列第1行）：点击打开该门客的服装弹窗
-	var cos_btn = c.get_node("HeroPanel").get_node_or_null("CostumeBtn")
-	if cos_btn == null:
-		cos_btn = Button.new()
-		cos_btn.name = "CostumeBtn"
-		cos_btn.text = "服装"
-		cos_btn.add_theme_font_size_override("font_size", 16)
-		c.get_node("HeroPanel").add_child(cos_btn)
-	cos_btn.size = btn_size
-	cos_btn.position = Vector2(20, 100)   # 【改】移到缘分上方
-	# 信号重连（先断后连，防止切换门客后串数据）
+	var cos_btn = c.get_node("HeroPanel/LeftBar/CostumeBtn")
 	for conn in cos_btn.pressed.get_connections():
 		cos_btn.pressed.disconnect(conn.callable)
 	cos_btn.pressed.connect(c.costume_view.show_hero_costume_popup.bind(current_hero_id))
-	
-	# 缘分按钮（左列第2行）：点击弹窗显示该门客的缘分挚友
-	var fate_btn = c.get_node("HeroPanel").get_node_or_null("FateBtn")
-	if fate_btn == null:
-		fate_btn = Button.new()
-		fate_btn.name = "FateBtn"
-		fate_btn.text = "缘分"
-		fate_btn.add_theme_font_size_override("font_size", 16)
-		c.get_node("HeroPanel").add_child(fate_btn)
-	fate_btn.size = btn_size
-	fate_btn.position = Vector2(20, 148)   # 【改】下移一行
-	# 信号重连（先断后连，防止切换门客后串数据）
+	var fate_btn = c.get_node("HeroPanel/LeftBar/FateBtn")
 	for conn in fate_btn.pressed.get_connections():
 		fate_btn.pressed.disconnect(conn.callable)
 	fate_btn.pressed.connect(_on_fate_btn_clicked.bind(current_hero_id))
-	
-		# 【新增】天赋按钮（左列缘分与珍兽行之间空位，即图中红框处）
-	var talent_btn = c.get_node("HeroPanel").get_node_or_null("TalentBtn")
-	if talent_btn == null:
-		talent_btn = Button.new()
-		talent_btn.name = "TalentBtn"
-		talent_btn.text = "天赋"
-		talent_btn.add_theme_font_size_override("font_size", 16)
-		c.get_node("HeroPanel").add_child(talent_btn)
-	talent_btn.size = btn_size
-	talent_btn.position = Vector2(20, 196)   # 【新增】缘分(148)与珍兽行(265)之间的空位
-	# 信号重连（先断后连，防止切换门客后串数据）
+	var talent_btn = c.get_node("HeroPanel/LeftBar/TalentBtn")
 	for conn in talent_btn.pressed.get_connections():
 		talent_btn.pressed.disconnect(conn.callable)
 	talent_btn.pressed.connect(_on_talent_btn_clicked)
 	
-	# 珍兽按钮（左列第3行第1格）
-	var beast_btn = c.get_node("HeroPanel").get_node_or_null("BeastEquipBtn")
-	if beast_btn == null:
-		beast_btn = Button.new()
-		beast_btn.name = "BeastEquipBtn"
-		beast_btn.add_theme_font_size_override("font_size", 16)
-		c.get_node("HeroPanel").add_child(beast_btn)
-	beast_btn.size = btn_size
-	beast_btn.position = Vector2(20, 265)   # 【改】下移
-	
-	for conn in beast_btn.pressed.get_connections():
-		beast_btn.pressed.disconnect(conn.callable)
-	
+	# ========== 系统位一排（圆槽壳在 tscn；信物/珍兽/渔获/促织/守护灵）==========
+	var sys_row = c.get_node("HeroPanel/SysRow")
+	var beast_slot = sys_row.get_node("SlotBeast")
+	var beast_b = beast_slot.get_node("Btn")
+	for conn in beast_b.pressed.get_connections():
+		beast_b.pressed.disconnect(conn.callable)
+	beast_b.text = "+"
+	beast_slot.get_node("Btn/Icon").texture = null
 	if beast_id != "":
-		# 【改】2026-09-24 绑定兽（魅影兔）显示形态名+有效等级（自动满级兽=当前珍兽上限）
-		beast_btn.text = "【%s】Lv.%d" % [data.beast_system.get_beast_display_name(beast_id), data.beast_system.get_beast_level(beast_id, beast_idx)]
-		beast_btn.pressed.connect(_on_hero_beast_btn_clicked.bind(beast_id, beast_idx))
+		beast_b.text = ""
+		beast_slot.get_node("Label").text = "%d级" % data.beast_system.get_beast_level(beast_id, beast_idx)
+		beast_b.pressed.connect(_on_hero_beast_btn_clicked.bind(beast_id, beast_idx))
 	else:
-		beast_btn.text = "珍兽"
-		beast_btn.pressed.connect(_show_beast_selector_for_hero)
-	
-	# 渔获按钮（左列第3行第2格，与珍兽并排）
-	var fish_btn = c.get_node("HeroPanel").get_node_or_null("FishEquipBtn")
-	if fish_btn == null:
-		fish_btn = Button.new()
-		fish_btn.name = "FishEquipBtn"
-		fish_btn.add_theme_font_size_override("font_size", 16)
-		c.get_node("HeroPanel").add_child(fish_btn)
-	fish_btn.size = btn_size
-	fish_btn.position = Vector2(148, 265)   # 【改】下移
-	# 信号重连（先断后连，防止切换门客后串数据）
-	for conn in fish_btn.pressed.get_connections():
-		fish_btn.pressed.disconnect(conn.callable)
+		beast_slot.get_node("Label").text = "珍兽"
+		beast_b.pressed.connect(_show_beast_selector_for_hero)
+	var fish_slot = sys_row.get_node("SlotFish")
+	var fish_b = fish_slot.get_node("Btn")
+	for conn in fish_b.pressed.get_connections():
+		fish_b.pressed.disconnect(conn.callable)
+	fish_b.text = "+"
 	var equipped_fish = data.fishing_system.get_hero_fish(current_hero_id)
+	fish_b.pressed.connect(c.show_view.bind("fish_equip", [current_hero_id]))
 	if equipped_fish != "":
-		fish_btn.text = "【%s】%d阶" % [data.fishing_system.get_fish_name(equipped_fish), data.fishing_system.get_fish_tier(equipped_fish)]
+		fish_b.text = ""
+		fish_slot.get_node("Label").text = "%d阶" % data.fishing_system.get_fish_tier(equipped_fish)
 	else:
-		fish_btn.text = "渔获"
-	fish_btn.pressed.connect(c.show_view.bind("fish_equip", [current_hero_id]))
-	
-		# 【新增】促织装备按钮（左列第3行第3格，与珍兽/渔获并排）
-	var cuzhi_btn = c.get_node("HeroPanel").get_node_or_null("CuzhiEquipBtn")
-	if cuzhi_btn == null:
-		cuzhi_btn = Button.new()
-		cuzhi_btn.name = "CuzhiEquipBtn"
-		cuzhi_btn.add_theme_font_size_override("font_size", 16)
-		c.get_node("HeroPanel").add_child(cuzhi_btn)
-	cuzhi_btn.size = btn_size
-	cuzhi_btn.position = Vector2(276, 265)
-	# 信号重连（先断后连，防止切换门客后串数据）
-	for conn in cuzhi_btn.pressed.get_connections():
-		cuzhi_btn.pressed.disconnect(conn.callable)
+		fish_slot.get_node("Label").text = "渔获"
+	var cuzhi_slot = sys_row.get_node("SlotCuzhi")
+	var cuzhi_b = cuzhi_slot.get_node("Btn")
+	for conn in cuzhi_b.pressed.get_connections():
+		cuzhi_b.pressed.disconnect(conn.callable)
+	cuzhi_b.text = "+"
 	var equipped_cuzhi = data.cuzhi_system.get_equipped_cricket(current_hero_id)
 	if equipped_cuzhi != "":
-		var cuzhi_name = data.cuzhi_system.get_cricket_data(equipped_cuzhi).get("name", "未知")
 		var cuzhi_lv = data.cuzhi_system.get_equip_level(equipped_cuzhi)
-		cuzhi_btn.text = "【%s】Lv.%d" % [cuzhi_name, cuzhi_lv]
+		cuzhi_b.text = ""
+		cuzhi_slot.get_node("Label").text = "%d级" % cuzhi_lv
 	else:
-		cuzhi_btn.text = "促织"
-	cuzhi_btn.pressed.connect(_on_cuzhi_btn_clicked)
-	
-		# 【新增】守护灵按钮（左列第3行第4格，仅无双门客显示）
-	var guardian_btn = c.get_node("HeroPanel").get_node_or_null("GuardianBtn")
-	if guardian_btn == null:
-		guardian_btn = Button.new()
-		guardian_btn.name = "GuardianBtn"
-		guardian_btn.add_theme_font_size_override("font_size", 16)
-		c.get_node("HeroPanel").add_child(guardian_btn)
-	guardian_btn.size = btn_size
-	guardian_btn.position = Vector2(404, 265)  # 促织旁边（间距8px）
-	# 信号重连（先断后连，防切换门客串数据）
-	for conn in guardian_btn.pressed.get_connections():
-		guardian_btn.pressed.disconnect(conn.callable)
-	# 【改】品质四档改造：无双档 2→3
+		cuzhi_slot.get_node("Label").text = "促织"
+	cuzhi_b.pressed.connect(_on_cuzhi_btn_clicked)
+	var guardian_slot = sys_row.get_node("SlotGuardian")
+	var guardian_b = guardian_slot.get_node("Btn")
+	for conn in guardian_b.pressed.get_connections():
+		guardian_b.pressed.disconnect(conn.callable)
+	guardian_b.text = "+"
+	guardian_slot.get_node("Btn/Icon").texture = null
+	# 【改】品质四档：无双档 3 才显示守护灵
 	var is_wushuang = h.get("quality", 0) == 3
-	guardian_btn.visible = is_wushuang
+	guardian_slot.visible = is_wushuang
 	if is_wushuang:
-		# 确保守护灵已初始化（旧档兼容）
 		data.guardian_system.init_guardian(current_hero_id)
 		var gs = data.guardian_system.get_guardian(current_hero_id)
-		var avatar_name = "溟灵"
-		for av in data.guardian_system.AVATARS:
-			if av.id == gs.get("avatar", "mingling"):
-				avatar_name = av.name
-				break
-		guardian_btn.text = "【%s】Lv.%d" % [avatar_name, gs.level]
-		guardian_btn.pressed.connect(_on_guardian_btn_clicked)
+		guardian_b.text = ""
+		if ResourceLoader.exists("res://assets/heroes/icon_guardian.png"):
+			guardian_slot.get_node("Btn/Icon").texture = load("res://assets/heroes/icon_guardian.png")
+		guardian_slot.get_node("Label").text = "Lv.%d" % gs.level
+		guardian_b.pressed.connect(_on_guardian_btn_clicked)
 	else:
-		guardian_btn.text = "守护灵"
+		guardian_slot.get_node("Label").text = "守护灵"
 	
-	# 【改】技能列表下移到最后一个按钮（促织）下方，避免重叠
-	if c.get_node("HeroPanel").has_node("ScrollContainer"):
-		var scroll = c.get_node("HeroPanel/ScrollContainer")
-		var skill_tab_bar = c.get_node("HeroPanel/SkillTabBar")
-		var last_btn = fish_btn
-		if c.get_node("HeroPanel").has_node("CuzhiEquipBtn"):
-			last_btn = c.get_node("HeroPanel/CuzhiEquipBtn")
-		# 守护灵存在且可见时，以它为最底
-		if c.get_node("HeroPanel").has_node("GuardianBtn") and c.get_node("HeroPanel/GuardianBtn").visible:
-			last_btn = c.get_node("HeroPanel/GuardianBtn")
-		var needed_scroll_y = last_btn.position.y + last_btn.size.y + 20  # 【改】间距从8加大到20
-		var needed_tab_y = needed_scroll_y - 40  # 标签栏在列表上方40px
-		if scroll.position.y < needed_scroll_y:
-			scroll.position.y = needed_scroll_y
-		if skill_tab_bar.position.y < needed_tab_y:
-			skill_tab_bar.position.y = needed_tab_y
+
 	
-	# 【新增】信物按钮：获得信物的门客显示（无信物直接隐藏），点击打开信物面板
-	var token_btn = c.get_node("HeroPanel").get_node_or_null("TokenBtn")
-	if token_btn:
-		for conn in token_btn.pressed.get_connections():
-			token_btn.pressed.disconnect(conn.callable)
-		if data.token_system.has_token(current_hero_id):
-			var t_cfg = data.token_system.get_token_cfg(current_hero_id)
-			token_btn.text = t_cfg.get("token_name", "信物")
-			token_btn.visible = true
-			token_btn.pressed.connect(token._on_token_btn_clicked)
-		else:
-			token_btn.visible = false
+	# 信物槽（tscn 壳；无信物隐藏槽位；李白专用信物剑图标）
+	var token_slot2 = sys_row.get_node("SlotToken")
+	var token_b2 = token_slot2.get_node("Btn")
+	for conn in token_b2.pressed.get_connections():
+		token_b2.pressed.disconnect(conn.callable)
+	token_b2.text = "+"
+	token_slot2.get_node("Btn/Icon").texture = null
+	if data.token_system.has_token(current_hero_id):
+		var t_cfg = data.token_system.get_token_cfg(current_hero_id)
+		token_b2.text = ""
+		token_slot2.get_node("Label").text = t_cfg.get("token_name", "信物")
+		if current_hero_id == "li_bai" and ResourceLoader.exists("res://assets/heroes/token_libai.png"):
+			token_slot2.get_node("Btn/Icon").texture = load("res://assets/heroes/token_libai.png")
+		token_slot2.visible = true
+		token_b2.pressed.connect(token._on_token_btn_clicked)
+	else:
+		token_slot2.visible = false
 	
 	# 【v3新增】赋诗/晋升按钮（右列上方）：有晋升内容的门客才显示，点击弹窗升级
 	# 【改】2026-09-24 服装一键晋升（simple_promotion，解鲁/四郎）：集齐任一已解锁服装→红点，点击直接晋升，晋升后按钮消失
-	var promo_btn = c.get_node("HeroPanel").get_node_or_null("PromoBtn")
+	var promo_btn = c.get_node_or_null("HeroPanel/RightArtBar/PromoBtn")
 	if promo_btn:
 		for conn in promo_btn.pressed.get_connections():
 			promo_btn.pressed.disconnect(conn.callable)
@@ -478,11 +309,31 @@ func update_hero_panel():
 		if fk_now or fk_candidate:
 			promo_btn.text = "凤魁"
 			promo_btn.visible = true
+			var pp_fk = c.get_node("HeroPanel/RightArtBar/PromoPlate")
+			pp_fk.visible = false
+			var sty_fk := StyleBoxFlat.new()
+			sty_fk.bg_color = Color(0, 0, 0, 0.55)
+			sty_fk.set_corner_radius_all(8)
+			for st_name in ["normal", "hover", "pressed"]:
+				promo_btn.add_theme_stylebox_override(st_name, sty_fk)
 			promo_btn.pressed.connect(promo._on_fengkui_btn_clicked)
 		elif simple_ready or h.has("promotion"):
 			var promo_name: String = str(sp_cfg.get("name", "晋升")) if simple_ready else str(h.promotion.get("name", "晋升"))
 			promo_btn.text = promo_name   # 【改】2026-09-24 按钮名=晋升玩法名（赋诗/落雁/军旅），去"赋诗晋升"特判
 			promo_btn.visible = true
+			var pp = c.get_node("HeroPanel/RightArtBar/PromoPlate")
+			if promo_name == "赋诗" and ResourceLoader.exists("res://assets/heroes/plate_promo_libai.png"):
+				pp.visible = true
+				pp.texture = load("res://assets/heroes/plate_promo_libai.png")
+				for st_name in ["normal", "hover", "pressed"]:
+					promo_btn.remove_theme_stylebox_override(st_name)
+			else:
+				pp.visible = false
+				var sty_p := StyleBoxFlat.new()
+				sty_p.bg_color = Color(0, 0, 0, 0.55)
+				sty_p.set_corner_radius_all(8)
+				for st_name in ["normal", "hover", "pressed"]:
+					promo_btn.add_theme_stylebox_override(st_name, sty_p)
 			# 红点：服装一键晋升条件满足才亮（● Label 节点查重复用，防 update_hero_panel 高频重入叠点）；赋诗分支维持原无红点
 			var dot: Label = null
 			for ch2 in promo_btn.get_children():
@@ -511,21 +362,42 @@ func update_hero_panel():
 		else:
 			# 无晋升内容：留空（上方区域预留门客立绘位）
 			promo_btn.visible = false
+			c.get_node("HeroPanel/RightArtBar/PromoPlate").visible = false
 	
 	# ========== 升级区（右列下方；v3：消耗数字显示在按钮内部，不再用文本标签） ==========
-	var level_box = c.get_node("HeroPanel").get_node("LevelUpBox")
+	var art_bar = c.get_node("HeroPanel/RightArtBar")
 	var max_lv = 50 + h.breakthrough_count * 50
 	var need_bt = h.level >= max_lv
 	var bt_cost = h.breakthrough_count * 10
 	
-	var lv_btn = level_box.get_node("LevelUpBtnBox/LevelUpBtn")
-	var batch_check = level_box.get_node("LevelUpBtnBox/BatchCheck")
+	var lv_btn = art_bar.get_node("LevelUpBtn")
+	var batch_check = art_bar.get_node("BatchCheck")
 	
 	# 【新增】copy_max_level 持有者：真实等级不用手动升（等级随全门客最高复制），整个升级区隐藏
 	# （突破按钮一并隐藏：突破要求真实等级到节点 50+突破×50，复制档升不了级永远点不亮，留死按钮更糟）
 	var is_copy_holder = data.talent_system.get_copy_level(current_hero_id) > 0
 	# 【改】复制档（王昭君宁胡和议/花木兰替父从军等）：升级位改天赋名按钮，点击弹天赋详情（2026-09-24 用户拍板）
-	level_box.visible = true
+		# 升级/突破字牌切换：复制档隐藏牌给按钮半透明底，突破档换突破牌
+	var lv_plate = art_bar.get_node("LevelPlate")
+	if is_copy_holder:
+		lv_plate.visible = false
+		var sty_c := StyleBoxFlat.new()
+		sty_c.bg_color = Color(0, 0, 0, 0.55)
+		sty_c.set_corner_radius_all(8)
+		for st_name in ["normal", "hover", "pressed"]:
+			lv_btn.add_theme_stylebox_override(st_name, sty_c)
+	elif need_bt:
+		lv_plate.visible = true
+		if ResourceLoader.exists("res://assets/heroes/plate_break.png"):
+			lv_plate.texture = load("res://assets/heroes/plate_break.png")
+		for st_name in ["normal", "hover", "pressed"]:
+			lv_btn.remove_theme_stylebox_override(st_name)
+	else:
+		lv_plate.visible = true
+		if ResourceLoader.exists("res://assets/heroes/plate_levelup.png"):
+			lv_plate.texture = load("res://assets/heroes/plate_levelup.png")
+		for st_name in ["normal", "hover", "pressed"]:
+			lv_btn.remove_theme_stylebox_override(st_name)
 	if is_copy_holder:
 		batch_check.visible = false
 		var ct: Dictionary = promo._get_copy_talent_info(current_hero_id)
@@ -592,8 +464,8 @@ func update_hero_panel():
 
 func on_hero_level_upgrade():
 	var batch = false
-	if c.has_node("HeroPanel/LevelUpBox/LevelUpBtnBox/BatchCheck"):
-		batch = c.get_node("HeroPanel/LevelUpBox/LevelUpBtnBox/BatchCheck").button_pressed
+	if c.has_node("HeroPanel/RightArtBar/BatchCheck"):
+		batch = c.get_node("HeroPanel/RightArtBar/BatchCheck").button_pressed
 	
 	var upgraded = data.upgrade_hero_level(current_hero_id, batch)
 	if upgraded > 0:
@@ -606,19 +478,19 @@ func on_hero_level_upgrade():
 # 【新增】升级按钮文本：未勾选十连显示下一级消耗；勾选十连显示接下来最多10级（不超突破上限）的总消耗
 # 【改】批次②③④-B4：消耗数值拆出 _get_level_up_cost，按钮文本与批次③着色共用同一口径
 func _get_level_up_btn_text(h) -> String:
-	if not c.has_node("HeroPanel/LevelUpBox/LevelUpBtnBox/BatchCheck"):
+	if not c.has_node("HeroPanel/RightArtBar/BatchCheck"):
 		return "升级"
 	var cost: int = _get_level_up_cost(h)
-	if c.get_node("HeroPanel/LevelUpBox/LevelUpBtnBox/BatchCheck").button_pressed:
+	if c.get_node("HeroPanel/RightArtBar/BatchCheck").button_pressed:
 		return "十连\n%d" % cost
 	return "升级\n%d" % cost
 
 # 升级消耗：单级=ceil(900×1.0158^lv)；十连=接下来最多10级（不超突破上限）逐级累加（每级×10）
 # 十连每级×10 与 hero_system.upgrade_hero_level 实扣口径一致（2026-09-26 用户拍板：实扣对齐显示）
 func _get_level_up_cost(h) -> int:
-	if not c.has_node("HeroPanel/LevelUpBox/LevelUpBtnBox/BatchCheck"):
+	if not c.has_node("HeroPanel/RightArtBar/BatchCheck"):
 		return int(ceil(900 * pow(1.0158, h.level)))
-	if not c.get_node("HeroPanel/LevelUpBox/LevelUpBtnBox/BatchCheck").button_pressed:
+	if not c.get_node("HeroPanel/RightArtBar/BatchCheck").button_pressed:
 		return int(ceil(900 * pow(1.0158, h.level)))
 	var max_lv = 50 + h.breakthrough_count * 50
 	var total = 0
