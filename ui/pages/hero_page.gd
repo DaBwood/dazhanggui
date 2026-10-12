@@ -2435,7 +2435,7 @@ func _ensure_hero_filter_bar():
 	var bar := HBoxContainer.new()
 	bar.name = "HeroFilterBar"
 	bar.set_anchors_preset(Control.PRESET_BOTTOM_WIDE)
-	bar.offset_top = -72
+	bar.offset_top = -90
 	bar.alignment = BoxContainer.ALIGNMENT_CENTER
 	bar.add_theme_constant_override("separation", 12)
 	hero_pg.add_child(bar)
@@ -2452,9 +2452,14 @@ func _ensure_hero_filter_bar():
 			b.add_theme_stylebox_override(sty, b_sty)
 		var tex := _load_hero_ui_icon("filter_all" if careers[i] == "" else HERO_CAREER_ICON[careers[i]])
 		if tex != null:
-			b.icon = tex
-			b.expand_icon = true
-			b.add_theme_constant_override("icon_max_width", 42)   # 统一图标宽，stylebox/素材差异不再影响尺寸
+			# 图标走 TextureRect 子节点定绘制区，绕开 Button 图标渲染（expand/边距/上限）的尺寸不确定性
+			var bi := TextureRect.new()
+			bi.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT, Control.PRESET_MODE_MINSIZE, 4)
+			bi.expand_mode = TextureRect.EXPAND_IGNORE_SIZE
+			bi.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_CENTERED
+			bi.texture = tex
+			bi.mouse_filter = Control.MOUSE_FILTER_IGNORE
+			b.add_child(bi)
 		else:
 			b.text = "全部" if careers[i] == "" else careers[i]
 			b.add_theme_font_size_override("font_size", 14)
@@ -2464,7 +2469,7 @@ func _ensure_hero_filter_bar():
 	# 神话门客入口（素材已就位，玩法预留）
 	var myth := Button.new()
 	myth.name = "MythBtn"
-	myth.custom_minimum_size = Vector2(72, 70)
+	myth.custom_minimum_size = Vector2(72, 86)
 	myth.focus_mode = Control.FOCUS_NONE
 	# 图标带透明区，Button 默认深色底会透出成黑边，背景全透
 	for sty in ["normal", "hover", "pressed", "focus"]:
