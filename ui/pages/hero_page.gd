@@ -109,7 +109,14 @@ func _create_hero_card(hero_id: String, locked: bool) -> Button:
 	# 立绘主题底图：全卡铺满，素材缺失时露卡底色
 	var art := TextureRect.new()
 	art.name = "Portrait"
-	art.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT, Control.PRESET_MODE_MINSIZE, 3)
+	art.anchor_left = 0.0
+	art.anchor_top = 0.0
+	art.anchor_right = 1.0
+	art.anchor_bottom = 1.0
+	art.offset_left = 3
+	art.offset_top = 3
+	art.offset_right = -3
+	art.offset_bottom = -3
 	art.expand_mode = TextureRect.EXPAND_IGNORE_SIZE
 	art.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_COVERED
 	art.mouse_filter = Control.MOUSE_FILTER_IGNORE
@@ -2435,12 +2442,12 @@ func _ensure_hero_filter_bar():
 	var bar := HBoxContainer.new()
 	bar.name = "HeroFilterBar"
 	bar.set_anchors_preset(Control.PRESET_BOTTOM_WIDE)
-	bar.offset_top = -90
+	bar.offset_top = -80
 	bar.alignment = BoxContainer.ALIGNMENT_CENTER
 	bar.add_theme_constant_override("separation", 12)
 	hero_pg.add_child(bar)
-	# 页签顺序照参考图：全/侠/农/工/商/士
-	var careers := ["", "侠", "农", "工", "商", "士"]
+	# 页签顺序：全/士/农/工/商/侠（用户定序）
+	var careers := ["", "士", "农", "工", "商", "侠"]
 	for i in range(careers.size()):
 		var b := Button.new()
 		b.custom_minimum_size = Vector2(48, 48)
@@ -2454,7 +2461,14 @@ func _ensure_hero_filter_bar():
 		if tex != null:
 			# 图标走 TextureRect 子节点定绘制区，绕开 Button 图标渲染（expand/边距/上限）的尺寸不确定性
 			var bi := TextureRect.new()
-			bi.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT, Control.PRESET_MODE_MINSIZE, 4)
+			bi.anchor_left = 0.5
+			bi.anchor_top = 0.5
+			bi.anchor_right = 0.5
+			bi.anchor_bottom = 0.5
+			bi.offset_left = -20
+			bi.offset_top = -20
+			bi.offset_right = 20
+			bi.offset_bottom = 20
 			bi.expand_mode = TextureRect.EXPAND_IGNORE_SIZE
 			bi.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_CENTERED
 			bi.texture = tex
@@ -2466,34 +2480,45 @@ func _ensure_hero_filter_bar():
 		b.pressed.connect(_set_hero_career.bind(careers[i]))
 		_hero_career_btns[careers[i]] = b
 		bar.add_child(b)
-	# 神话门客入口（素材已就位，玩法预留）
+	# 神话门客入口（素材已就位，玩法预留）：字压图 box——限高 60，标签压图标下缘省空间
 	var myth := Button.new()
 	myth.name = "MythBtn"
-	myth.custom_minimum_size = Vector2(72, 86)
+	myth.custom_minimum_size = Vector2(72, 64)
 	myth.focus_mode = Control.FOCUS_NONE
-	# 图标带透明区，Button 默认深色底会透出成黑边，背景全透
+	# 图标带透明区，Button 默认底透出成黑边，四态全透
 	for sty in ["normal", "hover", "pressed", "focus"]:
 		var m_sty := StyleBoxFlat.new()
 		m_sty.bg_color = Color(0, 0, 0, 0)
 		myth.add_theme_stylebox_override(sty, m_sty)
-	var mv := VBoxContainer.new()
-	mv.mouse_filter = Control.MOUSE_FILTER_IGNORE
-	mv.alignment = BoxContainer.ALIGNMENT_CENTER
 	var mi := TextureRect.new()
+	mi.anchor_left = 0.0
+	mi.anchor_top = 0.0
+	mi.anchor_right = 1.0
+	mi.anchor_bottom = 1.0
+	mi.offset_left = 8
+	mi.offset_top = 0
+	mi.offset_right = -8
+	mi.offset_bottom = -10
 	mi.expand_mode = TextureRect.EXPAND_IGNORE_SIZE
 	mi.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_CENTERED
-	mi.custom_minimum_size = Vector2(62, 52)
 	var myth_tex := _load_hero_ui_icon("btn_myth")
 	if myth_tex != null:
 		mi.texture = myth_tex
-	mv.add_child(mi)
+	mi.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	myth.add_child(mi)
 	var ml := Label.new()
 	ml.text = "神话门客"
+	ml.anchor_left = 0.0
+	ml.anchor_top = 1.0
+	ml.anchor_right = 1.0
+	ml.anchor_bottom = 1.0
+	ml.offset_top = -22
 	ml.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
-	ml.add_theme_font_size_override("font_size", 20)
-	ml.add_theme_color_override("font_color", Color(0.9, 0.8, 0.55))
-	mv.add_child(ml)
-	myth.add_child(mv)
+	ml.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
+	ml.add_theme_font_size_override("font_size", 18)
+	ml.add_theme_color_override("font_color", Color(0.95, 0.86, 0.6))
+	ml.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	myth.add_child(ml)
 	myth.pressed.connect(func(): c._show_success_popup("神话门客后续版本开放", 0, "info"))
 	bar.add_child(myth)
 
