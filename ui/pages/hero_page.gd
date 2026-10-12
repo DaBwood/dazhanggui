@@ -469,14 +469,22 @@ func update_hero_panel():
 		_:
 			# 预留占位（新标签页用）
 			_fill_placeholder_tab(list)
-	# 标签按钮高亮：选中页金色字，其余恢复默认色
+	# 标签按钮高亮：全部深棕字；选中=纸黄变亮（不再金字）
 	var tab_bar = c.get_node("HeroPanel").get_node_or_null("SkillTabBar")
 	if tab_bar:
 		for tab_btn in tab_bar.get_children():
+			for cname in ["font_color", "font_hover_color", "font_pressed_color", "font_focus_color"]:
+				tab_btn.add_theme_color_override(cname, Color(0.25, 0.18, 0.1))
+			var tab_sty := StyleBoxFlat.new()
 			if tab_btn.get_meta("tab_id", "") == current_skill_tab:
-				tab_btn.add_theme_color_override("font_color", Color("#ffd700"))
+				tab_sty.bg_color = Color(0.97, 0.91, 0.76)   # 选中变亮
 			else:
-				tab_btn.remove_theme_color_override("font_color")
+				tab_sty.bg_color = Color(0.88, 0.81, 0.64)   # 纸黄（同 tscn paper_sty）
+			tab_sty.border_color = Color(0.6, 0.5, 0.35)
+			tab_sty.set_border_width_all(1)
+			tab_sty.set_corner_radius_all(4)
+			for st in ["normal", "hover", "pressed", "focus"]:
+				tab_btn.add_theme_stylebox_override(st, tab_sty)
 
 func on_hero_level_upgrade():
 	var batch = false
@@ -843,9 +851,13 @@ func _build_star_row(stars: int) -> HBoxContainer:
 		star.text = "★"
 		star.add_theme_font_size_override("font_size", 11)
 		if i < overflow:
-			star.add_theme_color_override("font_color", Color("#e74c3c"))   # 溢出星级：从最左起红色
+			star.add_theme_color_override("font_color", Color(0.85, 0.15, 0.1))   # 溢出星级：红（米色底保对比）
+			star.add_theme_color_override("font_outline_color", Color(0.4, 0.28, 0.12))
+			star.add_theme_constant_override("font_outline_size", 1)
 		else:
-			star.add_theme_color_override("font_color", Color("#ffd700"))   # 金色
+			star.add_theme_color_override("font_color", Color(1, 0.71, 0.02))   # 亮黄（替换偏暗的金）
+			star.add_theme_color_override("font_outline_color", Color(0.4, 0.28, 0.12))
+			star.add_theme_constant_override("font_outline_size", 1)
 		box.add_child(star)
 	return box
 
@@ -855,20 +867,20 @@ func _build_skill_button(sname: String, stars: int, is_max: bool, is_sel: bool, 
 	btn.custom_minimum_size = Vector2(100, 58)
 	btn.mouse_filter = Control.MOUSE_FILTER_PASS   # 穿透触摸滑动
 	var style := StyleBoxFlat.new()
-	style.bg_color = Color("#2c2844")
+	style.bg_color = Color(0.89, 0.84, 0.74)   # 米色框（与详情卡同族）
 	style.set_corner_radius_all(4)
 	if is_max:
 		style.border_color = Color("#ffd700")
 		style.set_border_width_all(2)
 	elif is_sel:
-		style.border_color = Color("#5aa9e6")
+		style.border_color = Color(0.55, 0.45, 0.3)   # 选中=棕边（纸黄体系）
 		style.set_border_width_all(2)
 	else:
-		style.border_color = Color("#4a4468")
+		style.border_color = Color(0.6, 0.53, 0.4)
 		style.set_border_width_all(1)
 	btn.add_theme_stylebox_override("normal", style)
 	var hover: StyleBoxFlat = style.duplicate()
-	hover.bg_color = Color("#38325a")
+	hover.bg_color = Color(0.93, 0.88, 0.79)
 	btn.add_theme_stylebox_override("hover", hover)
 	btn.add_theme_stylebox_override("pressed", style)
 	var vb := VBoxContainer.new()
@@ -879,7 +891,10 @@ func _build_skill_button(sname: String, stars: int, is_max: bool, is_sel: bool, 
 	var name_lbl := Label.new()
 	name_lbl.text = sname
 	name_lbl.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
-	name_lbl.add_theme_font_size_override("font_size", 12)
+	name_lbl.add_theme_font_size_override("font_size", 15)
+	name_lbl.add_theme_color_override("font_color", Color(0.25, 0.18, 0.1))
+	name_lbl.add_theme_color_override("font_outline_color", Color(0.25, 0.18, 0.1))
+	name_lbl.add_theme_constant_override("font_outline_size", 1)
 	vb.add_child(name_lbl)
 	vb.add_child(_build_star_row(stars))
 	btn.pressed.connect(on_click)
@@ -925,12 +940,19 @@ func _render_skill_detail(list: VBoxContainer, item: Dictionary) -> void:
 	var bg := Panel.new()
 	bg.set_anchors_preset(Control.PRESET_FULL_RECT)
 	var style := StyleBoxFlat.new()
-	style.bg_color = Color("#232035")
+	style.bg_color = Color(0.89, 0.84, 0.74)   # 米色框（技能与升级同框）
 	style.set_corner_radius_all(6)
-	style.border_color = Color("#4a4468")
+	style.border_color = Color(0.6, 0.53, 0.4)
 	style.set_border_width_all(1)
 	bg.add_theme_stylebox_override("panel", style)
 	detail_wrap.add_child(bg)
+	# 青色半透明蒙层（参考图：升级区蒙青）
+	var tint := Panel.new()
+	tint.set_anchors_preset(Control.PRESET_FULL_RECT)
+	var tint_sty := StyleBoxFlat.new()
+	tint_sty.bg_color = Color(0.45, 0.68, 0.68, 0.28)
+	tint.add_theme_stylebox_override("panel", tint_sty)
+	detail_wrap.add_child(tint)
 	# 内容行
 	var row := HBoxContainer.new()
 	row.set_anchors_preset(Control.PRESET_FULL_RECT)
@@ -940,11 +962,17 @@ func _render_skill_detail(list: VBoxContainer, item: Dictionary) -> void:
 	row.offset_bottom = -6
 	row.add_theme_constant_override("separation", 12)
 	detail_wrap.add_child(row)
-	var info := Label.new()
-	info.text = item["info"]
+	var info_lines: Array = str(item["info"]).split("\n")
+	var info := RichTextLabel.new()
+	info.bbcode_enabled = true
+	info.custom_minimum_size = Vector2(200, 0)
 	info.size_flags_horizontal = Control.SIZE_EXPAND_FILL
-	info.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
-	info.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+	info.size_flags_vertical = Control.SIZE_SHRINK_CENTER
+	info.fit_content = true
+	info.scroll_active = false
+	var head: String = info_lines[0] if info_lines.size() > 0 else ""
+	var body: String = info_lines[1] if info_lines.size() > 1 else ""
+	info.text = "[color=#3d2b17][font_size=18]%s[/font_size][/color]\n[color=#14100b][font_size=16]%s[/font_size][/color]" % [head, body]
 	row.add_child(info)
 	var is_max: bool = bool(item["is_max"])
 	# 已满级、或纯展示条目（no_action）：右侧什么都不显示，只盖红章（见底部）
@@ -1003,7 +1031,14 @@ func _render_skill_detail(list: VBoxContainer, item: Dictionary) -> void:
 			var pill_cost_row: HBoxContainer = c._add_cost_row(pill_row, "资质丹", pill_stock, per_level)
 			for pill_lbl in pill_cost_row.get_children():
 				if pill_lbl is Label:
-					pill_lbl.add_theme_font_size_override("font_size", 12)
+					pill_lbl.add_theme_font_size_override("font_size", 14)
+					var _pc: Color = pill_lbl.get_theme_color("font_color")
+					if _pc.g > _pc.r and _pc.g > 0.3:
+						pill_lbl.add_theme_color_override("font_color", Color(0.04, 0.6, 0.16))
+				elif pill_lbl is CheckBox:
+					pill_lbl.add_theme_icon_override("checked", load("res://assets/common/check_on.png"))
+					pill_lbl.add_theme_icon_override("unchecked", load("res://assets/common/check_off.png"))
+
 			chk_col.add_child(pill_row)
 			var baiye_need: int = per_level * data.hero_system.get_baiye_per_pill()
 			var baiye_row := HBoxContainer.new()
@@ -1012,7 +1047,14 @@ func _render_skill_detail(list: VBoxContainer, item: Dictionary) -> void:
 			var baiye_cost_row: HBoxContainer = c._add_cost_row(baiye_row, "百业经验", pool_stock, baiye_need)
 			for baiye_lbl in baiye_cost_row.get_children():
 				if baiye_lbl is Label:
-					baiye_lbl.add_theme_font_size_override("font_size", 12)
+					baiye_lbl.add_theme_font_size_override("font_size", 14)
+					var _bc: Color = baiye_lbl.get_theme_color("font_color")
+					if _bc.g > _bc.r and _bc.g > 0.3:
+						baiye_lbl.add_theme_color_override("font_color", Color(0.04, 0.6, 0.16))
+				elif baiye_lbl is CheckBox:
+					baiye_lbl.add_theme_icon_override("checked", load("res://assets/common/check_on.png"))
+					baiye_lbl.add_theme_icon_override("unchecked", load("res://assets/common/check_off.png"))
+
 			chk_col.add_child(baiye_row)
 		elif item.has("own"):
 			var own: Array = item["own"]
@@ -1020,9 +1062,16 @@ func _render_skill_detail(list: VBoxContainer, item: Dictionary) -> void:
 			var own_cost_row: HBoxContainer = c._add_cost_row(right, str(item["own_name"]), int(own[1]), int(own[0]))
 			for own_lbl in own_cost_row.get_children():
 				if own_lbl is Label:
-					own_lbl.add_theme_font_size_override("font_size", 13)
+					own_lbl.add_theme_font_size_override("font_size", 15)
+					var _oc: Color = own_lbl.get_theme_color("font_color")
+					if _oc.g > _oc.r and _oc.g > 0.3:
+						own_lbl.add_theme_color_override("font_color", Color(0.04, 0.6, 0.16))
 		# 【新增】可选"?"说明钮（光环.极档：升级钮上方，点击显示各门客对应技能等级需求）
 		if item.has("on_hint"):
+				elif own_lbl is CheckBox:
+					own_lbl.add_theme_icon_override("checked", load("res://assets/common/check_on.png"))
+					own_lbl.add_theme_icon_override("unchecked", load("res://assets/common/check_off.png"))
+
 			var hbtn := Button.new()
 			hbtn.text = "i"   # 【改】2026-09-26 用户约定：门客面板补充信息入口用 i
 			hbtn.custom_minimum_size = Vector2(84, 20)

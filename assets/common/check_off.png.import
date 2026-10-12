@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://fjqykd71vop7"
-path="res://.godot/imported/career_gong.png-792bef02c646a0d6023b73b0bacfc3e7.ctex"
+uid="uid://dhndk8cfmc7kk"
+path="res://.godot/imported/check_off.png-181c6da17feb48ce776bca041a59e5cf.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://assets/heroes/career_gong.png"
-dest_files=["res://.godot/imported/career_gong.png-792bef02c646a0d6023b73b0bacfc3e7.ctex"]
+source_file="res://assets/common/check_off.png"
+dest_files=["res://.godot/imported/check_off.png-181c6da17feb48ce776bca041a59e5cf.ctex"]
 
 [params]
 

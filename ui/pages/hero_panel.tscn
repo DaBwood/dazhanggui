@@ -54,10 +54,24 @@ corner_radius_bottom_right = 4
 corner_radius_bottom_left = 4
 
 [sub_resource type="StyleBoxFlat" id="beige_sty"]
-bg_color = Color(0.85, 0.8, 0.7, 1)
+bg_color = Color(0.8, 0.72, 0.56, 1)
 border_width_top = 2
 border_color = Color(0.55, 0.47, 0.35, 1)
 
+[sub_resource type="StyleBoxFlat" id="paper_sty"]
+bg_color = Color(0.88, 0.81, 0.64, 1)
+border_width_left = 1
+border_width_top = 1
+border_width_right = 1
+border_width_bottom = 1
+border_color = Color(0.6, 0.5, 0.35, 1)
+corner_radius_top_left = 4
+corner_radius_top_right = 4
+corner_radius_bottom_right = 4
+corner_radius_bottom_left = 4
+
+[ext_resource type="Texture" path="res://assets/common/check_on.png" id="check_on"]
+[ext_resource type="Texture" path="res://assets/common/check_off.png" id="check_off"]
 [node name="HeroPanel" type="Panel" unique_id=1893611471]
 z_index = 10
 offset_right = 600.0
@@ -352,6 +366,8 @@ theme_override_font_sizes/font_size = 14
 theme_override_styles/normal = SubResource("check_sty")
 theme_override_styles/pressed = SubResource("check_sty")
 theme_override_styles/hover = SubResource("check_sty")
+theme_override_icons/checked = ExtResource("check_on")
+theme_override_icons/unchecked = ExtResource("check_off")
 text = "连续十次"
 
 [node name="LevelUpInfo" type="Label" parent="RightArtBar" unique_id=2082862528]
@@ -579,21 +595,53 @@ theme_override_constants/separation = 8
 custom_minimum_size = Vector2(136, 36)
 layout_mode = 2
 text = "技能"
+theme_override_colors/font_color = Color(0.25, 0.18, 0.1, 1)
+theme_override_colors/font_outline_color = Color(0.25, 0.18, 0.1, 1)
+theme_override_constants/font_outline_size = 1
+theme_override_font_sizes/font_size = 18
+theme_override_styles/normal = SubResource("paper_sty")
+theme_override_styles/hover = SubResource("paper_sty")
+theme_override_styles/pressed = SubResource("paper_sty")
+theme_override_styles/focus = SubResource("paper_sty")
 
 [node name="TabShop" type="Button" parent="SkillTabBar" unique_id=1209929806]
 custom_minimum_size = Vector2(136, 36)
 layout_mode = 2
 text = "副业"
+theme_override_colors/font_color = Color(0.25, 0.18, 0.1, 1)
+theme_override_colors/font_outline_color = Color(0.25, 0.18, 0.1, 1)
+theme_override_constants/font_outline_size = 1
+theme_override_font_sizes/font_size = 18
+theme_override_styles/normal = SubResource("paper_sty")
+theme_override_styles/hover = SubResource("paper_sty")
+theme_override_styles/pressed = SubResource("paper_sty")
+theme_override_styles/focus = SubResource("paper_sty")
 
 [node name="TabCostume" type="Button" parent="SkillTabBar" unique_id=392041592]
 custom_minimum_size = Vector2(136, 36)
 layout_mode = 2
 text = "服装"
+theme_override_colors/font_color = Color(0.25, 0.18, 0.1, 1)
+theme_override_colors/font_outline_color = Color(0.25, 0.18, 0.1, 1)
+theme_override_constants/font_outline_size = 1
+theme_override_font_sizes/font_size = 18
+theme_override_styles/normal = SubResource("paper_sty")
+theme_override_styles/hover = SubResource("paper_sty")
+theme_override_styles/pressed = SubResource("paper_sty")
+theme_override_styles/focus = SubResource("paper_sty")
 
 [node name="TabAura" type="Button" parent="SkillTabBar" unique_id=1120853419]
 custom_minimum_size = Vector2(136, 36)
 layout_mode = 2
 text = "光环"
+theme_override_colors/font_color = Color(0.25, 0.18, 0.1, 1)
+theme_override_colors/font_outline_color = Color(0.25, 0.18, 0.1, 1)
+theme_override_constants/font_outline_size = 1
+theme_override_font_sizes/font_size = 18
+theme_override_styles/normal = SubResource("paper_sty")
+theme_override_styles/hover = SubResource("paper_sty")
+theme_override_styles/pressed = SubResource("paper_sty")
+theme_override_styles/focus = SubResource("paper_sty")
 
 [node name="ScrollContainer" type="ScrollContainer" parent="." unique_id=515652147]
 layout_mode = 0
@@ -604,4 +652,4 @@ offset_bottom = 1067.0
 [node name="SkillList" type="VBoxContainer" parent="ScrollContainer" unique_id=778206193]
 layout_mode = 2
 size_flags_horizontal = 3
-theme_override_constants/separation = 8
+theme_override_constants/separation = 2

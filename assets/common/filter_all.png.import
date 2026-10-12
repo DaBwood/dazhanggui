@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://bok6prca76x0t"
-path="res://.godot/imported/career_xia.png-407d4adbeb57e639c95b14131936af58.ctex"
+uid="uid://dhl8qadtwnhxl"
+path="res://.godot/imported/filter_all.png-c9e0446280caa29e548d4db8d413a24f.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://assets/heroes/career_xia.png"
-dest_files=["res://.godot/imported/career_xia.png-407d4adbeb57e639c95b14131936af58.ctex"]
+source_file="res://assets/common/filter_all.png"
+dest_files=["res://.godot/imported/filter_all.png-c9e0446280caa29e548d4db8d413a24f.ctex"]
 
 [params]
 

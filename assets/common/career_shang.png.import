@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://dhvojt2xm1h0y"
-path="res://.godot/imported/career_shang.png-f43844acb87a1a0084113274a50a2c56.ctex"
+uid="uid://btsj478y8u8xg"
+path="res://.godot/imported/career_shang.png-c30b2044d477a28f7802aa2310b0722b.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://assets/heroes/career_shang.png"
-dest_files=["res://.godot/imported/career_shang.png-f43844acb87a1a0084113274a50a2c56.ctex"]
+source_file="res://assets/common/career_shang.png"
+dest_files=["res://.godot/imported/career_shang.png-c30b2044d477a28f7802aa2310b0722b.ctex"]
 
 [params]
 

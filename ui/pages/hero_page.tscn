@@ -2,12 +2,12 @@
 
 [ext_resource type="Texture" path="res://assets/heroes/bg_hero.png" id="bg_hero"]
 
-[ext_resource type="Texture" path="res://assets/heroes/filter_all.png" id="icon_all"]
-[ext_resource type="Texture" path="res://assets/heroes/career_shi.png" id="icon_shi"]
-[ext_resource type="Texture" path="res://assets/heroes/career_nong.png" id="icon_nong"]
-[ext_resource type="Texture" path="res://assets/heroes/career_gong.png" id="icon_gong"]
-[ext_resource type="Texture" path="res://assets/heroes/career_shang.png" id="icon_shang"]
-[ext_resource type="Texture" path="res://assets/heroes/career_xia.png" id="icon_xia"]
+[ext_resource type="Texture" path="res://assets/common/filter_all.png" id="icon_all"]
+[ext_resource type="Texture" path="res://assets/common/career_shi.png" id="icon_shi"]
+[ext_resource type="Texture" path="res://assets/common/career_nong.png" id="icon_nong"]
+[ext_resource type="Texture" path="res://assets/common/career_gong.png" id="icon_gong"]
+[ext_resource type="Texture" path="res://assets/common/career_shang.png" id="icon_shang"]
+[ext_resource type="Texture" path="res://assets/common/career_xia.png" id="icon_xia"]
 [ext_resource type="Texture" path="res://assets/heroes/btn_myth.png" id="icon_myth"]
 
 [sub_resource type="StyleBoxFlat" id="style_trans"]

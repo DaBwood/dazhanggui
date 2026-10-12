@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://dl7fvnwdqgohw"
-path="res://.godot/imported/career_nong.png-1f86a7a6addb1bac248a6bdd12b64b28.ctex"
+uid="uid://bvlgxjp86ga8o"
+path="res://.godot/imported/career_nong.png-f559c358801f3302fa35a124e41a771e.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://assets/heroes/career_nong.png"
-dest_files=["res://.godot/imported/career_nong.png-1f86a7a6addb1bac248a6bdd12b64b28.ctex"]
+source_file="res://assets/common/career_nong.png"
+dest_files=["res://.godot/imported/career_nong.png-f559c358801f3302fa35a124e41a771e.ctex"]
 
 [params]
 

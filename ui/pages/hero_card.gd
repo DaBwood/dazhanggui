@@ -4,7 +4,7 @@
 # ============================================================
 extends Button
 
-const ICON_DIR := "res://assets/heroes/"
+const ICON_DIR := "res://assets/common/"
 const CAREER_ICON := {"士": "career_shi", "农": "career_nong", "工": "career_gong", "商": "career_shang", "侠": "career_xia"}
 
 @onready var portrait: TextureRect = $Portrait
