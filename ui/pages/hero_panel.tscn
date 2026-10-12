@@ -226,10 +226,10 @@ theme_override_styles/focus = SubResource("style_trans")
 
 [node name="Icon" type="TextureRect" parent="LeftBar/CostumeBtn" unique_id=1533845343]
 layout_mode = 0
-offset_left = 6.0
-offset_top = 2.0
-offset_right = 130.0
-offset_bottom = 38.0
+offset_left = 4.0
+offset_top = 0.0
+offset_right = 44.0
+offset_bottom = 40.0
 mouse_filter = 2
 texture = ExtResource("icon_huanzhuang")
 expand_mode = 1
@@ -238,11 +238,10 @@ stretch_mode = 5
 [node name="Label" type="Label" parent="LeftBar/CostumeBtn" unique_id=1408136827]
 layout_mode = 0
 offset_top = 36.0
-offset_right = 136.0
+offset_right = 48.0
 offset_bottom = 52.0
 theme_override_colors/font_color = Color(1, 1, 1, 1)
 theme_override_font_sizes/font_size = 12
-theme_override_styles/normal = SubResource("label_sty")
 text = "换装"
 horizontal_alignment = 1
 vertical_alignment = 1
@@ -257,10 +256,10 @@ theme_override_styles/focus = SubResource("style_trans")
 
 [node name="Icon" type="TextureRect" parent="LeftBar/TalentBtn" unique_id=1962365958]
 layout_mode = 0
-offset_left = 6.0
-offset_top = 2.0
-offset_right = 130.0
-offset_bottom = 38.0
+offset_left = 4.0
+offset_top = 0.0
+offset_right = 44.0
+offset_bottom = 40.0
 mouse_filter = 2
 texture = ExtResource("icon_tianfu")
 expand_mode = 1
@@ -269,11 +268,10 @@ stretch_mode = 5
 [node name="Label" type="Label" parent="LeftBar/TalentBtn" unique_id=743708774]
 layout_mode = 0
 offset_top = 36.0
-offset_right = 136.0
+offset_right = 48.0
 offset_bottom = 52.0
 theme_override_colors/font_color = Color(1, 1, 1, 1)
 theme_override_font_sizes/font_size = 12
-theme_override_styles/normal = SubResource("label_sty")
 text = "天赋"
 horizontal_alignment = 1
 vertical_alignment = 1
@@ -288,10 +286,10 @@ theme_override_styles/focus = SubResource("style_trans")
 
 [node name="Icon" type="TextureRect" parent="LeftBar/FateBtn" unique_id=1644744853]
 layout_mode = 0
-offset_left = 6.0
-offset_top = 2.0
-offset_right = 130.0
-offset_bottom = 38.0
+offset_left = 4.0
+offset_top = 0.0
+offset_right = 44.0
+offset_bottom = 40.0
 mouse_filter = 2
 texture = ExtResource("icon_yuanfen")
 expand_mode = 1
@@ -300,11 +298,10 @@ stretch_mode = 5
 [node name="Label" type="Label" parent="LeftBar/FateBtn" unique_id=2132422061]
 layout_mode = 0
 offset_top = 36.0
-offset_right = 136.0
+offset_right = 48.0
 offset_bottom = 52.0
 theme_override_colors/font_color = Color(1, 1, 1, 1)
 theme_override_font_sizes/font_size = 12
-theme_override_styles/normal = SubResource("label_sty")
 text = "缘分"
 horizontal_alignment = 1
 vertical_alignment = 1
@@ -373,9 +370,9 @@ text = "连续十次"
 
 [node name="LevelUpInfo" type="Label" parent="RightArtBar" unique_id=2082862528]
 layout_mode = 0
-offset_top = 272.0
+offset_top = 184.0
 offset_right = 140.0
-offset_bottom = 294.0
+offset_bottom = 206.0
 theme_override_colors/font_color = Color(0.9, 0.82, 0.6, 1)
 theme_override_font_sizes/font_size = 13
 horizontal_alignment = 1
@@ -394,8 +391,8 @@ stretch_mode = 6
 
 [node name="HeroIncome" type="Label" parent="IncomePlate" unique_id=836246660]
 layout_mode = 0
-offset_left = 126.0
-offset_right = 291.0
+offset_left = 0.0
+offset_right = 300.0
 offset_bottom = 52.0
 theme_override_colors/font_color = Color(1, 1, 1, 1)
 theme_override_font_sizes/font_size = 22
@@ -412,7 +409,7 @@ offset_right = 350.0
 offset_bottom = 263.5
 grow_vertical = 2
 theme_override_constants/separation = 16
-alignment = 1
+alignment = 0
 
 [node name="SlotBeast" type="VBoxContainer" parent="SysRow" unique_id=1042932300]
 layout_mode = 2

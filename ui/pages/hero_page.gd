@@ -143,6 +143,9 @@ func _ensure_hero_panel_scene():
 		tab_btn.pressed.connect(_on_skill_tab_clicked.bind(tab_ids[tab_name]))
 
 func update_hero_panel():
+	# 【改】2026-10-13 面板对账前先置脏收入缓存：根治"先刷面板、后随 update_all_ui 才置脏"的顺序病
+	# （症状：升级后赚钱标签仍旧值，任意二次刷新才冒新值；30+ 处调用点统一在此兜底）
+	HeroData.invalidate_income_cache()
 	if current_hero_id == "" or not data.heroes.has(current_hero_id): return
 	var h = data.heroes[current_hero_id]
 	var income = data.get_hero_income(current_hero_id)
@@ -185,7 +188,17 @@ func update_hero_panel():
 		panel.get_node("BannerBox/HeroStars").text = star_txt
 	# 中央赚钱大数字（牌上"赚钱"二字为 art）
 	if panel.has_node("IncomePlate/HeroIncome"):
-		panel.get_node("IncomePlate/HeroIncome").text = c.format_number(income)
+		# 【改】2026-10-12 拍板：门客赚钱不取万/亿大数，精确个位+千分位逗号（仅此展示，全局 format_number 不动）
+		var inc_str: String = "%d" % int(income)
+		var inc_neg: bool = inc_str.begins_with("-")
+		if inc_neg:
+			inc_str = inc_str.substr(1)
+		var inc_parts := PackedStringArray()
+		while inc_str.length() > 3:
+			inc_parts.insert(0, inc_str.right(3))
+			inc_str = inc_str.left(inc_str.length() - 3)
+		inc_parts.insert(0, inc_str)
+		panel.get_node("IncomePlate/HeroIncome").text = ("-" if inc_neg else "") + ",".join(inc_parts)
 	# 底部统计条（交情无数据字段，未上）
 	if panel.has_node("StatsBar/StatLevel"):
 		panel.get_node("StatsBar/StatLevel").text = "等级：%d" % show_lv
