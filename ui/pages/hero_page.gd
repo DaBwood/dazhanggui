@@ -972,6 +972,10 @@ func _render_skill_detail(list: VBoxContainer, item: Dictionary) -> void:
 	info.scroll_active = false
 	var head: String = info_lines[0] if info_lines.size() > 0 else ""
 	var body: String = info_lines[1] if info_lines.size() > 1 else ""
+	# 【改】2026-10-12 拍板：「（下级+…）」提词转强绿（与消耗"够"同色族 #0a9929），「（已满级）」保持原色
+	var cut: int = body.find("（下级")
+	if cut != -1:
+		body = body.substr(0, cut) + "[color=#0a9929]" + body.substr(cut) + "[/color]"
 	info.text = "[color=#3d2b17][font_size=18]%s[/font_size][/color]\n[color=#14100b][font_size=16]%s[/font_size][/color]" % [head, body]
 	row.add_child(info)
 	var is_max: bool = bool(item["is_max"])
@@ -1084,11 +1088,22 @@ func _render_skill_detail(list: VBoxContainer, item: Dictionary) -> void:
 		var btn_row := HBoxContainer.new()
 		btn_row.add_theme_constant_override("separation", 8)
 		right.add_child(btn_row)
+		# 【改】2026-10-12 升级钮绿色皮（拍板）：normal/hover 同绿、pressed 加深，白字
+		var up_sty := StyleBoxFlat.new()
+		up_sty.bg_color = Color(0.04, 0.6, 0.16)
+		up_sty.set_corner_radius_all(4)
+		var up_sty_p := StyleBoxFlat.new()
+		up_sty_p.bg_color = Color(0.03, 0.47, 0.12)
+		up_sty_p.set_corner_radius_all(4)
 		# 【新增】2026-09-24 免费门槛卡（师徒光环广结良缘/日进斗金）：无消耗，仅单个升级钮
 		if item.get("free_action", false):
 			var up_free := Button.new()
 			up_free.text = "升级"
 			up_free.custom_minimum_size = Vector2(84, 34)
+			up_free.add_theme_stylebox_override("normal", up_sty)
+			up_free.add_theme_stylebox_override("hover", up_sty)
+			up_free.add_theme_stylebox_override("pressed", up_sty_p)
+			up_free.add_theme_color_override("font_color", Color(1, 1, 1))
 			up_free.pressed.connect(item["on_single"])
 			btn_row.add_child(up_free)
 		else:
@@ -1097,11 +1112,19 @@ func _render_skill_detail(list: VBoxContainer, item: Dictionary) -> void:
 			var up1 := Button.new()
 			up1.text = "升级"
 			up1.custom_minimum_size = Vector2(84, 34)
+			up1.add_theme_stylebox_override("normal", up_sty)
+			up1.add_theme_stylebox_override("hover", up_sty)
+			up1.add_theme_stylebox_override("pressed", up_sty_p)
+			up1.add_theme_color_override("font_color", Color(1, 1, 1))
 			up1.pressed.connect(item["on_single"])
 			btn_row.add_child(up1)
 			var up10 := Button.new()
 			up10.text = "升级10次"
 			up10.custom_minimum_size = Vector2(84, 34)
+			up10.add_theme_stylebox_override("normal", up_sty)
+			up10.add_theme_stylebox_override("hover", up_sty)
+			up10.add_theme_stylebox_override("pressed", up_sty_p)
+			up10.add_theme_color_override("font_color", Color(1, 1, 1))
 			up10.pressed.connect(item["on_bulk"])
 			btn_row.add_child(up10)
 	# 已满级红章：盖在详情区上
