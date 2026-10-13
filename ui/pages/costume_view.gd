@@ -115,12 +115,12 @@ func show_hero_costume_popup(hero_id: String):
 	qtag.size = Vector2(118, 104)
 	meta.add_child(qtag)
 	var plate := Panel.new()
-	plate.position = Vector2(0, 112)
-	plate.size = Vector2(118, 290)
+	plate.position = Vector2(30, 128)
+	plate.size = Vector2(84, 236)
 	var pl_sty := StyleBoxTexture.new()
 	if ResourceLoader.exists("res://assets/costumes/name_plate.png"):
 		pl_sty.texture = load("res://assets/costumes/name_plate.png")
-		pl_sty.set_content_margin_all(10)
+		pl_sty.set_content_margin_all(6)
 	plate.add_theme_stylebox_override("panel", pl_sty)
 	meta.add_child(plate)
 	var plate_col := VBoxContainer.new()
@@ -130,7 +130,7 @@ func show_hero_costume_popup(hero_id: String):
 	var name_lbl := Label.new()
 	name_lbl.name = "CosName"
 	name_lbl.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
-	name_lbl.add_theme_font_size_override("font_size", 22)
+	name_lbl.add_theme_font_size_override("font_size", 15)
 	name_lbl.add_theme_color_override("font_color", Color(0.95, 0.91, 0.8))
 	plate_col.add_child(name_lbl)
 	var hero_name_lbl := Label.new()
@@ -139,7 +139,7 @@ func show_hero_costume_popup(hero_id: String):
 		_hc.append(_ch)
 	hero_name_lbl.text = "\n".join(_hc)
 	hero_name_lbl.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
-	hero_name_lbl.add_theme_font_size_override("font_size", 13)
+	hero_name_lbl.add_theme_font_size_override("font_size", 10)
 	hero_name_lbl.add_theme_color_override("font_color", Color(0.85, 0.75, 0.55))
 	plate_col.add_child(hero_name_lbl)
 	mid.add_child(pv_box)
