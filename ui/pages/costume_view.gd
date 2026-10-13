@@ -6,6 +6,9 @@
 class_name CostumeView
 extends RefCounted
 
+# 名牌/词条统一暗金（品质色亮金刺眼，用户拍板收敛）
+const COS_NAME_GOLD := Color(0.72, 0.58, 0.3)
+
 var c      # game_controller 根脚本引用
 var data   # GameData 数据中枢引用
 
@@ -376,11 +379,12 @@ func _make_cos_chip(icon_path: String, fallback_char: String, chip_color: Color,
 	tl.add_theme_font_size_override("font_size", 15)
 	tl.add_theme_color_override("font_color", chip_color)
 	tx.add_child(tl)
-	var sl := Label.new()
-	sl.text = sub
-	sl.add_theme_font_size_override("font_size", 12)
-	sl.add_theme_color_override("font_color", Color(0.8, 0.75, 0.65))
-	tx.add_child(sl)
+	if sub != "":
+		var sl := Label.new()
+		sl.text = sub
+		sl.add_theme_font_size_override("font_size", 12)
+		sl.add_theme_color_override("font_color", Color(0.8, 0.75, 0.65))
+		tx.add_child(sl)
 	chip.add_child(tx)
 	return chip
 
@@ -391,14 +395,12 @@ func _update_cos_detail(hero_id: String, cfg: Dictionary, preview: TextureRect, 
 	var cos_id: String = cfg.get("id", "")
 	var cos_name: String = cfg.get("name", cos_id)
 	var quality: String = cfg.get("quality", "素装")
-	var series: String = cfg.get("series", "")
 	var st: Dictionary = data.costume_system.get_hero_cos_state(hero_id, cos_id)
 	var is_unlocked: bool = data.costume_system.is_hero_cos_unlocked(hero_id, cos_id)
 	var stock: int = int(st.get("stock", 0))
 	var worn: String = data.costume_system.get_worn_cos(hero_id)
 	var per: int = int(data.costume_system._settings().get("apt_per_level", {}).get(quality, 2))
 	var dup_bonus: int = int(data.costume_system._settings().get("dup_bonus", 15))
-	var unlock_bonus: int = int(data.costume_system._settings().get("unlock_bonus", {}).get(quality, 10))
 	for connH in halo_btn.pressed.get_connections():
 		halo_btn.pressed.disconnect(connH.callable)
 	halo_btn.visible = false
@@ -410,7 +412,7 @@ func _update_cos_detail(hero_id: String, cfg: Dictionary, preview: TextureRect, 
 		for _bch in cfg.get("name", "初始形象"):
 			_bnc.append(_bch)
 		name_lbl.text = "\n".join(_bnc)
-		name_lbl.add_theme_color_override("font_color", Color(0.95, 0.91, 0.8))
+		name_lbl.add_theme_color_override("font_color", COS_NAME_GOLD)
 		title_lbl.text = "◆ 使用效果 ◆"
 		_add_body_line(body, "默认形象，无法升级", Color(0.85, 0.8, 0.7), 15)
 		cost_lbl.text = ""
@@ -433,20 +435,7 @@ func _update_cos_detail(hero_id: String, cfg: Dictionary, preview: TextureRect, 
 	for _ch in cos_name:
 		_nc.append(_ch)
 	name_lbl.text = "\n".join(_nc)
-	name_lbl.add_theme_color_override("font_color", _quality_color(quality))
-	# 无获取途径且未解锁：暂未开放（唯一除外的第三态）
-	if not is_unlocked and stock == 0 and series == "":
-		title_lbl.text = "◆ 使用效果 ◆"
-		_add_body_line(body, "暂未开放", Color(0.85, 0.8, 0.7), 15)
-		cost_lbl.text = ""
-		for conn3 in act_btn.pressed.get_connections():
-			act_btn.pressed.disconnect(conn3.callable)
-		act_btn.text = "暂未开放"
-		act_btn.disabled = true
-		for conn4 in up_btn.pressed.get_connections():
-			up_btn.pressed.disconnect(conn4.callable)
-		up_btn.visible = false
-		return
+	name_lbl.add_theme_color_override("font_color", COS_NAME_GOLD)
 	# ── 双态：解锁效果 / 升级效果（华服/锦衣双词条分列左右，解锁/双钮居中）
 	halo_btn.visible = true
 	halo_btn.pressed.connect(_show_halo_rule.bind(hero_id, cfg))
@@ -459,9 +448,9 @@ func _update_cos_detail(hero_id: String, cfg: Dictionary, preview: TextureRect, 
 	chips.add_theme_constant_override("separation", 48)
 	if is_unlocked:
 		title_lbl.text = "◆ 升级效果 ◆"
-		_add_body_line(body, "升级：技能额外等级+%d（消耗 1 库存）" % dup_bonus, Color(0.7, 0.66, 0.58), 12)
+		_add_body_line(body, "升级：提高以下技能等级上限+%d" % dup_bonus, Color(0.7, 0.66, 0.58), 12)
 		var lv: int = int(st.get("base", 1)) + int(st.get("extra", 0))
-		chips.add_child(_make_cos_chip("res://assets/skill_icons/%s.png" % cos_id, cos_name.substr(0, 1), _quality_color(quality), "%s %d级" % [cos_name, lv], "资质+%d" % (lv * per)))
+		chips.add_child(_make_cos_chip("res://assets/skill_icons/%s.png" % cos_id, cos_name.substr(0, 1), COS_NAME_GOLD, "%s %d级" % [cos_name, lv], "资质+%d" % (lv * per)))
 		if quality == "华服" or quality == "锦衣":
 			var way_cap: int = data.costume_system.get_cos_way_cap(hero_id, quality)
 			var way_per: int = 3 if quality == "锦衣" else 1   # 口径=_cos_way_skill_base：华服1/锦衣3
@@ -471,11 +460,10 @@ func _update_cos_detail(hero_id: String, cfg: Dictionary, preview: TextureRect, 
 	else:
 		title_lbl.text = "◆ 解锁效果 ◆"
 		_add_body_line(body, "解锁以下技能：", Color(0.85, 0.8, 0.7), 13)
-		chips.add_child(_make_cos_chip("res://assets/skill_icons/%s.png" % cos_id, cos_name.substr(0, 1), _quality_color(quality), "%s %d级" % [cos_name, 1 + unlock_bonus], "资质+%d" % ((1 + unlock_bonus) * per)))
+		chips.add_child(_make_cos_chip("res://assets/skill_icons/%s.png" % cos_id, cos_name.substr(0, 1), COS_NAME_GOLD, cos_name, ""))
 		if quality == "华服" or quality == "锦衣":
-			var ub_per: int = 3 if quality == "锦衣" else 1
 			var sk_name2: String = _career_skill_name(hero_id, quality)
-			chips.add_child(_make_cos_chip(_career_icon_path(hero_id, quality), sk_name2.substr(0, 1), Color(0.95, 0.91, 0.8), "%s %d级" % [sk_name2, unlock_bonus], "资质+%d" % (unlock_bonus * ub_per)))
+			chips.add_child(_make_cos_chip(_career_icon_path(hero_id, quality), sk_name2.substr(0, 1), Color(0.95, 0.91, 0.8), sk_name2, ""))
 	body.add_child(chips)
 	# ── 钮区：解锁居中(缺库存禁用) / 穿戴+升级(缺库存禁用)
 	for conn5 in act_btn.pressed.get_connections():
@@ -518,67 +506,13 @@ func _career_icon_path(hero_id: String, quality: String) -> String:
 		return ""
 	return "res://assets/skill_icons/career_%s%s.png" % [pin, "_ji" if quality == "锦衣" else ""]
 
-# 职业光环说明弹窗（钮=升级区域左上「▦ 职业光环」）
+# 职业光环说明弹窗（钮=升级区域左上「▦ 职业光环」）：说明弹窗统一走仓库范式 _show_rule_popup
 # 口径=get_halo_cap：服装1级解锁，每1级上限+10，封顶100
 func _show_halo_rule(hero_id: String, cfg: Dictionary):
-	_close_popup("CosHaloRule")
-	if c.has_node("CosHaloRuleHost"):
-		c.get_node("CosHaloRuleHost").queue_free()
-	var mask = ColorRect.new()
-	mask.set_anchors_preset(Control.PRESET_FULL_RECT)
-	mask.color = Color(0, 0, 0, 0.55)
-	mask.z_index = 45
-	mask.mouse_filter = Control.MOUSE_FILTER_STOP
-	c.add_child(mask)
-	var cc := CenterContainer.new()
-	cc.name = "CosHaloRuleHost"
-	cc.set_anchors_preset(Control.PRESET_FULL_RECT)
-	cc.z_index = 46
-	cc.mouse_filter = Control.MOUSE_FILTER_IGNORE
-	c.add_child(cc)
-	var panel = PanelContainer.new()
-	panel.name = "CosHaloRule"
-	panel.set_meta("popup_mask", mask)
-	panel.tree_exiting.connect(func(): mask.queue_free(); cc.queue_free())
-	var p_sty := StyleBoxFlat.new()
-	p_sty.bg_color = Color("#241d18")
-	p_sty.set_corner_radius_all(10)
-	p_sty.set_border_width_all(1)
-	p_sty.border_color = Color(0.55, 0.4, 0.25)
-	p_sty.content_margin_left = 20.0
-	p_sty.content_margin_right = 20.0
-	p_sty.content_margin_top = 14.0
-	p_sty.content_margin_bottom = 14.0
-	panel.add_theme_stylebox_override("panel", p_sty)
-	panel.custom_minimum_size = Vector2(460, 0)
-	cc.add_child(panel)
-	var vb := VBoxContainer.new()
-	vb.add_theme_constant_override("separation", 10)
-	panel.add_child(vb)
-	var tl := Label.new()
-	tl.text = "职业光环"
-	tl.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
-	tl.add_theme_font_size_override("font_size", 18)
-	tl.add_theme_color_override("font_color", Color(0.91, 0.77, 0.42))
-	vb.add_child(tl)
 	var cos_name2: String = cfg.get("name", "")
 	var cat2: String = str(data.heroes.get(hero_id, {}).get("category", ""))
-	var lines := [
-		"%s +1时，解锁光环技能%s·%s" % [cos_name2, cos_name2, cat2],
-		"服装技能每提升1级，光环技能上限+10",
-		"光环技能上限最高100级",
-	]
-	for t in lines:
-		var ll := Label.new()
-		ll.text = t
-		ll.add_theme_font_size_override("font_size", 14)
-		ll.add_theme_color_override("font_color", Color(0.95, 0.91, 0.8))
-		vb.add_child(ll)
-	var ok := Button.new()
-	ok.text = "知道了"
-	ok.custom_minimum_size = Vector2(120, 36)
-	ok.pressed.connect(func(): _close_popup("CosHaloRule"))
-	vb.add_child(ok)
+	var text: String = "%s +1时，解锁光环技能%s·%s\n服装技能每提升1级，光环技能上限+10\n光环技能上限最高100级" % [cos_name2, cos_name2, cat2]
+	c._show_rule_popup("职业光环", text)
 
 # 【新增】穿戴回调：写 worn_cos → 刷新弹窗+详情面板+全局 UI
 func _on_cos_wear(hero_id: String, cos_id: String, cos_name: String):
