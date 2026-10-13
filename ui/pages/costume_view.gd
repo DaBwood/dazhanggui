@@ -95,6 +95,7 @@ func show_hero_costume_popup(hero_id: String):
 	pv_sty.border_color = Color(0.45, 0.33, 0.2)
 	pv_box.add_theme_stylebox_override("panel", pv_sty)
 	var preview := TextureRect.new()
+	preview.name = "CosPreview"
 	preview.set_anchors_preset(Control.PRESET_FULL_RECT)
 	preview.expand_mode = TextureRect.EXPAND_IGNORE_SIZE
 	preview.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_CENTERED
@@ -104,6 +105,7 @@ func show_hero_costume_popup(hero_id: String):
 	meta.position = Vector2(10, 8)
 	pv_box.add_child(meta)
 	var qtag := TextureRect.new()
+	qtag.name = "CosQTag"
 	qtag.expand_mode = TextureRect.EXPAND_IGNORE_SIZE
 	qtag.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_CENTERED
 	qtag.position = Vector2.ZERO
@@ -123,6 +125,7 @@ func show_hero_costume_popup(hero_id: String):
 	plate_col.alignment = BoxContainer.ALIGNMENT_CENTER
 	plate.add_child(plate_col)
 	var name_lbl := Label.new()
+	name_lbl.name = "CosName"
 	name_lbl.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	name_lbl.add_theme_font_size_override("font_size", 22)
 	name_lbl.add_theme_color_override("font_color", Color(0.95, 0.91, 0.8))
@@ -142,31 +145,78 @@ func show_hero_costume_popup(hero_id: String):
 	scroll.custom_minimum_size = Vector2(120, 0)
 	scroll.size_flags_vertical = Control.SIZE_EXPAND_FILL
 	var cards := VBoxContainer.new()
+	cards.name = "CosCards"
 	cards.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	cards.add_theme_constant_override("separation", 6)
 	scroll.add_child(cards)
 	mid.add_child(scroll)
-	# ── 底栏：效果 | 升级副钮 | 主操作钮
-	var bottom := HBoxContainer.new()
-	bottom.add_theme_constant_override("separation", 10)
-	var info := VBoxContainer.new()
-	info.size_flags_horizontal = Control.SIZE_EXPAND_FILL
-	var eff_lbl := Label.new()
-	eff_lbl.add_theme_font_size_override("font_size", 14)
-	eff_lbl.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
-	eff_lbl.size_flags_vertical = Control.SIZE_EXPAND_FILL
-	info.add_child(eff_lbl)
-	bottom.add_child(info)
-	var up_btn := Button.new()
-	up_btn.custom_minimum_size = Vector2(104, 40)
-	bottom.add_child(up_btn)
-	var act_btn := Button.new()
-	act_btn.custom_minimum_size = Vector2(128, 40)
-	bottom.add_child(act_btn)
+	# ── 底部升级区域：标题 + 加成内容行 + 消耗/双钮（结构照参考图：深色木纹卡）
+	var bottom := PanelContainer.new()
+	var bt_sty := StyleBoxFlat.new()
+	bt_sty.bg_color = Color(0.18, 0.13, 0.09)
+	bt_sty.set_corner_radius_all(8)
+	bt_sty.set_border_width_all(1)
+	bt_sty.border_color = Color(0.45, 0.33, 0.2)
+	bt_sty.content_margin_left = 12.0
+	bt_sty.content_margin_right = 12.0
+	bt_sty.content_margin_top = 8.0
+	bt_sty.content_margin_bottom = 8.0
+	bottom.add_theme_stylebox_override("panel", bt_sty)
 	root.add_child(bottom)
-	_build_cos_cards(cards, hero_id, preview, qtag, name_lbl, eff_lbl, act_btn, up_btn)
+	var up_vbox := VBoxContainer.new()
+	up_vbox.add_theme_constant_override("separation", 6)
+	bottom.add_child(up_vbox)
+	var title_lbl := Label.new()
+	title_lbl.name = "CosTitle"
+	title_lbl.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	title_lbl.add_theme_font_size_override("font_size", 18)
+	title_lbl.add_theme_color_override("font_color", Color(0.91, 0.77, 0.42))
+	up_vbox.add_child(title_lbl)
+	var body := VBoxContainer.new()
+	body.name = "CosBody"
+	body.add_theme_constant_override("separation", 2)
+	up_vbox.add_child(body)
+	var btn_row := HBoxContainer.new()
+	btn_row.alignment = BoxContainer.ALIGNMENT_END
+	btn_row.add_theme_constant_override("separation", 8)
+	up_vbox.add_child(btn_row)
+	var cost_lbl := Label.new()
+	cost_lbl.name = "CosCost"
+	cost_lbl.add_theme_font_size_override("font_size", 13)
+	cost_lbl.add_theme_color_override("font_color", Color(0.9, 0.85, 0.75))
+	cost_lbl.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	btn_row.add_child(cost_lbl)
+	var up_btn := Button.new()
+	up_btn.name = "CosUp"
+	up_btn.custom_minimum_size = Vector2(104, 40)
+	btn_row.add_child(up_btn)
+	var act_btn := Button.new()
+	act_btn.name = "CosAct"
+	act_btn.custom_minimum_size = Vector2(128, 40)
+	btn_row.add_child(act_btn)
+	_build_cos_cards(cards, hero_id, preview, qtag, name_lbl, title_lbl, body, cost_lbl, act_btn, up_btn)
 
-func _build_cos_cards(cards: VBoxContainer, hero_id: String, preview: TextureRect, qtag: TextureRect, name_lbl: Label, eff_lbl: Label, act_btn: Button, up_btn: Button):
+# 穿戴/解锁/升级/兑换后原地刷新（不整窗重建）：同帧重建同名弹窗会被自动改名，
+# 返回钮按名关窗恒落空=关不掉（同病灶教训=勋章弹窗原地重建）。
+func _refresh_hero_costume_popup(hero_id: String):
+	var popup = c.get_node_or_null("HeroCostumePopup")
+	if popup == null:
+		show_hero_costume_popup(hero_id)
+		return
+	var cards = popup.find_child("CosCards", true, false)
+	var preview = popup.find_child("CosPreview", true, false)
+	var qtag = popup.find_child("CosQTag", true, false)
+	var name_lbl = popup.find_child("CosName", true, false)
+	var title_lbl = popup.find_child("CosTitle", true, false)
+	var body = popup.find_child("CosBody", true, false)
+	var cost_lbl = popup.find_child("CosCost", true, false)
+	var act_btn = popup.find_child("CosAct", true, false)
+	var up_btn = popup.find_child("CosUp", true, false)
+	if cards == null or preview == null or qtag == null or name_lbl == null or title_lbl == null or body == null or cost_lbl == null or act_btn == null or up_btn == null:
+		return
+	_build_cos_cards(cards, hero_id, preview, qtag, name_lbl, title_lbl, body, cost_lbl, act_btn, up_btn)
+
+func _build_cos_cards(cards: VBoxContainer, hero_id: String, preview: TextureRect, qtag: TextureRect, name_lbl: Label, title_lbl: Label, body: VBoxContainer, cost_lbl: Label, act_btn: Button, up_btn: Button):
 	for ch in cards.get_children():
 		ch.queue_free()
 	var cfgs = data.costume_system.get_hero_costume_cfgs(hero_id)
@@ -225,17 +275,17 @@ func _build_cos_cards(cards: VBoxContainer, hero_id: String, preview: TextureRec
 		hit.mouse_filter = Control.MOUSE_FILTER_STOP
 		card.add_child(hit)
 		entries.append({"card": card, "sty": c_sty, "id": cos_id, "cfg": cfg})
-		hit.pressed.connect(_on_cos_card_click.bind(entries, sel, hero_id, cos_id, cfg, preview, qtag, name_lbl, eff_lbl, act_btn, up_btn))
+		hit.pressed.connect(_on_cos_card_click.bind(entries, sel, hero_id, cos_id, cfg, preview, qtag, name_lbl, title_lbl, body, cost_lbl, act_btn, up_btn))
 		cards.add_child(card)
 	for e in entries:
 		e.sty.border_color = Color("#e8c56a") if e.id == worn else Color("#8a6a45")
 	for e in entries:
 		if e.id == worn:
-			_on_cos_card_click(entries, sel, hero_id, e.id, e.cfg, preview, qtag, name_lbl, eff_lbl, act_btn, up_btn)
+			_on_cos_card_click(entries, sel, hero_id, e.id, e.cfg, preview, qtag, name_lbl, title_lbl, body, cost_lbl, act_btn, up_btn)
 			break
 
 # 点卡：金边选中 + 联动预览图/品质标/名牌/效果/双钮
-func _on_cos_card_click(entries: Array, sel: Dictionary, hero_id: String, cos_id: String, cfg: Dictionary, preview: TextureRect, qtag: TextureRect, name_lbl: Label, eff_lbl: Label, act_btn: Button, up_btn: Button):
+func _on_cos_card_click(entries: Array, sel: Dictionary, hero_id: String, cos_id: String, cfg: Dictionary, preview: TextureRect, qtag: TextureRect, name_lbl: Label, title_lbl: Label, body: VBoxContainer, cost_lbl: Label, act_btn: Button, up_btn: Button):
 	sel.id = cos_id
 	for e in entries:
 		e.sty.border_color = Color("#e8c56a") if e.id == sel.id else Color("#8a6a45")
@@ -249,10 +299,21 @@ func _on_cos_card_click(entries: Array, sel: Dictionary, hero_id: String, cos_id
 		qtag.visible = true
 	else:
 		qtag.visible = false
-	_update_cos_detail(hero_id, cfg, preview, name_lbl, eff_lbl, act_btn, up_btn)
+	_update_cos_detail(hero_id, cfg, preview, qtag, name_lbl, title_lbl, body, cost_lbl, act_btn, up_btn)
 
 # 选中联动：预览图/名字/效果/主钮（穿戴·已穿戴·解锁·兑换·未开放）/升级副钮
-func _update_cos_detail(hero_id: String, cfg: Dictionary, preview: TextureRect, name_lbl: Label, eff_lbl: Label, act_btn: Button, up_btn: Button):
+# 加成内容行：字号/颜色由态决定（▲纯展示行，不承载交互）
+func _add_body_line(body: VBoxContainer, text: String, color: Color, fsize: int) -> void:
+	var l := Label.new()
+	l.text = text
+	l.add_theme_font_size_override("font_size", fsize)
+	l.add_theme_color_override("font_color", color)
+	body.add_child(l)
+
+# 选中联动：预览图/名字/升级区域（标题/加成内容/消耗/主钮五态/升级副钮）
+func _update_cos_detail(hero_id: String, cfg: Dictionary, preview: TextureRect, qtag: TextureRect, name_lbl: Label, title_lbl: Label, body: VBoxContainer, cost_lbl: Label, act_btn: Button, up_btn: Button):
+	for ch in body.get_children():
+		ch.queue_free()
 	var cos_id: String = cfg.get("id", "")
 	var quality: String = cfg.get("quality", "素装")
 	var series: String = cfg.get("series", "")
@@ -260,7 +321,10 @@ func _update_cos_detail(hero_id: String, cfg: Dictionary, preview: TextureRect, 
 	var is_unlocked: bool = data.costume_system.is_hero_cos_unlocked(hero_id, cos_id)
 	var stock: int = int(st.get("stock", 0))
 	var worn: String = data.costume_system.get_worn_cos(hero_id)
-	# 初始形象（虚拟默认卡）：立绘预览+固定文案+仅穿戴钮，无品质标
+	var per: int = int(data.costume_system._settings().get("apt_per_level", {}).get(quality, 2))
+	var dup_bonus: int = int(data.costume_system._settings().get("dup_bonus", 15))
+	var unlock_bonus: int = int(data.costume_system._settings().get("unlock_bonus", {}).get(quality, 10))
+	# 初始形象（虚拟默认卡）：使用效果=固定文案+仅穿戴钮
 	if cos_id == "__default":
 		var bp: String = "res://assets/portraits/heroes/%s.png" % hero_id
 		preview.texture = load(bp) if ResourceLoader.exists(bp) else null
@@ -269,7 +333,9 @@ func _update_cos_detail(hero_id: String, cfg: Dictionary, preview: TextureRect, 
 			_bnc.append(_bch)
 		name_lbl.text = "\n".join(_bnc)
 		name_lbl.add_theme_color_override("font_color", Color(0.95, 0.91, 0.8))
-		eff_lbl.text = "门客初始形象"
+		title_lbl.text = "◆ 使用效果 ◆"
+		_add_body_line(body, "默认形象，无法升级", Color(0.85, 0.8, 0.7), 15)
+		cost_lbl.text = ""
 		for conn in act_btn.pressed.get_connections():
 			act_btn.pressed.disconnect(conn.callable)
 		act_btn.disabled = false
@@ -289,24 +355,55 @@ func _update_cos_detail(hero_id: String, cfg: Dictionary, preview: TextureRect, 
 	for _ch in cfg.get("name", cos_id):
 		_nc.append(_ch)
 	name_lbl.text = "\n".join(_nc)
+	name_lbl.add_theme_color_override("font_color", _quality_color(quality))
+	# ── 升级区域：已解锁/待解锁/未开放/待兑换 四态填标题+加成行
+	cost_lbl.add_theme_color_override("font_color", Color(0.9, 0.85, 0.75))
 	if is_unlocked:
-		var extra: int = int(st.get("extra", 0))
-		var per: int = int(data.costume_system._settings().get("apt_per_level", {}).get(quality, 2))
-		var dup_bonus: int = int(data.costume_system._settings().get("dup_bonus", 15))
-		eff_lbl.text = "解锁%d级，提供资质+%d，升级服装+%d级" % [extra, extra * per, dup_bonus]
-		name_lbl.add_theme_color_override("font_color", _quality_color(quality))
+		title_lbl.text = "◆ 升级效果 ◆"
+		var base_lv: int = int(st.get("base", 1))
+		var extra_lv: int = int(st.get("extra", 0))
+		var lv: int = base_lv + extra_lv
+		_add_body_line(body, "服装技能 Lv%d（资质+%d）" % [lv, lv * per], _quality_color(quality), 15)
+		_add_body_line(body, "＝基础 %d 级 ＋ 额外 %d 级" % [base_lv, extra_lv], Color(0.8, 0.75, 0.65), 12)
+		var halo_lv: int = int(st.get("halo", 0))
+		var halo_cap: int = data.costume_system.get_halo_cap(hero_id, cos_id)
+		_add_body_line(body, "职业光环 Lv%d/%d（每级资质+1）" % [halo_lv, halo_cap], Color(0.8, 0.75, 0.65), 12)
+		if quality == "华服" or quality == "锦衣":
+			var way_cap: int = data.costume_system.get_cos_way_cap(hero_id, quality)
+			var way_per: int = 3 if quality == "锦衣" else 1   # 口径=_cos_way_skill_base：华服1/锦衣3
+			if way_cap > 0:
+				_add_body_line(body, "同名光环技能上限 %d 级（每级资质+%d）" % [way_cap, way_per], Color(0.8, 0.75, 0.65), 12)
+		_add_body_line(body, "升级：额外等级+%d（消耗 1 库存）" % dup_bonus, Color(0.7, 0.66, 0.58), 12)
+		cost_lbl.text = "库存 %d/1" % stock
+		if stock < 1:
+			cost_lbl.add_theme_color_override("font_color", Color(1, 0.45, 0.4))
 	elif stock > 0:
-		eff_lbl.text = "待解锁（库存%d）" % stock
+		title_lbl.text = "◆ 解锁效果 ◆"
+		_add_body_line(body, "解锁以下加成：", Color(0.85, 0.8, 0.7), 13)
+		_add_body_line(body, "◆ %s 至 %d 级（资质+%d）" % [cfg.get("name", cos_id), 1 + unlock_bonus, (1 + unlock_bonus) * per], _quality_color(quality), 14)
+		if quality == "华服" or quality == "锦衣":
+			var ub_per: int = 3 if quality == "锦衣" else 1
+			_add_body_line(body, "◆ 同名光环技能 %d 级（每级资质+%d）" % [unlock_bonus, ub_per], Color(0.8, 0.75, 0.65), 12)
+		_add_body_line(body, "并开启职业光环槽（上限=服装等级×10）", Color(0.7, 0.66, 0.58), 12)
+		cost_lbl.text = "库存 %d/1" % stock
 	elif series == "":
-		eff_lbl.text = "暂未开放"
+		title_lbl.text = "◆ 使用效果 ◆"
+		_add_body_line(body, "暂未开放", Color(0.85, 0.8, 0.7), 15)
+		cost_lbl.text = ""
 	else:
+		title_lbl.text = "◆ 解锁效果 ◆"
 		var s: Dictionary = data.costume_system._get_series_cfg(series)
 		var cost: int = int(data.costume_system._settings().get("exchange_cost", 100))
 		var have: int = int(data.items.get(s.get("cost_item", ""), 0))
-		eff_lbl.text = "%s %d/%d" % [s.get("item_name", ""), have, cost]
-	# ── 主操作钮
-	for conn in act_btn.pressed.get_connections():
-		act_btn.pressed.disconnect(conn.callable)
+		_add_body_line(body, "参与「%s」系列兑换" % series, Color(0.85, 0.8, 0.7), 13)
+		_add_body_line(body, "消耗 %s ×%d" % [s.get("item_name", ""), cost], Color(0.8, 0.75, 0.65), 13)
+		_add_body_line(body, "当前拥有 %d" % have, Color(0.9, 0.85, 0.75) if have >= cost else Color(1, 0.45, 0.4), 13)
+		cost_lbl.text = "%s %d/%d" % [s.get("item_name", ""), have, cost]
+		if have < cost:
+			cost_lbl.add_theme_color_override("font_color", Color(1, 0.45, 0.4))
+	# ── 主操作钮（五态不变）
+	for conn3 in act_btn.pressed.get_connections():
+		act_btn.pressed.disconnect(conn3.callable)
 	act_btn.disabled = false
 	if cos_id == worn:
 		act_btn.text = "已穿戴"
@@ -328,8 +425,8 @@ func _update_cos_detail(hero_id: String, cfg: Dictionary, preview: TextureRect, 
 		act_btn.text = "暂未开放"
 		act_btn.disabled = true
 	# ── 升级副钮：已解锁且有库存才显示
-	for conn2 in up_btn.pressed.get_connections():
-		up_btn.pressed.disconnect(conn2.callable)
+	for conn4 in up_btn.pressed.get_connections():
+		up_btn.pressed.disconnect(conn4.callable)
 	if is_unlocked and stock > 0:
 		up_btn.visible = true
 		up_btn.text = "升级（库存%d）" % stock
@@ -341,7 +438,7 @@ func _update_cos_detail(hero_id: String, cfg: Dictionary, preview: TextureRect, 
 func _on_cos_wear(hero_id: String, cos_id: String, cos_name: String):
 	if data.costume_system.wear_hero_cos(hero_id, cos_id):
 		c._show_success_popup("已穿戴「%s」" % cos_name, 1.2, "ok")
-		show_hero_costume_popup(hero_id)
+		_refresh_hero_costume_popup(hero_id)
 		c.hero_page.update_hero_panel()
 		c.update_all_ui()
 
@@ -433,7 +530,7 @@ func _on_exchange_hero_cos(hero_id: String, cos_id: String):
 	var res = data.costume_system.exchange_hero_costume(hero_id, cos_id)
 	c._show_success_popup(res.get("msg", ""), 0.0, "ok")   # 【改】飘字退休→ok 弹窗
 	if res.get("ok", false):
-		show_hero_costume_popup(hero_id)
+		_refresh_hero_costume_popup(hero_id)
 		c.hero_page.update_hero_panel()
 		c.update_all_ui()
 
@@ -442,7 +539,7 @@ func _on_cos_unlock(hero_id: String, cos_id: String):
 	var res = data.costume_system.unlock_hero_cos(hero_id, cos_id)
 	c._show_success_popup(res.get("msg", ""), 0.0, "ok")   # 【改】飘字退休→ok 弹窗
 	if res.get("ok", false):
-		show_hero_costume_popup(hero_id)
+		_refresh_hero_costume_popup(hero_id)
 		c.hero_page.update_hero_panel()
 		c.update_all_ui()
 
@@ -451,7 +548,7 @@ func _on_cos_extra_upgrade(hero_id: String, cos_id: String):
 	var res = data.costume_system.upgrade_hero_cos_extra(hero_id, cos_id)
 	c._show_success_popup(res.get("msg", ""), 0.0, "ok")   # 【改】飘字退休→ok 弹窗
 	if res.get("ok", false):
-		show_hero_costume_popup(hero_id)
+		_refresh_hero_costume_popup(hero_id)
 		c.hero_page.update_hero_panel()
 		c.update_all_ui()
 
