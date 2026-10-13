@@ -1,6 +1,8 @@
 [gd_scene format=3 uid="uid://c4bgrrg6egw0"]
 
 [ext_resource type="Texture2D" uid="uid://luns22cujci0" path="res://assets/heroes/bg_hero.png" id="bg_hero"]
+[ext_resource type="Texture2D" uid="uid://dhndk8cfmc7kk" path="res://assets/common/check_off.png" id="check_off"]
+[ext_resource type="Texture2D" uid="uid://b7n2sm643ktsm" path="res://assets/common/check_on.png" id="check_on"]
 [ext_resource type="Texture2D" uid="uid://bpoxjpxi1su04" path="res://assets/heroes/icon_huanzhuang.png" id="icon_huanzhuang"]
 [ext_resource type="Texture2D" uid="uid://dtjl7bxh73b1x" path="res://assets/heroes/icon_shenfen.png" id="icon_shenfen"]
 [ext_resource type="Texture2D" uid="uid://pg882fg641pp" path="res://assets/heroes/icon_tianfu.png" id="icon_tianfu"]
@@ -8,8 +10,6 @@
 [ext_resource type="Texture2D" uid="uid://cqrlkqbn2ilyh" path="res://assets/heroes/income_plate.png" id="income_plate"]
 [ext_resource type="Texture2D" uid="uid://wjils6fd2eis" path="res://assets/heroes/plate_levelup.png" id="plate_levelup"]
 [ext_resource type="Texture2D" uid="uid://dha3qpytud548" path="res://assets/heroes/plate_promo_libai.png" id="plate_promo"]
-[ext_resource type="Texture2D" path="res://assets/common/check_on.png" id="check_on"]
-[ext_resource type="Texture2D" path="res://assets/common/check_off.png" id="check_off"]
 
 [sub_resource type="StyleBoxFlat" id="panel_sty"]
 bg_color = Color(0.117647, 0.105882, 0.180392, 1)
@@ -41,19 +41,19 @@ corner_radius_top_right = 36
 corner_radius_bottom_right = 36
 corner_radius_bottom_left = 36
 
-[sub_resource type="StyleBoxFlat" id="label_sty"]
-bg_color = Color(0, 0, 0, 0.45)
-corner_radius_top_left = 3
-corner_radius_top_right = 3
-corner_radius_bottom_right = 3
-corner_radius_bottom_left = 3
-
 [sub_resource type="StyleBoxFlat" id="check_sty"]
-bg_color = Color(0, 0, 0, 0.4)
+bg_color = Color(0.25, 0.16, 0.09, 0.6)
 corner_radius_top_left = 4
 corner_radius_top_right = 4
 corner_radius_bottom_right = 4
 corner_radius_bottom_left = 4
+
+[sub_resource type="StyleBoxFlat" id="label_sty"]
+bg_color = Color(0.25, 0.16, 0.09, 0.6)
+corner_radius_top_left = 3
+corner_radius_top_right = 3
+corner_radius_bottom_right = 3
+corner_radius_bottom_left = 3
 
 [sub_resource type="StyleBoxFlat" id="beige_sty"]
 bg_color = Color(0.8, 0.72, 0.56, 1)
@@ -133,15 +133,16 @@ stretch_mode = 5
 
 [node name="TokenSlot" type="VBoxContainer" parent="." unique_id=236634850]
 layout_mode = 0
-offset_left = 500.0
+offset_left = 470.0
 offset_top = 150.0
 offset_right = 572.0
-offset_bottom = 245.0
+offset_bottom = 256.0
 theme_override_constants/separation = 2
 
 [node name="Btn" type="Button" parent="TokenSlot" unique_id=1003553454]
 custom_minimum_size = Vector2(72, 72)
 layout_mode = 2
+size_flags_vertical = 3
 theme_override_font_sizes/font_size = 22
 theme_override_styles/normal = SubResource("slot_sty")
 theme_override_styles/pressed = SubResource("slot_sty")
@@ -150,11 +151,12 @@ theme_override_styles/focus = SubResource("slot_sty")
 text = "+"
 
 [node name="Icon" type="TextureRect" parent="TokenSlot/Btn" unique_id=303391943]
-layout_mode = 0
-offset_left = 3.0
-offset_top = 3.0
-offset_right = 69.0
-offset_bottom = 69.0
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
 mouse_filter = 2
 expand_mode = 1
 stretch_mode = 5
@@ -187,16 +189,14 @@ stretch_mode = 5
 [node name="HeroName" type="Label" parent="BannerBox" unique_id=924843338]
 layout_mode = 1
 anchors_preset = -1
-anchor_left = 0.0
-anchor_top = 0.42647058
+anchor_top = 0.36
 anchor_right = 1.0
-anchor_bottom = 0.5514706
+anchor_bottom = 0.64
 grow_horizontal = 2
 grow_vertical = 2
 theme_override_colors/font_color = Color(0.95, 0.91, 0.8, 1)
 theme_override_colors/font_outline_color = Color(0.1, 0.05, 0.04, 1)
-theme_override_constants/font_outline_size = 3
-theme_override_font_sizes/font_size = 22
+theme_override_font_sizes/font_size = 24
 horizontal_alignment = 1
 vertical_alignment = 1
 metadata/_edit_use_anchors_ = true
@@ -230,7 +230,6 @@ theme_override_styles/focus = SubResource("style_trans")
 [node name="Icon" type="TextureRect" parent="LeftBar/CostumeBtn" unique_id=1533845343]
 layout_mode = 0
 offset_left = 4.0
-offset_top = 0.0
 offset_right = 44.0
 offset_bottom = 40.0
 mouse_filter = 2
@@ -240,10 +239,13 @@ stretch_mode = 5
 
 [node name="Label" type="Label" parent="LeftBar/CostumeBtn" unique_id=1408136827]
 layout_mode = 0
-offset_top = 36.0
-offset_right = 48.0
-offset_bottom = 52.0
-theme_override_colors/font_color = Color(1, 1, 1, 1)
+offset_left = -1.0
+offset_top = 19.0
+offset_right = 47.0
+offset_bottom = 37.0
+theme_override_colors/font_color = Color(0.897696, 0.63197917, 0, 1)
+theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
+theme_override_constants/outline_size = 2
 theme_override_font_sizes/font_size = 12
 text = "换装"
 horizontal_alignment = 1
@@ -260,7 +262,6 @@ theme_override_styles/focus = SubResource("style_trans")
 [node name="Icon" type="TextureRect" parent="LeftBar/TalentBtn" unique_id=1962365958]
 layout_mode = 0
 offset_left = 4.0
-offset_top = 0.0
 offset_right = 44.0
 offset_bottom = 40.0
 mouse_filter = 2
@@ -270,9 +271,10 @@ stretch_mode = 5
 
 [node name="Label" type="Label" parent="LeftBar/TalentBtn" unique_id=743708774]
 layout_mode = 0
-offset_top = 36.0
-offset_right = 48.0
-offset_bottom = 52.0
+offset_left = -1.0
+offset_top = 20.0
+offset_right = 47.0
+offset_bottom = 38.0
 theme_override_colors/font_color = Color(1, 1, 1, 1)
 theme_override_font_sizes/font_size = 12
 text = "天赋"
@@ -290,7 +292,6 @@ theme_override_styles/focus = SubResource("style_trans")
 [node name="Icon" type="TextureRect" parent="LeftBar/FateBtn" unique_id=1644744853]
 layout_mode = 0
 offset_left = 4.0
-offset_top = 0.0
 offset_right = 44.0
 offset_bottom = 40.0
 mouse_filter = 2
@@ -300,9 +301,10 @@ stretch_mode = 5
 
 [node name="Label" type="Label" parent="LeftBar/FateBtn" unique_id=2132422061]
 layout_mode = 0
-offset_top = 36.0
-offset_right = 48.0
-offset_bottom = 52.0
+offset_left = 1.0
+offset_top = 21.0
+offset_right = 49.0
+offset_bottom = 39.0
 theme_override_colors/font_color = Color(1, 1, 1, 1)
 theme_override_font_sizes/font_size = 12
 text = "缘分"
@@ -358,8 +360,9 @@ flat = true
 
 [node name="BatchCheck" type="CheckBox" parent="RightArtBar" unique_id=1725911272]
 layout_mode = 0
+offset_left = 13.0
 offset_top = 236.0
-offset_right = 96.0
+offset_right = 109.0
 offset_bottom = 266.0
 theme_override_colors/font_color = Color(1, 1, 1, 1)
 theme_override_constants/icon_max_width = 20
@@ -373,9 +376,10 @@ text = "连续十次"
 
 [node name="LevelUpInfo" type="Label" parent="RightArtBar" unique_id=2082862528]
 layout_mode = 0
-offset_top = 184.0
-offset_right = 140.0
-offset_bottom = 206.0
+offset_left = -4.0
+offset_top = 197.0
+offset_right = 136.0
+offset_bottom = 219.0
 theme_override_colors/font_color = Color(0.9, 0.82, 0.6, 1)
 theme_override_font_sizes/font_size = 13
 theme_override_styles/normal = SubResource("label_sty")
@@ -395,7 +399,6 @@ stretch_mode = 6
 
 [node name="HeroIncome" type="Label" parent="IncomePlate" unique_id=836246660]
 layout_mode = 0
-offset_left = 0.0
 offset_right = 300.0
 offset_bottom = 52.0
 theme_override_colors/font_color = Color(1, 1, 1, 1)
@@ -413,7 +416,6 @@ offset_right = 350.0
 offset_bottom = 263.5
 grow_vertical = 2
 theme_override_constants/separation = 16
-alignment = 0
 
 [node name="SlotBeast" type="VBoxContainer" parent="SysRow" unique_id=1042932300]
 layout_mode = 2
@@ -596,54 +598,50 @@ theme_override_constants/separation = 8
 [node name="TabSkill" type="Button" parent="SkillTabBar" unique_id=1624388763]
 custom_minimum_size = Vector2(136, 36)
 layout_mode = 2
-text = "技能"
 theme_override_colors/font_color = Color(0.25, 0.18, 0.1, 1)
 theme_override_colors/font_outline_color = Color(0.25, 0.18, 0.1, 1)
-theme_override_constants/font_outline_size = 1
 theme_override_font_sizes/font_size = 18
 theme_override_styles/normal = SubResource("paper_sty")
-theme_override_styles/hover = SubResource("paper_sty")
 theme_override_styles/pressed = SubResource("paper_sty")
+theme_override_styles/hover = SubResource("paper_sty")
 theme_override_styles/focus = SubResource("paper_sty")
+text = "技能"
 
 [node name="TabShop" type="Button" parent="SkillTabBar" unique_id=1209929806]
 custom_minimum_size = Vector2(136, 36)
 layout_mode = 2
-text = "副业"
 theme_override_colors/font_color = Color(0.25, 0.18, 0.1, 1)
 theme_override_colors/font_outline_color = Color(0.25, 0.18, 0.1, 1)
-theme_override_constants/font_outline_size = 1
 theme_override_font_sizes/font_size = 18
 theme_override_styles/normal = SubResource("paper_sty")
-theme_override_styles/hover = SubResource("paper_sty")
 theme_override_styles/pressed = SubResource("paper_sty")
+theme_override_styles/hover = SubResource("paper_sty")
 theme_override_styles/focus = SubResource("paper_sty")
+text = "副业"
 
 [node name="TabCostume" type="Button" parent="SkillTabBar" unique_id=392041592]
 custom_minimum_size = Vector2(136, 36)
 layout_mode = 2
-text = "服装"
 theme_override_colors/font_color = Color(0.25, 0.18, 0.1, 1)
 theme_override_colors/font_outline_color = Color(0.25, 0.18, 0.1, 1)
-theme_override_constants/font_outline_size = 1
 theme_override_font_sizes/font_size = 18
 theme_override_styles/normal = SubResource("paper_sty")
-theme_override_styles/hover = SubResource("paper_sty")
 theme_override_styles/pressed = SubResource("paper_sty")
+theme_override_styles/hover = SubResource("paper_sty")
 theme_override_styles/focus = SubResource("paper_sty")
+text = "服装"
 
 [node name="TabAura" type="Button" parent="SkillTabBar" unique_id=1120853419]
 custom_minimum_size = Vector2(136, 36)
 layout_mode = 2
-text = "光环"
 theme_override_colors/font_color = Color(0.25, 0.18, 0.1, 1)
 theme_override_colors/font_outline_color = Color(0.25, 0.18, 0.1, 1)
-theme_override_constants/font_outline_size = 1
 theme_override_font_sizes/font_size = 18
 theme_override_styles/normal = SubResource("paper_sty")
-theme_override_styles/hover = SubResource("paper_sty")
 theme_override_styles/pressed = SubResource("paper_sty")
+theme_override_styles/hover = SubResource("paper_sty")
 theme_override_styles/focus = SubResource("paper_sty")
+text = "光环"
 
 [node name="ScrollContainer" type="ScrollContainer" parent="." unique_id=515652147]
 layout_mode = 0

@@ -186,7 +186,7 @@ func update_hero_panel():
 		# 【改】2026-10-13 拍板二改：金字红签底太花，深棕红描边压不住→米白+近黑描边3px
 		name_lbl.add_theme_color_override("font_color", Color(0.95, 0.91, 0.8))
 		name_lbl.add_theme_color_override("font_outline_color", Color(0.1, 0.05, 0.04))
-		name_lbl.add_theme_constant_override("font_outline_size", 3)
+		name_lbl.add_theme_constant_override("font_outline_size", 5)
 	if panel.has_node("BannerBox/HeroStars"):
 		panel.get_node("BannerBox/HeroStars").text = star_txt
 	# 中央赚钱大数字（牌上"赚钱"二字为 art）
