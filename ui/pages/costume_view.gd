@@ -166,35 +166,63 @@ func show_hero_costume_popup(hero_id: String):
 	var up_vbox := VBoxContainer.new()
 	up_vbox.add_theme_constant_override("separation", 6)
 	bottom.add_child(up_vbox)
+	# 标题行：左上职业光环钮（弹阶梯说明）+ 居中标题 + 右同宽占位对称
+	var title_row := HBoxContainer.new()
+	title_row.add_theme_constant_override("separation", 6)
+	up_vbox.add_child(title_row)
+	var halo_btn := Button.new()
+	halo_btn.name = "CosHalo"
+	halo_btn.text = "▦ 职业光环"
+	halo_btn.custom_minimum_size = Vector2(96, 28)
+	var h_sty := StyleBoxFlat.new()
+	h_sty.bg_color = Color(0.25, 0.16, 0.09, 0.9)
+	h_sty.set_corner_radius_all(6)
+	h_sty.set_border_width_all(1)
+	h_sty.border_color = Color(0.55, 0.4, 0.25)
+	halo_btn.add_theme_stylebox_override("normal", h_sty)
+	halo_btn.add_theme_stylebox_override("hover", h_sty)
+	halo_btn.add_theme_stylebox_override("pressed", h_sty)
+	halo_btn.add_theme_color_override("font_color", Color(0.95, 0.91, 0.8))
+	halo_btn.add_theme_font_size_override("font_size", 13)
+	title_row.add_child(halo_btn)
 	var title_lbl := Label.new()
 	title_lbl.name = "CosTitle"
+	title_lbl.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	title_lbl.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	title_lbl.add_theme_font_size_override("font_size", 18)
 	title_lbl.add_theme_color_override("font_color", Color(0.91, 0.77, 0.42))
-	up_vbox.add_child(title_lbl)
+	title_row.add_child(title_lbl)
+	var tr_spacer := Control.new()
+	tr_spacer.custom_minimum_size = Vector2(96, 0)
+	title_row.add_child(tr_spacer)
 	var body := VBoxContainer.new()
 	body.name = "CosBody"
-	body.add_theme_constant_override("separation", 2)
+	body.add_theme_constant_override("separation", 4)
 	up_vbox.add_child(body)
-	var btn_row := HBoxContainer.new()
-	btn_row.alignment = BoxContainer.ALIGNMENT_END
-	btn_row.add_theme_constant_override("separation", 8)
-	up_vbox.add_child(btn_row)
+	# 按钮盒：消耗数在上居中，双钮在下居中（解锁居中=参考图）
+	var btn_cell := VBoxContainer.new()
+	btn_cell.alignment = BoxContainer.ALIGNMENT_CENTER
+	btn_cell.add_theme_constant_override("separation", 4)
+	up_vbox.add_child(btn_cell)
 	var cost_lbl := Label.new()
 	cost_lbl.name = "CosCost"
+	cost_lbl.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	cost_lbl.add_theme_font_size_override("font_size", 13)
 	cost_lbl.add_theme_color_override("font_color", Color(0.9, 0.85, 0.75))
-	cost_lbl.size_flags_horizontal = Control.SIZE_EXPAND_FILL
-	btn_row.add_child(cost_lbl)
+	btn_cell.add_child(cost_lbl)
+	var btn_row := HBoxContainer.new()
+	btn_row.alignment = BoxContainer.ALIGNMENT_CENTER
+	btn_row.add_theme_constant_override("separation", 10)
+	btn_cell.add_child(btn_row)
 	var up_btn := Button.new()
 	up_btn.name = "CosUp"
-	up_btn.custom_minimum_size = Vector2(104, 40)
+	up_btn.custom_minimum_size = Vector2(120, 40)
 	btn_row.add_child(up_btn)
 	var act_btn := Button.new()
 	act_btn.name = "CosAct"
-	act_btn.custom_minimum_size = Vector2(128, 40)
+	act_btn.custom_minimum_size = Vector2(150, 40)
 	btn_row.add_child(act_btn)
-	_build_cos_cards(cards, hero_id, preview, qtag, name_lbl, title_lbl, body, cost_lbl, act_btn, up_btn)
+	_build_cos_cards(cards, hero_id, preview, qtag, name_lbl, title_lbl, halo_btn, body, cost_lbl, act_btn, up_btn)
 
 # 穿戴/解锁/升级/兑换后原地刷新（不整窗重建）：同帧重建同名弹窗会被自动改名，
 # 返回钮按名关窗恒落空=关不掉（同病灶教训=勋章弹窗原地重建）。
@@ -209,14 +237,15 @@ func _refresh_hero_costume_popup(hero_id: String):
 	var name_lbl = popup.find_child("CosName", true, false)
 	var title_lbl = popup.find_child("CosTitle", true, false)
 	var body = popup.find_child("CosBody", true, false)
+	var halo_btn = popup.find_child("CosHalo", true, false)
 	var cost_lbl = popup.find_child("CosCost", true, false)
 	var act_btn = popup.find_child("CosAct", true, false)
 	var up_btn = popup.find_child("CosUp", true, false)
-	if cards == null or preview == null or qtag == null or name_lbl == null or title_lbl == null or body == null or cost_lbl == null or act_btn == null or up_btn == null:
+	if cards == null or preview == null or qtag == null or name_lbl == null or title_lbl == null or halo_btn == null or body == null or cost_lbl == null or act_btn == null or up_btn == null:
 		return
-	_build_cos_cards(cards, hero_id, preview, qtag, name_lbl, title_lbl, body, cost_lbl, act_btn, up_btn)
+	_build_cos_cards(cards, hero_id, preview, qtag, name_lbl, title_lbl, halo_btn, body, cost_lbl, act_btn, up_btn)
 
-func _build_cos_cards(cards: VBoxContainer, hero_id: String, preview: TextureRect, qtag: TextureRect, name_lbl: Label, title_lbl: Label, body: VBoxContainer, cost_lbl: Label, act_btn: Button, up_btn: Button):
+func _build_cos_cards(cards: VBoxContainer, hero_id: String, preview: TextureRect, qtag: TextureRect, name_lbl: Label, title_lbl: Label, halo_btn: Button, body: VBoxContainer, cost_lbl: Label, act_btn: Button, up_btn: Button):
 	for ch in cards.get_children():
 		ch.queue_free()
 	var cfgs = data.costume_system.get_hero_costume_cfgs(hero_id)
@@ -275,17 +304,17 @@ func _build_cos_cards(cards: VBoxContainer, hero_id: String, preview: TextureRec
 		hit.mouse_filter = Control.MOUSE_FILTER_STOP
 		card.add_child(hit)
 		entries.append({"card": card, "sty": c_sty, "id": cos_id, "cfg": cfg})
-		hit.pressed.connect(_on_cos_card_click.bind(entries, sel, hero_id, cos_id, cfg, preview, qtag, name_lbl, title_lbl, body, cost_lbl, act_btn, up_btn))
+		hit.pressed.connect(_on_cos_card_click.bind(entries, sel, hero_id, cos_id, cfg, preview, qtag, name_lbl, title_lbl, halo_btn, body, cost_lbl, act_btn, up_btn))
 		cards.add_child(card)
 	for e in entries:
 		e.sty.border_color = Color("#e8c56a") if e.id == worn else Color("#8a6a45")
 	for e in entries:
 		if e.id == worn:
-			_on_cos_card_click(entries, sel, hero_id, e.id, e.cfg, preview, qtag, name_lbl, title_lbl, body, cost_lbl, act_btn, up_btn)
+			_on_cos_card_click(entries, sel, hero_id, e.id, e.cfg, preview, qtag, name_lbl, title_lbl, halo_btn, body, cost_lbl, act_btn, up_btn)
 			break
 
 # 点卡：金边选中 + 联动预览图/品质标/名牌/效果/双钮
-func _on_cos_card_click(entries: Array, sel: Dictionary, hero_id: String, cos_id: String, cfg: Dictionary, preview: TextureRect, qtag: TextureRect, name_lbl: Label, title_lbl: Label, body: VBoxContainer, cost_lbl: Label, act_btn: Button, up_btn: Button):
+func _on_cos_card_click(entries: Array, sel: Dictionary, hero_id: String, cos_id: String, cfg: Dictionary, preview: TextureRect, qtag: TextureRect, name_lbl: Label, title_lbl: Label, halo_btn: Button, body: VBoxContainer, cost_lbl: Label, act_btn: Button, up_btn: Button):
 	sel.id = cos_id
 	for e in entries:
 		e.sty.border_color = Color("#e8c56a") if e.id == sel.id else Color("#8a6a45")
@@ -299,22 +328,68 @@ func _on_cos_card_click(entries: Array, sel: Dictionary, hero_id: String, cos_id
 		qtag.visible = true
 	else:
 		qtag.visible = false
-	_update_cos_detail(hero_id, cfg, preview, qtag, name_lbl, title_lbl, body, cost_lbl, act_btn, up_btn)
+	_update_cos_detail(hero_id, cfg, preview, qtag, name_lbl, title_lbl, halo_btn, body, cost_lbl, act_btn, up_btn)
 
 # 选中联动：预览图/名字/效果/主钮（穿戴·已穿戴·解锁·兑换·未开放）/升级副钮
+# 加成内容行：字号/颜色由态决定（▲纯展示行，不承载交互）
 # 加成内容行：字号/颜色由态决定（▲纯展示行，不承载交互）
 func _add_body_line(body: VBoxContainer, text: String, color: Color, fsize: int) -> void:
 	var l := Label.new()
 	l.text = text
 	l.add_theme_font_size_override("font_size", fsize)
 	l.add_theme_color_override("font_color", color)
+	l.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	body.add_child(l)
 
-# 选中联动：预览图/名字/升级区域（标题/加成内容/消耗/主钮五态/升级副钮）
-func _update_cos_detail(hero_id: String, cfg: Dictionary, preview: TextureRect, qtag: TextureRect, name_lbl: Label, title_lbl: Label, body: VBoxContainer, cost_lbl: Label, act_btn: Button, up_btn: Button):
+# 技能词条：圆图(缺图回落品质色圆点+首字) + 名称等级行 + 资质行
+func _make_cos_chip(icon_path: String, fallback_char: String, chip_color: Color, title: String, sub: String) -> HBoxContainer:
+	var chip := HBoxContainer.new()
+	chip.add_theme_constant_override("separation", 8)
+	if icon_path != "" and ResourceLoader.exists(icon_path):
+		var icon := TextureRect.new()
+		icon.texture = load(icon_path)
+		icon.expand_mode = TextureRect.EXPAND_IGNORE_SIZE
+		icon.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_CENTERED
+		icon.custom_minimum_size = Vector2(64, 64)
+		chip.add_child(icon)
+	else:
+		var circ := PanelContainer.new()
+		circ.custom_minimum_size = Vector2(64, 64)
+		var c_sty := StyleBoxFlat.new()
+		c_sty.bg_color = chip_color
+		c_sty.set_corner_radius_all(32)
+		circ.add_theme_stylebox_override("panel", c_sty)
+		var cl := Label.new()
+		cl.text = fallback_char
+		cl.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+		cl.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
+		cl.set_anchors_preset(Control.PRESET_FULL_RECT)
+		cl.add_theme_font_size_override("font_size", 24)
+		cl.add_theme_color_override("font_color", Color(0.15, 0.1, 0.07))
+		circ.add_child(cl)
+		chip.add_child(circ)
+	var tx := VBoxContainer.new()
+	tx.alignment = BoxContainer.ALIGNMENT_CENTER
+	tx.add_theme_constant_override("separation", 2)
+	var tl := Label.new()
+	tl.text = title
+	tl.add_theme_font_size_override("font_size", 15)
+	tl.add_theme_color_override("font_color", chip_color)
+	tx.add_child(tl)
+	var sl := Label.new()
+	sl.text = sub
+	sl.add_theme_font_size_override("font_size", 12)
+	sl.add_theme_color_override("font_color", Color(0.8, 0.75, 0.65))
+	tx.add_child(sl)
+	chip.add_child(tx)
+	return chip
+
+# 选中联动：预览图/名牌/升级区域（双态：未解锁=解锁效果，已解锁=升级效果）
+func _update_cos_detail(hero_id: String, cfg: Dictionary, preview: TextureRect, qtag: TextureRect, name_lbl: Label, title_lbl: Label, halo_btn: Button, body: VBoxContainer, cost_lbl: Label, act_btn: Button, up_btn: Button):
 	for ch in body.get_children():
 		ch.queue_free()
 	var cos_id: String = cfg.get("id", "")
+	var cos_name: String = cfg.get("name", cos_id)
 	var quality: String = cfg.get("quality", "素装")
 	var series: String = cfg.get("series", "")
 	var st: Dictionary = data.costume_system.get_hero_cos_state(hero_id, cos_id)
@@ -324,6 +399,9 @@ func _update_cos_detail(hero_id: String, cfg: Dictionary, preview: TextureRect, 
 	var per: int = int(data.costume_system._settings().get("apt_per_level", {}).get(quality, 2))
 	var dup_bonus: int = int(data.costume_system._settings().get("dup_bonus", 15))
 	var unlock_bonus: int = int(data.costume_system._settings().get("unlock_bonus", {}).get(quality, 10))
+	for connH in halo_btn.pressed.get_connections():
+		halo_btn.pressed.disconnect(connH.callable)
+	halo_btn.visible = false
 	# 初始形象（虚拟默认卡）：使用效果=固定文案+仅穿戴钮
 	if cos_id == "__default":
 		var bp: String = "res://assets/portraits/heroes/%s.png" % hero_id
@@ -352,87 +430,155 @@ func _update_cos_detail(hero_id: String, cfg: Dictionary, preview: TextureRect, 
 	var tex_path: String = "res://assets/costumes/%s.png" % cos_id
 	preview.texture = load(tex_path) if ResourceLoader.exists(tex_path) else null
 	var _nc := PackedStringArray()
-	for _ch in cfg.get("name", cos_id):
+	for _ch in cos_name:
 		_nc.append(_ch)
 	name_lbl.text = "\n".join(_nc)
 	name_lbl.add_theme_color_override("font_color", _quality_color(quality))
-	# ── 升级区域：已解锁/待解锁/未开放/待兑换 四态填标题+加成行
+	# 无获取途径且未解锁：暂未开放（唯一除外的第三态）
+	if not is_unlocked and stock == 0 and series == "":
+		title_lbl.text = "◆ 使用效果 ◆"
+		_add_body_line(body, "暂未开放", Color(0.85, 0.8, 0.7), 15)
+		cost_lbl.text = ""
+		for conn3 in act_btn.pressed.get_connections():
+			act_btn.pressed.disconnect(conn3.callable)
+		act_btn.text = "暂未开放"
+		act_btn.disabled = true
+		for conn4 in up_btn.pressed.get_connections():
+			up_btn.pressed.disconnect(conn4.callable)
+		up_btn.visible = false
+		return
+	# ── 双态：解锁效果 / 升级效果（华服/锦衣双词条分列左右，解锁/双钮居中）
+	halo_btn.visible = true
+	halo_btn.pressed.connect(_show_halo_rule.bind(hero_id, cfg))
+	cost_lbl.text = "库存 %d/1" % stock
 	cost_lbl.add_theme_color_override("font_color", Color(0.9, 0.85, 0.75))
+	if stock < 1:
+		cost_lbl.add_theme_color_override("font_color", Color(1, 0.45, 0.4))
+	var chips := HBoxContainer.new()
+	chips.alignment = BoxContainer.ALIGNMENT_CENTER
+	chips.add_theme_constant_override("separation", 48)
 	if is_unlocked:
 		title_lbl.text = "◆ 升级效果 ◆"
-		var base_lv: int = int(st.get("base", 1))
-		var extra_lv: int = int(st.get("extra", 0))
-		var lv: int = base_lv + extra_lv
-		_add_body_line(body, "服装技能 Lv%d（资质+%d）" % [lv, lv * per], _quality_color(quality), 15)
-		_add_body_line(body, "＝基础 %d 级 ＋ 额外 %d 级" % [base_lv, extra_lv], Color(0.8, 0.75, 0.65), 12)
-		var halo_lv: int = int(st.get("halo", 0))
-		var halo_cap: int = data.costume_system.get_halo_cap(hero_id, cos_id)
-		_add_body_line(body, "职业光环 Lv%d/%d（每级资质+1）" % [halo_lv, halo_cap], Color(0.8, 0.75, 0.65), 12)
+		_add_body_line(body, "升级：技能额外等级+%d（消耗 1 库存）" % dup_bonus, Color(0.7, 0.66, 0.58), 12)
+		var lv: int = int(st.get("base", 1)) + int(st.get("extra", 0))
+		chips.add_child(_make_cos_chip("res://assets/skill_icons/%s.png" % cos_id, cos_name.substr(0, 1), _quality_color(quality), "%s %d级" % [cos_name, lv], "资质+%d" % (lv * per)))
 		if quality == "华服" or quality == "锦衣":
 			var way_cap: int = data.costume_system.get_cos_way_cap(hero_id, quality)
 			var way_per: int = 3 if quality == "锦衣" else 1   # 口径=_cos_way_skill_base：华服1/锦衣3
 			if way_cap > 0:
-				_add_body_line(body, "同名光环技能上限 %d 级（每级资质+%d）" % [way_cap, way_per], Color(0.8, 0.75, 0.65), 12)
-		_add_body_line(body, "升级：额外等级+%d（消耗 1 库存）" % dup_bonus, Color(0.7, 0.66, 0.58), 12)
-		cost_lbl.text = "库存 %d/1" % stock
-		if stock < 1:
-			cost_lbl.add_theme_color_override("font_color", Color(1, 0.45, 0.4))
-	elif stock > 0:
+				var sk_name: String = _career_skill_name(hero_id, quality)
+				chips.add_child(_make_cos_chip(_career_icon_path(hero_id, quality), sk_name.substr(0, 1), Color(0.95, 0.91, 0.8), "%s %d级" % [sk_name, way_cap], "资质+%d" % (way_cap * way_per)))
+	else:
 		title_lbl.text = "◆ 解锁效果 ◆"
-		_add_body_line(body, "解锁以下加成：", Color(0.85, 0.8, 0.7), 13)
-		_add_body_line(body, "◆ %s 至 %d 级（资质+%d）" % [cfg.get("name", cos_id), 1 + unlock_bonus, (1 + unlock_bonus) * per], _quality_color(quality), 14)
+		_add_body_line(body, "解锁以下技能：", Color(0.85, 0.8, 0.7), 13)
+		chips.add_child(_make_cos_chip("res://assets/skill_icons/%s.png" % cos_id, cos_name.substr(0, 1), _quality_color(quality), "%s %d级" % [cos_name, 1 + unlock_bonus], "资质+%d" % ((1 + unlock_bonus) * per)))
 		if quality == "华服" or quality == "锦衣":
 			var ub_per: int = 3 if quality == "锦衣" else 1
-			_add_body_line(body, "◆ 同名光环技能 %d 级（每级资质+%d）" % [unlock_bonus, ub_per], Color(0.8, 0.75, 0.65), 12)
-		_add_body_line(body, "并开启职业光环槽（上限=服装等级×10）", Color(0.7, 0.66, 0.58), 12)
-		cost_lbl.text = "库存 %d/1" % stock
-	elif series == "":
-		title_lbl.text = "◆ 使用效果 ◆"
-		_add_body_line(body, "暂未开放", Color(0.85, 0.8, 0.7), 15)
-		cost_lbl.text = ""
-	else:
-		title_lbl.text = "◆ 解锁效果 ◆"
-		var s: Dictionary = data.costume_system._get_series_cfg(series)
-		var cost: int = int(data.costume_system._settings().get("exchange_cost", 100))
-		var have: int = int(data.items.get(s.get("cost_item", ""), 0))
-		_add_body_line(body, "参与「%s」系列兑换" % series, Color(0.85, 0.8, 0.7), 13)
-		_add_body_line(body, "消耗 %s ×%d" % [s.get("item_name", ""), cost], Color(0.8, 0.75, 0.65), 13)
-		_add_body_line(body, "当前拥有 %d" % have, Color(0.9, 0.85, 0.75) if have >= cost else Color(1, 0.45, 0.4), 13)
-		cost_lbl.text = "%s %d/%d" % [s.get("item_name", ""), have, cost]
-		if have < cost:
-			cost_lbl.add_theme_color_override("font_color", Color(1, 0.45, 0.4))
-	# ── 主操作钮（五态不变）
-	for conn3 in act_btn.pressed.get_connections():
-		act_btn.pressed.disconnect(conn3.callable)
+			var sk_name2: String = _career_skill_name(hero_id, quality)
+			chips.add_child(_make_cos_chip(_career_icon_path(hero_id, quality), sk_name2.substr(0, 1), Color(0.95, 0.91, 0.8), "%s %d级" % [sk_name2, unlock_bonus], "资质+%d" % (unlock_bonus * ub_per)))
+	body.add_child(chips)
+	# ── 钮区：解锁居中(缺库存禁用) / 穿戴+升级(缺库存禁用)
+	for conn5 in act_btn.pressed.get_connections():
+		act_btn.pressed.disconnect(conn5.callable)
+	for conn6 in up_btn.pressed.get_connections():
+		up_btn.pressed.disconnect(conn6.callable)
 	act_btn.disabled = false
-	if cos_id == worn:
-		act_btn.text = "已穿戴"
-		act_btn.disabled = true
-	elif is_unlocked:
-		act_btn.text = "穿 戴"
-		act_btn.pressed.connect(_on_cos_wear.bind(hero_id, cos_id, cfg.get("name", cos_id)))
-	elif stock > 0:
-		act_btn.text = "解锁（库存%d）" % stock
-		act_btn.pressed.connect(_on_cos_unlock.bind(hero_id, cos_id))
-	elif series != "":
-		var s2: Dictionary = data.costume_system._get_series_cfg(series)
-		var cost2: int = int(data.costume_system._settings().get("exchange_cost", 100))
-		var have2: int = int(data.items.get(s2.get("cost_item", ""), 0))
-		act_btn.text = "兑换 %d/%d" % [have2, cost2]
-		act_btn.disabled = have2 < cost2
-		act_btn.pressed.connect(_on_exchange_hero_cos.bind(hero_id, cos_id))
-	else:
-		act_btn.text = "暂未开放"
-		act_btn.disabled = true
-	# ── 升级副钮：已解锁且有库存才显示
-	for conn4 in up_btn.pressed.get_connections():
-		up_btn.pressed.disconnect(conn4.callable)
-	if is_unlocked and stock > 0:
+	if is_unlocked:
+		if cos_id == worn:
+			act_btn.text = "已穿戴"
+			act_btn.disabled = true
+		else:
+			act_btn.text = "穿 戴"
+			act_btn.pressed.connect(_on_cos_wear.bind(hero_id, cos_id, cos_name))
 		up_btn.visible = true
-		up_btn.text = "升级（库存%d）" % stock
+		up_btn.text = "升 级"
+		up_btn.disabled = stock < 1
 		up_btn.pressed.connect(_on_cos_extra_upgrade.bind(hero_id, cos_id))
 	else:
 		up_btn.visible = false
+		act_btn.text = "解 锁"
+		act_btn.disabled = stock < 1
+		act_btn.pressed.connect(_on_cos_unlock.bind(hero_id, cos_id))
+
+# 同名光环技能名：口径=_cos_way_skill_base（（极·）职业书名+（锦衣/华服）后缀）
+func _career_skill_name(hero_id: String, quality: String) -> String:
+	var cat: String = str(data.heroes.get(hero_id, {}).get("category", ""))
+	var book_id: String = data.side_skill_system.get_career_book(cat)
+	var book_name: String = str(data.ITEM_CONFIG.get(book_id, {}).get("name", book_id))
+	if book_name == "":
+		book_name = "职业之道"
+	return ("极·" if quality == "锦衣" else "") + book_name + ("（锦衣）" if quality == "锦衣" else "（华服）")
+
+# 职业光环技能词条图：res://assets/skill_icons/career_<拼音>.png（锦衣=career_<拼音>_ji.png）
+# 现有素材仅士系；其余职业回落 _make_cos_chip 的品质圆点
+func _career_icon_path(hero_id: String, quality: String) -> String:
+	var cat: String = str(data.heroes.get(hero_id, {}).get("category", ""))
+	var pin: String = {"士": "shi"}.get(cat, "")
+	if pin == "":
+		return ""
+	return "res://assets/skill_icons/career_%s%s.png" % [pin, "_ji" if quality == "锦衣" else ""]
+
+# 职业光环说明弹窗（钮=升级区域左上「▦ 职业光环」）
+# 口径=get_halo_cap：服装1级解锁，每1级上限+10，封顶100
+func _show_halo_rule(hero_id: String, cfg: Dictionary):
+	_close_popup("CosHaloRule")
+	if c.has_node("CosHaloRuleHost"):
+		c.get_node("CosHaloRuleHost").queue_free()
+	var mask = ColorRect.new()
+	mask.set_anchors_preset(Control.PRESET_FULL_RECT)
+	mask.color = Color(0, 0, 0, 0.55)
+	mask.z_index = 45
+	mask.mouse_filter = Control.MOUSE_FILTER_STOP
+	c.add_child(mask)
+	var cc := CenterContainer.new()
+	cc.name = "CosHaloRuleHost"
+	cc.set_anchors_preset(Control.PRESET_FULL_RECT)
+	cc.z_index = 46
+	cc.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	c.add_child(cc)
+	var panel = PanelContainer.new()
+	panel.name = "CosHaloRule"
+	panel.set_meta("popup_mask", mask)
+	panel.tree_exiting.connect(func(): mask.queue_free(); cc.queue_free())
+	var p_sty := StyleBoxFlat.new()
+	p_sty.bg_color = Color("#241d18")
+	p_sty.set_corner_radius_all(10)
+	p_sty.set_border_width_all(1)
+	p_sty.border_color = Color(0.55, 0.4, 0.25)
+	p_sty.content_margin_left = 20.0
+	p_sty.content_margin_right = 20.0
+	p_sty.content_margin_top = 14.0
+	p_sty.content_margin_bottom = 14.0
+	panel.add_theme_stylebox_override("panel", p_sty)
+	panel.custom_minimum_size = Vector2(460, 0)
+	cc.add_child(panel)
+	var vb := VBoxContainer.new()
+	vb.add_theme_constant_override("separation", 10)
+	panel.add_child(vb)
+	var tl := Label.new()
+	tl.text = "职业光环"
+	tl.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	tl.add_theme_font_size_override("font_size", 18)
+	tl.add_theme_color_override("font_color", Color(0.91, 0.77, 0.42))
+	vb.add_child(tl)
+	var cos_name2: String = cfg.get("name", "")
+	var cat2: String = str(data.heroes.get(hero_id, {}).get("category", ""))
+	var lines := [
+		"%s +1时，解锁光环技能%s·%s" % [cos_name2, cos_name2, cat2],
+		"服装技能每提升1级，光环技能上限+10",
+		"光环技能上限最高100级",
+	]
+	for t in lines:
+		var ll := Label.new()
+		ll.text = t
+		ll.add_theme_font_size_override("font_size", 14)
+		ll.add_theme_color_override("font_color", Color(0.95, 0.91, 0.8))
+		vb.add_child(ll)
+	var ok := Button.new()
+	ok.text = "知道了"
+	ok.custom_minimum_size = Vector2(120, 36)
+	ok.pressed.connect(func(): _close_popup("CosHaloRule"))
+	vb.add_child(ok)
 
 # 【新增】穿戴回调：写 worn_cos → 刷新弹窗+详情面板+全局 UI
 func _on_cos_wear(hero_id: String, cos_id: String, cos_name: String):
