@@ -75,6 +75,7 @@ offset_top = 3.0
 offset_right = 37.0
 offset_bottom = 25.0
 rotation = 0.7853982
+pivot_offset = Vector2(11, 11)
 mouse_filter = 2
 theme_override_styles/panel = SubResource("dia_sty")
 
