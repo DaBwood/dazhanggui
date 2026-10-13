@@ -1226,6 +1226,12 @@ func load_game():
 	# 【改】读档循环走 _system_instances（顺序=清单顺序，drugshop 先于 talent 由清单保证）
 	for sys in _system_instances:
 		sys.load_save_data(data)
+	# 【新增】品质字段回填（2026-10-13）：老存档入库时 heroes.json 尚无 quality → 条目缺键 → .get 默认 0=蓝底
+	# 只补缺失、绝不覆盖（晋升改出的 2/3 档必须保住）；以后新配置字段同模式在此扩
+	for hero_id in heroes:
+		var he: Dictionary = heroes[hero_id]
+		if not he.has("quality") and _hero_configs.has(hero_id) and _hero_configs[hero_id].has("quality"):
+			he["quality"] = _hero_configs[hero_id]["quality"]
 	# 【新增】角色名空值兜底：老存档 player_name 为空；load_game 开头的自动生成发生在认领区之前，
 	# 会被旧空值盖掉——认领结束后必须再补一次，否则好友系统按角色名搜索/自报名全部落空
 	if player_name == "":
