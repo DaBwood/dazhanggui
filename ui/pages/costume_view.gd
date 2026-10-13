@@ -30,9 +30,10 @@ func _close_popup(pname: String):
 # ============================================================
 # 门客服装弹窗（门客面板【服装】按钮）
 # ============================================================
+const COS_TAG_FILES := {"素装": "tag_suzhuang.png", "锦衣": "tag_jinyi.png", "华服": "tag_huafu.png"}
+
 func show_hero_costume_popup(hero_id: String):
 	_close_popup("HeroCostumePopup")
-	var vs = c.get_viewport_rect().size
 	var mask = ColorRect.new()
 	mask.set_anchors_preset(Control.PRESET_FULL_RECT)
 	mask.color = Color(0, 0, 0, 0.55)
@@ -43,14 +44,14 @@ func show_hero_costume_popup(hero_id: String):
 	panel.name = "HeroCostumePopup"
 	panel.set_meta("popup_mask", mask)
 	panel.tree_exiting.connect(func(): mask.queue_free())
-	panel.custom_minimum_size = Vector2(minf(560.0, vs.x - 24.0), vs.y - 60.0)
-	panel.position = Vector2((vs.x - panel.custom_minimum_size.x) * 0.5, 30.0)
+	panel.set_anchors_preset(Control.PRESET_FULL_RECT)
 	panel.z_index = 30
 	var p_sty := StyleBoxFlat.new()
 	p_sty.bg_color = Color("#241d18")
-	p_sty.set_corner_radius_all(10)
-	p_sty.set_border_width_all(2)
-	p_sty.border_color = Color("#8a6a45")
+	p_sty.content_margin_left = 12.0
+	p_sty.content_margin_right = 12.0
+	p_sty.content_margin_top = 10.0
+	p_sty.content_margin_bottom = 10.0
 	panel.add_theme_stylebox_override("panel", p_sty)
 	c.add_child(panel)
 	var root := VBoxContainer.new()
@@ -79,12 +80,12 @@ func show_hero_costume_popup(hero_id: String):
 	title.add_theme_color_override("font_color", Color(0.95, 0.91, 0.8))
 	top.add_child(title)
 	root.add_child(top)
-	# ── 中部：左大预览 + 右服装卡列（木架格，可下滑）
+	# ── 中部：左预览(图上压品质标+名牌) + 右 slim 卡列
 	var mid := HBoxContainer.new()
 	mid.size_flags_vertical = Control.SIZE_EXPAND_FILL
 	mid.add_theme_constant_override("separation", 10)
 	root.add_child(mid)
-	var pv_box := PanelContainer.new()
+	var pv_box := Panel.new()
 	pv_box.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	pv_box.size_flags_vertical = Control.SIZE_EXPAND_FILL
 	var pv_sty := StyleBoxFlat.new()
@@ -94,33 +95,66 @@ func show_hero_costume_popup(hero_id: String):
 	pv_sty.border_color = Color(0.45, 0.33, 0.2)
 	pv_box.add_theme_stylebox_override("panel", pv_sty)
 	var preview := TextureRect.new()
+	preview.set_anchors_preset(Control.PRESET_FULL_RECT)
 	preview.expand_mode = TextureRect.EXPAND_IGNORE_SIZE
 	preview.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_CENTERED
-	preview.size_flags_horizontal = Control.SIZE_EXPAND_FILL
-	preview.size_flags_vertical = Control.SIZE_EXPAND_FILL
 	pv_box.add_child(preview)
+	# 左上：品质标签图 + 竖排名牌（上装名下角色名）
+	var meta := Control.new()
+	meta.position = Vector2(10, 8)
+	pv_box.add_child(meta)
+	var qtag := TextureRect.new()
+	qtag.expand_mode = TextureRect.EXPAND_IGNORE_SIZE
+	qtag.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_CENTERED
+	qtag.position = Vector2.ZERO
+	qtag.size = Vector2(118, 104)
+	meta.add_child(qtag)
+	var plate := Panel.new()
+	plate.position = Vector2(0, 112)
+	plate.size = Vector2(118, 290)
+	var pl_sty := StyleBoxTexture.new()
+	if ResourceLoader.exists("res://assets/costumes/name_plate.png"):
+		pl_sty.texture = load("res://assets/costumes/name_plate.png")
+		pl_sty.set_content_margin_all(10)
+	plate.add_theme_stylebox_override("panel", pl_sty)
+	meta.add_child(plate)
+	var plate_col := VBoxContainer.new()
+	plate_col.set_anchors_preset(Control.PRESET_FULL_RECT)
+	plate_col.alignment = BoxContainer.ALIGNMENT_CENTER
+	plate.add_child(plate_col)
+	var name_lbl := Label.new()
+	name_lbl.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	name_lbl.add_theme_font_size_override("font_size", 22)
+	name_lbl.add_theme_color_override("font_color", Color(0.95, 0.91, 0.8))
+	plate_col.add_child(name_lbl)
+	var hero_name_lbl := Label.new()
+	var _hc := PackedStringArray()
+	for _ch in data.heroes.get(hero_id, {}).get("name", hero_id):
+		_hc.append(_ch)
+	hero_name_lbl.text = "\n".join(_hc)
+	hero_name_lbl.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	hero_name_lbl.add_theme_font_size_override("font_size", 13)
+	hero_name_lbl.add_theme_color_override("font_color", Color(0.85, 0.75, 0.55))
+	plate_col.add_child(hero_name_lbl)
 	mid.add_child(pv_box)
+	# 右：slim 卡列（仅缩略图+已穿戴章，可下滑）
 	var scroll := ScrollContainer.new()
-	scroll.custom_minimum_size = Vector2(158, 0)
+	scroll.custom_minimum_size = Vector2(120, 0)
 	scroll.size_flags_vertical = Control.SIZE_EXPAND_FILL
 	var cards := VBoxContainer.new()
 	cards.size_flags_horizontal = Control.SIZE_EXPAND_FILL
-	cards.add_theme_constant_override("separation", 8)
+	cards.add_theme_constant_override("separation", 6)
 	scroll.add_child(cards)
 	mid.add_child(scroll)
-	# ── 底栏：名字+效果 | 升级副钮 | 主操作钮
+	# ── 底栏：效果 | 升级副钮 | 主操作钮
 	var bottom := HBoxContainer.new()
 	bottom.add_theme_constant_override("separation", 10)
 	var info := VBoxContainer.new()
 	info.size_flags_horizontal = Control.SIZE_EXPAND_FILL
-	var name_lbl := Label.new()
-	name_lbl.add_theme_font_size_override("font_size", 20)
-	name_lbl.add_theme_color_override("font_color", Color(0.95, 0.91, 0.8))
 	var eff_lbl := Label.new()
-	eff_lbl.add_theme_font_size_override("font_size", 13)
+	eff_lbl.add_theme_font_size_override("font_size", 14)
 	eff_lbl.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
 	eff_lbl.size_flags_vertical = Control.SIZE_EXPAND_FILL
-	info.add_child(name_lbl)
 	info.add_child(eff_lbl)
 	bottom.add_child(info)
 	var up_btn := Button.new()
@@ -130,230 +164,92 @@ func show_hero_costume_popup(hero_id: String):
 	act_btn.custom_minimum_size = Vector2(128, 40)
 	bottom.add_child(act_btn)
 	root.add_child(bottom)
-	_build_cos_cards(cards, hero_id, preview, name_lbl, eff_lbl, act_btn, up_btn)
+	_build_cos_cards(cards, hero_id, preview, qtag, name_lbl, eff_lbl, act_btn, up_btn)
 
-# 卡列构建：缩略图+品质竖签+已穿戴章；点卡选中（金边）→联动预览/效果/双钮
-func _build_cos_cards(cards: VBoxContainer, hero_id: String, preview: TextureRect, name_lbl: Label, eff_lbl: Label, act_btn: Button, up_btn: Button):
+func _build_cos_cards(cards: VBoxContainer, hero_id: String, preview: TextureRect, qtag: TextureRect, name_lbl: Label, eff_lbl: Label, act_btn: Button, up_btn: Button):
 	for ch in cards.get_children():
 		ch.queue_free()
 	var cfgs = data.costume_system.get_hero_costume_cfgs(hero_id)
 	var worn: String = data.costume_system.get_worn_cos(hero_id)
+	if worn == "":
+		worn = "__default"
+	# 虚拟首卡=初始形象（立绘，永远可用）； costumes.json 各套全为额外解锁服装
+	var all: Array = [{"id": "__default", "name": "初始形象", "quality": ""}]
+	all.append_array(cfgs)
 	var sel := {"id": worn}
 	var entries: Array = []
-	for cfg in cfgs:
+	for cfg in all:
 		var cos_id: String = cfg.get("id", "")
-		var quality: String = cfg.get("quality", "素装")
-		var is_unlocked: bool = data.costume_system.is_hero_cos_unlocked(hero_id, cos_id)
-		# ── 木架格卡：VBox(缩略图横排+名字)+整卡点击层
+		var is_unlocked: bool = (cos_id == "__default") or data.costume_system.is_hero_cos_unlocked(hero_id, cos_id)
+		# slim 卡：仅缩略图+已穿戴章+点击层（名字/品质在左侧详情区显示）
 		var card := Panel.new()
-		card.custom_minimum_size = Vector2(146, 172)
+		card.custom_minimum_size = Vector2(108, 136)
 		var c_sty := StyleBoxFlat.new()
 		c_sty.bg_color = Color("#3a2c20")
 		c_sty.set_corner_radius_all(6)
 		c_sty.set_border_width_all(2)
 		c_sty.border_color = Color("#8a6a45")
 		card.add_theme_stylebox_override("panel", c_sty)
-		var cvb := VBoxContainer.new()
-		cvb.add_theme_constant_override("separation", 2)
-		card.add_child(cvb)
-		var row := HBoxContainer.new()
-		row.add_theme_constant_override("separation", 2)
-		cvb.add_child(row)
 		var th := TextureRect.new()
-		th.custom_minimum_size = Vector2(112, 146)
-		th.size_flags_vertical = Control.SIZE_EXPAND_FILL
+		th.set_anchors_preset(Control.PRESET_FULL_RECT)
+		th.offset_left = 4.0
+		th.offset_top = 4.0
+		th.offset_right = -4.0
+		th.offset_bottom = -20.0
 		th.expand_mode = TextureRect.EXPAND_IGNORE_SIZE
 		th.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_CENTERED
 		var tex_path: String = "res://assets/costumes/%s.png" % cos_id
-		if ResourceLoader.exists(tex_path):
+		if cos_id == "__default":
+			var base_p: String = "res://assets/portraits/heroes/%s.png" % hero_id
+			tex_path = base_p if ResourceLoader.exists(base_p) else ""
+		if tex_path != "" and ResourceLoader.exists(tex_path):
 			th.texture = load(tex_path)
 		if not is_unlocked:
 			th.modulate = Color(0.45, 0.45, 0.45)
-		row.add_child(th)
-		# 右竖条：品质竖签（逐字竖排，红笔刷底）+ 已穿戴章
-		var side := VBoxContainer.new()
-		side.custom_minimum_size = Vector2(26, 0)
-		side.size_flags_vertical = Control.SIZE_EXPAND_FILL
-		side.add_theme_constant_override("separation", 2)
-		row.add_child(side)
-		var tag := Label.new()
-		var qc := PackedStringArray()
-		for ch in quality:
-			qc.append(ch)
-		tag.text = "\n".join(qc)
-		tag.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
-		tag.add_theme_font_size_override("font_size", 11)
-		tag.add_theme_color_override("font_color", Color(1, 1, 1))
-		var t_sty := StyleBoxTexture.new()
-		if ResourceLoader.exists("res://assets/heroes/slot_label.png"):
-			t_sty.texture = load("res://assets/heroes/slot_label.png")
-			t_sty.set_content_margin_all(2)
-			tag.add_theme_stylebox_override("normal", t_sty)
-		side.add_child(tag)
+		card.add_child(th)
 		if cos_id == worn:
 			var worn_lbl := Label.new()
 			worn_lbl.text = "已穿戴"
+			worn_lbl.anchor_left = 0.0
+			worn_lbl.anchor_right = 1.0
+			worn_lbl.anchor_top = 1.0
+			worn_lbl.anchor_bottom = 1.0
+			worn_lbl.offset_top = -18.0
 			worn_lbl.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 			worn_lbl.add_theme_font_size_override("font_size", 10)
 			worn_lbl.add_theme_color_override("font_color", Color(1, 0.35, 0.3))
-			side.add_child(worn_lbl)
-		var nm := Label.new()
-		nm.text = cfg.get("name", cos_id)
-		nm.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
-		nm.add_theme_font_size_override("font_size", 12)
-		nm.add_theme_color_override("font_color", Color(0.9, 0.86, 0.75))
-		cvb.add_child(nm)
+			card.add_child(worn_lbl)
 		var hit := Button.new()
 		hit.flat = true
 		hit.set_anchors_preset(Control.PRESET_FULL_RECT)
 		hit.mouse_filter = Control.MOUSE_FILTER_STOP
 		card.add_child(hit)
 		entries.append({"card": card, "sty": c_sty, "id": cos_id, "cfg": cfg})
-		hit.pressed.connect(_show_cos_detail.bind(hero_id, cos_id))
+		hit.pressed.connect(_on_cos_card_click.bind(entries, sel, hero_id, cos_id, cfg, preview, qtag, name_lbl, eff_lbl, act_btn, up_btn))
 		cards.add_child(card)
-	# 默认选中=穿戴中
 	for e in entries:
 		e.sty.border_color = Color("#e8c56a") if e.id == worn else Color("#8a6a45")
 	for e in entries:
 		if e.id == worn:
-			_update_cos_detail(hero_id, e.cfg, preview, name_lbl, eff_lbl, act_btn, up_btn)
+			_on_cos_card_click(entries, sel, hero_id, e.id, e.cfg, preview, qtag, name_lbl, eff_lbl, act_btn, up_btn)
 			break
 
-# 【新增】全屏服装详情（参考图样式）：满幅服装图 + 左上品质标签 + 竖排名牌(上装名下角色名) + 右上返回 + 底部效果双钮
-const COS_TAG_FILES := {"素装": "tag_suzhuang.png", "锦衣": "tag_jinyi.png", "华服": "tag_huafu.png"}
-
-func _show_cos_detail(hero_id: String, cos_id: String):
-	_close_popup("CosDetailPanel")
-	var cfg: Dictionary = {}
-	for c0 in data.costume_system.get_hero_costume_cfgs(hero_id):
-		if c0["id"] == cos_id:
-			cfg = c0
-			break
-	var mask = ColorRect.new()
-	mask.set_anchors_preset(Control.PRESET_FULL_RECT)
-	mask.color = Color(0, 0, 0, 0.4)
-	mask.z_index = 35
-	mask.mouse_filter = Control.MOUSE_FILTER_STOP
-	c.add_child(mask)
-	var panel := Panel.new()
-	panel.name = "CosDetailPanel"
-	panel.set_meta("popup_mask", mask)
-	panel.tree_exiting.connect(func(): mask.queue_free())
-	panel.set_anchors_preset(Control.PRESET_FULL_RECT)
-	panel.z_index = 40
-	c.add_child(panel)
-	# ── 满幅服装图（COVERED 铺满全屏）
-	var art := TextureRect.new()
-	art.set_anchors_preset(Control.PRESET_FULL_RECT)
-	art.expand_mode = TextureRect.EXPAND_IGNORE_SIZE
-	art.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_COVERED
-	var tex_path: String = "res://assets/costumes/%s.png" % cos_id
-	if ResourceLoader.exists(tex_path):
-		art.texture = load(tex_path)
-	panel.add_child(art)
-	if art.texture == null:
-		var dbg := ColorRect.new()
-		dbg.set_anchors_preset(Control.PRESET_FULL_RECT)
-		dbg.color = Color(0.13, 0.1, 0.08)
-		panel.add_child(dbg)
-	# ── 左上：品质标签图（素装/锦衣/华服）
+# 点卡：金边选中 + 联动预览图/品质标/名牌/效果/双钮
+func _on_cos_card_click(entries: Array, sel: Dictionary, hero_id: String, cos_id: String, cfg: Dictionary, preview: TextureRect, qtag: TextureRect, name_lbl: Label, eff_lbl: Label, act_btn: Button, up_btn: Button):
+	sel.id = cos_id
+	for e in entries:
+		e.sty.border_color = Color("#e8c56a") if e.id == sel.id else Color("#8a6a45")
 	var quality: String = cfg.get("quality", "")
-	if COS_TAG_FILES.has(quality) and ResourceLoader.exists("res://assets/costumes/" + COS_TAG_FILES[quality]):
-		var qtag := TextureRect.new()
+	# 拍板：默认皮肤（仅数据 is_default 标记）不显示品质标签；虚拟初始卡 quality 空串自然落空隐藏
+	var is_def: bool = cfg.get("is_default", false)
+	if is_def:
+		qtag.visible = false
+	elif COS_TAG_FILES.has(quality) and ResourceLoader.exists("res://assets/costumes/" + COS_TAG_FILES[quality]):
 		qtag.texture = load("res://assets/costumes/" + COS_TAG_FILES[quality])
-		qtag.expand_mode = TextureRect.EXPAND_IGNORE_SIZE
-		qtag.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_CENTERED
-		qtag.position = Vector2(14, 12)
-		qtag.size = Vector2(118, 104)
-		panel.add_child(qtag)
-	# ── 名牌：竖排名牌底 + 上服装名/下角色名（逐字竖排）
-	var plate := Panel.new()
-	plate.position = Vector2(14, 124)
-	plate.size = Vector2(118, 290)
-	var pl_sty := StyleBoxTexture.new()
-	if ResourceLoader.exists("res://assets/costumes/name_plate.png"):
-		pl_sty.texture = load("res://assets/costumes/name_plate.png")
-		pl_sty.set_content_margin_all(10)
-	plate.add_theme_stylebox_override("panel", pl_sty)
-	panel.add_child(plate)
-	var plate_col := VBoxContainer.new()
-	plate_col.set_anchors_preset(Control.PRESET_FULL_RECT)
-	plate_col.alignment = BoxContainer.ALIGNMENT_CENTER
-	plate.add_child(plate_col)
-	var cos_name_lbl := Label.new()
-	var nc := PackedStringArray()
-	for ch in cfg.get("name", cos_id):
-		nc.append(ch)
-	cos_name_lbl.text = "\n".join(nc)
-	cos_name_lbl.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
-	cos_name_lbl.add_theme_font_size_override("font_size", 22)
-	cos_name_lbl.add_theme_color_override("font_color", Color(0.95, 0.91, 0.8))
-	plate_col.add_child(cos_name_lbl)
-	var hero_name_lbl := Label.new()
-	var hnm: String = data.heroes.get(hero_id, {}).get("name", hero_id)
-	var hc2 := PackedStringArray()
-	for ch in hnm:
-		hc2.append(ch)
-	hero_name_lbl.text = "\n".join(hc2)
-	hero_name_lbl.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
-	hero_name_lbl.add_theme_font_size_override("font_size", 13)
-	hero_name_lbl.add_theme_color_override("font_color", Color(0.85, 0.75, 0.55))
-	plate_col.add_child(hero_name_lbl)
-	# ── 右上：返回（半透明）
-	var back := Button.new()
-	back.text = "<"
-	back.anchor_left = 1.0
-	back.anchor_right = 1.0
-	back.offset_left = -58.0
-	back.offset_top = 12.0
-	back.offset_right = -12.0
-	back.offset_bottom = 52.0
-	var bk_sty := StyleBoxFlat.new()
-	bk_sty.bg_color = Color(0.15, 0.11, 0.08, 0.75)
-	bk_sty.set_corner_radius_all(8)
-	back.add_theme_stylebox_override("normal", bk_sty)
-	back.add_theme_stylebox_override("hover", bk_sty)
-	back.add_theme_stylebox_override("pressed", bk_sty)
-	back.add_theme_color_override("font_color", Color(0.95, 0.91, 0.8))
-	back.pressed.connect(func(): _close_popup("CosDetailPanel"))
-	panel.add_child(back)
-	# ── 底部条：效果 + 升级副钮 + 主钮（复用 _update_cos_detail 五态机）
-	var bar := Panel.new()
-	bar.anchor_left = 0.0
-	bar.anchor_top = 1.0
-	bar.anchor_right = 1.0
-	bar.anchor_bottom = 1.0
-	bar.offset_top = -112.0
-	var bar_sty := StyleBoxFlat.new()
-	bar_sty.bg_color = Color(0.1, 0.08, 0.06, 0.85)
-	bar_sty.content_margin_left = 10.0
-	bar_sty.content_margin_right = 10.0
-	bar_sty.content_margin_top = 8.0
-	bar_sty.content_margin_bottom = 8.0
-	bar.add_theme_stylebox_override("panel", bar_sty)
-	panel.add_child(bar)
-	var bar_h := HBoxContainer.new()
-	bar_h.set_anchors_preset(Control.PRESET_FULL_RECT)
-	bar_h.offset_left = 8.0
-	bar_h.offset_top = 6.0
-	bar_h.offset_right = -8.0
-	bar_h.offset_bottom = -6.0
-	bar_h.add_theme_constant_override("separation", 8)
-	bar.add_child(bar_h)
-	var eff_lbl := Label.new()
-	eff_lbl.size_flags_horizontal = Control.SIZE_EXPAND_FILL
-	eff_lbl.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
-	eff_lbl.add_theme_font_size_override("font_size", 14)
-	eff_lbl.add_theme_color_override("font_color", Color(0.92, 0.88, 0.78))
-	bar_h.add_child(eff_lbl)
-	var up_btn := Button.new()
-	up_btn.custom_minimum_size = Vector2(104, 40)
-	bar_h.add_child(up_btn)
-	var act_btn := Button.new()
-	act_btn.custom_minimum_size = Vector2(128, 40)
-	bar_h.add_child(act_btn)
-	var dummy := Label.new()
-	_update_cos_detail(hero_id, cfg, art, dummy, eff_lbl, act_btn, up_btn)
+		qtag.visible = true
+	else:
+		qtag.visible = false
+	_update_cos_detail(hero_id, cfg, preview, name_lbl, eff_lbl, act_btn, up_btn)
 
 # 选中联动：预览图/名字/效果/主钮（穿戴·已穿戴·解锁·兑换·未开放）/升级副钮
 func _update_cos_detail(hero_id: String, cfg: Dictionary, preview: TextureRect, name_lbl: Label, eff_lbl: Label, act_btn: Button, up_btn: Button):
@@ -364,9 +260,35 @@ func _update_cos_detail(hero_id: String, cfg: Dictionary, preview: TextureRect, 
 	var is_unlocked: bool = data.costume_system.is_hero_cos_unlocked(hero_id, cos_id)
 	var stock: int = int(st.get("stock", 0))
 	var worn: String = data.costume_system.get_worn_cos(hero_id)
+	# 初始形象（虚拟默认卡）：立绘预览+固定文案+仅穿戴钮，无品质标
+	if cos_id == "__default":
+		var bp: String = "res://assets/portraits/heroes/%s.png" % hero_id
+		preview.texture = load(bp) if ResourceLoader.exists(bp) else null
+		var _bnc := PackedStringArray()
+		for _bch in cfg.get("name", "初始形象"):
+			_bnc.append(_bch)
+		name_lbl.text = "\n".join(_bnc)
+		name_lbl.add_theme_color_override("font_color", Color(0.95, 0.91, 0.8))
+		eff_lbl.text = "门客初始形象"
+		for conn in act_btn.pressed.get_connections():
+			act_btn.pressed.disconnect(conn.callable)
+		act_btn.disabled = false
+		if worn == "":
+			act_btn.text = "已穿戴"
+			act_btn.disabled = true
+		else:
+			act_btn.text = "穿 戴"
+			act_btn.pressed.connect(_on_cos_wear.bind(hero_id, "", cfg.get("name", "初始形象")))
+		for conn2 in up_btn.pressed.get_connections():
+			up_btn.pressed.disconnect(conn2.callable)
+		up_btn.visible = false
+		return
 	var tex_path: String = "res://assets/costumes/%s.png" % cos_id
 	preview.texture = load(tex_path) if ResourceLoader.exists(tex_path) else null
-	name_lbl.text = "%s（%s）" % [cfg.get("name", cos_id), quality]
+	var _nc := PackedStringArray()
+	for _ch in cfg.get("name", cos_id):
+		_nc.append(_ch)
+	name_lbl.text = "\n".join(_nc)
 	if is_unlocked:
 		var extra: int = int(st.get("extra", 0))
 		var per: int = int(data.costume_system._settings().get("apt_per_level", {}).get(quality, 2))
@@ -420,8 +342,6 @@ func _on_cos_wear(hero_id: String, cos_id: String, cos_name: String):
 	if data.costume_system.wear_hero_cos(hero_id, cos_id):
 		c._show_success_popup("已穿戴「%s」" % cos_name, 1.2, "ok")
 		show_hero_costume_popup(hero_id)
-		if c.has_node("CosDetailPanel"):
-			_show_cos_detail(hero_id, cos_id)
 		c.hero_page.update_hero_panel()
 		c.update_all_ui()
 
@@ -514,8 +434,6 @@ func _on_exchange_hero_cos(hero_id: String, cos_id: String):
 	c._show_success_popup(res.get("msg", ""), 0.0, "ok")   # 【改】飘字退休→ok 弹窗
 	if res.get("ok", false):
 		show_hero_costume_popup(hero_id)
-		if c.has_node("CosDetailPanel"):
-			_show_cos_detail(hero_id, cos_id)
 		c.hero_page.update_hero_panel()
 		c.update_all_ui()
 
@@ -525,8 +443,6 @@ func _on_cos_unlock(hero_id: String, cos_id: String):
 	c._show_success_popup(res.get("msg", ""), 0.0, "ok")   # 【改】飘字退休→ok 弹窗
 	if res.get("ok", false):
 		show_hero_costume_popup(hero_id)
-		if c.has_node("CosDetailPanel"):
-			_show_cos_detail(hero_id, cos_id)
 		c.hero_page.update_hero_panel()
 		c.update_all_ui()
 
@@ -536,8 +452,6 @@ func _on_cos_extra_upgrade(hero_id: String, cos_id: String):
 	c._show_success_popup(res.get("msg", ""), 0.0, "ok")   # 【改】飘字退休→ok 弹窗
 	if res.get("ok", false):
 		show_hero_costume_popup(hero_id)
-		if c.has_node("CosDetailPanel"):
-			_show_cos_detail(hero_id, cos_id)
 		c.hero_page.update_hero_panel()
 		c.update_all_ui()
 
