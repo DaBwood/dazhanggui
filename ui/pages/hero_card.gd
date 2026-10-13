@@ -19,11 +19,14 @@ func bind_data(hero_id: String, data, locked: bool) -> void:
 	set_meta("hero_id", hero_id)
 	set_meta("locked", locked)
 	var cfg = data.get_hero_config(hero_id)
-	# 卡片=免抠立绘（heroes_card 优先）+ 当前品质纯色底
+	# 卡片=穿戴服装优先（非默认且有图）→免抠立绘（heroes_card 优先）→全幅立绘，+ 当前品质纯色底
+	var cos_p: String = data.costume_system.get_worn_cos_path(hero_id)
 	var p_card := "res://assets/portraits/heroes_card/%s.png" % hero_id
 	var p_full := "res://assets/portraits/heroes/%s.png" % hero_id
 	portrait.texture = null
-	if ResourceLoader.exists(p_card):
+	if cos_p != "":
+		portrait.texture = load(cos_p)
+	elif ResourceLoader.exists(p_card):
 		portrait.texture = load(p_card)
 	elif ResourceLoader.exists(p_full):
 		portrait.texture = load(p_full)

@@ -162,9 +162,14 @@ func update_hero_panel():
 	if panel.has_node("Portrait"):
 		var art = panel.get_node("Portrait")
 		art.texture = null
-		var p_path := "res://assets/portraits/heroes/%s.png" % current_hero_id
-		if ResourceLoader.exists(p_path):
-			art.texture = load(p_path)
+		# 【改】2026-10-13 穿戴优先：非默认穿戴且有服装图→显示服装，否则回落立绘
+		var cos_p: String = data.costume_system.get_worn_cos_path(current_hero_id)
+		if cos_p != "":
+			art.texture = load(cos_p)
+		else:
+			var p_path := "res://assets/portraits/heroes/%s.png" % current_hero_id
+			if ResourceLoader.exists(p_path):
+				art.texture = load(p_path)
 	var star_txt = data.talent_system.get_star_text(current_hero_id)
 	# 【改】copy_max_level 持有者：显示有效等级=max(自身, 复制等级)，与赚钱口径一致
 	var show_lv = int(h.level)

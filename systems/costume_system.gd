@@ -67,6 +67,35 @@ func get_hero_cos_state(hero_id: String, cos_id: String) -> Dictionary:
 func is_hero_cos_unlocked(hero_id: String, cos_id: String) -> bool:
 	return get_hero_cos_state(hero_id, cos_id).has("base")
 
+# 【新增】穿戴中服装：worn_cos 存英雄档（.get 防御，老档默认=is_default 那套）
+func get_worn_cos(hero_id: String) -> String:
+	var def: String = ""
+	for cfg in get_hero_costume_cfgs(hero_id):
+		if cfg.get("is_default", false):
+			def = cfg["id"]
+			break
+	return g.heroes.get(hero_id, {}).get("worn_cos", def)
+
+# 【新增】穿上指定服装（仅已解锁可穿）；返回是否成功（供弹窗刷新）
+func wear_hero_cos(hero_id: String, cos_id: String) -> bool:
+	if not is_hero_cos_unlocked(hero_id, cos_id):
+		return false
+	g.heroes[hero_id]["worn_cos"] = cos_id
+	return true
+
+# 【新增】当前穿戴展示图：非默认穿戴且图存在→服装图路径，否则空串（调用方回落立绘）
+func get_worn_cos_path(hero_id: String) -> String:
+	var worn: String = get_worn_cos(hero_id)
+	if worn == "":
+		return ""
+	for cfg in get_hero_costume_cfgs(hero_id):
+		if cfg["id"] == worn:
+			if cfg.get("is_default", false):
+				return ""
+			var p: String = "res://assets/costumes/%s.png" % worn
+			return p if ResourceLoader.exists(p) else ""
+	return ""
+
 # 服装技能总等级 = 资质丹等级 + 服装额外等级（额外等级在200满级之上）
 # 未解锁（含只有stock无base）返回0
 func get_cos_skill_level(hero_id: String, cos_id: String) -> int:
