@@ -183,7 +183,10 @@ func update_hero_panel():
 		for ch in str(h.name):
 			name_parts.append(ch)
 		name_lbl.text = "\n".join(name_parts)
-		name_lbl.add_theme_color_override("font_color", Color.WHITE)
+		# 【改】2026-10-13 拍板二改：金字红签底太花，深棕红描边压不住→米白+近黑描边3px
+		name_lbl.add_theme_color_override("font_color", Color(0.95, 0.91, 0.8))
+		name_lbl.add_theme_color_override("font_outline_color", Color(0.1, 0.05, 0.04))
+		name_lbl.add_theme_constant_override("font_outline_size", 3)
 	if panel.has_node("BannerBox/HeroStars"):
 		panel.get_node("BannerBox/HeroStars").text = star_txt
 	# 中央赚钱大数字（牌上"赚钱"二字为 art）
@@ -285,6 +288,18 @@ func update_hero_panel():
 		guardian_b.pressed.connect(_on_guardian_btn_clicked)
 	else:
 		guardian_slot.get_node("Label").text = "守护灵"
+	# 【改】2026-10-13 拍板回归：四槽红笔刷名字签（图三素材，file 本就在 assets/heroes/slot_label.png）
+	var slot_tag: StyleBoxTexture = null
+	if ResourceLoader.exists("res://assets/heroes/slot_label.png"):
+		slot_tag = StyleBoxTexture.new()
+		slot_tag.texture = load("res://assets/heroes/slot_label.png")
+		slot_tag.content_margin_left = 10
+		slot_tag.content_margin_right = 10
+	if slot_tag:
+		for sl in [beast_slot, fish_slot, cuzhi_slot, guardian_slot]:
+			var sl_lbl = sl.get_node("Label")
+			sl_lbl.add_theme_stylebox_override("normal", slot_tag)
+			sl_lbl.add_theme_color_override("font_color", Color(1, 1, 1, 1))
 	
 
 	
@@ -296,7 +311,7 @@ func update_hero_panel():
 	token_b2.text = "+"
 	token_slot2.get_node("Btn/Icon").texture = null
 	if data.token_system.has_token(current_hero_id):
-		var t_cfg = data.token_system.get_token_cfg(current_hero_id)
+		var _t_cfg = data.token_system.get_token_cfg(current_hero_id)
 		token_b2.text = ""
 		# 有图标=无框（参考图口径：信物图标直接悬浮）
 		var t_trans := StyleBoxFlat.new()
@@ -462,6 +477,12 @@ func update_hero_panel():
 		var need_exp: int = _get_level_up_cost(h)
 		lv_info.text = "阅历：%s/%s" % [c.format_number(own_exp), c.format_number(need_exp)]
 		lv_info.add_theme_color_override("font_color", c._cost_color(own_exp, need_exp))
+		# 【改】2026-10-13 拍板：阅历黑底贴身——按文本实宽收紧标签、居中于升级牌（牌心 x≈63），黑底不延长
+		var lv_f: Font = lv_info.get_theme_font("font", "Label")
+		var lv_sz: int = lv_info.get_theme_font_size("font_size", "Label")
+		var lv_w: float = lv_f.get_string_size(lv_info.text, HORIZONTAL_ALIGNMENT_LEFT, -1, lv_sz).x + 16
+		lv_info.size.x = lv_w
+		lv_info.position.x = 63.0 - lv_w / 2.0
 	if not c.has_node("HeroPanel/ScrollContainer/SkillList"): return
 	var list = c.get_node("HeroPanel/ScrollContainer/SkillList")
 	

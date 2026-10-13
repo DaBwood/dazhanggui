@@ -187,14 +187,17 @@ stretch_mode = 5
 [node name="HeroName" type="Label" parent="BannerBox" unique_id=924843338]
 layout_mode = 1
 anchors_preset = -1
-anchor_left = 0.4368932
+anchor_left = 0.0
 anchor_top = 0.42647058
-anchor_right = 1.5242718
+anchor_right = 1.0
 anchor_bottom = 0.5514706
-grow_horizontal = 0
+grow_horizontal = 2
 grow_vertical = 2
-theme_override_colors/font_color = Color(1, 1, 1, 1)
+theme_override_colors/font_color = Color(0.95, 0.91, 0.8, 1)
+theme_override_colors/font_outline_color = Color(0.1, 0.05, 0.04, 1)
+theme_override_constants/font_outline_size = 3
 theme_override_font_sizes/font_size = 22
+horizontal_alignment = 1
 vertical_alignment = 1
 metadata/_edit_use_anchors_ = true
 
@@ -356,7 +359,7 @@ flat = true
 [node name="BatchCheck" type="CheckBox" parent="RightArtBar" unique_id=1725911272]
 layout_mode = 0
 offset_top = 236.0
-offset_right = 140.0
+offset_right = 96.0
 offset_bottom = 266.0
 theme_override_colors/font_color = Color(1, 1, 1, 1)
 theme_override_constants/icon_max_width = 20
@@ -375,6 +378,7 @@ offset_right = 140.0
 offset_bottom = 206.0
 theme_override_colors/font_color = Color(0.9, 0.82, 0.6, 1)
 theme_override_font_sizes/font_size = 13
+theme_override_styles/normal = SubResource("label_sty")
 horizontal_alignment = 1
 vertical_alignment = 1
 
