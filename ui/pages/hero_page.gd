@@ -901,43 +901,103 @@ func _build_star_row(stars: int) -> HBoxContainer:
 	return box
 
 # 技能按钮：矩形，上=技能名，下=星级；已满级金色边框，选中蓝色边框
-func _build_skill_button(sname: String, stars: int, is_max: bool, is_sel: bool, on_click: Callable) -> Button:
+# 技能按钮：矩形，上=技能名，下=星级；已满级金色边框，选中蓝色边框
+# 【图标化】有图标时上图标（TextureRect 子节点定绘制区，绕开 Button.icon 渲染尺寸不可靠问题）；
+# 缺图回落品质色圆点（素材共位规范：assets/skill_icons 按 cos_id 命名，缺图不得崩）
+# 技能按钮：圆形图标钮（2026-10-14 用户按参考图二拍板）——图标即按钮本体，星数压圆底内缘，不显示名字；
+# 选中=白光环、满级=金光环（halo 压图标下层露 3px 边）；缺图回落品质色圆底；全程显式 anchor/offset，不碰 preset
+func _build_skill_button(_sname: String, stars: int, is_max: bool, is_sel: bool, on_click: Callable, icon_tex: Texture2D = null, qual: String = "") -> Button:
 	var btn := Button.new()
-	btn.custom_minimum_size = Vector2(100, 58)
+	btn.custom_minimum_size = Vector2(56, 64)
 	btn.mouse_filter = Control.MOUSE_FILTER_PASS   # 穿透触摸滑动
-	var style := StyleBoxFlat.new()
-	style.bg_color = Color(0.89, 0.84, 0.74)   # 米色框（与详情卡同族）
-	style.set_corner_radius_all(4)
-	if is_max:
-		style.border_color = Color("#ffd700")
-		style.set_border_width_all(2)
-	elif is_sel:
-		style.border_color = Color(0.55, 0.45, 0.3)   # 选中=棕边（纸黄体系）
-		style.set_border_width_all(2)
-	else:
-		style.border_color = Color(0.6, 0.53, 0.4)
-		style.set_border_width_all(1)
-	btn.add_theme_stylebox_override("normal", style)
-	var hover: StyleBoxFlat = style.duplicate()
-	hover.bg_color = Color(0.93, 0.88, 0.79)
-	btn.add_theme_stylebox_override("hover", hover)
-	btn.add_theme_stylebox_override("pressed", style)
-	var vb := VBoxContainer.new()
-	vb.set_anchors_preset(Control.PRESET_FULL_RECT)
-	vb.alignment = BoxContainer.ALIGNMENT_CENTER
-	vb.add_theme_constant_override("separation", 2)
-	btn.add_child(vb)
-	var name_lbl := Label.new()
-	name_lbl.text = sname
-	name_lbl.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
-	name_lbl.add_theme_font_size_override("font_size", 15)
-	name_lbl.add_theme_color_override("font_color", Color(0.25, 0.18, 0.1))
-	name_lbl.add_theme_color_override("font_outline_color", Color(0.25, 0.18, 0.1))
-	name_lbl.add_theme_constant_override("font_outline_size", 1)
-	vb.add_child(name_lbl)
-	vb.add_child(_build_star_row(stars))
+	var transparent := StyleBoxEmpty.new()
+	btn.add_theme_stylebox_override("normal", transparent)
+	btn.add_theme_stylebox_override("hover", transparent)
+	btn.add_theme_stylebox_override("pressed", transparent)
+	btn.add_theme_stylebox_override("focus", transparent)
+	# 光环：选中白 / 满级金（同时满足=选中白优先），直径 58 居中露 3px
+	if is_sel or is_max:
+		var halo := Panel.new()
+		var hs := StyleBoxFlat.new()
+		if is_sel:
+			hs.bg_color = Color(1, 1, 1)
+		else:
+			hs.bg_color = Color("#ffd700")
+		hs.set_corner_radius_all(29)
+		halo.add_theme_stylebox_override("panel", hs)
+		halo.anchor_left = 0.5
+		halo.anchor_top = 0.5
+		halo.anchor_right = 0.5
+		halo.anchor_bottom = 0.5
+		halo.offset_left = -29
+		halo.offset_top = -29
+		halo.offset_right = 29
+		halo.offset_bottom = 29
+		halo.mouse_filter = Control.MOUSE_FILTER_IGNORE
+		btn.add_child(halo)
+	# 图标圆 52（y 中心偏上 2px 给星留位）；缺图=品质色圆底 44
+	if icon_tex != null:
+		var icon_tr := TextureRect.new()
+		icon_tr.texture = icon_tex
+		icon_tr.expand_mode = TextureRect.EXPAND_IGNORE_SIZE
+		icon_tr.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_CENTERED
+		icon_tr.anchor_left = 0.5
+		icon_tr.anchor_top = 0.5
+		icon_tr.anchor_right = 0.5
+		icon_tr.anchor_bottom = 0.5
+		icon_tr.offset_left = -26
+		icon_tr.offset_top = -28
+		icon_tr.offset_right = 26
+		icon_tr.offset_bottom = 24
+		icon_tr.mouse_filter = Control.MOUSE_FILTER_IGNORE
+		btn.add_child(icon_tr)
+	elif qual != "":
+		var disc := Panel.new()
+		var ds := StyleBoxFlat.new()
+		ds.bg_color = _skill_qual_color(qual)
+		ds.set_corner_radius_all(22)
+		disc.add_theme_stylebox_override("panel", ds)
+		disc.anchor_left = 0.5
+		disc.anchor_top = 0.5
+		disc.anchor_right = 0.5
+		disc.anchor_bottom = 0.5
+		disc.offset_left = -22
+		disc.offset_top = -24
+		disc.offset_right = 22
+		disc.offset_bottom = 20
+		disc.mouse_filter = Control.MOUSE_FILTER_IGNORE
+		btn.add_child(disc)
+	# 星数压圆底内缘（最上层后挂）；等级语义全在星级里，名字只进详情区
+	var star_wrap := Control.new()
+	star_wrap.anchor_left = 0.0
+	star_wrap.anchor_top = 0.0
+	star_wrap.anchor_right = 1.0
+	star_wrap.anchor_bottom = 0.0
+	star_wrap.offset_top = 38
+	star_wrap.offset_bottom = 54
+	star_wrap.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	btn.add_child(star_wrap)
+	var star_row := _build_star_row(stars)
+	star_row.set_anchors_preset(Control.PRESET_FULL_RECT)
+	star_wrap.add_child(star_row)
 	btn.pressed.connect(on_click)
 	return btn
+
+# 技能图标加载：契约目录 assets/skill_icons（换装批次素材共位规范），缺图返回 null 走品质圆底回落
+
+func _load_skill_icon(it: Dictionary) -> Texture2D:
+	var p: String = str(it.get("icon", ""))
+	if p == "" or not ResourceLoader.exists(p):
+		return null
+	return load(p) as Texture2D
+
+# 服装品质→圆点回落色（素装=普通白/华服=卓越紫/锦衣=传奇橙，全仓品质色规范）
+func _skill_qual_color(qual: String) -> Color:
+	if qual == "华服":
+		return Color("#9b59b6")
+	if qual == "锦衣":
+		return Color("#e67e22")
+	return Color("#f2f2f2")
 
 # 按钮排：ScrollContainer 只包裹按钮排（横向滑动不影响下方详情区）
 # 【热修】4.7 已移除 HScrollContainer/VScrollContainer，用 ScrollContainer + 滚动模式（同 game_controller 商铺地图先例）
@@ -959,7 +1019,7 @@ func _render_skill_buttons(list: VBoxContainer, items: Array, sel: int, tab_id: 
 	for i in range(items.size()):
 		var it: Dictionary = items[i]
 		btn_row.add_child(_build_skill_button(it["name"], it["stars"], it["is_max"], i == sel,
-			_on_skill_btn_clicked.bind(tab_id, i)))
+			_on_skill_btn_clicked.bind(tab_id, i), _load_skill_icon(it), str(it.get("qual", ""))))
 
 func _on_skill_btn_clicked(tab_id: String, idx: int):
 	_sel_idx[tab_id] = idx
@@ -1356,6 +1416,7 @@ func _fill_costume_tab(list):
 		else:
 			info += "（下级+%d）" % [(base + 1) * per]
 		items.append({"name": cfg.get("name", cos_id), "stars": per, "is_max": is_max, "info": info,
+			"icon": "res://assets/skill_icons/%s.png" % cos_id, "qual": str(cfg.get("quality", "")),
 			"pill": per, "on_single": _on_cos_skill_upgrade.bind(cos_id, "single"), "on_bulk": _on_cos_skill_upgrade.bind(cos_id, "bulk")})
 	if items.is_empty():
 		var lbl = Label.new()
