@@ -1278,12 +1278,14 @@ func _fill_skill_tab(list):
 			var cnum: int = int(skill.get("cost_num", 300))
 			items.append({
 				"name": skill.name, "stars": per, "is_max": is_max, "info": info,
+				"icon": "res://assets/skill_icons/%s.png" % str(skill.name),
 				"own": [cnum, int(data.items.get(bid, 0))], "own_name": str(data.ITEM_CONFIG.get(bid, {}).get("name", bid)),
 				"on_single": on_aptitude_skill_upgrade.bind(i, "single"), "on_bulk": on_aptitude_skill_upgrade.bind(i, "bulk")
 			})
 		else:
 			items.append({
 				"name": skill.name, "stars": per, "is_max": is_max, "info": info,
+			"icon": "res://assets/skill_icons/%s.png" % str(skill.name),
 				"pill": per, "on_single": on_aptitude_skill_upgrade.bind(i, "single"), "on_bulk": on_aptitude_skill_upgrade.bind(i, "bulk")
 			})
 
@@ -1306,6 +1308,7 @@ func _fill_skill_tab(list):
 					info += "（下级+%d）" % [(skill.level + 1) * per]
 				items.append({
 					"name": skill.name, "stars": per, "is_max": is_max, "info": info,
+				"icon": "res://assets/skill_icons/%s.png" % str(skill.name),
 					"pill": per, "on_single": _on_guardian_skill_upgrade.bind(i, "single"), "on_bulk": _on_guardian_skill_upgrade.bind(i, "bulk")
 				})
 	# 【批次④】信物伴生技能（全信物通用；星级=每级资质；未解锁纯展示）
@@ -1327,6 +1330,7 @@ func _fill_skill_tab(list):
 			t_info = "【%s】  Lv.%d/%d\n资质+%d（下级+%d）" % [t_name, t_lv, t_cap, t_lv * t_star, (t_lv + 1) * t_star]
 		items.append({
 			"name": t_name, "stars": t_star, "is_max": (not is_lock and t_lv >= t_cap), "info": t_info,
+			"icon": "res://assets/skill_icons/%s.png" % t_name,
 			"no_action": is_lock,
 			"pill": t_star, "on_single": token._on_token_skill_upgrade.bind(t_name, "single"), "on_bulk": token._on_token_skill_upgrade.bind(t_name, "bulk")
 		})
@@ -1352,11 +1356,13 @@ func _fill_shop_tab(list):
 		if is_caiyuan:
 			# 货币(消耗/库存) 由勾选框显示，信息区不再写每级消耗
 			items.append({"name": skill.name, "stars": 1, "is_max": is_max, "info": info,
+			"icon": "res://assets/skill_icons/%s.png" % str(skill.name),
 				"own_name": "筹算值", "own": [data.bank_system.get_chousuan_cost(skill.level), data.bank_system.get_chousuan(current_hero_id)],
 				"on_single": on_shop_skill_chousuan_upgrade.bind("single"), "on_bulk": on_shop_skill_chousuan_upgrade.bind("bulk")})
 		else:
 			var abacus_cost: int = max(1, int(ceil(pow(1.05, skill.level - 1))))
 			items.append({"name": skill.name, "stars": 1, "is_max": is_max, "info": info,
+			"icon": "res://assets/skill_icons/%s.png" % str(skill.name),
 				"own_name": "算盘", "own": [abacus_cost, int(data.items.get("abacus", 0))],
 				"on_single": on_shop_skill_upgrade.bind(i, "single"), "on_bulk": on_shop_skill_upgrade.bind(i, "bulk")})
 
@@ -1366,6 +1372,7 @@ func _fill_shop_tab(list):
 		var lv: int = int(r["level"])
 		var info: String = "【%s】  Lv.%d/%d\n资质+%d" % [r["name"], lv, int(r["max"]), lv]
 		var it := {"name": r["name"], "stars": 1, "is_max": is_max, "info": info,
+			"icon": "res://assets/skill_icons/%s.png" % str(r["name"]),
 			"on_single": on_side_sys_upgrade.bind(str(r["key"]), "single"), "on_bulk": on_side_sys_upgrade.bind(str(r["key"]), "bulk")}
 		if is_max:
 			info += "（已满级）"
@@ -1386,6 +1393,7 @@ func _fill_shop_tab(list):
 		else:
 			info += "（下级+%d）" % [(lv + 1) * star]
 		items.append({"name": s.name, "stars": star, "is_max": is_max, "info": info,
+			"icon": "res://assets/skill_icons/%s.png" % str(s.name),
 			"pill": star, "on_single": on_side_skill_upgrade.bind(int(s.idx), "single"), "on_bulk": on_side_skill_upgrade.bind(int(s.idx), "bulk")})
 	_render_skill_tab(list, items, "shop")
 
@@ -1456,6 +1464,7 @@ func _fill_halo_tab(list):
 		if is_max:
 			info += "（已满级）"
 		items.append({"name": cfg.get("name", cos_id), "stars": per, "is_max": is_max, "info": info,
+			"icon": "res://assets/skill_icons/%s.png" % cos_id, "qual": str(cfg.get("quality", "")),
 			"own_name": "玉璜", "own": [cs.get_halo_cost(lv + 1), int(data.items.get("yu_huang", 0))],
 			"on_single": _on_halo_upgrade.bind(cos_id, "single"), "on_bulk": _on_halo_upgrade.bind(cos_id, "bulk")})
 	# 系列光环：全部技能并入卡片（与服装光环同排同详情区）
