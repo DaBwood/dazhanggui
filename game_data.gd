@@ -889,6 +889,7 @@ func _register_hero_bonuses() -> void:
 	HeroData.register_bonus("师徒光环", "pct", func(g, hid): return float(g.hero_system.get_master_aura_income_pct(hid)))   # 市井之学/广结良缘/日进斗金
 	HeroData.register_bonus("双人光环", "pct", func(g, hid): return float(g.hero_system.get_pair_aura_income_pct(hid)))   # 落日起誓
 	HeroData.register_bonus("自带光环", "pct", func(g, hid): return float(g.hero_system.get_self_aura_income_pct(hid)))   # 玉蝶轻舞/花影翩跹
+	HeroData.register_bonus("职业光环", "pct", func(g, hid): return float(g.costume_system.get_career_halo_income_pct_by_career(str(g.heroes[hid].get("category", "")))))   # 锦衣职业光环：同职业赚钱+5%/级
 	# ── 固定收入 flat ──
 	HeroData.register_bonus("道具", "flat", func(g, hid): return int(g.heroes[hid].get("extra_income", 0)))
 	HeroData.register_bonus("挚友", "flat", func(g, hid):

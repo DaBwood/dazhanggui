@@ -283,6 +283,60 @@ func get_halo_cap(hero_id: String, cos_id: String) -> int:
 func get_halo_cost(target_level: int) -> int:
 	return int(_settings().get("halo_cost_base", 10)) + int(_settings().get("halo_cost_step", 5)) * int((target_level - 1) / 10.0)
 
+
+# 【新增】职业光环（2026-10-16 拍板）：锦衣专属第二光环，同名光环满100级解锁，上限100，玉璜100/级；
+# 效果=同职业全体门客赚钱+5%/级（注册表 pct，game_data 侧挂"职业光环"一行）
+const CAREER_HALO_UNLOCK := 100
+const CAREER_HALO_CAP := 100
+const CAREER_HALO_COST := 100
+
+func get_career_halo_level(st: Dictionary) -> int:
+	return int(st.get("career_halo", 0))
+
+# 解锁判定=同名光环满100级（st["halo"] 直读，仓库范式）
+func is_career_halo_unlocked(st: Dictionary) -> bool:
+	return int(st.get("halo", 0)) >= CAREER_HALO_UNLOCK
+
+# 升级（single=1级/bulk=10级，玉璜固定100/级；跟随 upgrade_halo 范式：st 引用直改、不主动 save）
+func upgrade_career_halo(hero_id: String, cos_id: String, mode: String = "single") -> Dictionary:
+	var st = get_hero_cos_state(hero_id, cos_id)
+	if not st.has("base"):
+		return {"ok": false, "msg": "服装未解锁"}
+	if not is_career_halo_unlocked(st):
+		return {"ok": false, "msg": "需同名光环满级（%d级）后解锁" % CAREER_HALO_UNLOCK}
+	var lv := get_career_halo_level(st)
+	var stones := int(g.items.get("yu_huang", 0))
+	var limit: int = 1 if mode == "single" else 10
+	var levels := 0
+	while lv < CAREER_HALO_CAP and levels < limit:
+		if stones < CAREER_HALO_COST:
+			break
+		stones -= CAREER_HALO_COST
+		lv += 1
+		levels += 1
+	if levels <= 0:
+		return {"ok": false, "msg": "玉璜不足" if stones < CAREER_HALO_COST else "已满级"}
+	g.items["yu_huang"] = stones
+	st["career_halo"] = lv
+	return {"ok": true, "levels": levels}
+
+# 指定职业的全局职业光环赚钱加成：遍历全英雄该职业已解锁锦衣（+5%/级，小数口径注册表加算）
+func get_career_halo_income_pct_by_career(career: String) -> float:
+	if career == "":
+		return 0.0
+	var pct := 0.0
+	for hid in g.heroes.keys():
+		if g.heroes[hid].get("category", "") != career:
+			continue
+		var cos_dict: Dictionary = g.heroes[hid].get("costumes", {})
+		for cos_id in cos_dict.keys():
+			if str(_get_hero_cos_cfg(hid, str(cos_id)).get("quality", "")) != "锦衣":
+				continue
+			var st: Dictionary = cos_dict[cos_id]
+			if is_career_halo_unlocked(st):
+				pct += float(get_career_halo_level(st)) * 0.05
+	return pct
+
 # 升级光环；mode: single=1级 / bulk=升级10次（玉璜不够升剩余）
 # 返回 {ok, levels, msg}
 func upgrade_halo(hero_id: String, cos_id: String, mode: String = "single") -> Dictionary:

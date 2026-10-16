@@ -1487,6 +1487,22 @@ func _fill_halo_tab(list):
 			"icon": "res://assets/skill_icons/%s.png" % cos_id, "qual": str(cfg.get("quality", "")),
 			"own_name": "玉璜", "own": [cs.get_halo_cost(lv + 1), int(data.items.get("yu_huang", 0))],
 			"on_single": _on_halo_upgrade.bind(cos_id, "single"), "on_bulk": _on_halo_upgrade.bind(cos_id, "bulk")})
+		# 职业光环（2026-10-16 拍板）：锦衣专属第二光环；同名光环满100级解锁，上限100，玉璜100/级；同职业门客赚钱+5%/级（等级=星级可视化）
+		if str(cfg.get("quality", "")) == "锦衣":
+			var ch_lv: int = cs.get_career_halo_level(st)
+			var ch_info: String = "【%s：%s】  Lv.%d/%d\n同职业门客赚钱+%d%%" % [cfg.get("name", cos_id), my_cat, ch_lv, cs.CAREER_HALO_CAP, ch_lv * 5]
+			if cs.is_career_halo_unlocked(st):
+				if ch_lv >= cs.CAREER_HALO_CAP:
+					ch_info += "（已满级）"
+				items.append({"name": "%s：%s" % [cfg.get("name", cos_id), my_cat], "stars": ch_lv, "is_max": ch_lv >= cs.CAREER_HALO_CAP, "info": ch_info,
+					"icon": "res://assets/skill_icons/%s.png" % cos_id, "qual": "锦衣",
+					"own_name": "玉璜", "own": [cs.CAREER_HALO_COST, int(data.items.get("yu_huang", 0))],
+					"on_single": _on_career_halo_upgrade.bind(cos_id, "single"), "on_bulk": _on_career_halo_upgrade.bind(cos_id, "bulk")})
+			else:
+				# 详情渲染只取 info 前两行（head/body），激活条件并入 body 效果行尾部（绿色 BBCode）
+				ch_info += "[color=#0a9929]（光环%s满级解锁）[/color]" % cfg.get("name", cos_id)
+				items.append({"name": "%s：%s" % [cfg.get("name", cos_id), my_cat], "stars": ch_lv, "is_max": false, "info": ch_info,
+					"icon": "res://assets/skill_icons/%s.png" % cos_id, "qual": "锦衣", "no_action": true})
 	# 系列光环：全部技能并入卡片（与服装光环同排同详情区）
 	var ts = data.talent_system
 	var acfg = ts.get_hero_aura_cfg(current_hero_id)
@@ -1606,6 +1622,17 @@ func _on_halo_upgrade(cos_id: String, mode: String):
 	c.update_bag_list()
 
 # 【新增】促织按钮点击：已装备弹操作面板，未装备弹选择器
+# 【新增】职业光环升级回调（锦衣专属第二光环；同职业门客赚钱变化，全局对账口径同同名光环）
+func _on_career_halo_upgrade(cos_id: String, mode: String):
+	var res = data.costume_system.upgrade_career_halo(current_hero_id, cos_id, mode)
+	if not res.get("ok", false):
+		c._show_success_popup(res.get("msg", "无法升级"), 0.0, "warn")
+		return
+	c._show_success_popup("职业光环升级成功！")
+	update_hero_panel()
+	c.update_all_ui()
+	c.update_bag_list()
+
 func _on_cuzhi_btn_clicked():
 	var equipped = data.cuzhi_system.get_equipped_cricket(current_hero_id)
 	if equipped != "":
