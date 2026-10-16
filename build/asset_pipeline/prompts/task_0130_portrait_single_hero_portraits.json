@@ -1,0 +1,38 @@
+{
+  "task_id": "task_0130",
+  "kind": "portrait_single",
+  "group": "hero_portraits",
+  "title": "东皇太一 默认皮肤",
+  "rows": 1,
+  "cols": 1,
+  "reference_image": "",
+  "cells": [
+    {
+      "label": "东皇太一",
+      "saves": [
+        {
+          "key": "hero_portrait:donghuang_taiyi:donghuang_taiyi",
+          "category": "hero_portrait",
+          "asset_id": "donghuang_taiyi",
+          "name": "东皇太一",
+          "owner_id": "donghuang_taiyi",
+          "owner_name": "东皇太一",
+          "target": "assets/portraits/heroes/donghuang_taiyi.png",
+          "size": "portrait",
+          "generation": "portrait",
+          "group": "hero_portraits",
+          "meta": {
+            "category": "农",
+            "quality": 3
+          }
+        }
+      ],
+      "index": 0,
+      "row": 0,
+      "col": 0
+    }
+  ],
+  "filename_base": "task_0130_portrait_single_hero_portraits",
+  "image_name": "task_0130_portrait_single_hero_portraits.png",
+  "output_path": "build/asset_pipeline/inbox/atlases/task_0130_portrait_single_hero_portraits.png"
+}

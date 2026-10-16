@@ -1,0 +1,38 @@
+{
+  "task_id": "task_0117",
+  "kind": "portrait_single",
+  "group": "hero_portraits",
+  "title": "敖武 默认皮肤",
+  "rows": 1,
+  "cols": 1,
+  "reference_image": "",
+  "cells": [
+    {
+      "label": "敖武",
+      "saves": [
+        {
+          "key": "hero_portrait:ao_wu:ao_wu",
+          "category": "hero_portrait",
+          "asset_id": "ao_wu",
+          "name": "敖武",
+          "owner_id": "ao_wu",
+          "owner_name": "敖武",
+          "target": "assets/portraits/heroes/ao_wu.png",
+          "size": "portrait",
+          "generation": "portrait",
+          "group": "hero_portraits",
+          "meta": {
+            "category": "农",
+            "quality": 2
+          }
+        }
+      ],
+      "index": 0,
+      "row": 0,
+      "col": 0
+    }
+  ],
+  "filename_base": "task_0117_portrait_single_hero_portraits",
+  "image_name": "task_0117_portrait_single_hero_portraits.png",
+  "output_path": "build/asset_pipeline/inbox/atlases/task_0117_portrait_single_hero_portraits.png"
+}

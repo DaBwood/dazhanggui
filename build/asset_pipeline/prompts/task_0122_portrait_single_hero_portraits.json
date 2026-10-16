@@ -1,0 +1,38 @@
+{
+  "task_id": "task_0122",
+  "kind": "portrait_single",
+  "group": "hero_portraits",
+  "title": "蔡京 默认皮肤",
+  "rows": 1,
+  "cols": 1,
+  "reference_image": "",
+  "cells": [
+    {
+      "label": "蔡京",
+      "saves": [
+        {
+          "key": "hero_portrait:cai_jing:cai_jing",
+          "category": "hero_portrait",
+          "asset_id": "cai_jing",
+          "name": "蔡京",
+          "owner_id": "cai_jing",
+          "owner_name": "蔡京",
+          "target": "assets/portraits/heroes/cai_jing.png",
+          "size": "portrait",
+          "generation": "portrait",
+          "group": "hero_portraits",
+          "meta": {
+            "category": "士",
+            "quality": 2
+          }
+        }
+      ],
+      "index": 0,
+      "row": 0,
+      "col": 0
+    }
+  ],
+  "filename_base": "task_0122_portrait_single_hero_portraits",
+  "image_name": "task_0122_portrait_single_hero_portraits.png",
+  "output_path": "build/asset_pipeline/inbox/atlases/task_0122_portrait_single_hero_portraits.png"
+}

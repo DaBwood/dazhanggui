@@ -2,27 +2,27 @@
   "task_id": "task_0197",
   "kind": "portrait_single",
   "group": "hero_portraits",
-  "title": "何雅士",
+  "title": "武石仁 默认皮肤",
   "rows": 1,
   "cols": 1,
   "reference_image": "",
   "cells": [
     {
-      "label": "何雅士",
+      "label": "武石仁",
       "saves": [
         {
-          "key": "hero_portrait:he_yashi:he_yashi",
+          "key": "hero_portrait:wu_shiren:wu_shiren",
           "category": "hero_portrait",
-          "asset_id": "he_yashi",
-          "name": "何雅士",
-          "owner_id": "he_yashi",
-          "owner_name": "何雅士",
-          "target": "assets/portraits/heroes/he_yashi.png",
+          "asset_id": "wu_shiren",
+          "name": "武石仁",
+          "owner_id": "wu_shiren",
+          "owner_name": "武石仁",
+          "target": "assets/portraits/heroes/wu_shiren.png",
           "size": "portrait",
           "generation": "portrait",
           "group": "hero_portraits",
           "meta": {
-            "category": "士",
+            "category": "侠",
             "quality": 0
           }
         }

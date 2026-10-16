@@ -1,0 +1,37 @@
+{
+  "task_id": "task_0024",
+  "kind": "portrait_single",
+  "group": "friend_portraits",
+  "title": "徽茵 默认皮肤",
+  "rows": 1,
+  "cols": 1,
+  "reference_image": "",
+  "cells": [
+    {
+      "label": "徽茵",
+      "saves": [
+        {
+          "key": "friend_portrait:hui_yin:hui_yin",
+          "category": "friend_portrait",
+          "asset_id": "hui_yin",
+          "name": "徽茵",
+          "owner_id": "hui_yin",
+          "owner_name": "徽茵",
+          "target": "assets/portraits/friends/hui_yin.png",
+          "size": "portrait",
+          "generation": "portrait",
+          "group": "friend_portraits",
+          "meta": {
+            "category": "工"
+          }
+        }
+      ],
+      "index": 0,
+      "row": 0,
+      "col": 0
+    }
+  ],
+  "filename_base": "task_0024_portrait_single_friend_portraits",
+  "image_name": "task_0024_portrait_single_friend_portraits.png",
+  "output_path": "build/asset_pipeline/inbox/atlases/task_0024_portrait_single_friend_portraits.png"
+}

@@ -1,0 +1,38 @@
+{
+  "task_id": "task_0125",
+  "kind": "portrait_single",
+  "group": "hero_portraits",
+  "title": "沉香 默认皮肤",
+  "rows": 1,
+  "cols": 1,
+  "reference_image": "",
+  "cells": [
+    {
+      "label": "沉香",
+      "saves": [
+        {
+          "key": "hero_portrait:chen_xiang:chen_xiang",
+          "category": "hero_portrait",
+          "asset_id": "chen_xiang",
+          "name": "沉香",
+          "owner_id": "chen_xiang",
+          "owner_name": "沉香",
+          "target": "assets/portraits/heroes/chen_xiang.png",
+          "size": "portrait",
+          "generation": "portrait",
+          "group": "hero_portraits",
+          "meta": {
+            "category": "农",
+            "quality": 1
+          }
+        }
+      ],
+      "index": 0,
+      "row": 0,
+      "col": 0
+    }
+  ],
+  "filename_base": "task_0125_portrait_single_hero_portraits",
+  "image_name": "task_0125_portrait_single_hero_portraits.png",
+  "output_path": "build/asset_pipeline/inbox/atlases/task_0125_portrait_single_hero_portraits.png"
+}

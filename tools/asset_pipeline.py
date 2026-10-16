@@ -24,6 +24,7 @@ import math
 import os
 import re
 import shutil
+import subprocess
 import sys
 from collections import Counter, defaultdict, deque
 from datetime import datetime
@@ -669,66 +670,74 @@ def _make_task(kind: str, group: str, cells: list[dict[str, Any]], reference_ima
     }
 
 
-def build_generation_tasks(manifest: dict[str, Any], max_costume_cells: int = 6, icon_batch: int = 9) -> list[dict[str, Any]]:
-    """只给缺失素材排任务；已存在的素材不重复生成。"""
+def build_generation_tasks(manifest: dict[str, Any], max_costume_cells: int = 6, icon_batch: int = 9, phase: str = "all") -> list[dict[str, Any]]:
+    """默认皮肤优先；服装是道具，只在默认皮肤已存在时排服装图集。"""
     assets = manifest.get("assets", [])
     tasks: list[dict[str, Any]] = []
 
-    costume_groups: dict[str, list[dict[str, Any]]] = defaultdict(list)
-    for rec in assets:
-        if rec.get("category") == "costume_full" and not rec.get("exists"):
-            costume_groups[rec.get("group", "")].append(rec)
+    if phase in ("all", "costume"):
+        costume_groups: dict[str, list[dict[str, Any]]] = defaultdict(list)
+        for rec in assets:
+            if rec.get("category") == "costume_full" and not rec.get("exists"):
+                costume_groups[rec.get("group", "")].append(rec)
 
-    covered_portraits: set[str] = set()
-    for group, recs in sorted(costume_groups.items()):
-        if not recs:
-            continue
-        recs.sort(key=lambda r: r.get("asset_id", ""))
-        owner_id = recs[0].get("owner_id", "")
-        owner_kind = recs[0].get("meta", {}).get("owner_kind", "")
-        portrait_category = "hero_portrait" if owner_kind == "hero" else "friend_portrait"
-        portrait = next(
-            (r for r in assets if r.get("category") == portrait_category and r.get("owner_id") == owner_id),
-            None,
-        )
-        chunks = [recs[i : i + max_costume_cells] for i in range(0, len(recs), max_costume_cells)]
-        for ci, chunk in enumerate(chunks):
-            cells: list[dict[str, Any]] = []
-            for rec in chunk:
-                saves = [_task_save(rec)]
-                if ci == 0 and rec is chunk[0] and portrait is not None and not portrait.get("exists"):
-                    saves.append(_task_save(portrait))
-                    covered_portraits.add(portrait.get("key", ""))
-                label = rec.get("name", rec.get("asset_id", ""))
-                hint = rec.get("hint", "")
-                cells.append({"label": f"{label}{('（' + hint + '）') if hint else ''}", "saves": saves})
-            title = f"{recs[0].get('owner_name', owner_id)} 的服装图集"
-            ref_img = (portrait or {}).get("target", "") if portrait and portrait.get("exists") else ""
-            tasks.append(_make_task("costume_sheet", group, cells, reference_image=ref_img, title=title))
+        for group, recs in sorted(costume_groups.items()):
+            if not recs:
+                continue
+            recs.sort(key=lambda r: r.get("asset_id", ""))
+            owner_id = recs[0].get("owner_id", "")
+            owner_kind = recs[0].get("meta", {}).get("owner_kind", "")
+            portrait_category = "hero_portrait" if owner_kind == "hero" else "friend_portrait"
+            portrait = next(
+                (r for r in assets if r.get("category") == portrait_category and r.get("owner_id") == owner_id),
+                None,
+            )
+            if portrait is None or not portrait.get("exists"):
+                print(f"[prompts] 跳过服装图集 {group}：默认皮肤尚未生成，请先生成 base 并 slice。")
+                continue
 
-    for rec in assets:
-        if rec.get("category") not in ("hero_portrait", "friend_portrait"):
-            continue
-        if rec.get("exists") or rec.get("key") in covered_portraits:
-            continue
-        cell = {"label": rec.get("name", rec.get("asset_id", "")), "saves": [_task_save(rec)]}
-        tasks.append(_make_task("portrait_single", rec.get("group", "portrait_single"), [cell], title=rec.get("name", "")))
+            chunks = [recs[i : i + max_costume_cells] for i in range(0, len(recs), max_costume_cells)]
+            for chunk in chunks:
+                cells: list[dict[str, Any]] = []
+                for rec in chunk:
+                    label = rec.get("name", rec.get("asset_id", ""))
+                    hint = rec.get("hint", "")
+                    cells.append({"label": f"{label}{('（' + hint + '）') if hint else ''}", "saves": [_task_save(rec)]})
+                title = f"{recs[0].get('owner_name', owner_id)} 服装图集（基于默认皮肤）"
+                tasks.append(_make_task("costume_sheet", group, cells, reference_image=portrait.get("target", ""), title=title))
 
-    icon_groups: dict[str, list[dict[str, Any]]] = defaultdict(list)
-    for rec in assets:
-        if rec.get("generation") == "icon_sheet" and not rec.get("exists"):
-            icon_groups[rec.get("group", "icon_sheet")].append(rec)
+    if phase in ("all", "base"):
+        for rec in assets:
+            if rec.get("category") not in ("hero_portrait", "friend_portrait"):
+                continue
+            if rec.get("exists"):
+                continue
+            cell = {"label": rec.get("name", rec.get("asset_id", "")), "saves": [_task_save(rec)]}
+            tasks.append(
+                _make_task(
+                    "portrait_single",
+                    rec.get("group", "portrait_single"),
+                    [cell],
+                    title=f"{rec.get('name', rec.get('asset_id', ''))} 默认皮肤",
+                )
+            )
 
-    for group, recs in sorted(icon_groups.items()):
-        recs.sort(key=lambda r: (r.get("category", ""), r.get("asset_id", "")))
-        for i in range(0, len(recs), icon_batch):
-            chunk = recs[i : i + icon_batch]
-            cells = []
-            for rec in chunk:
-                hint = rec.get("hint", "")
-                label = rec.get("name", rec.get("asset_id", ""))
-                cells.append({"label": f"{label}{('：' + hint) if hint else ''}", "saves": [_task_save(rec)]})
-            tasks.append(_make_task("icon_sheet", group, cells, title=f"{group} 图标图集"))
+    if phase in ("all", "icons"):
+        icon_groups: dict[str, list[dict[str, Any]]] = defaultdict(list)
+        for rec in assets:
+            if rec.get("generation") == "icon_sheet" and not rec.get("exists"):
+                icon_groups[rec.get("group", "icon_sheet")].append(rec)
+
+        for group, recs in sorted(icon_groups.items()):
+            recs.sort(key=lambda r: (r.get("category", ""), r.get("asset_id", "")))
+            for i in range(0, len(recs), icon_batch):
+                chunk = recs[i : i + icon_batch]
+                cells = []
+                for rec in chunk:
+                    hint = rec.get("hint", "")
+                    label = rec.get("name", rec.get("asset_id", ""))
+                    cells.append({"label": f"{label}{('：' + hint) if hint else ''}", "saves": [_task_save(rec)]})
+                tasks.append(_make_task("icon_sheet", group, cells, title=f"{group} 图标图集"))
 
     for i, task in enumerate(tasks, 1):
         task["task_id"] = f"task_{i:04d}"
@@ -773,7 +782,7 @@ def render_task_prompt(task: dict[str, Any], bible: dict[str, dict[str, str]]) -
                 lines.append(f"设定：{bible_row.get('canon_description')}")
             if bible_row.get("appearance_keywords"):
                 lines.append(f"外貌锁定：{bible_row.get('appearance_keywords')}")
-        lines.append("要求：全身或七分身立绘，正面或四分之三侧身，自然站姿，人物位于画面中央，脚底或衣摆完整入画。")
+        lines.append("要求：这是该角色的默认皮肤/基础立绘。全身或七分身，正面或四分之三侧身，自然站姿，人物位于画面中央，脚底或衣摆完整入画。后续所有服装都基于此图，请确保角色本体特征稳定。")
     elif kind == "costume_sheet":
         lines.append("【画面内容】")
         if cells and cells[0].get("saves"):
@@ -784,7 +793,7 @@ def render_task_prompt(task: dict[str, Any], bible: dict[str, dict[str, str]]) -
                 lines.append(f"设定：{bible_row.get('canon_description')}")
             if bible_row.get("appearance_keywords"):
                 lines.append(f"外貌锁定：{bible_row.get('appearance_keywords')}")
-        lines.append("要求：同一角色的多套服装立绘。所有格子的脸型、发型、发色、体型、肤色必须完全一致，只改变服装、配饰、姿态和手持物。每格一个完整全身/七分身立绘，脚底尽量对齐同一水平线，主体不跨格。")
+        lines.append("本任务是服装道具换装：以参考图中的默认皮肤为基础，只改变服装、配饰、姿态和手持物；所有格子的脸型、发型、发色、体型、肤色必须与默认皮肤完全一致。每格一个完整全身/七分身立绘，脚底尽量对齐同一水平线，主体不跨格。")
         lines.append("")
         lines.append("【单元格顺序】")
         for cell in cells:
@@ -853,18 +862,26 @@ def write_generation_tasks(tasks: list[dict[str, Any]], manifest: dict[str, Any]
         "任务文件：\n"
         "- `task_XXXX_*.txt`：直接复制给豆包/绘图模型的提示词。\n"
         "- `task_XXXX_*.json`：单元格到素材路径的映射，`slice` 命令会读取它。\n\n"
-        "工作流：\n"
+        "工作流（默认皮肤优先）：\n"
         "1. 先补全 `build/asset_pipeline/character_bible.csv`。\n"
-        "2. 运行 `python tools/asset_pipeline.py prompts`。\n"
-        "3. 按提示词生成图片，保存到 `build/asset_pipeline/inbox/atlases/`。\n"
-        "4. 运行 `python tools/asset_pipeline.py slice` 自动切图、抠底、命名并写入 assets。\n"
-        "5. 运行 `python tools/asset_pipeline.py qc` 批量验收。\n",
+        "2. 运行 `python tools/asset_pipeline.py prompts --phase base`，生成全部角色默认皮肤提示词。\n"
+        "3. 生成默认皮肤图，保存到 `inbox/atlases/`，运行 `python tools/asset_pipeline.py slice`。\n"
+        "4. 再运行 `python tools/asset_pipeline.py prompts --phase costume`，此时服装提示词会带默认皮肤参考图。\n"
+        "5. 生成服装图集，保存到 `inbox/atlases/`，运行 `slice` 和 `derive`。\n"
+        "6. 如需图标，运行 `prompts --phase icons`，生成后同样 `slice`。\n"
+        "7. 最后运行 `verify` 和 `qc`。\n",
         encoding="utf-8",
     )
 
 
 def cmd_prompts(args: argparse.Namespace) -> int:
     ensure_dirs()
+    # 每次按 phase 重新生成时，清掉旧任务文件，避免 generate/slice 读到上一阶段的陈旧映射。
+    for p in list(PROMPT_DIR.glob("task_*.txt")) + list(PROMPT_DIR.glob("task_*.json")):
+        try:
+            p.unlink()
+        except Exception:
+            pass
     manifest = build_manifest()
     write_json(MANIFEST_JSON, manifest)
     write_csv(MANIFEST_CSV, manifest_rows(manifest))
@@ -873,6 +890,7 @@ def cmd_prompts(args: argparse.Namespace) -> int:
         manifest,
         max_costume_cells=int(args.max_costume_cells),
         icon_batch=int(args.icon_batch),
+        phase=str(args.phase),
     )
     write_generation_tasks(tasks, manifest)
     kind_counter = Counter(t.get("kind", "") for t in tasks)
@@ -1236,6 +1254,147 @@ def cmd_verify(args: argparse.Namespace) -> int:
     return 0
 
 
+def _ve_command() -> str:
+    for name in ("ve.cmd", "ve.exe", "ve"):
+        found = shutil.which(name)
+        if found:
+            return found
+    fallback = Path.home() / "AppData" / "Roaming" / "npm" / "ve.cmd"
+    if fallback.exists():
+        return str(fallback)
+    return ""
+
+
+def _model_prompt(task: dict[str, Any]) -> str:
+    kind = task.get("kind", "")
+    cells = task.get("cells", [])
+    lines: list[str] = []
+    if kind == "portrait_single":
+        save = cells[0]["saves"][0]
+        lines.append(
+            f"《大掌柜》角色默认皮肤立绘：{save.get('name', '')}。"
+            "全身或七分身，正面或四分之三侧身，自然站姿，脚底或衣摆完整入画，背景纯洋红 #FF00FF。"
+        )
+    elif kind == "costume_sheet":
+        first = cells[0]["saves"][0] if cells and cells[0].get("saves") else {}
+        lines.append(
+            f"参考图中的默认皮肤是角色 {first.get('owner_name') or first.get('name', '')}。"
+            "请以参考图为基础做服装道具换装：脸型、发型、发色、体型、肤色必须与参考图完全一致，"
+            "只替换服装、配饰、姿态和手持物。"
+        )
+        lines.append(f"按 {task.get('cols')} 列 × {task.get('rows')} 行排列，每格一套完整服装立绘：")
+        for cell in cells:
+            saves = cell.get("saves", [])
+            if saves:
+                save = saves[0]
+                lines.append(f"{int(cell.get('index', 0)) + 1}. {save.get('name', '')}")
+    else:
+        lines.append(
+            f"生成一组统一的游戏图标，共 {len(cells)} 个，按 {task.get('cols')} 列 × {task.get('rows')} 行排列。"
+            "每个图标独立居中，风格、光源、视角、描边粗细保持一致；图标之间不要分割线，四周留纯洋红空隙。"
+        )
+        for cell in cells:
+            saves = cell.get("saves", [])
+            if saves:
+                save = saves[0]
+                lines.append(f"{int(cell.get('index', 0)) + 1}. {save.get('name', '')}")
+    lines.append(STYLE_BLOCK)
+    lines.append(f"【负向词】{NEGATIVE_BLOCK}")
+    return "\n".join(lines)
+
+
+def _dir_files(directory: Path) -> set[Path]:
+    if not directory.exists():
+        return set()
+    return {p for p in directory.iterdir() if p.is_file()}
+
+
+def cmd_generate(args: argparse.Namespace) -> int:
+    ensure_dirs()
+    ve = _ve_command()
+    if not ve:
+        print("[generate] 未找到 ve 命令，请先运行：npx -y @volcengine/skills-setup@latest")
+        return 1
+
+    tasks: list[dict[str, Any]] = []
+    for p in sorted(PROMPT_DIR.glob("task_*.json")):
+        try:
+            tasks.append(load_json(p))
+        except Exception:
+            continue
+    if args.kind:
+        wanted = {k.strip() for k in str(args.kind).split(",") if k.strip()}
+        tasks = [t for t in tasks if t.get("kind") in wanted]
+    if args.limit:
+        tasks = tasks[: int(args.limit)]
+    if not tasks:
+        print("[generate] 没有匹配的任务，请先运行 prompts。")
+        return 1
+
+    if args.dry_run:
+        for i, task in enumerate(tasks, 1):
+            cmd = [
+                ve, "arkcli", "+gen", _model_prompt(task),
+                "--model", args.model,
+                "--size", args.size,
+                "--output-format", "png",
+                "--save-to", str(ATLAS_DIR),
+                "--no-open",
+            ]
+            if task.get("reference_image"):
+                ref = ROOT / task["reference_image"]
+                if ref.exists():
+                    cmd += ["--input", "@" + str(ref)]
+            print(f"[generate/dry-run] {i}/{len(tasks)} {task.get('task_id')} -> {task.get('image_name')}")
+            print("  " + " ".join(cmd[:2] + ["<prompt>"] + cmd[3:]))
+        print(f"[generate/dry-run] 共 {len(tasks)} 个任务；正式执行请去掉 --dry-run")
+        return 0
+
+    done = 0
+    failed = 0
+    for i, task in enumerate(tasks, 1):
+        target = ATLAS_DIR / task.get("image_name", f"{task.get('task_id', 'task')}.png")
+        if target.exists() and not args.force:
+            print(f"[generate] {i}/{len(tasks)} 已存在，跳过 {target.name}")
+            continue
+
+        cmd = [
+            ve, "arkcli", "+gen", _model_prompt(task),
+            "--model", args.model,
+            "--size", args.size,
+            "--output-format", "png",
+            "--save-to", str(ATLAS_DIR),
+            "--no-open",
+        ]
+        if task.get("reference_image"):
+            ref = ROOT / task["reference_image"]
+            if ref.exists():
+                cmd += ["--input", "@" + str(ref)]
+
+        before = _dir_files(ATLAS_DIR)
+        result = subprocess.run(cmd, capture_output=True, text=True, encoding="utf-8", errors="replace")
+        if result.returncode != 0:
+            failed += 1
+            print(f"[generate] {i}/{len(tasks)} 失败 {task.get('task_id')}: {result.stderr.strip()[:300]}")
+            continue
+        after = _dir_files(ATLAS_DIR)
+        new_files = sorted(after - before, key=lambda p: p.stat().st_mtime, reverse=True)
+        if new_files:
+            if target.exists() and not args.force:
+                new_files[0].unlink(missing_ok=True)
+            else:
+                new_files[0].replace(target)
+            done += 1
+            print(f"[generate] {i}/{len(tasks)} 完成 -> {target.name}")
+        else:
+            failed += 1
+            print(f"[generate] {i}/{len(tasks)} 命令成功但未找到新图片 {task.get('task_id')}")
+            if result.stdout.strip():
+                print("  " + result.stdout.strip()[:300])
+    print(f"[generate] 完成 {done} 个，失败 {failed} 个")
+    return 0 if failed == 0 else 2
+
+
 def cmd_qc(args: argparse.Namespace) -> int:
     ensure_dirs()
     manifest = build_manifest()
@@ -1305,7 +1464,22 @@ def build_parser() -> argparse.ArgumentParser:
     p_prompts = sub.add_parser("prompts", help="生成批量提示词和图集映射")
     p_prompts.add_argument("--max-costume-cells", type=int, default=6, help="单张服装图集最多放几套服装")
     p_prompts.add_argument("--icon-batch", type=int, default=9, help="图标图集每张最多几个图标")
+    p_prompts.add_argument(
+        "--phase",
+        choices=["all", "base", "costume", "icons"],
+        default="all",
+        help="base=默认皮肤，costume=服装，icons=图标，all=默认皮肤+图标（服装需默认皮肤已存在）",
+    )
     p_prompts.set_defaults(func=cmd_prompts)
+
+    p_generate = sub.add_parser("generate", help="用 ve arkcli 批量生成图集")
+    p_generate.add_argument("--model", type=str, default="doubao-seedream-5-0-pro-260628", help="Ark 图片模型名")
+    p_generate.add_argument("--size", type=str, default="2048x2048", help="输出尺寸，例如 2048x2048")
+    p_generate.add_argument("--kind", type=str, default="", help="只生成指定类型：portrait_single,costume_sheet,icon_sheet")
+    p_generate.add_argument("--limit", type=int, default=0, help="只处理前 N 个任务，调试用")
+    p_generate.add_argument("--force", action="store_true", help="已存在也重新生成")
+    p_generate.add_argument("--dry-run", action="store_true", help="只打印将执行的命令，不调 API")
+    p_generate.set_defaults(func=cmd_generate)
 
     p_slice = sub.add_parser("slice", help="切图集、抠底、写入 assets")
     _add_image_args(p_slice)

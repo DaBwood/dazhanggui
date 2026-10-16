@@ -1,0 +1,37 @@
+{
+  "task_id": "task_0115",
+  "kind": "portrait_single",
+  "group": "friend_portraits",
+  "title": "捉鬼师 默认皮肤",
+  "rows": 1,
+  "cols": 1,
+  "reference_image": "",
+  "cells": [
+    {
+      "label": "捉鬼师",
+      "saves": [
+        {
+          "key": "friend_portrait:zhuo_gui_shi:zhuo_gui_shi",
+          "category": "friend_portrait",
+          "asset_id": "zhuo_gui_shi",
+          "name": "捉鬼师",
+          "owner_id": "zhuo_gui_shi",
+          "owner_name": "捉鬼师",
+          "target": "assets/portraits/friends/zhuo_gui_shi.png",
+          "size": "portrait",
+          "generation": "portrait",
+          "group": "friend_portraits",
+          "meta": {
+            "category": "工"
+          }
+        }
+      ],
+      "index": 0,
+      "row": 0,
+      "col": 0
+    }
+  ],
+  "filename_base": "task_0115_portrait_single_friend_portraits",
+  "image_name": "task_0115_portrait_single_friend_portraits.png",
+  "output_path": "build/asset_pipeline/inbox/atlases/task_0115_portrait_single_friend_portraits.png"
+}

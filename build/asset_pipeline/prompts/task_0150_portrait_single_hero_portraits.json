@@ -1,0 +1,38 @@
+{
+  "task_id": "task_0150",
+  "kind": "portrait_single",
+  "group": "hero_portraits",
+  "title": "祭师妇好 默认皮肤",
+  "rows": 1,
+  "cols": 1,
+  "reference_image": "",
+  "cells": [
+    {
+      "label": "祭师妇好",
+      "saves": [
+        {
+          "key": "hero_portrait:jisi_fuhao:jisi_fuhao",
+          "category": "hero_portrait",
+          "asset_id": "jisi_fuhao",
+          "name": "祭师妇好",
+          "owner_id": "jisi_fuhao",
+          "owner_name": "祭师妇好",
+          "target": "assets/portraits/heroes/jisi_fuhao.png",
+          "size": "portrait",
+          "generation": "portrait",
+          "group": "hero_portraits",
+          "meta": {
+            "category": "农",
+            "quality": 2
+          }
+        }
+      ],
+      "index": 0,
+      "row": 0,
+      "col": 0
+    }
+  ],
+  "filename_base": "task_0150_portrait_single_hero_portraits",
+  "image_name": "task_0150_portrait_single_hero_portraits.png",
+  "output_path": "build/asset_pipeline/inbox/atlases/task_0150_portrait_single_hero_portraits.png"
+}

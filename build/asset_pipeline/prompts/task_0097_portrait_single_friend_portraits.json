@@ -1,0 +1,37 @@
+{
+  "task_id": "task_0097",
+  "kind": "portrait_single",
+  "group": "friend_portraits",
+  "title": "驯鹰少女 默认皮肤",
+  "rows": 1,
+  "cols": 1,
+  "reference_image": "",
+  "cells": [
+    {
+      "label": "驯鹰少女",
+      "saves": [
+        {
+          "key": "friend_portrait:xun_ying_shaonv:xun_ying_shaonv",
+          "category": "friend_portrait",
+          "asset_id": "xun_ying_shaonv",
+          "name": "驯鹰少女",
+          "owner_id": "xun_ying_shaonv",
+          "owner_name": "驯鹰少女",
+          "target": "assets/portraits/friends/xun_ying_shaonv.png",
+          "size": "portrait",
+          "generation": "portrait",
+          "group": "friend_portraits",
+          "meta": {
+            "category": "商"
+          }
+        }
+      ],
+      "index": 0,
+      "row": 0,
+      "col": 0
+    }
+  ],
+  "filename_base": "task_0097_portrait_single_friend_portraits",
+  "image_name": "task_0097_portrait_single_friend_portraits.png",
+  "output_path": "build/asset_pipeline/inbox/atlases/task_0097_portrait_single_friend_portraits.png"
+}

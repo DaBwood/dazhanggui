@@ -1,0 +1,37 @@
+{
+  "task_id": "task_0002",
+  "kind": "portrait_single",
+  "group": "friend_portraits",
+  "title": "卞玉京 默认皮肤",
+  "rows": 1,
+  "cols": 1,
+  "reference_image": "",
+  "cells": [
+    {
+      "label": "卞玉京",
+      "saves": [
+        {
+          "key": "friend_portrait:bian_yujing_friend:bian_yujing_friend",
+          "category": "friend_portrait",
+          "asset_id": "bian_yujing_friend",
+          "name": "卞玉京",
+          "owner_id": "bian_yujing_friend",
+          "owner_name": "卞玉京",
+          "target": "assets/portraits/friends/bian_yujing_friend.png",
+          "size": "portrait",
+          "generation": "portrait",
+          "group": "friend_portraits",
+          "meta": {
+            "category": "商"
+          }
+        }
+      ],
+      "index": 0,
+      "row": 0,
+      "col": 0
+    }
+  ],
+  "filename_base": "task_0002_portrait_single_friend_portraits",
+  "image_name": "task_0002_portrait_single_friend_portraits.png",
+  "output_path": "build/asset_pipeline/inbox/atlases/task_0002_portrait_single_friend_portraits.png"
+}

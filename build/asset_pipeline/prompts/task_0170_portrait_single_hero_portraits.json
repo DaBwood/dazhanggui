@@ -1,0 +1,38 @@
+{
+  "task_id": "task_0170",
+  "kind": "portrait_single",
+  "group": "hero_portraits",
+  "title": "吕布 默认皮肤",
+  "rows": 1,
+  "cols": 1,
+  "reference_image": "",
+  "cells": [
+    {
+      "label": "吕布",
+      "saves": [
+        {
+          "key": "hero_portrait:lv_bu:lv_bu",
+          "category": "hero_portrait",
+          "asset_id": "lv_bu",
+          "name": "吕布",
+          "owner_id": "lv_bu",
+          "owner_name": "吕布",
+          "target": "assets/portraits/heroes/lv_bu.png",
+          "size": "portrait",
+          "generation": "portrait",
+          "group": "hero_portraits",
+          "meta": {
+            "category": "侠",
+            "quality": 2
+          }
+        }
+      ],
+      "index": 0,
+      "row": 0,
+      "col": 0
+    }
+  ],
+  "filename_base": "task_0170_portrait_single_hero_portraits",
+  "image_name": "task_0170_portrait_single_hero_portraits.png",
+  "output_path": "build/asset_pipeline/inbox/atlases/task_0170_portrait_single_hero_portraits.png"
+}

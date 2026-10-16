@@ -1,0 +1,37 @@
+{
+  "task_id": "task_0012",
+  "kind": "portrait_single",
+  "group": "friend_portraits",
+  "title": "古国公主 默认皮肤",
+  "rows": 1,
+  "cols": 1,
+  "reference_image": "",
+  "cells": [
+    {
+      "label": "古国公主",
+      "saves": [
+        {
+          "key": "friend_portrait:gu_guo_gongzhu:gu_guo_gongzhu",
+          "category": "friend_portrait",
+          "asset_id": "gu_guo_gongzhu",
+          "name": "古国公主",
+          "owner_id": "gu_guo_gongzhu",
+          "owner_name": "古国公主",
+          "target": "assets/portraits/friends/gu_guo_gongzhu.png",
+          "size": "portrait",
+          "generation": "portrait",
+          "group": "friend_portraits",
+          "meta": {
+            "category": "农"
+          }
+        }
+      ],
+      "index": 0,
+      "row": 0,
+      "col": 0
+    }
+  ],
+  "filename_base": "task_0012_portrait_single_friend_portraits",
+  "image_name": "task_0012_portrait_single_friend_portraits.png",
+  "output_path": "build/asset_pipeline/inbox/atlases/task_0012_portrait_single_friend_portraits.png"
+}

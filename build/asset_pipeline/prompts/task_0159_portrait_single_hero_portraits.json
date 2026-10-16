@@ -1,0 +1,38 @@
+{
+  "task_id": "task_0159",
+  "kind": "portrait_single",
+  "group": "hero_portraits",
+  "title": "李香君 默认皮肤",
+  "rows": 1,
+  "cols": 1,
+  "reference_image": "",
+  "cells": [
+    {
+      "label": "李香君",
+      "saves": [
+        {
+          "key": "hero_portrait:li_xiangjun:li_xiangjun",
+          "category": "hero_portrait",
+          "asset_id": "li_xiangjun",
+          "name": "李香君",
+          "owner_id": "li_xiangjun",
+          "owner_name": "李香君",
+          "target": "assets/portraits/heroes/li_xiangjun.png",
+          "size": "portrait",
+          "generation": "portrait",
+          "group": "hero_portraits",
+          "meta": {
+            "category": "农",
+            "quality": 2
+          }
+        }
+      ],
+      "index": 0,
+      "row": 0,
+      "col": 0
+    }
+  ],
+  "filename_base": "task_0159_portrait_single_hero_portraits",
+  "image_name": "task_0159_portrait_single_hero_portraits.png",
+  "output_path": "build/asset_pipeline/inbox/atlases/task_0159_portrait_single_hero_portraits.png"
+}

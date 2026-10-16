@@ -1,0 +1,37 @@
+{
+  "task_id": "task_0003",
+  "kind": "portrait_single",
+  "group": "friend_portraits",
+  "title": "捕快 默认皮肤",
+  "rows": 1,
+  "cols": 1,
+  "reference_image": "",
+  "cells": [
+    {
+      "label": "捕快",
+      "saves": [
+        {
+          "key": "friend_portrait:bu_kuai:bu_kuai",
+          "category": "friend_portrait",
+          "asset_id": "bu_kuai",
+          "name": "捕快",
+          "owner_id": "bu_kuai",
+          "owner_name": "捕快",
+          "target": "assets/portraits/friends/bu_kuai.png",
+          "size": "portrait",
+          "generation": "portrait",
+          "group": "friend_portraits",
+          "meta": {
+            "category": "侠"
+          }
+        }
+      ],
+      "index": 0,
+      "row": 0,
+      "col": 0
+    }
+  ],
+  "filename_base": "task_0003_portrait_single_friend_portraits",
+  "image_name": "task_0003_portrait_single_friend_portraits.png",
+  "output_path": "build/asset_pipeline/inbox/atlases/task_0003_portrait_single_friend_portraits.png"
+}

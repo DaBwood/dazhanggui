@@ -1,0 +1,37 @@
+{
+  "task_id": "task_0069",
+  "kind": "portrait_single",
+  "group": "friend_portraits",
+  "title": "书香女 默认皮肤",
+  "rows": 1,
+  "cols": 1,
+  "reference_image": "",
+  "cells": [
+    {
+      "label": "书香女",
+      "saves": [
+        {
+          "key": "friend_portrait:shu_xiang_nv:shu_xiang_nv",
+          "category": "friend_portrait",
+          "asset_id": "shu_xiang_nv",
+          "name": "书香女",
+          "owner_id": "shu_xiang_nv",
+          "owner_name": "书香女",
+          "target": "assets/portraits/friends/shu_xiang_nv.png",
+          "size": "portrait",
+          "generation": "portrait",
+          "group": "friend_portraits",
+          "meta": {
+            "category": "士"
+          }
+        }
+      ],
+      "index": 0,
+      "row": 0,
+      "col": 0
+    }
+  ],
+  "filename_base": "task_0069_portrait_single_friend_portraits",
+  "image_name": "task_0069_portrait_single_friend_portraits.png",
+  "output_path": "build/asset_pipeline/inbox/atlases/task_0069_portrait_single_friend_portraits.png"
+}

@@ -2,28 +2,28 @@
   "task_id": "task_0189",
   "kind": "portrait_single",
   "group": "hero_portraits",
-  "title": "蔡渔夫",
+  "title": "孙膑 默认皮肤",
   "rows": 1,
   "cols": 1,
   "reference_image": "",
   "cells": [
     {
-      "label": "蔡渔夫",
+      "label": "孙膑",
       "saves": [
         {
-          "key": "hero_portrait:cai_yufu:cai_yufu",
+          "key": "hero_portrait:sun_bin:sun_bin",
           "category": "hero_portrait",
-          "asset_id": "cai_yufu",
-          "name": "蔡渔夫",
-          "owner_id": "cai_yufu",
-          "owner_name": "蔡渔夫",
-          "target": "assets/portraits/heroes/cai_yufu.png",
+          "asset_id": "sun_bin",
+          "name": "孙膑",
+          "owner_id": "sun_bin",
+          "owner_name": "孙膑",
+          "target": "assets/portraits/heroes/sun_bin.png",
           "size": "portrait",
           "generation": "portrait",
           "group": "hero_portraits",
           "meta": {
             "category": "农",
-            "quality": 0
+            "quality": 2
           }
         }
       ],

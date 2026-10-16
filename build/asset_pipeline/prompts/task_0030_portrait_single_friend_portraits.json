@@ -1,0 +1,37 @@
+{
+  "task_id": "task_0030",
+  "kind": "portrait_single",
+  "group": "friend_portraits",
+  "title": "静庵 默认皮肤",
+  "rows": 1,
+  "cols": 1,
+  "reference_image": "",
+  "cells": [
+    {
+      "label": "静庵",
+      "saves": [
+        {
+          "key": "friend_portrait:jing_an:jing_an",
+          "category": "friend_portrait",
+          "asset_id": "jing_an",
+          "name": "静庵",
+          "owner_id": "jing_an",
+          "owner_name": "静庵",
+          "target": "assets/portraits/friends/jing_an.png",
+          "size": "portrait",
+          "generation": "portrait",
+          "group": "friend_portraits",
+          "meta": {
+            "category": "士"
+          }
+        }
+      ],
+      "index": 0,
+      "row": 0,
+      "col": 0
+    }
+  ],
+  "filename_base": "task_0030_portrait_single_friend_portraits",
+  "image_name": "task_0030_portrait_single_friend_portraits.png",
+  "output_path": "build/asset_pipeline/inbox/atlases/task_0030_portrait_single_friend_portraits.png"
+}

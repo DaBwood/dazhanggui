@@ -1,0 +1,37 @@
+{
+  "task_id": "task_0106",
+  "kind": "portrait_single",
+  "group": "friend_portraits",
+  "title": "玉露 默认皮肤",
+  "rows": 1,
+  "cols": 1,
+  "reference_image": "",
+  "cells": [
+    {
+      "label": "玉露",
+      "saves": [
+        {
+          "key": "friend_portrait:yu_lu:yu_lu",
+          "category": "friend_portrait",
+          "asset_id": "yu_lu",
+          "name": "玉露",
+          "owner_id": "yu_lu",
+          "owner_name": "玉露",
+          "target": "assets/portraits/friends/yu_lu.png",
+          "size": "portrait",
+          "generation": "portrait",
+          "group": "friend_portraits",
+          "meta": {
+            "category": "农"
+          }
+        }
+      ],
+      "index": 0,
+      "row": 0,
+      "col": 0
+    }
+  ],
+  "filename_base": "task_0106_portrait_single_friend_portraits",
+  "image_name": "task_0106_portrait_single_friend_portraits.png",
+  "output_path": "build/asset_pipeline/inbox/atlases/task_0106_portrait_single_friend_portraits.png"
+}

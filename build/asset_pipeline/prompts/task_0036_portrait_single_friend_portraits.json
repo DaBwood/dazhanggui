@@ -1,0 +1,37 @@
+{
+  "task_id": "task_0036",
+  "kind": "portrait_single",
+  "group": "friend_portraits",
+  "title": "李师师 默认皮肤",
+  "rows": 1,
+  "cols": 1,
+  "reference_image": "",
+  "cells": [
+    {
+      "label": "李师师",
+      "saves": [
+        {
+          "key": "friend_portrait:li_shishi:li_shishi",
+          "category": "friend_portrait",
+          "asset_id": "li_shishi",
+          "name": "李师师",
+          "owner_id": "li_shishi",
+          "owner_name": "李师师",
+          "target": "assets/portraits/friends/li_shishi.png",
+          "size": "portrait",
+          "generation": "portrait",
+          "group": "friend_portraits",
+          "meta": {
+            "category": "商"
+          }
+        }
+      ],
+      "index": 0,
+      "row": 0,
+      "col": 0
+    }
+  ],
+  "filename_base": "task_0036_portrait_single_friend_portraits",
+  "image_name": "task_0036_portrait_single_friend_portraits.png",
+  "output_path": "build/asset_pipeline/inbox/atlases/task_0036_portrait_single_friend_portraits.png"
+}

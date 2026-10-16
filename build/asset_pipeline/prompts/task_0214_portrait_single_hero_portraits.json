@@ -2,28 +2,28 @@
   "task_id": "task_0214",
   "kind": "portrait_single",
   "group": "hero_portraits",
-  "title": "皮影匠人",
+  "title": "张三丰 默认皮肤",
   "rows": 1,
   "cols": 1,
   "reference_image": "",
   "cells": [
     {
-      "label": "皮影匠人",
+      "label": "张三丰",
       "saves": [
         {
-          "key": "hero_portrait:pi_yingjiang:pi_yingjiang",
+          "key": "hero_portrait:zhang_sanfeng:zhang_sanfeng",
           "category": "hero_portrait",
-          "asset_id": "pi_yingjiang",
-          "name": "皮影匠人",
-          "owner_id": "pi_yingjiang",
-          "owner_name": "皮影匠人",
-          "target": "assets/portraits/heroes/pi_yingjiang.png",
+          "asset_id": "zhang_sanfeng",
+          "name": "张三丰",
+          "owner_id": "zhang_sanfeng",
+          "owner_name": "张三丰",
+          "target": "assets/portraits/heroes/zhang_sanfeng.png",
           "size": "portrait",
           "generation": "portrait",
           "group": "hero_portraits",
           "meta": {
-            "category": "士",
-            "quality": 1
+            "category": "侠",
+            "quality": 2
           }
         }
       ],

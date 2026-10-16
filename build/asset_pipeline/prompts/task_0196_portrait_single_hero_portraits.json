@@ -2,28 +2,28 @@
   "task_id": "task_0196",
   "kind": "portrait_single",
   "group": "hero_portraits",
-  "title": "昊天上帝",
+  "title": "吴道子 默认皮肤",
   "rows": 1,
   "cols": 1,
   "reference_image": "",
   "cells": [
     {
-      "label": "昊天上帝",
+      "label": "吴道子",
       "saves": [
         {
-          "key": "hero_portrait:haotian_shangdi:haotian_shangdi",
+          "key": "hero_portrait:wu_daozi:wu_daozi",
           "category": "hero_portrait",
-          "asset_id": "haotian_shangdi",
-          "name": "昊天上帝",
-          "owner_id": "haotian_shangdi",
-          "owner_name": "昊天上帝",
-          "target": "assets/portraits/heroes/haotian_shangdi.png",
+          "asset_id": "wu_daozi",
+          "name": "吴道子",
+          "owner_id": "wu_daozi",
+          "owner_name": "吴道子",
+          "target": "assets/portraits/heroes/wu_daozi.png",
           "size": "portrait",
           "generation": "portrait",
           "group": "hero_portraits",
           "meta": {
-            "category": "工",
-            "quality": 3
+            "category": "士",
+            "quality": 2
           }
         }
       ],

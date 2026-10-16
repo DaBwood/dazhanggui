@@ -2,28 +2,28 @@
   "task_id": "task_0200",
   "kind": "portrait_single",
   "group": "hero_portraits",
-  "title": "贾猴子",
+  "title": "小八 默认皮肤",
   "rows": 1,
   "cols": 1,
   "reference_image": "",
   "cells": [
     {
-      "label": "贾猴子",
+      "label": "小八",
       "saves": [
         {
-          "key": "hero_portrait:jia_houzi:jia_houzi",
+          "key": "hero_portrait:xiao_ba:xiao_ba",
           "category": "hero_portrait",
-          "asset_id": "jia_houzi",
-          "name": "贾猴子",
-          "owner_id": "jia_houzi",
-          "owner_name": "贾猴子",
-          "target": "assets/portraits/heroes/jia_houzi.png",
+          "asset_id": "xiao_ba",
+          "name": "小八",
+          "owner_id": "xiao_ba",
+          "owner_name": "小八",
+          "target": "assets/portraits/heroes/xiao_ba.png",
           "size": "portrait",
           "generation": "portrait",
           "group": "hero_portraits",
           "meta": {
-            "category": "工",
-            "quality": 0
+            "category": "士",
+            "quality": 2
           }
         }
       ],

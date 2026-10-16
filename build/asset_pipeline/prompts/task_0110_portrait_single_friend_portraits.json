@@ -1,0 +1,37 @@
+{
+  "task_id": "task_0110",
+  "kind": "portrait_single",
+  "group": "friend_portraits",
+  "title": "昭阳 默认皮肤",
+  "rows": 1,
+  "cols": 1,
+  "reference_image": "",
+  "cells": [
+    {
+      "label": "昭阳",
+      "saves": [
+        {
+          "key": "friend_portrait:zhao_yang:zhao_yang",
+          "category": "friend_portrait",
+          "asset_id": "zhao_yang",
+          "name": "昭阳",
+          "owner_id": "zhao_yang",
+          "owner_name": "昭阳",
+          "target": "assets/portraits/friends/zhao_yang.png",
+          "size": "portrait",
+          "generation": "portrait",
+          "group": "friend_portraits",
+          "meta": {
+            "category": "工"
+          }
+        }
+      ],
+      "index": 0,
+      "row": 0,
+      "col": 0
+    }
+  ],
+  "filename_base": "task_0110_portrait_single_friend_portraits",
+  "image_name": "task_0110_portrait_single_friend_portraits.png",
+  "output_path": "build/asset_pipeline/inbox/atlases/task_0110_portrait_single_friend_portraits.png"
+}

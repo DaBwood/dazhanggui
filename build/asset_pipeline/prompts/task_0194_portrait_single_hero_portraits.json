@@ -2,28 +2,28 @@
   "task_id": "task_0194",
   "kind": "portrait_single",
   "group": "hero_portraits",
-  "title": "葛郎中",
+  "title": "王昭君 默认皮肤",
   "rows": 1,
   "cols": 1,
   "reference_image": "",
   "cells": [
     {
-      "label": "葛郎中",
+      "label": "王昭君",
       "saves": [
         {
-          "key": "hero_portrait:ge_langzhong:ge_langzhong",
+          "key": "hero_portrait:wang_zhaojun:wang_zhaojun",
           "category": "hero_portrait",
-          "asset_id": "ge_langzhong",
-          "name": "葛郎中",
-          "owner_id": "ge_langzhong",
-          "owner_name": "葛郎中",
-          "target": "assets/portraits/heroes/ge_langzhong.png",
+          "asset_id": "wang_zhaojun",
+          "name": "王昭君",
+          "owner_id": "wang_zhaojun",
+          "owner_name": "王昭君",
+          "target": "assets/portraits/heroes/wang_zhaojun.png",
           "size": "portrait",
           "generation": "portrait",
           "group": "hero_portraits",
           "meta": {
-            "category": "士",
-            "quality": 0
+            "category": "商",
+            "quality": 1
           }
         }
       ],

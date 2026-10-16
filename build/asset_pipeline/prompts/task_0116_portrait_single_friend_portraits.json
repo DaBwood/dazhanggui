@@ -1,0 +1,37 @@
+{
+  "task_id": "task_0116",
+  "kind": "portrait_single",
+  "group": "friend_portraits",
+  "title": "紫玉 默认皮肤",
+  "rows": 1,
+  "cols": 1,
+  "reference_image": "",
+  "cells": [
+    {
+      "label": "紫玉",
+      "saves": [
+        {
+          "key": "friend_portrait:zi_yu:zi_yu",
+          "category": "friend_portrait",
+          "asset_id": "zi_yu",
+          "name": "紫玉",
+          "owner_id": "zi_yu",
+          "owner_name": "紫玉",
+          "target": "assets/portraits/friends/zi_yu.png",
+          "size": "portrait",
+          "generation": "portrait",
+          "group": "friend_portraits",
+          "meta": {
+            "category": "农"
+          }
+        }
+      ],
+      "index": 0,
+      "row": 0,
+      "col": 0
+    }
+  ],
+  "filename_base": "task_0116_portrait_single_friend_portraits",
+  "image_name": "task_0116_portrait_single_friend_portraits.png",
+  "output_path": "build/asset_pipeline/inbox/atlases/task_0116_portrait_single_friend_portraits.png"
+}

@@ -2,28 +2,28 @@
   "task_id": "task_0195",
   "kind": "portrait_single",
   "group": "hero_portraits",
-  "title": "观星师",
+  "title": "武镖师 默认皮肤",
   "rows": 1,
   "cols": 1,
   "reference_image": "",
   "cells": [
     {
-      "label": "观星师",
+      "label": "武镖师",
       "saves": [
         {
-          "key": "hero_portrait:guanxingshi:guanxingshi",
+          "key": "hero_portrait:wu_biaoshi:wu_biaoshi",
           "category": "hero_portrait",
-          "asset_id": "guanxingshi",
-          "name": "观星师",
-          "owner_id": "guanxingshi",
-          "owner_name": "观星师",
-          "target": "assets/portraits/heroes/guanxingshi.png",
+          "asset_id": "wu_biaoshi",
+          "name": "武镖师",
+          "owner_id": "wu_biaoshi",
+          "owner_name": "武镖师",
+          "target": "assets/portraits/heroes/wu_biaoshi.png",
           "size": "portrait",
           "generation": "portrait",
           "group": "hero_portraits",
           "meta": {
             "category": "侠",
-            "quality": 2
+            "quality": 1
           }
         }
       ],

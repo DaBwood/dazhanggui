@@ -1,0 +1,38 @@
+{
+  "task_id": "task_0182",
+  "kind": "portrait_single",
+  "group": "hero_portraits",
+  "title": "沈万三 默认皮肤",
+  "rows": 1,
+  "cols": 1,
+  "reference_image": "",
+  "cells": [
+    {
+      "label": "沈万三",
+      "saves": [
+        {
+          "key": "hero_portrait:shen_wansan:shen_wansan",
+          "category": "hero_portrait",
+          "asset_id": "shen_wansan",
+          "name": "沈万三",
+          "owner_id": "shen_wansan",
+          "owner_name": "沈万三",
+          "target": "assets/portraits/heroes/shen_wansan.png",
+          "size": "portrait",
+          "generation": "portrait",
+          "group": "hero_portraits",
+          "meta": {
+            "category": "商",
+            "quality": 2
+          }
+        }
+      ],
+      "index": 0,
+      "row": 0,
+      "col": 0
+    }
+  ],
+  "filename_base": "task_0182_portrait_single_hero_portraits",
+  "image_name": "task_0182_portrait_single_hero_portraits.png",
+  "output_path": "build/asset_pipeline/inbox/atlases/task_0182_portrait_single_hero_portraits.png"
+}

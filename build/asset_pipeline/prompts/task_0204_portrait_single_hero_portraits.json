@@ -2,28 +2,28 @@
   "task_id": "task_0204",
   "kind": "portrait_single",
   "group": "hero_portraits",
-  "title": "黎蛊师",
+  "title": "解鲁 默认皮肤",
   "rows": 1,
   "cols": 1,
   "reference_image": "",
   "cells": [
     {
-      "label": "黎蛊师",
+      "label": "解鲁",
       "saves": [
         {
-          "key": "hero_portrait:li_gushi:li_gushi",
+          "key": "hero_portrait:xie_lu:xie_lu",
           "category": "hero_portrait",
-          "asset_id": "li_gushi",
-          "name": "黎蛊师",
-          "owner_id": "li_gushi",
-          "owner_name": "黎蛊师",
-          "target": "assets/portraits/heroes/li_gushi.png",
+          "asset_id": "xie_lu",
+          "name": "解鲁",
+          "owner_id": "xie_lu",
+          "owner_name": "解鲁",
+          "target": "assets/portraits/heroes/xie_lu.png",
           "size": "portrait",
           "generation": "portrait",
           "group": "hero_portraits",
           "meta": {
-            "category": "侠",
-            "quality": 0
+            "category": "士",
+            "quality": 1
           }
         }
       ],

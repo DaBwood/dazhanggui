@@ -953,7 +953,7 @@ cricket_icon,夜幽冥,夜幽冥,,,assets/skill_icons/夜幽冥.png,icon_sheet,i
 cricket_icon,天巧星,天巧星,,,assets/skill_icons/天巧星.png,icon_sheet,icon,cricket_icons,cuzhi.json:crickets,农系 6星,False,,,
 cricket_icon,孙大圣,孙大圣,,,assets/skill_icons/孙大圣.png,icon_sheet,icon,cricket_icons,cuzhi.json:crickets,商系 6星,False,,,
 cricket_icon,孙尚香,孙尚香,,,assets/skill_icons/孙尚香.png,icon_sheet,icon,cricket_icons,cuzhi.json:crickets,侠系 6星,False,,,
-cricket_icon,射弓白,射弓白,,,assets/skill_icons/射弓白.png,icon_sheet,icon,cricket_icons,cuzhi.json:crickets,士系 2星,False,,,
+cricket_icon,射弓红,射弓红,,,assets/skill_icons/射弓红.png,icon_sheet,icon,cricket_icons,cuzhi.json:crickets,士系 2星,True,128,128,RGBA
 cricket_icon,小西瓜,小西瓜,,,assets/skill_icons/小西瓜.png,icon_sheet,icon,cricket_icons,cuzhi.json:crickets,农系 3星,False,,,
 cricket_icon,尖头紫,尖头紫,,,assets/skill_icons/尖头紫.png,icon_sheet,icon,cricket_icons,cuzhi.json:crickets,侠系 2星,False,,,
 cricket_icon,尚方剑,尚方剑,,,assets/skill_icons/尚方剑.png,icon_sheet,icon,cricket_icons,cuzhi.json:crickets,士系 5星,True,128,128,RGBA
@@ -979,7 +979,7 @@ cricket_icon,碧穹晶,碧穹晶,,,assets/skill_icons/碧穹晶.png,icon_sheet,i
 cricket_icon,紫星辰,紫星辰,,,assets/skill_icons/紫星辰.png,icon_sheet,icon,cricket_icons,cuzhi.json:crickets,商系 4星,False,,,
 cricket_icon,紫翅白,紫翅白,,,assets/skill_icons/紫翅白.png,icon_sheet,icon,cricket_icons,cuzhi.json:crickets,工系 1星,False,,,
 cricket_icon,红头青,红头青,,,assets/skill_icons/红头青.png,icon_sheet,icon,cricket_icons,cuzhi.json:crickets,工系 2星,False,,,
-cricket_icon,红牙白,红牙白,,,assets/skill_icons/红牙白.png,icon_sheet,icon,cricket_icons,cuzhi.json:crickets,士系 1星,False,,,
+cricket_icon,红牙白,红牙白,,,assets/skill_icons/红牙白.png,icon_sheet,icon,cricket_icons,cuzhi.json:crickets,士系 1星,True,128,128,RGBA
 cricket_icon,红缨枪,红缨枪,,,assets/skill_icons/红缨枪.png,icon_sheet,icon,cricket_icons,cuzhi.json:crickets,商系 5星,False,,,
 cricket_icon,红麻头,红麻头,,,assets/skill_icons/红麻头.png,icon_sheet,icon,cricket_icons,cuzhi.json:crickets,商系 2星,False,,,
 cricket_icon,蛮荒骷,蛮荒骷,,,assets/skill_icons/蛮荒骷.png,icon_sheet,icon,cricket_icons,cuzhi.json:crickets,工系 6星,False,,,
@@ -1032,7 +1032,6 @@ existing_asset,厚德树人,厚德树人,,,assets/skill_icons/厚德树人.png,n
 existing_asset,启沃之资,启沃之资,,,assets/skill_icons/启沃之资.png,none,unknown,existing_assets,filesystem,,True,128,128,RGBA
 existing_asset,因材施教,因材施教,,,assets/skill_icons/因材施教.png,none,unknown,existing_assets,filesystem,,True,128,128,RGBA
 existing_asset,天人合一,天人合一,,,assets/skill_icons/天人合一.png,none,unknown,existing_assets,filesystem,,True,128,128,RGBA
-existing_asset,射弓红,射弓红,,,assets/skill_icons/射弓红.png,none,unknown,existing_assets,filesystem,,True,128,128,RGBA
 existing_asset,得心应手,得心应手,,,assets/skill_icons/得心应手.png,none,unknown,existing_assets,filesystem,,True,128,128,RGBA
 existing_asset,循循善诱,循循善诱,,,assets/skill_icons/循循善诱.png,none,unknown,existing_assets,filesystem,,True,128,128,RGBA
 existing_asset,桃李天下,桃李天下,,,assets/skill_icons/桃李天下.png,none,unknown,existing_assets,filesystem,,True,128,128,RGBA

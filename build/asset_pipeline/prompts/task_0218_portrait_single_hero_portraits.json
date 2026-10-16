@@ -2,28 +2,28 @@
   "task_id": "task_0218",
   "kind": "portrait_single",
   "group": "hero_portraits",
-  "title": "神算子",
+  "title": "郑果农 默认皮肤",
   "rows": 1,
   "cols": 1,
   "reference_image": "",
   "cells": [
     {
-      "label": "神算子",
+      "label": "郑果农",
       "saves": [
         {
-          "key": "hero_portrait:shen_suanzi:shen_suanzi",
+          "key": "hero_portrait:zheng_guonong:zheng_guonong",
           "category": "hero_portrait",
-          "asset_id": "shen_suanzi",
-          "name": "神算子",
-          "owner_id": "shen_suanzi",
-          "owner_name": "神算子",
-          "target": "assets/portraits/heroes/shen_suanzi.png",
+          "asset_id": "zheng_guonong",
+          "name": "郑果农",
+          "owner_id": "zheng_guonong",
+          "owner_name": "郑果农",
+          "target": "assets/portraits/heroes/zheng_guonong.png",
           "size": "portrait",
           "generation": "portrait",
           "group": "hero_portraits",
           "meta": {
-            "category": "士",
-            "quality": 1
+            "category": "农",
+            "quality": 0
           }
         }
       ],

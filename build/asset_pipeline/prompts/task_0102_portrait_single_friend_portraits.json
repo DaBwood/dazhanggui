@@ -1,0 +1,37 @@
+{
+  "task_id": "task_0102",
+  "kind": "portrait_single",
+  "group": "friend_portraits",
+  "title": "隐娘 默认皮肤",
+  "rows": 1,
+  "cols": 1,
+  "reference_image": "",
+  "cells": [
+    {
+      "label": "隐娘",
+      "saves": [
+        {
+          "key": "friend_portrait:yin_niang:yin_niang",
+          "category": "friend_portrait",
+          "asset_id": "yin_niang",
+          "name": "隐娘",
+          "owner_id": "yin_niang",
+          "owner_name": "隐娘",
+          "target": "assets/portraits/friends/yin_niang.png",
+          "size": "portrait",
+          "generation": "portrait",
+          "group": "friend_portraits",
+          "meta": {
+            "category": "农"
+          }
+        }
+      ],
+      "index": 0,
+      "row": 0,
+      "col": 0
+    }
+  ],
+  "filename_base": "task_0102_portrait_single_friend_portraits",
+  "image_name": "task_0102_portrait_single_friend_portraits.png",
+  "output_path": "build/asset_pipeline/inbox/atlases/task_0102_portrait_single_friend_portraits.png"
+}

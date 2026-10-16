@@ -1,0 +1,37 @@
+{
+  "task_id": "task_0041",
+  "kind": "portrait_single",
+  "group": "friend_portraits",
+  "title": "嬷嬷 默认皮肤",
+  "rows": 1,
+  "cols": 1,
+  "reference_image": "",
+  "cells": [
+    {
+      "label": "嬷嬷",
+      "saves": [
+        {
+          "key": "friend_portrait:ma_ma:ma_ma",
+          "category": "friend_portrait",
+          "asset_id": "ma_ma",
+          "name": "嬷嬷",
+          "owner_id": "ma_ma",
+          "owner_name": "嬷嬷",
+          "target": "assets/portraits/friends/ma_ma.png",
+          "size": "portrait",
+          "generation": "portrait",
+          "group": "friend_portraits",
+          "meta": {
+            "category": "农"
+          }
+        }
+      ],
+      "index": 0,
+      "row": 0,
+      "col": 0
+    }
+  ],
+  "filename_base": "task_0041_portrait_single_friend_portraits",
+  "image_name": "task_0041_portrait_single_friend_portraits.png",
+  "output_path": "build/asset_pipeline/inbox/atlases/task_0041_portrait_single_friend_portraits.png"
+}

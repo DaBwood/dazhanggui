@@ -1,0 +1,37 @@
+{
+  "task_id": "task_0089",
+  "kind": "portrait_single",
+  "group": "friend_portraits",
+  "title": "西湖船娘 默认皮肤",
+  "rows": 1,
+  "cols": 1,
+  "reference_image": "",
+  "cells": [
+    {
+      "label": "西湖船娘",
+      "saves": [
+        {
+          "key": "friend_portrait:xihu_chuangniang:xihu_chuangniang",
+          "category": "friend_portrait",
+          "asset_id": "xihu_chuangniang",
+          "name": "西湖船娘",
+          "owner_id": "xihu_chuangniang",
+          "owner_name": "西湖船娘",
+          "target": "assets/portraits/friends/xihu_chuangniang.png",
+          "size": "portrait",
+          "generation": "portrait",
+          "group": "friend_portraits",
+          "meta": {
+            "category": "农"
+          }
+        }
+      ],
+      "index": 0,
+      "row": 0,
+      "col": 0
+    }
+  ],
+  "filename_base": "task_0089_portrait_single_friend_portraits",
+  "image_name": "task_0089_portrait_single_friend_portraits.png",
+  "output_path": "build/asset_pipeline/inbox/atlases/task_0089_portrait_single_friend_portraits.png"
+}

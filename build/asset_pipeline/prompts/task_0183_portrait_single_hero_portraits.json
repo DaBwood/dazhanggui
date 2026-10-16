@@ -1,0 +1,38 @@
+{
+  "task_id": "task_0183",
+  "kind": "portrait_single",
+  "group": "hero_portraits",
+  "title": "石敢当 默认皮肤",
+  "rows": 1,
+  "cols": 1,
+  "reference_image": "",
+  "cells": [
+    {
+      "label": "石敢当",
+      "saves": [
+        {
+          "key": "hero_portrait:shi_gandang:shi_gandang",
+          "category": "hero_portrait",
+          "asset_id": "shi_gandang",
+          "name": "石敢当",
+          "owner_id": "shi_gandang",
+          "owner_name": "石敢当",
+          "target": "assets/portraits/heroes/shi_gandang.png",
+          "size": "portrait",
+          "generation": "portrait",
+          "group": "hero_portraits",
+          "meta": {
+            "category": "工",
+            "quality": 2
+          }
+        }
+      ],
+      "index": 0,
+      "row": 0,
+      "col": 0
+    }
+  ],
+  "filename_base": "task_0183_portrait_single_hero_portraits",
+  "image_name": "task_0183_portrait_single_hero_portraits.png",
+  "output_path": "build/asset_pipeline/inbox/atlases/task_0183_portrait_single_hero_portraits.png"
+}

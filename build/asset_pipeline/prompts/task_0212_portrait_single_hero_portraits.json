@@ -2,27 +2,27 @@
   "task_id": "task_0212",
   "kind": "portrait_single",
   "group": "hero_portraits",
-  "title": "洛孙山",
+  "title": "张老伯 默认皮肤",
   "rows": 1,
   "cols": 1,
   "reference_image": "",
   "cells": [
     {
-      "label": "洛孙山",
+      "label": "张老伯",
       "saves": [
         {
-          "key": "hero_portrait:luo_sunshan:luo_sunshan",
+          "key": "hero_portrait:zhang_laobo:zhang_laobo",
           "category": "hero_portrait",
-          "asset_id": "luo_sunshan",
-          "name": "洛孙山",
-          "owner_id": "luo_sunshan",
-          "owner_name": "洛孙山",
-          "target": "assets/portraits/heroes/luo_sunshan.png",
+          "asset_id": "zhang_laobo",
+          "name": "张老伯",
+          "owner_id": "zhang_laobo",
+          "owner_name": "张老伯",
+          "target": "assets/portraits/heroes/zhang_laobo.png",
           "size": "portrait",
           "generation": "portrait",
           "group": "hero_portraits",
           "meta": {
-            "category": "士",
+            "category": "农",
             "quality": 0
           }
         }

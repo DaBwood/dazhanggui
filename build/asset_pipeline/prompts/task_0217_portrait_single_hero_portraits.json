@@ -2,28 +2,28 @@
   "task_id": "task_0217",
   "kind": "portrait_single",
   "group": "hero_portraits",
-  "title": "秦始皇",
+  "title": "郑厨子 默认皮肤",
   "rows": 1,
   "cols": 1,
   "reference_image": "",
   "cells": [
     {
-      "label": "秦始皇",
+      "label": "郑厨子",
       "saves": [
         {
-          "key": "hero_portrait:qin_shihuang:qin_shihuang",
+          "key": "hero_portrait:zheng_chuzi:zheng_chuzi",
           "category": "hero_portrait",
-          "asset_id": "qin_shihuang",
-          "name": "秦始皇",
-          "owner_id": "qin_shihuang",
-          "owner_name": "秦始皇",
-          "target": "assets/portraits/heroes/qin_shihuang.png",
+          "asset_id": "zheng_chuzi",
+          "name": "郑厨子",
+          "owner_id": "zheng_chuzi",
+          "owner_name": "郑厨子",
+          "target": "assets/portraits/heroes/zheng_chuzi.png",
           "size": "portrait",
           "generation": "portrait",
           "group": "hero_portraits",
           "meta": {
-            "category": "士",
-            "quality": 2
+            "category": "工",
+            "quality": 0
           }
         }
       ],

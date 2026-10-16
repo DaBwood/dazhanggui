@@ -1,0 +1,38 @@
+{
+  "task_id": "task_0144",
+  "kind": "portrait_single",
+  "group": "hero_portraits",
+  "title": "葫芦仙人 默认皮肤",
+  "rows": 1,
+  "cols": 1,
+  "reference_image": "",
+  "cells": [
+    {
+      "label": "葫芦仙人",
+      "saves": [
+        {
+          "key": "hero_portrait:hu_lu_xianren:hu_lu_xianren",
+          "category": "hero_portrait",
+          "asset_id": "hu_lu_xianren",
+          "name": "葫芦仙人",
+          "owner_id": "hu_lu_xianren",
+          "owner_name": "葫芦仙人",
+          "target": "assets/portraits/heroes/hu_lu_xianren.png",
+          "size": "portrait",
+          "generation": "portrait",
+          "group": "hero_portraits",
+          "meta": {
+            "category": "商",
+            "quality": 1
+          }
+        }
+      ],
+      "index": 0,
+      "row": 0,
+      "col": 0
+    }
+  ],
+  "filename_base": "task_0144_portrait_single_hero_portraits",
+  "image_name": "task_0144_portrait_single_hero_portraits.png",
+  "output_path": "build/asset_pipeline/inbox/atlases/task_0144_portrait_single_hero_portraits.png"
+}

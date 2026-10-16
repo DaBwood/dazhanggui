@@ -1,7 +1,7 @@
 {
-  "generated_at": "2026-10-16 15:25:07",
+  "generated_at": "2026-10-16 22:26:54",
   "project_root": "C:\\Users\\林\\Documents\\大掌柜",
-  "asset_count": 2063,
+  "asset_count": 2062,
   "counts": {
     "beast_icon": {
       "total": 23,
@@ -19,12 +19,12 @@
     },
     "cricket_icon": {
       "total": 71,
-      "missing": 63,
-      "exists": 8
+      "missing": 61,
+      "exists": 10
     },
     "existing_asset": {
-      "total": 37,
-      "exists": 37
+      "total": 36,
+      "exists": 36
     },
     "fishing_icon": {
       "total": 113,
@@ -23390,13 +23390,13 @@
       "status": "missing"
     },
     {
-      "key": "cricket_icon:射弓白",
+      "key": "cricket_icon:射弓红",
       "category": "cricket_icon",
-      "asset_id": "射弓白",
-      "name": "射弓白",
+      "asset_id": "射弓红",
+      "name": "射弓红",
       "owner_id": "",
       "owner_name": "",
-      "target": "assets/skill_icons/射弓白.png",
+      "target": "assets/skill_icons/射弓红.png",
       "generation": "icon_sheet",
       "size": "icon",
       "group": "cricket_icons",
@@ -23407,11 +23407,11 @@
         "career": "士",
         "quality": 2
       },
-      "exists": false,
-      "existing_w": null,
-      "existing_h": null,
-      "existing_mode": null,
-      "status": "missing"
+      "exists": true,
+      "existing_w": 128,
+      "existing_h": 128,
+      "existing_mode": "RGBA",
+      "status": "exists"
     },
     {
       "key": "cricket_icon:小西瓜",
@@ -24031,11 +24031,11 @@
         "career": "士",
         "quality": 1
       },
-      "exists": false,
-      "existing_w": null,
-      "existing_h": null,
-      "existing_mode": null,
-      "status": "missing"
+      "exists": true,
+      "existing_w": 128,
+      "existing_h": 128,
+      "existing_mode": "RGBA",
+      "status": "exists"
     },
     {
       "key": "cricket_icon:红缨枪",
@@ -25173,26 +25173,6 @@
       "owner_id": "",
       "owner_name": "",
       "target": "assets/skill_icons/天人合一.png",
-      "generation": "none",
-      "size": "unknown",
-      "group": "existing_assets",
-      "source": "filesystem",
-      "hint": "",
-      "meta": {},
-      "exists": true,
-      "existing_w": 128,
-      "existing_h": 128,
-      "existing_mode": "RGBA",
-      "status": "exists"
-    },
-    {
-      "key": "existing_asset:射弓红",
-      "category": "existing_asset",
-      "asset_id": "射弓红",
-      "name": "射弓红",
-      "owner_id": "",
-      "owner_name": "",
-      "target": "assets/skill_icons/射弓红.png",
       "generation": "none",
       "size": "unknown",
       "group": "existing_assets",

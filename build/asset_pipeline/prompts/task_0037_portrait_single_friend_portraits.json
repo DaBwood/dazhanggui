@@ -1,0 +1,37 @@
+{
+  "task_id": "task_0037",
+  "kind": "portrait_single",
+  "group": "friend_portraits",
+  "title": "李香君 默认皮肤",
+  "rows": 1,
+  "cols": 1,
+  "reference_image": "",
+  "cells": [
+    {
+      "label": "李香君",
+      "saves": [
+        {
+          "key": "friend_portrait:li_xiangjun_friend:li_xiangjun_friend",
+          "category": "friend_portrait",
+          "asset_id": "li_xiangjun_friend",
+          "name": "李香君",
+          "owner_id": "li_xiangjun_friend",
+          "owner_name": "李香君",
+          "target": "assets/portraits/friends/li_xiangjun_friend.png",
+          "size": "portrait",
+          "generation": "portrait",
+          "group": "friend_portraits",
+          "meta": {
+            "category": "农"
+          }
+        }
+      ],
+      "index": 0,
+      "row": 0,
+      "col": 0
+    }
+  ],
+  "filename_base": "task_0037_portrait_single_friend_portraits",
+  "image_name": "task_0037_portrait_single_friend_portraits.png",
+  "output_path": "build/asset_pipeline/inbox/atlases/task_0037_portrait_single_friend_portraits.png"
+}

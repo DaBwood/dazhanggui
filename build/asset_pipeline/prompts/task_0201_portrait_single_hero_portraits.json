@@ -2,28 +2,28 @@
   "task_id": "task_0201",
   "kind": "portrait_single",
   "group": "hero_portraits",
-  "title": "贾机关",
+  "title": "小柒 默认皮肤",
   "rows": 1,
   "cols": 1,
   "reference_image": "",
   "cells": [
     {
-      "label": "贾机关",
+      "label": "小柒",
       "saves": [
         {
-          "key": "hero_portrait:jia_jiguan:jia_jiguan",
+          "key": "hero_portrait:xiao_qi:xiao_qi",
           "category": "hero_portrait",
-          "asset_id": "jia_jiguan",
-          "name": "贾机关",
-          "owner_id": "jia_jiguan",
-          "owner_name": "贾机关",
-          "target": "assets/portraits/heroes/jia_jiguan.png",
+          "asset_id": "xiao_qi",
+          "name": "小柒",
+          "owner_id": "xiao_qi",
+          "owner_name": "小柒",
+          "target": "assets/portraits/heroes/xiao_qi.png",
           "size": "portrait",
           "generation": "portrait",
           "group": "hero_portraits",
           "meta": {
-            "category": "工",
-            "quality": 1
+            "category": "士",
+            "quality": 2
           }
         }
       ],

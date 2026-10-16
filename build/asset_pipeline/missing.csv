@@ -937,7 +937,6 @@ cricket_icon,夜幽冥,夜幽冥,assets/skill_icons/夜幽冥.png,icon_sheet,cri
 cricket_icon,天巧星,天巧星,assets/skill_icons/天巧星.png,icon_sheet,cricket_icons,cuzhi.json:crickets
 cricket_icon,孙大圣,孙大圣,assets/skill_icons/孙大圣.png,icon_sheet,cricket_icons,cuzhi.json:crickets
 cricket_icon,孙尚香,孙尚香,assets/skill_icons/孙尚香.png,icon_sheet,cricket_icons,cuzhi.json:crickets
-cricket_icon,射弓白,射弓白,assets/skill_icons/射弓白.png,icon_sheet,cricket_icons,cuzhi.json:crickets
 cricket_icon,小西瓜,小西瓜,assets/skill_icons/小西瓜.png,icon_sheet,cricket_icons,cuzhi.json:crickets
 cricket_icon,尖头紫,尖头紫,assets/skill_icons/尖头紫.png,icon_sheet,cricket_icons,cuzhi.json:crickets
 cricket_icon,张辽,张辽,assets/skill_icons/张辽.png,icon_sheet,cricket_icons,cuzhi.json:crickets
@@ -960,7 +959,6 @@ cricket_icon,碧穹晶,碧穹晶,assets/skill_icons/碧穹晶.png,icon_sheet,cri
 cricket_icon,紫星辰,紫星辰,assets/skill_icons/紫星辰.png,icon_sheet,cricket_icons,cuzhi.json:crickets
 cricket_icon,紫翅白,紫翅白,assets/skill_icons/紫翅白.png,icon_sheet,cricket_icons,cuzhi.json:crickets
 cricket_icon,红头青,红头青,assets/skill_icons/红头青.png,icon_sheet,cricket_icons,cuzhi.json:crickets
-cricket_icon,红牙白,红牙白,assets/skill_icons/红牙白.png,icon_sheet,cricket_icons,cuzhi.json:crickets
 cricket_icon,红缨枪,红缨枪,assets/skill_icons/红缨枪.png,icon_sheet,cricket_icons,cuzhi.json:crickets
 cricket_icon,红麻头,红麻头,assets/skill_icons/红麻头.png,icon_sheet,cricket_icons,cuzhi.json:crickets
 cricket_icon,蛮荒骷,蛮荒骷,assets/skill_icons/蛮荒骷.png,icon_sheet,cricket_icons,cuzhi.json:crickets
@@ -1932,4 +1930,3 @@ skill_icon,魂脉合流,魂脉合流,assets/skill_icons/魂脉合流.png,icon_sh
 skill_icon,魔星降世,魔星降世,assets/skill_icons/魔星降世.png,icon_sheet,skill_icons,hero_talents.json
 skill_icon,魔神角,魔神角,assets/skill_icons/魔神角.png,icon_sheet,skill_icons,heroes.json:aptitude_skills
 skill_icon,麟角刷,麟角刷,assets/skill_icons/麟角刷.png,icon_sheet,skill_icons,heroes.json:aptitude_skills
-ui_asset,career_<拼音>,career_<拼音>,assets/skill_icons/career_<拼音>.png,none,ui_assets,code_literal

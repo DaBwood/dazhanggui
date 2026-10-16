@@ -2,27 +2,27 @@
   "task_id": "task_0219",
   "kind": "portrait_single",
   "group": "hero_portraits",
-  "title": "宋江",
+  "title": "郑和 默认皮肤",
   "rows": 1,
   "cols": 1,
   "reference_image": "",
   "cells": [
     {
-      "label": "宋江",
+      "label": "郑和",
       "saves": [
         {
-          "key": "hero_portrait:song_jiang:song_jiang",
+          "key": "hero_portrait:zheng_he:zheng_he",
           "category": "hero_portrait",
-          "asset_id": "song_jiang",
-          "name": "宋江",
-          "owner_id": "song_jiang",
-          "owner_name": "宋江",
-          "target": "assets/portraits/heroes/song_jiang.png",
+          "asset_id": "zheng_he",
+          "name": "郑和",
+          "owner_id": "zheng_he",
+          "owner_name": "郑和",
+          "target": "assets/portraits/heroes/zheng_he.png",
           "size": "portrait",
           "generation": "portrait",
           "group": "hero_portraits",
           "meta": {
-            "category": "农",
+            "category": "士",
             "quality": 2
           }
         }

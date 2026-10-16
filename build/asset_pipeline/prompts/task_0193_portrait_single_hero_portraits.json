@@ -2,28 +2,28 @@
   "task_id": "task_0193",
   "kind": "portrait_single",
   "group": "hero_portraits",
-  "title": "伏羲",
+  "title": "万金牙 默认皮肤",
   "rows": 1,
   "cols": 1,
   "reference_image": "",
   "cells": [
     {
-      "label": "伏羲",
+      "label": "万金牙",
       "saves": [
         {
-          "key": "hero_portrait:fuxi:fuxi",
+          "key": "hero_portrait:wan_jinya:wan_jinya",
           "category": "hero_portrait",
-          "asset_id": "fuxi",
-          "name": "伏羲",
-          "owner_id": "fuxi",
-          "owner_name": "伏羲",
-          "target": "assets/portraits/heroes/fuxi.png",
+          "asset_id": "wan_jinya",
+          "name": "万金牙",
+          "owner_id": "wan_jinya",
+          "owner_name": "万金牙",
+          "target": "assets/portraits/heroes/wan_jinya.png",
           "size": "portrait",
           "generation": "portrait",
           "group": "hero_portraits",
           "meta": {
-            "category": "士",
-            "quality": 3
+            "category": "商",
+            "quality": 0
           }
         }
       ],

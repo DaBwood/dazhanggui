@@ -2,28 +2,28 @@
   "task_id": "task_0206",
   "kind": "portrait_single",
   "group": "hero_portraits",
-  "title": "梁歪七",
+  "title": "牙九 默认皮肤",
   "rows": 1,
   "cols": 1,
   "reference_image": "",
   "cells": [
     {
-      "label": "梁歪七",
+      "label": "牙九",
       "saves": [
         {
-          "key": "hero_portrait:liang_waiqi:liang_waiqi",
+          "key": "hero_portrait:ya_jiu:ya_jiu",
           "category": "hero_portrait",
-          "asset_id": "liang_waiqi",
-          "name": "梁歪七",
-          "owner_id": "liang_waiqi",
-          "owner_name": "梁歪七",
-          "target": "assets/portraits/heroes/liang_waiqi.png",
+          "asset_id": "ya_jiu",
+          "name": "牙九",
+          "owner_id": "ya_jiu",
+          "owner_name": "牙九",
+          "target": "assets/portraits/heroes/ya_jiu.png",
           "size": "portrait",
           "generation": "portrait",
           "group": "hero_portraits",
           "meta": {
-            "category": "侠",
-            "quality": 0
+            "category": "农",
+            "quality": 2
           }
         }
       ],

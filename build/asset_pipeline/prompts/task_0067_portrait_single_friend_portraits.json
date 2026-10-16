@@ -1,0 +1,37 @@
+{
+  "task_id": "task_0067",
+  "kind": "portrait_single",
+  "group": "friend_portraits",
+  "title": "市舶使 默认皮肤",
+  "rows": 1,
+  "cols": 1,
+  "reference_image": "",
+  "cells": [
+    {
+      "label": "市舶使",
+      "saves": [
+        {
+          "key": "friend_portrait:shi_bo_shi:shi_bo_shi",
+          "category": "friend_portrait",
+          "asset_id": "shi_bo_shi",
+          "name": "市舶使",
+          "owner_id": "shi_bo_shi",
+          "owner_name": "市舶使",
+          "target": "assets/portraits/friends/shi_bo_shi.png",
+          "size": "portrait",
+          "generation": "portrait",
+          "group": "friend_portraits",
+          "meta": {
+            "category": "侠"
+          }
+        }
+      ],
+      "index": 0,
+      "row": 0,
+      "col": 0
+    }
+  ],
+  "filename_base": "task_0067_portrait_single_friend_portraits",
+  "image_name": "task_0067_portrait_single_friend_portraits.png",
+  "output_path": "build/asset_pipeline/inbox/atlases/task_0067_portrait_single_friend_portraits.png"
+}

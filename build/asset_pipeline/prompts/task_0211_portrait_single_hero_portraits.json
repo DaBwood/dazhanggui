@@ -2,28 +2,28 @@
   "task_id": "task_0211",
   "kind": "portrait_single",
   "group": "hero_portraits",
-  "title": "罗海王",
+  "title": "云游人 默认皮肤",
   "rows": 1,
   "cols": 1,
   "reference_image": "",
   "cells": [
     {
-      "label": "罗海王",
+      "label": "云游人",
       "saves": [
         {
-          "key": "hero_portrait:luo_haiwang:luo_haiwang",
+          "key": "hero_portrait:yun_youren:yun_youren",
           "category": "hero_portrait",
-          "asset_id": "luo_haiwang",
-          "name": "罗海王",
-          "owner_id": "luo_haiwang",
-          "owner_name": "罗海王",
-          "target": "assets/portraits/heroes/luo_haiwang.png",
+          "asset_id": "yun_youren",
+          "name": "云游人",
+          "owner_id": "yun_youren",
+          "owner_name": "云游人",
+          "target": "assets/portraits/heroes/yun_youren.png",
           "size": "portrait",
           "generation": "portrait",
           "group": "hero_portraits",
           "meta": {
             "category": "农",
-            "quality": 2
+            "quality": 1
           }
         }
       ],

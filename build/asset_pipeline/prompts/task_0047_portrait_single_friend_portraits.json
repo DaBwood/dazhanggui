@@ -1,0 +1,37 @@
+{
+  "task_id": "task_0047",
+  "kind": "portrait_single",
+  "group": "friend_portraits",
+  "title": "墨璃 默认皮肤",
+  "rows": 1,
+  "cols": 1,
+  "reference_image": "",
+  "cells": [
+    {
+      "label": "墨璃",
+      "saves": [
+        {
+          "key": "friend_portrait:mo_li:mo_li",
+          "category": "friend_portrait",
+          "asset_id": "mo_li",
+          "name": "墨璃",
+          "owner_id": "mo_li",
+          "owner_name": "墨璃",
+          "target": "assets/portraits/friends/mo_li.png",
+          "size": "portrait",
+          "generation": "portrait",
+          "group": "friend_portraits",
+          "meta": {
+            "category": "商"
+          }
+        }
+      ],
+      "index": 0,
+      "row": 0,
+      "col": 0
+    }
+  ],
+  "filename_base": "task_0047_portrait_single_friend_portraits",
+  "image_name": "task_0047_portrait_single_friend_portraits.png",
+  "output_path": "build/asset_pipeline/inbox/atlases/task_0047_portrait_single_friend_portraits.png"
+}

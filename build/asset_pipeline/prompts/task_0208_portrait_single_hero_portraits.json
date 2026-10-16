@@ -2,27 +2,27 @@
   "task_id": "task_0208",
   "kind": "portrait_single",
   "group": "hero_portraits",
-  "title": "刘四郎",
+  "title": "严小二 默认皮肤",
   "rows": 1,
   "cols": 1,
   "reference_image": "",
   "cells": [
     {
-      "label": "刘四郎",
+      "label": "严小二",
       "saves": [
         {
-          "key": "hero_portrait:liu_silang:liu_silang",
+          "key": "hero_portrait:yan_xiaoer:yan_xiaoer",
           "category": "hero_portrait",
-          "asset_id": "liu_silang",
-          "name": "刘四郎",
-          "owner_id": "liu_silang",
-          "owner_name": "刘四郎",
-          "target": "assets/portraits/heroes/liu_silang.png",
+          "asset_id": "yan_xiaoer",
+          "name": "严小二",
+          "owner_id": "yan_xiaoer",
+          "owner_name": "严小二",
+          "target": "assets/portraits/heroes/yan_xiaoer.png",
           "size": "portrait",
           "generation": "portrait",
           "group": "hero_portraits",
           "meta": {
-            "category": "工",
+            "category": "商",
             "quality": 1
           }
         }

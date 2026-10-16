@@ -1,0 +1,37 @@
+{
+  "task_id": "task_0099",
+  "kind": "portrait_single",
+  "group": "friend_portraits",
+  "title": "邀影 默认皮肤",
+  "rows": 1,
+  "cols": 1,
+  "reference_image": "",
+  "cells": [
+    {
+      "label": "邀影",
+      "saves": [
+        {
+          "key": "friend_portrait:yao_ying:yao_ying",
+          "category": "friend_portrait",
+          "asset_id": "yao_ying",
+          "name": "邀影",
+          "owner_id": "yao_ying",
+          "owner_name": "邀影",
+          "target": "assets/portraits/friends/yao_ying.png",
+          "size": "portrait",
+          "generation": "portrait",
+          "group": "friend_portraits",
+          "meta": {
+            "category": "侠"
+          }
+        }
+      ],
+      "index": 0,
+      "row": 0,
+      "col": 0
+    }
+  ],
+  "filename_base": "task_0099_portrait_single_friend_portraits",
+  "image_name": "task_0099_portrait_single_friend_portraits.png",
+  "output_path": "build/asset_pipeline/inbox/atlases/task_0099_portrait_single_friend_portraits.png"
+}

@@ -2,28 +2,28 @@
   "task_id": "task_0203",
   "kind": "portrait_single",
   "group": "hero_portraits",
-  "title": "康茶师",
+  "title": "小鱼儿 默认皮肤",
   "rows": 1,
   "cols": 1,
   "reference_image": "",
   "cells": [
     {
-      "label": "康茶师",
+      "label": "小鱼儿",
       "saves": [
         {
-          "key": "hero_portrait:kang_chashi:kang_chashi",
+          "key": "hero_portrait:xiao_yuer:xiao_yuer",
           "category": "hero_portrait",
-          "asset_id": "kang_chashi",
-          "name": "康茶师",
-          "owner_id": "kang_chashi",
-          "owner_name": "康茶师",
-          "target": "assets/portraits/heroes/kang_chashi.png",
+          "asset_id": "xiao_yuer",
+          "name": "小鱼儿",
+          "owner_id": "xiao_yuer",
+          "owner_name": "小鱼儿",
+          "target": "assets/portraits/heroes/xiao_yuer.png",
           "size": "portrait",
           "generation": "portrait",
           "group": "hero_portraits",
           "meta": {
             "category": "工",
-            "quality": 0
+            "quality": 1
           }
         }
       ],

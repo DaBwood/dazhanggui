@@ -1,0 +1,38 @@
+{
+  "task_id": "task_0143",
+  "kind": "portrait_single",
+  "group": "hero_portraits",
+  "title": "后羿 默认皮肤",
+  "rows": 1,
+  "cols": 1,
+  "reference_image": "",
+  "cells": [
+    {
+      "label": "后羿",
+      "saves": [
+        {
+          "key": "hero_portrait:houyi:houyi",
+          "category": "hero_portrait",
+          "asset_id": "houyi",
+          "name": "后羿",
+          "owner_id": "houyi",
+          "owner_name": "后羿",
+          "target": "assets/portraits/heroes/houyi.png",
+          "size": "portrait",
+          "generation": "portrait",
+          "group": "hero_portraits",
+          "meta": {
+            "category": "商",
+            "quality": 3
+          }
+        }
+      ],
+      "index": 0,
+      "row": 0,
+      "col": 0
+    }
+  ],
+  "filename_base": "task_0143_portrait_single_hero_portraits",
+  "image_name": "task_0143_portrait_single_hero_portraits.png",
+  "output_path": "build/asset_pipeline/inbox/atlases/task_0143_portrait_single_hero_portraits.png"
+}

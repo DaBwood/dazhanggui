@@ -1,0 +1,38 @@
+{
+  "task_id": "task_0177",
+  "kind": "portrait_single",
+  "group": "hero_portraits",
+  "title": "钱财主 默认皮肤",
+  "rows": 1,
+  "cols": 1,
+  "reference_image": "",
+  "cells": [
+    {
+      "label": "钱财主",
+      "saves": [
+        {
+          "key": "hero_portrait:qian_caizhu:qian_caizhu",
+          "category": "hero_portrait",
+          "asset_id": "qian_caizhu",
+          "name": "钱财主",
+          "owner_id": "qian_caizhu",
+          "owner_name": "钱财主",
+          "target": "assets/portraits/heroes/qian_caizhu.png",
+          "size": "portrait",
+          "generation": "portrait",
+          "group": "hero_portraits",
+          "meta": {
+            "category": "商",
+            "quality": 1
+          }
+        }
+      ],
+      "index": 0,
+      "row": 0,
+      "col": 0
+    }
+  ],
+  "filename_base": "task_0177_portrait_single_hero_portraits",
+  "image_name": "task_0177_portrait_single_hero_portraits.png",
+  "output_path": "build/asset_pipeline/inbox/atlases/task_0177_portrait_single_hero_portraits.png"
+}

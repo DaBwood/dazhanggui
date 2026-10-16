@@ -1,0 +1,38 @@
+{
+  "task_id": "task_0134",
+  "kind": "portrait_single",
+  "group": "hero_portraits",
+  "title": "冯蜜儿 默认皮肤",
+  "rows": 1,
+  "cols": 1,
+  "reference_image": "",
+  "cells": [
+    {
+      "label": "冯蜜儿",
+      "saves": [
+        {
+          "key": "hero_portrait:feng_mier:feng_mier",
+          "category": "hero_portrait",
+          "asset_id": "feng_mier",
+          "name": "冯蜜儿",
+          "owner_id": "feng_mier",
+          "owner_name": "冯蜜儿",
+          "target": "assets/portraits/heroes/feng_mier.png",
+          "size": "portrait",
+          "generation": "portrait",
+          "group": "hero_portraits",
+          "meta": {
+            "category": "农",
+            "quality": 2
+          }
+        }
+      ],
+      "index": 0,
+      "row": 0,
+      "col": 0
+    }
+  ],
+  "filename_base": "task_0134_portrait_single_hero_portraits",
+  "image_name": "task_0134_portrait_single_hero_portraits.png",
+  "output_path": "build/asset_pipeline/inbox/atlases/task_0134_portrait_single_hero_portraits.png"
+}

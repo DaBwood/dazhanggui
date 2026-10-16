@@ -1,0 +1,37 @@
+{
+  "task_id": "task_0109",
+  "kind": "portrait_single",
+  "group": "friend_portraits",
+  "title": "云织 默认皮肤",
+  "rows": 1,
+  "cols": 1,
+  "reference_image": "",
+  "cells": [
+    {
+      "label": "云织",
+      "saves": [
+        {
+          "key": "friend_portrait:yun_zhi:yun_zhi",
+          "category": "friend_portrait",
+          "asset_id": "yun_zhi",
+          "name": "云织",
+          "owner_id": "yun_zhi",
+          "owner_name": "云织",
+          "target": "assets/portraits/friends/yun_zhi.png",
+          "size": "portrait",
+          "generation": "portrait",
+          "group": "friend_portraits",
+          "meta": {
+            "category": "农"
+          }
+        }
+      ],
+      "index": 0,
+      "row": 0,
+      "col": 0
+    }
+  ],
+  "filename_base": "task_0109_portrait_single_friend_portraits",
+  "image_name": "task_0109_portrait_single_friend_portraits.png",
+  "output_path": "build/asset_pipeline/inbox/atlases/task_0109_portrait_single_friend_portraits.png"
+}

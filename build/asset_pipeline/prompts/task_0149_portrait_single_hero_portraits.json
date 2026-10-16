@@ -1,0 +1,38 @@
+{
+  "task_id": "task_0149",
+  "kind": "portrait_single",
+  "group": "hero_portraits",
+  "title": "贾机关 默认皮肤",
+  "rows": 1,
+  "cols": 1,
+  "reference_image": "",
+  "cells": [
+    {
+      "label": "贾机关",
+      "saves": [
+        {
+          "key": "hero_portrait:jia_jiguan:jia_jiguan",
+          "category": "hero_portrait",
+          "asset_id": "jia_jiguan",
+          "name": "贾机关",
+          "owner_id": "jia_jiguan",
+          "owner_name": "贾机关",
+          "target": "assets/portraits/heroes/jia_jiguan.png",
+          "size": "portrait",
+          "generation": "portrait",
+          "group": "hero_portraits",
+          "meta": {
+            "category": "工",
+            "quality": 1
+          }
+        }
+      ],
+      "index": 0,
+      "row": 0,
+      "col": 0
+    }
+  ],
+  "filename_base": "task_0149_portrait_single_hero_portraits",
+  "image_name": "task_0149_portrait_single_hero_portraits.png",
+  "output_path": "build/asset_pipeline/inbox/atlases/task_0149_portrait_single_hero_portraits.png"
+}

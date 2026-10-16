@@ -6,9 +6,11 @@
 - `task_XXXX_*.txt`：直接复制给豆包/绘图模型的提示词。
 - `task_XXXX_*.json`：单元格到素材路径的映射，`slice` 命令会读取它。
 
-工作流：
+工作流（默认皮肤优先）：
 1. 先补全 `build/asset_pipeline/character_bible.csv`。
-2. 运行 `python tools/asset_pipeline.py prompts`。
-3. 按提示词生成图片，保存到 `build/asset_pipeline/inbox/atlases/`。
-4. 运行 `python tools/asset_pipeline.py slice` 自动切图、抠底、命名并写入 assets。
-5. 运行 `python tools/asset_pipeline.py qc` 批量验收。
+2. 运行 `python tools/asset_pipeline.py prompts --phase base`，生成全部角色默认皮肤提示词。
+3. 生成默认皮肤图，保存到 `inbox/atlases/`，运行 `python tools/asset_pipeline.py slice`。
+4. 再运行 `python tools/asset_pipeline.py prompts --phase costume`，此时服装提示词会带默认皮肤参考图。
+5. 生成服装图集，保存到 `inbox/atlases/`，运行 `slice` 和 `derive`。
+6. 如需图标，运行 `prompts --phase icons`，生成后同样 `slice`。
+7. 最后运行 `verify` 和 `qc`。

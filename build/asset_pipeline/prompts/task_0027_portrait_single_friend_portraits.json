@@ -1,0 +1,37 @@
+{
+  "task_id": "task_0027",
+  "kind": "portrait_single",
+  "group": "friend_portraits",
+  "title": "剑舞者 默认皮肤",
+  "rows": 1,
+  "cols": 1,
+  "reference_image": "",
+  "cells": [
+    {
+      "label": "剑舞者",
+      "saves": [
+        {
+          "key": "friend_portrait:jian_wuzhe:jian_wuzhe",
+          "category": "friend_portrait",
+          "asset_id": "jian_wuzhe",
+          "name": "剑舞者",
+          "owner_id": "jian_wuzhe",
+          "owner_name": "剑舞者",
+          "target": "assets/portraits/friends/jian_wuzhe.png",
+          "size": "portrait",
+          "generation": "portrait",
+          "group": "friend_portraits",
+          "meta": {
+            "category": "侠"
+          }
+        }
+      ],
+      "index": 0,
+      "row": 0,
+      "col": 0
+    }
+  ],
+  "filename_base": "task_0027_portrait_single_friend_portraits",
+  "image_name": "task_0027_portrait_single_friend_portraits.png",
+  "output_path": "build/asset_pipeline/inbox/atlases/task_0027_portrait_single_friend_portraits.png"
+}

@@ -1,0 +1,38 @@
+{
+  "task_id": "task_0175",
+  "kind": "portrait_single",
+  "group": "hero_portraits",
+  "title": "欧冶子 默认皮肤",
+  "rows": 1,
+  "cols": 1,
+  "reference_image": "",
+  "cells": [
+    {
+      "label": "欧冶子",
+      "saves": [
+        {
+          "key": "hero_portrait:ou_yezi:ou_yezi",
+          "category": "hero_portrait",
+          "asset_id": "ou_yezi",
+          "name": "欧冶子",
+          "owner_id": "ou_yezi",
+          "owner_name": "欧冶子",
+          "target": "assets/portraits/heroes/ou_yezi.png",
+          "size": "portrait",
+          "generation": "portrait",
+          "group": "hero_portraits",
+          "meta": {
+            "category": "侠",
+            "quality": 2
+          }
+        }
+      ],
+      "index": 0,
+      "row": 0,
+      "col": 0
+    }
+  ],
+  "filename_base": "task_0175_portrait_single_hero_portraits",
+  "image_name": "task_0175_portrait_single_hero_portraits.png",
+  "output_path": "build/asset_pipeline/inbox/atlases/task_0175_portrait_single_hero_portraits.png"
+}

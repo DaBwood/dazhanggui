@@ -1,0 +1,37 @@
+{
+  "task_id": "task_0079",
+  "kind": "portrait_single",
+  "group": "friend_portraits",
+  "title": "巫女 默认皮肤",
+  "rows": 1,
+  "cols": 1,
+  "reference_image": "",
+  "cells": [
+    {
+      "label": "巫女",
+      "saves": [
+        {
+          "key": "friend_portrait:wu_nv_wu:wu_nv_wu",
+          "category": "friend_portrait",
+          "asset_id": "wu_nv_wu",
+          "name": "巫女",
+          "owner_id": "wu_nv_wu",
+          "owner_name": "巫女",
+          "target": "assets/portraits/friends/wu_nv_wu.png",
+          "size": "portrait",
+          "generation": "portrait",
+          "group": "friend_portraits",
+          "meta": {
+            "category": "侠"
+          }
+        }
+      ],
+      "index": 0,
+      "row": 0,
+      "col": 0
+    }
+  ],
+  "filename_base": "task_0079_portrait_single_friend_portraits",
+  "image_name": "task_0079_portrait_single_friend_portraits.png",
+  "output_path": "build/asset_pipeline/inbox/atlases/task_0079_portrait_single_friend_portraits.png"
+}

@@ -2,28 +2,28 @@
   "task_id": "task_0207",
   "kind": "portrait_single",
   "group": "hero_portraits",
-  "title": "柳捕快",
+  "title": "严先生 默认皮肤",
   "rows": 1,
   "cols": 1,
   "reference_image": "",
   "cells": [
     {
-      "label": "柳捕快",
+      "label": "严先生",
       "saves": [
         {
-          "key": "hero_portrait:liu_bukuai:liu_bukuai",
+          "key": "hero_portrait:yan_xiansheng:yan_xiansheng",
           "category": "hero_portrait",
-          "asset_id": "liu_bukuai",
-          "name": "柳捕快",
-          "owner_id": "liu_bukuai",
-          "owner_name": "柳捕快",
-          "target": "assets/portraits/heroes/liu_bukuai.png",
+          "asset_id": "yan_xiansheng",
+          "name": "严先生",
+          "owner_id": "yan_xiansheng",
+          "owner_name": "严先生",
+          "target": "assets/portraits/heroes/yan_xiansheng.png",
           "size": "portrait",
           "generation": "portrait",
           "group": "hero_portraits",
           "meta": {
             "category": "士",
-            "quality": 0
+            "quality": 2
           }
         }
       ],

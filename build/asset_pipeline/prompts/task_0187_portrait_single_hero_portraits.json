@@ -2,27 +2,27 @@
   "task_id": "task_0187",
   "kind": "portrait_single",
   "group": "hero_portraits",
-  "title": "敖武",
+  "title": "宋太祖 默认皮肤",
   "rows": 1,
   "cols": 1,
   "reference_image": "",
   "cells": [
     {
-      "label": "敖武",
+      "label": "宋太祖",
       "saves": [
         {
-          "key": "hero_portrait:ao_wu:ao_wu",
+          "key": "hero_portrait:song_taizu:song_taizu",
           "category": "hero_portrait",
-          "asset_id": "ao_wu",
-          "name": "敖武",
-          "owner_id": "ao_wu",
-          "owner_name": "敖武",
-          "target": "assets/portraits/heroes/ao_wu.png",
+          "asset_id": "song_taizu",
+          "name": "宋太祖",
+          "owner_id": "song_taizu",
+          "owner_name": "宋太祖",
+          "target": "assets/portraits/heroes/song_taizu.png",
           "size": "portrait",
           "generation": "portrait",
           "group": "hero_portraits",
           "meta": {
-            "category": "农",
+            "category": "侠",
             "quality": 2
           }
         }

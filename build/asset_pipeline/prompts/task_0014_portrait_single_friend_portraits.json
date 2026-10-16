@@ -1,0 +1,37 @@
+{
+  "task_id": "task_0014",
+  "kind": "portrait_single",
+  "group": "friend_portraits",
+  "title": "红娘子 默认皮肤",
+  "rows": 1,
+  "cols": 1,
+  "reference_image": "",
+  "cells": [
+    {
+      "label": "红娘子",
+      "saves": [
+        {
+          "key": "friend_portrait:hong_niangzi:hong_niangzi",
+          "category": "friend_portrait",
+          "asset_id": "hong_niangzi",
+          "name": "红娘子",
+          "owner_id": "hong_niangzi",
+          "owner_name": "红娘子",
+          "target": "assets/portraits/friends/hong_niangzi.png",
+          "size": "portrait",
+          "generation": "portrait",
+          "group": "friend_portraits",
+          "meta": {
+            "category": "侠"
+          }
+        }
+      ],
+      "index": 0,
+      "row": 0,
+      "col": 0
+    }
+  ],
+  "filename_base": "task_0014_portrait_single_friend_portraits",
+  "image_name": "task_0014_portrait_single_friend_portraits.png",
+  "output_path": "build/asset_pipeline/inbox/atlases/task_0014_portrait_single_friend_portraits.png"
+}

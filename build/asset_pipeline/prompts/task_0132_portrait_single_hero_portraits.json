@@ -1,0 +1,38 @@
+{
+  "task_id": "task_0132",
+  "kind": "portrait_single",
+  "group": "hero_portraits",
+  "title": "敦煌匠神 默认皮肤",
+  "rows": 1,
+  "cols": 1,
+  "reference_image": "",
+  "cells": [
+    {
+      "label": "敦煌匠神",
+      "saves": [
+        {
+          "key": "hero_portrait:dunhuang_jiangshen:dunhuang_jiangshen",
+          "category": "hero_portrait",
+          "asset_id": "dunhuang_jiangshen",
+          "name": "敦煌匠神",
+          "owner_id": "dunhuang_jiangshen",
+          "owner_name": "敦煌匠神",
+          "target": "assets/portraits/heroes/dunhuang_jiangshen.png",
+          "size": "portrait",
+          "generation": "portrait",
+          "group": "hero_portraits",
+          "meta": {
+            "category": "工",
+            "quality": 2
+          }
+        }
+      ],
+      "index": 0,
+      "row": 0,
+      "col": 0
+    }
+  ],
+  "filename_base": "task_0132_portrait_single_hero_portraits",
+  "image_name": "task_0132_portrait_single_hero_portraits.png",
+  "output_path": "build/asset_pipeline/inbox/atlases/task_0132_portrait_single_hero_portraits.png"
+}

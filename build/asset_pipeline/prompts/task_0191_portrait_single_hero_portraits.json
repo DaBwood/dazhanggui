@@ -2,28 +2,28 @@
   "task_id": "task_0191",
   "kind": "portrait_single",
   "group": "hero_portraits",
-  "title": "蚩尤",
+  "title": "唐葫芦 默认皮肤",
   "rows": 1,
   "cols": 1,
   "reference_image": "",
   "cells": [
     {
-      "label": "蚩尤",
+      "label": "唐葫芦",
       "saves": [
         {
-          "key": "hero_portrait:chiyou:chiyou",
+          "key": "hero_portrait:tang_hulu:tang_hulu",
           "category": "hero_portrait",
-          "asset_id": "chiyou",
-          "name": "蚩尤",
-          "owner_id": "chiyou",
-          "owner_name": "蚩尤",
-          "target": "assets/portraits/heroes/chiyou.png",
+          "asset_id": "tang_hulu",
+          "name": "唐葫芦",
+          "owner_id": "tang_hulu",
+          "owner_name": "唐葫芦",
+          "target": "assets/portraits/heroes/tang_hulu.png",
           "size": "portrait",
           "generation": "portrait",
           "group": "hero_portraits",
           "meta": {
-            "category": "侠",
-            "quality": 3
+            "category": "商",
+            "quality": 0
           }
         }
       ],

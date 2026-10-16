@@ -2,28 +2,28 @@
   "task_id": "task_0192",
   "kind": "portrait_single",
   "group": "hero_portraits",
-  "title": "东皇太一",
+  "title": "田诗人 默认皮肤",
   "rows": 1,
   "cols": 1,
   "reference_image": "",
   "cells": [
     {
-      "label": "东皇太一",
+      "label": "田诗人",
       "saves": [
         {
-          "key": "hero_portrait:donghuang_taiyi:donghuang_taiyi",
+          "key": "hero_portrait:tian_shiren:tian_shiren",
           "category": "hero_portrait",
-          "asset_id": "donghuang_taiyi",
-          "name": "东皇太一",
-          "owner_id": "donghuang_taiyi",
-          "owner_name": "东皇太一",
-          "target": "assets/portraits/heroes/donghuang_taiyi.png",
+          "asset_id": "tian_shiren",
+          "name": "田诗人",
+          "owner_id": "tian_shiren",
+          "owner_name": "田诗人",
+          "target": "assets/portraits/heroes/tian_shiren.png",
           "size": "portrait",
           "generation": "portrait",
           "group": "hero_portraits",
           "meta": {
-            "category": "农",
-            "quality": 3
+            "category": "士",
+            "quality": 1
           }
         }
       ],

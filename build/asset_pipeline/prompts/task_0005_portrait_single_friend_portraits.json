@@ -1,0 +1,37 @@
+{
+  "task_id": "task_0005",
+  "kind": "portrait_single",
+  "group": "friend_portraits",
+  "title": "采药女 默认皮肤",
+  "rows": 1,
+  "cols": 1,
+  "reference_image": "",
+  "cells": [
+    {
+      "label": "采药女",
+      "saves": [
+        {
+          "key": "friend_portrait:cai_yao_nv:cai_yao_nv",
+          "category": "friend_portrait",
+          "asset_id": "cai_yao_nv",
+          "name": "采药女",
+          "owner_id": "cai_yao_nv",
+          "owner_name": "采药女",
+          "target": "assets/portraits/friends/cai_yao_nv.png",
+          "size": "portrait",
+          "generation": "portrait",
+          "group": "friend_portraits",
+          "meta": {
+            "category": "农"
+          }
+        }
+      ],
+      "index": 0,
+      "row": 0,
+      "col": 0
+    }
+  ],
+  "filename_base": "task_0005_portrait_single_friend_portraits",
+  "image_name": "task_0005_portrait_single_friend_portraits.png",
+  "output_path": "build/asset_pipeline/inbox/atlases/task_0005_portrait_single_friend_portraits.png"
+}

@@ -2,28 +2,28 @@
   "task_id": "task_0209",
   "kind": "portrait_single",
   "group": "hero_portraits",
-  "title": "刘戏子",
+  "title": "杨戬 默认皮肤",
   "rows": 1,
   "cols": 1,
   "reference_image": "",
   "cells": [
     {
-      "label": "刘戏子",
+      "label": "杨戬",
       "saves": [
         {
-          "key": "hero_portrait:liu_xizi:liu_xizi",
+          "key": "hero_portrait:yang_jian:yang_jian",
           "category": "hero_portrait",
-          "asset_id": "liu_xizi",
-          "name": "刘戏子",
-          "owner_id": "liu_xizi",
-          "owner_name": "刘戏子",
-          "target": "assets/portraits/heroes/liu_xizi.png",
+          "asset_id": "yang_jian",
+          "name": "杨戬",
+          "owner_id": "yang_jian",
+          "owner_name": "杨戬",
+          "target": "assets/portraits/heroes/yang_jian.png",
           "size": "portrait",
           "generation": "portrait",
           "group": "hero_portraits",
           "meta": {
-            "category": "工",
-            "quality": 0
+            "category": "农",
+            "quality": 1
           }
         }
       ],

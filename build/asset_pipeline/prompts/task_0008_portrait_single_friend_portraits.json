@@ -1,0 +1,37 @@
+{
+  "task_id": "task_0008",
+  "kind": "portrait_single",
+  "group": "friend_portraits",
+  "title": "蹴鞠女 默认皮肤",
+  "rows": 1,
+  "cols": 1,
+  "reference_image": "",
+  "cells": [
+    {
+      "label": "蹴鞠女",
+      "saves": [
+        {
+          "key": "friend_portrait:cu_ju_nv:cu_ju_nv",
+          "category": "friend_portrait",
+          "asset_id": "cu_ju_nv",
+          "name": "蹴鞠女",
+          "owner_id": "cu_ju_nv",
+          "owner_name": "蹴鞠女",
+          "target": "assets/portraits/friends/cu_ju_nv.png",
+          "size": "portrait",
+          "generation": "portrait",
+          "group": "friend_portraits",
+          "meta": {
+            "category": "工"
+          }
+        }
+      ],
+      "index": 0,
+      "row": 0,
+      "col": 0
+    }
+  ],
+  "filename_base": "task_0008_portrait_single_friend_portraits",
+  "image_name": "task_0008_portrait_single_friend_portraits.png",
+  "output_path": "build/asset_pipeline/inbox/atlases/task_0008_portrait_single_friend_portraits.png"
+}

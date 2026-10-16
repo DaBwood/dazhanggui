@@ -1,0 +1,38 @@
+{
+  "task_id": "task_0148",
+  "kind": "portrait_single",
+  "group": "hero_portraits",
+  "title": "贾猴子 默认皮肤",
+  "rows": 1,
+  "cols": 1,
+  "reference_image": "",
+  "cells": [
+    {
+      "label": "贾猴子",
+      "saves": [
+        {
+          "key": "hero_portrait:jia_houzi:jia_houzi",
+          "category": "hero_portrait",
+          "asset_id": "jia_houzi",
+          "name": "贾猴子",
+          "owner_id": "jia_houzi",
+          "owner_name": "贾猴子",
+          "target": "assets/portraits/heroes/jia_houzi.png",
+          "size": "portrait",
+          "generation": "portrait",
+          "group": "hero_portraits",
+          "meta": {
+            "category": "工",
+            "quality": 0
+          }
+        }
+      ],
+      "index": 0,
+      "row": 0,
+      "col": 0
+    }
+  ],
+  "filename_base": "task_0148_portrait_single_hero_portraits",
+  "image_name": "task_0148_portrait_single_hero_portraits.png",
+  "output_path": "build/asset_pipeline/inbox/atlases/task_0148_portrait_single_hero_portraits.png"
+}

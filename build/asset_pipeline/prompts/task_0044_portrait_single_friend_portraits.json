@@ -1,0 +1,37 @@
+{
+  "task_id": "task_0044",
+  "kind": "portrait_single",
+  "group": "friend_portraits",
+  "title": "蒙琪儿 默认皮肤",
+  "rows": 1,
+  "cols": 1,
+  "reference_image": "",
+  "cells": [
+    {
+      "label": "蒙琪儿",
+      "saves": [
+        {
+          "key": "friend_portrait:meng_qier:meng_qier",
+          "category": "friend_portrait",
+          "asset_id": "meng_qier",
+          "name": "蒙琪儿",
+          "owner_id": "meng_qier",
+          "owner_name": "蒙琪儿",
+          "target": "assets/portraits/friends/meng_qier.png",
+          "size": "portrait",
+          "generation": "portrait",
+          "group": "friend_portraits",
+          "meta": {
+            "category": "侠"
+          }
+        }
+      ],
+      "index": 0,
+      "row": 0,
+      "col": 0
+    }
+  ],
+  "filename_base": "task_0044_portrait_single_friend_portraits",
+  "image_name": "task_0044_portrait_single_friend_portraits.png",
+  "output_path": "build/asset_pipeline/inbox/atlases/task_0044_portrait_single_friend_portraits.png"
+}

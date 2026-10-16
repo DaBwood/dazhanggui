@@ -1,0 +1,38 @@
+{
+  "task_id": "task_0146",
+  "kind": "portrait_single",
+  "group": "hero_portraits",
+  "title": "花木兰 默认皮肤",
+  "rows": 1,
+  "cols": 1,
+  "reference_image": "",
+  "cells": [
+    {
+      "label": "花木兰",
+      "saves": [
+        {
+          "key": "hero_portrait:hua_mulan:hua_mulan",
+          "category": "hero_portrait",
+          "asset_id": "hua_mulan",
+          "name": "花木兰",
+          "owner_id": "hua_mulan",
+          "owner_name": "花木兰",
+          "target": "assets/portraits/heroes/hua_mulan.png",
+          "size": "portrait",
+          "generation": "portrait",
+          "group": "hero_portraits",
+          "meta": {
+            "category": "商",
+            "quality": 1
+          }
+        }
+      ],
+      "index": 0,
+      "row": 0,
+      "col": 0
+    }
+  ],
+  "filename_base": "task_0146_portrait_single_hero_portraits",
+  "image_name": "task_0146_portrait_single_hero_portraits.png",
+  "output_path": "build/asset_pipeline/inbox/atlases/task_0146_portrait_single_hero_portraits.png"
+}

@@ -1,0 +1,37 @@
+{
+  "task_id": "task_0078",
+  "kind": "portrait_single",
+  "group": "friend_portraits",
+  "title": "舞女 默认皮肤",
+  "rows": 1,
+  "cols": 1,
+  "reference_image": "",
+  "cells": [
+    {
+      "label": "舞女",
+      "saves": [
+        {
+          "key": "friend_portrait:wu_nv:wu_nv",
+          "category": "friend_portrait",
+          "asset_id": "wu_nv",
+          "name": "舞女",
+          "owner_id": "wu_nv",
+          "owner_name": "舞女",
+          "target": "assets/portraits/friends/wu_nv.png",
+          "size": "portrait",
+          "generation": "portrait",
+          "group": "friend_portraits",
+          "meta": {
+            "category": "士"
+          }
+        }
+      ],
+      "index": 0,
+      "row": 0,
+      "col": 0
+    }
+  ],
+  "filename_base": "task_0078_portrait_single_friend_portraits",
+  "image_name": "task_0078_portrait_single_friend_portraits.png",
+  "output_path": "build/asset_pipeline/inbox/atlases/task_0078_portrait_single_friend_portraits.png"
+}

@@ -2,28 +2,28 @@
   "task_id": "task_0199",
   "kind": "portrait_single",
   "group": "hero_portraits",
-  "title": "胡乞丐",
+  "title": "项羽 默认皮肤",
   "rows": 1,
   "cols": 1,
   "reference_image": "",
   "cells": [
     {
-      "label": "胡乞丐",
+      "label": "项羽",
       "saves": [
         {
-          "key": "hero_portrait:hu_qigai:hu_qigai",
+          "key": "hero_portrait:xiang_yu:xiang_yu",
           "category": "hero_portrait",
-          "asset_id": "hu_qigai",
-          "name": "胡乞丐",
-          "owner_id": "hu_qigai",
-          "owner_name": "胡乞丐",
-          "target": "assets/portraits/heroes/hu_qigai.png",
+          "asset_id": "xiang_yu",
+          "name": "项羽",
+          "owner_id": "xiang_yu",
+          "owner_name": "项羽",
+          "target": "assets/portraits/heroes/xiang_yu.png",
           "size": "portrait",
           "generation": "portrait",
           "group": "hero_portraits",
           "meta": {
-            "category": "农",
-            "quality": 0
+            "category": "商",
+            "quality": 2
           }
         }
       ],

@@ -1,0 +1,37 @@
+{
+  "task_id": "task_0063",
+  "kind": "portrait_single",
+  "group": "friend_portraits",
+  "title": "三圣母 默认皮肤",
+  "rows": 1,
+  "cols": 1,
+  "reference_image": "",
+  "cells": [
+    {
+      "label": "三圣母",
+      "saves": [
+        {
+          "key": "friend_portrait:san_shengmu:san_shengmu",
+          "category": "friend_portrait",
+          "asset_id": "san_shengmu",
+          "name": "三圣母",
+          "owner_id": "san_shengmu",
+          "owner_name": "三圣母",
+          "target": "assets/portraits/friends/san_shengmu.png",
+          "size": "portrait",
+          "generation": "portrait",
+          "group": "friend_portraits",
+          "meta": {
+            "category": "农"
+          }
+        }
+      ],
+      "index": 0,
+      "row": 0,
+      "col": 0
+    }
+  ],
+  "filename_base": "task_0063_portrait_single_friend_portraits",
+  "image_name": "task_0063_portrait_single_friend_portraits.png",
+  "output_path": "build/asset_pipeline/inbox/atlases/task_0063_portrait_single_friend_portraits.png"
+}

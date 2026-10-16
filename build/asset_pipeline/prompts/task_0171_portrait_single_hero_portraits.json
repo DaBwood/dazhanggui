@@ -1,0 +1,38 @@
+{
+  "task_id": "task_0171",
+  "kind": "portrait_single",
+  "group": "hero_portraits",
+  "title": "马湘兰 默认皮肤",
+  "rows": 1,
+  "cols": 1,
+  "reference_image": "",
+  "cells": [
+    {
+      "label": "马湘兰",
+      "saves": [
+        {
+          "key": "hero_portrait:ma_xianglan:ma_xianglan",
+          "category": "hero_portrait",
+          "asset_id": "ma_xianglan",
+          "name": "马湘兰",
+          "owner_id": "ma_xianglan",
+          "owner_name": "马湘兰",
+          "target": "assets/portraits/heroes/ma_xianglan.png",
+          "size": "portrait",
+          "generation": "portrait",
+          "group": "hero_portraits",
+          "meta": {
+            "category": "士",
+            "quality": 2
+          }
+        }
+      ],
+      "index": 0,
+      "row": 0,
+      "col": 0
+    }
+  ],
+  "filename_base": "task_0171_portrait_single_hero_portraits",
+  "image_name": "task_0171_portrait_single_hero_portraits.png",
+  "output_path": "build/asset_pipeline/inbox/atlases/task_0171_portrait_single_hero_portraits.png"
+}

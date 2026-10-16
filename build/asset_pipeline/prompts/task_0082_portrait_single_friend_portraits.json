@@ -1,0 +1,37 @@
+{
+  "task_id": "task_0082",
+  "kind": "portrait_single",
+  "group": "friend_portraits",
+  "title": "小蝴蝶 默认皮肤",
+  "rows": 1,
+  "cols": 1,
+  "reference_image": "",
+  "cells": [
+    {
+      "label": "小蝴蝶",
+      "saves": [
+        {
+          "key": "friend_portrait:xiao_hudie:xiao_hudie",
+          "category": "friend_portrait",
+          "asset_id": "xiao_hudie",
+          "name": "小蝴蝶",
+          "owner_id": "xiao_hudie",
+          "owner_name": "小蝴蝶",
+          "target": "assets/portraits/friends/xiao_hudie.png",
+          "size": "portrait",
+          "generation": "portrait",
+          "group": "friend_portraits",
+          "meta": {
+            "category": "商"
+          }
+        }
+      ],
+      "index": 0,
+      "row": 0,
+      "col": 0
+    }
+  ],
+  "filename_base": "task_0082_portrait_single_friend_portraits",
+  "image_name": "task_0082_portrait_single_friend_portraits.png",
+  "output_path": "build/asset_pipeline/inbox/atlases/task_0082_portrait_single_friend_portraits.png"
+}

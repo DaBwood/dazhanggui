@@ -1,0 +1,37 @@
+{
+  "task_id": "task_0068",
+  "kind": "portrait_single",
+  "group": "friend_portraits",
+  "title": "手工少女 默认皮肤",
+  "rows": 1,
+  "cols": 1,
+  "reference_image": "",
+  "cells": [
+    {
+      "label": "手工少女",
+      "saves": [
+        {
+          "key": "friend_portrait:shou_gong_shaonv:shou_gong_shaonv",
+          "category": "friend_portrait",
+          "asset_id": "shou_gong_shaonv",
+          "name": "手工少女",
+          "owner_id": "shou_gong_shaonv",
+          "owner_name": "手工少女",
+          "target": "assets/portraits/friends/shou_gong_shaonv.png",
+          "size": "portrait",
+          "generation": "portrait",
+          "group": "friend_portraits",
+          "meta": {
+            "category": "工"
+          }
+        }
+      ],
+      "index": 0,
+      "row": 0,
+      "col": 0
+    }
+  ],
+  "filename_base": "task_0068_portrait_single_friend_portraits",
+  "image_name": "task_0068_portrait_single_friend_portraits.png",
+  "output_path": "build/asset_pipeline/inbox/atlases/task_0068_portrait_single_friend_portraits.png"
+}

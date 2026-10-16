@@ -2,28 +2,28 @@
   "task_id": "task_0198",
   "kind": "portrait_single",
   "group": "hero_portraits",
-  "title": "后羿",
+  "title": "向恩 默认皮肤",
   "rows": 1,
   "cols": 1,
   "reference_image": "",
   "cells": [
     {
-      "label": "后羿",
+      "label": "向恩",
       "saves": [
         {
-          "key": "hero_portrait:houyi:houyi",
+          "key": "hero_portrait:xiang_en:xiang_en",
           "category": "hero_portrait",
-          "asset_id": "houyi",
-          "name": "后羿",
-          "owner_id": "houyi",
-          "owner_name": "后羿",
-          "target": "assets/portraits/heroes/houyi.png",
+          "asset_id": "xiang_en",
+          "name": "向恩",
+          "owner_id": "xiang_en",
+          "owner_name": "向恩",
+          "target": "assets/portraits/heroes/xiang_en.png",
           "size": "portrait",
           "generation": "portrait",
           "group": "hero_portraits",
           "meta": {
-            "category": "商",
-            "quality": 3
+            "category": "工",
+            "quality": 2
           }
         }
       ],

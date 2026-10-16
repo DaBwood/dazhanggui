@@ -1,0 +1,38 @@
+{
+  "task_id": "task_0129",
+  "kind": "portrait_single",
+  "group": "hero_portraits",
+  "title": "董小宛 默认皮肤",
+  "rows": 1,
+  "cols": 1,
+  "reference_image": "",
+  "cells": [
+    {
+      "label": "董小宛",
+      "saves": [
+        {
+          "key": "hero_portrait:dong_xiaowan:dong_xiaowan",
+          "category": "hero_portrait",
+          "asset_id": "dong_xiaowan",
+          "name": "董小宛",
+          "owner_id": "dong_xiaowan",
+          "owner_name": "董小宛",
+          "target": "assets/portraits/heroes/dong_xiaowan.png",
+          "size": "portrait",
+          "generation": "portrait",
+          "group": "hero_portraits",
+          "meta": {
+            "category": "工",
+            "quality": 2
+          }
+        }
+      ],
+      "index": 0,
+      "row": 0,
+      "col": 0
+    }
+  ],
+  "filename_base": "task_0129_portrait_single_hero_portraits",
+  "image_name": "task_0129_portrait_single_hero_portraits.png",
+  "output_path": "build/asset_pipeline/inbox/atlases/task_0129_portrait_single_hero_portraits.png"
+}

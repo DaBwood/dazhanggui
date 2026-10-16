@@ -2,27 +2,27 @@
   "task_id": "task_0216",
   "kind": "portrait_single",
   "group": "hero_portraits",
-  "title": "秦琼尉迟恭",
+  "title": "镇屠夫 默认皮肤",
   "rows": 1,
   "cols": 1,
   "reference_image": "",
   "cells": [
     {
-      "label": "秦琼尉迟恭",
+      "label": "镇屠夫",
       "saves": [
         {
-          "key": "hero_portrait:qin_qiong_yuchi_gong:qin_qiong_yuchi_gong",
+          "key": "hero_portrait:zhen_tufu:zhen_tufu",
           "category": "hero_portrait",
-          "asset_id": "qin_qiong_yuchi_gong",
-          "name": "秦琼尉迟恭",
-          "owner_id": "qin_qiong_yuchi_gong",
-          "owner_name": "秦琼尉迟恭",
-          "target": "assets/portraits/heroes/qin_qiong_yuchi_gong.png",
+          "asset_id": "zhen_tufu",
+          "name": "镇屠夫",
+          "owner_id": "zhen_tufu",
+          "owner_name": "镇屠夫",
+          "target": "assets/portraits/heroes/zhen_tufu.png",
           "size": "portrait",
           "generation": "portrait",
           "group": "hero_portraits",
           "meta": {
-            "category": "侠",
+            "category": "商",
             "quality": 2
           }
         }

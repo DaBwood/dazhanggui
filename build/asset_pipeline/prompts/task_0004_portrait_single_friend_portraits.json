@@ -1,0 +1,37 @@
+{
+  "task_id": "task_0004",
+  "kind": "portrait_single",
+  "group": "friend_portraits",
+  "title": "采诗官 默认皮肤",
+  "rows": 1,
+  "cols": 1,
+  "reference_image": "",
+  "cells": [
+    {
+      "label": "采诗官",
+      "saves": [
+        {
+          "key": "friend_portrait:cai_shi_guan:cai_shi_guan",
+          "category": "friend_portrait",
+          "asset_id": "cai_shi_guan",
+          "name": "采诗官",
+          "owner_id": "cai_shi_guan",
+          "owner_name": "采诗官",
+          "target": "assets/portraits/friends/cai_shi_guan.png",
+          "size": "portrait",
+          "generation": "portrait",
+          "group": "friend_portraits",
+          "meta": {
+            "category": "士"
+          }
+        }
+      ],
+      "index": 0,
+      "row": 0,
+      "col": 0
+    }
+  ],
+  "filename_base": "task_0004_portrait_single_friend_portraits",
+  "image_name": "task_0004_portrait_single_friend_portraits.png",
+  "output_path": "build/asset_pipeline/inbox/atlases/task_0004_portrait_single_friend_portraits.png"
+}

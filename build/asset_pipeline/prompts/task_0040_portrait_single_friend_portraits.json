@@ -1,0 +1,37 @@
+{
+  "task_id": "task_0040",
+  "kind": "portrait_single",
+  "group": "friend_portraits",
+  "title": "萝 默认皮肤",
+  "rows": 1,
+  "cols": 1,
+  "reference_image": "",
+  "cells": [
+    {
+      "label": "萝",
+      "saves": [
+        {
+          "key": "friend_portrait:luo:luo",
+          "category": "friend_portrait",
+          "asset_id": "luo",
+          "name": "萝",
+          "owner_id": "luo",
+          "owner_name": "萝",
+          "target": "assets/portraits/friends/luo.png",
+          "size": "portrait",
+          "generation": "portrait",
+          "group": "friend_portraits",
+          "meta": {
+            "category": "工"
+          }
+        }
+      ],
+      "index": 0,
+      "row": 0,
+      "col": 0
+    }
+  ],
+  "filename_base": "task_0040_portrait_single_friend_portraits",
+  "image_name": "task_0040_portrait_single_friend_portraits.png",
+  "output_path": "build/asset_pipeline/inbox/atlases/task_0040_portrait_single_friend_portraits.png"
+}

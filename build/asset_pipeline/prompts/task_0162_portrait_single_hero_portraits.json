@@ -1,0 +1,38 @@
+{
+  "task_id": "task_0162",
+  "kind": "portrait_single",
+  "group": "hero_portraits",
+  "title": "刘昴星 默认皮肤",
+  "rows": 1,
+  "cols": 1,
+  "reference_image": "",
+  "cells": [
+    {
+      "label": "刘昴星",
+      "saves": [
+        {
+          "key": "hero_portrait:liu_maoxing:liu_maoxing",
+          "category": "hero_portrait",
+          "asset_id": "liu_maoxing",
+          "name": "刘昴星",
+          "owner_id": "liu_maoxing",
+          "owner_name": "刘昴星",
+          "target": "assets/portraits/heroes/liu_maoxing.png",
+          "size": "portrait",
+          "generation": "portrait",
+          "group": "hero_portraits",
+          "meta": {
+            "category": "侠",
+            "quality": 1
+          }
+        }
+      ],
+      "index": 0,
+      "row": 0,
+      "col": 0
+    }
+  ],
+  "filename_base": "task_0162_portrait_single_hero_portraits",
+  "image_name": "task_0162_portrait_single_hero_portraits.png",
+  "output_path": "build/asset_pipeline/inbox/atlases/task_0162_portrait_single_hero_portraits.png"
+}

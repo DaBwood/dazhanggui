@@ -2,28 +2,28 @@
   "task_id": "task_0221",
   "kind": "portrait_single",
   "group": "hero_portraits",
-  "title": "田诗人",
+  "title": "朱大亮 默认皮肤",
   "rows": 1,
   "cols": 1,
   "reference_image": "",
   "cells": [
     {
-      "label": "田诗人",
+      "label": "朱大亮",
       "saves": [
         {
-          "key": "hero_portrait:tian_shiren:tian_shiren",
+          "key": "hero_portrait:zhu_daliang:zhu_daliang",
           "category": "hero_portrait",
-          "asset_id": "tian_shiren",
-          "name": "田诗人",
-          "owner_id": "tian_shiren",
-          "owner_name": "田诗人",
-          "target": "assets/portraits/heroes/tian_shiren.png",
+          "asset_id": "zhu_daliang",
+          "name": "朱大亮",
+          "owner_id": "zhu_daliang",
+          "owner_name": "朱大亮",
+          "target": "assets/portraits/heroes/zhu_daliang.png",
           "size": "portrait",
           "generation": "portrait",
           "group": "hero_portraits",
           "meta": {
-            "category": "士",
-            "quality": 1
+            "category": "商",
+            "quality": 0
           }
         }
       ],

@@ -2,27 +2,27 @@
   "task_id": "task_0220",
   "kind": "portrait_single",
   "group": "hero_portraits",
-  "title": "宋太祖",
+  "title": "周瑜 默认皮肤",
   "rows": 1,
   "cols": 1,
   "reference_image": "",
   "cells": [
     {
-      "label": "宋太祖",
+      "label": "周瑜",
       "saves": [
         {
-          "key": "hero_portrait:song_taizu:song_taizu",
+          "key": "hero_portrait:zhou_yu:zhou_yu",
           "category": "hero_portrait",
-          "asset_id": "song_taizu",
-          "name": "宋太祖",
-          "owner_id": "song_taizu",
-          "owner_name": "宋太祖",
-          "target": "assets/portraits/heroes/song_taizu.png",
+          "asset_id": "zhou_yu",
+          "name": "周瑜",
+          "owner_id": "zhou_yu",
+          "owner_name": "周瑜",
+          "target": "assets/portraits/heroes/zhou_yu.png",
           "size": "portrait",
           "generation": "portrait",
           "group": "hero_portraits",
           "meta": {
-            "category": "侠",
+            "category": "商",
             "quality": 2
           }
         }

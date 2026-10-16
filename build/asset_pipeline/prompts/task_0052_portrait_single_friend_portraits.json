@@ -1,0 +1,37 @@
+{
+  "task_id": "task_0052",
+  "kind": "portrait_single",
+  "group": "friend_portraits",
+  "title": "牛郎 默认皮肤",
+  "rows": 1,
+  "cols": 1,
+  "reference_image": "",
+  "cells": [
+    {
+      "label": "牛郎",
+      "saves": [
+        {
+          "key": "friend_portrait:niu_lang:niu_lang",
+          "category": "friend_portrait",
+          "asset_id": "niu_lang",
+          "name": "牛郎",
+          "owner_id": "niu_lang",
+          "owner_name": "牛郎",
+          "target": "assets/portraits/friends/niu_lang.png",
+          "size": "portrait",
+          "generation": "portrait",
+          "group": "friend_portraits",
+          "meta": {
+            "category": "农"
+          }
+        }
+      ],
+      "index": 0,
+      "row": 0,
+      "col": 0
+    }
+  ],
+  "filename_base": "task_0052_portrait_single_friend_portraits",
+  "image_name": "task_0052_portrait_single_friend_portraits.png",
+  "output_path": "build/asset_pipeline/inbox/atlases/task_0052_portrait_single_friend_portraits.png"
+}

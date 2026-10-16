@@ -1,0 +1,37 @@
+{
+  "task_id": "task_0101",
+  "kind": "portrait_single",
+  "group": "friend_portraits",
+  "title": "医师 默认皮肤",
+  "rows": 1,
+  "cols": 1,
+  "reference_image": "",
+  "cells": [
+    {
+      "label": "医师",
+      "saves": [
+        {
+          "key": "friend_portrait:yi_shi_new:yi_shi_new",
+          "category": "friend_portrait",
+          "asset_id": "yi_shi_new",
+          "name": "医师",
+          "owner_id": "yi_shi_new",
+          "owner_name": "医师",
+          "target": "assets/portraits/friends/yi_shi_new.png",
+          "size": "portrait",
+          "generation": "portrait",
+          "group": "friend_portraits",
+          "meta": {
+            "category": "士"
+          }
+        }
+      ],
+      "index": 0,
+      "row": 0,
+      "col": 0
+    }
+  ],
+  "filename_base": "task_0101_portrait_single_friend_portraits",
+  "image_name": "task_0101_portrait_single_friend_portraits.png",
+  "output_path": "build/asset_pipeline/inbox/atlases/task_0101_portrait_single_friend_portraits.png"
+}

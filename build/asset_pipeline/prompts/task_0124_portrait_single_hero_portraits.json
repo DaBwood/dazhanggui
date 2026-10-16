@@ -1,0 +1,38 @@
+{
+  "task_id": "task_0124",
+  "kind": "portrait_single",
+  "group": "hero_portraits",
+  "title": "曹铁匠 默认皮肤",
+  "rows": 1,
+  "cols": 1,
+  "reference_image": "",
+  "cells": [
+    {
+      "label": "曹铁匠",
+      "saves": [
+        {
+          "key": "hero_portrait:cao_tiejiang:cao_tiejiang",
+          "category": "hero_portrait",
+          "asset_id": "cao_tiejiang",
+          "name": "曹铁匠",
+          "owner_id": "cao_tiejiang",
+          "owner_name": "曹铁匠",
+          "target": "assets/portraits/heroes/cao_tiejiang.png",
+          "size": "portrait",
+          "generation": "portrait",
+          "group": "hero_portraits",
+          "meta": {
+            "category": "工",
+            "quality": 1
+          }
+        }
+      ],
+      "index": 0,
+      "row": 0,
+      "col": 0
+    }
+  ],
+  "filename_base": "task_0124_portrait_single_hero_portraits",
+  "image_name": "task_0124_portrait_single_hero_portraits.png",
+  "output_path": "build/asset_pipeline/inbox/atlases/task_0124_portrait_single_hero_portraits.png"
+}

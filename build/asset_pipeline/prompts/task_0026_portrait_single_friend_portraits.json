@@ -1,0 +1,37 @@
+{
+  "task_id": "task_0026",
+  "kind": "portrait_single",
+  "group": "friend_portraits",
+  "title": "极昼 默认皮肤",
+  "rows": 1,
+  "cols": 1,
+  "reference_image": "",
+  "cells": [
+    {
+      "label": "极昼",
+      "saves": [
+        {
+          "key": "friend_portrait:ji_zhou:ji_zhou",
+          "category": "friend_portrait",
+          "asset_id": "ji_zhou",
+          "name": "极昼",
+          "owner_id": "ji_zhou",
+          "owner_name": "极昼",
+          "target": "assets/portraits/friends/ji_zhou.png",
+          "size": "portrait",
+          "generation": "portrait",
+          "group": "friend_portraits",
+          "meta": {
+            "category": "工"
+          }
+        }
+      ],
+      "index": 0,
+      "row": 0,
+      "col": 0
+    }
+  ],
+  "filename_base": "task_0026_portrait_single_friend_portraits",
+  "image_name": "task_0026_portrait_single_friend_portraits.png",
+  "output_path": "build/asset_pipeline/inbox/atlases/task_0026_portrait_single_friend_portraits.png"
+}

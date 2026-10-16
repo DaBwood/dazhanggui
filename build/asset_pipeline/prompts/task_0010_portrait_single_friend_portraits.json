@@ -1,0 +1,37 @@
+{
+  "task_id": "task_0010",
+  "kind": "portrait_single",
+  "group": "friend_portraits",
+  "title": "董小宛 默认皮肤",
+  "rows": 1,
+  "cols": 1,
+  "reference_image": "",
+  "cells": [
+    {
+      "label": "董小宛",
+      "saves": [
+        {
+          "key": "friend_portrait:dong_xiaowan_friend:dong_xiaowan_friend",
+          "category": "friend_portrait",
+          "asset_id": "dong_xiaowan_friend",
+          "name": "董小宛",
+          "owner_id": "dong_xiaowan_friend",
+          "owner_name": "董小宛",
+          "target": "assets/portraits/friends/dong_xiaowan_friend.png",
+          "size": "portrait",
+          "generation": "portrait",
+          "group": "friend_portraits",
+          "meta": {
+            "category": "工"
+          }
+        }
+      ],
+      "index": 0,
+      "row": 0,
+      "col": 0
+    }
+  ],
+  "filename_base": "task_0010_portrait_single_friend_portraits",
+  "image_name": "task_0010_portrait_single_friend_portraits.png",
+  "output_path": "build/asset_pipeline/inbox/atlases/task_0010_portrait_single_friend_portraits.png"
+}

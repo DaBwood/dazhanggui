@@ -1,0 +1,38 @@
+{
+  "task_id": "task_0133",
+  "kind": "portrait_single",
+  "group": "hero_portraits",
+  "title": "方火头 默认皮肤",
+  "rows": 1,
+  "cols": 1,
+  "reference_image": "",
+  "cells": [
+    {
+      "label": "方火头",
+      "saves": [
+        {
+          "key": "hero_portrait:fang_huotou:fang_huotou",
+          "category": "hero_portrait",
+          "asset_id": "fang_huotou",
+          "name": "方火头",
+          "owner_id": "fang_huotou",
+          "owner_name": "方火头",
+          "target": "assets/portraits/heroes/fang_huotou.png",
+          "size": "portrait",
+          "generation": "portrait",
+          "group": "hero_portraits",
+          "meta": {
+            "category": "侠",
+            "quality": 2
+          }
+        }
+      ],
+      "index": 0,
+      "row": 0,
+      "col": 0
+    }
+  ],
+  "filename_base": "task_0133_portrait_single_hero_portraits",
+  "image_name": "task_0133_portrait_single_hero_portraits.png",
+  "output_path": "build/asset_pipeline/inbox/atlases/task_0133_portrait_single_hero_portraits.png"
+}

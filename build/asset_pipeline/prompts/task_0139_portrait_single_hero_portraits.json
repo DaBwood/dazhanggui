@@ -1,0 +1,38 @@
+{
+  "task_id": "task_0139",
+  "kind": "portrait_single",
+  "group": "hero_portraits",
+  "title": "滚海蛟 默认皮肤",
+  "rows": 1,
+  "cols": 1,
+  "reference_image": "",
+  "cells": [
+    {
+      "label": "滚海蛟",
+      "saves": [
+        {
+          "key": "hero_portrait:gun_haijiao:gun_haijiao",
+          "category": "hero_portrait",
+          "asset_id": "gun_haijiao",
+          "name": "滚海蛟",
+          "owner_id": "gun_haijiao",
+          "owner_name": "滚海蛟",
+          "target": "assets/portraits/heroes/gun_haijiao.png",
+          "size": "portrait",
+          "generation": "portrait",
+          "group": "hero_portraits",
+          "meta": {
+            "category": "侠",
+            "quality": 2
+          }
+        }
+      ],
+      "index": 0,
+      "row": 0,
+      "col": 0
+    }
+  ],
+  "filename_base": "task_0139_portrait_single_hero_portraits",
+  "image_name": "task_0139_portrait_single_hero_portraits.png",
+  "output_path": "build/asset_pipeline/inbox/atlases/task_0139_portrait_single_hero_portraits.png"
+}

@@ -1,0 +1,38 @@
+{
+  "task_id": "task_0123",
+  "kind": "portrait_single",
+  "group": "hero_portraits",
+  "title": "蔡渔夫 默认皮肤",
+  "rows": 1,
+  "cols": 1,
+  "reference_image": "",
+  "cells": [
+    {
+      "label": "蔡渔夫",
+      "saves": [
+        {
+          "key": "hero_portrait:cai_yufu:cai_yufu",
+          "category": "hero_portrait",
+          "asset_id": "cai_yufu",
+          "name": "蔡渔夫",
+          "owner_id": "cai_yufu",
+          "owner_name": "蔡渔夫",
+          "target": "assets/portraits/heroes/cai_yufu.png",
+          "size": "portrait",
+          "generation": "portrait",
+          "group": "hero_portraits",
+          "meta": {
+            "category": "农",
+            "quality": 0
+          }
+        }
+      ],
+      "index": 0,
+      "row": 0,
+      "col": 0
+    }
+  ],
+  "filename_base": "task_0123_portrait_single_hero_portraits",
+  "image_name": "task_0123_portrait_single_hero_portraits.png",
+  "output_path": "build/asset_pipeline/inbox/atlases/task_0123_portrait_single_hero_portraits.png"
+}

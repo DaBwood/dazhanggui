@@ -1,0 +1,37 @@
+{
+  "task_id": "task_0093",
+  "kind": "portrait_single",
+  "group": "friend_portraits",
+  "title": "秀娘 默认皮肤",
+  "rows": 1,
+  "cols": 1,
+  "reference_image": "",
+  "cells": [
+    {
+      "label": "秀娘",
+      "saves": [
+        {
+          "key": "friend_portrait:xiu_niang:xiu_niang",
+          "category": "friend_portrait",
+          "asset_id": "xiu_niang",
+          "name": "秀娘",
+          "owner_id": "xiu_niang",
+          "owner_name": "秀娘",
+          "target": "assets/portraits/friends/xiu_niang.png",
+          "size": "portrait",
+          "generation": "portrait",
+          "group": "friend_portraits",
+          "meta": {
+            "category": "农"
+          }
+        }
+      ],
+      "index": 0,
+      "row": 0,
+      "col": 0
+    }
+  ],
+  "filename_base": "task_0093_portrait_single_friend_portraits",
+  "image_name": "task_0093_portrait_single_friend_portraits.png",
+  "output_path": "build/asset_pipeline/inbox/atlases/task_0093_portrait_single_friend_portraits.png"
+}

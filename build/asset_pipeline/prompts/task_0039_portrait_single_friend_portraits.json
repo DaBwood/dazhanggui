@@ -1,0 +1,37 @@
+{
+  "task_id": "task_0039",
+  "kind": "portrait_single",
+  "group": "friend_portraits",
+  "title": "灵夜猫女 默认皮肤",
+  "rows": 1,
+  "cols": 1,
+  "reference_image": "",
+  "cells": [
+    {
+      "label": "灵夜猫女",
+      "saves": [
+        {
+          "key": "friend_portrait:ling_ye_mao_nv:ling_ye_mao_nv",
+          "category": "friend_portrait",
+          "asset_id": "ling_ye_mao_nv",
+          "name": "灵夜猫女",
+          "owner_id": "ling_ye_mao_nv",
+          "owner_name": "灵夜猫女",
+          "target": "assets/portraits/friends/ling_ye_mao_nv.png",
+          "size": "portrait",
+          "generation": "portrait",
+          "group": "friend_portraits",
+          "meta": {
+            "category": "工"
+          }
+        }
+      ],
+      "index": 0,
+      "row": 0,
+      "col": 0
+    }
+  ],
+  "filename_base": "task_0039_portrait_single_friend_portraits",
+  "image_name": "task_0039_portrait_single_friend_portraits.png",
+  "output_path": "build/asset_pipeline/inbox/atlases/task_0039_portrait_single_friend_portraits.png"
+}

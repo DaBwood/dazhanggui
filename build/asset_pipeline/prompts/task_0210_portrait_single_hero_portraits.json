@@ -2,28 +2,28 @@
   "task_id": "task_0210",
   "kind": "portrait_single",
   "group": "hero_portraits",
-  "title": "龙骧",
+  "title": "姚仵作 默认皮肤",
   "rows": 1,
   "cols": 1,
   "reference_image": "",
   "cells": [
     {
-      "label": "龙骧",
+      "label": "姚仵作",
       "saves": [
         {
-          "key": "hero_portrait:long_xiang:long_xiang",
+          "key": "hero_portrait:yao_wuzuo:yao_wuzuo",
           "category": "hero_portrait",
-          "asset_id": "long_xiang",
-          "name": "龙骧",
-          "owner_id": "long_xiang",
-          "owner_name": "龙骧",
-          "target": "assets/portraits/heroes/long_xiang.png",
+          "asset_id": "yao_wuzuo",
+          "name": "姚仵作",
+          "owner_id": "yao_wuzuo",
+          "owner_name": "姚仵作",
+          "target": "assets/portraits/heroes/yao_wuzuo.png",
           "size": "portrait",
           "generation": "portrait",
           "group": "hero_portraits",
           "meta": {
-            "category": "工",
-            "quality": 2
+            "category": "士",
+            "quality": 1
           }
         }
       ],

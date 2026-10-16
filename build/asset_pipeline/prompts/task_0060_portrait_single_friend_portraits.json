@@ -1,0 +1,37 @@
+{
+  "task_id": "task_0060",
+  "kind": "portrait_single",
+  "group": "friend_portraits",
+  "title": "青凝 默认皮肤",
+  "rows": 1,
+  "cols": 1,
+  "reference_image": "",
+  "cells": [
+    {
+      "label": "青凝",
+      "saves": [
+        {
+          "key": "friend_portrait:qing_ning:qing_ning",
+          "category": "friend_portrait",
+          "asset_id": "qing_ning",
+          "name": "青凝",
+          "owner_id": "qing_ning",
+          "owner_name": "青凝",
+          "target": "assets/portraits/friends/qing_ning.png",
+          "size": "portrait",
+          "generation": "portrait",
+          "group": "friend_portraits",
+          "meta": {
+            "category": "士"
+          }
+        }
+      ],
+      "index": 0,
+      "row": 0,
+      "col": 0
+    }
+  ],
+  "filename_base": "task_0060_portrait_single_friend_portraits",
+  "image_name": "task_0060_portrait_single_friend_portraits.png",
+  "output_path": "build/asset_pipeline/inbox/atlases/task_0060_portrait_single_friend_portraits.png"
+}

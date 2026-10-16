@@ -1,0 +1,37 @@
+{
+  "task_id": "task_0050",
+  "kind": "portrait_single",
+  "group": "friend_portraits",
+  "title": "霓凰郡主 默认皮肤",
+  "rows": 1,
+  "cols": 1,
+  "reference_image": "",
+  "cells": [
+    {
+      "label": "霓凰郡主",
+      "saves": [
+        {
+          "key": "friend_portrait:ni_huang_junzhu:ni_huang_junzhu",
+          "category": "friend_portrait",
+          "asset_id": "ni_huang_junzhu",
+          "name": "霓凰郡主",
+          "owner_id": "ni_huang_junzhu",
+          "owner_name": "霓凰郡主",
+          "target": "assets/portraits/friends/ni_huang_junzhu.png",
+          "size": "portrait",
+          "generation": "portrait",
+          "group": "friend_portraits",
+          "meta": {
+            "category": "士"
+          }
+        }
+      ],
+      "index": 0,
+      "row": 0,
+      "col": 0
+    }
+  ],
+  "filename_base": "task_0050_portrait_single_friend_portraits",
+  "image_name": "task_0050_portrait_single_friend_portraits.png",
+  "output_path": "build/asset_pipeline/inbox/atlases/task_0050_portrait_single_friend_portraits.png"
+}

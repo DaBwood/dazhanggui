@@ -2,28 +2,28 @@
   "task_id": "task_0213",
   "kind": "portrait_single",
   "group": "hero_portraits",
-  "title": "牛符师",
+  "title": "张起灵 默认皮肤",
   "rows": 1,
   "cols": 1,
   "reference_image": "",
   "cells": [
     {
-      "label": "牛符师",
+      "label": "张起灵",
       "saves": [
         {
-          "key": "hero_portrait:niu_fushi:niu_fushi",
+          "key": "hero_portrait:zhang_qiling:zhang_qiling",
           "category": "hero_portrait",
-          "asset_id": "niu_fushi",
-          "name": "牛符师",
-          "owner_id": "niu_fushi",
-          "owner_name": "牛符师",
-          "target": "assets/portraits/heroes/niu_fushi.png",
+          "asset_id": "zhang_qiling",
+          "name": "张起灵",
+          "owner_id": "zhang_qiling",
+          "owner_name": "张起灵",
+          "target": "assets/portraits/heroes/zhang_qiling.png",
           "size": "portrait",
           "generation": "portrait",
           "group": "hero_portraits",
           "meta": {
-            "category": "侠",
-            "quality": 0
+            "category": "工",
+            "quality": 1
           }
         }
       ],

@@ -1,0 +1,38 @@
+{
+  "task_id": "task_0137",
+  "kind": "portrait_single",
+  "group": "hero_portraits",
+  "title": "葛郎中 默认皮肤",
+  "rows": 1,
+  "cols": 1,
+  "reference_image": "",
+  "cells": [
+    {
+      "label": "葛郎中",
+      "saves": [
+        {
+          "key": "hero_portrait:ge_langzhong:ge_langzhong",
+          "category": "hero_portrait",
+          "asset_id": "ge_langzhong",
+          "name": "葛郎中",
+          "owner_id": "ge_langzhong",
+          "owner_name": "葛郎中",
+          "target": "assets/portraits/heroes/ge_langzhong.png",
+          "size": "portrait",
+          "generation": "portrait",
+          "group": "hero_portraits",
+          "meta": {
+            "category": "士",
+            "quality": 0
+          }
+        }
+      ],
+      "index": 0,
+      "row": 0,
+      "col": 0
+    }
+  ],
+  "filename_base": "task_0137_portrait_single_hero_portraits",
+  "image_name": "task_0137_portrait_single_hero_portraits.png",
+  "output_path": "build/asset_pipeline/inbox/atlases/task_0137_portrait_single_hero_portraits.png"
+}

@@ -1,0 +1,38 @@
+{
+  "task_id": "task_0174",
+  "kind": "portrait_single",
+  "group": "hero_portraits",
+  "title": "牛符师 默认皮肤",
+  "rows": 1,
+  "cols": 1,
+  "reference_image": "",
+  "cells": [
+    {
+      "label": "牛符师",
+      "saves": [
+        {
+          "key": "hero_portrait:niu_fushi:niu_fushi",
+          "category": "hero_portrait",
+          "asset_id": "niu_fushi",
+          "name": "牛符师",
+          "owner_id": "niu_fushi",
+          "owner_name": "牛符师",
+          "target": "assets/portraits/heroes/niu_fushi.png",
+          "size": "portrait",
+          "generation": "portrait",
+          "group": "hero_portraits",
+          "meta": {
+            "category": "侠",
+            "quality": 0
+          }
+        }
+      ],
+      "index": 0,
+      "row": 0,
+      "col": 0
+    }
+  ],
+  "filename_base": "task_0174_portrait_single_hero_portraits",
+  "image_name": "task_0174_portrait_single_hero_portraits.png",
+  "output_path": "build/asset_pipeline/inbox/atlases/task_0174_portrait_single_hero_portraits.png"
+}

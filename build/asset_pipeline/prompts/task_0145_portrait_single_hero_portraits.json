@@ -1,0 +1,38 @@
+{
+  "task_id": "task_0145",
+  "kind": "portrait_single",
+  "group": "hero_portraits",
+  "title": "胡乞丐 默认皮肤",
+  "rows": 1,
+  "cols": 1,
+  "reference_image": "",
+  "cells": [
+    {
+      "label": "胡乞丐",
+      "saves": [
+        {
+          "key": "hero_portrait:hu_qigai:hu_qigai",
+          "category": "hero_portrait",
+          "asset_id": "hu_qigai",
+          "name": "胡乞丐",
+          "owner_id": "hu_qigai",
+          "owner_name": "胡乞丐",
+          "target": "assets/portraits/heroes/hu_qigai.png",
+          "size": "portrait",
+          "generation": "portrait",
+          "group": "hero_portraits",
+          "meta": {
+            "category": "农",
+            "quality": 0
+          }
+        }
+      ],
+      "index": 0,
+      "row": 0,
+      "col": 0
+    }
+  ],
+  "filename_base": "task_0145_portrait_single_hero_portraits",
+  "image_name": "task_0145_portrait_single_hero_portraits.png",
+  "output_path": "build/asset_pipeline/inbox/atlases/task_0145_portrait_single_hero_portraits.png"
+}

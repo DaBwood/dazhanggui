@@ -2,27 +2,27 @@
   "task_id": "task_0205",
   "kind": "portrait_single",
   "group": "hero_portraits",
-  "title": "李剑痴",
+  "title": "邢护卫 默认皮肤",
   "rows": 1,
   "cols": 1,
   "reference_image": "",
   "cells": [
     {
-      "label": "李剑痴",
+      "label": "邢护卫",
       "saves": [
         {
-          "key": "hero_portrait:li_jianchi:li_jianchi",
+          "key": "hero_portrait:xing_huwei:xing_huwei",
           "category": "hero_portrait",
-          "asset_id": "li_jianchi",
-          "name": "李剑痴",
-          "owner_id": "li_jianchi",
-          "owner_name": "李剑痴",
-          "target": "assets/portraits/heroes/li_jianchi.png",
+          "asset_id": "xing_huwei",
+          "name": "邢护卫",
+          "owner_id": "xing_huwei",
+          "owner_name": "邢护卫",
+          "target": "assets/portraits/heroes/xing_huwei.png",
           "size": "portrait",
           "generation": "portrait",
           "group": "hero_portraits",
           "meta": {
-            "category": "商",
+            "category": "侠",
             "quality": 1
           }
         }

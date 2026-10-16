@@ -1,0 +1,38 @@
+{
+  "task_id": "task_0119",
+  "kind": "portrait_single",
+  "group": "hero_portraits",
+  "title": "百戏圣刀 默认皮肤",
+  "rows": 1,
+  "cols": 1,
+  "reference_image": "",
+  "cells": [
+    {
+      "label": "百戏圣刀",
+      "saves": [
+        {
+          "key": "hero_portrait:baixi_shengdao:baixi_shengdao",
+          "category": "hero_portrait",
+          "asset_id": "baixi_shengdao",
+          "name": "百戏圣刀",
+          "owner_id": "baixi_shengdao",
+          "owner_name": "百戏圣刀",
+          "target": "assets/portraits/heroes/baixi_shengdao.png",
+          "size": "portrait",
+          "generation": "portrait",
+          "group": "hero_portraits",
+          "meta": {
+            "category": "侠",
+            "quality": 2
+          }
+        }
+      ],
+      "index": 0,
+      "row": 0,
+      "col": 0
+    }
+  ],
+  "filename_base": "task_0119_portrait_single_hero_portraits",
+  "image_name": "task_0119_portrait_single_hero_portraits.png",
+  "output_path": "build/asset_pipeline/inbox/atlases/task_0119_portrait_single_hero_portraits.png"
+}

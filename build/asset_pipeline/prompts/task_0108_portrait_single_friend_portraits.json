@@ -1,0 +1,37 @@
+{
+  "task_id": "task_0108",
+  "kind": "portrait_single",
+  "group": "friend_portraits",
+  "title": "元宵姑娘 默认皮肤",
+  "rows": 1,
+  "cols": 1,
+  "reference_image": "",
+  "cells": [
+    {
+      "label": "元宵姑娘",
+      "saves": [
+        {
+          "key": "friend_portrait:yuan_xiao_guniang:yuan_xiao_guniang",
+          "category": "friend_portrait",
+          "asset_id": "yuan_xiao_guniang",
+          "name": "元宵姑娘",
+          "owner_id": "yuan_xiao_guniang",
+          "owner_name": "元宵姑娘",
+          "target": "assets/portraits/friends/yuan_xiao_guniang.png",
+          "size": "portrait",
+          "generation": "portrait",
+          "group": "friend_portraits",
+          "meta": {
+            "category": "工"
+          }
+        }
+      ],
+      "index": 0,
+      "row": 0,
+      "col": 0
+    }
+  ],
+  "filename_base": "task_0108_portrait_single_friend_portraits",
+  "image_name": "task_0108_portrait_single_friend_portraits.png",
+  "output_path": "build/asset_pipeline/inbox/atlases/task_0108_portrait_single_friend_portraits.png"
+}
