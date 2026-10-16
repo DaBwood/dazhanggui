@@ -39,5 +39,4 @@ desktop.ini
 *.log
 
 # 构建产物（如果后续有）
-/build/
 /dist/

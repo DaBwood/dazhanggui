@@ -1,0 +1,179 @@
+{
+  "task_id": "task_0007",
+  "kind": "costume_sheet",
+  "group": "costume_friend:gu_guo_gongzhu",
+  "title": "古国公主 的服装图集",
+  "rows": 3,
+  "cols": 2,
+  "reference_image": "",
+  "cells": [
+    {
+      "label": "楼兰女王（素装）",
+      "saves": [
+        {
+          "key": "costume_full:gu_guo_gongzhu:gu_guo_gongzhu_cos01",
+          "category": "costume_full",
+          "asset_id": "gu_guo_gongzhu_cos01",
+          "name": "楼兰女王",
+          "owner_id": "gu_guo_gongzhu",
+          "owner_name": "古国公主",
+          "target": "assets/costumes/gu_guo_gongzhu_cos01.png",
+          "size": "portrait",
+          "generation": "costume_sheet",
+          "group": "costume_friend:gu_guo_gongzhu",
+          "meta": {
+            "quality": "素装",
+            "series": "",
+            "owner_kind": "friend"
+          }
+        },
+        {
+          "key": "friend_portrait:gu_guo_gongzhu:gu_guo_gongzhu",
+          "category": "friend_portrait",
+          "asset_id": "gu_guo_gongzhu",
+          "name": "古国公主",
+          "owner_id": "gu_guo_gongzhu",
+          "owner_name": "古国公主",
+          "target": "assets/portraits/friends/gu_guo_gongzhu.png",
+          "size": "portrait",
+          "generation": "portrait",
+          "group": "friend_portraits",
+          "meta": {
+            "category": "农"
+          }
+        }
+      ],
+      "index": 0,
+      "row": 0,
+      "col": 0
+    },
+    {
+      "label": "精绝女王（素装）",
+      "saves": [
+        {
+          "key": "costume_full:gu_guo_gongzhu:gu_guo_gongzhu_cos02",
+          "category": "costume_full",
+          "asset_id": "gu_guo_gongzhu_cos02",
+          "name": "精绝女王",
+          "owner_id": "gu_guo_gongzhu",
+          "owner_name": "古国公主",
+          "target": "assets/costumes/gu_guo_gongzhu_cos02.png",
+          "size": "portrait",
+          "generation": "costume_sheet",
+          "group": "costume_friend:gu_guo_gongzhu",
+          "meta": {
+            "quality": "素装",
+            "series": "",
+            "owner_kind": "friend"
+          }
+        }
+      ],
+      "index": 1,
+      "row": 0,
+      "col": 1
+    },
+    {
+      "label": "楼兰故梦（锦衣）",
+      "saves": [
+        {
+          "key": "costume_full:gu_guo_gongzhu:gu_guo_gongzhu_cos03",
+          "category": "costume_full",
+          "asset_id": "gu_guo_gongzhu_cos03",
+          "name": "楼兰故梦",
+          "owner_id": "gu_guo_gongzhu",
+          "owner_name": "古国公主",
+          "target": "assets/costumes/gu_guo_gongzhu_cos03.png",
+          "size": "portrait",
+          "generation": "costume_sheet",
+          "group": "costume_friend:gu_guo_gongzhu",
+          "meta": {
+            "quality": "锦衣",
+            "series": "",
+            "owner_kind": "friend"
+          }
+        }
+      ],
+      "index": 2,
+      "row": 1,
+      "col": 0
+    },
+    {
+      "label": "圣诞之宴（素装）",
+      "saves": [
+        {
+          "key": "costume_full:gu_guo_gongzhu:gu_guo_gongzhu_cos04",
+          "category": "costume_full",
+          "asset_id": "gu_guo_gongzhu_cos04",
+          "name": "圣诞之宴",
+          "owner_id": "gu_guo_gongzhu",
+          "owner_name": "古国公主",
+          "target": "assets/costumes/gu_guo_gongzhu_cos04.png",
+          "size": "portrait",
+          "generation": "costume_sheet",
+          "group": "costume_friend:gu_guo_gongzhu",
+          "meta": {
+            "quality": "素装",
+            "series": "",
+            "owner_kind": "friend"
+          }
+        }
+      ],
+      "index": 3,
+      "row": 1,
+      "col": 1
+    },
+    {
+      "label": "永浴爱河（素装）",
+      "saves": [
+        {
+          "key": "costume_full:gu_guo_gongzhu:gu_guo_gongzhu_cos05",
+          "category": "costume_full",
+          "asset_id": "gu_guo_gongzhu_cos05",
+          "name": "永浴爱河",
+          "owner_id": "gu_guo_gongzhu",
+          "owner_name": "古国公主",
+          "target": "assets/costumes/gu_guo_gongzhu_cos05.png",
+          "size": "portrait",
+          "generation": "costume_sheet",
+          "group": "costume_friend:gu_guo_gongzhu",
+          "meta": {
+            "quality": "素装",
+            "series": "",
+            "owner_kind": "friend"
+          }
+        }
+      ],
+      "index": 4,
+      "row": 2,
+      "col": 0
+    },
+    {
+      "label": "流沙溯时（锦衣）",
+      "saves": [
+        {
+          "key": "costume_full:gu_guo_gongzhu:gu_guo_gongzhu_cos06",
+          "category": "costume_full",
+          "asset_id": "gu_guo_gongzhu_cos06",
+          "name": "流沙溯时",
+          "owner_id": "gu_guo_gongzhu",
+          "owner_name": "古国公主",
+          "target": "assets/costumes/gu_guo_gongzhu_cos06.png",
+          "size": "portrait",
+          "generation": "costume_sheet",
+          "group": "costume_friend:gu_guo_gongzhu",
+          "meta": {
+            "quality": "锦衣",
+            "series": "",
+            "owner_kind": "friend"
+          }
+        }
+      ],
+      "index": 5,
+      "row": 2,
+      "col": 1
+    }
+  ],
+  "filename_base": "task_0007_costume_sheet_costume_friend_gu_guo_gongzhu",
+  "image_name": "task_0007_costume_sheet_costume_friend_gu_guo_gongzhu.png",
+  "output_path": "build/asset_pipeline/inbox/atlases/task_0007_costume_sheet_costume_friend_gu_guo_gongzhu.png"
+}

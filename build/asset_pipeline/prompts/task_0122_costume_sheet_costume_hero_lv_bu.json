@@ -1,0 +1,55 @@
+{
+  "task_id": "task_0122",
+  "kind": "costume_sheet",
+  "group": "costume_hero:lv_bu",
+  "title": "吕布 的服装图集",
+  "rows": 1,
+  "cols": 1,
+  "reference_image": "",
+  "cells": [
+    {
+      "label": "白起（素装）",
+      "saves": [
+        {
+          "key": "costume_full:lv_bu:lv_bu_cos01",
+          "category": "costume_full",
+          "asset_id": "lv_bu_cos01",
+          "name": "白起",
+          "owner_id": "lv_bu",
+          "owner_name": "吕布",
+          "target": "assets/costumes/lv_bu_cos01.png",
+          "size": "portrait",
+          "generation": "costume_sheet",
+          "group": "costume_hero:lv_bu",
+          "meta": {
+            "quality": "素装",
+            "series": "",
+            "owner_kind": "hero"
+          }
+        },
+        {
+          "key": "hero_portrait:lv_bu:lv_bu",
+          "category": "hero_portrait",
+          "asset_id": "lv_bu",
+          "name": "吕布",
+          "owner_id": "lv_bu",
+          "owner_name": "吕布",
+          "target": "assets/portraits/heroes/lv_bu.png",
+          "size": "portrait",
+          "generation": "portrait",
+          "group": "hero_portraits",
+          "meta": {
+            "category": "侠",
+            "quality": 2
+          }
+        }
+      ],
+      "index": 0,
+      "row": 0,
+      "col": 0
+    }
+  ],
+  "filename_base": "task_0122_costume_sheet_costume_hero_lv_bu",
+  "image_name": "task_0122_costume_sheet_costume_hero_lv_bu.png",
+  "output_path": "build/asset_pipeline/inbox/atlases/task_0122_costume_sheet_costume_hero_lv_bu.png"
+}

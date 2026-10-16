@@ -1,0 +1,203 @@
+{
+  "task_id": "task_0302",
+  "kind": "icon_sheet",
+  "group": "skill_icons",
+  "title": "skill_icons 图标图集",
+  "rows": 3,
+  "cols": 3,
+  "reference_image": "",
+  "cells": [
+    {
+      "label": "爆杀八段摔",
+      "saves": [
+        {
+          "key": "skill_icon:爆杀八段摔",
+          "category": "skill_icon",
+          "asset_id": "爆杀八段摔",
+          "name": "爆杀八段摔",
+          "owner_id": "",
+          "owner_name": "",
+          "target": "assets/skill_icons/爆杀八段摔.png",
+          "size": "icon",
+          "generation": "icon_sheet",
+          "group": "skill_icons",
+          "meta": {}
+        }
+      ],
+      "index": 0,
+      "row": 0,
+      "col": 0
+    },
+    {
+      "label": "牵丝戏",
+      "saves": [
+        {
+          "key": "skill_icon:牵丝戏",
+          "category": "skill_icon",
+          "asset_id": "牵丝戏",
+          "name": "牵丝戏",
+          "owner_id": "",
+          "owner_name": "",
+          "target": "assets/skill_icons/牵丝戏.png",
+          "size": "icon",
+          "generation": "icon_sheet",
+          "group": "skill_icons",
+          "meta": {}
+        }
+      ],
+      "index": 1,
+      "row": 0,
+      "col": 1
+    },
+    {
+      "label": "特级厨师",
+      "saves": [
+        {
+          "key": "skill_icon:特级厨师",
+          "category": "skill_icon",
+          "asset_id": "特级厨师",
+          "name": "特级厨师",
+          "owner_id": "",
+          "owner_name": "",
+          "target": "assets/skill_icons/特级厨师.png",
+          "size": "icon",
+          "generation": "icon_sheet",
+          "group": "skill_icons",
+          "meta": {}
+        }
+      ],
+      "index": 2,
+      "row": 0,
+      "col": 2
+    },
+    {
+      "label": "独具匠心",
+      "saves": [
+        {
+          "key": "skill_icon:独具匠心",
+          "category": "skill_icon",
+          "asset_id": "独具匠心",
+          "name": "独具匠心",
+          "owner_id": "",
+          "owner_name": "",
+          "target": "assets/skill_icons/独具匠心.png",
+          "size": "icon",
+          "generation": "icon_sheet",
+          "group": "skill_icons",
+          "meta": {}
+        }
+      ],
+      "index": 3,
+      "row": 1,
+      "col": 0
+    },
+    {
+      "label": "狼群之力",
+      "saves": [
+        {
+          "key": "skill_icon:狼群之力",
+          "category": "skill_icon",
+          "asset_id": "狼群之力",
+          "name": "狼群之力",
+          "owner_id": "",
+          "owner_name": "",
+          "target": "assets/skill_icons/狼群之力.png",
+          "size": "icon",
+          "generation": "icon_sheet",
+          "group": "skill_icons",
+          "meta": {}
+        }
+      ],
+      "index": 4,
+      "row": 1,
+      "col": 1
+    },
+    {
+      "label": "玉盘珍馐",
+      "saves": [
+        {
+          "key": "skill_icon:玉盘珍馐",
+          "category": "skill_icon",
+          "asset_id": "玉盘珍馐",
+          "name": "玉盘珍馐",
+          "owner_id": "",
+          "owner_name": "",
+          "target": "assets/skill_icons/玉盘珍馐.png",
+          "size": "icon",
+          "generation": "icon_sheet",
+          "group": "skill_icons",
+          "meta": {}
+        }
+      ],
+      "index": 5,
+      "row": 1,
+      "col": 2
+    },
+    {
+      "label": "玉盘珍馐.极",
+      "saves": [
+        {
+          "key": "skill_icon:玉盘珍馐.极",
+          "category": "skill_icon",
+          "asset_id": "玉盘珍馐.极",
+          "name": "玉盘珍馐.极",
+          "owner_id": "",
+          "owner_name": "",
+          "target": "assets/skill_icons/玉盘珍馐.极.png",
+          "size": "icon",
+          "generation": "icon_sheet",
+          "group": "skill_icons",
+          "meta": {}
+        }
+      ],
+      "index": 6,
+      "row": 2,
+      "col": 0
+    },
+    {
+      "label": "珊瑚木难",
+      "saves": [
+        {
+          "key": "skill_icon:珊瑚木难",
+          "category": "skill_icon",
+          "asset_id": "珊瑚木难",
+          "name": "珊瑚木难",
+          "owner_id": "",
+          "owner_name": "",
+          "target": "assets/skill_icons/珊瑚木难.png",
+          "size": "icon",
+          "generation": "icon_sheet",
+          "group": "skill_icons",
+          "meta": {}
+        }
+      ],
+      "index": 7,
+      "row": 2,
+      "col": 1
+    },
+    {
+      "label": "用兵如神",
+      "saves": [
+        {
+          "key": "skill_icon:用兵如神",
+          "category": "skill_icon",
+          "asset_id": "用兵如神",
+          "name": "用兵如神",
+          "owner_id": "",
+          "owner_name": "",
+          "target": "assets/skill_icons/用兵如神.png",
+          "size": "icon",
+          "generation": "icon_sheet",
+          "group": "skill_icons",
+          "meta": {}
+        }
+      ],
+      "index": 8,
+      "row": 2,
+      "col": 2
+    }
+  ],
+  "filename_base": "task_0302_icon_sheet_skill_icons",
+  "image_name": "task_0302_icon_sheet_skill_icons.png",
+  "output_path": "build/asset_pipeline/inbox/atlases/task_0302_icon_sheet_skill_icons.png"
+}

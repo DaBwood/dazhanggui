@@ -1,0 +1,114 @@
+{
+  "task_id": "task_0284",
+  "kind": "icon_sheet",
+  "group": "item_icons",
+  "title": "item_icons 图标图集",
+  "rows": 2,
+  "cols": 2,
+  "reference_image": "",
+  "cells": [
+    {
+      "label": "自选宝印：打开后选择获得开山令或宗匠令 ×1，可批量打开",
+      "saves": [
+        {
+          "key": "item_icon:zixuan_baoyin",
+          "category": "item_icon",
+          "asset_id": "zixuan_baoyin",
+          "name": "自选宝印",
+          "owner_id": "",
+          "owner_name": "",
+          "target": "assets/items/zixuan_baoyin.png",
+          "size": "icon",
+          "generation": "icon_sheet",
+          "group": "item_icons",
+          "meta": {
+            "desc": "打开后选择获得开山令或宗匠令 ×1，可批量打开",
+            "use": {
+              "type": "zixuan_baoyin",
+              "btn": "打开",
+              "title": "打开自选宝印"
+            }
+          }
+        }
+      ],
+      "index": 0,
+      "row": 0,
+      "col": 0
+    },
+    {
+      "label": "宗匠令：兑换一代宗匠系列门客所需",
+      "saves": [
+        {
+          "key": "item_icon:zongjiang_ling",
+          "category": "item_icon",
+          "asset_id": "zongjiang_ling",
+          "name": "宗匠令",
+          "owner_id": "",
+          "owner_name": "",
+          "target": "assets/items/zongjiang_ling.png",
+          "size": "icon",
+          "generation": "icon_sheet",
+          "group": "item_icons",
+          "meta": {
+            "desc": "兑换一代宗匠系列门客所需",
+            "use": ""
+          }
+        }
+      ],
+      "index": 1,
+      "row": 0,
+      "col": 1
+    },
+    {
+      "label": "宗匠印碎片：20个合成1个宗匠令",
+      "saves": [
+        {
+          "key": "item_icon:zongjiang_yin",
+          "category": "item_icon",
+          "asset_id": "zongjiang_yin",
+          "name": "宗匠印碎片",
+          "owner_id": "",
+          "owner_name": "",
+          "target": "assets/items/zongjiang_yin.png",
+          "size": "icon",
+          "generation": "icon_sheet",
+          "group": "item_icons",
+          "meta": {
+            "desc": "20个合成1个宗匠令",
+            "use": ""
+          }
+        }
+      ],
+      "index": 2,
+      "row": 1,
+      "col": 0
+    },
+    {
+      "label": "醉仙酿：李白赋诗升级所需",
+      "saves": [
+        {
+          "key": "item_icon:zui_xian_niang",
+          "category": "item_icon",
+          "asset_id": "zui_xian_niang",
+          "name": "醉仙酿",
+          "owner_id": "",
+          "owner_name": "",
+          "target": "assets/items/zui_xian_niang.png",
+          "size": "icon",
+          "generation": "icon_sheet",
+          "group": "item_icons",
+          "meta": {
+            "desc": "李白赋诗升级所需",
+            "use": ""
+          }
+        }
+      ],
+      "index": 3,
+      "row": 1,
+      "col": 1
+    }
+  ],
+  "filename_base": "task_0284_icon_sheet_item_icons",
+  "image_name": "task_0284_icon_sheet_item_icons.png",
+  "output_path": "build/asset_pipeline/inbox/atlases/task_0284_icon_sheet_item_icons.png"
+}

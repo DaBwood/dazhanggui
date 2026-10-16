@@ -1,0 +1,154 @@
+{
+  "task_id": "task_0004",
+  "kind": "costume_sheet",
+  "group": "costume_friend:cai_shi_guan",
+  "title": "采诗官 的服装图集",
+  "rows": 3,
+  "cols": 2,
+  "reference_image": "",
+  "cells": [
+    {
+      "label": "月下品诗（素装）",
+      "saves": [
+        {
+          "key": "costume_full:cai_shi_guan:cai_shi_guan_cos01",
+          "category": "costume_full",
+          "asset_id": "cai_shi_guan_cos01",
+          "name": "月下品诗",
+          "owner_id": "cai_shi_guan",
+          "owner_name": "采诗官",
+          "target": "assets/costumes/cai_shi_guan_cos01.png",
+          "size": "portrait",
+          "generation": "costume_sheet",
+          "group": "costume_friend:cai_shi_guan",
+          "meta": {
+            "quality": "素装",
+            "series": "",
+            "owner_kind": "friend"
+          }
+        },
+        {
+          "key": "friend_portrait:cai_shi_guan:cai_shi_guan",
+          "category": "friend_portrait",
+          "asset_id": "cai_shi_guan",
+          "name": "采诗官",
+          "owner_id": "cai_shi_guan",
+          "owner_name": "采诗官",
+          "target": "assets/portraits/friends/cai_shi_guan.png",
+          "size": "portrait",
+          "generation": "portrait",
+          "group": "friend_portraits",
+          "meta": {
+            "category": "士"
+          }
+        }
+      ],
+      "index": 0,
+      "row": 0,
+      "col": 0
+    },
+    {
+      "label": "端午寻诗（素装）",
+      "saves": [
+        {
+          "key": "costume_full:cai_shi_guan:cai_shi_guan_cos02",
+          "category": "costume_full",
+          "asset_id": "cai_shi_guan_cos02",
+          "name": "端午寻诗",
+          "owner_id": "cai_shi_guan",
+          "owner_name": "采诗官",
+          "target": "assets/costumes/cai_shi_guan_cos02.png",
+          "size": "portrait",
+          "generation": "costume_sheet",
+          "group": "costume_friend:cai_shi_guan",
+          "meta": {
+            "quality": "素装",
+            "series": "",
+            "owner_kind": "friend"
+          }
+        }
+      ],
+      "index": 1,
+      "row": 0,
+      "col": 1
+    },
+    {
+      "label": "雨后新诗（素装）",
+      "saves": [
+        {
+          "key": "costume_full:cai_shi_guan:cai_shi_guan_cos03",
+          "category": "costume_full",
+          "asset_id": "cai_shi_guan_cos03",
+          "name": "雨后新诗",
+          "owner_id": "cai_shi_guan",
+          "owner_name": "采诗官",
+          "target": "assets/costumes/cai_shi_guan_cos03.png",
+          "size": "portrait",
+          "generation": "costume_sheet",
+          "group": "costume_friend:cai_shi_guan",
+          "meta": {
+            "quality": "素装",
+            "series": "",
+            "owner_kind": "friend"
+          }
+        }
+      ],
+      "index": 2,
+      "row": 1,
+      "col": 0
+    },
+    {
+      "label": "东篱采诗（素装）",
+      "saves": [
+        {
+          "key": "costume_full:cai_shi_guan:cai_shi_guan_cos04",
+          "category": "costume_full",
+          "asset_id": "cai_shi_guan_cos04",
+          "name": "东篱采诗",
+          "owner_id": "cai_shi_guan",
+          "owner_name": "采诗官",
+          "target": "assets/costumes/cai_shi_guan_cos04.png",
+          "size": "portrait",
+          "generation": "costume_sheet",
+          "group": "costume_friend:cai_shi_guan",
+          "meta": {
+            "quality": "素装",
+            "series": "",
+            "owner_kind": "friend"
+          }
+        }
+      ],
+      "index": 3,
+      "row": 1,
+      "col": 1
+    },
+    {
+      "label": "春江花月（锦衣）",
+      "saves": [
+        {
+          "key": "costume_full:cai_shi_guan:cai_shi_guan_cos05",
+          "category": "costume_full",
+          "asset_id": "cai_shi_guan_cos05",
+          "name": "春江花月",
+          "owner_id": "cai_shi_guan",
+          "owner_name": "采诗官",
+          "target": "assets/costumes/cai_shi_guan_cos05.png",
+          "size": "portrait",
+          "generation": "costume_sheet",
+          "group": "costume_friend:cai_shi_guan",
+          "meta": {
+            "quality": "锦衣",
+            "series": "",
+            "owner_kind": "friend"
+          }
+        }
+      ],
+      "index": 4,
+      "row": 2,
+      "col": 0
+    }
+  ],
+  "filename_base": "task_0004_costume_sheet_costume_friend_cai_shi_guan",
+  "image_name": "task_0004_costume_sheet_costume_friend_cai_shi_guan.png",
+  "output_path": "build/asset_pipeline/inbox/atlases/task_0004_costume_sheet_costume_friend_cai_shi_guan.png"
+}

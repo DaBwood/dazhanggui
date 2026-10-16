@@ -1,0 +1,54 @@
+{
+  "task_id": "task_0081",
+  "kind": "costume_sheet",
+  "group": "costume_friend:ying_chun",
+  "title": "映春 的服装图集",
+  "rows": 1,
+  "cols": 1,
+  "reference_image": "",
+  "cells": [
+    {
+      "label": "跃动万物（素装）",
+      "saves": [
+        {
+          "key": "costume_full:ying_chun:ying_chun_cos01",
+          "category": "costume_full",
+          "asset_id": "ying_chun_cos01",
+          "name": "跃动万物",
+          "owner_id": "ying_chun",
+          "owner_name": "映春",
+          "target": "assets/costumes/ying_chun_cos01.png",
+          "size": "portrait",
+          "generation": "costume_sheet",
+          "group": "costume_friend:ying_chun",
+          "meta": {
+            "quality": "素装",
+            "series": "",
+            "owner_kind": "friend"
+          }
+        },
+        {
+          "key": "friend_portrait:ying_chun:ying_chun",
+          "category": "friend_portrait",
+          "asset_id": "ying_chun",
+          "name": "映春",
+          "owner_id": "ying_chun",
+          "owner_name": "映春",
+          "target": "assets/portraits/friends/ying_chun.png",
+          "size": "portrait",
+          "generation": "portrait",
+          "group": "friend_portraits",
+          "meta": {
+            "category": "侠"
+          }
+        }
+      ],
+      "index": 0,
+      "row": 0,
+      "col": 0
+    }
+  ],
+  "filename_base": "task_0081_costume_sheet_costume_friend_ying_chun",
+  "image_name": "task_0081_costume_sheet_costume_friend_ying_chun.png",
+  "output_path": "build/asset_pipeline/inbox/atlases/task_0081_costume_sheet_costume_friend_ying_chun.png"
+}

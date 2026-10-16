@@ -1,0 +1,54 @@
+{
+  "task_id": "task_0086",
+  "kind": "costume_sheet",
+  "group": "costume_friend:yuan_xiao_guniang",
+  "title": "元宵姑娘 的服装图集",
+  "rows": 1,
+  "cols": 1,
+  "reference_image": "",
+  "cells": [
+    {
+      "label": "元宵灯会（素装）",
+      "saves": [
+        {
+          "key": "costume_full:yuan_xiao_guniang:yuan_xiao_guniang_cos01",
+          "category": "costume_full",
+          "asset_id": "yuan_xiao_guniang_cos01",
+          "name": "元宵灯会",
+          "owner_id": "yuan_xiao_guniang",
+          "owner_name": "元宵姑娘",
+          "target": "assets/costumes/yuan_xiao_guniang_cos01.png",
+          "size": "portrait",
+          "generation": "costume_sheet",
+          "group": "costume_friend:yuan_xiao_guniang",
+          "meta": {
+            "quality": "素装",
+            "series": "",
+            "owner_kind": "friend"
+          }
+        },
+        {
+          "key": "friend_portrait:yuan_xiao_guniang:yuan_xiao_guniang",
+          "category": "friend_portrait",
+          "asset_id": "yuan_xiao_guniang",
+          "name": "元宵姑娘",
+          "owner_id": "yuan_xiao_guniang",
+          "owner_name": "元宵姑娘",
+          "target": "assets/portraits/friends/yuan_xiao_guniang.png",
+          "size": "portrait",
+          "generation": "portrait",
+          "group": "friend_portraits",
+          "meta": {
+            "category": "工"
+          }
+        }
+      ],
+      "index": 0,
+      "row": 0,
+      "col": 0
+    }
+  ],
+  "filename_base": "task_0086_costume_sheet_costume_friend_yuan_xiao_guniang",
+  "image_name": "task_0086_costume_sheet_costume_friend_yuan_xiao_guniang.png",
+  "output_path": "build/asset_pipeline/inbox/atlases/task_0086_costume_sheet_costume_friend_yuan_xiao_guniang.png"
+}

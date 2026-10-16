@@ -1,0 +1,230 @@
+{
+  "task_id": "task_0233",
+  "kind": "icon_sheet",
+  "group": "beast_icons",
+  "title": "beast_icons 图标图集",
+  "rows": 3,
+  "cols": 3,
+  "reference_image": "",
+  "cells": [
+    {
+      "label": "白泽：无双 60资质",
+      "saves": [
+        {
+          "key": "beast_icon:bai_ze",
+          "category": "beast_icon",
+          "asset_id": "bai_ze",
+          "name": "白泽",
+          "owner_id": "",
+          "owner_name": "",
+          "target": "assets/beasts/bai_ze.png",
+          "size": "icon",
+          "generation": "icon_sheet",
+          "group": "beast_icons",
+          "meta": {
+            "quality": "无双",
+            "aptitude": 60
+          }
+        }
+      ],
+      "index": 0,
+      "row": 0,
+      "col": 0
+    },
+    {
+      "label": "毕方：山海异兽 120资质",
+      "saves": [
+        {
+          "key": "beast_icon:bi_fang",
+          "category": "beast_icon",
+          "asset_id": "bi_fang",
+          "name": "毕方",
+          "owner_id": "",
+          "owner_name": "",
+          "target": "assets/beasts/bi_fang.png",
+          "size": "icon",
+          "generation": "icon_sheet",
+          "group": "beast_icons",
+          "meta": {
+            "quality": "山海异兽",
+            "aptitude": 120
+          }
+        }
+      ],
+      "index": 1,
+      "row": 0,
+      "col": 1
+    },
+    {
+      "label": "乘黄：蛮荒主兽 120资质",
+      "saves": [
+        {
+          "key": "beast_icon:cheng_huang",
+          "category": "beast_icon",
+          "asset_id": "cheng_huang",
+          "name": "乘黄",
+          "owner_id": "",
+          "owner_name": "",
+          "target": "assets/beasts/cheng_huang.png",
+          "size": "icon",
+          "generation": "icon_sheet",
+          "group": "beast_icons",
+          "meta": {
+            "quality": "蛮荒主兽",
+            "aptitude": 120
+          }
+        }
+      ],
+      "index": 2,
+      "row": 0,
+      "col": 2
+    },
+    {
+      "label": "混沌：上古凶兽 120资质",
+      "saves": [
+        {
+          "key": "beast_icon:hun_dun",
+          "category": "beast_icon",
+          "asset_id": "hun_dun",
+          "name": "混沌",
+          "owner_id": "",
+          "owner_name": "",
+          "target": "assets/beasts/hun_dun.png",
+          "size": "icon",
+          "generation": "icon_sheet",
+          "group": "beast_icons",
+          "meta": {
+            "quality": "上古凶兽",
+            "aptitude": 120
+          }
+        }
+      ],
+      "index": 3,
+      "row": 1,
+      "col": 0
+    },
+    {
+      "label": "金乌：蛮荒主兽 120资质",
+      "saves": [
+        {
+          "key": "beast_icon:jin_wu",
+          "category": "beast_icon",
+          "asset_id": "jin_wu",
+          "name": "金乌",
+          "owner_id": "",
+          "owner_name": "",
+          "target": "assets/beasts/jin_wu.png",
+          "size": "icon",
+          "generation": "icon_sheet",
+          "group": "beast_icons",
+          "meta": {
+            "quality": "蛮荒主兽",
+            "aptitude": 120
+          }
+        }
+      ],
+      "index": 4,
+      "row": 1,
+      "col": 1
+    },
+    {
+      "label": "九尾狐：封神灵兽 100资质",
+      "saves": [
+        {
+          "key": "beast_icon:jiu_wei_hu",
+          "category": "beast_icon",
+          "asset_id": "jiu_wei_hu",
+          "name": "九尾狐",
+          "owner_id": "",
+          "owner_name": "",
+          "target": "assets/beasts/jiu_wei_hu.png",
+          "size": "icon",
+          "generation": "icon_sheet",
+          "group": "beast_icons",
+          "meta": {
+            "quality": "封神灵兽",
+            "aptitude": 100
+          }
+        }
+      ],
+      "index": 5,
+      "row": 1,
+      "col": 2
+    },
+    {
+      "label": "鲲：山海异兽 120资质",
+      "saves": [
+        {
+          "key": "beast_icon:kun",
+          "category": "beast_icon",
+          "asset_id": "kun",
+          "name": "鲲",
+          "owner_id": "",
+          "owner_name": "",
+          "target": "assets/beasts/kun.png",
+          "size": "icon",
+          "generation": "icon_sheet",
+          "group": "beast_icons",
+          "meta": {
+            "quality": "山海异兽",
+            "aptitude": 120
+          }
+        }
+      ],
+      "index": 6,
+      "row": 2,
+      "col": 0
+    },
+    {
+      "label": "陆吾：蛮荒主兽 120资质",
+      "saves": [
+        {
+          "key": "beast_icon:lu_wu",
+          "category": "beast_icon",
+          "asset_id": "lu_wu",
+          "name": "陆吾",
+          "owner_id": "",
+          "owner_name": "",
+          "target": "assets/beasts/lu_wu.png",
+          "size": "icon",
+          "generation": "icon_sheet",
+          "group": "beast_icons",
+          "meta": {
+            "quality": "蛮荒主兽",
+            "aptitude": 120
+          }
+        }
+      ],
+      "index": 7,
+      "row": 2,
+      "col": 1
+    },
+    {
+      "label": "魅影兔：无双 40资质",
+      "saves": [
+        {
+          "key": "beast_icon:mei_ying_tu",
+          "category": "beast_icon",
+          "asset_id": "mei_ying_tu",
+          "name": "魅影兔",
+          "owner_id": "",
+          "owner_name": "",
+          "target": "assets/beasts/mei_ying_tu.png",
+          "size": "icon",
+          "generation": "icon_sheet",
+          "group": "beast_icons",
+          "meta": {
+            "quality": "无双",
+            "aptitude": 40
+          }
+        }
+      ],
+      "index": 8,
+      "row": 2,
+      "col": 2
+    }
+  ],
+  "filename_base": "task_0233_icon_sheet_beast_icons",
+  "image_name": "task_0233_icon_sheet_beast_icons.png",
+  "output_path": "build/asset_pipeline/inbox/atlases/task_0233_icon_sheet_beast_icons.png"
+}

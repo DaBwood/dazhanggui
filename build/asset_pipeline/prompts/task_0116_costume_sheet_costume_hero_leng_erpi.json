@@ -1,0 +1,55 @@
+{
+  "task_id": "task_0116",
+  "kind": "costume_sheet",
+  "group": "costume_hero:leng_erpi",
+  "title": "冷二皮 的服装图集",
+  "rows": 1,
+  "cols": 1,
+  "reference_image": "",
+  "cells": [
+    {
+      "label": "身不由己（锦衣）",
+      "saves": [
+        {
+          "key": "costume_full:leng_erpi:leng_erpi_cos01",
+          "category": "costume_full",
+          "asset_id": "leng_erpi_cos01",
+          "name": "身不由己",
+          "owner_id": "leng_erpi",
+          "owner_name": "冷二皮",
+          "target": "assets/costumes/leng_erpi_cos01.png",
+          "size": "portrait",
+          "generation": "costume_sheet",
+          "group": "costume_hero:leng_erpi",
+          "meta": {
+            "quality": "锦衣",
+            "series": "",
+            "owner_kind": "hero"
+          }
+        },
+        {
+          "key": "hero_portrait:leng_erpi:leng_erpi",
+          "category": "hero_portrait",
+          "asset_id": "leng_erpi",
+          "name": "冷二皮",
+          "owner_id": "leng_erpi",
+          "owner_name": "冷二皮",
+          "target": "assets/portraits/heroes/leng_erpi.png",
+          "size": "portrait",
+          "generation": "portrait",
+          "group": "hero_portraits",
+          "meta": {
+            "category": "士",
+            "quality": 2
+          }
+        }
+      ],
+      "index": 0,
+      "row": 0,
+      "col": 0
+    }
+  ],
+  "filename_base": "task_0116_costume_sheet_costume_hero_leng_erpi",
+  "image_name": "task_0116_costume_sheet_costume_hero_leng_erpi.png",
+  "output_path": "build/asset_pipeline/inbox/atlases/task_0116_costume_sheet_costume_hero_leng_erpi.png"
+}

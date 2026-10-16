@@ -1,0 +1,203 @@
+{
+  "task_id": "task_0285",
+  "kind": "icon_sheet",
+  "group": "skill_icons",
+  "title": "skill_icons 图标图集",
+  "rows": 3,
+  "cols": 3,
+  "reference_image": "",
+  "cells": [
+    {
+      "label": "@third",
+      "saves": [
+        {
+          "key": "skill_icon:@third",
+          "category": "skill_icon",
+          "asset_id": "@third",
+          "name": "@third",
+          "owner_id": "",
+          "owner_name": "",
+          "target": "assets/skill_icons/@third.png",
+          "size": "icon",
+          "generation": "icon_sheet",
+          "group": "skill_icons",
+          "meta": {}
+        }
+      ],
+      "index": 0,
+      "row": 0,
+      "col": 0
+    },
+    {
+      "label": "一世枭雄",
+      "saves": [
+        {
+          "key": "skill_icon:一世枭雄",
+          "category": "skill_icon",
+          "asset_id": "一世枭雄",
+          "name": "一世枭雄",
+          "owner_id": "",
+          "owner_name": "",
+          "target": "assets/skill_icons/一世枭雄.png",
+          "size": "icon",
+          "generation": "icon_sheet",
+          "group": "skill_icons",
+          "meta": {}
+        }
+      ],
+      "index": 1,
+      "row": 0,
+      "col": 1
+    },
+    {
+      "label": "一代宗匠",
+      "saves": [
+        {
+          "key": "skill_icon:一代宗匠",
+          "category": "skill_icon",
+          "asset_id": "一代宗匠",
+          "name": "一代宗匠",
+          "owner_id": "",
+          "owner_name": "",
+          "target": "assets/skill_icons/一代宗匠.png",
+          "size": "icon",
+          "generation": "icon_sheet",
+          "group": "skill_icons",
+          "meta": {}
+        }
+      ],
+      "index": 2,
+      "row": 0,
+      "col": 2
+    },
+    {
+      "label": "一念通明：铸骨",
+      "saves": [
+        {
+          "key": "skill_icon:一念通明",
+          "category": "skill_icon",
+          "asset_id": "一念通明",
+          "name": "一念通明",
+          "owner_id": "",
+          "owner_name": "",
+          "target": "assets/skill_icons/一念通明.png",
+          "size": "icon",
+          "generation": "icon_sheet",
+          "group": "skill_icons",
+          "meta": {}
+        }
+      ],
+      "index": 3,
+      "row": 1,
+      "col": 0
+    },
+    {
+      "label": "一本万利：商战，榷场，商帮，花石纲争霸等活动出战时，同职业门客赚钱+5%",
+      "saves": [
+        {
+          "key": "skill_icon:一本万利",
+          "category": "skill_icon",
+          "asset_id": "一本万利",
+          "name": "一本万利",
+          "owner_id": "",
+          "owner_name": "",
+          "target": "assets/skill_icons/一本万利.png",
+          "size": "icon",
+          "generation": "icon_sheet",
+          "group": "skill_icons",
+          "meta": {}
+        }
+      ],
+      "index": 4,
+      "row": 1,
+      "col": 1
+    },
+    {
+      "label": "万物所出：所有珍兽等级上限+10",
+      "saves": [
+        {
+          "key": "skill_icon:万物所出",
+          "category": "skill_icon",
+          "asset_id": "万物所出",
+          "name": "万物所出",
+          "owner_id": "",
+          "owner_name": "",
+          "target": "assets/skill_icons/万物所出.png",
+          "size": "icon",
+          "generation": "icon_sheet",
+          "group": "skill_icons",
+          "meta": {}
+        }
+      ],
+      "index": 5,
+      "row": 1,
+      "col": 2
+    },
+    {
+      "label": "万里长城",
+      "saves": [
+        {
+          "key": "skill_icon:万里长城",
+          "category": "skill_icon",
+          "asset_id": "万里长城",
+          "name": "万里长城",
+          "owner_id": "",
+          "owner_name": "",
+          "target": "assets/skill_icons/万里长城.png",
+          "size": "icon",
+          "generation": "icon_sheet",
+          "group": "skill_icons",
+          "meta": {}
+        }
+      ],
+      "index": 6,
+      "row": 2,
+      "col": 0
+    },
+    {
+      "label": "三过家门而不入：所有珍兽等级上限+10",
+      "saves": [
+        {
+          "key": "skill_icon:三过家门而不入",
+          "category": "skill_icon",
+          "asset_id": "三过家门而不入",
+          "name": "三过家门而不入",
+          "owner_id": "",
+          "owner_name": "",
+          "target": "assets/skill_icons/三过家门而不入.png",
+          "size": "icon",
+          "generation": "icon_sheet",
+          "group": "skill_icons",
+          "meta": {}
+        }
+      ],
+      "index": 7,
+      "row": 2,
+      "col": 1
+    },
+    {
+      "label": "上古神话",
+      "saves": [
+        {
+          "key": "skill_icon:上古神话",
+          "category": "skill_icon",
+          "asset_id": "上古神话",
+          "name": "上古神话",
+          "owner_id": "",
+          "owner_name": "",
+          "target": "assets/skill_icons/上古神话.png",
+          "size": "icon",
+          "generation": "icon_sheet",
+          "group": "skill_icons",
+          "meta": {}
+        }
+      ],
+      "index": 8,
+      "row": 2,
+      "col": 2
+    }
+  ],
+  "filename_base": "task_0285_icon_sheet_skill_icons",
+  "image_name": "task_0285_icon_sheet_skill_icons.png",
+  "output_path": "build/asset_pipeline/inbox/atlases/task_0285_icon_sheet_skill_icons.png"
+}

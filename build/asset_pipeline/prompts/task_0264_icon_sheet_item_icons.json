@@ -1,0 +1,230 @@
+{
+  "task_id": "task_0264",
+  "kind": "icon_sheet",
+  "group": "item_icons",
+  "title": "item_icons 图标图集",
+  "rows": 3,
+  "cols": 3,
+  "reference_image": "",
+  "cells": [
+    {
+      "label": "金芙蓉：百花齐放系列服装的兑换道具（后续玩法产出）",
+      "saves": [
+        {
+          "key": "item_icon:jin_furong",
+          "category": "item_icon",
+          "asset_id": "jin_furong",
+          "name": "金芙蓉",
+          "owner_id": "",
+          "owner_name": "",
+          "target": "assets/items/jin_furong.png",
+          "size": "icon",
+          "generation": "icon_sheet",
+          "group": "item_icons",
+          "meta": {
+            "desc": "百花齐放系列服装的兑换道具（后续玩法产出）",
+            "use": ""
+          }
+        }
+      ],
+      "index": 0,
+      "row": 0,
+      "col": 0
+    },
+    {
+      "label": "巾帼戎装：花木兰风姿【红妆缭乱】专属升级道具，每级固定消耗600个；获取途径待接",
+      "saves": [
+        {
+          "key": "item_icon:jin_guo_rong_zhuang",
+          "category": "item_icon",
+          "asset_id": "jin_guo_rong_zhuang",
+          "name": "巾帼戎装",
+          "owner_id": "",
+          "owner_name": "",
+          "target": "assets/items/jin_guo_rong_zhuang.png",
+          "size": "icon",
+          "generation": "icon_sheet",
+          "group": "item_icons",
+          "meta": {
+            "desc": "花木兰风姿【红妆缭乱】专属升级道具，每级固定消耗600个；获取途径待接",
+            "use": ""
+          }
+        }
+      ],
+      "index": 1,
+      "row": 0,
+      "col": 1
+    },
+    {
+      "label": "百年晶核：百年魂骨升阶材料，每阶消耗13个",
+      "saves": [
+        {
+          "key": "item_icon:jinghe_bainian",
+          "category": "item_icon",
+          "asset_id": "jinghe_bainian",
+          "name": "百年晶核",
+          "owner_id": "",
+          "owner_name": "",
+          "target": "assets/items/jinghe_bainian.png",
+          "size": "icon",
+          "generation": "icon_sheet",
+          "group": "item_icons",
+          "meta": {
+            "desc": "百年魂骨升阶材料，每阶消耗13个",
+            "use": ""
+          }
+        }
+      ],
+      "index": 2,
+      "row": 0,
+      "col": 2
+    },
+    {
+      "label": "百万年晶核：百万年魂骨升阶材料，每阶消耗1个",
+      "saves": [
+        {
+          "key": "item_icon:jinghe_baiwannian",
+          "category": "item_icon",
+          "asset_id": "jinghe_baiwannian",
+          "name": "百万年晶核",
+          "owner_id": "",
+          "owner_name": "",
+          "target": "assets/items/jinghe_baiwannian.png",
+          "size": "icon",
+          "generation": "icon_sheet",
+          "group": "item_icons",
+          "meta": {
+            "desc": "百万年魂骨升阶材料，每阶消耗1个",
+            "use": ""
+          }
+        }
+      ],
+      "index": 3,
+      "row": 1,
+      "col": 0
+    },
+    {
+      "label": "千年晶核：千年魂骨升阶材料，每阶消耗5个",
+      "saves": [
+        {
+          "key": "item_icon:jinghe_qiannian",
+          "category": "item_icon",
+          "asset_id": "jinghe_qiannian",
+          "name": "千年晶核",
+          "owner_id": "",
+          "owner_name": "",
+          "target": "assets/items/jinghe_qiannian.png",
+          "size": "icon",
+          "generation": "icon_sheet",
+          "group": "item_icons",
+          "meta": {
+            "desc": "千年魂骨升阶材料，每阶消耗5个",
+            "use": ""
+          }
+        }
+      ],
+      "index": 4,
+      "row": 1,
+      "col": 1
+    },
+    {
+      "label": "十万年晶核：十万年魂骨升阶材料，每阶消耗2个",
+      "saves": [
+        {
+          "key": "item_icon:jinghe_shiwannian",
+          "category": "item_icon",
+          "asset_id": "jinghe_shiwannian",
+          "name": "十万年晶核",
+          "owner_id": "",
+          "owner_name": "",
+          "target": "assets/items/jinghe_shiwannian.png",
+          "size": "icon",
+          "generation": "icon_sheet",
+          "group": "item_icons",
+          "meta": {
+            "desc": "十万年魂骨升阶材料，每阶消耗2个",
+            "use": ""
+          }
+        }
+      ],
+      "index": 5,
+      "row": 1,
+      "col": 2
+    },
+    {
+      "label": "万年晶核：万年魂骨升阶材料，每阶消耗4个",
+      "saves": [
+        {
+          "key": "item_icon:jinghe_wannian",
+          "category": "item_icon",
+          "asset_id": "jinghe_wannian",
+          "name": "万年晶核",
+          "owner_id": "",
+          "owner_name": "",
+          "target": "assets/items/jinghe_wannian.png",
+          "size": "icon",
+          "generation": "icon_sheet",
+          "group": "item_icons",
+          "meta": {
+            "desc": "万年魂骨升阶材料，每阶消耗4个",
+            "use": ""
+          }
+        }
+      ],
+      "index": 6,
+      "row": 2,
+      "col": 0
+    },
+    {
+      "label": "精忠碑：精忠报国系列服装的兑换道具（后续玩法产出）",
+      "saves": [
+        {
+          "key": "item_icon:jingzhong_bei",
+          "category": "item_icon",
+          "asset_id": "jingzhong_bei",
+          "name": "精忠碑",
+          "owner_id": "",
+          "owner_name": "",
+          "target": "assets/items/jingzhong_bei.png",
+          "size": "icon",
+          "generation": "icon_sheet",
+          "group": "item_icons",
+          "meta": {
+            "desc": "精忠报国系列服装的兑换道具（后续玩法产出）",
+            "use": ""
+          }
+        }
+      ],
+      "index": 7,
+      "row": 2,
+      "col": 1
+    },
+    {
+      "label": "九渊之水：兑换蛮荒主兽",
+      "saves": [
+        {
+          "key": "item_icon:jiu_yuan_shui",
+          "category": "item_icon",
+          "asset_id": "jiu_yuan_shui",
+          "name": "九渊之水",
+          "owner_id": "",
+          "owner_name": "",
+          "target": "assets/items/jiu_yuan_shui.png",
+          "size": "icon",
+          "generation": "icon_sheet",
+          "group": "item_icons",
+          "meta": {
+            "desc": "兑换蛮荒主兽",
+            "use": ""
+          }
+        }
+      ],
+      "index": 8,
+      "row": 2,
+      "col": 2
+    }
+  ],
+  "filename_base": "task_0264_icon_sheet_item_icons",
+  "image_name": "task_0264_icon_sheet_item_icons.png",
+  "output_path": "build/asset_pipeline/inbox/atlases/task_0264_icon_sheet_item_icons.png"
+}

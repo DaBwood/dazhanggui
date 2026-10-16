@@ -1,0 +1,54 @@
+{
+  "task_id": "task_0044",
+  "kind": "costume_sheet",
+  "group": "costume_friend:rong",
+  "title": "融 的服装图集",
+  "rows": 1,
+  "cols": 1,
+  "reference_image": "",
+  "cells": [
+    {
+      "label": "林间狩猎（素装）",
+      "saves": [
+        {
+          "key": "costume_full:rong:rong_cos01",
+          "category": "costume_full",
+          "asset_id": "rong_cos01",
+          "name": "林间狩猎",
+          "owner_id": "rong",
+          "owner_name": "融",
+          "target": "assets/costumes/rong_cos01.png",
+          "size": "portrait",
+          "generation": "costume_sheet",
+          "group": "costume_friend:rong",
+          "meta": {
+            "quality": "素装",
+            "series": "",
+            "owner_kind": "friend"
+          }
+        },
+        {
+          "key": "friend_portrait:rong:rong",
+          "category": "friend_portrait",
+          "asset_id": "rong",
+          "name": "融",
+          "owner_id": "rong",
+          "owner_name": "融",
+          "target": "assets/portraits/friends/rong.png",
+          "size": "portrait",
+          "generation": "portrait",
+          "group": "friend_portraits",
+          "meta": {
+            "category": "商"
+          }
+        }
+      ],
+      "index": 0,
+      "row": 0,
+      "col": 0
+    }
+  ],
+  "filename_base": "task_0044_costume_sheet_costume_friend_rong",
+  "image_name": "task_0044_costume_sheet_costume_friend_rong.png",
+  "output_path": "build/asset_pipeline/inbox/atlases/task_0044_costume_sheet_costume_friend_rong.png"
+}

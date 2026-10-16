@@ -1,0 +1,55 @@
+{
+  "task_id": "task_0107",
+  "kind": "costume_sheet",
+  "group": "costume_hero:gun_haijiao",
+  "title": "滚海蛟 的服装图集",
+  "rows": 1,
+  "cols": 1,
+  "reference_image": "",
+  "cells": [
+    {
+      "label": "海洋龙卷（素装）",
+      "saves": [
+        {
+          "key": "costume_full:gun_haijiao:gun_haijiao_cos01",
+          "category": "costume_full",
+          "asset_id": "gun_haijiao_cos01",
+          "name": "海洋龙卷",
+          "owner_id": "gun_haijiao",
+          "owner_name": "滚海蛟",
+          "target": "assets/costumes/gun_haijiao_cos01.png",
+          "size": "portrait",
+          "generation": "costume_sheet",
+          "group": "costume_hero:gun_haijiao",
+          "meta": {
+            "quality": "素装",
+            "series": "",
+            "owner_kind": "hero"
+          }
+        },
+        {
+          "key": "hero_portrait:gun_haijiao:gun_haijiao",
+          "category": "hero_portrait",
+          "asset_id": "gun_haijiao",
+          "name": "滚海蛟",
+          "owner_id": "gun_haijiao",
+          "owner_name": "滚海蛟",
+          "target": "assets/portraits/heroes/gun_haijiao.png",
+          "size": "portrait",
+          "generation": "portrait",
+          "group": "hero_portraits",
+          "meta": {
+            "category": "侠",
+            "quality": 2
+          }
+        }
+      ],
+      "index": 0,
+      "row": 0,
+      "col": 0
+    }
+  ],
+  "filename_base": "task_0107_costume_sheet_costume_hero_gun_haijiao",
+  "image_name": "task_0107_costume_sheet_costume_hero_gun_haijiao.png",
+  "output_path": "build/asset_pipeline/inbox/atlases/task_0107_costume_sheet_costume_hero_gun_haijiao.png"
+}

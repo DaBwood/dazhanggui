@@ -1,0 +1,38 @@
+{
+  "task_id": "task_0231",
+  "kind": "portrait_single",
+  "group": "hero_portraits",
+  "title": "朱大亮",
+  "rows": 1,
+  "cols": 1,
+  "reference_image": "",
+  "cells": [
+    {
+      "label": "朱大亮",
+      "saves": [
+        {
+          "key": "hero_portrait:zhu_daliang:zhu_daliang",
+          "category": "hero_portrait",
+          "asset_id": "zhu_daliang",
+          "name": "朱大亮",
+          "owner_id": "zhu_daliang",
+          "owner_name": "朱大亮",
+          "target": "assets/portraits/heroes/zhu_daliang.png",
+          "size": "portrait",
+          "generation": "portrait",
+          "group": "hero_portraits",
+          "meta": {
+            "category": "商",
+            "quality": 0
+          }
+        }
+      ],
+      "index": 0,
+      "row": 0,
+      "col": 0
+    }
+  ],
+  "filename_base": "task_0231_portrait_single_hero_portraits",
+  "image_name": "task_0231_portrait_single_hero_portraits.png",
+  "output_path": "build/asset_pipeline/inbox/atlases/task_0231_portrait_single_hero_portraits.png"
+}

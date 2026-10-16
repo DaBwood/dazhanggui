@@ -1,0 +1,230 @@
+{
+  "task_id": "task_0283",
+  "kind": "icon_sheet",
+  "group": "item_icons",
+  "title": "item_icons 图标图集",
+  "rows": 3,
+  "cols": 3,
+  "reference_image": "",
+  "cells": [
+    {
+      "label": "蕴灵珏：守护灵注灵材料，每级消耗随等级提升",
+      "saves": [
+        {
+          "key": "item_icon:yulin_jue",
+          "category": "item_icon",
+          "asset_id": "yulin_jue",
+          "name": "蕴灵珏",
+          "owner_id": "",
+          "owner_name": "",
+          "target": "assets/items/yulin_jue.png",
+          "size": "icon",
+          "generation": "icon_sheet",
+          "group": "item_icons",
+          "meta": {
+            "desc": "守护灵注灵材料，每级消耗随等级提升",
+            "use": ""
+          }
+        }
+      ],
+      "index": 0,
+      "row": 0,
+      "col": 0
+    },
+    {
+      "label": "玉叶金花：兑换门客【小柒】所需",
+      "saves": [
+        {
+          "key": "item_icon:yuye_jinhua",
+          "category": "item_icon",
+          "asset_id": "yuye_jinhua",
+          "name": "玉叶金花",
+          "owner_id": "",
+          "owner_name": "",
+          "target": "assets/items/yuye_jinhua.png",
+          "size": "icon",
+          "generation": "icon_sheet",
+          "group": "item_icons",
+          "meta": {
+            "desc": "兑换门客【小柒】所需",
+            "use": ""
+          }
+        }
+      ],
+      "index": 1,
+      "row": 0,
+      "col": 1
+    },
+    {
+      "label": "创作之花：妙音坊缘分物，后续用于芳华技能",
+      "saves": [
+        {
+          "key": "item_icon:yyf_chuangzuo",
+          "category": "item_icon",
+          "asset_id": "yyf_chuangzuo",
+          "name": "创作之花",
+          "owner_id": "",
+          "owner_name": "",
+          "target": "assets/items/yyf_chuangzuo.png",
+          "size": "icon",
+          "generation": "icon_sheet",
+          "group": "item_icons",
+          "meta": {
+            "desc": "妙音坊缘分物，后续用于芳华技能",
+            "use": ""
+          }
+        }
+      ],
+      "index": 2,
+      "row": 0,
+      "col": 2
+    },
+    {
+      "label": "声乐之花：妙音坊缘分物，后续用于芳华技能",
+      "saves": [
+        {
+          "key": "item_icon:yyf_shengyue",
+          "category": "item_icon",
+          "asset_id": "yyf_shengyue",
+          "name": "声乐之花",
+          "owner_id": "",
+          "owner_name": "",
+          "target": "assets/items/yyf_shengyue.png",
+          "size": "icon",
+          "generation": "icon_sheet",
+          "group": "item_icons",
+          "meta": {
+            "desc": "妙音坊缘分物，后续用于芳华技能",
+            "use": ""
+          }
+        }
+      ],
+      "index": 3,
+      "row": 1,
+      "col": 0
+    },
+    {
+      "label": "舞蹈之花：妙音坊缘分物，后续用于芳华技能",
+      "saves": [
+        {
+          "key": "item_icon:yyf_wudao",
+          "category": "item_icon",
+          "asset_id": "yyf_wudao",
+          "name": "舞蹈之花",
+          "owner_id": "",
+          "owner_name": "",
+          "target": "assets/items/yyf_wudao.png",
+          "size": "icon",
+          "generation": "icon_sheet",
+          "group": "item_icons",
+          "meta": {
+            "desc": "妙音坊缘分物，后续用于芳华技能",
+            "use": ""
+          }
+        }
+      ],
+      "index": 4,
+      "row": 1,
+      "col": 1
+    },
+    {
+      "label": "仪态之花：妙音坊缘分物，后续用于芳华技能",
+      "saves": [
+        {
+          "key": "item_icon:yyf_yitai",
+          "category": "item_icon",
+          "asset_id": "yyf_yitai",
+          "name": "仪态之花",
+          "owner_id": "",
+          "owner_name": "",
+          "target": "assets/items/yyf_yitai.png",
+          "size": "icon",
+          "generation": "icon_sheet",
+          "group": "item_icons",
+          "meta": {
+            "desc": "妙音坊缘分物，后续用于芳华技能",
+            "use": ""
+          }
+        }
+      ],
+      "index": 5,
+      "row": 1,
+      "col": 2
+    },
+    {
+      "label": "乐器之花：妙音坊缘分物，后续用于芳华技能",
+      "saves": [
+        {
+          "key": "item_icon:yyf_yueqi",
+          "category": "item_icon",
+          "asset_id": "yyf_yueqi",
+          "name": "乐器之花",
+          "owner_id": "",
+          "owner_name": "",
+          "target": "assets/items/yyf_yueqi.png",
+          "size": "icon",
+          "generation": "icon_sheet",
+          "group": "item_icons",
+          "meta": {
+            "desc": "妙音坊缘分物，后续用于芳华技能",
+            "use": ""
+          }
+        }
+      ],
+      "index": 6,
+      "row": 2,
+      "col": 0
+    },
+    {
+      "label": "织梦缀玉：兑换门客【董小宛】所需",
+      "saves": [
+        {
+          "key": "item_icon:zhimeng_zhuiyu",
+          "category": "item_icon",
+          "asset_id": "zhimeng_zhuiyu",
+          "name": "织梦缀玉",
+          "owner_id": "",
+          "owner_name": "",
+          "target": "assets/items/zhimeng_zhuiyu.png",
+          "size": "icon",
+          "generation": "icon_sheet",
+          "group": "item_icons",
+          "meta": {
+            "desc": "兑换门客【董小宛】所需",
+            "use": ""
+          }
+        }
+      ],
+      "index": 7,
+      "row": 2,
+      "col": 1
+    },
+    {
+      "label": "烛火光：藏品升级道具：101~200级使用",
+      "saves": [
+        {
+          "key": "item_icon:zhu_huo_guang",
+          "category": "item_icon",
+          "asset_id": "zhu_huo_guang",
+          "name": "烛火光",
+          "owner_id": "",
+          "owner_name": "",
+          "target": "assets/items/zhu_huo_guang.png",
+          "size": "icon",
+          "generation": "icon_sheet",
+          "group": "item_icons",
+          "meta": {
+            "desc": "藏品升级道具：101~200级使用",
+            "use": ""
+          }
+        }
+      ],
+      "index": 8,
+      "row": 2,
+      "col": 2
+    }
+  ],
+  "filename_base": "task_0283_icon_sheet_item_icons",
+  "image_name": "task_0283_icon_sheet_item_icons.png",
+  "output_path": "build/asset_pipeline/inbox/atlases/task_0283_icon_sheet_item_icons.png"
+}

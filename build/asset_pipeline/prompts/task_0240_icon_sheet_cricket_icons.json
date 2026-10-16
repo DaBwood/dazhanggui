@@ -1,0 +1,239 @@
+{
+  "task_id": "task_0240",
+  "kind": "icon_sheet",
+  "group": "cricket_icons",
+  "title": "cricket_icons 图标图集",
+  "rows": 3,
+  "cols": 3,
+  "reference_image": "",
+  "cells": [
+    {
+      "label": "碧穹晶：农系 6星",
+      "saves": [
+        {
+          "key": "cricket_icon:碧穹晶",
+          "category": "cricket_icon",
+          "asset_id": "碧穹晶",
+          "name": "碧穹晶",
+          "owner_id": "",
+          "owner_name": "",
+          "target": "assets/skill_icons/碧穹晶.png",
+          "size": "icon",
+          "generation": "icon_sheet",
+          "group": "cricket_icons",
+          "meta": {
+            "cricket_id": "bi_qiong_jing",
+            "career": "农",
+            "quality": 6
+          }
+        }
+      ],
+      "index": 0,
+      "row": 0,
+      "col": 0
+    },
+    {
+      "label": "紫星辰：商系 4星",
+      "saves": [
+        {
+          "key": "cricket_icon:紫星辰",
+          "category": "cricket_icon",
+          "asset_id": "紫星辰",
+          "name": "紫星辰",
+          "owner_id": "",
+          "owner_name": "",
+          "target": "assets/skill_icons/紫星辰.png",
+          "size": "icon",
+          "generation": "icon_sheet",
+          "group": "cricket_icons",
+          "meta": {
+            "cricket_id": "zi_xing_chen",
+            "career": "商",
+            "quality": 4
+          }
+        }
+      ],
+      "index": 1,
+      "row": 0,
+      "col": 1
+    },
+    {
+      "label": "紫翅白：工系 1星",
+      "saves": [
+        {
+          "key": "cricket_icon:紫翅白",
+          "category": "cricket_icon",
+          "asset_id": "紫翅白",
+          "name": "紫翅白",
+          "owner_id": "",
+          "owner_name": "",
+          "target": "assets/skill_icons/紫翅白.png",
+          "size": "icon",
+          "generation": "icon_sheet",
+          "group": "cricket_icons",
+          "meta": {
+            "cricket_id": "zi_chi_bai",
+            "career": "工",
+            "quality": 1
+          }
+        }
+      ],
+      "index": 2,
+      "row": 0,
+      "col": 2
+    },
+    {
+      "label": "红头青：工系 2星",
+      "saves": [
+        {
+          "key": "cricket_icon:红头青",
+          "category": "cricket_icon",
+          "asset_id": "红头青",
+          "name": "红头青",
+          "owner_id": "",
+          "owner_name": "",
+          "target": "assets/skill_icons/红头青.png",
+          "size": "icon",
+          "generation": "icon_sheet",
+          "group": "cricket_icons",
+          "meta": {
+            "cricket_id": "hong_tou_qing",
+            "career": "工",
+            "quality": 2
+          }
+        }
+      ],
+      "index": 3,
+      "row": 1,
+      "col": 0
+    },
+    {
+      "label": "红牙白：士系 1星",
+      "saves": [
+        {
+          "key": "cricket_icon:红牙白",
+          "category": "cricket_icon",
+          "asset_id": "红牙白",
+          "name": "红牙白",
+          "owner_id": "",
+          "owner_name": "",
+          "target": "assets/skill_icons/红牙白.png",
+          "size": "icon",
+          "generation": "icon_sheet",
+          "group": "cricket_icons",
+          "meta": {
+            "cricket_id": "hong_ya_bai",
+            "career": "士",
+            "quality": 1
+          }
+        }
+      ],
+      "index": 4,
+      "row": 1,
+      "col": 1
+    },
+    {
+      "label": "红缨枪：商系 5星",
+      "saves": [
+        {
+          "key": "cricket_icon:红缨枪",
+          "category": "cricket_icon",
+          "asset_id": "红缨枪",
+          "name": "红缨枪",
+          "owner_id": "",
+          "owner_name": "",
+          "target": "assets/skill_icons/红缨枪.png",
+          "size": "icon",
+          "generation": "icon_sheet",
+          "group": "cricket_icons",
+          "meta": {
+            "cricket_id": "hong_ying_qiang",
+            "career": "商",
+            "quality": 5
+          }
+        }
+      ],
+      "index": 5,
+      "row": 1,
+      "col": 2
+    },
+    {
+      "label": "红麻头：商系 2星",
+      "saves": [
+        {
+          "key": "cricket_icon:红麻头",
+          "category": "cricket_icon",
+          "asset_id": "红麻头",
+          "name": "红麻头",
+          "owner_id": "",
+          "owner_name": "",
+          "target": "assets/skill_icons/红麻头.png",
+          "size": "icon",
+          "generation": "icon_sheet",
+          "group": "cricket_icons",
+          "meta": {
+            "cricket_id": "hong_ma_tou",
+            "career": "商",
+            "quality": 2
+          }
+        }
+      ],
+      "index": 6,
+      "row": 2,
+      "col": 0
+    },
+    {
+      "label": "蛮荒骷：工系 6星",
+      "saves": [
+        {
+          "key": "cricket_icon:蛮荒骷",
+          "category": "cricket_icon",
+          "asset_id": "蛮荒骷",
+          "name": "蛮荒骷",
+          "owner_id": "",
+          "owner_name": "",
+          "target": "assets/skill_icons/蛮荒骷.png",
+          "size": "icon",
+          "generation": "icon_sheet",
+          "group": "cricket_icons",
+          "meta": {
+            "cricket_id": "man_huang_ku",
+            "career": "工",
+            "quality": 6
+          }
+        }
+      ],
+      "index": 7,
+      "row": 2,
+      "col": 1
+    },
+    {
+      "label": "行者：商系 6星",
+      "saves": [
+        {
+          "key": "cricket_icon:行者",
+          "category": "cricket_icon",
+          "asset_id": "行者",
+          "name": "行者",
+          "owner_id": "",
+          "owner_name": "",
+          "target": "assets/skill_icons/行者.png",
+          "size": "icon",
+          "generation": "icon_sheet",
+          "group": "cricket_icons",
+          "meta": {
+            "cricket_id": "xing_zhe",
+            "career": "商",
+            "quality": 6
+          }
+        }
+      ],
+      "index": 8,
+      "row": 2,
+      "col": 2
+    }
+  ],
+  "filename_base": "task_0240_icon_sheet_cricket_icons",
+  "image_name": "task_0240_icon_sheet_cricket_icons.png",
+  "output_path": "build/asset_pipeline/inbox/atlases/task_0240_icon_sheet_cricket_icons.png"
+}

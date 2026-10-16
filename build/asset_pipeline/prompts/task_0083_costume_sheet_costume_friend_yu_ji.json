@@ -1,0 +1,54 @@
+{
+  "task_id": "task_0083",
+  "kind": "costume_sheet",
+  "group": "costume_friend:yu_ji",
+  "title": "虞姬 的服装图集",
+  "rows": 1,
+  "cols": 1,
+  "reference_image": "",
+  "cells": [
+    {
+      "label": "虞美人（素装）",
+      "saves": [
+        {
+          "key": "costume_full:yu_ji:yu_ji_cos01",
+          "category": "costume_full",
+          "asset_id": "yu_ji_cos01",
+          "name": "虞美人",
+          "owner_id": "yu_ji",
+          "owner_name": "虞姬",
+          "target": "assets/costumes/yu_ji_cos01.png",
+          "size": "portrait",
+          "generation": "costume_sheet",
+          "group": "costume_friend:yu_ji",
+          "meta": {
+            "quality": "素装",
+            "series": "",
+            "owner_kind": "friend"
+          }
+        },
+        {
+          "key": "friend_portrait:yu_ji:yu_ji",
+          "category": "friend_portrait",
+          "asset_id": "yu_ji",
+          "name": "虞姬",
+          "owner_id": "yu_ji",
+          "owner_name": "虞姬",
+          "target": "assets/portraits/friends/yu_ji.png",
+          "size": "portrait",
+          "generation": "portrait",
+          "group": "friend_portraits",
+          "meta": {
+            "category": "士"
+          }
+        }
+      ],
+      "index": 0,
+      "row": 0,
+      "col": 0
+    }
+  ],
+  "filename_base": "task_0083_costume_sheet_costume_friend_yu_ji",
+  "image_name": "task_0083_costume_sheet_costume_friend_yu_ji.png",
+  "output_path": "build/asset_pipeline/inbox/atlases/task_0083_costume_sheet_costume_friend_yu_ji.png"
+}

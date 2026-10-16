@@ -1,0 +1,54 @@
+{
+  "task_id": "task_0013",
+  "kind": "costume_sheet",
+  "group": "costume_friend:hua_wuque",
+  "title": "花无缺 的服装图集",
+  "rows": 1,
+  "cols": 1,
+  "reference_image": "",
+  "cells": [
+    {
+      "label": "初露锋芒（素装）",
+      "saves": [
+        {
+          "key": "costume_full:hua_wuque:hua_wuque_cos01",
+          "category": "costume_full",
+          "asset_id": "hua_wuque_cos01",
+          "name": "初露锋芒",
+          "owner_id": "hua_wuque",
+          "owner_name": "花无缺",
+          "target": "assets/costumes/hua_wuque_cos01.png",
+          "size": "portrait",
+          "generation": "costume_sheet",
+          "group": "costume_friend:hua_wuque",
+          "meta": {
+            "quality": "素装",
+            "series": "",
+            "owner_kind": "friend"
+          }
+        },
+        {
+          "key": "friend_portrait:hua_wuque:hua_wuque",
+          "category": "friend_portrait",
+          "asset_id": "hua_wuque",
+          "name": "花无缺",
+          "owner_id": "hua_wuque",
+          "owner_name": "花无缺",
+          "target": "assets/portraits/friends/hua_wuque.png",
+          "size": "portrait",
+          "generation": "portrait",
+          "group": "friend_portraits",
+          "meta": {
+            "category": "农"
+          }
+        }
+      ],
+      "index": 0,
+      "row": 0,
+      "col": 0
+    }
+  ],
+  "filename_base": "task_0013_costume_sheet_costume_friend_hua_wuque",
+  "image_name": "task_0013_costume_sheet_costume_friend_hua_wuque.png",
+  "output_path": "build/asset_pipeline/inbox/atlases/task_0013_costume_sheet_costume_friend_hua_wuque.png"
+}

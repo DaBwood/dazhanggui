@@ -1,0 +1,105 @@
+{
+  "task_id": "task_0108",
+  "kind": "costume_sheet",
+  "group": "costume_hero:hong_laoxie",
+  "title": "洪老邪 的服装图集",
+  "rows": 2,
+  "cols": 2,
+  "reference_image": "",
+  "cells": [
+    {
+      "label": "古墓异响（素装）",
+      "saves": [
+        {
+          "key": "costume_full:hong_laoxie:hong_laoxie_cos01",
+          "category": "costume_full",
+          "asset_id": "hong_laoxie_cos01",
+          "name": "古墓异响",
+          "owner_id": "hong_laoxie",
+          "owner_name": "洪老邪",
+          "target": "assets/costumes/hong_laoxie_cos01.png",
+          "size": "portrait",
+          "generation": "costume_sheet",
+          "group": "costume_hero:hong_laoxie",
+          "meta": {
+            "quality": "素装",
+            "series": "",
+            "owner_kind": "hero"
+          }
+        },
+        {
+          "key": "hero_portrait:hong_laoxie:hong_laoxie",
+          "category": "hero_portrait",
+          "asset_id": "hong_laoxie",
+          "name": "洪老邪",
+          "owner_id": "hong_laoxie",
+          "owner_name": "洪老邪",
+          "target": "assets/portraits/heroes/hong_laoxie.png",
+          "size": "portrait",
+          "generation": "portrait",
+          "group": "hero_portraits",
+          "meta": {
+            "category": "侠",
+            "quality": 2
+          }
+        }
+      ],
+      "index": 0,
+      "row": 0,
+      "col": 0
+    },
+    {
+      "label": "深海探宝（素装）",
+      "saves": [
+        {
+          "key": "costume_full:hong_laoxie:hong_laoxie_cos02",
+          "category": "costume_full",
+          "asset_id": "hong_laoxie_cos02",
+          "name": "深海探宝",
+          "owner_id": "hong_laoxie",
+          "owner_name": "洪老邪",
+          "target": "assets/costumes/hong_laoxie_cos02.png",
+          "size": "portrait",
+          "generation": "costume_sheet",
+          "group": "costume_hero:hong_laoxie",
+          "meta": {
+            "quality": "素装",
+            "series": "",
+            "owner_kind": "hero"
+          }
+        }
+      ],
+      "index": 1,
+      "row": 0,
+      "col": 1
+    },
+    {
+      "label": "搬山道人（素装）",
+      "saves": [
+        {
+          "key": "costume_full:hong_laoxie:hong_laoxie_cos03",
+          "category": "costume_full",
+          "asset_id": "hong_laoxie_cos03",
+          "name": "搬山道人",
+          "owner_id": "hong_laoxie",
+          "owner_name": "洪老邪",
+          "target": "assets/costumes/hong_laoxie_cos03.png",
+          "size": "portrait",
+          "generation": "costume_sheet",
+          "group": "costume_hero:hong_laoxie",
+          "meta": {
+            "quality": "素装",
+            "series": "",
+            "owner_kind": "hero"
+          }
+        }
+      ],
+      "index": 2,
+      "row": 1,
+      "col": 0
+    }
+  ],
+  "filename_base": "task_0108_costume_sheet_costume_hero_hong_laoxie",
+  "image_name": "task_0108_costume_sheet_costume_hero_hong_laoxie.png",
+  "output_path": "build/asset_pipeline/inbox/atlases/task_0108_costume_sheet_costume_hero_hong_laoxie.png"
+}

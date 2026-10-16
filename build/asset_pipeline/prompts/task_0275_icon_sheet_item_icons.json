@@ -1,0 +1,266 @@
+{
+  "task_id": "task_0275",
+  "kind": "icon_sheet",
+  "group": "item_icons",
+  "title": "item_icons 图标图集",
+  "rows": 3,
+  "cols": 3,
+  "reference_image": "",
+  "cells": [
+    {
+      "label": "市贾自选锦盒：使用后任选以下藏品碎片×1：走笔绘商、百宝货箱、信印生辉",
+      "saves": [
+        {
+          "key": "item_icon:suitbox_市贾",
+          "category": "item_icon",
+          "asset_id": "suitbox_市贾",
+          "name": "市贾自选锦盒",
+          "owner_id": "",
+          "owner_name": "",
+          "target": "assets/items/suitbox_市贾.png",
+          "size": "icon",
+          "generation": "icon_sheet",
+          "group": "item_icons",
+          "meta": {
+            "desc": "使用后任选以下藏品碎片×1：走笔绘商、百宝货箱、信印生辉",
+            "use": {
+              "type": "suit_frag_box",
+              "btn": "使用",
+              "title": "选择碎片"
+            }
+          }
+        }
+      ],
+      "index": 0,
+      "row": 0,
+      "col": 0
+    },
+    {
+      "label": "承运自选锦盒：使用后任选以下藏品碎片×1：珐彩翔龙、吉庆长明",
+      "saves": [
+        {
+          "key": "item_icon:suitbox_承运",
+          "category": "item_icon",
+          "asset_id": "suitbox_承运",
+          "name": "承运自选锦盒",
+          "owner_id": "",
+          "owner_name": "",
+          "target": "assets/items/suitbox_承运.png",
+          "size": "icon",
+          "generation": "icon_sheet",
+          "group": "item_icons",
+          "meta": {
+            "desc": "使用后任选以下藏品碎片×1：珐彩翔龙、吉庆长明",
+            "use": {
+              "type": "suit_frag_box",
+              "btn": "使用",
+              "title": "选择碎片"
+            }
+          }
+        }
+      ],
+      "index": 1,
+      "row": 0,
+      "col": 1
+    },
+    {
+      "label": "时霜自选锦盒：使用后任选以下藏品碎片×1：冰凌雪枪、无尽沙漏、四相镜",
+      "saves": [
+        {
+          "key": "item_icon:suitbox_时霜",
+          "category": "item_icon",
+          "asset_id": "suitbox_时霜",
+          "name": "时霜自选锦盒",
+          "owner_id": "",
+          "owner_name": "",
+          "target": "assets/items/suitbox_时霜.png",
+          "size": "icon",
+          "generation": "icon_sheet",
+          "group": "item_icons",
+          "meta": {
+            "desc": "使用后任选以下藏品碎片×1：冰凌雪枪、无尽沙漏、四相镜",
+            "use": {
+              "type": "suit_frag_box",
+              "btn": "使用",
+              "title": "选择碎片"
+            }
+          }
+        }
+      ],
+      "index": 2,
+      "row": 0,
+      "col": 2
+    },
+    {
+      "label": "星光自选锦盒：使用后任选以下藏品碎片×1：兰烬羽扇、云筝栖羽、蝶梦九霄、芳阮凝香、天香乘鸾",
+      "saves": [
+        {
+          "key": "item_icon:suitbox_星光",
+          "category": "item_icon",
+          "asset_id": "suitbox_星光",
+          "name": "星光自选锦盒",
+          "owner_id": "",
+          "owner_name": "",
+          "target": "assets/items/suitbox_星光.png",
+          "size": "icon",
+          "generation": "icon_sheet",
+          "group": "item_icons",
+          "meta": {
+            "desc": "使用后任选以下藏品碎片×1：兰烬羽扇、云筝栖羽、蝶梦九霄、芳阮凝香、天香乘鸾",
+            "use": {
+              "type": "suit_frag_box",
+              "btn": "使用",
+              "title": "选择碎片"
+            }
+          }
+        }
+      ],
+      "index": 3,
+      "row": 1,
+      "col": 0
+    },
+    {
+      "label": "春意盎然自选锦盒：使用后任选以下藏品碎片×1：花醉云裳、细雨轻尘、春江水暖",
+      "saves": [
+        {
+          "key": "item_icon:suitbox_春意盎然",
+          "category": "item_icon",
+          "asset_id": "suitbox_春意盎然",
+          "name": "春意盎然自选锦盒",
+          "owner_id": "",
+          "owner_name": "",
+          "target": "assets/items/suitbox_春意盎然.png",
+          "size": "icon",
+          "generation": "icon_sheet",
+          "group": "item_icons",
+          "meta": {
+            "desc": "使用后任选以下藏品碎片×1：花醉云裳、细雨轻尘、春江水暖",
+            "use": {
+              "type": "suit_frag_box",
+              "btn": "使用",
+              "title": "选择碎片"
+            }
+          }
+        }
+      ],
+      "index": 4,
+      "row": 1,
+      "col": 1
+    },
+    {
+      "label": "水玉自选锦盒：使用后任选以下藏品碎片×1：千年御水滴、天罡寒玉、七宝妙树皮",
+      "saves": [
+        {
+          "key": "item_icon:suitbox_水玉",
+          "category": "item_icon",
+          "asset_id": "suitbox_水玉",
+          "name": "水玉自选锦盒",
+          "owner_id": "",
+          "owner_name": "",
+          "target": "assets/items/suitbox_水玉.png",
+          "size": "icon",
+          "generation": "icon_sheet",
+          "group": "item_icons",
+          "meta": {
+            "desc": "使用后任选以下藏品碎片×1：千年御水滴、天罡寒玉、七宝妙树皮",
+            "use": {
+              "type": "suit_frag_box",
+              "btn": "使用",
+              "title": "选择碎片"
+            }
+          }
+        }
+      ],
+      "index": 5,
+      "row": 1,
+      "col": 2
+    },
+    {
+      "label": "求知自选锦盒：使用后任选以下藏品碎片×1：杏坛讲学、鲤跃龙门",
+      "saves": [
+        {
+          "key": "item_icon:suitbox_求知",
+          "category": "item_icon",
+          "asset_id": "suitbox_求知",
+          "name": "求知自选锦盒",
+          "owner_id": "",
+          "owner_name": "",
+          "target": "assets/items/suitbox_求知.png",
+          "size": "icon",
+          "generation": "icon_sheet",
+          "group": "item_icons",
+          "meta": {
+            "desc": "使用后任选以下藏品碎片×1：杏坛讲学、鲤跃龙门",
+            "use": {
+              "type": "suit_frag_box",
+              "btn": "使用",
+              "title": "选择碎片"
+            }
+          }
+        }
+      ],
+      "index": 6,
+      "row": 2,
+      "col": 0
+    },
+    {
+      "label": "清辉自选锦盒：使用后任选以下藏品碎片×1：缠枝玉壶、宫灯计",
+      "saves": [
+        {
+          "key": "item_icon:suitbox_清辉",
+          "category": "item_icon",
+          "asset_id": "suitbox_清辉",
+          "name": "清辉自选锦盒",
+          "owner_id": "",
+          "owner_name": "",
+          "target": "assets/items/suitbox_清辉.png",
+          "size": "icon",
+          "generation": "icon_sheet",
+          "group": "item_icons",
+          "meta": {
+            "desc": "使用后任选以下藏品碎片×1：缠枝玉壶、宫灯计",
+            "use": {
+              "type": "suit_frag_box",
+              "btn": "使用",
+              "title": "选择碎片"
+            }
+          }
+        }
+      ],
+      "index": 7,
+      "row": 2,
+      "col": 1
+    },
+    {
+      "label": "溯光自选锦盒：使用后任选以下藏品碎片×1：岁月轮转、盛世镜",
+      "saves": [
+        {
+          "key": "item_icon:suitbox_溯光",
+          "category": "item_icon",
+          "asset_id": "suitbox_溯光",
+          "name": "溯光自选锦盒",
+          "owner_id": "",
+          "owner_name": "",
+          "target": "assets/items/suitbox_溯光.png",
+          "size": "icon",
+          "generation": "icon_sheet",
+          "group": "item_icons",
+          "meta": {
+            "desc": "使用后任选以下藏品碎片×1：岁月轮转、盛世镜",
+            "use": {
+              "type": "suit_frag_box",
+              "btn": "使用",
+              "title": "选择碎片"
+            }
+          }
+        }
+      ],
+      "index": 8,
+      "row": 2,
+      "col": 2
+    }
+  ],
+  "filename_base": "task_0275_icon_sheet_item_icons",
+  "image_name": "task_0275_icon_sheet_item_icons.png",
+  "output_path": "build/asset_pipeline/inbox/atlases/task_0275_icon_sheet_item_icons.png"
+}

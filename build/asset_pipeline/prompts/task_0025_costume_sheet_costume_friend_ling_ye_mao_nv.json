@@ -1,0 +1,179 @@
+{
+  "task_id": "task_0025",
+  "kind": "costume_sheet",
+  "group": "costume_friend:ling_ye_mao_nv",
+  "title": "灵夜猫女 的服装图集",
+  "rows": 3,
+  "cols": 2,
+  "reference_image": "",
+  "cells": [
+    {
+      "label": "专属甜心（素装）",
+      "saves": [
+        {
+          "key": "costume_full:ling_ye_mao_nv:ling_ye_mao_nv_cos01",
+          "category": "costume_full",
+          "asset_id": "ling_ye_mao_nv_cos01",
+          "name": "专属甜心",
+          "owner_id": "ling_ye_mao_nv",
+          "owner_name": "灵夜猫女",
+          "target": "assets/costumes/ling_ye_mao_nv_cos01.png",
+          "size": "portrait",
+          "generation": "costume_sheet",
+          "group": "costume_friend:ling_ye_mao_nv",
+          "meta": {
+            "quality": "素装",
+            "series": "",
+            "owner_kind": "friend"
+          }
+        },
+        {
+          "key": "friend_portrait:ling_ye_mao_nv:ling_ye_mao_nv",
+          "category": "friend_portrait",
+          "asset_id": "ling_ye_mao_nv",
+          "name": "灵夜猫女",
+          "owner_id": "ling_ye_mao_nv",
+          "owner_name": "灵夜猫女",
+          "target": "assets/portraits/friends/ling_ye_mao_nv.png",
+          "size": "portrait",
+          "generation": "portrait",
+          "group": "friend_portraits",
+          "meta": {
+            "category": "工"
+          }
+        }
+      ],
+      "index": 0,
+      "row": 0,
+      "col": 0
+    },
+    {
+      "label": "一钩渔满（素装）",
+      "saves": [
+        {
+          "key": "costume_full:ling_ye_mao_nv:ling_ye_mao_nv_cos02",
+          "category": "costume_full",
+          "asset_id": "ling_ye_mao_nv_cos02",
+          "name": "一钩渔满",
+          "owner_id": "ling_ye_mao_nv",
+          "owner_name": "灵夜猫女",
+          "target": "assets/costumes/ling_ye_mao_nv_cos02.png",
+          "size": "portrait",
+          "generation": "costume_sheet",
+          "group": "costume_friend:ling_ye_mao_nv",
+          "meta": {
+            "quality": "素装",
+            "series": "",
+            "owner_kind": "friend"
+          }
+        }
+      ],
+      "index": 1,
+      "row": 0,
+      "col": 1
+    },
+    {
+      "label": "招财猫女（素装）",
+      "saves": [
+        {
+          "key": "costume_full:ling_ye_mao_nv:ling_ye_mao_nv_cos03",
+          "category": "costume_full",
+          "asset_id": "ling_ye_mao_nv_cos03",
+          "name": "招财猫女",
+          "owner_id": "ling_ye_mao_nv",
+          "owner_name": "灵夜猫女",
+          "target": "assets/costumes/ling_ye_mao_nv_cos03.png",
+          "size": "portrait",
+          "generation": "costume_sheet",
+          "group": "costume_friend:ling_ye_mao_nv",
+          "meta": {
+            "quality": "素装",
+            "series": "",
+            "owner_kind": "friend"
+          }
+        }
+      ],
+      "index": 2,
+      "row": 1,
+      "col": 0
+    },
+    {
+      "label": "倩女喵魂（华服）",
+      "saves": [
+        {
+          "key": "costume_full:ling_ye_mao_nv:ling_ye_mao_nv_cos04",
+          "category": "costume_full",
+          "asset_id": "ling_ye_mao_nv_cos04",
+          "name": "倩女喵魂",
+          "owner_id": "ling_ye_mao_nv",
+          "owner_name": "灵夜猫女",
+          "target": "assets/costumes/ling_ye_mao_nv_cos04.png",
+          "size": "portrait",
+          "generation": "costume_sheet",
+          "group": "costume_friend:ling_ye_mao_nv",
+          "meta": {
+            "quality": "华服",
+            "series": "",
+            "owner_kind": "friend"
+          }
+        }
+      ],
+      "index": 3,
+      "row": 1,
+      "col": 1
+    },
+    {
+      "label": "殊途长恨（锦衣）",
+      "saves": [
+        {
+          "key": "costume_full:ling_ye_mao_nv:ling_ye_mao_nv_cos05",
+          "category": "costume_full",
+          "asset_id": "ling_ye_mao_nv_cos05",
+          "name": "殊途长恨",
+          "owner_id": "ling_ye_mao_nv",
+          "owner_name": "灵夜猫女",
+          "target": "assets/costumes/ling_ye_mao_nv_cos05.png",
+          "size": "portrait",
+          "generation": "costume_sheet",
+          "group": "costume_friend:ling_ye_mao_nv",
+          "meta": {
+            "quality": "锦衣",
+            "series": "",
+            "owner_kind": "friend"
+          }
+        }
+      ],
+      "index": 4,
+      "row": 2,
+      "col": 0
+    },
+    {
+      "label": "爱恨交织（锦衣）",
+      "saves": [
+        {
+          "key": "costume_full:ling_ye_mao_nv:ling_ye_mao_nv_cos06",
+          "category": "costume_full",
+          "asset_id": "ling_ye_mao_nv_cos06",
+          "name": "爱恨交织",
+          "owner_id": "ling_ye_mao_nv",
+          "owner_name": "灵夜猫女",
+          "target": "assets/costumes/ling_ye_mao_nv_cos06.png",
+          "size": "portrait",
+          "generation": "costume_sheet",
+          "group": "costume_friend:ling_ye_mao_nv",
+          "meta": {
+            "quality": "锦衣",
+            "series": "",
+            "owner_kind": "friend"
+          }
+        }
+      ],
+      "index": 5,
+      "row": 2,
+      "col": 1
+    }
+  ],
+  "filename_base": "task_0025_costume_sheet_costume_friend_ling_ye_mao_nv",
+  "image_name": "task_0025_costume_sheet_costume_friend_ling_ye_mao_nv.png",
+  "output_path": "build/asset_pipeline/inbox/atlases/task_0025_costume_sheet_costume_friend_ling_ye_mao_nv.png"
+}

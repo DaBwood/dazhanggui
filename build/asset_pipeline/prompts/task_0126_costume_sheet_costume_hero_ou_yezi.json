@@ -1,0 +1,130 @@
+{
+  "task_id": "task_0126",
+  "kind": "costume_sheet",
+  "group": "costume_hero:ou_yezi",
+  "title": "欧冶子 的服装图集",
+  "rows": 2,
+  "cols": 2,
+  "reference_image": "",
+  "cells": [
+    {
+      "label": "龙渊神剑（素装）",
+      "saves": [
+        {
+          "key": "costume_full:ou_yezi:ou_yezi_cos01",
+          "category": "costume_full",
+          "asset_id": "ou_yezi_cos01",
+          "name": "龙渊神剑",
+          "owner_id": "ou_yezi",
+          "owner_name": "欧冶子",
+          "target": "assets/costumes/ou_yezi_cos01.png",
+          "size": "portrait",
+          "generation": "costume_sheet",
+          "group": "costume_hero:ou_yezi",
+          "meta": {
+            "quality": "素装",
+            "series": "",
+            "owner_kind": "hero"
+          }
+        },
+        {
+          "key": "hero_portrait:ou_yezi:ou_yezi",
+          "category": "hero_portrait",
+          "asset_id": "ou_yezi",
+          "name": "欧冶子",
+          "owner_id": "ou_yezi",
+          "owner_name": "欧冶子",
+          "target": "assets/portraits/heroes/ou_yezi.png",
+          "size": "portrait",
+          "generation": "portrait",
+          "group": "hero_portraits",
+          "meta": {
+            "category": "侠",
+            "quality": 2
+          }
+        }
+      ],
+      "index": 0,
+      "row": 0,
+      "col": 0
+    },
+    {
+      "label": "蒙挚（素装）",
+      "saves": [
+        {
+          "key": "costume_full:ou_yezi:ou_yezi_cos02",
+          "category": "costume_full",
+          "asset_id": "ou_yezi_cos02",
+          "name": "蒙挚",
+          "owner_id": "ou_yezi",
+          "owner_name": "欧冶子",
+          "target": "assets/costumes/ou_yezi_cos02.png",
+          "size": "portrait",
+          "generation": "costume_sheet",
+          "group": "costume_hero:ou_yezi",
+          "meta": {
+            "quality": "素装",
+            "series": "",
+            "owner_kind": "hero"
+          }
+        }
+      ],
+      "index": 1,
+      "row": 0,
+      "col": 1
+    },
+    {
+      "label": "铸剑世家（素装）",
+      "saves": [
+        {
+          "key": "costume_full:ou_yezi:ou_yezi_cos03",
+          "category": "costume_full",
+          "asset_id": "ou_yezi_cos03",
+          "name": "铸剑世家",
+          "owner_id": "ou_yezi",
+          "owner_name": "欧冶子",
+          "target": "assets/costumes/ou_yezi_cos03.png",
+          "size": "portrait",
+          "generation": "costume_sheet",
+          "group": "costume_hero:ou_yezi",
+          "meta": {
+            "quality": "素装",
+            "series": "",
+            "owner_kind": "hero"
+          }
+        }
+      ],
+      "index": 2,
+      "row": 1,
+      "col": 0
+    },
+    {
+      "label": "铸剑为犁（华服 清平盛世）",
+      "saves": [
+        {
+          "key": "costume_full:ou_yezi:ou_yezi_cos04",
+          "category": "costume_full",
+          "asset_id": "ou_yezi_cos04",
+          "name": "铸剑为犁",
+          "owner_id": "ou_yezi",
+          "owner_name": "欧冶子",
+          "target": "assets/costumes/ou_yezi_cos04.png",
+          "size": "portrait",
+          "generation": "costume_sheet",
+          "group": "costume_hero:ou_yezi",
+          "meta": {
+            "quality": "华服",
+            "series": "清平盛世",
+            "owner_kind": "hero"
+          }
+        }
+      ],
+      "index": 3,
+      "row": 1,
+      "col": 1
+    }
+  ],
+  "filename_base": "task_0126_costume_sheet_costume_hero_ou_yezi",
+  "image_name": "task_0126_costume_sheet_costume_hero_ou_yezi.png",
+  "output_path": "build/asset_pipeline/inbox/atlases/task_0126_costume_sheet_costume_hero_ou_yezi.png"
+}

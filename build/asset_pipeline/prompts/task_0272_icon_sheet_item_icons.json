@@ -1,0 +1,230 @@
+{
+  "task_id": "task_0272",
+  "kind": "icon_sheet",
+  "group": "item_icons",
+  "title": "item_icons 图标图集",
+  "rows": 3,
+  "cols": 3,
+  "reference_image": "",
+  "cells": [
+    {
+      "label": "生粉食材包：客栈烹饪食材，获取途径待活动接入",
+      "saves": [
+        {
+          "key": "item_icon:shicai_shengfen",
+          "category": "item_icon",
+          "asset_id": "shicai_shengfen",
+          "name": "生粉食材包",
+          "owner_id": "",
+          "owner_name": "",
+          "target": "assets/items/shicai_shengfen.png",
+          "size": "icon",
+          "generation": "icon_sheet",
+          "group": "item_icons",
+          "meta": {
+            "desc": "客栈烹饪食材，获取途径待活动接入",
+            "use": ""
+          }
+        }
+      ],
+      "index": 0,
+      "row": 0,
+      "col": 0
+    },
+    {
+      "label": "汤类食材包：客栈烹饪食材，获取途径待活动接入",
+      "saves": [
+        {
+          "key": "item_icon:shicai_tanglei",
+          "category": "item_icon",
+          "asset_id": "shicai_tanglei",
+          "name": "汤类食材包",
+          "owner_id": "",
+          "owner_name": "",
+          "target": "assets/items/shicai_tanglei.png",
+          "size": "icon",
+          "generation": "icon_sheet",
+          "group": "item_icons",
+          "meta": {
+            "desc": "客栈烹饪食材，获取途径待活动接入",
+            "use": ""
+          }
+        }
+      ],
+      "index": 1,
+      "row": 0,
+      "col": 1
+    },
+    {
+      "label": "饮料食材包：客栈烹饪食材，获取途径待活动接入",
+      "saves": [
+        {
+          "key": "item_icon:shicai_yinliao",
+          "category": "item_icon",
+          "asset_id": "shicai_yinliao",
+          "name": "饮料食材包",
+          "owner_id": "",
+          "owner_name": "",
+          "target": "assets/items/shicai_yinliao.png",
+          "size": "icon",
+          "generation": "icon_sheet",
+          "group": "item_icons",
+          "meta": {
+            "desc": "客栈烹饪食材，获取途径待活动接入",
+            "use": ""
+          }
+        }
+      ],
+      "index": 2,
+      "row": 0,
+      "col": 2
+    },
+    {
+      "label": "鱼类食材包：客栈烹饪食材，获取途径待活动接入",
+      "saves": [
+        {
+          "key": "item_icon:shicai_yulei",
+          "category": "item_icon",
+          "asset_id": "shicai_yulei",
+          "name": "鱼类食材包",
+          "owner_id": "",
+          "owner_name": "",
+          "target": "assets/items/shicai_yulei.png",
+          "size": "icon",
+          "generation": "icon_sheet",
+          "group": "item_icons",
+          "meta": {
+            "desc": "客栈烹饪食材，获取途径待活动接入",
+            "use": ""
+          }
+        }
+      ],
+      "index": 3,
+      "row": 1,
+      "col": 0
+    },
+    {
+      "label": "猪肉食材包：客栈烹饪食材，获取途径待活动接入",
+      "saves": [
+        {
+          "key": "item_icon:shicai_zhurou",
+          "category": "item_icon",
+          "asset_id": "shicai_zhurou",
+          "name": "猪肉食材包",
+          "owner_id": "",
+          "owner_name": "",
+          "target": "assets/items/shicai_zhurou.png",
+          "size": "icon",
+          "generation": "icon_sheet",
+          "group": "item_icons",
+          "meta": {
+            "desc": "客栈烹饪食材，获取途径待活动接入",
+            "use": ""
+          }
+        }
+      ],
+      "index": 4,
+      "row": 1,
+      "col": 1
+    },
+    {
+      "label": "商铺图纸：用于解锁新商铺",
+      "saves": [
+        {
+          "key": "item_icon:shop_blueprint",
+          "category": "item_icon",
+          "asset_id": "shop_blueprint",
+          "name": "商铺图纸",
+          "owner_id": "",
+          "owner_name": "",
+          "target": "assets/items/shop_blueprint.png",
+          "size": "icon",
+          "generation": "icon_sheet",
+          "group": "item_icons",
+          "meta": {
+            "desc": "用于解锁新商铺",
+            "use": ""
+          }
+        }
+      ],
+      "index": 5,
+      "row": 1,
+      "col": 2
+    },
+    {
+      "label": "狩猎骨刃：兑换门客【敖武】所需",
+      "saves": [
+        {
+          "key": "item_icon:shoulie_guren",
+          "category": "item_icon",
+          "asset_id": "shoulie_guren",
+          "name": "狩猎骨刃",
+          "owner_id": "",
+          "owner_name": "",
+          "target": "assets/items/shoulie_guren.png",
+          "size": "icon",
+          "generation": "icon_sheet",
+          "group": "item_icons",
+          "meta": {
+            "desc": "兑换门客【敖武】所需",
+            "use": ""
+          }
+        }
+      ],
+      "index": 6,
+      "row": 2,
+      "col": 0
+    },
+    {
+      "label": "水晶血龙参：小舞晋升【修炼】专属消耗道具，魅兔真身每级消耗600个；获取途径待接",
+      "saves": [
+        {
+          "key": "item_icon:shui_jing_xue_long_shen",
+          "category": "item_icon",
+          "asset_id": "shui_jing_xue_long_shen",
+          "name": "水晶血龙参",
+          "owner_id": "",
+          "owner_name": "",
+          "target": "assets/items/shui_jing_xue_long_shen.png",
+          "size": "icon",
+          "generation": "icon_sheet",
+          "group": "item_icons",
+          "meta": {
+            "desc": "小舞晋升【修炼】专属消耗道具，魅兔真身每级消耗600个；获取途径待接",
+            "use": ""
+          }
+        }
+      ],
+      "index": 7,
+      "row": 2,
+      "col": 1
+    },
+    {
+      "label": "小资质丹：20个可在背包合成1个资质丹",
+      "saves": [
+        {
+          "key": "item_icon:small_aptitude_pill",
+          "category": "item_icon",
+          "asset_id": "small_aptitude_pill",
+          "name": "小资质丹",
+          "owner_id": "",
+          "owner_name": "",
+          "target": "assets/items/small_aptitude_pill.png",
+          "size": "icon",
+          "generation": "icon_sheet",
+          "group": "item_icons",
+          "meta": {
+            "desc": "20个可在背包合成1个资质丹",
+            "use": ""
+          }
+        }
+      ],
+      "index": 8,
+      "row": 2,
+      "col": 2
+    }
+  ],
+  "filename_base": "task_0272_icon_sheet_item_icons",
+  "image_name": "task_0272_icon_sheet_item_icons.png",
+  "output_path": "build/asset_pipeline/inbox/atlases/task_0272_icon_sheet_item_icons.png"
+}

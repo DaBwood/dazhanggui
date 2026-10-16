@@ -1,0 +1,203 @@
+{
+  "task_id": "task_0288",
+  "kind": "icon_sheet",
+  "group": "skill_icons",
+  "title": "skill_icons 图标图集",
+  "rows": 3,
+  "cols": 3,
+  "reference_image": "",
+  "cells": [
+    {
+      "label": "传道授业：同类徒弟每次培养获得见识+10%",
+      "saves": [
+        {
+          "key": "skill_icon:传道授业",
+          "category": "skill_icon",
+          "asset_id": "传道授业",
+          "name": "传道授业",
+          "owner_id": "",
+          "owner_name": "",
+          "target": "assets/skill_icons/传道授业.png",
+          "size": "icon",
+          "generation": "icon_sheet",
+          "group": "skill_icons",
+          "meta": {}
+        }
+      ],
+      "index": 0,
+      "row": 0,
+      "col": 0
+    },
+    {
+      "label": "位三皇",
+      "saves": [
+        {
+          "key": "skill_icon:位三皇",
+          "category": "skill_icon",
+          "asset_id": "位三皇",
+          "name": "位三皇",
+          "owner_id": "",
+          "owner_name": "",
+          "target": "assets/skill_icons/位三皇.png",
+          "size": "icon",
+          "generation": "icon_sheet",
+          "group": "skill_icons",
+          "meta": {}
+        }
+      ],
+      "index": 1,
+      "row": 0,
+      "col": 1
+    },
+    {
+      "label": "侵如火",
+      "saves": [
+        {
+          "key": "skill_icon:侵如火",
+          "category": "skill_icon",
+          "asset_id": "侵如火",
+          "name": "侵如火",
+          "owner_id": "",
+          "owner_name": "",
+          "target": "assets/skill_icons/侵如火.png",
+          "size": "icon",
+          "generation": "icon_sheet",
+          "group": "skill_icons",
+          "meta": {}
+        }
+      ],
+      "index": 2,
+      "row": 0,
+      "col": 2
+    },
+    {
+      "label": "借花献佛：跟同职业挚友谈心获得缘分+10%",
+      "saves": [
+        {
+          "key": "skill_icon:借花献佛",
+          "category": "skill_icon",
+          "asset_id": "借花献佛",
+          "name": "借花献佛",
+          "owner_id": "",
+          "owner_name": "",
+          "target": "assets/skill_icons/借花献佛.png",
+          "size": "icon",
+          "generation": "icon_sheet",
+          "group": "skill_icons",
+          "meta": {}
+        }
+      ],
+      "index": 3,
+      "row": 1,
+      "col": 0
+    },
+    {
+      "label": "八方来运：商战，榷场，商帮，花石纲争霸等活动出战时，同职业门客赚钱+15%",
+      "saves": [
+        {
+          "key": "skill_icon:八方来运",
+          "category": "skill_icon",
+          "asset_id": "八方来运",
+          "name": "八方来运",
+          "owner_id": "",
+          "owner_name": "",
+          "target": "assets/skill_icons/八方来运.png",
+          "size": "icon",
+          "generation": "icon_sheet",
+          "group": "skill_icons",
+          "meta": {}
+        }
+      ],
+      "index": 4,
+      "row": 1,
+      "col": 1
+    },
+    {
+      "label": "八珍玉食：所有特级厨师赚钱+10%",
+      "saves": [
+        {
+          "key": "skill_icon:八珍玉食",
+          "category": "skill_icon",
+          "asset_id": "八珍玉食",
+          "name": "八珍玉食",
+          "owner_id": "",
+          "owner_name": "",
+          "target": "assets/skill_icons/八珍玉食.png",
+          "size": "icon",
+          "generation": "icon_sheet",
+          "group": "skill_icons",
+          "meta": {}
+        }
+      ],
+      "index": 5,
+      "row": 1,
+      "col": 2
+    },
+    {
+      "label": "兵圣：五雄争霸活动中最终战力+5%",
+      "saves": [
+        {
+          "key": "skill_icon:兵圣",
+          "category": "skill_icon",
+          "asset_id": "兵圣",
+          "name": "兵圣",
+          "owner_id": "",
+          "owner_name": "",
+          "target": "assets/skill_icons/兵圣.png",
+          "size": "icon",
+          "generation": "icon_sheet",
+          "group": "skill_icons",
+          "meta": {}
+        }
+      ],
+      "index": 6,
+      "row": 2,
+      "col": 0
+    },
+    {
+      "label": "冰山雕",
+      "saves": [
+        {
+          "key": "skill_icon:冰山雕",
+          "category": "skill_icon",
+          "asset_id": "冰山雕",
+          "name": "冰山雕",
+          "owner_id": "",
+          "owner_name": "",
+          "target": "assets/skill_icons/冰山雕.png",
+          "size": "icon",
+          "generation": "icon_sheet",
+          "group": "skill_icons",
+          "meta": {}
+        }
+      ],
+      "index": 7,
+      "row": 2,
+      "col": 1
+    },
+    {
+      "label": "凤游山河",
+      "saves": [
+        {
+          "key": "skill_icon:凤游山河",
+          "category": "skill_icon",
+          "asset_id": "凤游山河",
+          "name": "凤游山河",
+          "owner_id": "",
+          "owner_name": "",
+          "target": "assets/skill_icons/凤游山河.png",
+          "size": "icon",
+          "generation": "icon_sheet",
+          "group": "skill_icons",
+          "meta": {}
+        }
+      ],
+      "index": 8,
+      "row": 2,
+      "col": 2
+    }
+  ],
+  "filename_base": "task_0288_icon_sheet_skill_icons",
+  "image_name": "task_0288_icon_sheet_skill_icons.png",
+  "output_path": "build/asset_pipeline/inbox/atlases/task_0288_icon_sheet_skill_icons.png"
+}

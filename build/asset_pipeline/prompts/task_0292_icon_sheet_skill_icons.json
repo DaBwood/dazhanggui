@@ -1,0 +1,203 @@
+{
+  "task_id": "task_0292",
+  "kind": "icon_sheet",
+  "group": "skill_icons",
+  "title": "skill_icons 图标图集",
+  "rows": 3,
+  "cols": 3,
+  "reference_image": "",
+  "cells": [
+    {
+      "label": "天才阿昴：所有珍兽等级上限+10",
+      "saves": [
+        {
+          "key": "skill_icon:天才阿昴",
+          "category": "skill_icon",
+          "asset_id": "天才阿昴",
+          "name": "天才阿昴",
+          "owner_id": "",
+          "owner_name": "",
+          "target": "assets/skill_icons/天才阿昴.png",
+          "size": "icon",
+          "generation": "icon_sheet",
+          "group": "skill_icons",
+          "meta": {}
+        }
+      ],
+      "index": 0,
+      "row": 0,
+      "col": 0
+    },
+    {
+      "label": "天才阿飞：所有珍兽等级上限+10",
+      "saves": [
+        {
+          "key": "skill_icon:天才阿飞",
+          "category": "skill_icon",
+          "asset_id": "天才阿飞",
+          "name": "天才阿飞",
+          "owner_id": "",
+          "owner_name": "",
+          "target": "assets/skill_icons/天才阿飞.png",
+          "size": "icon",
+          "generation": "icon_sheet",
+          "group": "skill_icons",
+          "meta": {}
+        }
+      ],
+      "index": 1,
+      "row": 0,
+      "col": 1
+    },
+    {
+      "label": "天狼刃：招商可额外立项1场",
+      "saves": [
+        {
+          "key": "skill_icon:天狼刃",
+          "category": "skill_icon",
+          "asset_id": "天狼刃",
+          "name": "天狼刃",
+          "owner_id": "",
+          "owner_name": "",
+          "target": "assets/skill_icons/天狼刃.png",
+          "size": "icon",
+          "generation": "icon_sheet",
+          "group": "skill_icons",
+          "meta": {}
+        }
+      ],
+      "index": 2,
+      "row": 0,
+      "col": 2
+    },
+    {
+      "label": "天生奇才：所有同职业门客虫师技能等级上限+4",
+      "saves": [
+        {
+          "key": "skill_icon:天生奇才",
+          "category": "skill_icon",
+          "asset_id": "天生奇才",
+          "name": "天生奇才",
+          "owner_id": "",
+          "owner_name": "",
+          "target": "assets/skill_icons/天生奇才.png",
+          "size": "icon",
+          "generation": "icon_sheet",
+          "group": "skill_icons",
+          "meta": {}
+        }
+      ],
+      "index": 3,
+      "row": 1,
+      "col": 0
+    },
+    {
+      "label": "天道主宰：所有珍兽等级上限+10",
+      "saves": [
+        {
+          "key": "skill_icon:天道主宰",
+          "category": "skill_icon",
+          "asset_id": "天道主宰",
+          "name": "天道主宰",
+          "owner_id": "",
+          "owner_name": "",
+          "target": "assets/skill_icons/天道主宰.png",
+          "size": "icon",
+          "generation": "icon_sheet",
+          "group": "skill_icons",
+          "meta": {}
+        }
+      ],
+      "index": 4,
+      "row": 1,
+      "col": 1
+    },
+    {
+      "label": "天马行空",
+      "saves": [
+        {
+          "key": "skill_icon:天马行空",
+          "category": "skill_icon",
+          "asset_id": "天马行空",
+          "name": "天马行空",
+          "owner_id": "",
+          "owner_name": "",
+          "target": "assets/skill_icons/天马行空.png",
+          "size": "icon",
+          "generation": "icon_sheet",
+          "group": "skill_icons",
+          "meta": {}
+        }
+      ],
+      "index": 5,
+      "row": 1,
+      "col": 2
+    },
+    {
+      "label": "太阳星",
+      "saves": [
+        {
+          "key": "skill_icon:太阳星",
+          "category": "skill_icon",
+          "asset_id": "太阳星",
+          "name": "太阳星",
+          "owner_id": "",
+          "owner_name": "",
+          "target": "assets/skill_icons/太阳星.png",
+          "size": "icon",
+          "generation": "icon_sheet",
+          "group": "skill_icons",
+          "meta": {}
+        }
+      ],
+      "index": 6,
+      "row": 2,
+      "col": 0
+    },
+    {
+      "label": "夺命判",
+      "saves": [
+        {
+          "key": "skill_icon:夺命判",
+          "category": "skill_icon",
+          "asset_id": "夺命判",
+          "name": "夺命判",
+          "owner_id": "",
+          "owner_name": "",
+          "target": "assets/skill_icons/夺命判.png",
+          "size": "icon",
+          "generation": "icon_sheet",
+          "group": "skill_icons",
+          "meta": {}
+        }
+      ],
+      "index": 7,
+      "row": 2,
+      "col": 1
+    },
+    {
+      "label": "奇人异士",
+      "saves": [
+        {
+          "key": "skill_icon:奇人异士",
+          "category": "skill_icon",
+          "asset_id": "奇人异士",
+          "name": "奇人异士",
+          "owner_id": "",
+          "owner_name": "",
+          "target": "assets/skill_icons/奇人异士.png",
+          "size": "icon",
+          "generation": "icon_sheet",
+          "group": "skill_icons",
+          "meta": {}
+        }
+      ],
+      "index": 8,
+      "row": 2,
+      "col": 2
+    }
+  ],
+  "filename_base": "task_0292_icon_sheet_skill_icons",
+  "image_name": "task_0292_icon_sheet_skill_icons.png",
+  "output_path": "build/asset_pipeline/inbox/atlases/task_0292_icon_sheet_skill_icons.png"
+}

@@ -1,0 +1,203 @@
+{
+  "task_id": "task_0291",
+  "kind": "icon_sheet",
+  "group": "skill_icons",
+  "title": "skill_icons 图标图集",
+  "rows": 3,
+  "cols": 3,
+  "reference_image": "",
+  "cells": [
+    {
+      "label": "味觉封印：押镖每周挚友额外免费1次",
+      "saves": [
+        {
+          "key": "skill_icon:味觉封印",
+          "category": "skill_icon",
+          "asset_id": "味觉封印",
+          "name": "味觉封印",
+          "owner_id": "",
+          "owner_name": "",
+          "target": "assets/skill_icons/味觉封印.png",
+          "size": "icon",
+          "generation": "icon_sheet",
+          "group": "skill_icons",
+          "meta": {}
+        }
+      ],
+      "index": 0,
+      "row": 0,
+      "col": 0
+    },
+    {
+      "label": "善尤兰",
+      "saves": [
+        {
+          "key": "skill_icon:善尤兰",
+          "category": "skill_icon",
+          "asset_id": "善尤兰",
+          "name": "善尤兰",
+          "owner_id": "",
+          "owner_name": "",
+          "target": "assets/skill_icons/善尤兰.png",
+          "size": "icon",
+          "generation": "icon_sheet",
+          "group": "skill_icons",
+          "meta": {}
+        }
+      ],
+      "index": 1,
+      "row": 0,
+      "col": 1
+    },
+    {
+      "label": "善谋略",
+      "saves": [
+        {
+          "key": "skill_icon:善谋略",
+          "category": "skill_icon",
+          "asset_id": "善谋略",
+          "name": "善谋略",
+          "owner_id": "",
+          "owner_name": "",
+          "target": "assets/skill_icons/善谋略.png",
+          "size": "icon",
+          "generation": "icon_sheet",
+          "group": "skill_icons",
+          "meta": {}
+        }
+      ],
+      "index": 2,
+      "row": 0,
+      "col": 2
+    },
+    {
+      "label": "噬金虫：所有同职业门客虫师技能等级上限+4",
+      "saves": [
+        {
+          "key": "skill_icon:噬金虫",
+          "category": "skill_icon",
+          "asset_id": "噬金虫",
+          "name": "噬金虫",
+          "owner_id": "",
+          "owner_name": "",
+          "target": "assets/skill_icons/噬金虫.png",
+          "size": "icon",
+          "generation": "icon_sheet",
+          "group": "skill_icons",
+          "meta": {}
+        }
+      ],
+      "index": 3,
+      "row": 1,
+      "col": 0
+    },
+    {
+      "label": "回梦术：所有珍兽等级上限+10",
+      "saves": [
+        {
+          "key": "skill_icon:回梦术",
+          "category": "skill_icon",
+          "asset_id": "回梦术",
+          "name": "回梦术",
+          "owner_id": "",
+          "owner_name": "",
+          "target": "assets/skill_icons/回梦术.png",
+          "size": "icon",
+          "generation": "icon_sheet",
+          "group": "skill_icons",
+          "meta": {}
+        }
+      ],
+      "index": 4,
+      "row": 1,
+      "col": 1
+    },
+    {
+      "label": "塞弦歌",
+      "saves": [
+        {
+          "key": "skill_icon:塞弦歌",
+          "category": "skill_icon",
+          "asset_id": "塞弦歌",
+          "name": "塞弦歌",
+          "owner_id": "",
+          "owner_name": "",
+          "target": "assets/skill_icons/塞弦歌.png",
+          "size": "icon",
+          "generation": "icon_sheet",
+          "group": "skill_icons",
+          "meta": {}
+        }
+      ],
+      "index": 5,
+      "row": 1,
+      "col": 2
+    },
+    {
+      "label": "墨兰册",
+      "saves": [
+        {
+          "key": "skill_icon:墨兰册",
+          "category": "skill_icon",
+          "asset_id": "墨兰册",
+          "name": "墨兰册",
+          "owner_id": "",
+          "owner_name": "",
+          "target": "assets/skill_icons/墨兰册.png",
+          "size": "icon",
+          "generation": "icon_sheet",
+          "group": "skill_icons",
+          "meta": {}
+        }
+      ],
+      "index": 6,
+      "row": 2,
+      "col": 0
+    },
+    {
+      "label": "大师资质",
+      "saves": [
+        {
+          "key": "skill_icon:大师资质",
+          "category": "skill_icon",
+          "asset_id": "大师资质",
+          "name": "大师资质",
+          "owner_id": "",
+          "owner_name": "",
+          "target": "assets/skill_icons/大师资质.png",
+          "size": "icon",
+          "generation": "icon_sheet",
+          "group": "skill_icons",
+          "meta": {}
+        }
+      ],
+      "index": 7,
+      "row": 2,
+      "col": 1
+    },
+    {
+      "label": "天下和",
+      "saves": [
+        {
+          "key": "skill_icon:天下和",
+          "category": "skill_icon",
+          "asset_id": "天下和",
+          "name": "天下和",
+          "owner_id": "",
+          "owner_name": "",
+          "target": "assets/skill_icons/天下和.png",
+          "size": "icon",
+          "generation": "icon_sheet",
+          "group": "skill_icons",
+          "meta": {}
+        }
+      ],
+      "index": 8,
+      "row": 2,
+      "col": 2
+    }
+  ],
+  "filename_base": "task_0291_icon_sheet_skill_icons",
+  "image_name": "task_0291_icon_sheet_skill_icons.png",
+  "output_path": "build/asset_pipeline/inbox/atlases/task_0291_icon_sheet_skill_icons.png"
+}

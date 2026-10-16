@@ -1,0 +1,54 @@
+{
+  "task_id": "task_0050",
+  "kind": "costume_sheet",
+  "group": "costume_friend:si_tang",
+  "title": "司棠 的服装图集",
+  "rows": 1,
+  "cols": 1,
+  "reference_image": "",
+  "cells": [
+    {
+      "label": "鉴宝识心（素装）",
+      "saves": [
+        {
+          "key": "costume_full:si_tang:si_tang_cos01",
+          "category": "costume_full",
+          "asset_id": "si_tang_cos01",
+          "name": "鉴宝识心",
+          "owner_id": "si_tang",
+          "owner_name": "司棠",
+          "target": "assets/costumes/si_tang_cos01.png",
+          "size": "portrait",
+          "generation": "costume_sheet",
+          "group": "costume_friend:si_tang",
+          "meta": {
+            "quality": "素装",
+            "series": "",
+            "owner_kind": "friend"
+          }
+        },
+        {
+          "key": "friend_portrait:si_tang:si_tang",
+          "category": "friend_portrait",
+          "asset_id": "si_tang",
+          "name": "司棠",
+          "owner_id": "si_tang",
+          "owner_name": "司棠",
+          "target": "assets/portraits/friends/si_tang.png",
+          "size": "portrait",
+          "generation": "portrait",
+          "group": "friend_portraits",
+          "meta": {
+            "category": "商"
+          }
+        }
+      ],
+      "index": 0,
+      "row": 0,
+      "col": 0
+    }
+  ],
+  "filename_base": "task_0050_costume_sheet_costume_friend_si_tang",
+  "image_name": "task_0050_costume_sheet_costume_friend_si_tang.png",
+  "output_path": "build/asset_pipeline/inbox/atlases/task_0050_costume_sheet_costume_friend_si_tang.png"
+}

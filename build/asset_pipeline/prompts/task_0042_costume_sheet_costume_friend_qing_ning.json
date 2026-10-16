@@ -1,0 +1,154 @@
+{
+  "task_id": "task_0042",
+  "kind": "costume_sheet",
+  "group": "costume_friend:qing_ning",
+  "title": "青凝 的服装图集",
+  "rows": 3,
+  "cols": 2,
+  "reference_image": "",
+  "cells": [
+    {
+      "label": "心向自然（素装）",
+      "saves": [
+        {
+          "key": "costume_full:qing_ning:qing_ning_cos01",
+          "category": "costume_full",
+          "asset_id": "qing_ning_cos01",
+          "name": "心向自然",
+          "owner_id": "qing_ning",
+          "owner_name": "青凝",
+          "target": "assets/costumes/qing_ning_cos01.png",
+          "size": "portrait",
+          "generation": "costume_sheet",
+          "group": "costume_friend:qing_ning",
+          "meta": {
+            "quality": "素装",
+            "series": "",
+            "owner_kind": "friend"
+          }
+        },
+        {
+          "key": "friend_portrait:qing_ning:qing_ning",
+          "category": "friend_portrait",
+          "asset_id": "qing_ning",
+          "name": "青凝",
+          "owner_id": "qing_ning",
+          "owner_name": "青凝",
+          "target": "assets/portraits/friends/qing_ning.png",
+          "size": "portrait",
+          "generation": "portrait",
+          "group": "friend_portraits",
+          "meta": {
+            "category": "士"
+          }
+        }
+      ],
+      "index": 0,
+      "row": 0,
+      "col": 0
+    },
+    {
+      "label": "流苏舞影（素装）",
+      "saves": [
+        {
+          "key": "costume_full:qing_ning:qing_ning_cos02",
+          "category": "costume_full",
+          "asset_id": "qing_ning_cos02",
+          "name": "流苏舞影",
+          "owner_id": "qing_ning",
+          "owner_name": "青凝",
+          "target": "assets/costumes/qing_ning_cos02.png",
+          "size": "portrait",
+          "generation": "costume_sheet",
+          "group": "costume_friend:qing_ning",
+          "meta": {
+            "quality": "素装",
+            "series": "",
+            "owner_kind": "friend"
+          }
+        }
+      ],
+      "index": 1,
+      "row": 0,
+      "col": 1
+    },
+    {
+      "label": "枫野拾秋（素装）",
+      "saves": [
+        {
+          "key": "costume_full:qing_ning:qing_ning_cos03",
+          "category": "costume_full",
+          "asset_id": "qing_ning_cos03",
+          "name": "枫野拾秋",
+          "owner_id": "qing_ning",
+          "owner_name": "青凝",
+          "target": "assets/costumes/qing_ning_cos03.png",
+          "size": "portrait",
+          "generation": "costume_sheet",
+          "group": "costume_friend:qing_ning",
+          "meta": {
+            "quality": "素装",
+            "series": "",
+            "owner_kind": "friend"
+          }
+        }
+      ],
+      "index": 2,
+      "row": 1,
+      "col": 0
+    },
+    {
+      "label": "圣诞之星（素装）",
+      "saves": [
+        {
+          "key": "costume_full:qing_ning:qing_ning_cos04",
+          "category": "costume_full",
+          "asset_id": "qing_ning_cos04",
+          "name": "圣诞之星",
+          "owner_id": "qing_ning",
+          "owner_name": "青凝",
+          "target": "assets/costumes/qing_ning_cos04.png",
+          "size": "portrait",
+          "generation": "costume_sheet",
+          "group": "costume_friend:qing_ning",
+          "meta": {
+            "quality": "素装",
+            "series": "",
+            "owner_kind": "friend"
+          }
+        }
+      ],
+      "index": 3,
+      "row": 1,
+      "col": 1
+    },
+    {
+      "label": "花想容（锦衣）",
+      "saves": [
+        {
+          "key": "costume_full:qing_ning:qing_ning_cos05",
+          "category": "costume_full",
+          "asset_id": "qing_ning_cos05",
+          "name": "花想容",
+          "owner_id": "qing_ning",
+          "owner_name": "青凝",
+          "target": "assets/costumes/qing_ning_cos05.png",
+          "size": "portrait",
+          "generation": "costume_sheet",
+          "group": "costume_friend:qing_ning",
+          "meta": {
+            "quality": "锦衣",
+            "series": "",
+            "owner_kind": "friend"
+          }
+        }
+      ],
+      "index": 4,
+      "row": 2,
+      "col": 0
+    }
+  ],
+  "filename_base": "task_0042_costume_sheet_costume_friend_qing_ning",
+  "image_name": "task_0042_costume_sheet_costume_friend_qing_ning.png",
+  "output_path": "build/asset_pipeline/inbox/atlases/task_0042_costume_sheet_costume_friend_qing_ning.png"
+}

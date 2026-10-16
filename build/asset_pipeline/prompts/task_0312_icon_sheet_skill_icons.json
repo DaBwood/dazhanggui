@@ -1,0 +1,98 @@
+{
+  "task_id": "task_0312",
+  "kind": "icon_sheet",
+  "group": "skill_icons",
+  "title": "skill_icons 图标图集",
+  "rows": 2,
+  "cols": 2,
+  "reference_image": "",
+  "cells": [
+    {
+      "label": "魂脉合流：胎元",
+      "saves": [
+        {
+          "key": "skill_icon:魂脉合流",
+          "category": "skill_icon",
+          "asset_id": "魂脉合流",
+          "name": "魂脉合流",
+          "owner_id": "",
+          "owner_name": "",
+          "target": "assets/skill_icons/魂脉合流.png",
+          "size": "icon",
+          "generation": "icon_sheet",
+          "group": "skill_icons",
+          "meta": {}
+        }
+      ],
+      "index": 0,
+      "row": 0,
+      "col": 0
+    },
+    {
+      "label": "魔星降世：门生达到传奇以上概率+10%",
+      "saves": [
+        {
+          "key": "skill_icon:魔星降世",
+          "category": "skill_icon",
+          "asset_id": "魔星降世",
+          "name": "魔星降世",
+          "owner_id": "",
+          "owner_name": "",
+          "target": "assets/skill_icons/魔星降世.png",
+          "size": "icon",
+          "generation": "icon_sheet",
+          "group": "skill_icons",
+          "meta": {}
+        }
+      ],
+      "index": 1,
+      "row": 0,
+      "col": 1
+    },
+    {
+      "label": "魔神角",
+      "saves": [
+        {
+          "key": "skill_icon:魔神角",
+          "category": "skill_icon",
+          "asset_id": "魔神角",
+          "name": "魔神角",
+          "owner_id": "",
+          "owner_name": "",
+          "target": "assets/skill_icons/魔神角.png",
+          "size": "icon",
+          "generation": "icon_sheet",
+          "group": "skill_icons",
+          "meta": {}
+        }
+      ],
+      "index": 2,
+      "row": 1,
+      "col": 0
+    },
+    {
+      "label": "麟角刷",
+      "saves": [
+        {
+          "key": "skill_icon:麟角刷",
+          "category": "skill_icon",
+          "asset_id": "麟角刷",
+          "name": "麟角刷",
+          "owner_id": "",
+          "owner_name": "",
+          "target": "assets/skill_icons/麟角刷.png",
+          "size": "icon",
+          "generation": "icon_sheet",
+          "group": "skill_icons",
+          "meta": {}
+        }
+      ],
+      "index": 3,
+      "row": 1,
+      "col": 1
+    }
+  ],
+  "filename_base": "task_0312_icon_sheet_skill_icons",
+  "image_name": "task_0312_icon_sheet_skill_icons.png",
+  "output_path": "build/asset_pipeline/inbox/atlases/task_0312_icon_sheet_skill_icons.png"
+}

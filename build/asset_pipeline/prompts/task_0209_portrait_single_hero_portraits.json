@@ -1,0 +1,38 @@
+{
+  "task_id": "task_0209",
+  "kind": "portrait_single",
+  "group": "hero_portraits",
+  "title": "刘戏子",
+  "rows": 1,
+  "cols": 1,
+  "reference_image": "",
+  "cells": [
+    {
+      "label": "刘戏子",
+      "saves": [
+        {
+          "key": "hero_portrait:liu_xizi:liu_xizi",
+          "category": "hero_portrait",
+          "asset_id": "liu_xizi",
+          "name": "刘戏子",
+          "owner_id": "liu_xizi",
+          "owner_name": "刘戏子",
+          "target": "assets/portraits/heroes/liu_xizi.png",
+          "size": "portrait",
+          "generation": "portrait",
+          "group": "hero_portraits",
+          "meta": {
+            "category": "工",
+            "quality": 0
+          }
+        }
+      ],
+      "index": 0,
+      "row": 0,
+      "col": 0
+    }
+  ],
+  "filename_base": "task_0209_portrait_single_hero_portraits",
+  "image_name": "task_0209_portrait_single_hero_portraits.png",
+  "output_path": "build/asset_pipeline/inbox/atlases/task_0209_portrait_single_hero_portraits.png"
+}

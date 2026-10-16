@@ -1,0 +1,230 @@
+{
+  "task_id": "task_0243",
+  "kind": "icon_sheet",
+  "group": "fishing_icons",
+  "title": "fishing_icons 图标图集",
+  "rows": 3,
+  "cols": 3,
+  "reference_image": "",
+  "cells": [
+    {
+      "label": "安康鱼：普通",
+      "saves": [
+        {
+          "key": "fishing_icon:ankang_yu",
+          "category": "fishing_icon",
+          "asset_id": "ankang_yu",
+          "name": "安康鱼",
+          "owner_id": "",
+          "owner_name": "",
+          "target": "assets/fishing/ankang_yu.png",
+          "size": "icon",
+          "generation": "icon_sheet",
+          "group": "fishing_icons",
+          "meta": {
+            "quality": "普通",
+            "kind": ""
+          }
+        }
+      ],
+      "index": 0,
+      "row": 0,
+      "col": 0
+    },
+    {
+      "label": "白鲸：无双",
+      "saves": [
+        {
+          "key": "fishing_icon:bai_jing",
+          "category": "fishing_icon",
+          "asset_id": "bai_jing",
+          "name": "白鲸",
+          "owner_id": "",
+          "owner_name": "",
+          "target": "assets/fishing/bai_jing.png",
+          "size": "icon",
+          "generation": "icon_sheet",
+          "group": "fishing_icons",
+          "meta": {
+            "quality": "无双",
+            "kind": ""
+          }
+        }
+      ],
+      "index": 1,
+      "row": 0,
+      "col": 1
+    },
+    {
+      "label": "竹钓竿",
+      "saves": [
+        {
+          "key": "fishing_icon:bamboo_rod",
+          "category": "fishing_icon",
+          "asset_id": "bamboo_rod",
+          "name": "竹钓竿",
+          "owner_id": "",
+          "owner_name": "",
+          "target": "assets/fishing/bamboo_rod.png",
+          "size": "icon",
+          "generation": "icon_sheet",
+          "group": "fishing_icons",
+          "meta": {
+            "quality": "",
+            "kind": ""
+          }
+        }
+      ],
+      "index": 2,
+      "row": 0,
+      "col": 2
+    },
+    {
+      "label": "斑鳜：无",
+      "saves": [
+        {
+          "key": "fishing_icon:ban_gui",
+          "category": "fishing_icon",
+          "asset_id": "ban_gui",
+          "name": "斑鳜",
+          "owner_id": "",
+          "owner_name": "",
+          "target": "assets/fishing/ban_gui.png",
+          "size": "icon",
+          "generation": "icon_sheet",
+          "group": "fishing_icons",
+          "meta": {
+            "quality": "无",
+            "kind": ""
+          }
+        }
+      ],
+      "index": 3,
+      "row": 1,
+      "col": 0
+    },
+    {
+      "label": "斑结虾：无",
+      "saves": [
+        {
+          "key": "fishing_icon:banjie_xia",
+          "category": "fishing_icon",
+          "asset_id": "banjie_xia",
+          "name": "斑结虾",
+          "owner_id": "",
+          "owner_name": "",
+          "target": "assets/fishing/banjie_xia.png",
+          "size": "icon",
+          "generation": "icon_sheet",
+          "group": "fishing_icons",
+          "meta": {
+            "quality": "无",
+            "kind": ""
+          }
+        }
+      ],
+      "index": 4,
+      "row": 1,
+      "col": 1
+    },
+    {
+      "label": "彩色鲫鱼：无",
+      "saves": [
+        {
+          "key": "fishing_icon:caise_jiyu",
+          "category": "fishing_icon",
+          "asset_id": "caise_jiyu",
+          "name": "彩色鲫鱼",
+          "owner_id": "",
+          "owner_name": "",
+          "target": "assets/fishing/caise_jiyu.png",
+          "size": "icon",
+          "generation": "icon_sheet",
+          "group": "fishing_icons",
+          "meta": {
+            "quality": "无",
+            "kind": ""
+          }
+        }
+      ],
+      "index": 5,
+      "row": 1,
+      "col": 2
+    },
+    {
+      "label": "草鱼：无",
+      "saves": [
+        {
+          "key": "fishing_icon:cao_yu",
+          "category": "fishing_icon",
+          "asset_id": "cao_yu",
+          "name": "草鱼",
+          "owner_id": "",
+          "owner_name": "",
+          "target": "assets/fishing/cao_yu.png",
+          "size": "icon",
+          "generation": "icon_sheet",
+          "group": "fishing_icons",
+          "meta": {
+            "quality": "无",
+            "kind": ""
+          }
+        }
+      ],
+      "index": 6,
+      "row": 2,
+      "col": 0
+    },
+    {
+      "label": "草莓鼻鱼：无",
+      "saves": [
+        {
+          "key": "fishing_icon:caomei_biyu",
+          "category": "fishing_icon",
+          "asset_id": "caomei_biyu",
+          "name": "草莓鼻鱼",
+          "owner_id": "",
+          "owner_name": "",
+          "target": "assets/fishing/caomei_biyu.png",
+          "size": "icon",
+          "generation": "icon_sheet",
+          "group": "fishing_icons",
+          "meta": {
+            "quality": "无",
+            "kind": ""
+          }
+        }
+      ],
+      "index": 7,
+      "row": 2,
+      "col": 1
+    },
+    {
+      "label": "长鼻鲟：无",
+      "saves": [
+        {
+          "key": "fishing_icon:changbi_xun",
+          "category": "fishing_icon",
+          "asset_id": "changbi_xun",
+          "name": "长鼻鲟",
+          "owner_id": "",
+          "owner_name": "",
+          "target": "assets/fishing/changbi_xun.png",
+          "size": "icon",
+          "generation": "icon_sheet",
+          "group": "fishing_icons",
+          "meta": {
+            "quality": "无",
+            "kind": ""
+          }
+        }
+      ],
+      "index": 8,
+      "row": 2,
+      "col": 2
+    }
+  ],
+  "filename_base": "task_0243_icon_sheet_fishing_icons",
+  "image_name": "task_0243_icon_sheet_fishing_icons.png",
+  "output_path": "build/asset_pipeline/inbox/atlases/task_0243_icon_sheet_fishing_icons.png"
+}

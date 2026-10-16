@@ -1,0 +1,54 @@
+{
+  "task_id": "task_0038",
+  "kind": "costume_sheet",
+  "group": "costume_friend:qi_guang",
+  "title": "栖光 的服装图集",
+  "rows": 1,
+  "cols": 1,
+  "reference_image": "",
+  "cells": [
+    {
+      "label": "与春同行（素装）",
+      "saves": [
+        {
+          "key": "costume_full:qi_guang:qi_guang_cos01",
+          "category": "costume_full",
+          "asset_id": "qi_guang_cos01",
+          "name": "与春同行",
+          "owner_id": "qi_guang",
+          "owner_name": "栖光",
+          "target": "assets/costumes/qi_guang_cos01.png",
+          "size": "portrait",
+          "generation": "costume_sheet",
+          "group": "costume_friend:qi_guang",
+          "meta": {
+            "quality": "素装",
+            "series": "",
+            "owner_kind": "friend"
+          }
+        },
+        {
+          "key": "friend_portrait:qi_guang:qi_guang",
+          "category": "friend_portrait",
+          "asset_id": "qi_guang",
+          "name": "栖光",
+          "owner_id": "qi_guang",
+          "owner_name": "栖光",
+          "target": "assets/portraits/friends/qi_guang.png",
+          "size": "portrait",
+          "generation": "portrait",
+          "group": "friend_portraits",
+          "meta": {
+            "category": "商"
+          }
+        }
+      ],
+      "index": 0,
+      "row": 0,
+      "col": 0
+    }
+  ],
+  "filename_base": "task_0038_costume_sheet_costume_friend_qi_guang",
+  "image_name": "task_0038_costume_sheet_costume_friend_qi_guang.png",
+  "output_path": "build/asset_pipeline/inbox/atlases/task_0038_costume_sheet_costume_friend_qi_guang.png"
+}

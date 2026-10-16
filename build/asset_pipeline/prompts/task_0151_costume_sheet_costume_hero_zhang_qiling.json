@@ -1,0 +1,155 @@
+{
+  "task_id": "task_0151",
+  "kind": "costume_sheet",
+  "group": "costume_hero:zhang_qiling",
+  "title": "张起灵 的服装图集",
+  "rows": 3,
+  "cols": 2,
+  "reference_image": "",
+  "cells": [
+    {
+      "label": "黑金古刀（素装）",
+      "saves": [
+        {
+          "key": "costume_full:zhang_qiling:zhang_qiling_cos01",
+          "category": "costume_full",
+          "asset_id": "zhang_qiling_cos01",
+          "name": "黑金古刀",
+          "owner_id": "zhang_qiling",
+          "owner_name": "张起灵",
+          "target": "assets/costumes/zhang_qiling_cos01.png",
+          "size": "portrait",
+          "generation": "costume_sheet",
+          "group": "costume_hero:zhang_qiling",
+          "meta": {
+            "quality": "素装",
+            "series": "",
+            "owner_kind": "hero"
+          }
+        },
+        {
+          "key": "hero_portrait:zhang_qiling:zhang_qiling",
+          "category": "hero_portrait",
+          "asset_id": "zhang_qiling",
+          "name": "张起灵",
+          "owner_id": "zhang_qiling",
+          "owner_name": "张起灵",
+          "target": "assets/portraits/heroes/zhang_qiling.png",
+          "size": "portrait",
+          "generation": "portrait",
+          "group": "hero_portraits",
+          "meta": {
+            "category": "工",
+            "quality": 1
+          }
+        }
+      ],
+      "index": 0,
+      "row": 0,
+      "col": 0
+    },
+    {
+      "label": "永生之海（素装）",
+      "saves": [
+        {
+          "key": "costume_full:zhang_qiling:zhang_qiling_cos02",
+          "category": "costume_full",
+          "asset_id": "zhang_qiling_cos02",
+          "name": "永生之海",
+          "owner_id": "zhang_qiling",
+          "owner_name": "张起灵",
+          "target": "assets/costumes/zhang_qiling_cos02.png",
+          "size": "portrait",
+          "generation": "costume_sheet",
+          "group": "costume_hero:zhang_qiling",
+          "meta": {
+            "quality": "素装",
+            "series": "",
+            "owner_kind": "hero"
+          }
+        }
+      ],
+      "index": 1,
+      "row": 0,
+      "col": 1
+    },
+    {
+      "label": "麒麟当道（素装）",
+      "saves": [
+        {
+          "key": "costume_full:zhang_qiling:zhang_qiling_cos03",
+          "category": "costume_full",
+          "asset_id": "zhang_qiling_cos03",
+          "name": "麒麟当道",
+          "owner_id": "zhang_qiling",
+          "owner_name": "张起灵",
+          "target": "assets/costumes/zhang_qiling_cos03.png",
+          "size": "portrait",
+          "generation": "costume_sheet",
+          "group": "costume_hero:zhang_qiling",
+          "meta": {
+            "quality": "素装",
+            "series": "",
+            "owner_kind": "hero"
+          }
+        }
+      ],
+      "index": 2,
+      "row": 1,
+      "col": 0
+    },
+    {
+      "label": "三日静寂（素装）",
+      "saves": [
+        {
+          "key": "costume_full:zhang_qiling:zhang_qiling_cos04",
+          "category": "costume_full",
+          "asset_id": "zhang_qiling_cos04",
+          "name": "三日静寂",
+          "owner_id": "zhang_qiling",
+          "owner_name": "张起灵",
+          "target": "assets/costumes/zhang_qiling_cos04.png",
+          "size": "portrait",
+          "generation": "costume_sheet",
+          "group": "costume_hero:zhang_qiling",
+          "meta": {
+            "quality": "素装",
+            "series": "",
+            "owner_kind": "hero"
+          }
+        }
+      ],
+      "index": 3,
+      "row": 1,
+      "col": 1
+    },
+    {
+      "label": "青铜门下（华服）",
+      "saves": [
+        {
+          "key": "costume_full:zhang_qiling:zhang_qiling_cos05",
+          "category": "costume_full",
+          "asset_id": "zhang_qiling_cos05",
+          "name": "青铜门下",
+          "owner_id": "zhang_qiling",
+          "owner_name": "张起灵",
+          "target": "assets/costumes/zhang_qiling_cos05.png",
+          "size": "portrait",
+          "generation": "costume_sheet",
+          "group": "costume_hero:zhang_qiling",
+          "meta": {
+            "quality": "华服",
+            "series": "",
+            "owner_kind": "hero"
+          }
+        }
+      ],
+      "index": 4,
+      "row": 2,
+      "col": 0
+    }
+  ],
+  "filename_base": "task_0151_costume_sheet_costume_hero_zhang_qiling",
+  "image_name": "task_0151_costume_sheet_costume_hero_zhang_qiling.png",
+  "output_path": "build/asset_pipeline/inbox/atlases/task_0151_costume_sheet_costume_hero_zhang_qiling.png"
+}

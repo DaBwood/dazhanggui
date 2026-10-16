@@ -1,0 +1,37 @@
+{
+  "task_id": "task_0161",
+  "kind": "portrait_single",
+  "group": "friend_portraits",
+  "title": "草原女孩",
+  "rows": 1,
+  "cols": 1,
+  "reference_image": "",
+  "cells": [
+    {
+      "label": "草原女孩",
+      "saves": [
+        {
+          "key": "friend_portrait:cao_yuan_nvhai:cao_yuan_nvhai",
+          "category": "friend_portrait",
+          "asset_id": "cao_yuan_nvhai",
+          "name": "草原女孩",
+          "owner_id": "cao_yuan_nvhai",
+          "owner_name": "草原女孩",
+          "target": "assets/portraits/friends/cao_yuan_nvhai.png",
+          "size": "portrait",
+          "generation": "portrait",
+          "group": "friend_portraits",
+          "meta": {
+            "category": "侠"
+          }
+        }
+      ],
+      "index": 0,
+      "row": 0,
+      "col": 0
+    }
+  ],
+  "filename_base": "task_0161_portrait_single_friend_portraits",
+  "image_name": "task_0161_portrait_single_friend_portraits.png",
+  "output_path": "build/asset_pipeline/inbox/atlases/task_0161_portrait_single_friend_portraits.png"
+}

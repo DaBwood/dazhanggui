@@ -1,0 +1,164 @@
+{
+  "task_id": "task_0150",
+  "kind": "costume_sheet",
+  "group": "costume_hero:yang_jian",
+  "title": "杨戬 的服装图集",
+  "rows": 3,
+  "cols": 2,
+  "reference_image": "",
+  "cells": [
+    {
+      "label": "千手修罗（素装）",
+      "saves": [
+        {
+          "key": "costume_full:yang_jian:yang_jian_cos07",
+          "category": "costume_full",
+          "asset_id": "yang_jian_cos07",
+          "name": "千手修罗",
+          "owner_id": "yang_jian",
+          "owner_name": "杨戬",
+          "target": "assets/costumes/yang_jian_cos07.png",
+          "size": "portrait",
+          "generation": "costume_sheet",
+          "group": "costume_hero:yang_jian",
+          "meta": {
+            "quality": "素装",
+            "series": "",
+            "owner_kind": "hero"
+          }
+        }
+      ],
+      "index": 0,
+      "row": 0,
+      "col": 0
+    },
+    {
+      "label": "昊天锤（素装）",
+      "saves": [
+        {
+          "key": "costume_full:yang_jian:yang_jian_cos08",
+          "category": "costume_full",
+          "asset_id": "yang_jian_cos08",
+          "name": "昊天锤",
+          "owner_id": "yang_jian",
+          "owner_name": "杨戬",
+          "target": "assets/costumes/yang_jian_cos08.png",
+          "size": "portrait",
+          "generation": "costume_sheet",
+          "group": "costume_hero:yang_jian",
+          "meta": {
+            "quality": "素装",
+            "series": "",
+            "owner_kind": "hero"
+          }
+        }
+      ],
+      "index": 1,
+      "row": 0,
+      "col": 1
+    },
+    {
+      "label": "蓝银皇（素装）",
+      "saves": [
+        {
+          "key": "costume_full:yang_jian:yang_jian_cos09",
+          "category": "costume_full",
+          "asset_id": "yang_jian_cos09",
+          "name": "蓝银皇",
+          "owner_id": "yang_jian",
+          "owner_name": "杨戬",
+          "target": "assets/costumes/yang_jian_cos09.png",
+          "size": "portrait",
+          "generation": "costume_sheet",
+          "group": "costume_hero:yang_jian",
+          "meta": {
+            "quality": "素装",
+            "series": "",
+            "owner_kind": "hero"
+          }
+        }
+      ],
+      "index": 2,
+      "row": 1,
+      "col": 0
+    },
+    {
+      "label": "海神（华服）",
+      "saves": [
+        {
+          "key": "costume_full:yang_jian:yang_jian_cos10",
+          "category": "costume_full",
+          "asset_id": "yang_jian_cos10",
+          "name": "海神",
+          "owner_id": "yang_jian",
+          "owner_name": "杨戬",
+          "target": "assets/costumes/yang_jian_cos10.png",
+          "size": "portrait",
+          "generation": "costume_sheet",
+          "group": "costume_hero:yang_jian",
+          "meta": {
+            "quality": "华服",
+            "series": "",
+            "owner_kind": "hero"
+          }
+        }
+      ],
+      "index": 3,
+      "row": 1,
+      "col": 1
+    },
+    {
+      "label": "修罗神（华服）",
+      "saves": [
+        {
+          "key": "costume_full:yang_jian:yang_jian_cos11",
+          "category": "costume_full",
+          "asset_id": "yang_jian_cos11",
+          "name": "修罗神",
+          "owner_id": "yang_jian",
+          "owner_name": "杨戬",
+          "target": "assets/costumes/yang_jian_cos11.png",
+          "size": "portrait",
+          "generation": "costume_sheet",
+          "group": "costume_hero:yang_jian",
+          "meta": {
+            "quality": "华服",
+            "series": "",
+            "owner_kind": "hero"
+          }
+        }
+      ],
+      "index": 4,
+      "row": 2,
+      "col": 0
+    },
+    {
+      "label": "双神同体（华服）",
+      "saves": [
+        {
+          "key": "costume_full:yang_jian:yang_jian_cos12",
+          "category": "costume_full",
+          "asset_id": "yang_jian_cos12",
+          "name": "双神同体",
+          "owner_id": "yang_jian",
+          "owner_name": "杨戬",
+          "target": "assets/costumes/yang_jian_cos12.png",
+          "size": "portrait",
+          "generation": "costume_sheet",
+          "group": "costume_hero:yang_jian",
+          "meta": {
+            "quality": "华服",
+            "series": "",
+            "owner_kind": "hero"
+          }
+        }
+      ],
+      "index": 5,
+      "row": 2,
+      "col": 1
+    }
+  ],
+  "filename_base": "task_0150_costume_sheet_costume_hero_yang_jian",
+  "image_name": "task_0150_costume_sheet_costume_hero_yang_jian.png",
+  "output_path": "build/asset_pipeline/inbox/atlases/task_0150_costume_sheet_costume_hero_yang_jian.png"
+}

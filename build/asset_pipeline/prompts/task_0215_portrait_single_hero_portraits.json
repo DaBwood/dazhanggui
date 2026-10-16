@@ -1,0 +1,38 @@
+{
+  "task_id": "task_0215",
+  "kind": "portrait_single",
+  "group": "hero_portraits",
+  "title": "秦剑仙",
+  "rows": 1,
+  "cols": 1,
+  "reference_image": "",
+  "cells": [
+    {
+      "label": "秦剑仙",
+      "saves": [
+        {
+          "key": "hero_portrait:qin_jianxian:qin_jianxian",
+          "category": "hero_portrait",
+          "asset_id": "qin_jianxian",
+          "name": "秦剑仙",
+          "owner_id": "qin_jianxian",
+          "owner_name": "秦剑仙",
+          "target": "assets/portraits/heroes/qin_jianxian.png",
+          "size": "portrait",
+          "generation": "portrait",
+          "group": "hero_portraits",
+          "meta": {
+            "category": "侠",
+            "quality": 1
+          }
+        }
+      ],
+      "index": 0,
+      "row": 0,
+      "col": 0
+    }
+  ],
+  "filename_base": "task_0215_portrait_single_hero_portraits",
+  "image_name": "task_0215_portrait_single_hero_portraits.png",
+  "output_path": "build/asset_pipeline/inbox/atlases/task_0215_portrait_single_hero_portraits.png"
+}

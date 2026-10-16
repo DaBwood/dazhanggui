@@ -1,0 +1,203 @@
+{
+  "task_id": "task_0287",
+  "kind": "icon_sheet",
+  "group": "skill_icons",
+  "title": "skill_icons 图标图集",
+  "rows": 3,
+  "cols": 3,
+  "reference_image": "",
+  "cells": [
+    {
+      "label": "乾坤一掷",
+      "saves": [
+        {
+          "key": "skill_icon:乾坤一掷",
+          "category": "skill_icon",
+          "asset_id": "乾坤一掷",
+          "name": "乾坤一掷",
+          "owner_id": "",
+          "owner_name": "",
+          "target": "assets/skill_icons/乾坤一掷.png",
+          "size": "icon",
+          "generation": "icon_sheet",
+          "group": "skill_icons",
+          "meta": {}
+        }
+      ],
+      "index": 0,
+      "row": 0,
+      "col": 0
+    },
+    {
+      "label": "乾坤定味：海王餐厅中实力+5%",
+      "saves": [
+        {
+          "key": "skill_icon:乾坤定味",
+          "category": "skill_icon",
+          "asset_id": "乾坤定味",
+          "name": "乾坤定味",
+          "owner_id": "",
+          "owner_name": "",
+          "target": "assets/skill_icons/乾坤定味.png",
+          "size": "icon",
+          "generation": "icon_sheet",
+          "group": "skill_icons",
+          "meta": {}
+        }
+      ],
+      "index": 1,
+      "row": 0,
+      "col": 1
+    },
+    {
+      "label": "了如指掌",
+      "saves": [
+        {
+          "key": "skill_icon:了如指掌",
+          "category": "skill_icon",
+          "asset_id": "了如指掌",
+          "name": "了如指掌",
+          "owner_id": "",
+          "owner_name": "",
+          "target": "assets/skill_icons/了如指掌.png",
+          "size": "icon",
+          "generation": "icon_sheet",
+          "group": "skill_icons",
+          "meta": {}
+        }
+      ],
+      "index": 2,
+      "row": 0,
+      "col": 2
+    },
+    {
+      "label": "五方名岳：所有秦淮五艳门客赚钱+10%",
+      "saves": [
+        {
+          "key": "skill_icon:五方名岳",
+          "category": "skill_icon",
+          "asset_id": "五方名岳",
+          "name": "五方名岳",
+          "owner_id": "",
+          "owner_name": "",
+          "target": "assets/skill_icons/五方名岳.png",
+          "size": "icon",
+          "generation": "icon_sheet",
+          "group": "skill_icons",
+          "meta": {}
+        }
+      ],
+      "index": 3,
+      "row": 1,
+      "col": 0
+    },
+    {
+      "label": "五福聚财：商战，榷场，商帮，花石纲争霸等活动出战时，同职业门客赚钱+10%",
+      "saves": [
+        {
+          "key": "skill_icon:五福聚财",
+          "category": "skill_icon",
+          "asset_id": "五福聚财",
+          "name": "五福聚财",
+          "owner_id": "",
+          "owner_name": "",
+          "target": "assets/skill_icons/五福聚财.png",
+          "size": "icon",
+          "generation": "icon_sheet",
+          "group": "skill_icons",
+          "meta": {}
+        }
+      ],
+      "index": 4,
+      "row": 1,
+      "col": 1
+    },
+    {
+      "label": "五绝",
+      "saves": [
+        {
+          "key": "skill_icon:五绝",
+          "category": "skill_icon",
+          "asset_id": "五绝",
+          "name": "五绝",
+          "owner_id": "",
+          "owner_name": "",
+          "target": "assets/skill_icons/五绝.png",
+          "size": "icon",
+          "generation": "icon_sheet",
+          "group": "skill_icons",
+          "meta": {}
+        }
+      ],
+      "index": 5,
+      "row": 1,
+      "col": 2
+    },
+    {
+      "label": "会诸侯",
+      "saves": [
+        {
+          "key": "skill_icon:会诸侯",
+          "category": "skill_icon",
+          "asset_id": "会诸侯",
+          "name": "会诸侯",
+          "owner_id": "",
+          "owner_name": "",
+          "target": "assets/skill_icons/会诸侯.png",
+          "size": "icon",
+          "generation": "icon_sheet",
+          "group": "skill_icons",
+          "meta": {}
+        }
+      ],
+      "index": 6,
+      "row": 2,
+      "col": 0
+    },
+    {
+      "label": "传世墨宝：辩学大赛时全天资+10%",
+      "saves": [
+        {
+          "key": "skill_icon:传世墨宝",
+          "category": "skill_icon",
+          "asset_id": "传世墨宝",
+          "name": "传世墨宝",
+          "owner_id": "",
+          "owner_name": "",
+          "target": "assets/skill_icons/传世墨宝.png",
+          "size": "icon",
+          "generation": "icon_sheet",
+          "group": "skill_icons",
+          "meta": {}
+        }
+      ],
+      "index": 7,
+      "row": 2,
+      "col": 1
+    },
+    {
+      "label": "传说资质",
+      "saves": [
+        {
+          "key": "skill_icon:传说资质",
+          "category": "skill_icon",
+          "asset_id": "传说资质",
+          "name": "传说资质",
+          "owner_id": "",
+          "owner_name": "",
+          "target": "assets/skill_icons/传说资质.png",
+          "size": "icon",
+          "generation": "icon_sheet",
+          "group": "skill_icons",
+          "meta": {}
+        }
+      ],
+      "index": 8,
+      "row": 2,
+      "col": 2
+    }
+  ],
+  "filename_base": "task_0287_icon_sheet_skill_icons",
+  "image_name": "task_0287_icon_sheet_skill_icons.png",
+  "output_path": "build/asset_pipeline/inbox/atlases/task_0287_icon_sheet_skill_icons.png"
+}

@@ -1,0 +1,64 @@
+{
+  "task_id": "task_0030",
+  "kind": "costume_sheet",
+  "group": "costume_friend:miao_jiang_shengnv",
+  "title": "苗疆圣女 的服装图集",
+  "rows": 1,
+  "cols": 2,
+  "reference_image": "",
+  "cells": [
+    {
+      "label": "月华洗礼（锦衣）",
+      "saves": [
+        {
+          "key": "costume_full:miao_jiang_shengnv:miao_jiang_shengnv_cos07",
+          "category": "costume_full",
+          "asset_id": "miao_jiang_shengnv_cos07",
+          "name": "月华洗礼",
+          "owner_id": "miao_jiang_shengnv",
+          "owner_name": "苗疆圣女",
+          "target": "assets/costumes/miao_jiang_shengnv_cos07.png",
+          "size": "portrait",
+          "generation": "costume_sheet",
+          "group": "costume_friend:miao_jiang_shengnv",
+          "meta": {
+            "quality": "锦衣",
+            "series": "",
+            "owner_kind": "friend"
+          }
+        }
+      ],
+      "index": 0,
+      "row": 0,
+      "col": 0
+    },
+    {
+      "label": "苗疆神火（锦衣）",
+      "saves": [
+        {
+          "key": "costume_full:miao_jiang_shengnv:miao_jiang_shengnv_cos08",
+          "category": "costume_full",
+          "asset_id": "miao_jiang_shengnv_cos08",
+          "name": "苗疆神火",
+          "owner_id": "miao_jiang_shengnv",
+          "owner_name": "苗疆圣女",
+          "target": "assets/costumes/miao_jiang_shengnv_cos08.png",
+          "size": "portrait",
+          "generation": "costume_sheet",
+          "group": "costume_friend:miao_jiang_shengnv",
+          "meta": {
+            "quality": "锦衣",
+            "series": "",
+            "owner_kind": "friend"
+          }
+        }
+      ],
+      "index": 1,
+      "row": 0,
+      "col": 1
+    }
+  ],
+  "filename_base": "task_0030_costume_sheet_costume_friend_miao_jiang_shengnv",
+  "image_name": "task_0030_costume_sheet_costume_friend_miao_jiang_shengnv.png",
+  "output_path": "build/asset_pipeline/inbox/atlases/task_0030_costume_sheet_costume_friend_miao_jiang_shengnv.png"
+}

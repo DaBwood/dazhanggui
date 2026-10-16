@@ -1,0 +1,266 @@
+{
+  "task_id": "task_0276",
+  "kind": "icon_sheet",
+  "group": "item_icons",
+  "title": "item_icons 图标图集",
+  "rows": 3,
+  "cols": 3,
+  "reference_image": "",
+  "cells": [
+    {
+      "label": "玉瑞自选锦盒：使用后任选以下藏品碎片×1：莲鹤方壶、榴开百子",
+      "saves": [
+        {
+          "key": "item_icon:suitbox_玉瑞",
+          "category": "item_icon",
+          "asset_id": "suitbox_玉瑞",
+          "name": "玉瑞自选锦盒",
+          "owner_id": "",
+          "owner_name": "",
+          "target": "assets/items/suitbox_玉瑞.png",
+          "size": "icon",
+          "generation": "icon_sheet",
+          "group": "item_icons",
+          "meta": {
+            "desc": "使用后任选以下藏品碎片×1：莲鹤方壶、榴开百子",
+            "use": {
+              "type": "suit_frag_box",
+              "btn": "使用",
+              "title": "选择碎片"
+            }
+          }
+        }
+      ],
+      "index": 0,
+      "row": 0,
+      "col": 0
+    },
+    {
+      "label": "琅轩自选锦盒：使用后任选以下藏品碎片×1：与天对话、梅花瞻瓶、花蝶云肩",
+      "saves": [
+        {
+          "key": "item_icon:suitbox_琅轩",
+          "category": "item_icon",
+          "asset_id": "suitbox_琅轩",
+          "name": "琅轩自选锦盒",
+          "owner_id": "",
+          "owner_name": "",
+          "target": "assets/items/suitbox_琅轩.png",
+          "size": "icon",
+          "generation": "icon_sheet",
+          "group": "item_icons",
+          "meta": {
+            "desc": "使用后任选以下藏品碎片×1：与天对话、梅花瞻瓶、花蝶云肩",
+            "use": {
+              "type": "suit_frag_box",
+              "btn": "使用",
+              "title": "选择碎片"
+            }
+          }
+        }
+      ],
+      "index": 1,
+      "row": 0,
+      "col": 1
+    },
+    {
+      "label": "瑞光自选锦盒：使用后任选以下藏品碎片×1：青禽衔光、琅华千色",
+      "saves": [
+        {
+          "key": "item_icon:suitbox_瑞光",
+          "category": "item_icon",
+          "asset_id": "suitbox_瑞光",
+          "name": "瑞光自选锦盒",
+          "owner_id": "",
+          "owner_name": "",
+          "target": "assets/items/suitbox_瑞光.png",
+          "size": "icon",
+          "generation": "icon_sheet",
+          "group": "item_icons",
+          "meta": {
+            "desc": "使用后任选以下藏品碎片×1：青禽衔光、琅华千色",
+            "use": {
+              "type": "suit_frag_box",
+              "btn": "使用",
+              "title": "选择碎片"
+            }
+          }
+        }
+      ],
+      "index": 2,
+      "row": 0,
+      "col": 2
+    },
+    {
+      "label": "瑶华自选锦盒：使用后任选以下藏品碎片×1：花彩盘龙瓶、龙凤冠",
+      "saves": [
+        {
+          "key": "item_icon:suitbox_瑶华",
+          "category": "item_icon",
+          "asset_id": "suitbox_瑶华",
+          "name": "瑶华自选锦盒",
+          "owner_id": "",
+          "owner_name": "",
+          "target": "assets/items/suitbox_瑶华.png",
+          "size": "icon",
+          "generation": "icon_sheet",
+          "group": "item_icons",
+          "meta": {
+            "desc": "使用后任选以下藏品碎片×1：花彩盘龙瓶、龙凤冠",
+            "use": {
+              "type": "suit_frag_box",
+              "btn": "使用",
+              "title": "选择碎片"
+            }
+          }
+        }
+      ],
+      "index": 3,
+      "row": 1,
+      "col": 0
+    },
+    {
+      "label": "碧爻自选锦盒：使用后任选以下藏品碎片×1：湘妃竹、和氏璧、撼龙经",
+      "saves": [
+        {
+          "key": "item_icon:suitbox_碧爻",
+          "category": "item_icon",
+          "asset_id": "suitbox_碧爻",
+          "name": "碧爻自选锦盒",
+          "owner_id": "",
+          "owner_name": "",
+          "target": "assets/items/suitbox_碧爻.png",
+          "size": "icon",
+          "generation": "icon_sheet",
+          "group": "item_icons",
+          "meta": {
+            "desc": "使用后任选以下藏品碎片×1：湘妃竹、和氏璧、撼龙经",
+            "use": {
+              "type": "suit_frag_box",
+              "btn": "使用",
+              "title": "选择碎片"
+            }
+          }
+        }
+      ],
+      "index": 4,
+      "row": 1,
+      "col": 1
+    },
+    {
+      "label": "礼遇自选锦盒：使用后任选以下藏品碎片×1：云霞纳岳、金声玉振、栖凤鸣弦",
+      "saves": [
+        {
+          "key": "item_icon:suitbox_礼遇",
+          "category": "item_icon",
+          "asset_id": "suitbox_礼遇",
+          "name": "礼遇自选锦盒",
+          "owner_id": "",
+          "owner_name": "",
+          "target": "assets/items/suitbox_礼遇.png",
+          "size": "icon",
+          "generation": "icon_sheet",
+          "group": "item_icons",
+          "meta": {
+            "desc": "使用后任选以下藏品碎片×1：云霞纳岳、金声玉振、栖凤鸣弦",
+            "use": {
+              "type": "suit_frag_box",
+              "btn": "使用",
+              "title": "选择碎片"
+            }
+          }
+        }
+      ],
+      "index": 5,
+      "row": 1,
+      "col": 2
+    },
+    {
+      "label": "离尘自选锦盒：使用后任选以下藏品碎片×1：纹银香囊、长明袖灯、博山炉",
+      "saves": [
+        {
+          "key": "item_icon:suitbox_离尘",
+          "category": "item_icon",
+          "asset_id": "suitbox_离尘",
+          "name": "离尘自选锦盒",
+          "owner_id": "",
+          "owner_name": "",
+          "target": "assets/items/suitbox_离尘.png",
+          "size": "icon",
+          "generation": "icon_sheet",
+          "group": "item_icons",
+          "meta": {
+            "desc": "使用后任选以下藏品碎片×1：纹银香囊、长明袖灯、博山炉",
+            "use": {
+              "type": "suit_frag_box",
+              "btn": "使用",
+              "title": "选择碎片"
+            }
+          }
+        }
+      ],
+      "index": 6,
+      "row": 2,
+      "col": 0
+    },
+    {
+      "label": "童忆自选锦盒：使用后任选以下藏品碎片×1：少时画影、清风童趣、柿柿如意",
+      "saves": [
+        {
+          "key": "item_icon:suitbox_童忆",
+          "category": "item_icon",
+          "asset_id": "suitbox_童忆",
+          "name": "童忆自选锦盒",
+          "owner_id": "",
+          "owner_name": "",
+          "target": "assets/items/suitbox_童忆.png",
+          "size": "icon",
+          "generation": "icon_sheet",
+          "group": "item_icons",
+          "meta": {
+            "desc": "使用后任选以下藏品碎片×1：少时画影、清风童趣、柿柿如意",
+            "use": {
+              "type": "suit_frag_box",
+              "btn": "使用",
+              "title": "选择碎片"
+            }
+          }
+        }
+      ],
+      "index": 7,
+      "row": 2,
+      "col": 1
+    },
+    {
+      "label": "续缘自选锦盒：使用后任选以下藏品碎片×1：王权剑、无尽酒壶",
+      "saves": [
+        {
+          "key": "item_icon:suitbox_续缘",
+          "category": "item_icon",
+          "asset_id": "suitbox_续缘",
+          "name": "续缘自选锦盒",
+          "owner_id": "",
+          "owner_name": "",
+          "target": "assets/items/suitbox_续缘.png",
+          "size": "icon",
+          "generation": "icon_sheet",
+          "group": "item_icons",
+          "meta": {
+            "desc": "使用后任选以下藏品碎片×1：王权剑、无尽酒壶",
+            "use": {
+              "type": "suit_frag_box",
+              "btn": "使用",
+              "title": "选择碎片"
+            }
+          }
+        }
+      ],
+      "index": 8,
+      "row": 2,
+      "col": 2
+    }
+  ],
+  "filename_base": "task_0276_icon_sheet_item_icons",
+  "image_name": "task_0276_icon_sheet_item_icons.png",
+  "output_path": "build/asset_pipeline/inbox/atlases/task_0276_icon_sheet_item_icons.png"
+}

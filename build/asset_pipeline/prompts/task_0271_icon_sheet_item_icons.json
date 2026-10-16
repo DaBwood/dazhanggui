@@ -1,0 +1,230 @@
+{
+  "task_id": "task_0271",
+  "kind": "icon_sheet",
+  "group": "item_icons",
+  "title": "item_icons 图标图集",
+  "rows": 3,
+  "cols": 3,
+  "reference_image": "",
+  "cells": [
+    {
+      "label": "神界法印：杨戬信物【神界法印】专属升级道具，双界联结每级消耗600个；获取途径待接",
+      "saves": [
+        {
+          "key": "item_icon:shen_jie_fa_yin",
+          "category": "item_icon",
+          "asset_id": "shen_jie_fa_yin",
+          "name": "神界法印",
+          "owner_id": "",
+          "owner_name": "",
+          "target": "assets/items/shen_jie_fa_yin.png",
+          "size": "icon",
+          "generation": "icon_sheet",
+          "group": "item_icons",
+          "meta": {
+            "desc": "杨戬信物【神界法印】专属升级道具，双界联结每级消耗600个；获取途径待接",
+            "use": ""
+          }
+        }
+      ],
+      "index": 0,
+      "row": 0,
+      "col": 0
+    },
+    {
+      "label": "圣魂草：小舞光环【落日起誓】【三五组合】升级道具；获取途径待接",
+      "saves": [
+        {
+          "key": "item_icon:sheng_hun_cao",
+          "category": "item_icon",
+          "asset_id": "sheng_hun_cao",
+          "name": "圣魂草",
+          "owner_id": "",
+          "owner_name": "",
+          "target": "assets/items/sheng_hun_cao.png",
+          "size": "icon",
+          "generation": "icon_sheet",
+          "group": "item_icons",
+          "meta": {
+            "desc": "小舞光环【落日起誓】【三五组合】升级道具；获取途径待接",
+            "use": ""
+          }
+        }
+      ],
+      "index": 1,
+      "row": 0,
+      "col": 1
+    },
+    {
+      "label": "盛世钟：清平盛世系列服装的兑换道具（后续玩法产出）",
+      "saves": [
+        {
+          "key": "item_icon:shengshi_zhong",
+          "category": "item_icon",
+          "asset_id": "shengshi_zhong",
+          "name": "盛世钟",
+          "owner_id": "",
+          "owner_name": "",
+          "target": "assets/items/shengshi_zhong.png",
+          "size": "icon",
+          "generation": "icon_sheet",
+          "group": "item_icons",
+          "meta": {
+            "desc": "清平盛世系列服装的兑换道具（后续玩法产出）",
+            "use": ""
+          }
+        }
+      ],
+      "index": 2,
+      "row": 0,
+      "col": 2
+    },
+    {
+      "label": "仕途之道：提升士人类门客的仕途之道技能",
+      "saves": [
+        {
+          "key": "item_icon:shi_way",
+          "category": "item_icon",
+          "asset_id": "shi_way",
+          "name": "仕途之道",
+          "owner_id": "",
+          "owner_name": "",
+          "target": "assets/items/shi_way.png",
+          "size": "icon",
+          "generation": "icon_sheet",
+          "group": "item_icons",
+          "meta": {
+            "desc": "提升士人类门客的仕途之道技能",
+            "use": ""
+          }
+        }
+      ],
+      "index": 3,
+      "row": 1,
+      "col": 0
+    },
+    {
+      "label": "大虾食材包：客栈烹饪食材，获取途径待活动接入",
+      "saves": [
+        {
+          "key": "item_icon:shicai_daxia",
+          "category": "item_icon",
+          "asset_id": "shicai_daxia",
+          "name": "大虾食材包",
+          "owner_id": "",
+          "owner_name": "",
+          "target": "assets/items/shicai_daxia.png",
+          "size": "icon",
+          "generation": "icon_sheet",
+          "group": "item_icons",
+          "meta": {
+            "desc": "客栈烹饪食材，获取途径待活动接入",
+            "use": ""
+          }
+        }
+      ],
+      "index": 4,
+      "row": 1,
+      "col": 1
+    },
+    {
+      "label": "粉面食材包：客栈烹饪食材，获取途径待活动接入",
+      "saves": [
+        {
+          "key": "item_icon:shicai_fenmian",
+          "category": "item_icon",
+          "asset_id": "shicai_fenmian",
+          "name": "粉面食材包",
+          "owner_id": "",
+          "owner_name": "",
+          "target": "assets/items/shicai_fenmian.png",
+          "size": "icon",
+          "generation": "icon_sheet",
+          "group": "item_icons",
+          "meta": {
+            "desc": "客栈烹饪食材，获取途径待活动接入",
+            "use": ""
+          }
+        }
+      ],
+      "index": 5,
+      "row": 1,
+      "col": 2
+    },
+    {
+      "label": "鸡蛋食材包：客栈烹饪食材，获取途径待活动接入",
+      "saves": [
+        {
+          "key": "item_icon:shicai_jidan",
+          "category": "item_icon",
+          "asset_id": "shicai_jidan",
+          "name": "鸡蛋食材包",
+          "owner_id": "",
+          "owner_name": "",
+          "target": "assets/items/shicai_jidan.png",
+          "size": "icon",
+          "generation": "icon_sheet",
+          "group": "item_icons",
+          "meta": {
+            "desc": "客栈烹饪食材，获取途径待活动接入",
+            "use": ""
+          }
+        }
+      ],
+      "index": 6,
+      "row": 2,
+      "col": 0
+    },
+    {
+      "label": "鸡肉食材包：客栈烹饪食材，获取途径待活动接入",
+      "saves": [
+        {
+          "key": "item_icon:shicai_jirou",
+          "category": "item_icon",
+          "asset_id": "shicai_jirou",
+          "name": "鸡肉食材包",
+          "owner_id": "",
+          "owner_name": "",
+          "target": "assets/items/shicai_jirou.png",
+          "size": "icon",
+          "generation": "icon_sheet",
+          "group": "item_icons",
+          "meta": {
+            "desc": "客栈烹饪食材，获取途径待活动接入",
+            "use": ""
+          }
+        }
+      ],
+      "index": 7,
+      "row": 2,
+      "col": 1
+    },
+    {
+      "label": "螃蟹食材包：客栈烹饪食材，获取途径待活动接入",
+      "saves": [
+        {
+          "key": "item_icon:shicai_pangxie",
+          "category": "item_icon",
+          "asset_id": "shicai_pangxie",
+          "name": "螃蟹食材包",
+          "owner_id": "",
+          "owner_name": "",
+          "target": "assets/items/shicai_pangxie.png",
+          "size": "icon",
+          "generation": "icon_sheet",
+          "group": "item_icons",
+          "meta": {
+            "desc": "客栈烹饪食材，获取途径待活动接入",
+            "use": ""
+          }
+        }
+      ],
+      "index": 8,
+      "row": 2,
+      "col": 2
+    }
+  ],
+  "filename_base": "task_0271_icon_sheet_item_icons",
+  "image_name": "task_0271_icon_sheet_item_icons.png",
+  "output_path": "build/asset_pipeline/inbox/atlases/task_0271_icon_sheet_item_icons.png"
+}

@@ -1,0 +1,105 @@
+{
+  "task_id": "task_0106",
+  "kind": "costume_sheet",
+  "group": "costume_hero:gao_jianli",
+  "title": "高渐离 的服装图集",
+  "rows": 2,
+  "cols": 2,
+  "reference_image": "",
+  "cells": [
+    {
+      "label": "枕弦醉风（素装）",
+      "saves": [
+        {
+          "key": "costume_full:gao_jianli:gao_jianli_cos01",
+          "category": "costume_full",
+          "asset_id": "gao_jianli_cos01",
+          "name": "枕弦醉风",
+          "owner_id": "gao_jianli",
+          "owner_name": "高渐离",
+          "target": "assets/costumes/gao_jianli_cos01.png",
+          "size": "portrait",
+          "generation": "costume_sheet",
+          "group": "costume_hero:gao_jianli",
+          "meta": {
+            "quality": "素装",
+            "series": "",
+            "owner_kind": "hero"
+          }
+        },
+        {
+          "key": "hero_portrait:gao_jianli:gao_jianli",
+          "category": "hero_portrait",
+          "asset_id": "gao_jianli",
+          "name": "高渐离",
+          "owner_id": "gao_jianli",
+          "owner_name": "高渐离",
+          "target": "assets/portraits/heroes/gao_jianli.png",
+          "size": "portrait",
+          "generation": "portrait",
+          "group": "hero_portraits",
+          "meta": {
+            "category": "士",
+            "quality": 2
+          }
+        }
+      ],
+      "index": 0,
+      "row": 0,
+      "col": 0
+    },
+    {
+      "label": "悲伤离歌（华服 精忠报国）",
+      "saves": [
+        {
+          "key": "costume_full:gao_jianli:gao_jianli_cos02",
+          "category": "costume_full",
+          "asset_id": "gao_jianli_cos02",
+          "name": "悲伤离歌",
+          "owner_id": "gao_jianli",
+          "owner_name": "高渐离",
+          "target": "assets/costumes/gao_jianli_cos02.png",
+          "size": "portrait",
+          "generation": "costume_sheet",
+          "group": "costume_hero:gao_jianli",
+          "meta": {
+            "quality": "华服",
+            "series": "精忠报国",
+            "owner_kind": "hero"
+          }
+        }
+      ],
+      "index": 1,
+      "row": 0,
+      "col": 1
+    },
+    {
+      "label": "鱼肠（华服 君子如剑）",
+      "saves": [
+        {
+          "key": "costume_full:gao_jianli:gao_jianli_cos03",
+          "category": "costume_full",
+          "asset_id": "gao_jianli_cos03",
+          "name": "鱼肠",
+          "owner_id": "gao_jianli",
+          "owner_name": "高渐离",
+          "target": "assets/costumes/gao_jianli_cos03.png",
+          "size": "portrait",
+          "generation": "costume_sheet",
+          "group": "costume_hero:gao_jianli",
+          "meta": {
+            "quality": "华服",
+            "series": "君子如剑",
+            "owner_kind": "hero"
+          }
+        }
+      ],
+      "index": 2,
+      "row": 1,
+      "col": 0
+    }
+  ],
+  "filename_base": "task_0106_costume_sheet_costume_hero_gao_jianli",
+  "image_name": "task_0106_costume_sheet_costume_hero_gao_jianli.png",
+  "output_path": "build/asset_pipeline/inbox/atlases/task_0106_costume_sheet_costume_hero_gao_jianli.png"
+}

@@ -1,0 +1,203 @@
+{
+  "task_id": "task_0310",
+  "kind": "icon_sheet",
+  "group": "skill_icons",
+  "title": "skill_icons 图标图集",
+  "rows": 3,
+  "cols": 3,
+  "reference_image": "",
+  "cells": [
+    {
+      "label": "镇鸿蒙",
+      "saves": [
+        {
+          "key": "skill_icon:镇鸿蒙",
+          "category": "skill_icon",
+          "asset_id": "镇鸿蒙",
+          "name": "镇鸿蒙",
+          "owner_id": "",
+          "owner_name": "",
+          "target": "assets/skill_icons/镇鸿蒙.png",
+          "size": "icon",
+          "generation": "icon_sheet",
+          "group": "skill_icons",
+          "meta": {}
+        }
+      ],
+      "index": 0,
+      "row": 0,
+      "col": 0
+    },
+    {
+      "label": "长生不朽",
+      "saves": [
+        {
+          "key": "skill_icon:长生不朽",
+          "category": "skill_icon",
+          "asset_id": "长生不朽",
+          "name": "长生不朽",
+          "owner_id": "",
+          "owner_name": "",
+          "target": "assets/skill_icons/长生不朽.png",
+          "size": "icon",
+          "generation": "icon_sheet",
+          "group": "skill_icons",
+          "meta": {}
+        }
+      ],
+      "index": 1,
+      "row": 0,
+      "col": 1
+    },
+    {
+      "label": "闻名天下",
+      "saves": [
+        {
+          "key": "skill_icon:闻名天下",
+          "category": "skill_icon",
+          "asset_id": "闻名天下",
+          "name": "闻名天下",
+          "owner_id": "",
+          "owner_name": "",
+          "target": "assets/skill_icons/闻名天下.png",
+          "size": "icon",
+          "generation": "icon_sheet",
+          "group": "skill_icons",
+          "meta": {}
+        }
+      ],
+      "index": 2,
+      "row": 0,
+      "col": 2
+    },
+    {
+      "label": "降猰貐",
+      "saves": [
+        {
+          "key": "skill_icon:降猰貐",
+          "category": "skill_icon",
+          "asset_id": "降猰貐",
+          "name": "降猰貐",
+          "owner_id": "",
+          "owner_name": "",
+          "target": "assets/skill_icons/降猰貐.png",
+          "size": "icon",
+          "generation": "icon_sheet",
+          "group": "skill_icons",
+          "meta": {}
+        }
+      ],
+      "index": 3,
+      "row": 1,
+      "col": 0
+    },
+    {
+      "label": "陷阵双雄：逐鹿隋唐活动中带兵上限+2600",
+      "saves": [
+        {
+          "key": "skill_icon:陷阵双雄",
+          "category": "skill_icon",
+          "asset_id": "陷阵双雄",
+          "name": "陷阵双雄",
+          "owner_id": "",
+          "owner_name": "",
+          "target": "assets/skill_icons/陷阵双雄.png",
+          "size": "icon",
+          "generation": "icon_sheet",
+          "group": "skill_icons",
+          "meta": {}
+        }
+      ],
+      "index": 4,
+      "row": 1,
+      "col": 1
+    },
+    {
+      "label": "雷霆净世",
+      "saves": [
+        {
+          "key": "skill_icon:雷霆净世",
+          "category": "skill_icon",
+          "asset_id": "雷霆净世",
+          "name": "雷霆净世",
+          "owner_id": "",
+          "owner_name": "",
+          "target": "assets/skill_icons/雷霆净世.png",
+          "size": "icon",
+          "generation": "icon_sheet",
+          "group": "skill_icons",
+          "meta": {}
+        }
+      ],
+      "index": 5,
+      "row": 1,
+      "col": 2
+    },
+    {
+      "label": "震天雷",
+      "saves": [
+        {
+          "key": "skill_icon:震天雷",
+          "category": "skill_icon",
+          "asset_id": "震天雷",
+          "name": "震天雷",
+          "owner_id": "",
+          "owner_name": "",
+          "target": "assets/skill_icons/震天雷.png",
+          "size": "icon",
+          "generation": "icon_sheet",
+          "group": "skill_icons",
+          "meta": {}
+        }
+      ],
+      "index": 6,
+      "row": 2,
+      "col": 0
+    },
+    {
+      "label": "霸王举鼎：楚汉争霸带兵上限+1600",
+      "saves": [
+        {
+          "key": "skill_icon:霸王举鼎",
+          "category": "skill_icon",
+          "asset_id": "霸王举鼎",
+          "name": "霸王举鼎",
+          "owner_id": "",
+          "owner_name": "",
+          "target": "assets/skill_icons/霸王举鼎.png",
+          "size": "icon",
+          "generation": "icon_sheet",
+          "group": "skill_icons",
+          "meta": {}
+        }
+      ],
+      "index": 7,
+      "row": 2,
+      "col": 1
+    },
+    {
+      "label": "青龙斩",
+      "saves": [
+        {
+          "key": "skill_icon:青龙斩",
+          "category": "skill_icon",
+          "asset_id": "青龙斩",
+          "name": "青龙斩",
+          "owner_id": "",
+          "owner_name": "",
+          "target": "assets/skill_icons/青龙斩.png",
+          "size": "icon",
+          "generation": "icon_sheet",
+          "group": "skill_icons",
+          "meta": {}
+        }
+      ],
+      "index": 8,
+      "row": 2,
+      "col": 2
+    }
+  ],
+  "filename_base": "task_0310_icon_sheet_skill_icons",
+  "image_name": "task_0310_icon_sheet_skill_icons.png",
+  "output_path": "build/asset_pipeline/inbox/atlases/task_0310_icon_sheet_skill_icons.png"
+}

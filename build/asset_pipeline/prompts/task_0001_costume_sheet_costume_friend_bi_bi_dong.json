@@ -1,0 +1,54 @@
+{
+  "task_id": "task_0001",
+  "kind": "costume_sheet",
+  "group": "costume_friend:bi_bi_dong",
+  "title": "比比东 的服装图集",
+  "rows": 1,
+  "cols": 1,
+  "reference_image": "",
+  "cells": [
+    {
+      "label": "魔镰罗刹（素装）",
+      "saves": [
+        {
+          "key": "costume_full:bi_bi_dong:bi_bi_dong_cos01",
+          "category": "costume_full",
+          "asset_id": "bi_bi_dong_cos01",
+          "name": "魔镰罗刹",
+          "owner_id": "bi_bi_dong",
+          "owner_name": "比比东",
+          "target": "assets/costumes/bi_bi_dong_cos01.png",
+          "size": "portrait",
+          "generation": "costume_sheet",
+          "group": "costume_friend:bi_bi_dong",
+          "meta": {
+            "quality": "素装",
+            "series": "",
+            "owner_kind": "friend"
+          }
+        },
+        {
+          "key": "friend_portrait:bi_bi_dong:bi_bi_dong",
+          "category": "friend_portrait",
+          "asset_id": "bi_bi_dong",
+          "name": "比比东",
+          "owner_id": "bi_bi_dong",
+          "owner_name": "比比东",
+          "target": "assets/portraits/friends/bi_bi_dong.png",
+          "size": "portrait",
+          "generation": "portrait",
+          "group": "friend_portraits",
+          "meta": {
+            "category": "士"
+          }
+        }
+      ],
+      "index": 0,
+      "row": 0,
+      "col": 0
+    }
+  ],
+  "filename_base": "task_0001_costume_sheet_costume_friend_bi_bi_dong",
+  "image_name": "task_0001_costume_sheet_costume_friend_bi_bi_dong.png",
+  "output_path": "build/asset_pipeline/inbox/atlases/task_0001_costume_sheet_costume_friend_bi_bi_dong.png"
+}

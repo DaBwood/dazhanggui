@@ -1,0 +1,130 @@
+{
+  "task_id": "task_0140",
+  "kind": "costume_sheet",
+  "group": "costume_hero:xiang_en",
+  "title": "向恩 的服装图集",
+  "rows": 2,
+  "cols": 2,
+  "reference_image": "",
+  "cells": [
+    {
+      "label": "高高在上（素装）",
+      "saves": [
+        {
+          "key": "costume_full:xiang_en:xiang_en_cos01",
+          "category": "costume_full",
+          "asset_id": "xiang_en_cos01",
+          "name": "高高在上",
+          "owner_id": "xiang_en",
+          "owner_name": "向恩",
+          "target": "assets/costumes/xiang_en_cos01.png",
+          "size": "portrait",
+          "generation": "costume_sheet",
+          "group": "costume_hero:xiang_en",
+          "meta": {
+            "quality": "素装",
+            "series": "",
+            "owner_kind": "hero"
+          }
+        },
+        {
+          "key": "hero_portrait:xiang_en:xiang_en",
+          "category": "hero_portrait",
+          "asset_id": "xiang_en",
+          "name": "向恩",
+          "owner_id": "xiang_en",
+          "owner_name": "向恩",
+          "target": "assets/portraits/heroes/xiang_en.png",
+          "size": "portrait",
+          "generation": "portrait",
+          "group": "hero_portraits",
+          "meta": {
+            "category": "工",
+            "quality": 2
+          }
+        }
+      ],
+      "index": 0,
+      "row": 0,
+      "col": 0
+    },
+    {
+      "label": "玉龙锅（素装）",
+      "saves": [
+        {
+          "key": "costume_full:xiang_en:xiang_en_cos02",
+          "category": "costume_full",
+          "asset_id": "xiang_en_cos02",
+          "name": "玉龙锅",
+          "owner_id": "xiang_en",
+          "owner_name": "向恩",
+          "target": "assets/costumes/xiang_en_cos02.png",
+          "size": "portrait",
+          "generation": "costume_sheet",
+          "group": "costume_hero:xiang_en",
+          "meta": {
+            "quality": "素装",
+            "series": "",
+            "owner_kind": "hero"
+          }
+        }
+      ],
+      "index": 1,
+      "row": 0,
+      "col": 1
+    },
+    {
+      "label": "味觉之秘（素装）",
+      "saves": [
+        {
+          "key": "costume_full:xiang_en:xiang_en_cos03",
+          "category": "costume_full",
+          "asset_id": "xiang_en_cos03",
+          "name": "味觉之秘",
+          "owner_id": "xiang_en",
+          "owner_name": "向恩",
+          "target": "assets/costumes/xiang_en_cos03.png",
+          "size": "portrait",
+          "generation": "costume_sheet",
+          "group": "costume_hero:xiang_en",
+          "meta": {
+            "quality": "素装",
+            "series": "",
+            "owner_kind": "hero"
+          }
+        }
+      ],
+      "index": 2,
+      "row": 1,
+      "col": 0
+    },
+    {
+      "label": "神速破军（华服）",
+      "saves": [
+        {
+          "key": "costume_full:xiang_en:xiang_en_cos04",
+          "category": "costume_full",
+          "asset_id": "xiang_en_cos04",
+          "name": "神速破军",
+          "owner_id": "xiang_en",
+          "owner_name": "向恩",
+          "target": "assets/costumes/xiang_en_cos04.png",
+          "size": "portrait",
+          "generation": "costume_sheet",
+          "group": "costume_hero:xiang_en",
+          "meta": {
+            "quality": "华服",
+            "series": "",
+            "owner_kind": "hero"
+          }
+        }
+      ],
+      "index": 3,
+      "row": 1,
+      "col": 1
+    }
+  ],
+  "filename_base": "task_0140_costume_sheet_costume_hero_xiang_en",
+  "image_name": "task_0140_costume_sheet_costume_hero_xiang_en.png",
+  "output_path": "build/asset_pipeline/inbox/atlases/task_0140_costume_sheet_costume_hero_xiang_en.png"
+}

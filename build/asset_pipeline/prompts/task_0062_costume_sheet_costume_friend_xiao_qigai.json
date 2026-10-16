@@ -1,0 +1,54 @@
+{
+  "task_id": "task_0062",
+  "kind": "costume_sheet",
+  "group": "costume_friend:xiao_qigai",
+  "title": "小乞丐 的服装图集",
+  "rows": 1,
+  "cols": 1,
+  "reference_image": "",
+  "cells": [
+    {
+      "label": "团圆年夜（素装）",
+      "saves": [
+        {
+          "key": "costume_full:xiao_qigai:xiao_qigai_cos01",
+          "category": "costume_full",
+          "asset_id": "xiao_qigai_cos01",
+          "name": "团圆年夜",
+          "owner_id": "xiao_qigai",
+          "owner_name": "小乞丐",
+          "target": "assets/costumes/xiao_qigai_cos01.png",
+          "size": "portrait",
+          "generation": "costume_sheet",
+          "group": "costume_friend:xiao_qigai",
+          "meta": {
+            "quality": "素装",
+            "series": "",
+            "owner_kind": "friend"
+          }
+        },
+        {
+          "key": "friend_portrait:xiao_qigai:xiao_qigai",
+          "category": "friend_portrait",
+          "asset_id": "xiao_qigai",
+          "name": "小乞丐",
+          "owner_id": "xiao_qigai",
+          "owner_name": "小乞丐",
+          "target": "assets/portraits/friends/xiao_qigai.png",
+          "size": "portrait",
+          "generation": "portrait",
+          "group": "friend_portraits",
+          "meta": {
+            "category": "农"
+          }
+        }
+      ],
+      "index": 0,
+      "row": 0,
+      "col": 0
+    }
+  ],
+  "filename_base": "task_0062_costume_sheet_costume_friend_xiao_qigai",
+  "image_name": "task_0062_costume_sheet_costume_friend_xiao_qigai.png",
+  "output_path": "build/asset_pipeline/inbox/atlases/task_0062_costume_sheet_costume_friend_xiao_qigai.png"
+}

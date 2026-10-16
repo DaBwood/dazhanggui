@@ -1,0 +1,37 @@
+{
+  "task_id": "task_0162",
+  "kind": "portrait_single",
+  "group": "friend_portraits",
+  "title": "嫦娥",
+  "rows": 1,
+  "cols": 1,
+  "reference_image": "",
+  "cells": [
+    {
+      "label": "嫦娥",
+      "saves": [
+        {
+          "key": "friend_portrait:change:change",
+          "category": "friend_portrait",
+          "asset_id": "change",
+          "name": "嫦娥",
+          "owner_id": "change",
+          "owner_name": "嫦娥",
+          "target": "assets/portraits/friends/change.png",
+          "size": "portrait",
+          "generation": "portrait",
+          "group": "friend_portraits",
+          "meta": {
+            "category": "侠"
+          }
+        }
+      ],
+      "index": 0,
+      "row": 0,
+      "col": 0
+    }
+  ],
+  "filename_base": "task_0162_portrait_single_friend_portraits",
+  "image_name": "task_0162_portrait_single_friend_portraits.png",
+  "output_path": "build/asset_pipeline/inbox/atlases/task_0162_portrait_single_friend_portraits.png"
+}

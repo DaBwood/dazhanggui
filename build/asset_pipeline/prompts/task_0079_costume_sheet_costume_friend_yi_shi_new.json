@@ -1,0 +1,54 @@
+{
+  "task_id": "task_0079",
+  "kind": "costume_sheet",
+  "group": "costume_friend:yi_shi_new",
+  "title": "医师 的服装图集",
+  "rows": 1,
+  "cols": 1,
+  "reference_image": "",
+  "cells": [
+    {
+      "label": "玉背行罐（素装）",
+      "saves": [
+        {
+          "key": "costume_full:yi_shi_new:yi_shi_new_cos01",
+          "category": "costume_full",
+          "asset_id": "yi_shi_new_cos01",
+          "name": "玉背行罐",
+          "owner_id": "yi_shi_new",
+          "owner_name": "医师",
+          "target": "assets/costumes/yi_shi_new_cos01.png",
+          "size": "portrait",
+          "generation": "costume_sheet",
+          "group": "costume_friend:yi_shi_new",
+          "meta": {
+            "quality": "素装",
+            "series": "",
+            "owner_kind": "friend"
+          }
+        },
+        {
+          "key": "friend_portrait:yi_shi_new:yi_shi_new",
+          "category": "friend_portrait",
+          "asset_id": "yi_shi_new",
+          "name": "医师",
+          "owner_id": "yi_shi_new",
+          "owner_name": "医师",
+          "target": "assets/portraits/friends/yi_shi_new.png",
+          "size": "portrait",
+          "generation": "portrait",
+          "group": "friend_portraits",
+          "meta": {
+            "category": "士"
+          }
+        }
+      ],
+      "index": 0,
+      "row": 0,
+      "col": 0
+    }
+  ],
+  "filename_base": "task_0079_costume_sheet_costume_friend_yi_shi_new",
+  "image_name": "task_0079_costume_sheet_costume_friend_yi_shi_new.png",
+  "output_path": "build/asset_pipeline/inbox/atlases/task_0079_costume_sheet_costume_friend_yi_shi_new.png"
+}

@@ -1,0 +1,238 @@
+{
+  "task_id": "task_0278",
+  "kind": "icon_sheet",
+  "group": "item_icons",
+  "title": "item_icons 图标图集",
+  "rows": 3,
+  "cols": 3,
+  "reference_image": "",
+  "cells": [
+    {
+      "label": "风华自选锦盒：使用后任选以下藏品碎片×1：炽耀千秋、逐梦荣光",
+      "saves": [
+        {
+          "key": "item_icon:suitbox_风华",
+          "category": "item_icon",
+          "asset_id": "suitbox_风华",
+          "name": "风华自选锦盒",
+          "owner_id": "",
+          "owner_name": "",
+          "target": "assets/items/suitbox_风华.png",
+          "size": "icon",
+          "generation": "icon_sheet",
+          "group": "item_icons",
+          "meta": {
+            "desc": "使用后任选以下藏品碎片×1：炽耀千秋、逐梦荣光",
+            "use": {
+              "type": "suit_frag_box",
+              "btn": "使用",
+              "title": "选择碎片"
+            }
+          }
+        }
+      ],
+      "index": 0,
+      "row": 0,
+      "col": 0
+    },
+    {
+      "label": "魂器自选锦盒：使用后任选以下藏品碎片×1：瀚海乾坤罩、明月夜、观音泪",
+      "saves": [
+        {
+          "key": "item_icon:suitbox_魂器",
+          "category": "item_icon",
+          "asset_id": "suitbox_魂器",
+          "name": "魂器自选锦盒",
+          "owner_id": "",
+          "owner_name": "",
+          "target": "assets/items/suitbox_魂器.png",
+          "size": "icon",
+          "generation": "icon_sheet",
+          "group": "item_icons",
+          "meta": {
+            "desc": "使用后任选以下藏品碎片×1：瀚海乾坤罩、明月夜、观音泪",
+            "use": {
+              "type": "suit_frag_box",
+              "btn": "使用",
+              "title": "选择碎片"
+            }
+          }
+        }
+      ],
+      "index": 1,
+      "row": 0,
+      "col": 1
+    },
+    {
+      "label": "泰阿剑：兑换门客【秦始皇】所需",
+      "saves": [
+        {
+          "key": "item_icon:taia_jian",
+          "category": "item_icon",
+          "asset_id": "taia_jian",
+          "name": "泰阿剑",
+          "owner_id": "",
+          "owner_name": "",
+          "target": "assets/items/taia_jian.png",
+          "size": "icon",
+          "generation": "icon_sheet",
+          "group": "item_icons",
+          "meta": {
+            "desc": "兑换门客【秦始皇】所需",
+            "use": ""
+          }
+        }
+      ],
+      "index": 2,
+      "row": 0,
+      "col": 2
+    },
+    {
+      "label": "檀木簪：檀木雕琢的发簪（后续玩法更新后使用）",
+      "saves": [
+        {
+          "key": "item_icon:tanmu_zan",
+          "category": "item_icon",
+          "asset_id": "tanmu_zan",
+          "name": "檀木簪",
+          "owner_id": "",
+          "owner_name": "",
+          "target": "assets/items/tanmu_zan.png",
+          "size": "icon",
+          "generation": "icon_sheet",
+          "group": "item_icons",
+          "meta": {
+            "desc": "檀木雕琢的发簪（后续玩法更新后使用）",
+            "use": ""
+          }
+        }
+      ],
+      "index": 3,
+      "row": 1,
+      "col": 0
+    },
+    {
+      "label": "淘宝券：用于淘宝抽取藏品（单次1张，十连10张），获取途径：活动",
+      "saves": [
+        {
+          "key": "item_icon:tao_bao_quan",
+          "category": "item_icon",
+          "asset_id": "tao_bao_quan",
+          "name": "淘宝券",
+          "owner_id": "",
+          "owner_name": "",
+          "target": "assets/items/tao_bao_quan.png",
+          "size": "icon",
+          "generation": "icon_sheet",
+          "group": "item_icons",
+          "meta": {
+            "desc": "用于淘宝抽取藏品（单次1张，十连10张），获取途径：活动",
+            "use": ""
+          }
+        }
+      ],
+      "index": 4,
+      "row": 1,
+      "col": 1
+    },
+    {
+      "label": "特级厨师勋章：特级厨师勋章信物（刘昴星·天马行空/兰飞鸿·涅槃新生）通用升级道具，每级消耗600个；获取途径待接",
+      "saves": [
+        {
+          "key": "item_icon:teji_chushi_xunzhang",
+          "category": "item_icon",
+          "asset_id": "teji_chushi_xunzhang",
+          "name": "特级厨师勋章",
+          "owner_id": "",
+          "owner_name": "",
+          "target": "assets/items/teji_chushi_xunzhang.png",
+          "size": "icon",
+          "generation": "icon_sheet",
+          "group": "item_icons",
+          "meta": {
+            "desc": "特级厨师勋章信物（刘昴星·天马行空/兰飞鸿·涅槃新生）通用升级道具，每级消耗600个；获取途径待接",
+            "use": ""
+          }
+        }
+      ],
+      "index": 5,
+      "row": 1,
+      "col": 2
+    },
+    {
+      "label": "天星：汴梁女团系列服装的兑换道具（后续玩法产出）",
+      "saves": [
+        {
+          "key": "item_icon:tian_xing",
+          "category": "item_icon",
+          "asset_id": "tian_xing",
+          "name": "天星",
+          "owner_id": "",
+          "owner_name": "",
+          "target": "assets/items/tian_xing.png",
+          "size": "icon",
+          "generation": "icon_sheet",
+          "group": "item_icons",
+          "meta": {
+            "desc": "汴梁女团系列服装的兑换道具（后续玩法产出）",
+            "use": ""
+          }
+        }
+      ],
+      "index": 6,
+      "row": 2,
+      "col": 0
+    },
+    {
+      "label": "天工錾锤：兑换门客【石敢当】所需",
+      "saves": [
+        {
+          "key": "item_icon:tiangong_zanchui",
+          "category": "item_icon",
+          "asset_id": "tiangong_zanchui",
+          "name": "天工錾锤",
+          "owner_id": "",
+          "owner_name": "",
+          "target": "assets/items/tiangong_zanchui.png",
+          "size": "icon",
+          "generation": "icon_sheet",
+          "group": "item_icons",
+          "meta": {
+            "desc": "兑换门客【石敢当】所需",
+            "use": ""
+          }
+        }
+      ],
+      "index": 7,
+      "row": 2,
+      "col": 1
+    },
+    {
+      "label": "天魁令旗：兑换门客【宋江】所需",
+      "saves": [
+        {
+          "key": "item_icon:tiankui_lingqi",
+          "category": "item_icon",
+          "asset_id": "tiankui_lingqi",
+          "name": "天魁令旗",
+          "owner_id": "",
+          "owner_name": "",
+          "target": "assets/items/tiankui_lingqi.png",
+          "size": "icon",
+          "generation": "icon_sheet",
+          "group": "item_icons",
+          "meta": {
+            "desc": "兑换门客【宋江】所需",
+            "use": ""
+          }
+        }
+      ],
+      "index": 8,
+      "row": 2,
+      "col": 2
+    }
+  ],
+  "filename_base": "task_0278_icon_sheet_item_icons",
+  "image_name": "task_0278_icon_sheet_item_icons.png",
+  "output_path": "build/asset_pipeline/inbox/atlases/task_0278_icon_sheet_item_icons.png"
+}

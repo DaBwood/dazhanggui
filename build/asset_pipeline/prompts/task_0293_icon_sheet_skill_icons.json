@@ -1,0 +1,203 @@
+{
+  "task_id": "task_0293",
+  "kind": "icon_sheet",
+  "group": "skill_icons",
+  "title": "skill_icons 图标图集",
+  "rows": 3,
+  "cols": 3,
+  "reference_image": "",
+  "cells": [
+    {
+      "label": "如有神助：敦煌石窟活动中，我方血量+5%",
+      "saves": [
+        {
+          "key": "skill_icon:如有神助",
+          "category": "skill_icon",
+          "asset_id": "如有神助",
+          "name": "如有神助",
+          "owner_id": "",
+          "owner_name": "",
+          "target": "assets/skill_icons/如有神助.png",
+          "size": "icon",
+          "generation": "icon_sheet",
+          "group": "skill_icons",
+          "meta": {}
+        }
+      ],
+      "index": 0,
+      "row": 0,
+      "col": 0
+    },
+    {
+      "label": "妙手天成",
+      "saves": [
+        {
+          "key": "skill_icon:妙手天成",
+          "category": "skill_icon",
+          "asset_id": "妙手天成",
+          "name": "妙手天成",
+          "owner_id": "",
+          "owner_name": "",
+          "target": "assets/skill_icons/妙手天成.png",
+          "size": "icon",
+          "generation": "icon_sheet",
+          "group": "skill_icons",
+          "meta": {}
+        }
+      ],
+      "index": 1,
+      "row": 0,
+      "col": 1
+    },
+    {
+      "label": "始皇帝",
+      "saves": [
+        {
+          "key": "skill_icon:始皇帝",
+          "category": "skill_icon",
+          "asset_id": "始皇帝",
+          "name": "始皇帝",
+          "owner_id": "",
+          "owner_name": "",
+          "target": "assets/skill_icons/始皇帝.png",
+          "size": "icon",
+          "generation": "icon_sheet",
+          "group": "skill_icons",
+          "meta": {}
+        }
+      ],
+      "index": 2,
+      "row": 0,
+      "col": 2
+    },
+    {
+      "label": "宁胡和议：复制最高等级门客的等级(最高500级)",
+      "saves": [
+        {
+          "key": "skill_icon:宁胡和议",
+          "category": "skill_icon",
+          "asset_id": "宁胡和议",
+          "name": "宁胡和议",
+          "owner_id": "",
+          "owner_name": "",
+          "target": "assets/skill_icons/宁胡和议.png",
+          "size": "icon",
+          "generation": "icon_sheet",
+          "group": "skill_icons",
+          "meta": {}
+        }
+      ],
+      "index": 3,
+      "row": 1,
+      "col": 0
+    },
+    {
+      "label": "完美资质",
+      "saves": [
+        {
+          "key": "skill_icon:完美资质",
+          "category": "skill_icon",
+          "asset_id": "完美资质",
+          "name": "完美资质",
+          "owner_id": "",
+          "owner_name": "",
+          "target": "assets/skill_icons/完美资质.png",
+          "size": "icon",
+          "generation": "icon_sheet",
+          "group": "skill_icons",
+          "meta": {}
+        }
+      ],
+      "index": 4,
+      "row": 1,
+      "col": 1
+    },
+    {
+      "label": "宝莲光华",
+      "saves": [
+        {
+          "key": "skill_icon:宝莲光华",
+          "category": "skill_icon",
+          "asset_id": "宝莲光华",
+          "name": "宝莲光华",
+          "owner_id": "",
+          "owner_name": "",
+          "target": "assets/skill_icons/宝莲光华.png",
+          "size": "icon",
+          "generation": "icon_sheet",
+          "group": "skill_icons",
+          "meta": {}
+        }
+      ],
+      "index": 5,
+      "row": 1,
+      "col": 2
+    },
+    {
+      "label": "客满堂前",
+      "saves": [
+        {
+          "key": "skill_icon:客满堂前",
+          "category": "skill_icon",
+          "asset_id": "客满堂前",
+          "name": "客满堂前",
+          "owner_id": "",
+          "owner_name": "",
+          "target": "assets/skill_icons/客满堂前.png",
+          "size": "icon",
+          "generation": "icon_sheet",
+          "group": "skill_icons",
+          "meta": {}
+        }
+      ],
+      "index": 6,
+      "row": 2,
+      "col": 0
+    },
+    {
+      "label": "对酒当歌：宴会结束人气+10%",
+      "saves": [
+        {
+          "key": "skill_icon:对酒当歌",
+          "category": "skill_icon",
+          "asset_id": "对酒当歌",
+          "name": "对酒当歌",
+          "owner_id": "",
+          "owner_name": "",
+          "target": "assets/skill_icons/对酒当歌.png",
+          "size": "icon",
+          "generation": "icon_sheet",
+          "group": "skill_icons",
+          "meta": {}
+        }
+      ],
+      "index": 7,
+      "row": 2,
+      "col": 1
+    },
+    {
+      "label": "封仙籍",
+      "saves": [
+        {
+          "key": "skill_icon:封仙籍",
+          "category": "skill_icon",
+          "asset_id": "封仙籍",
+          "name": "封仙籍",
+          "owner_id": "",
+          "owner_name": "",
+          "target": "assets/skill_icons/封仙籍.png",
+          "size": "icon",
+          "generation": "icon_sheet",
+          "group": "skill_icons",
+          "meta": {}
+        }
+      ],
+      "index": 8,
+      "row": 2,
+      "col": 2
+    }
+  ],
+  "filename_base": "task_0293_icon_sheet_skill_icons",
+  "image_name": "task_0293_icon_sheet_skill_icons.png",
+  "output_path": "build/asset_pipeline/inbox/atlases/task_0293_icon_sheet_skill_icons.png"
+}

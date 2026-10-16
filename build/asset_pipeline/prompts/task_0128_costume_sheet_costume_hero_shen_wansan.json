@@ -1,0 +1,105 @@
+{
+  "task_id": "task_0128",
+  "kind": "costume_sheet",
+  "group": "costume_hero:shen_wansan",
+  "title": "沈万三 的服装图集",
+  "rows": 2,
+  "cols": 2,
+  "reference_image": "",
+  "cells": [
+    {
+      "label": "靖王（素装）",
+      "saves": [
+        {
+          "key": "costume_full:shen_wansan:shen_wansan_cos01",
+          "category": "costume_full",
+          "asset_id": "shen_wansan_cos01",
+          "name": "靖王",
+          "owner_id": "shen_wansan",
+          "owner_name": "沈万三",
+          "target": "assets/costumes/shen_wansan_cos01.png",
+          "size": "portrait",
+          "generation": "costume_sheet",
+          "group": "costume_hero:shen_wansan",
+          "meta": {
+            "quality": "素装",
+            "series": "",
+            "owner_kind": "hero"
+          }
+        },
+        {
+          "key": "hero_portrait:shen_wansan:shen_wansan",
+          "category": "hero_portrait",
+          "asset_id": "shen_wansan",
+          "name": "沈万三",
+          "owner_id": "shen_wansan",
+          "owner_name": "沈万三",
+          "target": "assets/portraits/heroes/shen_wansan.png",
+          "size": "portrait",
+          "generation": "portrait",
+          "group": "hero_portraits",
+          "meta": {
+            "category": "商",
+            "quality": 2
+          }
+        }
+      ],
+      "index": 0,
+      "row": 0,
+      "col": 0
+    },
+    {
+      "label": "吴刚（素装）",
+      "saves": [
+        {
+          "key": "costume_full:shen_wansan:shen_wansan_cos02",
+          "category": "costume_full",
+          "asset_id": "shen_wansan_cos02",
+          "name": "吴刚",
+          "owner_id": "shen_wansan",
+          "owner_name": "沈万三",
+          "target": "assets/costumes/shen_wansan_cos02.png",
+          "size": "portrait",
+          "generation": "costume_sheet",
+          "group": "costume_hero:shen_wansan",
+          "meta": {
+            "quality": "素装",
+            "series": "",
+            "owner_kind": "hero"
+          }
+        }
+      ],
+      "index": 1,
+      "row": 0,
+      "col": 1
+    },
+    {
+      "label": "烟火迎春（素装）",
+      "saves": [
+        {
+          "key": "costume_full:shen_wansan:shen_wansan_cos03",
+          "category": "costume_full",
+          "asset_id": "shen_wansan_cos03",
+          "name": "烟火迎春",
+          "owner_id": "shen_wansan",
+          "owner_name": "沈万三",
+          "target": "assets/costumes/shen_wansan_cos03.png",
+          "size": "portrait",
+          "generation": "costume_sheet",
+          "group": "costume_hero:shen_wansan",
+          "meta": {
+            "quality": "素装",
+            "series": "",
+            "owner_kind": "hero"
+          }
+        }
+      ],
+      "index": 2,
+      "row": 1,
+      "col": 0
+    }
+  ],
+  "filename_base": "task_0128_costume_sheet_costume_hero_shen_wansan",
+  "image_name": "task_0128_costume_sheet_costume_hero_shen_wansan.png",
+  "output_path": "build/asset_pipeline/inbox/atlases/task_0128_costume_sheet_costume_hero_shen_wansan.png"
+}

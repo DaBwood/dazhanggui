@@ -1,0 +1,19 @@
+[remap]
+
+importer="csv_translation"
+type="Translation"
+uid="uid://d0rluq6nh3njd"
+
+[deps]
+
+files=["res://build/asset_pipeline/character_bible.type.translation", "res://build/asset_pipeline/character_bible.name.translation", "res://build/asset_pipeline/character_bible.category.translation", "res://build/asset_pipeline/character_bible.quality.translation", "res://build/asset_pipeline/character_bible.reference.translation"]
+
+source_file="res://build/asset_pipeline/character_bible.csv"
+dest_files=["res://build/asset_pipeline/character_bible.type.translation", "res://build/asset_pipeline/character_bible.name.translation", "res://build/asset_pipeline/character_bible.category.translation", "res://build/asset_pipeline/character_bible.quality.translation", "res://build/asset_pipeline/character_bible.reference.translation"]
+
+[params]
+
+compress=1
+delimiter=0
+unescape_keys=false
+unescape_translations=true

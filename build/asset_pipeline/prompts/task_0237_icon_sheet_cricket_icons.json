@@ -1,0 +1,239 @@
+{
+  "task_id": "task_0237",
+  "kind": "icon_sheet",
+  "group": "cricket_icons",
+  "title": "cricket_icons 图标图集",
+  "rows": 3,
+  "cols": 3,
+  "reference_image": "",
+  "cells": [
+    {
+      "label": "呼保义：工系 6星",
+      "saves": [
+        {
+          "key": "cricket_icon:呼保义",
+          "category": "cricket_icon",
+          "asset_id": "呼保义",
+          "name": "呼保义",
+          "owner_id": "",
+          "owner_name": "",
+          "target": "assets/skill_icons/呼保义.png",
+          "size": "icon",
+          "generation": "icon_sheet",
+          "group": "cricket_icons",
+          "meta": {
+            "cricket_id": "hu_bao_yi",
+            "career": "工",
+            "quality": 6
+          }
+        }
+      ],
+      "index": 0,
+      "row": 0,
+      "col": 0
+    },
+    {
+      "label": "土重岳：工系 6星",
+      "saves": [
+        {
+          "key": "cricket_icon:土重岳",
+          "category": "cricket_icon",
+          "asset_id": "土重岳",
+          "name": "土重岳",
+          "owner_id": "",
+          "owner_name": "",
+          "target": "assets/skill_icons/土重岳.png",
+          "size": "icon",
+          "generation": "icon_sheet",
+          "group": "cricket_icons",
+          "meta": {
+            "cricket_id": "tu_zhong_yue",
+            "career": "工",
+            "quality": 6
+          }
+        }
+      ],
+      "index": 1,
+      "row": 0,
+      "col": 1
+    },
+    {
+      "label": "墨韵白：工系 4星",
+      "saves": [
+        {
+          "key": "cricket_icon:墨韵白",
+          "category": "cricket_icon",
+          "asset_id": "墨韵白",
+          "name": "墨韵白",
+          "owner_id": "",
+          "owner_name": "",
+          "target": "assets/skill_icons/墨韵白.png",
+          "size": "icon",
+          "generation": "icon_sheet",
+          "group": "cricket_icons",
+          "meta": {
+            "cricket_id": "mo_yun_bai",
+            "career": "工",
+            "quality": 4
+          }
+        }
+      ],
+      "index": 2,
+      "row": 0,
+      "col": 2
+    },
+    {
+      "label": "夏侯惇：侠系 6星",
+      "saves": [
+        {
+          "key": "cricket_icon:夏侯惇",
+          "category": "cricket_icon",
+          "asset_id": "夏侯惇",
+          "name": "夏侯惇",
+          "owner_id": "",
+          "owner_name": "",
+          "target": "assets/skill_icons/夏侯惇.png",
+          "size": "icon",
+          "generation": "icon_sheet",
+          "group": "cricket_icons",
+          "meta": {
+            "cricket_id": "xia_hou_dun",
+            "career": "侠",
+            "quality": 6
+          }
+        }
+      ],
+      "index": 3,
+      "row": 1,
+      "col": 0
+    },
+    {
+      "label": "夜幽冥：侠系 6星",
+      "saves": [
+        {
+          "key": "cricket_icon:夜幽冥",
+          "category": "cricket_icon",
+          "asset_id": "夜幽冥",
+          "name": "夜幽冥",
+          "owner_id": "",
+          "owner_name": "",
+          "target": "assets/skill_icons/夜幽冥.png",
+          "size": "icon",
+          "generation": "icon_sheet",
+          "group": "cricket_icons",
+          "meta": {
+            "cricket_id": "ye_you_ming",
+            "career": "侠",
+            "quality": 6
+          }
+        }
+      ],
+      "index": 4,
+      "row": 1,
+      "col": 1
+    },
+    {
+      "label": "天巧星：农系 6星",
+      "saves": [
+        {
+          "key": "cricket_icon:天巧星",
+          "category": "cricket_icon",
+          "asset_id": "天巧星",
+          "name": "天巧星",
+          "owner_id": "",
+          "owner_name": "",
+          "target": "assets/skill_icons/天巧星.png",
+          "size": "icon",
+          "generation": "icon_sheet",
+          "group": "cricket_icons",
+          "meta": {
+            "cricket_id": "tian_qiao_xing",
+            "career": "农",
+            "quality": 6
+          }
+        }
+      ],
+      "index": 5,
+      "row": 1,
+      "col": 2
+    },
+    {
+      "label": "孙大圣：商系 6星",
+      "saves": [
+        {
+          "key": "cricket_icon:孙大圣",
+          "category": "cricket_icon",
+          "asset_id": "孙大圣",
+          "name": "孙大圣",
+          "owner_id": "",
+          "owner_name": "",
+          "target": "assets/skill_icons/孙大圣.png",
+          "size": "icon",
+          "generation": "icon_sheet",
+          "group": "cricket_icons",
+          "meta": {
+            "cricket_id": "sun_da_sheng",
+            "career": "商",
+            "quality": 6
+          }
+        }
+      ],
+      "index": 6,
+      "row": 2,
+      "col": 0
+    },
+    {
+      "label": "孙尚香：侠系 6星",
+      "saves": [
+        {
+          "key": "cricket_icon:孙尚香",
+          "category": "cricket_icon",
+          "asset_id": "孙尚香",
+          "name": "孙尚香",
+          "owner_id": "",
+          "owner_name": "",
+          "target": "assets/skill_icons/孙尚香.png",
+          "size": "icon",
+          "generation": "icon_sheet",
+          "group": "cricket_icons",
+          "meta": {
+            "cricket_id": "sun_shang_xiang",
+            "career": "侠",
+            "quality": 6
+          }
+        }
+      ],
+      "index": 7,
+      "row": 2,
+      "col": 1
+    },
+    {
+      "label": "射弓白：士系 2星",
+      "saves": [
+        {
+          "key": "cricket_icon:射弓白",
+          "category": "cricket_icon",
+          "asset_id": "射弓白",
+          "name": "射弓白",
+          "owner_id": "",
+          "owner_name": "",
+          "target": "assets/skill_icons/射弓白.png",
+          "size": "icon",
+          "generation": "icon_sheet",
+          "group": "cricket_icons",
+          "meta": {
+            "cricket_id": "she_工_bai",
+            "career": "士",
+            "quality": 2
+          }
+        }
+      ],
+      "index": 8,
+      "row": 2,
+      "col": 2
+    }
+  ],
+  "filename_base": "task_0237_icon_sheet_cricket_icons",
+  "image_name": "task_0237_icon_sheet_cricket_icons.png",
+  "output_path": "build/asset_pipeline/inbox/atlases/task_0237_icon_sheet_cricket_icons.png"
+}

@@ -1,0 +1,80 @@
+{
+  "task_id": "task_0111",
+  "kind": "costume_sheet",
+  "group": "costume_hero:hua_mulan",
+  "title": "花木兰 的服装图集",
+  "rows": 1,
+  "cols": 2,
+  "reference_image": "",
+  "cells": [
+    {
+      "label": "寒锋破虏（华服）",
+      "saves": [
+        {
+          "key": "costume_full:hua_mulan:hua_mulan_cos01",
+          "category": "costume_full",
+          "asset_id": "hua_mulan_cos01",
+          "name": "寒锋破虏",
+          "owner_id": "hua_mulan",
+          "owner_name": "花木兰",
+          "target": "assets/costumes/hua_mulan_cos01.png",
+          "size": "portrait",
+          "generation": "costume_sheet",
+          "group": "costume_hero:hua_mulan",
+          "meta": {
+            "quality": "华服",
+            "series": "",
+            "owner_kind": "hero"
+          }
+        },
+        {
+          "key": "hero_portrait:hua_mulan:hua_mulan",
+          "category": "hero_portrait",
+          "asset_id": "hua_mulan",
+          "name": "花木兰",
+          "owner_id": "hua_mulan",
+          "owner_name": "花木兰",
+          "target": "assets/portraits/heroes/hua_mulan.png",
+          "size": "portrait",
+          "generation": "portrait",
+          "group": "hero_portraits",
+          "meta": {
+            "category": "商",
+            "quality": 1
+          }
+        }
+      ],
+      "index": 0,
+      "row": 0,
+      "col": 0
+    },
+    {
+      "label": "巾帼归阙（锦衣）",
+      "saves": [
+        {
+          "key": "costume_full:hua_mulan:hua_mulan_cos02",
+          "category": "costume_full",
+          "asset_id": "hua_mulan_cos02",
+          "name": "巾帼归阙",
+          "owner_id": "hua_mulan",
+          "owner_name": "花木兰",
+          "target": "assets/costumes/hua_mulan_cos02.png",
+          "size": "portrait",
+          "generation": "costume_sheet",
+          "group": "costume_hero:hua_mulan",
+          "meta": {
+            "quality": "锦衣",
+            "series": "",
+            "owner_kind": "hero"
+          }
+        }
+      ],
+      "index": 1,
+      "row": 0,
+      "col": 1
+    }
+  ],
+  "filename_base": "task_0111_costume_sheet_costume_hero_hua_mulan",
+  "image_name": "task_0111_costume_sheet_costume_hero_hua_mulan.png",
+  "output_path": "build/asset_pipeline/inbox/atlases/task_0111_costume_sheet_costume_hero_hua_mulan.png"
+}

@@ -1,0 +1,54 @@
+{
+  "task_id": "task_0016",
+  "kind": "costume_sheet",
+  "group": "costume_friend:huan_xi",
+  "title": "幻戏 的服装图集",
+  "rows": 1,
+  "cols": 1,
+  "reference_image": "",
+  "cells": [
+    {
+      "label": "鱼龙曼延（素装）",
+      "saves": [
+        {
+          "key": "costume_full:huan_xi:huan_xi_cos01",
+          "category": "costume_full",
+          "asset_id": "huan_xi_cos01",
+          "name": "鱼龙曼延",
+          "owner_id": "huan_xi",
+          "owner_name": "幻戏",
+          "target": "assets/costumes/huan_xi_cos01.png",
+          "size": "portrait",
+          "generation": "costume_sheet",
+          "group": "costume_friend:huan_xi",
+          "meta": {
+            "quality": "素装",
+            "series": "",
+            "owner_kind": "friend"
+          }
+        },
+        {
+          "key": "friend_portrait:huan_xi:huan_xi",
+          "category": "friend_portrait",
+          "asset_id": "huan_xi",
+          "name": "幻戏",
+          "owner_id": "huan_xi",
+          "owner_name": "幻戏",
+          "target": "assets/portraits/friends/huan_xi.png",
+          "size": "portrait",
+          "generation": "portrait",
+          "group": "friend_portraits",
+          "meta": {
+            "category": "侠"
+          }
+        }
+      ],
+      "index": 0,
+      "row": 0,
+      "col": 0
+    }
+  ],
+  "filename_base": "task_0016_costume_sheet_costume_friend_huan_xi",
+  "image_name": "task_0016_costume_sheet_costume_friend_huan_xi.png",
+  "output_path": "build/asset_pipeline/inbox/atlases/task_0016_costume_sheet_costume_friend_huan_xi.png"
+}

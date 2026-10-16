@@ -1,0 +1,230 @@
+{
+  "task_id": "task_0253",
+  "kind": "icon_sheet",
+  "group": "fishing_icons",
+  "title": "fishing_icons 图标图集",
+  "rows": 3,
+  "cols": 3,
+  "reference_image": "",
+  "cells": [
+    {
+      "label": "水晶瓦：无双 item",
+      "saves": [
+        {
+          "key": "fishing_icon:shuijing_wa",
+          "category": "fishing_icon",
+          "asset_id": "shuijing_wa",
+          "name": "水晶瓦",
+          "owner_id": "",
+          "owner_name": "",
+          "target": "assets/fishing/shuijing_wa.png",
+          "size": "icon",
+          "generation": "icon_sheet",
+          "group": "fishing_icons",
+          "meta": {
+            "quality": "无双",
+            "kind": "item"
+          }
+        }
+      ],
+      "index": 0,
+      "row": 0,
+      "col": 0
+    },
+    {
+      "label": "竖琴海豹：极.无双",
+      "saves": [
+        {
+          "key": "fishing_icon:shuqin_haibao",
+          "category": "fishing_icon",
+          "asset_id": "shuqin_haibao",
+          "name": "竖琴海豹",
+          "owner_id": "",
+          "owner_name": "",
+          "target": "assets/fishing/shuqin_haibao.png",
+          "size": "icon",
+          "generation": "icon_sheet",
+          "group": "fishing_icons",
+          "meta": {
+            "quality": "极.无双",
+            "kind": ""
+          }
+        }
+      ],
+      "index": 1,
+      "row": 0,
+      "col": 1
+    },
+    {
+      "label": "松江鲈鱼：无",
+      "saves": [
+        {
+          "key": "fishing_icon:songjiang_luyu",
+          "category": "fishing_icon",
+          "asset_id": "songjiang_luyu",
+          "name": "松江鲈鱼",
+          "owner_id": "",
+          "owner_name": "",
+          "target": "assets/fishing/songjiang_luyu.png",
+          "size": "icon",
+          "generation": "icon_sheet",
+          "group": "fishing_icons",
+          "meta": {
+            "quality": "无",
+            "kind": ""
+          }
+        }
+      ],
+      "index": 2,
+      "row": 0,
+      "col": 2
+    },
+    {
+      "label": "蓑鲉：普通",
+      "saves": [
+        {
+          "key": "fishing_icon:suo_you",
+          "category": "fishing_icon",
+          "asset_id": "suo_you",
+          "name": "蓑鲉",
+          "owner_id": "",
+          "owner_name": "",
+          "target": "assets/fishing/suo_you.png",
+          "size": "icon",
+          "generation": "icon_sheet",
+          "group": "fishing_icons",
+          "meta": {
+            "quality": "普通",
+            "kind": ""
+          }
+        }
+      ],
+      "index": 3,
+      "row": 1,
+      "col": 0
+    },
+    {
+      "label": "天使：无双",
+      "saves": [
+        {
+          "key": "fishing_icon:tian_shi",
+          "category": "fishing_icon",
+          "asset_id": "tian_shi",
+          "name": "天使",
+          "owner_id": "",
+          "owner_name": "",
+          "target": "assets/fishing/tian_shi.png",
+          "size": "icon",
+          "generation": "icon_sheet",
+          "group": "fishing_icons",
+          "meta": {
+            "quality": "无双",
+            "kind": ""
+          }
+        }
+      ],
+      "index": 4,
+      "row": 1,
+      "col": 1
+    },
+    {
+      "label": "湾鳄：极.无双",
+      "saves": [
+        {
+          "key": "fishing_icon:wan_e",
+          "category": "fishing_icon",
+          "asset_id": "wan_e",
+          "name": "湾鳄",
+          "owner_id": "",
+          "owner_name": "",
+          "target": "assets/fishing/wan_e.png",
+          "size": "icon",
+          "generation": "icon_sheet",
+          "group": "fishing_icons",
+          "meta": {
+            "quality": "极.无双",
+            "kind": ""
+          }
+        }
+      ],
+      "index": 5,
+      "row": 1,
+      "col": 2
+    },
+    {
+      "label": "王带鱼：普通",
+      "saves": [
+        {
+          "key": "fishing_icon:wang_daiyu",
+          "category": "fishing_icon",
+          "asset_id": "wang_daiyu",
+          "name": "王带鱼",
+          "owner_id": "",
+          "owner_name": "",
+          "target": "assets/fishing/wang_daiyu.png",
+          "size": "icon",
+          "generation": "icon_sheet",
+          "group": "fishing_icons",
+          "meta": {
+            "quality": "普通",
+            "kind": ""
+          }
+        }
+      ],
+      "index": 6,
+      "row": 2,
+      "col": 0
+    },
+    {
+      "label": "乌鳢：无",
+      "saves": [
+        {
+          "key": "fishing_icon:wu_li",
+          "category": "fishing_icon",
+          "asset_id": "wu_li",
+          "name": "乌鳢",
+          "owner_id": "",
+          "owner_name": "",
+          "target": "assets/fishing/wu_li.png",
+          "size": "icon",
+          "generation": "icon_sheet",
+          "group": "fishing_icons",
+          "meta": {
+            "quality": "无",
+            "kind": ""
+          }
+        }
+      ],
+      "index": 7,
+      "row": 2,
+      "col": 1
+    },
+    {
+      "label": "五彩蛇鱼：无",
+      "saves": [
+        {
+          "key": "fishing_icon:wucai_sheyu",
+          "category": "fishing_icon",
+          "asset_id": "wucai_sheyu",
+          "name": "五彩蛇鱼",
+          "owner_id": "",
+          "owner_name": "",
+          "target": "assets/fishing/wucai_sheyu.png",
+          "size": "icon",
+          "generation": "icon_sheet",
+          "group": "fishing_icons",
+          "meta": {
+            "quality": "无",
+            "kind": ""
+          }
+        }
+      ],
+      "index": 8,
+      "row": 2,
+      "col": 2
+    }
+  ],
+  "filename_base": "task_0253_icon_sheet_fishing_icons",
+  "image_name": "task_0253_icon_sheet_fishing_icons.png",
+  "output_path": "build/asset_pipeline/inbox/atlases/task_0253_icon_sheet_fishing_icons.png"
+}

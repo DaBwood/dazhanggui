@@ -1,0 +1,37 @@
+{
+  "task_id": "task_0176",
+  "kind": "portrait_single",
+  "group": "friend_portraits",
+  "title": "密探",
+  "rows": 1,
+  "cols": 1,
+  "reference_image": "",
+  "cells": [
+    {
+      "label": "密探",
+      "saves": [
+        {
+          "key": "friend_portrait:mi_tan:mi_tan",
+          "category": "friend_portrait",
+          "asset_id": "mi_tan",
+          "name": "密探",
+          "owner_id": "mi_tan",
+          "owner_name": "密探",
+          "target": "assets/portraits/friends/mi_tan.png",
+          "size": "portrait",
+          "generation": "portrait",
+          "group": "friend_portraits",
+          "meta": {
+            "category": "侠"
+          }
+        }
+      ],
+      "index": 0,
+      "row": 0,
+      "col": 0
+    }
+  ],
+  "filename_base": "task_0176_portrait_single_friend_portraits",
+  "image_name": "task_0176_portrait_single_friend_portraits.png",
+  "output_path": "build/asset_pipeline/inbox/atlases/task_0176_portrait_single_friend_portraits.png"
+}

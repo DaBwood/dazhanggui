@@ -1,0 +1,230 @@
+{
+  "task_id": "task_0270",
+  "kind": "icon_sheet",
+  "group": "item_icons",
+  "title": "item_icons 图标图集",
+  "rows": 3,
+  "cols": 3,
+  "reference_image": "",
+  "cells": [
+    {
+      "label": "日轮光：藏品升级道具：401~500级使用",
+      "saves": [
+        {
+          "key": "item_icon:ri_lun_guang",
+          "category": "item_icon",
+          "asset_id": "ri_lun_guang",
+          "name": "日轮光",
+          "owner_id": "",
+          "owner_name": "",
+          "target": "assets/items/ri_lun_guang.png",
+          "size": "icon",
+          "generation": "icon_sheet",
+          "group": "item_icons",
+          "meta": {
+            "desc": "藏品升级道具：401~500级使用",
+            "use": ""
+          }
+        }
+      ],
+      "index": 0,
+      "row": 0,
+      "col": 0
+    },
+    {
+      "label": "玫瑰香水：与指定挚友吟诗作对（谈心）",
+      "saves": [
+        {
+          "key": "item_icon:rose_perfume",
+          "category": "item_icon",
+          "asset_id": "rose_perfume",
+          "name": "玫瑰香水",
+          "owner_id": "",
+          "owner_name": "",
+          "target": "assets/items/rose_perfume.png",
+          "size": "icon",
+          "generation": "icon_sheet",
+          "group": "item_icons",
+          "meta": {
+            "desc": "与指定挚友吟诗作对（谈心）",
+            "use": ""
+          }
+        }
+      ],
+      "index": 1,
+      "row": 0,
+      "col": 1
+    },
+    {
+      "label": "胭脂：赠送给挚友，才华+1",
+      "saves": [
+        {
+          "key": "item_icon:rouge",
+          "category": "item_icon",
+          "asset_id": "rouge",
+          "name": "胭脂",
+          "owner_id": "",
+          "owner_name": "",
+          "target": "assets/items/rouge.png",
+          "size": "icon",
+          "generation": "icon_sheet",
+          "group": "item_icons",
+          "meta": {
+            "desc": "赠送给挚友，才华+1",
+            "use": ""
+          }
+        }
+      ],
+      "index": 2,
+      "row": 0,
+      "col": 2
+    },
+    {
+      "label": "三国岩：三国系列促织蜕壳所需的道具",
+      "saves": [
+        {
+          "key": "item_icon:sanguo_yan",
+          "category": "item_icon",
+          "asset_id": "sanguo_yan",
+          "name": "三国岩",
+          "owner_id": "",
+          "owner_name": "",
+          "target": "assets/items/sanguo_yan.png",
+          "size": "icon",
+          "generation": "icon_sheet",
+          "group": "item_icons",
+          "meta": {
+            "desc": "三国系列促织蜕壳所需的道具",
+            "use": ""
+          }
+        }
+      ],
+      "index": 3,
+      "row": 1,
+      "col": 0
+    },
+    {
+      "label": "山海石：兑换山海异兽",
+      "saves": [
+        {
+          "key": "item_icon:shan_hai_shi",
+          "category": "item_icon",
+          "asset_id": "shan_hai_shi",
+          "name": "山海石",
+          "owner_id": "",
+          "owner_name": "",
+          "target": "assets/items/shan_hai_shi.png",
+          "size": "icon",
+          "generation": "icon_sheet",
+          "group": "item_icons",
+          "meta": {
+            "desc": "兑换山海异兽",
+            "use": ""
+          }
+        }
+      ],
+      "index": 4,
+      "row": 1,
+      "col": 1
+    },
+    {
+      "label": "珊瑚手串：王昭君专属信物，信物升级消耗道具；获取途径待接",
+      "saves": [
+        {
+          "key": "item_icon:shan_hu_shou_chuan",
+          "category": "item_icon",
+          "asset_id": "shan_hu_shou_chuan",
+          "name": "珊瑚手串",
+          "owner_id": "",
+          "owner_name": "",
+          "target": "assets/items/shan_hu_shou_chuan.png",
+          "size": "icon",
+          "generation": "icon_sheet",
+          "group": "item_icons",
+          "meta": {
+            "desc": "王昭君专属信物，信物升级消耗道具；获取途径待接",
+            "use": ""
+          }
+        }
+      ],
+      "index": 5,
+      "row": 1,
+      "col": 2
+    },
+    {
+      "label": "经商之道：提升商贾类门客的经商之道技能",
+      "saves": [
+        {
+          "key": "item_icon:shang_way",
+          "category": "item_icon",
+          "asset_id": "shang_way",
+          "name": "经商之道",
+          "owner_id": "",
+          "owner_name": "",
+          "target": "assets/items/shang_way.png",
+          "size": "icon",
+          "generation": "icon_sheet",
+          "group": "item_icons",
+          "meta": {
+            "desc": "提升商贾类门客的经商之道技能",
+            "use": ""
+          }
+        }
+      ],
+      "index": 6,
+      "row": 2,
+      "col": 0
+    },
+    {
+      "label": "山海岩：山海系列促织蜕壳所需的道具",
+      "saves": [
+        {
+          "key": "item_icon:shanhai_yan",
+          "category": "item_icon",
+          "asset_id": "shanhai_yan",
+          "name": "山海岩",
+          "owner_id": "",
+          "owner_name": "",
+          "target": "assets/items/shanhai_yan.png",
+          "size": "icon",
+          "generation": "icon_sheet",
+          "group": "item_icons",
+          "meta": {
+            "desc": "山海系列促织蜕壳所需的道具",
+            "use": ""
+          }
+        }
+      ],
+      "index": 7,
+      "row": 2,
+      "col": 1
+    },
+    {
+      "label": "射虏弓：花木兰晋升【军旅】专属道具，每级消耗600个；获取途径待接",
+      "saves": [
+        {
+          "key": "item_icon:she_lu_gong",
+          "category": "item_icon",
+          "asset_id": "she_lu_gong",
+          "name": "射虏弓",
+          "owner_id": "",
+          "owner_name": "",
+          "target": "assets/items/she_lu_gong.png",
+          "size": "icon",
+          "generation": "icon_sheet",
+          "group": "item_icons",
+          "meta": {
+            "desc": "花木兰晋升【军旅】专属道具，每级消耗600个；获取途径待接",
+            "use": ""
+          }
+        }
+      ],
+      "index": 8,
+      "row": 2,
+      "col": 2
+    }
+  ],
+  "filename_base": "task_0270_icon_sheet_item_icons",
+  "image_name": "task_0270_icon_sheet_item_icons.png",
+  "output_path": "build/asset_pipeline/inbox/atlases/task_0270_icon_sheet_item_icons.png"
+}

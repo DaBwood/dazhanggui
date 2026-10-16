@@ -1,0 +1,238 @@
+{
+  "task_id": "task_0257",
+  "kind": "icon_sheet",
+  "group": "item_icons",
+  "title": "item_icons 图标图集",
+  "rows": 3,
+  "cols": 3,
+  "reference_image": "",
+  "cells": [
+    {
+      "label": "珍兽果：升级珍兽等级",
+      "saves": [
+        {
+          "key": "item_icon:beast_fruit",
+          "category": "item_icon",
+          "asset_id": "beast_fruit",
+          "name": "珍兽果",
+          "owner_id": "",
+          "owner_name": "",
+          "target": "assets/items/beast_fruit.png",
+          "size": "icon",
+          "generation": "icon_sheet",
+          "group": "item_icons",
+          "meta": {
+            "desc": "升级珍兽等级",
+            "use": ""
+          }
+        }
+      ],
+      "index": 0,
+      "row": 0,
+      "col": 0
+    },
+    {
+      "label": "秉节木兰：花木兰专属信物，信物升级消耗道具；获取途径待接",
+      "saves": [
+        {
+          "key": "item_icon:bing_jie_mulan",
+          "category": "item_icon",
+          "asset_id": "bing_jie_mulan",
+          "name": "秉节木兰",
+          "owner_id": "",
+          "owner_name": "",
+          "target": "assets/items/bing_jie_mulan.png",
+          "size": "icon",
+          "generation": "icon_sheet",
+          "group": "item_icons",
+          "meta": {
+            "desc": "花木兰专属信物，信物升级消耗道具；获取途径待接",
+            "use": ""
+          }
+        }
+      ],
+      "index": 1,
+      "row": 0,
+      "col": 1
+    },
+    {
+      "label": "博古卷：传世珍宝系列服装的兑换道具（后续玩法产出）",
+      "saves": [
+        {
+          "key": "item_icon:bogu_juan",
+          "category": "item_icon",
+          "asset_id": "bogu_juan",
+          "name": "博古卷",
+          "owner_id": "",
+          "owner_name": "",
+          "target": "assets/items/bogu_juan.png",
+          "size": "icon",
+          "generation": "icon_sheet",
+          "group": "item_icons",
+          "meta": {
+            "desc": "传世珍宝系列服装的兑换道具（后续玩法产出）",
+            "use": ""
+          }
+        }
+      ],
+      "index": 2,
+      "row": 0,
+      "col": 2
+    },
+    {
+      "label": "门客残帖：10张合成1张门客帖",
+      "saves": [
+        {
+          "key": "item_icon:can_tie",
+          "category": "item_icon",
+          "asset_id": "can_tie",
+          "name": "门客残帖",
+          "owner_id": "",
+          "owner_name": "",
+          "target": "assets/items/can_tie.png",
+          "size": "icon",
+          "generation": "icon_sheet",
+          "group": "item_icons",
+          "meta": {
+            "desc": "10张合成1张门客帖",
+            "use": ""
+          }
+        }
+      ],
+      "index": 3,
+      "row": 1,
+      "col": 0
+    },
+    {
+      "label": "藏宝图：兑换门客【滚海蛟】所需",
+      "saves": [
+        {
+          "key": "item_icon:cangbao_tu",
+          "category": "item_icon",
+          "asset_id": "cangbao_tu",
+          "name": "藏宝图",
+          "owner_id": "",
+          "owner_name": "",
+          "target": "assets/items/cangbao_tu.png",
+          "size": "icon",
+          "generation": "icon_sheet",
+          "group": "item_icons",
+          "meta": {
+            "desc": "兑换门客【滚海蛟】所需",
+            "use": ""
+          }
+        }
+      ],
+      "index": 4,
+      "row": 1,
+      "col": 1
+    },
+    {
+      "label": "残破缀玉：20个可自选合成1枚缀玉（攀竹/织梦/莺歌/落花/流云）",
+      "saves": [
+        {
+          "key": "item_icon:canpo_zhuiyu",
+          "category": "item_icon",
+          "asset_id": "canpo_zhuiyu",
+          "name": "残破缀玉",
+          "owner_id": "",
+          "owner_name": "",
+          "target": "assets/items/canpo_zhuiyu.png",
+          "size": "icon",
+          "generation": "icon_sheet",
+          "group": "item_icons",
+          "meta": {
+            "desc": "20个可自选合成1枚缀玉（攀竹/织梦/莺歌/落花/流云）",
+            "use": ""
+          }
+        }
+      ],
+      "index": 5,
+      "row": 1,
+      "col": 2
+    },
+    {
+      "label": "茶叶：使用后随机一名农门客基础赚速+500",
+      "saves": [
+        {
+          "key": "item_icon:cha_ye",
+          "category": "item_icon",
+          "asset_id": "cha_ye",
+          "name": "茶叶",
+          "owner_id": "",
+          "owner_name": "",
+          "target": "assets/items/cha_ye.png",
+          "size": "icon",
+          "generation": "icon_sheet",
+          "group": "item_icons",
+          "meta": {
+            "desc": "使用后随机一名农门客基础赚速+500",
+            "use": {
+              "type": "quantity",
+              "btn": "使用",
+              "title": "使用茶叶"
+            }
+          }
+        }
+      ],
+      "index": 6,
+      "row": 2,
+      "col": 0
+    },
+    {
+      "label": "产物卡：使用后获得当前庄园12小时的全部产物",
+      "saves": [
+        {
+          "key": "item_icon:chanwu_card",
+          "category": "item_icon",
+          "asset_id": "chanwu_card",
+          "name": "产物卡",
+          "owner_id": "",
+          "owner_name": "",
+          "target": "assets/items/chanwu_card.png",
+          "size": "icon",
+          "generation": "icon_sheet",
+          "group": "item_icons",
+          "meta": {
+            "desc": "使用后获得当前庄园12小时的全部产物",
+            "use": {
+              "type": "quantity",
+              "btn": "使用",
+              "title": "使用产物卡"
+            }
+          }
+        }
+      ],
+      "index": 7,
+      "row": 2,
+      "col": 1
+    },
+    {
+      "label": "承建批文：用于招商中承包工事承建项目，每份持续180分钟，可获得大量匠造资历",
+      "saves": [
+        {
+          "key": "item_icon:chengjian_piwen",
+          "category": "item_icon",
+          "asset_id": "chengjian_piwen",
+          "name": "承建批文",
+          "owner_id": "",
+          "owner_name": "",
+          "target": "assets/items/chengjian_piwen.png",
+          "size": "icon",
+          "generation": "icon_sheet",
+          "group": "item_icons",
+          "meta": {
+            "desc": "用于招商中承包工事承建项目，每份持续180分钟，可获得大量匠造资历",
+            "use": ""
+          }
+        }
+      ],
+      "index": 8,
+      "row": 2,
+      "col": 2
+    }
+  ],
+  "filename_base": "task_0257_icon_sheet_item_icons",
+  "image_name": "task_0257_icon_sheet_item_icons.png",
+  "output_path": "build/asset_pipeline/inbox/atlases/task_0257_icon_sheet_item_icons.png"
+}

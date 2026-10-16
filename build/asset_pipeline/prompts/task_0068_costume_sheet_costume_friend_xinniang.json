@@ -1,0 +1,179 @@
+{
+  "task_id": "task_0068",
+  "kind": "costume_sheet",
+  "group": "costume_friend:xinniang",
+  "title": "新娘 的服装图集",
+  "rows": 3,
+  "cols": 2,
+  "reference_image": "",
+  "cells": [
+    {
+      "label": "绣织情缘（素装）",
+      "saves": [
+        {
+          "key": "costume_full:xinniang:xinniang_cos01",
+          "category": "costume_full",
+          "asset_id": "xinniang_cos01",
+          "name": "绣织情缘",
+          "owner_id": "xinniang",
+          "owner_name": "新娘",
+          "target": "assets/costumes/xinniang_cos01.png",
+          "size": "portrait",
+          "generation": "costume_sheet",
+          "group": "costume_friend:xinniang",
+          "meta": {
+            "quality": "素装",
+            "series": "",
+            "owner_kind": "friend"
+          }
+        },
+        {
+          "key": "friend_portrait:xinniang:xinniang",
+          "category": "friend_portrait",
+          "asset_id": "xinniang",
+          "name": "新娘",
+          "owner_id": "xinniang",
+          "owner_name": "新娘",
+          "target": "assets/portraits/friends/xinniang.png",
+          "size": "portrait",
+          "generation": "portrait",
+          "group": "friend_portraits",
+          "meta": {
+            "category": "商"
+          }
+        }
+      ],
+      "index": 0,
+      "row": 0,
+      "col": 0
+    },
+    {
+      "label": "九宝琉璃（素装）",
+      "saves": [
+        {
+          "key": "costume_full:xinniang:xinniang_cos02",
+          "category": "costume_full",
+          "asset_id": "xinniang_cos02",
+          "name": "九宝琉璃",
+          "owner_id": "xinniang",
+          "owner_name": "新娘",
+          "target": "assets/costumes/xinniang_cos02.png",
+          "size": "portrait",
+          "generation": "costume_sheet",
+          "group": "costume_friend:xinniang",
+          "meta": {
+            "quality": "素装",
+            "series": "",
+            "owner_kind": "friend"
+          }
+        }
+      ],
+      "index": 1,
+      "row": 0,
+      "col": 1
+    },
+    {
+      "label": "笑春风（素装）",
+      "saves": [
+        {
+          "key": "costume_full:xinniang:xinniang_cos03",
+          "category": "costume_full",
+          "asset_id": "xinniang_cos03",
+          "name": "笑春风",
+          "owner_id": "xinniang",
+          "owner_name": "新娘",
+          "target": "assets/costumes/xinniang_cos03.png",
+          "size": "portrait",
+          "generation": "costume_sheet",
+          "group": "costume_friend:xinniang",
+          "meta": {
+            "quality": "素装",
+            "series": "",
+            "owner_kind": "friend"
+          }
+        }
+      ],
+      "index": 2,
+      "row": 1,
+      "col": 0
+    },
+    {
+      "label": "红装新妇（华服）",
+      "saves": [
+        {
+          "key": "costume_full:xinniang:xinniang_cos04",
+          "category": "costume_full",
+          "asset_id": "xinniang_cos04",
+          "name": "红装新妇",
+          "owner_id": "xinniang",
+          "owner_name": "新娘",
+          "target": "assets/costumes/xinniang_cos04.png",
+          "size": "portrait",
+          "generation": "costume_sheet",
+          "group": "costume_friend:xinniang",
+          "meta": {
+            "quality": "华服",
+            "series": "",
+            "owner_kind": "friend"
+          }
+        }
+      ],
+      "index": 3,
+      "row": 1,
+      "col": 1
+    },
+    {
+      "label": "红颜凤轿（锦衣）",
+      "saves": [
+        {
+          "key": "costume_full:xinniang:xinniang_cos05",
+          "category": "costume_full",
+          "asset_id": "xinniang_cos05",
+          "name": "红颜凤轿",
+          "owner_id": "xinniang",
+          "owner_name": "新娘",
+          "target": "assets/costumes/xinniang_cos05.png",
+          "size": "portrait",
+          "generation": "costume_sheet",
+          "group": "costume_friend:xinniang",
+          "meta": {
+            "quality": "锦衣",
+            "series": "",
+            "owner_kind": "friend"
+          }
+        }
+      ],
+      "index": 4,
+      "row": 2,
+      "col": 0
+    },
+    {
+      "label": "十里红妆（锦衣）",
+      "saves": [
+        {
+          "key": "costume_full:xinniang:xinniang_cos06",
+          "category": "costume_full",
+          "asset_id": "xinniang_cos06",
+          "name": "十里红妆",
+          "owner_id": "xinniang",
+          "owner_name": "新娘",
+          "target": "assets/costumes/xinniang_cos06.png",
+          "size": "portrait",
+          "generation": "costume_sheet",
+          "group": "costume_friend:xinniang",
+          "meta": {
+            "quality": "锦衣",
+            "series": "",
+            "owner_kind": "friend"
+          }
+        }
+      ],
+      "index": 5,
+      "row": 2,
+      "col": 1
+    }
+  ],
+  "filename_base": "task_0068_costume_sheet_costume_friend_xinniang",
+  "image_name": "task_0068_costume_sheet_costume_friend_xinniang.png",
+  "output_path": "build/asset_pipeline/inbox/atlases/task_0068_costume_sheet_costume_friend_xinniang.png"
+}

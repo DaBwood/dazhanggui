@@ -1,0 +1,233 @@
+{
+  "task_id": "task_0260",
+  "kind": "icon_sheet",
+  "group": "item_icons",
+  "title": "item_icons 图标图集",
+  "rows": 3,
+  "cols": 3,
+  "reference_image": "",
+  "cells": [
+    {
+      "label": "凤羽：五凤来仪系列服装的兑换道具（后续玩法产出）",
+      "saves": [
+        {
+          "key": "item_icon:feng_yu",
+          "category": "item_icon",
+          "asset_id": "feng_yu",
+          "name": "凤羽",
+          "owner_id": "",
+          "owner_name": "",
+          "target": "assets/items/feng_yu.png",
+          "size": "icon",
+          "generation": "icon_sheet",
+          "group": "item_icons",
+          "meta": {
+            "desc": "五凤来仪系列服装的兑换道具（后续玩法产出）",
+            "use": ""
+          }
+        }
+      ],
+      "index": 0,
+      "row": 0,
+      "col": 0
+    },
+    {
+      "label": "风水符：厢房升级消耗同名家具时获得；用于命盘卜卦（批次③开放）",
+      "saves": [
+        {
+          "key": "item_icon:fengshui_fu",
+          "category": "item_icon",
+          "asset_id": "fengshui_fu",
+          "name": "风水符",
+          "owner_id": "",
+          "owner_name": "",
+          "target": "assets/items/fengshui_fu.png",
+          "size": "icon",
+          "generation": "icon_sheet",
+          "group": "item_icons",
+          "meta": {
+            "desc": "厢房升级消耗同名家具时获得；用于命盘卜卦（批次③开放）",
+            "use": ""
+          }
+        }
+      ],
+      "index": 1,
+      "row": 0,
+      "col": 1
+    },
+    {
+      "label": "风雅颂：门客突破所需",
+      "saves": [
+        {
+          "key": "item_icon:fengyasong",
+          "category": "item_icon",
+          "asset_id": "fengyasong",
+          "name": "风雅颂",
+          "owner_id": "",
+          "owner_name": "",
+          "target": "assets/items/fengyasong.png",
+          "size": "icon",
+          "generation": "icon_sheet",
+          "group": "item_icons",
+          "meta": {
+            "desc": "门客突破所需",
+            "use": ""
+          }
+        }
+      ],
+      "index": 2,
+      "row": 0,
+      "col": 2
+    },
+    {
+      "label": "凤游五岳石：山河五岳系列服装的兑换道具（后续玩法产出）",
+      "saves": [
+        {
+          "key": "item_icon:fengyou_wuyue_shi",
+          "category": "item_icon",
+          "asset_id": "fengyou_wuyue_shi",
+          "name": "凤游五岳石",
+          "owner_id": "",
+          "owner_name": "",
+          "target": "assets/items/fengyou_wuyue_shi.png",
+          "size": "icon",
+          "generation": "icon_sheet",
+          "group": "item_icons",
+          "meta": {
+            "desc": "山河五岳系列服装的兑换道具（后续玩法产出）",
+            "use": ""
+          }
+        }
+      ],
+      "index": 3,
+      "row": 1,
+      "col": 0
+    },
+    {
+      "label": "通用碎片·普通：合成/晋升任意普通藏品时抵扣碎片",
+      "saves": [
+        {
+          "key": "item_icon:frag_putong",
+          "category": "item_icon",
+          "asset_id": "frag_putong",
+          "name": "通用碎片·普通",
+          "owner_id": "",
+          "owner_name": "",
+          "target": "assets/items/frag_putong.png",
+          "size": "icon",
+          "generation": "icon_sheet",
+          "group": "item_icons",
+          "meta": {
+            "desc": "合成/晋升任意普通藏品时抵扣碎片",
+            "use": ""
+          }
+        }
+      ],
+      "index": 4,
+      "row": 1,
+      "col": 1
+    },
+    {
+      "label": "通用碎片·优秀：合成/晋升任意优秀藏品时抵扣碎片",
+      "saves": [
+        {
+          "key": "item_icon:frag_youxiu",
+          "category": "item_icon",
+          "asset_id": "frag_youxiu",
+          "name": "通用碎片·优秀",
+          "owner_id": "",
+          "owner_name": "",
+          "target": "assets/items/frag_youxiu.png",
+          "size": "icon",
+          "generation": "icon_sheet",
+          "group": "item_icons",
+          "meta": {
+            "desc": "合成/晋升任意优秀藏品时抵扣碎片",
+            "use": ""
+          }
+        }
+      ],
+      "index": 5,
+      "row": 1,
+      "col": 2
+    },
+    {
+      "label": "通用碎片·卓越：合成/晋升任意卓越藏品时抵扣碎片",
+      "saves": [
+        {
+          "key": "item_icon:frag_zhuoyue",
+          "category": "item_icon",
+          "asset_id": "frag_zhuoyue",
+          "name": "通用碎片·卓越",
+          "owner_id": "",
+          "owner_name": "",
+          "target": "assets/items/frag_zhuoyue.png",
+          "size": "icon",
+          "generation": "icon_sheet",
+          "group": "item_icons",
+          "meta": {
+            "desc": "合成/晋升任意卓越藏品时抵扣碎片",
+            "use": ""
+          }
+        }
+      ],
+      "index": 6,
+      "row": 2,
+      "col": 0
+    },
+    {
+      "label": "挚友盒子：打开后可从所有挚友中选择一个获得",
+      "saves": [
+        {
+          "key": "item_icon:friend_box",
+          "category": "item_icon",
+          "asset_id": "friend_box",
+          "name": "挚友盒子",
+          "owner_id": "",
+          "owner_name": "",
+          "target": "assets/items/friend_box.png",
+          "size": "icon",
+          "generation": "icon_sheet",
+          "group": "item_icons",
+          "meta": {
+            "desc": "打开后可从所有挚友中选择一个获得",
+            "use": {
+              "type": "friend_box",
+              "btn": "打开"
+            }
+          }
+        }
+      ],
+      "index": 7,
+      "row": 2,
+      "col": 1
+    },
+    {
+      "label": "挚友帖：用于兑换挚友",
+      "saves": [
+        {
+          "key": "item_icon:friend_token",
+          "category": "item_icon",
+          "asset_id": "friend_token",
+          "name": "挚友帖",
+          "owner_id": "",
+          "owner_name": "",
+          "target": "assets/items/friend_token.png",
+          "size": "icon",
+          "generation": "icon_sheet",
+          "group": "item_icons",
+          "meta": {
+            "desc": "用于兑换挚友",
+            "use": ""
+          }
+        }
+      ],
+      "index": 8,
+      "row": 2,
+      "col": 2
+    }
+  ],
+  "filename_base": "task_0260_icon_sheet_item_icons",
+  "image_name": "task_0260_icon_sheet_item_icons.png",
+  "output_path": "build/asset_pipeline/inbox/atlases/task_0260_icon_sheet_item_icons.png"
+}

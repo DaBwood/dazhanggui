@@ -1,0 +1,55 @@
+{
+  "task_id": "task_0135",
+  "kind": "costume_sheet",
+  "group": "costume_hero:tang_hulu",
+  "title": "唐葫芦 的服装图集",
+  "rows": 1,
+  "cols": 1,
+  "reference_image": "",
+  "cells": [
+    {
+      "label": "酸甜童忆（素装）",
+      "saves": [
+        {
+          "key": "costume_full:tang_hulu:tang_hulu_cos01",
+          "category": "costume_full",
+          "asset_id": "tang_hulu_cos01",
+          "name": "酸甜童忆",
+          "owner_id": "tang_hulu",
+          "owner_name": "唐葫芦",
+          "target": "assets/costumes/tang_hulu_cos01.png",
+          "size": "portrait",
+          "generation": "costume_sheet",
+          "group": "costume_hero:tang_hulu",
+          "meta": {
+            "quality": "素装",
+            "series": "",
+            "owner_kind": "hero"
+          }
+        },
+        {
+          "key": "hero_portrait:tang_hulu:tang_hulu",
+          "category": "hero_portrait",
+          "asset_id": "tang_hulu",
+          "name": "唐葫芦",
+          "owner_id": "tang_hulu",
+          "owner_name": "唐葫芦",
+          "target": "assets/portraits/heroes/tang_hulu.png",
+          "size": "portrait",
+          "generation": "portrait",
+          "group": "hero_portraits",
+          "meta": {
+            "category": "商",
+            "quality": 0
+          }
+        }
+      ],
+      "index": 0,
+      "row": 0,
+      "col": 0
+    }
+  ],
+  "filename_base": "task_0135_costume_sheet_costume_hero_tang_hulu",
+  "image_name": "task_0135_costume_sheet_costume_hero_tang_hulu.png",
+  "output_path": "build/asset_pipeline/inbox/atlases/task_0135_costume_sheet_costume_hero_tang_hulu.png"
+}

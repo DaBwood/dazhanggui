@@ -1,0 +1,154 @@
+{
+  "task_id": "task_0078",
+  "kind": "costume_sheet",
+  "group": "costume_friend:yi_shi",
+  "title": "驿使 的服装图集",
+  "rows": 3,
+  "cols": 2,
+  "reference_image": "",
+  "cells": [
+    {
+      "label": "旗开得胜（素装）",
+      "saves": [
+        {
+          "key": "costume_full:yi_shi:yi_shi_cos01",
+          "category": "costume_full",
+          "asset_id": "yi_shi_cos01",
+          "name": "旗开得胜",
+          "owner_id": "yi_shi",
+          "owner_name": "驿使",
+          "target": "assets/costumes/yi_shi_cos01.png",
+          "size": "portrait",
+          "generation": "costume_sheet",
+          "group": "costume_friend:yi_shi",
+          "meta": {
+            "quality": "素装",
+            "series": "",
+            "owner_kind": "friend"
+          }
+        },
+        {
+          "key": "friend_portrait:yi_shi:yi_shi",
+          "category": "friend_portrait",
+          "asset_id": "yi_shi",
+          "name": "驿使",
+          "owner_id": "yi_shi",
+          "owner_name": "驿使",
+          "target": "assets/portraits/friends/yi_shi.png",
+          "size": "portrait",
+          "generation": "portrait",
+          "group": "friend_portraits",
+          "meta": {
+            "category": "士"
+          }
+        }
+      ],
+      "index": 0,
+      "row": 0,
+      "col": 0
+    },
+    {
+      "label": "家书万金（素装）",
+      "saves": [
+        {
+          "key": "costume_full:yi_shi:yi_shi_cos02",
+          "category": "costume_full",
+          "asset_id": "yi_shi_cos02",
+          "name": "家书万金",
+          "owner_id": "yi_shi",
+          "owner_name": "驿使",
+          "target": "assets/costumes/yi_shi_cos02.png",
+          "size": "portrait",
+          "generation": "costume_sheet",
+          "group": "costume_friend:yi_shi",
+          "meta": {
+            "quality": "素装",
+            "series": "",
+            "owner_kind": "friend"
+          }
+        }
+      ],
+      "index": 1,
+      "row": 0,
+      "col": 1
+    },
+    {
+      "label": "塞北传音（素装）",
+      "saves": [
+        {
+          "key": "costume_full:yi_shi:yi_shi_cos03",
+          "category": "costume_full",
+          "asset_id": "yi_shi_cos03",
+          "name": "塞北传音",
+          "owner_id": "yi_shi",
+          "owner_name": "驿使",
+          "target": "assets/costumes/yi_shi_cos03.png",
+          "size": "portrait",
+          "generation": "costume_sheet",
+          "group": "costume_friend:yi_shi",
+          "meta": {
+            "quality": "素装",
+            "series": "",
+            "owner_kind": "friend"
+          }
+        }
+      ],
+      "index": 2,
+      "row": 1,
+      "col": 0
+    },
+    {
+      "label": "烽火佳人（华服）",
+      "saves": [
+        {
+          "key": "costume_full:yi_shi:yi_shi_cos04",
+          "category": "costume_full",
+          "asset_id": "yi_shi_cos04",
+          "name": "烽火佳人",
+          "owner_id": "yi_shi",
+          "owner_name": "驿使",
+          "target": "assets/costumes/yi_shi_cos04.png",
+          "size": "portrait",
+          "generation": "costume_sheet",
+          "group": "costume_friend:yi_shi",
+          "meta": {
+            "quality": "华服",
+            "series": "",
+            "owner_kind": "friend"
+          }
+        }
+      ],
+      "index": 3,
+      "row": 1,
+      "col": 1
+    },
+    {
+      "label": "桃源游（锦衣）",
+      "saves": [
+        {
+          "key": "costume_full:yi_shi:yi_shi_cos05",
+          "category": "costume_full",
+          "asset_id": "yi_shi_cos05",
+          "name": "桃源游",
+          "owner_id": "yi_shi",
+          "owner_name": "驿使",
+          "target": "assets/costumes/yi_shi_cos05.png",
+          "size": "portrait",
+          "generation": "costume_sheet",
+          "group": "costume_friend:yi_shi",
+          "meta": {
+            "quality": "锦衣",
+            "series": "",
+            "owner_kind": "friend"
+          }
+        }
+      ],
+      "index": 4,
+      "row": 2,
+      "col": 0
+    }
+  ],
+  "filename_base": "task_0078_costume_sheet_costume_friend_yi_shi",
+  "image_name": "task_0078_costume_sheet_costume_friend_yi_shi.png",
+  "output_path": "build/asset_pipeline/inbox/atlases/task_0078_costume_sheet_costume_friend_yi_shi.png"
+}

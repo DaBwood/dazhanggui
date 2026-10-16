@@ -1,0 +1,38 @@
+{
+  "task_id": "task_0211",
+  "kind": "portrait_single",
+  "group": "hero_portraits",
+  "title": "罗海王",
+  "rows": 1,
+  "cols": 1,
+  "reference_image": "",
+  "cells": [
+    {
+      "label": "罗海王",
+      "saves": [
+        {
+          "key": "hero_portrait:luo_haiwang:luo_haiwang",
+          "category": "hero_portrait",
+          "asset_id": "luo_haiwang",
+          "name": "罗海王",
+          "owner_id": "luo_haiwang",
+          "owner_name": "罗海王",
+          "target": "assets/portraits/heroes/luo_haiwang.png",
+          "size": "portrait",
+          "generation": "portrait",
+          "group": "hero_portraits",
+          "meta": {
+            "category": "农",
+            "quality": 2
+          }
+        }
+      ],
+      "index": 0,
+      "row": 0,
+      "col": 0
+    }
+  ],
+  "filename_base": "task_0211_portrait_single_hero_portraits",
+  "image_name": "task_0211_portrait_single_hero_portraits.png",
+  "output_path": "build/asset_pipeline/inbox/atlases/task_0211_portrait_single_hero_portraits.png"
+}

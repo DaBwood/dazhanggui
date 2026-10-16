@@ -1,0 +1,234 @@
+{
+  "task_id": "task_0265",
+  "kind": "icon_sheet",
+  "group": "item_icons",
+  "title": "item_icons 图标图集",
+  "rows": 3,
+  "cols": 3,
+  "reference_image": "",
+  "cells": [
+    {
+      "label": "军需批文：用于招商中承包军械营造项目，每份持续180分钟，可获得大量军事资历",
+      "saves": [
+        {
+          "key": "item_icon:junxu_piwen",
+          "category": "item_icon",
+          "asset_id": "junxu_piwen",
+          "name": "军需批文",
+          "owner_id": "",
+          "owner_name": "",
+          "target": "assets/items/junxu_piwen.png",
+          "size": "icon",
+          "generation": "icon_sheet",
+          "group": "item_icons",
+          "meta": {
+            "desc": "用于招商中承包军械营造项目，每份持续180分钟，可获得大量军事资历",
+            "use": ""
+          }
+        }
+      ],
+      "index": 0,
+      "row": 0,
+      "col": 0
+    },
+    {
+      "label": "开山斧：沉香晋升【历练】专属道具，每级消耗600个；获取途径待接",
+      "saves": [
+        {
+          "key": "item_icon:kai_shan_fu",
+          "category": "item_icon",
+          "asset_id": "kai_shan_fu",
+          "name": "开山斧",
+          "owner_id": "",
+          "owner_name": "",
+          "target": "assets/items/kai_shan_fu.png",
+          "size": "icon",
+          "generation": "icon_sheet",
+          "group": "item_icons",
+          "meta": {
+            "desc": "沉香晋升【历练】专属道具，每级消耗600个；获取途径待接",
+            "use": ""
+          }
+        }
+      ],
+      "index": 1,
+      "row": 0,
+      "col": 1
+    },
+    {
+      "label": "开山令：兑换开山鼻祖系列门客所需",
+      "saves": [
+        {
+          "key": "item_icon:kaishan_ling",
+          "category": "item_icon",
+          "asset_id": "kaishan_ling",
+          "name": "开山令",
+          "owner_id": "",
+          "owner_name": "",
+          "target": "assets/items/kaishan_ling.png",
+          "size": "icon",
+          "generation": "icon_sheet",
+          "group": "item_icons",
+          "meta": {
+            "desc": "兑换开山鼻祖系列门客所需",
+            "use": ""
+          }
+        }
+      ],
+      "index": 2,
+      "row": 0,
+      "col": 2
+    },
+    {
+      "label": "开山印碎片：20个合成1个开山令",
+      "saves": [
+        {
+          "key": "item_icon:kaishan_yin",
+          "category": "item_icon",
+          "asset_id": "kaishan_yin",
+          "name": "开山印碎片",
+          "owner_id": "",
+          "owner_name": "",
+          "target": "assets/items/kaishan_yin.png",
+          "size": "icon",
+          "generation": "icon_sheet",
+          "group": "item_icons",
+          "meta": {
+            "desc": "20个合成1个开山令",
+            "use": ""
+          }
+        }
+      ],
+      "index": 3,
+      "row": 1,
+      "col": 0
+    },
+    {
+      "label": "科室图纸：医馆升级科室所用图纸，接诊病人时有概率掉落",
+      "saves": [
+        {
+          "key": "item_icon:ke_shi_tu_zhi",
+          "category": "item_icon",
+          "asset_id": "ke_shi_tu_zhi",
+          "name": "科室图纸",
+          "owner_id": "",
+          "owner_name": "",
+          "target": "assets/items/ke_shi_tu_zhi.png",
+          "size": "icon",
+          "generation": "icon_sheet",
+          "group": "item_icons",
+          "meta": {
+            "desc": "医馆升级科室所用图纸，接诊病人时有概率掉落",
+            "use": ""
+          }
+        }
+      ],
+      "index": 4,
+      "row": 1,
+      "col": 1
+    },
+    {
+      "label": "柯亭遗韵：解锁守护灵幻化：蔡文姬",
+      "saves": [
+        {
+          "key": "item_icon:ke_ting_yiyun",
+          "category": "item_icon",
+          "asset_id": "ke_ting_yiyun",
+          "name": "柯亭遗韵",
+          "owner_id": "",
+          "owner_name": "",
+          "target": "assets/items/ke_ting_yiyun.png",
+          "size": "icon",
+          "generation": "icon_sheet",
+          "group": "item_icons",
+          "meta": {
+            "desc": "解锁守护灵幻化：蔡文姬",
+            "use": ""
+          }
+        }
+      ],
+      "index": 5,
+      "row": 1,
+      "col": 2
+    },
+    {
+      "label": "刻钟卡：使用后获得当前赚速1分钟的铜钱；60张可在背包【合成】合成1张小时卡",
+      "saves": [
+        {
+          "key": "item_icon:kezhong_card",
+          "category": "item_icon",
+          "asset_id": "kezhong_card",
+          "name": "刻钟卡",
+          "owner_id": "",
+          "owner_name": "",
+          "target": "assets/items/kezhong_card.png",
+          "size": "icon",
+          "generation": "icon_sheet",
+          "group": "item_icons",
+          "meta": {
+            "desc": "使用后获得当前赚速1分钟的铜钱；60张可在背包【合成】合成1张小时卡",
+            "use": {
+              "type": "quantity",
+              "btn": "使用",
+              "title": "使用刻钟卡"
+            }
+          }
+        }
+      ],
+      "index": 6,
+      "row": 2,
+      "col": 0
+    },
+    {
+      "label": "礼部批文：用于招商中承包贡茶培育项目，每份持续180分钟，可获得大量农事资历",
+      "saves": [
+        {
+          "key": "item_icon:libu_piwen",
+          "category": "item_icon",
+          "asset_id": "libu_piwen",
+          "name": "礼部批文",
+          "owner_id": "",
+          "owner_name": "",
+          "target": "assets/items/libu_piwen.png",
+          "size": "icon",
+          "generation": "icon_sheet",
+          "group": "item_icons",
+          "meta": {
+            "desc": "用于招商中承包贡茶培育项目，每份持续180分钟，可获得大量农事资历",
+            "use": ""
+          }
+        }
+      ],
+      "index": 7,
+      "row": 2,
+      "col": 1
+    },
+    {
+      "label": "玲珑荷包：兑换门客【小八】所需",
+      "saves": [
+        {
+          "key": "item_icon:linglong_hebao",
+          "category": "item_icon",
+          "asset_id": "linglong_hebao",
+          "name": "玲珑荷包",
+          "owner_id": "",
+          "owner_name": "",
+          "target": "assets/items/linglong_hebao.png",
+          "size": "icon",
+          "generation": "icon_sheet",
+          "group": "item_icons",
+          "meta": {
+            "desc": "兑换门客【小八】所需",
+            "use": ""
+          }
+        }
+      ],
+      "index": 8,
+      "row": 2,
+      "col": 2
+    }
+  ],
+  "filename_base": "task_0265_icon_sheet_item_icons",
+  "image_name": "task_0265_icon_sheet_item_icons.png",
+  "output_path": "build/asset_pipeline/inbox/atlases/task_0265_icon_sheet_item_icons.png"
+}

@@ -1,0 +1,54 @@
+{
+  "task_id": "task_0057",
+  "kind": "costume_sheet",
+  "group": "costume_friend:wu_xie",
+  "title": "吴邪 的服装图集",
+  "rows": 1,
+  "cols": 1,
+  "reference_image": "",
+  "cells": [
+    {
+      "label": "天真不复（素装）",
+      "saves": [
+        {
+          "key": "costume_full:wu_xie:wu_xie_cos01",
+          "category": "costume_full",
+          "asset_id": "wu_xie_cos01",
+          "name": "天真不复",
+          "owner_id": "wu_xie",
+          "owner_name": "吴邪",
+          "target": "assets/costumes/wu_xie_cos01.png",
+          "size": "portrait",
+          "generation": "costume_sheet",
+          "group": "costume_friend:wu_xie",
+          "meta": {
+            "quality": "素装",
+            "series": "",
+            "owner_kind": "friend"
+          }
+        },
+        {
+          "key": "friend_portrait:wu_xie:wu_xie",
+          "category": "friend_portrait",
+          "asset_id": "wu_xie",
+          "name": "吴邪",
+          "owner_id": "wu_xie",
+          "owner_name": "吴邪",
+          "target": "assets/portraits/friends/wu_xie.png",
+          "size": "portrait",
+          "generation": "portrait",
+          "group": "friend_portraits",
+          "meta": {
+            "category": "侠"
+          }
+        }
+      ],
+      "index": 0,
+      "row": 0,
+      "col": 0
+    }
+  ],
+  "filename_base": "task_0057_costume_sheet_costume_friend_wu_xie",
+  "image_name": "task_0057_costume_sheet_costume_friend_wu_xie.png",
+  "output_path": "build/asset_pipeline/inbox/atlases/task_0057_costume_sheet_costume_friend_wu_xie.png"
+}

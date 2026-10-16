@@ -1,0 +1,38 @@
+{
+  "task_id": "task_0193",
+  "kind": "portrait_single",
+  "group": "hero_portraits",
+  "title": "伏羲",
+  "rows": 1,
+  "cols": 1,
+  "reference_image": "",
+  "cells": [
+    {
+      "label": "伏羲",
+      "saves": [
+        {
+          "key": "hero_portrait:fuxi:fuxi",
+          "category": "hero_portrait",
+          "asset_id": "fuxi",
+          "name": "伏羲",
+          "owner_id": "fuxi",
+          "owner_name": "伏羲",
+          "target": "assets/portraits/heroes/fuxi.png",
+          "size": "portrait",
+          "generation": "portrait",
+          "group": "hero_portraits",
+          "meta": {
+            "category": "士",
+            "quality": 3
+          }
+        }
+      ],
+      "index": 0,
+      "row": 0,
+      "col": 0
+    }
+  ],
+  "filename_base": "task_0193_portrait_single_hero_portraits",
+  "image_name": "task_0193_portrait_single_hero_portraits.png",
+  "output_path": "build/asset_pipeline/inbox/atlases/task_0193_portrait_single_hero_portraits.png"
+}

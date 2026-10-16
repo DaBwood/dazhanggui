@@ -1,0 +1,55 @@
+{
+  "task_id": "task_0134",
+  "kind": "costume_sheet",
+  "group": "costume_hero:sun_wu",
+  "title": "孙武 的服装图集",
+  "rows": 1,
+  "cols": 1,
+  "reference_image": "",
+  "cells": [
+    {
+      "label": "兵法至圣（素装）",
+      "saves": [
+        {
+          "key": "costume_full:sun_wu:sun_wu_cos01",
+          "category": "costume_full",
+          "asset_id": "sun_wu_cos01",
+          "name": "兵法至圣",
+          "owner_id": "sun_wu",
+          "owner_name": "孙武",
+          "target": "assets/costumes/sun_wu_cos01.png",
+          "size": "portrait",
+          "generation": "costume_sheet",
+          "group": "costume_hero:sun_wu",
+          "meta": {
+            "quality": "素装",
+            "series": "",
+            "owner_kind": "hero"
+          }
+        },
+        {
+          "key": "hero_portrait:sun_wu:sun_wu",
+          "category": "hero_portrait",
+          "asset_id": "sun_wu",
+          "name": "孙武",
+          "owner_id": "sun_wu",
+          "owner_name": "孙武",
+          "target": "assets/portraits/heroes/sun_wu.png",
+          "size": "portrait",
+          "generation": "portrait",
+          "group": "hero_portraits",
+          "meta": {
+            "category": "农",
+            "quality": 2
+          }
+        }
+      ],
+      "index": 0,
+      "row": 0,
+      "col": 0
+    }
+  ],
+  "filename_base": "task_0134_costume_sheet_costume_hero_sun_wu",
+  "image_name": "task_0134_costume_sheet_costume_hero_sun_wu.png",
+  "output_path": "build/asset_pipeline/inbox/atlases/task_0134_costume_sheet_costume_hero_sun_wu.png"
+}

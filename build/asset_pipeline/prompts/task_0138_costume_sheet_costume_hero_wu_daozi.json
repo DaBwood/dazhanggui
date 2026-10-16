@@ -1,0 +1,80 @@
+{
+  "task_id": "task_0138",
+  "kind": "costume_sheet",
+  "group": "costume_hero:wu_daozi",
+  "title": "吴道子 的服装图集",
+  "rows": 1,
+  "cols": 2,
+  "reference_image": "",
+  "cells": [
+    {
+      "label": "送子天王（素装）",
+      "saves": [
+        {
+          "key": "costume_full:wu_daozi:wu_daozi_cos01",
+          "category": "costume_full",
+          "asset_id": "wu_daozi_cos01",
+          "name": "送子天王",
+          "owner_id": "wu_daozi",
+          "owner_name": "吴道子",
+          "target": "assets/costumes/wu_daozi_cos01.png",
+          "size": "portrait",
+          "generation": "costume_sheet",
+          "group": "costume_hero:wu_daozi",
+          "meta": {
+            "quality": "素装",
+            "series": "",
+            "owner_kind": "hero"
+          }
+        },
+        {
+          "key": "hero_portrait:wu_daozi:wu_daozi",
+          "category": "hero_portrait",
+          "asset_id": "wu_daozi",
+          "name": "吴道子",
+          "owner_id": "wu_daozi",
+          "owner_name": "吴道子",
+          "target": "assets/portraits/heroes/wu_daozi.png",
+          "size": "portrait",
+          "generation": "portrait",
+          "group": "hero_portraits",
+          "meta": {
+            "category": "士",
+            "quality": 2
+          }
+        }
+      ],
+      "index": 0,
+      "row": 0,
+      "col": 0
+    },
+    {
+      "label": "醉墨淋漓（华服 清平盛世）",
+      "saves": [
+        {
+          "key": "costume_full:wu_daozi:wu_daozi_cos02",
+          "category": "costume_full",
+          "asset_id": "wu_daozi_cos02",
+          "name": "醉墨淋漓",
+          "owner_id": "wu_daozi",
+          "owner_name": "吴道子",
+          "target": "assets/costumes/wu_daozi_cos02.png",
+          "size": "portrait",
+          "generation": "costume_sheet",
+          "group": "costume_hero:wu_daozi",
+          "meta": {
+            "quality": "华服",
+            "series": "清平盛世",
+            "owner_kind": "hero"
+          }
+        }
+      ],
+      "index": 1,
+      "row": 0,
+      "col": 1
+    }
+  ],
+  "filename_base": "task_0138_costume_sheet_costume_hero_wu_daozi",
+  "image_name": "task_0138_costume_sheet_costume_hero_wu_daozi.png",
+  "output_path": "build/asset_pipeline/inbox/atlases/task_0138_costume_sheet_costume_hero_wu_daozi.png"
+}

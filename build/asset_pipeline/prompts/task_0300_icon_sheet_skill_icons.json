@@ -1,0 +1,203 @@
+{
+  "task_id": "task_0300",
+  "kind": "icon_sheet",
+  "group": "skill_icons",
+  "title": "skill_icons 图标图集",
+  "rows": 3,
+  "cols": 3,
+  "reference_image": "",
+  "cells": [
+    {
+      "label": "海上霸主：海上争霸活动海盗之乱所有职业攻击+15",
+      "saves": [
+        {
+          "key": "skill_icon:海上霸主",
+          "category": "skill_icon",
+          "asset_id": "海上霸主",
+          "name": "海上霸主",
+          "owner_id": "",
+          "owner_name": "",
+          "target": "assets/skill_icons/海上霸主.png",
+          "size": "icon",
+          "generation": "icon_sheet",
+          "group": "skill_icons",
+          "meta": {}
+        }
+      ],
+      "index": 0,
+      "row": 0,
+      "col": 0
+    },
+    {
+      "label": "海盗王",
+      "saves": [
+        {
+          "key": "skill_icon:海盗王",
+          "category": "skill_icon",
+          "asset_id": "海盗王",
+          "name": "海盗王",
+          "owner_id": "",
+          "owner_name": "",
+          "target": "assets/skill_icons/海盗王.png",
+          "size": "icon",
+          "generation": "icon_sheet",
+          "group": "skill_icons",
+          "meta": {}
+        }
+      ],
+      "index": 1,
+      "row": 0,
+      "col": 1
+    },
+    {
+      "label": "涅槃新生",
+      "saves": [
+        {
+          "key": "skill_icon:涅槃新生",
+          "category": "skill_icon",
+          "asset_id": "涅槃新生",
+          "name": "涅槃新生",
+          "owner_id": "",
+          "owner_name": "",
+          "target": "assets/skill_icons/涅槃新生.png",
+          "size": "icon",
+          "generation": "icon_sheet",
+          "group": "skill_icons",
+          "meta": {}
+        }
+      ],
+      "index": 2,
+      "row": 0,
+      "col": 2
+    },
+    {
+      "label": "混天绫舞：徒弟每次培养见识获得+5%",
+      "saves": [
+        {
+          "key": "skill_icon:混天绫舞",
+          "category": "skill_icon",
+          "asset_id": "混天绫舞",
+          "name": "混天绫舞",
+          "owner_id": "",
+          "owner_name": "",
+          "target": "assets/skill_icons/混天绫舞.png",
+          "size": "icon",
+          "generation": "icon_sheet",
+          "group": "skill_icons",
+          "meta": {}
+        }
+      ],
+      "index": 3,
+      "row": 1,
+      "col": 0
+    },
+    {
+      "label": "混沌钟",
+      "saves": [
+        {
+          "key": "skill_icon:混沌钟",
+          "category": "skill_icon",
+          "asset_id": "混沌钟",
+          "name": "混沌钟",
+          "owner_id": "",
+          "owner_name": "",
+          "target": "assets/skill_icons/混沌钟.png",
+          "size": "icon",
+          "generation": "icon_sheet",
+          "group": "skill_icons",
+          "meta": {}
+        }
+      ],
+      "index": 4,
+      "row": 1,
+      "col": 1
+    },
+    {
+      "label": "游太虚",
+      "saves": [
+        {
+          "key": "skill_icon:游太虚",
+          "category": "skill_icon",
+          "asset_id": "游太虚",
+          "name": "游太虚",
+          "owner_id": "",
+          "owner_name": "",
+          "target": "assets/skill_icons/游太虚.png",
+          "size": "icon",
+          "generation": "icon_sheet",
+          "group": "skill_icons",
+          "meta": {}
+        }
+      ],
+      "index": 5,
+      "row": 1,
+      "col": 2
+    },
+    {
+      "label": "游山玩水：跟同职业挚友谈心获得缘分+5%",
+      "saves": [
+        {
+          "key": "skill_icon:游山玩水",
+          "category": "skill_icon",
+          "asset_id": "游山玩水",
+          "name": "游山玩水",
+          "owner_id": "",
+          "owner_name": "",
+          "target": "assets/skill_icons/游山玩水.png",
+          "size": "icon",
+          "generation": "icon_sheet",
+          "group": "skill_icons",
+          "meta": {}
+        }
+      ],
+      "index": 6,
+      "row": 2,
+      "col": 0
+    },
+    {
+      "label": "潮鸣鼎沸",
+      "saves": [
+        {
+          "key": "skill_icon:潮鸣鼎沸",
+          "category": "skill_icon",
+          "asset_id": "潮鸣鼎沸",
+          "name": "潮鸣鼎沸",
+          "owner_id": "",
+          "owner_name": "",
+          "target": "assets/skill_icons/潮鸣鼎沸.png",
+          "size": "icon",
+          "generation": "icon_sheet",
+          "group": "skill_icons",
+          "meta": {}
+        }
+      ],
+      "index": 7,
+      "row": 2,
+      "col": 1
+    },
+    {
+      "label": "灌香糖",
+      "saves": [
+        {
+          "key": "skill_icon:灌香糖",
+          "category": "skill_icon",
+          "asset_id": "灌香糖",
+          "name": "灌香糖",
+          "owner_id": "",
+          "owner_name": "",
+          "target": "assets/skill_icons/灌香糖.png",
+          "size": "icon",
+          "generation": "icon_sheet",
+          "group": "skill_icons",
+          "meta": {}
+        }
+      ],
+      "index": 8,
+      "row": 2,
+      "col": 2
+    }
+  ],
+  "filename_base": "task_0300_icon_sheet_skill_icons",
+  "image_name": "task_0300_icon_sheet_skill_icons.png",
+  "output_path": "build/asset_pipeline/inbox/atlases/task_0300_icon_sheet_skill_icons.png"
+}

@@ -1,0 +1,203 @@
+{
+  "task_id": "task_0309",
+  "kind": "icon_sheet",
+  "group": "skill_icons",
+  "title": "skill_icons 图标图集",
+  "rows": 3,
+  "cols": 3,
+  "reference_image": "",
+  "cells": [
+    {
+      "label": "身临其境.极",
+      "saves": [
+        {
+          "key": "skill_icon:身临其境.极",
+          "category": "skill_icon",
+          "asset_id": "身临其境.极",
+          "name": "身临其境.极",
+          "owner_id": "",
+          "owner_name": "",
+          "target": "assets/skill_icons/身临其境.极.png",
+          "size": "icon",
+          "generation": "icon_sheet",
+          "group": "skill_icons",
+          "meta": {}
+        }
+      ],
+      "index": 0,
+      "row": 0,
+      "col": 0
+    },
+    {
+      "label": "转世续缘",
+      "saves": [
+        {
+          "key": "skill_icon:转世续缘",
+          "category": "skill_icon",
+          "asset_id": "转世续缘",
+          "name": "转世续缘",
+          "owner_id": "",
+          "owner_name": "",
+          "target": "assets/skill_icons/转世续缘.png",
+          "size": "icon",
+          "generation": "icon_sheet",
+          "group": "skill_icons",
+          "meta": {}
+        }
+      ],
+      "index": 1,
+      "row": 0,
+      "col": 1
+    },
+    {
+      "label": "进宝：所有门客赚钱+5%",
+      "saves": [
+        {
+          "key": "skill_icon:进宝",
+          "category": "skill_icon",
+          "asset_id": "进宝",
+          "name": "进宝",
+          "owner_id": "",
+          "owner_name": "",
+          "target": "assets/skill_icons/进宝.png",
+          "size": "icon",
+          "generation": "icon_sheet",
+          "group": "skill_icons",
+          "meta": {}
+        }
+      ],
+      "index": 2,
+      "row": 0,
+      "col": 2
+    },
+    {
+      "label": "造九鼎",
+      "saves": [
+        {
+          "key": "skill_icon:造九鼎",
+          "category": "skill_icon",
+          "asset_id": "造九鼎",
+          "name": "造九鼎",
+          "owner_id": "",
+          "owner_name": "",
+          "target": "assets/skill_icons/造九鼎.png",
+          "size": "icon",
+          "generation": "icon_sheet",
+          "group": "skill_icons",
+          "meta": {}
+        }
+      ],
+      "index": 3,
+      "row": 1,
+      "col": 0
+    },
+    {
+      "label": "道君皇帝",
+      "saves": [
+        {
+          "key": "skill_icon:道君皇帝",
+          "category": "skill_icon",
+          "asset_id": "道君皇帝",
+          "name": "道君皇帝",
+          "owner_id": "",
+          "owner_name": "",
+          "target": "assets/skill_icons/道君皇帝.png",
+          "size": "icon",
+          "generation": "icon_sheet",
+          "group": "skill_icons",
+          "meta": {}
+        }
+      ],
+      "index": 4,
+      "row": 1,
+      "col": 1
+    },
+    {
+      "label": "道天机",
+      "saves": [
+        {
+          "key": "skill_icon:道天机",
+          "category": "skill_icon",
+          "asset_id": "道天机",
+          "name": "道天机",
+          "owner_id": "",
+          "owner_name": "",
+          "target": "assets/skill_icons/道天机.png",
+          "size": "icon",
+          "generation": "icon_sheet",
+          "group": "skill_icons",
+          "meta": {}
+        }
+      ],
+      "index": 5,
+      "row": 1,
+      "col": 2
+    },
+    {
+      "label": "金刚臂",
+      "saves": [
+        {
+          "key": "skill_icon:金刚臂",
+          "category": "skill_icon",
+          "asset_id": "金刚臂",
+          "name": "金刚臂",
+          "owner_id": "",
+          "owner_name": "",
+          "target": "assets/skill_icons/金刚臂.png",
+          "size": "icon",
+          "generation": "icon_sheet",
+          "group": "skill_icons",
+          "meta": {}
+        }
+      ],
+      "index": 6,
+      "row": 2,
+      "col": 0
+    },
+    {
+      "label": "铜铁骨",
+      "saves": [
+        {
+          "key": "skill_icon:铜铁骨",
+          "category": "skill_icon",
+          "asset_id": "铜铁骨",
+          "name": "铜铁骨",
+          "owner_id": "",
+          "owner_name": "",
+          "target": "assets/skill_icons/铜铁骨.png",
+          "size": "icon",
+          "generation": "icon_sheet",
+          "group": "skill_icons",
+          "meta": {}
+        }
+      ],
+      "index": 7,
+      "row": 2,
+      "col": 1
+    },
+    {
+      "label": "镇邪祟",
+      "saves": [
+        {
+          "key": "skill_icon:镇邪祟",
+          "category": "skill_icon",
+          "asset_id": "镇邪祟",
+          "name": "镇邪祟",
+          "owner_id": "",
+          "owner_name": "",
+          "target": "assets/skill_icons/镇邪祟.png",
+          "size": "icon",
+          "generation": "icon_sheet",
+          "group": "skill_icons",
+          "meta": {}
+        }
+      ],
+      "index": 8,
+      "row": 2,
+      "col": 2
+    }
+  ],
+  "filename_base": "task_0309_icon_sheet_skill_icons",
+  "image_name": "task_0309_icon_sheet_skill_icons.png",
+  "output_path": "build/asset_pipeline/inbox/atlases/task_0309_icon_sheet_skill_icons.png"
+}

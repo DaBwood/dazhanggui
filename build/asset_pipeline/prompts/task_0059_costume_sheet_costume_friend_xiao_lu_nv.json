@@ -1,0 +1,104 @@
+{
+  "task_id": "task_0059",
+  "kind": "costume_sheet",
+  "group": "costume_friend:xiao_lu_nv",
+  "title": "小鹿女 的服装图集",
+  "rows": 2,
+  "cols": 2,
+  "reference_image": "",
+  "cells": [
+    {
+      "label": "银月（素装）",
+      "saves": [
+        {
+          "key": "costume_full:xiao_lu_nv:xiao_lu_nv_cos01",
+          "category": "costume_full",
+          "asset_id": "xiao_lu_nv_cos01",
+          "name": "银月",
+          "owner_id": "xiao_lu_nv",
+          "owner_name": "小鹿女",
+          "target": "assets/costumes/xiao_lu_nv_cos01.png",
+          "size": "portrait",
+          "generation": "costume_sheet",
+          "group": "costume_friend:xiao_lu_nv",
+          "meta": {
+            "quality": "素装",
+            "series": "",
+            "owner_kind": "friend"
+          }
+        },
+        {
+          "key": "friend_portrait:xiao_lu_nv:xiao_lu_nv",
+          "category": "friend_portrait",
+          "asset_id": "xiao_lu_nv",
+          "name": "小鹿女",
+          "owner_id": "xiao_lu_nv",
+          "owner_name": "小鹿女",
+          "target": "assets/portraits/friends/xiao_lu_nv.png",
+          "size": "portrait",
+          "generation": "portrait",
+          "group": "friend_portraits",
+          "meta": {
+            "category": "士"
+          }
+        }
+      ],
+      "index": 0,
+      "row": 0,
+      "col": 0
+    },
+    {
+      "label": "冰上芭蕾（素装）",
+      "saves": [
+        {
+          "key": "costume_full:xiao_lu_nv:xiao_lu_nv_cos02",
+          "category": "costume_full",
+          "asset_id": "xiao_lu_nv_cos02",
+          "name": "冰上芭蕾",
+          "owner_id": "xiao_lu_nv",
+          "owner_name": "小鹿女",
+          "target": "assets/costumes/xiao_lu_nv_cos02.png",
+          "size": "portrait",
+          "generation": "costume_sheet",
+          "group": "costume_friend:xiao_lu_nv",
+          "meta": {
+            "quality": "素装",
+            "series": "",
+            "owner_kind": "friend"
+          }
+        }
+      ],
+      "index": 1,
+      "row": 0,
+      "col": 1
+    },
+    {
+      "label": "圣诞奇遇（素装）",
+      "saves": [
+        {
+          "key": "costume_full:xiao_lu_nv:xiao_lu_nv_cos03",
+          "category": "costume_full",
+          "asset_id": "xiao_lu_nv_cos03",
+          "name": "圣诞奇遇",
+          "owner_id": "xiao_lu_nv",
+          "owner_name": "小鹿女",
+          "target": "assets/costumes/xiao_lu_nv_cos03.png",
+          "size": "portrait",
+          "generation": "costume_sheet",
+          "group": "costume_friend:xiao_lu_nv",
+          "meta": {
+            "quality": "素装",
+            "series": "",
+            "owner_kind": "friend"
+          }
+        }
+      ],
+      "index": 2,
+      "row": 1,
+      "col": 0
+    }
+  ],
+  "filename_base": "task_0059_costume_sheet_costume_friend_xiao_lu_nv",
+  "image_name": "task_0059_costume_sheet_costume_friend_xiao_lu_nv.png",
+  "output_path": "build/asset_pipeline/inbox/atlases/task_0059_costume_sheet_costume_friend_xiao_lu_nv.png"
+}

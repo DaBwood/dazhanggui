@@ -1,0 +1,19 @@
+[remap]
+
+importer="csv_translation"
+type="Translation"
+uid="uid://ciwdxgel5lp3b"
+
+[deps]
+
+files=["res://build/asset_pipeline/prompt_index.kind.translation", "res://build/asset_pipeline/prompt_index.title.translation", "res://build/asset_pipeline/prompt_index.grid.translation", "res://build/asset_pipeline/prompt_index.cells.translation", "res://build/asset_pipeline/prompt_index.asset.translation", "res://build/asset_pipeline/prompt_index.prompt.translation", "res://build/asset_pipeline/prompt_index.mapping.translation", "res://build/asset_pipeline/prompt_index.save.translation", "res://build/asset_pipeline/prompt_index.output.translation", "res://build/asset_pipeline/prompt_index.reference.translation"]
+
+source_file="res://build/asset_pipeline/prompt_index.csv"
+dest_files=["res://build/asset_pipeline/prompt_index.kind.translation", "res://build/asset_pipeline/prompt_index.title.translation", "res://build/asset_pipeline/prompt_index.grid.translation", "res://build/asset_pipeline/prompt_index.cells.translation", "res://build/asset_pipeline/prompt_index.asset.translation", "res://build/asset_pipeline/prompt_index.prompt.translation", "res://build/asset_pipeline/prompt_index.mapping.translation", "res://build/asset_pipeline/prompt_index.save.translation", "res://build/asset_pipeline/prompt_index.output.translation", "res://build/asset_pipeline/prompt_index.reference.translation"]
+
+[params]
+
+compress=1
+delimiter=0
+unescape_keys=false
+unescape_translations=true

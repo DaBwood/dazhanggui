@@ -1,0 +1,130 @@
+{
+  "task_id": "task_0132",
+  "kind": "costume_sheet",
+  "group": "costume_hero:su_wu",
+  "title": "苏武 的服装图集",
+  "rows": 2,
+  "cols": 2,
+  "reference_image": "",
+  "cells": [
+    {
+      "label": "月下刺猹（素装）",
+      "saves": [
+        {
+          "key": "costume_full:su_wu:su_wu_cos01",
+          "category": "costume_full",
+          "asset_id": "su_wu_cos01",
+          "name": "月下刺猹",
+          "owner_id": "su_wu",
+          "owner_name": "苏武",
+          "target": "assets/costumes/su_wu_cos01.png",
+          "size": "portrait",
+          "generation": "costume_sheet",
+          "group": "costume_hero:su_wu",
+          "meta": {
+            "quality": "素装",
+            "series": "",
+            "owner_kind": "hero"
+          }
+        },
+        {
+          "key": "hero_portrait:su_wu:su_wu",
+          "category": "hero_portrait",
+          "asset_id": "su_wu",
+          "name": "苏武",
+          "owner_id": "su_wu",
+          "owner_name": "苏武",
+          "target": "assets/portraits/heroes/su_wu.png",
+          "size": "portrait",
+          "generation": "portrait",
+          "group": "hero_portraits",
+          "meta": {
+            "category": "农",
+            "quality": 2
+          }
+        }
+      ],
+      "index": 0,
+      "row": 0,
+      "col": 0
+    },
+    {
+      "label": "北海牧歌（素装）",
+      "saves": [
+        {
+          "key": "costume_full:su_wu:su_wu_cos02",
+          "category": "costume_full",
+          "asset_id": "su_wu_cos02",
+          "name": "北海牧歌",
+          "owner_id": "su_wu",
+          "owner_name": "苏武",
+          "target": "assets/costumes/su_wu_cos02.png",
+          "size": "portrait",
+          "generation": "costume_sheet",
+          "group": "costume_hero:su_wu",
+          "meta": {
+            "quality": "素装",
+            "series": "",
+            "owner_kind": "hero"
+          }
+        }
+      ],
+      "index": 1,
+      "row": 0,
+      "col": 1
+    },
+    {
+      "label": "大汉使者（华服 精忠报国）",
+      "saves": [
+        {
+          "key": "costume_full:su_wu:su_wu_cos03",
+          "category": "costume_full",
+          "asset_id": "su_wu_cos03",
+          "name": "大汉使者",
+          "owner_id": "su_wu",
+          "owner_name": "苏武",
+          "target": "assets/costumes/su_wu_cos03.png",
+          "size": "portrait",
+          "generation": "costume_sheet",
+          "group": "costume_hero:su_wu",
+          "meta": {
+            "quality": "华服",
+            "series": "精忠报国",
+            "owner_kind": "hero"
+          }
+        }
+      ],
+      "index": 2,
+      "row": 1,
+      "col": 0
+    },
+    {
+      "label": "龙渊（华服 君子如剑）",
+      "saves": [
+        {
+          "key": "costume_full:su_wu:su_wu_cos04",
+          "category": "costume_full",
+          "asset_id": "su_wu_cos04",
+          "name": "龙渊",
+          "owner_id": "su_wu",
+          "owner_name": "苏武",
+          "target": "assets/costumes/su_wu_cos04.png",
+          "size": "portrait",
+          "generation": "costume_sheet",
+          "group": "costume_hero:su_wu",
+          "meta": {
+            "quality": "华服",
+            "series": "君子如剑",
+            "owner_kind": "hero"
+          }
+        }
+      ],
+      "index": 3,
+      "row": 1,
+      "col": 1
+    }
+  ],
+  "filename_base": "task_0132_costume_sheet_costume_hero_su_wu",
+  "image_name": "task_0132_costume_sheet_costume_hero_su_wu.png",
+  "output_path": "build/asset_pipeline/inbox/atlases/task_0132_costume_sheet_costume_hero_su_wu.png"
+}

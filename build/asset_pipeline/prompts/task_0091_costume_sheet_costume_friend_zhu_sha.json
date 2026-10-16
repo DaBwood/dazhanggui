@@ -1,0 +1,54 @@
+{
+  "task_id": "task_0091",
+  "kind": "costume_sheet",
+  "group": "costume_friend:zhu_sha",
+  "title": "朱砂 的服装图集",
+  "rows": 1,
+  "cols": 1,
+  "reference_image": "",
+  "cells": [
+    {
+      "label": "予夺（素装）",
+      "saves": [
+        {
+          "key": "costume_full:zhu_sha:zhu_sha_cos01",
+          "category": "costume_full",
+          "asset_id": "zhu_sha_cos01",
+          "name": "予夺",
+          "owner_id": "zhu_sha",
+          "owner_name": "朱砂",
+          "target": "assets/costumes/zhu_sha_cos01.png",
+          "size": "portrait",
+          "generation": "costume_sheet",
+          "group": "costume_friend:zhu_sha",
+          "meta": {
+            "quality": "素装",
+            "series": "",
+            "owner_kind": "friend"
+          }
+        },
+        {
+          "key": "friend_portrait:zhu_sha:zhu_sha",
+          "category": "friend_portrait",
+          "asset_id": "zhu_sha",
+          "name": "朱砂",
+          "owner_id": "zhu_sha",
+          "owner_name": "朱砂",
+          "target": "assets/portraits/friends/zhu_sha.png",
+          "size": "portrait",
+          "generation": "portrait",
+          "group": "friend_portraits",
+          "meta": {
+            "category": "农"
+          }
+        }
+      ],
+      "index": 0,
+      "row": 0,
+      "col": 0
+    }
+  ],
+  "filename_base": "task_0091_costume_sheet_costume_friend_zhu_sha",
+  "image_name": "task_0091_costume_sheet_costume_friend_zhu_sha.png",
+  "output_path": "build/asset_pipeline/inbox/atlases/task_0091_costume_sheet_costume_friend_zhu_sha.png"
+}

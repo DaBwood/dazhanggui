@@ -1,0 +1,179 @@
+{
+  "task_id": "task_0069",
+  "kind": "costume_sheet",
+  "group": "costume_friend:xinniang_zhimei",
+  "title": "新娘之妹 的服装图集",
+  "rows": 3,
+  "cols": 2,
+  "reference_image": "",
+  "cells": [
+    {
+      "label": "桂华宠儿（素装）",
+      "saves": [
+        {
+          "key": "costume_full:xinniang_zhimei:xinniang_zhimei_cos01",
+          "category": "costume_full",
+          "asset_id": "xinniang_zhimei_cos01",
+          "name": "桂华宠儿",
+          "owner_id": "xinniang_zhimei",
+          "owner_name": "新娘之妹",
+          "target": "assets/costumes/xinniang_zhimei_cos01.png",
+          "size": "portrait",
+          "generation": "costume_sheet",
+          "group": "costume_friend:xinniang_zhimei",
+          "meta": {
+            "quality": "素装",
+            "series": "",
+            "owner_kind": "friend"
+          }
+        },
+        {
+          "key": "friend_portrait:xinniang_zhimei:xinniang_zhimei",
+          "category": "friend_portrait",
+          "asset_id": "xinniang_zhimei",
+          "name": "新娘之妹",
+          "owner_id": "xinniang_zhimei",
+          "owner_name": "新娘之妹",
+          "target": "assets/portraits/friends/xinniang_zhimei.png",
+          "size": "portrait",
+          "generation": "portrait",
+          "group": "friend_portraits",
+          "meta": {
+            "category": "工"
+          }
+        }
+      ],
+      "index": 0,
+      "row": 0,
+      "col": 0
+    },
+    {
+      "label": "雪见（素装）",
+      "saves": [
+        {
+          "key": "costume_full:xinniang_zhimei:xinniang_zhimei_cos02",
+          "category": "costume_full",
+          "asset_id": "xinniang_zhimei_cos02",
+          "name": "雪见",
+          "owner_id": "xinniang_zhimei",
+          "owner_name": "新娘之妹",
+          "target": "assets/costumes/xinniang_zhimei_cos02.png",
+          "size": "portrait",
+          "generation": "costume_sheet",
+          "group": "costume_friend:xinniang_zhimei",
+          "meta": {
+            "quality": "素装",
+            "series": "",
+            "owner_kind": "friend"
+          }
+        }
+      ],
+      "index": 1,
+      "row": 0,
+      "col": 1
+    },
+    {
+      "label": "心动烟火（素装）",
+      "saves": [
+        {
+          "key": "costume_full:xinniang_zhimei:xinniang_zhimei_cos03",
+          "category": "costume_full",
+          "asset_id": "xinniang_zhimei_cos03",
+          "name": "心动烟火",
+          "owner_id": "xinniang_zhimei",
+          "owner_name": "新娘之妹",
+          "target": "assets/costumes/xinniang_zhimei_cos03.png",
+          "size": "portrait",
+          "generation": "costume_sheet",
+          "group": "costume_friend:xinniang_zhimei",
+          "meta": {
+            "quality": "素装",
+            "series": "",
+            "owner_kind": "friend"
+          }
+        }
+      ],
+      "index": 2,
+      "row": 1,
+      "col": 0
+    },
+    {
+      "label": "对镜初妆（素装）",
+      "saves": [
+        {
+          "key": "costume_full:xinniang_zhimei:xinniang_zhimei_cos04",
+          "category": "costume_full",
+          "asset_id": "xinniang_zhimei_cos04",
+          "name": "对镜初妆",
+          "owner_id": "xinniang_zhimei",
+          "owner_name": "新娘之妹",
+          "target": "assets/costumes/xinniang_zhimei_cos04.png",
+          "size": "portrait",
+          "generation": "costume_sheet",
+          "group": "costume_friend:xinniang_zhimei",
+          "meta": {
+            "quality": "素装",
+            "series": "",
+            "owner_kind": "friend"
+          }
+        }
+      ],
+      "index": 3,
+      "row": 1,
+      "col": 1
+    },
+    {
+      "label": "听海拾贝（素装）",
+      "saves": [
+        {
+          "key": "costume_full:xinniang_zhimei:xinniang_zhimei_cos05",
+          "category": "costume_full",
+          "asset_id": "xinniang_zhimei_cos05",
+          "name": "听海拾贝",
+          "owner_id": "xinniang_zhimei",
+          "owner_name": "新娘之妹",
+          "target": "assets/costumes/xinniang_zhimei_cos05.png",
+          "size": "portrait",
+          "generation": "costume_sheet",
+          "group": "costume_friend:xinniang_zhimei",
+          "meta": {
+            "quality": "素装",
+            "series": "",
+            "owner_kind": "friend"
+          }
+        }
+      ],
+      "index": 4,
+      "row": 2,
+      "col": 0
+    },
+    {
+      "label": "红线牵缘（锦衣）",
+      "saves": [
+        {
+          "key": "costume_full:xinniang_zhimei:xinniang_zhimei_cos06",
+          "category": "costume_full",
+          "asset_id": "xinniang_zhimei_cos06",
+          "name": "红线牵缘",
+          "owner_id": "xinniang_zhimei",
+          "owner_name": "新娘之妹",
+          "target": "assets/costumes/xinniang_zhimei_cos06.png",
+          "size": "portrait",
+          "generation": "costume_sheet",
+          "group": "costume_friend:xinniang_zhimei",
+          "meta": {
+            "quality": "锦衣",
+            "series": "",
+            "owner_kind": "friend"
+          }
+        }
+      ],
+      "index": 5,
+      "row": 2,
+      "col": 1
+    }
+  ],
+  "filename_base": "task_0069_costume_sheet_costume_friend_xinniang_zhimei",
+  "image_name": "task_0069_costume_sheet_costume_friend_xinniang_zhimei.png",
+  "output_path": "build/asset_pipeline/inbox/atlases/task_0069_costume_sheet_costume_friend_xinniang_zhimei.png"
+}

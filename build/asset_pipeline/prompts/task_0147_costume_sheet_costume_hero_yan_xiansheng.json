@@ -1,0 +1,105 @@
+{
+  "task_id": "task_0147",
+  "kind": "costume_sheet",
+  "group": "costume_hero:yan_xiansheng",
+  "title": "严先生 的服装图集",
+  "rows": 2,
+  "cols": 2,
+  "reference_image": "",
+  "cells": [
+    {
+      "label": "小惩大诫（素装）",
+      "saves": [
+        {
+          "key": "costume_full:yan_xiansheng:yan_xiansheng_cos01",
+          "category": "costume_full",
+          "asset_id": "yan_xiansheng_cos01",
+          "name": "小惩大诫",
+          "owner_id": "yan_xiansheng",
+          "owner_name": "严先生",
+          "target": "assets/costumes/yan_xiansheng_cos01.png",
+          "size": "portrait",
+          "generation": "costume_sheet",
+          "group": "costume_hero:yan_xiansheng",
+          "meta": {
+            "quality": "素装",
+            "series": "",
+            "owner_kind": "hero"
+          }
+        },
+        {
+          "key": "hero_portrait:yan_xiansheng:yan_xiansheng",
+          "category": "hero_portrait",
+          "asset_id": "yan_xiansheng",
+          "name": "严先生",
+          "owner_id": "yan_xiansheng",
+          "owner_name": "严先生",
+          "target": "assets/portraits/heroes/yan_xiansheng.png",
+          "size": "portrait",
+          "generation": "portrait",
+          "group": "hero_portraits",
+          "meta": {
+            "category": "士",
+            "quality": 2
+          }
+        }
+      ],
+      "index": 0,
+      "row": 0,
+      "col": 0
+    },
+    {
+      "label": "童心未泯（素装）",
+      "saves": [
+        {
+          "key": "costume_full:yan_xiansheng:yan_xiansheng_cos02",
+          "category": "costume_full",
+          "asset_id": "yan_xiansheng_cos02",
+          "name": "童心未泯",
+          "owner_id": "yan_xiansheng",
+          "owner_name": "严先生",
+          "target": "assets/costumes/yan_xiansheng_cos02.png",
+          "size": "portrait",
+          "generation": "costume_sheet",
+          "group": "costume_hero:yan_xiansheng",
+          "meta": {
+            "quality": "素装",
+            "series": "",
+            "owner_kind": "hero"
+          }
+        }
+      ],
+      "index": 1,
+      "row": 0,
+      "col": 1
+    },
+    {
+      "label": "金牌教练（素装）",
+      "saves": [
+        {
+          "key": "costume_full:yan_xiansheng:yan_xiansheng_cos03",
+          "category": "costume_full",
+          "asset_id": "yan_xiansheng_cos03",
+          "name": "金牌教练",
+          "owner_id": "yan_xiansheng",
+          "owner_name": "严先生",
+          "target": "assets/costumes/yan_xiansheng_cos03.png",
+          "size": "portrait",
+          "generation": "costume_sheet",
+          "group": "costume_hero:yan_xiansheng",
+          "meta": {
+            "quality": "素装",
+            "series": "",
+            "owner_kind": "hero"
+          }
+        }
+      ],
+      "index": 2,
+      "row": 1,
+      "col": 0
+    }
+  ],
+  "filename_base": "task_0147_costume_sheet_costume_hero_yan_xiansheng",
+  "image_name": "task_0147_costume_sheet_costume_hero_yan_xiansheng.png",
+  "output_path": "build/asset_pipeline/inbox/atlases/task_0147_costume_sheet_costume_hero_yan_xiansheng.png"
+}

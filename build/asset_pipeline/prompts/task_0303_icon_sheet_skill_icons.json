@@ -1,0 +1,203 @@
+{
+  "task_id": "task_0303",
+  "kind": "icon_sheet",
+  "group": "skill_icons",
+  "title": "skill_icons 图标图集",
+  "rows": 3,
+  "cols": 3,
+  "reference_image": "",
+  "cells": [
+    {
+      "label": "瘦金体",
+      "saves": [
+        {
+          "key": "skill_icon:瘦金体",
+          "category": "skill_icon",
+          "asset_id": "瘦金体",
+          "name": "瘦金体",
+          "owner_id": "",
+          "owner_name": "",
+          "target": "assets/skill_icons/瘦金体.png",
+          "size": "icon",
+          "generation": "icon_sheet",
+          "group": "skill_icons",
+          "meta": {}
+        }
+      ],
+      "index": 0,
+      "row": 0,
+      "col": 0
+    },
+    {
+      "label": "登峰造极",
+      "saves": [
+        {
+          "key": "skill_icon:登峰造极",
+          "category": "skill_icon",
+          "asset_id": "登峰造极",
+          "name": "登峰造极",
+          "owner_id": "",
+          "owner_name": "",
+          "target": "assets/skill_icons/登峰造极.png",
+          "size": "icon",
+          "generation": "icon_sheet",
+          "group": "skill_icons",
+          "meta": {}
+        }
+      ],
+      "index": 1,
+      "row": 0,
+      "col": 1
+    },
+    {
+      "label": "登无极",
+      "saves": [
+        {
+          "key": "skill_icon:登无极",
+          "category": "skill_icon",
+          "asset_id": "登无极",
+          "name": "登无极",
+          "owner_id": "",
+          "owner_name": "",
+          "target": "assets/skill_icons/登无极.png",
+          "size": "icon",
+          "generation": "icon_sheet",
+          "group": "skill_icons",
+          "meta": {}
+        }
+      ],
+      "index": 2,
+      "row": 0,
+      "col": 2
+    },
+    {
+      "label": "百兵之主：所有珍兽等级上限+10",
+      "saves": [
+        {
+          "key": "skill_icon:百兵之主",
+          "category": "skill_icon",
+          "asset_id": "百兵之主",
+          "name": "百兵之主",
+          "owner_id": "",
+          "owner_name": "",
+          "target": "assets/skill_icons/百兵之主.png",
+          "size": "icon",
+          "generation": "icon_sheet",
+          "group": "skill_icons",
+          "meta": {}
+        }
+      ],
+      "index": 3,
+      "row": 1,
+      "col": 0
+    },
+    {
+      "label": "百戏圣刀",
+      "saves": [
+        {
+          "key": "skill_icon:百戏圣刀",
+          "category": "skill_icon",
+          "asset_id": "百戏圣刀",
+          "name": "百戏圣刀",
+          "owner_id": "",
+          "owner_name": "",
+          "target": "assets/skill_icons/百戏圣刀.png",
+          "size": "icon",
+          "generation": "icon_sheet",
+          "group": "skill_icons",
+          "meta": {}
+        }
+      ],
+      "index": 4,
+      "row": 1,
+      "col": 1
+    },
+    {
+      "label": "睥睨天下",
+      "saves": [
+        {
+          "key": "skill_icon:睥睨天下",
+          "category": "skill_icon",
+          "asset_id": "睥睨天下",
+          "name": "睥睨天下",
+          "owner_id": "",
+          "owner_name": "",
+          "target": "assets/skill_icons/睥睨天下.png",
+          "size": "icon",
+          "generation": "icon_sheet",
+          "group": "skill_icons",
+          "meta": {}
+        }
+      ],
+      "index": 5,
+      "row": 1,
+      "col": 2
+    },
+    {
+      "label": "破军切",
+      "saves": [
+        {
+          "key": "skill_icon:破军切",
+          "category": "skill_icon",
+          "asset_id": "破军切",
+          "name": "破军切",
+          "owner_id": "",
+          "owner_name": "",
+          "target": "assets/skill_icons/破军切.png",
+          "size": "icon",
+          "generation": "icon_sheet",
+          "group": "skill_icons",
+          "meta": {}
+        }
+      ],
+      "index": 6,
+      "row": 2,
+      "col": 0
+    },
+    {
+      "label": "破茧蝴蝶：所有同职业门客虫师技能等级上限+4",
+      "saves": [
+        {
+          "key": "skill_icon:破茧蝴蝶",
+          "category": "skill_icon",
+          "asset_id": "破茧蝴蝶",
+          "name": "破茧蝴蝶",
+          "owner_id": "",
+          "owner_name": "",
+          "target": "assets/skill_icons/破茧蝴蝶.png",
+          "size": "icon",
+          "generation": "icon_sheet",
+          "group": "skill_icons",
+          "meta": {}
+        }
+      ],
+      "index": 7,
+      "row": 2,
+      "col": 1
+    },
+    {
+      "label": "神乎其技",
+      "saves": [
+        {
+          "key": "skill_icon:神乎其技",
+          "category": "skill_icon",
+          "asset_id": "神乎其技",
+          "name": "神乎其技",
+          "owner_id": "",
+          "owner_name": "",
+          "target": "assets/skill_icons/神乎其技.png",
+          "size": "icon",
+          "generation": "icon_sheet",
+          "group": "skill_icons",
+          "meta": {}
+        }
+      ],
+      "index": 8,
+      "row": 2,
+      "col": 2
+    }
+  ],
+  "filename_base": "task_0303_icon_sheet_skill_icons",
+  "image_name": "task_0303_icon_sheet_skill_icons.png",
+  "output_path": "build/asset_pipeline/inbox/atlases/task_0303_icon_sheet_skill_icons.png"
+}

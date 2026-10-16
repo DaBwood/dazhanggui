@@ -1,0 +1,54 @@
+{
+  "task_id": "task_0041",
+  "kind": "costume_sheet",
+  "group": "costume_friend:qian_ren_xue",
+  "title": "千仞雪 的服装图集",
+  "rows": 1,
+  "cols": 1,
+  "reference_image": "",
+  "cells": [
+    {
+      "label": "武魂真身（素装）",
+      "saves": [
+        {
+          "key": "costume_full:qian_ren_xue:qian_ren_xue_cos01",
+          "category": "costume_full",
+          "asset_id": "qian_ren_xue_cos01",
+          "name": "武魂真身",
+          "owner_id": "qian_ren_xue",
+          "owner_name": "千仞雪",
+          "target": "assets/costumes/qian_ren_xue_cos01.png",
+          "size": "portrait",
+          "generation": "costume_sheet",
+          "group": "costume_friend:qian_ren_xue",
+          "meta": {
+            "quality": "素装",
+            "series": "",
+            "owner_kind": "friend"
+          }
+        },
+        {
+          "key": "friend_portrait:qian_ren_xue:qian_ren_xue",
+          "category": "friend_portrait",
+          "asset_id": "qian_ren_xue",
+          "name": "千仞雪",
+          "owner_id": "qian_ren_xue",
+          "owner_name": "千仞雪",
+          "target": "assets/portraits/friends/qian_ren_xue.png",
+          "size": "portrait",
+          "generation": "portrait",
+          "group": "friend_portraits",
+          "meta": {
+            "category": "士"
+          }
+        }
+      ],
+      "index": 0,
+      "row": 0,
+      "col": 0
+    }
+  ],
+  "filename_base": "task_0041_costume_sheet_costume_friend_qian_ren_xue",
+  "image_name": "task_0041_costume_sheet_costume_friend_qian_ren_xue.png",
+  "output_path": "build/asset_pipeline/inbox/atlases/task_0041_costume_sheet_costume_friend_qian_ren_xue.png"
+}

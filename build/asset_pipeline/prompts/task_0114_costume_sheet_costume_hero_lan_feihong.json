@@ -1,0 +1,130 @@
+{
+  "task_id": "task_0114",
+  "kind": "costume_sheet",
+  "group": "costume_hero:lan_feihong",
+  "title": "兰飞鸿 的服装图集",
+  "rows": 2,
+  "cols": 2,
+  "reference_image": "",
+  "cells": [
+    {
+      "label": "浴火重生（华服）",
+      "saves": [
+        {
+          "key": "costume_full:lan_feihong:lan_feihong_cos01",
+          "category": "costume_full",
+          "asset_id": "lan_feihong_cos01",
+          "name": "浴火重生",
+          "owner_id": "lan_feihong",
+          "owner_name": "兰飞鸿",
+          "target": "assets/costumes/lan_feihong_cos01.png",
+          "size": "portrait",
+          "generation": "costume_sheet",
+          "group": "costume_hero:lan_feihong",
+          "meta": {
+            "quality": "华服",
+            "series": "",
+            "owner_kind": "hero"
+          }
+        },
+        {
+          "key": "hero_portrait:lan_feihong:lan_feihong",
+          "category": "hero_portrait",
+          "asset_id": "lan_feihong",
+          "name": "兰飞鸿",
+          "owner_id": "lan_feihong",
+          "owner_name": "兰飞鸿",
+          "target": "assets/portraits/heroes/lan_feihong.png",
+          "size": "portrait",
+          "generation": "portrait",
+          "group": "hero_portraits",
+          "meta": {
+            "category": "侠",
+            "quality": 1
+          }
+        }
+      ],
+      "index": 0,
+      "row": 0,
+      "col": 0
+    },
+    {
+      "label": "迦楼罗刀（华服）",
+      "saves": [
+        {
+          "key": "costume_full:lan_feihong:lan_feihong_cos02",
+          "category": "costume_full",
+          "asset_id": "lan_feihong_cos02",
+          "name": "迦楼罗刀",
+          "owner_id": "lan_feihong",
+          "owner_name": "兰飞鸿",
+          "target": "assets/costumes/lan_feihong_cos02.png",
+          "size": "portrait",
+          "generation": "costume_sheet",
+          "group": "costume_hero:lan_feihong",
+          "meta": {
+            "quality": "华服",
+            "series": "",
+            "owner_kind": "hero"
+          }
+        }
+      ],
+      "index": 1,
+      "row": 0,
+      "col": 1
+    },
+    {
+      "label": "绝境逢生（华服）",
+      "saves": [
+        {
+          "key": "costume_full:lan_feihong:lan_feihong_cos03",
+          "category": "costume_full",
+          "asset_id": "lan_feihong_cos03",
+          "name": "绝境逢生",
+          "owner_id": "lan_feihong",
+          "owner_name": "兰飞鸿",
+          "target": "assets/costumes/lan_feihong_cos03.png",
+          "size": "portrait",
+          "generation": "costume_sheet",
+          "group": "costume_hero:lan_feihong",
+          "meta": {
+            "quality": "华服",
+            "series": "",
+            "owner_kind": "hero"
+          }
+        }
+      ],
+      "index": 2,
+      "row": 1,
+      "col": 0
+    },
+    {
+      "label": "御前对决（华服）",
+      "saves": [
+        {
+          "key": "costume_full:lan_feihong:lan_feihong_cos04",
+          "category": "costume_full",
+          "asset_id": "lan_feihong_cos04",
+          "name": "御前对决",
+          "owner_id": "lan_feihong",
+          "owner_name": "兰飞鸿",
+          "target": "assets/costumes/lan_feihong_cos04.png",
+          "size": "portrait",
+          "generation": "costume_sheet",
+          "group": "costume_hero:lan_feihong",
+          "meta": {
+            "quality": "华服",
+            "series": "",
+            "owner_kind": "hero"
+          }
+        }
+      ],
+      "index": 3,
+      "row": 1,
+      "col": 1
+    }
+  ],
+  "filename_base": "task_0114_costume_sheet_costume_hero_lan_feihong",
+  "image_name": "task_0114_costume_sheet_costume_hero_lan_feihong.png",
+  "output_path": "build/asset_pipeline/inbox/atlases/task_0114_costume_sheet_costume_hero_lan_feihong.png"
+}

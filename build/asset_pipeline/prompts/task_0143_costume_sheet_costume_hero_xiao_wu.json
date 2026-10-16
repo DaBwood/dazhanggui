@@ -1,0 +1,55 @@
+{
+  "task_id": "task_0143",
+  "kind": "costume_sheet",
+  "group": "costume_hero:xiao_wu",
+  "title": "小舞 的服装图集",
+  "rows": 1,
+  "cols": 1,
+  "reference_image": "",
+  "cells": [
+    {
+      "label": "生死诀别（华服）",
+      "saves": [
+        {
+          "key": "costume_full:xiao_wu:xiao_wu_cos01",
+          "category": "costume_full",
+          "asset_id": "xiao_wu_cos01",
+          "name": "生死诀别",
+          "owner_id": "xiao_wu",
+          "owner_name": "小舞",
+          "target": "assets/costumes/xiao_wu_cos01.png",
+          "size": "portrait",
+          "generation": "costume_sheet",
+          "group": "costume_hero:xiao_wu",
+          "meta": {
+            "quality": "华服",
+            "series": "",
+            "owner_kind": "hero"
+          }
+        },
+        {
+          "key": "hero_portrait:xiao_wu:xiao_wu",
+          "category": "hero_portrait",
+          "asset_id": "xiao_wu",
+          "name": "小舞",
+          "owner_id": "xiao_wu",
+          "owner_name": "小舞",
+          "target": "assets/portraits/heroes/xiao_wu.png",
+          "size": "portrait",
+          "generation": "portrait",
+          "group": "hero_portraits",
+          "meta": {
+            "category": "农",
+            "quality": 2
+          }
+        }
+      ],
+      "index": 0,
+      "row": 0,
+      "col": 0
+    }
+  ],
+  "filename_base": "task_0143_costume_sheet_costume_hero_xiao_wu",
+  "image_name": "task_0143_costume_sheet_costume_hero_xiao_wu.png",
+  "output_path": "build/asset_pipeline/inbox/atlases/task_0143_costume_sheet_costume_hero_xiao_wu.png"
+}

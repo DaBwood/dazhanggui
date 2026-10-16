@@ -1,0 +1,155 @@
+{
+  "task_id": "task_0096",
+  "kind": "costume_sheet",
+  "group": "costume_hero:bian_yujing",
+  "title": "卞玉京 的服装图集",
+  "rows": 3,
+  "cols": 2,
+  "reference_image": "",
+  "cells": [
+    {
+      "label": "鹓雏降财（华服 五凤来仪）",
+      "saves": [
+        {
+          "key": "costume_full:bian_yujing:bian_yujing_cos01",
+          "category": "costume_full",
+          "asset_id": "bian_yujing_cos01",
+          "name": "鹓雏降财",
+          "owner_id": "bian_yujing",
+          "owner_name": "卞玉京",
+          "target": "assets/costumes/bian_yujing_cos01.png",
+          "size": "portrait",
+          "generation": "costume_sheet",
+          "group": "costume_hero:bian_yujing",
+          "meta": {
+            "quality": "华服",
+            "series": "五凤来仪",
+            "owner_kind": "hero"
+          }
+        },
+        {
+          "key": "hero_portrait:bian_yujing:bian_yujing",
+          "category": "hero_portrait",
+          "asset_id": "bian_yujing",
+          "name": "卞玉京",
+          "owner_id": "bian_yujing",
+          "owner_name": "卞玉京",
+          "target": "assets/portraits/heroes/bian_yujing.png",
+          "size": "portrait",
+          "generation": "portrait",
+          "group": "hero_portraits",
+          "meta": {
+            "category": "商",
+            "quality": 2
+          }
+        }
+      ],
+      "index": 0,
+      "row": 0,
+      "col": 0
+    },
+    {
+      "label": "长信宫灯（华服 传世珍宝）",
+      "saves": [
+        {
+          "key": "costume_full:bian_yujing:bian_yujing_cos02",
+          "category": "costume_full",
+          "asset_id": "bian_yujing_cos02",
+          "name": "长信宫灯",
+          "owner_id": "bian_yujing",
+          "owner_name": "卞玉京",
+          "target": "assets/costumes/bian_yujing_cos02.png",
+          "size": "portrait",
+          "generation": "costume_sheet",
+          "group": "costume_hero:bian_yujing",
+          "meta": {
+            "quality": "华服",
+            "series": "传世珍宝",
+            "owner_kind": "hero"
+          }
+        }
+      ],
+      "index": 1,
+      "row": 0,
+      "col": 1
+    },
+    {
+      "label": "南岳玑衡（华服 山河五岳）",
+      "saves": [
+        {
+          "key": "costume_full:bian_yujing:bian_yujing_cos03",
+          "category": "costume_full",
+          "asset_id": "bian_yujing_cos03",
+          "name": "南岳玑衡",
+          "owner_id": "bian_yujing",
+          "owner_name": "卞玉京",
+          "target": "assets/costumes/bian_yujing_cos03.png",
+          "size": "portrait",
+          "generation": "costume_sheet",
+          "group": "costume_hero:bian_yujing",
+          "meta": {
+            "quality": "华服",
+            "series": "山河五岳",
+            "owner_kind": "hero"
+          }
+        }
+      ],
+      "index": 2,
+      "row": 1,
+      "col": 0
+    },
+    {
+      "label": "碧玉声歌（华服 汴梁女团）",
+      "saves": [
+        {
+          "key": "costume_full:bian_yujing:bian_yujing_cos04",
+          "category": "costume_full",
+          "asset_id": "bian_yujing_cos04",
+          "name": "碧玉声歌",
+          "owner_id": "bian_yujing",
+          "owner_name": "卞玉京",
+          "target": "assets/costumes/bian_yujing_cos04.png",
+          "size": "portrait",
+          "generation": "costume_sheet",
+          "group": "costume_hero:bian_yujing",
+          "meta": {
+            "quality": "华服",
+            "series": "汴梁女团",
+            "owner_kind": "hero"
+          }
+        }
+      ],
+      "index": 3,
+      "row": 1,
+      "col": 1
+    },
+    {
+      "label": "凌霜秋菊（锦衣 百花齐放）",
+      "saves": [
+        {
+          "key": "costume_full:bian_yujing:bian_yujing_cos05",
+          "category": "costume_full",
+          "asset_id": "bian_yujing_cos05",
+          "name": "凌霜秋菊",
+          "owner_id": "bian_yujing",
+          "owner_name": "卞玉京",
+          "target": "assets/costumes/bian_yujing_cos05.png",
+          "size": "portrait",
+          "generation": "costume_sheet",
+          "group": "costume_hero:bian_yujing",
+          "meta": {
+            "quality": "锦衣",
+            "series": "百花齐放",
+            "owner_kind": "hero"
+          }
+        }
+      ],
+      "index": 4,
+      "row": 2,
+      "col": 0
+    }
+  ],
+  "filename_base": "task_0096_costume_sheet_costume_hero_bian_yujing",
+  "image_name": "task_0096_costume_sheet_costume_hero_bian_yujing.png",
+  "output_path": "build/asset_pipeline/inbox/atlases/task_0096_costume_sheet_costume_hero_bian_yujing.png"
+}

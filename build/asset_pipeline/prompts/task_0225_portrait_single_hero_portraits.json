@@ -1,0 +1,38 @@
+{
+  "task_id": "task_0225",
+  "kind": "portrait_single",
+  "group": "hero_portraits",
+  "title": "邢护卫",
+  "rows": 1,
+  "cols": 1,
+  "reference_image": "",
+  "cells": [
+    {
+      "label": "邢护卫",
+      "saves": [
+        {
+          "key": "hero_portrait:xing_huwei:xing_huwei",
+          "category": "hero_portrait",
+          "asset_id": "xing_huwei",
+          "name": "邢护卫",
+          "owner_id": "xing_huwei",
+          "owner_name": "邢护卫",
+          "target": "assets/portraits/heroes/xing_huwei.png",
+          "size": "portrait",
+          "generation": "portrait",
+          "group": "hero_portraits",
+          "meta": {
+            "category": "侠",
+            "quality": 1
+          }
+        }
+      ],
+      "index": 0,
+      "row": 0,
+      "col": 0
+    }
+  ],
+  "filename_base": "task_0225_portrait_single_hero_portraits",
+  "image_name": "task_0225_portrait_single_hero_portraits.png",
+  "output_path": "build/asset_pipeline/inbox/atlases/task_0225_portrait_single_hero_portraits.png"
+}

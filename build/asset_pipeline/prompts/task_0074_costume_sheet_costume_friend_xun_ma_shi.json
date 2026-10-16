@@ -1,0 +1,54 @@
+{
+  "task_id": "task_0074",
+  "kind": "costume_sheet",
+  "group": "costume_friend:xun_ma_shi",
+  "title": "驯马师 的服装图集",
+  "rows": 1,
+  "cols": 1,
+  "reference_image": "",
+  "cells": [
+    {
+      "label": "鲜衣骏马（素装）",
+      "saves": [
+        {
+          "key": "costume_full:xun_ma_shi:xun_ma_shi_cos01",
+          "category": "costume_full",
+          "asset_id": "xun_ma_shi_cos01",
+          "name": "鲜衣骏马",
+          "owner_id": "xun_ma_shi",
+          "owner_name": "驯马师",
+          "target": "assets/costumes/xun_ma_shi_cos01.png",
+          "size": "portrait",
+          "generation": "costume_sheet",
+          "group": "costume_friend:xun_ma_shi",
+          "meta": {
+            "quality": "素装",
+            "series": "",
+            "owner_kind": "friend"
+          }
+        },
+        {
+          "key": "friend_portrait:xun_ma_shi:xun_ma_shi",
+          "category": "friend_portrait",
+          "asset_id": "xun_ma_shi",
+          "name": "驯马师",
+          "owner_id": "xun_ma_shi",
+          "owner_name": "驯马师",
+          "target": "assets/portraits/friends/xun_ma_shi.png",
+          "size": "portrait",
+          "generation": "portrait",
+          "group": "friend_portraits",
+          "meta": {
+            "category": "农"
+          }
+        }
+      ],
+      "index": 0,
+      "row": 0,
+      "col": 0
+    }
+  ],
+  "filename_base": "task_0074_costume_sheet_costume_friend_xun_ma_shi",
+  "image_name": "task_0074_costume_sheet_costume_friend_xun_ma_shi.png",
+  "output_path": "build/asset_pipeline/inbox/atlases/task_0074_costume_sheet_costume_friend_xun_ma_shi.png"
+}

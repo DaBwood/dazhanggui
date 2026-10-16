@@ -1,0 +1,203 @@
+{
+  "task_id": "task_0299",
+  "kind": "icon_sheet",
+  "group": "skill_icons",
+  "title": "skill_icons 图标图集",
+  "rows": 3,
+  "cols": 3,
+  "reference_image": "",
+  "cells": [
+    {
+      "label": "极·工业之道",
+      "saves": [
+        {
+          "key": "skill_icon:极·工业之道",
+          "category": "skill_icon",
+          "asset_id": "极·工业之道",
+          "name": "极·工业之道",
+          "owner_id": "",
+          "owner_name": "",
+          "target": "assets/skill_icons/极·工业之道.png",
+          "size": "icon",
+          "generation": "icon_sheet",
+          "group": "skill_icons",
+          "meta": {}
+        }
+      ],
+      "index": 0,
+      "row": 0,
+      "col": 0
+    },
+    {
+      "label": "极·经商之道",
+      "saves": [
+        {
+          "key": "skill_icon:极·经商之道",
+          "category": "skill_icon",
+          "asset_id": "极·经商之道",
+          "name": "极·经商之道",
+          "owner_id": "",
+          "owner_name": "",
+          "target": "assets/skill_icons/极·经商之道.png",
+          "size": "icon",
+          "generation": "icon_sheet",
+          "group": "skill_icons",
+          "meta": {}
+        }
+      ],
+      "index": 1,
+      "row": 0,
+      "col": 1
+    },
+    {
+      "label": "林中之狼：山海伏兽活动中战力+5%",
+      "saves": [
+        {
+          "key": "skill_icon:林中之狼",
+          "category": "skill_icon",
+          "asset_id": "林中之狼",
+          "name": "林中之狼",
+          "owner_id": "",
+          "owner_name": "",
+          "target": "assets/skill_icons/林中之狼.png",
+          "size": "icon",
+          "generation": "icon_sheet",
+          "group": "skill_icons",
+          "meta": {}
+        }
+      ],
+      "index": 2,
+      "row": 0,
+      "col": 2
+    },
+    {
+      "label": "枭雄本色",
+      "saves": [
+        {
+          "key": "skill_icon:枭雄本色",
+          "category": "skill_icon",
+          "asset_id": "枭雄本色",
+          "name": "枭雄本色",
+          "owner_id": "",
+          "owner_name": "",
+          "target": "assets/skill_icons/枭雄本色.png",
+          "size": "icon",
+          "generation": "icon_sheet",
+          "group": "skill_icons",
+          "meta": {}
+        }
+      ],
+      "index": 3,
+      "row": 1,
+      "col": 0
+    },
+    {
+      "label": "武德丰沛：燕云宏图活动中带兵上限+1600",
+      "saves": [
+        {
+          "key": "skill_icon:武德丰沛",
+          "category": "skill_icon",
+          "asset_id": "武德丰沛",
+          "name": "武德丰沛",
+          "owner_id": "",
+          "owner_name": "",
+          "target": "assets/skill_icons/武德丰沛.png",
+          "size": "icon",
+          "generation": "icon_sheet",
+          "group": "skill_icons",
+          "meta": {}
+        }
+      ],
+      "index": 4,
+      "row": 1,
+      "col": 1
+    },
+    {
+      "label": "水龙吟",
+      "saves": [
+        {
+          "key": "skill_icon:水龙吟",
+          "category": "skill_icon",
+          "asset_id": "水龙吟",
+          "name": "水龙吟",
+          "owner_id": "",
+          "owner_name": "",
+          "target": "assets/skill_icons/水龙吟.png",
+          "size": "icon",
+          "generation": "icon_sheet",
+          "group": "skill_icons",
+          "meta": {}
+        }
+      ],
+      "index": 5,
+      "row": 1,
+      "col": 2
+    },
+    {
+      "label": "汇通八方",
+      "saves": [
+        {
+          "key": "skill_icon:汇通八方",
+          "category": "skill_icon",
+          "asset_id": "汇通八方",
+          "name": "汇通八方",
+          "owner_id": "",
+          "owner_name": "",
+          "target": "assets/skill_icons/汇通八方.png",
+          "size": "icon",
+          "generation": "icon_sheet",
+          "group": "skill_icons",
+          "meta": {}
+        }
+      ],
+      "index": 6,
+      "row": 2,
+      "col": 0
+    },
+    {
+      "label": "治水术",
+      "saves": [
+        {
+          "key": "skill_icon:治水术",
+          "category": "skill_icon",
+          "asset_id": "治水术",
+          "name": "治水术",
+          "owner_id": "",
+          "owner_name": "",
+          "target": "assets/skill_icons/治水术.png",
+          "size": "icon",
+          "generation": "icon_sheet",
+          "group": "skill_icons",
+          "meta": {}
+        }
+      ],
+      "index": 7,
+      "row": 2,
+      "col": 1
+    },
+    {
+      "label": "波翻浪涌",
+      "saves": [
+        {
+          "key": "skill_icon:波翻浪涌",
+          "category": "skill_icon",
+          "asset_id": "波翻浪涌",
+          "name": "波翻浪涌",
+          "owner_id": "",
+          "owner_name": "",
+          "target": "assets/skill_icons/波翻浪涌.png",
+          "size": "icon",
+          "generation": "icon_sheet",
+          "group": "skill_icons",
+          "meta": {}
+        }
+      ],
+      "index": 8,
+      "row": 2,
+      "col": 2
+    }
+  ],
+  "filename_base": "task_0299_icon_sheet_skill_icons",
+  "image_name": "task_0299_icon_sheet_skill_icons.png",
+  "output_path": "build/asset_pipeline/inbox/atlases/task_0299_icon_sheet_skill_icons.png"
+}

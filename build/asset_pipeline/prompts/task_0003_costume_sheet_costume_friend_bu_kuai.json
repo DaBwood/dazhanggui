@@ -1,0 +1,129 @@
+{
+  "task_id": "task_0003",
+  "kind": "costume_sheet",
+  "group": "costume_friend:bu_kuai",
+  "title": "捕快 的服装图集",
+  "rows": 2,
+  "cols": 2,
+  "reference_image": "",
+  "cells": [
+    {
+      "label": "满弓知艳（素装）",
+      "saves": [
+        {
+          "key": "costume_full:bu_kuai:bu_kuai_cos01",
+          "category": "costume_full",
+          "asset_id": "bu_kuai_cos01",
+          "name": "满弓知艳",
+          "owner_id": "bu_kuai",
+          "owner_name": "捕快",
+          "target": "assets/costumes/bu_kuai_cos01.png",
+          "size": "portrait",
+          "generation": "costume_sheet",
+          "group": "costume_friend:bu_kuai",
+          "meta": {
+            "quality": "素装",
+            "series": "",
+            "owner_kind": "friend"
+          }
+        },
+        {
+          "key": "friend_portrait:bu_kuai:bu_kuai",
+          "category": "friend_portrait",
+          "asset_id": "bu_kuai",
+          "name": "捕快",
+          "owner_id": "bu_kuai",
+          "owner_name": "捕快",
+          "target": "assets/portraits/friends/bu_kuai.png",
+          "size": "portrait",
+          "generation": "portrait",
+          "group": "friend_portraits",
+          "meta": {
+            "category": "侠"
+          }
+        }
+      ],
+      "index": 0,
+      "row": 0,
+      "col": 0
+    },
+    {
+      "label": "寒月侠女（素装）",
+      "saves": [
+        {
+          "key": "costume_full:bu_kuai:bu_kuai_cos02",
+          "category": "costume_full",
+          "asset_id": "bu_kuai_cos02",
+          "name": "寒月侠女",
+          "owner_id": "bu_kuai",
+          "owner_name": "捕快",
+          "target": "assets/costumes/bu_kuai_cos02.png",
+          "size": "portrait",
+          "generation": "costume_sheet",
+          "group": "costume_friend:bu_kuai",
+          "meta": {
+            "quality": "素装",
+            "series": "",
+            "owner_kind": "friend"
+          }
+        }
+      ],
+      "index": 1,
+      "row": 0,
+      "col": 1
+    },
+    {
+      "label": "圣上敕令（素装）",
+      "saves": [
+        {
+          "key": "costume_full:bu_kuai:bu_kuai_cos03",
+          "category": "costume_full",
+          "asset_id": "bu_kuai_cos03",
+          "name": "圣上敕令",
+          "owner_id": "bu_kuai",
+          "owner_name": "捕快",
+          "target": "assets/costumes/bu_kuai_cos03.png",
+          "size": "portrait",
+          "generation": "costume_sheet",
+          "group": "costume_friend:bu_kuai",
+          "meta": {
+            "quality": "素装",
+            "series": "",
+            "owner_kind": "friend"
+          }
+        }
+      ],
+      "index": 2,
+      "row": 1,
+      "col": 0
+    },
+    {
+      "label": "龙腾虎蹴（素装）",
+      "saves": [
+        {
+          "key": "costume_full:bu_kuai:bu_kuai_cos04",
+          "category": "costume_full",
+          "asset_id": "bu_kuai_cos04",
+          "name": "龙腾虎蹴",
+          "owner_id": "bu_kuai",
+          "owner_name": "捕快",
+          "target": "assets/costumes/bu_kuai_cos04.png",
+          "size": "portrait",
+          "generation": "costume_sheet",
+          "group": "costume_friend:bu_kuai",
+          "meta": {
+            "quality": "素装",
+            "series": "",
+            "owner_kind": "friend"
+          }
+        }
+      ],
+      "index": 3,
+      "row": 1,
+      "col": 1
+    }
+  ],
+  "filename_base": "task_0003_costume_sheet_costume_friend_bu_kuai",
+  "image_name": "task_0003_costume_sheet_costume_friend_bu_kuai.png",
+  "output_path": "build/asset_pipeline/inbox/atlases/task_0003_costume_sheet_costume_friend_bu_kuai.png"
+}

@@ -1,0 +1,38 @@
+{
+  "task_id": "task_0207",
+  "kind": "portrait_single",
+  "group": "hero_portraits",
+  "title": "柳捕快",
+  "rows": 1,
+  "cols": 1,
+  "reference_image": "",
+  "cells": [
+    {
+      "label": "柳捕快",
+      "saves": [
+        {
+          "key": "hero_portrait:liu_bukuai:liu_bukuai",
+          "category": "hero_portrait",
+          "asset_id": "liu_bukuai",
+          "name": "柳捕快",
+          "owner_id": "liu_bukuai",
+          "owner_name": "柳捕快",
+          "target": "assets/portraits/heroes/liu_bukuai.png",
+          "size": "portrait",
+          "generation": "portrait",
+          "group": "hero_portraits",
+          "meta": {
+            "category": "士",
+            "quality": 0
+          }
+        }
+      ],
+      "index": 0,
+      "row": 0,
+      "col": 0
+    }
+  ],
+  "filename_base": "task_0207_portrait_single_hero_portraits",
+  "image_name": "task_0207_portrait_single_hero_portraits.png",
+  "output_path": "build/asset_pipeline/inbox/atlases/task_0207_portrait_single_hero_portraits.png"
+}

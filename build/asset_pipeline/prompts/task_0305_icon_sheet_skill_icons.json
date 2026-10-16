@@ -1,0 +1,203 @@
+{
+  "task_id": "task_0305",
+  "kind": "icon_sheet",
+  "group": "skill_icons",
+  "title": "skill_icons 图标图集",
+  "rows": 3,
+  "cols": 3,
+  "reference_image": "",
+  "cells": [
+    {
+      "label": "立天庭",
+      "saves": [
+        {
+          "key": "skill_icon:立天庭",
+          "category": "skill_icon",
+          "asset_id": "立天庭",
+          "name": "立天庭",
+          "owner_id": "",
+          "owner_name": "",
+          "target": "assets/skill_icons/立天庭.png",
+          "size": "icon",
+          "generation": "icon_sheet",
+          "group": "skill_icons",
+          "meta": {}
+        }
+      ],
+      "index": 0,
+      "row": 0,
+      "col": 0
+    },
+    {
+      "label": "立天纲",
+      "saves": [
+        {
+          "key": "skill_icon:立天纲",
+          "category": "skill_icon",
+          "asset_id": "立天纲",
+          "name": "立天纲",
+          "owner_id": "",
+          "owner_name": "",
+          "target": "assets/skill_icons/立天纲.png",
+          "size": "icon",
+          "generation": "icon_sheet",
+          "group": "skill_icons",
+          "meta": {}
+        }
+      ],
+      "index": 1,
+      "row": 0,
+      "col": 1
+    },
+    {
+      "label": "立身举龙",
+      "saves": [
+        {
+          "key": "skill_icon:立身举龙",
+          "category": "skill_icon",
+          "asset_id": "立身举龙",
+          "name": "立身举龙",
+          "owner_id": "",
+          "owner_name": "",
+          "target": "assets/skill_icons/立身举龙.png",
+          "size": "icon",
+          "generation": "icon_sheet",
+          "group": "skill_icons",
+          "meta": {}
+        }
+      ],
+      "index": 2,
+      "row": 0,
+      "col": 2
+    },
+    {
+      "label": "纯爱天篇：所有同职业门客虫师技能等级上限+4",
+      "saves": [
+        {
+          "key": "skill_icon:纯爱天篇",
+          "category": "skill_icon",
+          "asset_id": "纯爱天篇",
+          "name": "纯爱天篇",
+          "owner_id": "",
+          "owner_name": "",
+          "target": "assets/skill_icons/纯爱天篇.png",
+          "size": "icon",
+          "generation": "icon_sheet",
+          "group": "skill_icons",
+          "meta": {}
+        }
+      ],
+      "index": 3,
+      "row": 1,
+      "col": 0
+    },
+    {
+      "label": "结绳记事：所有珍兽等级上限+10",
+      "saves": [
+        {
+          "key": "skill_icon:结绳记事",
+          "category": "skill_icon",
+          "asset_id": "结绳记事",
+          "name": "结绳记事",
+          "owner_id": "",
+          "owner_name": "",
+          "target": "assets/skill_icons/结绳记事.png",
+          "size": "icon",
+          "generation": "icon_sheet",
+          "group": "skill_icons",
+          "meta": {}
+        }
+      ],
+      "index": 4,
+      "row": 1,
+      "col": 1
+    },
+    {
+      "label": "绝代风华",
+      "saves": [
+        {
+          "key": "skill_icon:绝代风华",
+          "category": "skill_icon",
+          "asset_id": "绝代风华",
+          "name": "绝代风华",
+          "owner_id": "",
+          "owner_name": "",
+          "target": "assets/skill_icons/绝代风华.png",
+          "size": "icon",
+          "generation": "icon_sheet",
+          "group": "skill_icons",
+          "meta": {}
+        }
+      ],
+      "index": 5,
+      "row": 1,
+      "col": 2
+    },
+    {
+      "label": "统万族",
+      "saves": [
+        {
+          "key": "skill_icon:统万族",
+          "category": "skill_icon",
+          "asset_id": "统万族",
+          "name": "统万族",
+          "owner_id": "",
+          "owner_name": "",
+          "target": "assets/skill_icons/统万族.png",
+          "size": "icon",
+          "generation": "icon_sheet",
+          "group": "skill_icons",
+          "meta": {}
+        }
+      ],
+      "index": 6,
+      "row": 2,
+      "col": 0
+    },
+    {
+      "label": "统帅三军：统兵演武活动中队伍带兵上限+1600",
+      "saves": [
+        {
+          "key": "skill_icon:统帅三军",
+          "category": "skill_icon",
+          "asset_id": "统帅三军",
+          "name": "统帅三军",
+          "owner_id": "",
+          "owner_name": "",
+          "target": "assets/skill_icons/统帅三军.png",
+          "size": "icon",
+          "generation": "icon_sheet",
+          "group": "skill_icons",
+          "meta": {}
+        }
+      ],
+      "index": 7,
+      "row": 2,
+      "col": 1
+    },
+    {
+      "label": "统百部",
+      "saves": [
+        {
+          "key": "skill_icon:统百部",
+          "category": "skill_icon",
+          "asset_id": "统百部",
+          "name": "统百部",
+          "owner_id": "",
+          "owner_name": "",
+          "target": "assets/skill_icons/统百部.png",
+          "size": "icon",
+          "generation": "icon_sheet",
+          "group": "skill_icons",
+          "meta": {}
+        }
+      ],
+      "index": 8,
+      "row": 2,
+      "col": 2
+    }
+  ],
+  "filename_base": "task_0305_icon_sheet_skill_icons",
+  "image_name": "task_0305_icon_sheet_skill_icons.png",
+  "output_path": "build/asset_pipeline/inbox/atlases/task_0305_icon_sheet_skill_icons.png"
+}

@@ -1,0 +1,80 @@
+{
+  "task_id": "task_0102",
+  "kind": "costume_sheet",
+  "group": "costume_hero:du_kang",
+  "title": "杜康 的服装图集",
+  "rows": 1,
+  "cols": 2,
+  "reference_image": "",
+  "cells": [
+    {
+      "label": "酿酒宗师（素装）",
+      "saves": [
+        {
+          "key": "costume_full:du_kang:du_kang_cos01",
+          "category": "costume_full",
+          "asset_id": "du_kang_cos01",
+          "name": "酿酒宗师",
+          "owner_id": "du_kang",
+          "owner_name": "杜康",
+          "target": "assets/costumes/du_kang_cos01.png",
+          "size": "portrait",
+          "generation": "costume_sheet",
+          "group": "costume_hero:du_kang",
+          "meta": {
+            "quality": "素装",
+            "series": "",
+            "owner_kind": "hero"
+          }
+        },
+        {
+          "key": "hero_portrait:du_kang:du_kang",
+          "category": "hero_portrait",
+          "asset_id": "du_kang",
+          "name": "杜康",
+          "owner_id": "du_kang",
+          "owner_name": "杜康",
+          "target": "assets/portraits/heroes/du_kang.png",
+          "size": "portrait",
+          "generation": "portrait",
+          "group": "hero_portraits",
+          "meta": {
+            "category": "商",
+            "quality": 2
+          }
+        }
+      ],
+      "index": 0,
+      "row": 0,
+      "col": 0
+    },
+    {
+      "label": "歌舞升平（华服 清平盛世）",
+      "saves": [
+        {
+          "key": "costume_full:du_kang:du_kang_cos02",
+          "category": "costume_full",
+          "asset_id": "du_kang_cos02",
+          "name": "歌舞升平",
+          "owner_id": "du_kang",
+          "owner_name": "杜康",
+          "target": "assets/costumes/du_kang_cos02.png",
+          "size": "portrait",
+          "generation": "costume_sheet",
+          "group": "costume_hero:du_kang",
+          "meta": {
+            "quality": "华服",
+            "series": "清平盛世",
+            "owner_kind": "hero"
+          }
+        }
+      ],
+      "index": 1,
+      "row": 0,
+      "col": 1
+    }
+  ],
+  "filename_base": "task_0102_costume_sheet_costume_hero_du_kang",
+  "image_name": "task_0102_costume_sheet_costume_hero_du_kang.png",
+  "output_path": "build/asset_pipeline/inbox/atlases/task_0102_costume_sheet_costume_hero_du_kang.png"
+}

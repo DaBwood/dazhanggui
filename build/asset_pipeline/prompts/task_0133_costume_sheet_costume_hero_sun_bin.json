@@ -1,0 +1,105 @@
+{
+  "task_id": "task_0133",
+  "kind": "costume_sheet",
+  "group": "costume_hero:sun_bin",
+  "title": "孙膑 的服装图集",
+  "rows": 2,
+  "cols": 2,
+  "reference_image": "",
+  "cells": [
+    {
+      "label": "田忌赛马（素装）",
+      "saves": [
+        {
+          "key": "costume_full:sun_bin:sun_bin_cos01",
+          "category": "costume_full",
+          "asset_id": "sun_bin_cos01",
+          "name": "田忌赛马",
+          "owner_id": "sun_bin",
+          "owner_name": "孙膑",
+          "target": "assets/costumes/sun_bin_cos01.png",
+          "size": "portrait",
+          "generation": "costume_sheet",
+          "group": "costume_hero:sun_bin",
+          "meta": {
+            "quality": "素装",
+            "series": "",
+            "owner_kind": "hero"
+          }
+        },
+        {
+          "key": "hero_portrait:sun_bin:sun_bin",
+          "category": "hero_portrait",
+          "asset_id": "sun_bin",
+          "name": "孙膑",
+          "owner_id": "sun_bin",
+          "owner_name": "孙膑",
+          "target": "assets/portraits/heroes/sun_bin.png",
+          "size": "portrait",
+          "generation": "portrait",
+          "group": "hero_portraits",
+          "meta": {
+            "category": "农",
+            "quality": 2
+          }
+        }
+      ],
+      "index": 0,
+      "row": 0,
+      "col": 0
+    },
+    {
+      "label": "景天（素装）",
+      "saves": [
+        {
+          "key": "costume_full:sun_bin:sun_bin_cos02",
+          "category": "costume_full",
+          "asset_id": "sun_bin_cos02",
+          "name": "景天",
+          "owner_id": "sun_bin",
+          "owner_name": "孙膑",
+          "target": "assets/costumes/sun_bin_cos02.png",
+          "size": "portrait",
+          "generation": "costume_sheet",
+          "group": "costume_hero:sun_bin",
+          "meta": {
+            "quality": "素装",
+            "series": "",
+            "owner_kind": "hero"
+          }
+        }
+      ],
+      "index": 1,
+      "row": 0,
+      "col": 1
+    },
+    {
+      "label": "鼓乐齐鸣（华服 清平盛世）",
+      "saves": [
+        {
+          "key": "costume_full:sun_bin:sun_bin_cos03",
+          "category": "costume_full",
+          "asset_id": "sun_bin_cos03",
+          "name": "鼓乐齐鸣",
+          "owner_id": "sun_bin",
+          "owner_name": "孙膑",
+          "target": "assets/costumes/sun_bin_cos03.png",
+          "size": "portrait",
+          "generation": "costume_sheet",
+          "group": "costume_hero:sun_bin",
+          "meta": {
+            "quality": "华服",
+            "series": "清平盛世",
+            "owner_kind": "hero"
+          }
+        }
+      ],
+      "index": 2,
+      "row": 1,
+      "col": 0
+    }
+  ],
+  "filename_base": "task_0133_costume_sheet_costume_hero_sun_bin",
+  "image_name": "task_0133_costume_sheet_costume_hero_sun_bin.png",
+  "output_path": "build/asset_pipeline/inbox/atlases/task_0133_costume_sheet_costume_hero_sun_bin.png"
+}

@@ -1,0 +1,234 @@
+{
+  "task_id": "task_0281",
+  "kind": "icon_sheet",
+  "group": "item_icons",
+  "title": "item_icons 图标图集",
+  "rows": 3,
+  "cols": 3,
+  "reference_image": "",
+  "cells": [
+    {
+      "label": "星曜光：藏品升级道具：201~300级使用",
+      "saves": [
+        {
+          "key": "item_icon:xing_yao_guang",
+          "category": "item_icon",
+          "asset_id": "xing_yao_guang",
+          "name": "星曜光",
+          "owner_id": "",
+          "owner_name": "",
+          "target": "assets/items/xing_yao_guang.png",
+          "size": "icon",
+          "generation": "icon_sheet",
+          "group": "item_icons",
+          "meta": {
+            "desc": "藏品升级道具：201~300级使用",
+            "use": ""
+          }
+        }
+      ],
+      "index": 0,
+      "row": 0,
+      "col": 0
+    },
+    {
+      "label": "修罗匕首：小舞风姿【修罗出鞘】专属升级道具，每级固定消耗600个；获取途径待接",
+      "saves": [
+        {
+          "key": "item_icon:xiu_luo_bi_shou",
+          "category": "item_icon",
+          "asset_id": "xiu_luo_bi_shou",
+          "name": "修罗匕首",
+          "owner_id": "",
+          "owner_name": "",
+          "target": "assets/items/xiu_luo_bi_shou.png",
+          "size": "icon",
+          "generation": "icon_sheet",
+          "group": "item_icons",
+          "meta": {
+            "desc": "小舞风姿【修罗出鞘】专属升级道具，每级固定消耗600个；获取途径待接",
+            "use": ""
+          }
+        }
+      ],
+      "index": 1,
+      "row": 0,
+      "col": 1
+    },
+    {
+      "label": "宣纸：使用后随机一名士门客基础赚速+500",
+      "saves": [
+        {
+          "key": "item_icon:xuan_zhi",
+          "category": "item_icon",
+          "asset_id": "xuan_zhi",
+          "name": "宣纸",
+          "owner_id": "",
+          "owner_name": "",
+          "target": "assets/items/xuan_zhi.png",
+          "size": "icon",
+          "generation": "icon_sheet",
+          "group": "item_icons",
+          "meta": {
+            "desc": "使用后随机一名士门客基础赚速+500",
+            "use": {
+              "type": "quantity",
+              "btn": "使用",
+              "title": "使用宣纸"
+            }
+          }
+        }
+      ],
+      "index": 2,
+      "row": 0,
+      "col": 2
+    },
+    {
+      "label": "宣和七玺：兑换门客【宋徽宗】所需",
+      "saves": [
+        {
+          "key": "item_icon:xuanhe_qixi",
+          "category": "item_icon",
+          "asset_id": "xuanhe_qixi",
+          "name": "宣和七玺",
+          "owner_id": "",
+          "owner_name": "",
+          "target": "assets/items/xuanhe_qixi.png",
+          "size": "icon",
+          "generation": "icon_sheet",
+          "group": "item_icons",
+          "meta": {
+            "desc": "兑换门客【宋徽宗】所需",
+            "use": ""
+          }
+        }
+      ],
+      "index": 3,
+      "row": 1,
+      "col": 0
+    },
+    {
+      "label": "续缘天书：白月初信物【续缘天书】专属升级道具，转世续缘每级消耗600个；获取途径待接",
+      "saves": [
+        {
+          "key": "item_icon:xuyuan_tianshu",
+          "category": "item_icon",
+          "asset_id": "xuyuan_tianshu",
+          "name": "续缘天书",
+          "owner_id": "",
+          "owner_name": "",
+          "target": "assets/items/xuyuan_tianshu.png",
+          "size": "icon",
+          "generation": "icon_sheet",
+          "group": "item_icons",
+          "meta": {
+            "desc": "白月初信物【续缘天书】专属升级道具，转世续缘每级消耗600个；获取途径待接",
+            "use": ""
+          }
+        }
+      ],
+      "index": 4,
+      "row": 1,
+      "col": 1
+    },
+    {
+      "label": "偃月孤锋：解锁守护灵幻化：关羽",
+      "saves": [
+        {
+          "key": "item_icon:yan_yue_gufeng",
+          "category": "item_icon",
+          "asset_id": "yan_yue_gufeng",
+          "name": "偃月孤锋",
+          "owner_id": "",
+          "owner_name": "",
+          "target": "assets/items/yan_yue_gufeng.png",
+          "size": "icon",
+          "generation": "icon_sheet",
+          "group": "item_icons",
+          "meta": {
+            "desc": "解锁守护灵幻化：关羽",
+            "use": ""
+          }
+        }
+      ],
+      "index": 5,
+      "row": 1,
+      "col": 2
+    },
+    {
+      "label": "药院批文：用于招商中承包御药专供项目，每份持续180分钟，可获得大量行商资历",
+      "saves": [
+        {
+          "key": "item_icon:yaoyuan_piwen",
+          "category": "item_icon",
+          "asset_id": "yaoyuan_piwen",
+          "name": "药院批文",
+          "owner_id": "",
+          "owner_name": "",
+          "target": "assets/items/yaoyuan_piwen.png",
+          "size": "icon",
+          "generation": "icon_sheet",
+          "group": "item_icons",
+          "meta": {
+            "desc": "用于招商中承包御药专供项目，每份持续180分钟，可获得大量行商资历",
+            "use": ""
+          }
+        }
+      ],
+      "index": 6,
+      "row": 2,
+      "col": 0
+    },
+    {
+      "label": "银耳环：赠送挚友，友好度+5",
+      "saves": [
+        {
+          "key": "item_icon:yin_erhuan",
+          "category": "item_icon",
+          "asset_id": "yin_erhuan",
+          "name": "银耳环",
+          "owner_id": "",
+          "owner_name": "",
+          "target": "assets/items/yin_erhuan.png",
+          "size": "icon",
+          "generation": "icon_sheet",
+          "group": "item_icons",
+          "meta": {
+            "desc": "赠送挚友，友好度+5",
+            "use": ""
+          }
+        }
+      ],
+      "index": 7,
+      "row": 2,
+      "col": 1
+    },
+    {
+      "label": "萤虫光：藏品升级道具：1~100级使用",
+      "saves": [
+        {
+          "key": "item_icon:ying_chong_guang",
+          "category": "item_icon",
+          "asset_id": "ying_chong_guang",
+          "name": "萤虫光",
+          "owner_id": "",
+          "owner_name": "",
+          "target": "assets/items/ying_chong_guang.png",
+          "size": "icon",
+          "generation": "icon_sheet",
+          "group": "item_icons",
+          "meta": {
+            "desc": "藏品升级道具：1~100级使用",
+            "use": ""
+          }
+        }
+      ],
+      "index": 8,
+      "row": 2,
+      "col": 2
+    }
+  ],
+  "filename_base": "task_0281_icon_sheet_item_icons",
+  "image_name": "task_0281_icon_sheet_item_icons.png",
+  "output_path": "build/asset_pipeline/inbox/atlases/task_0281_icon_sheet_item_icons.png"
+}

@@ -1,0 +1,54 @@
+{
+  "task_id": "task_0061",
+  "kind": "costume_sheet",
+  "group": "costume_friend:xiao_ning",
+  "title": "骁宁 的服装图集",
+  "rows": 1,
+  "cols": 1,
+  "reference_image": "",
+  "cells": [
+    {
+      "label": "凌空决意（素装）",
+      "saves": [
+        {
+          "key": "costume_full:xiao_ning:xiao_ning_cos01",
+          "category": "costume_full",
+          "asset_id": "xiao_ning_cos01",
+          "name": "凌空决意",
+          "owner_id": "xiao_ning",
+          "owner_name": "骁宁",
+          "target": "assets/costumes/xiao_ning_cos01.png",
+          "size": "portrait",
+          "generation": "costume_sheet",
+          "group": "costume_friend:xiao_ning",
+          "meta": {
+            "quality": "素装",
+            "series": "",
+            "owner_kind": "friend"
+          }
+        },
+        {
+          "key": "friend_portrait:xiao_ning:xiao_ning",
+          "category": "friend_portrait",
+          "asset_id": "xiao_ning",
+          "name": "骁宁",
+          "owner_id": "xiao_ning",
+          "owner_name": "骁宁",
+          "target": "assets/portraits/friends/xiao_ning.png",
+          "size": "portrait",
+          "generation": "portrait",
+          "group": "friend_portraits",
+          "meta": {
+            "category": "商"
+          }
+        }
+      ],
+      "index": 0,
+      "row": 0,
+      "col": 0
+    }
+  ],
+  "filename_base": "task_0061_costume_sheet_costume_friend_xiao_ning",
+  "image_name": "task_0061_costume_sheet_costume_friend_xiao_ning.png",
+  "output_path": "build/asset_pipeline/inbox/atlases/task_0061_costume_sheet_costume_friend_xiao_ning.png"
+}

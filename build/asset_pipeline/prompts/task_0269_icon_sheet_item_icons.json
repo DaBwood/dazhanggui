@@ -1,0 +1,258 @@
+{
+  "task_id": "task_0269",
+  "kind": "icon_sheet",
+  "group": "item_icons",
+  "title": "item_icons 图标图集",
+  "rows": 3,
+  "cols": 3,
+  "reference_image": "",
+  "cells": [
+    {
+      "label": "琼浆：使用后随机一名工门客基础赚速+500",
+      "saves": [
+        {
+          "key": "item_icon:qiong_jiang",
+          "category": "item_icon",
+          "asset_id": "qiong_jiang",
+          "name": "琼浆",
+          "owner_id": "",
+          "owner_name": "",
+          "target": "assets/items/qiong_jiang.png",
+          "size": "icon",
+          "generation": "icon_sheet",
+          "group": "item_icons",
+          "meta": {
+            "desc": "使用后随机一名工门客基础赚速+500",
+            "use": {
+              "type": "quantity",
+              "btn": "使用",
+              "title": "使用琼浆"
+            }
+          }
+        }
+      ],
+      "index": 0,
+      "row": 0,
+      "col": 0
+    },
+    {
+      "label": "七圣面具：兑换门客【百戏圣刀】所需",
+      "saves": [
+        {
+          "key": "item_icon:qisheng_mianju",
+          "category": "item_icon",
+          "asset_id": "qisheng_mianju",
+          "name": "七圣面具",
+          "owner_id": "",
+          "owner_name": "",
+          "target": "assets/items/qisheng_mianju.png",
+          "size": "icon",
+          "generation": "icon_sheet",
+          "group": "item_icons",
+          "meta": {
+            "desc": "兑换门客【百戏圣刀】所需",
+            "use": ""
+          }
+        }
+      ],
+      "index": 1,
+      "row": 0,
+      "col": 1
+    },
+    {
+      "label": "权相之冠：兑换门客【蔡京】所需",
+      "saves": [
+        {
+          "key": "item_icon:quanxiang_guan",
+          "category": "item_icon",
+          "asset_id": "quanxiang_guan",
+          "name": "权相之冠",
+          "owner_id": "",
+          "owner_name": "",
+          "target": "assets/items/quanxiang_guan.png",
+          "size": "icon",
+          "generation": "icon_sheet",
+          "group": "item_icons",
+          "meta": {
+            "desc": "兑换门客【蔡京】所需",
+            "use": ""
+          }
+        }
+      ],
+      "index": 2,
+      "row": 0,
+      "col": 2
+    },
+    {
+      "label": "随机书籍：打开后随机获得一本：仕途/农业/工业/经商/侠义之道",
+      "saves": [
+        {
+          "key": "item_icon:random_book",
+          "category": "item_icon",
+          "asset_id": "random_book",
+          "name": "随机书籍",
+          "owner_id": "",
+          "owner_name": "",
+          "target": "assets/items/random_book.png",
+          "size": "icon",
+          "generation": "icon_sheet",
+          "group": "item_icons",
+          "meta": {
+            "desc": "打开后随机获得一本：仕途/农业/工业/经商/侠义之道",
+            "use": {
+              "type": "quantity",
+              "btn": "打开",
+              "title": "打开随机书籍"
+            }
+          }
+        }
+      ],
+      "index": 3,
+      "row": 1,
+      "col": 0
+    },
+    {
+      "label": "募工铜牌：使用后随机店铺店员+1",
+      "saves": [
+        {
+          "key": "item_icon:recruit_bronze",
+          "category": "item_icon",
+          "asset_id": "recruit_bronze",
+          "name": "募工铜牌",
+          "owner_id": "",
+          "owner_name": "",
+          "target": "assets/items/recruit_bronze.png",
+          "size": "icon",
+          "generation": "icon_sheet",
+          "group": "item_icons",
+          "meta": {
+            "desc": "使用后随机店铺店员+1",
+            "use": {
+              "type": "quantity",
+              "btn": "使用",
+              "title": "使用募工铜牌"
+            }
+          }
+        }
+      ],
+      "index": 4,
+      "row": 1,
+      "col": 1
+    },
+    {
+      "label": "募工金牌：使用后随机店铺店员+5",
+      "saves": [
+        {
+          "key": "item_icon:recruit_gold",
+          "category": "item_icon",
+          "asset_id": "recruit_gold",
+          "name": "募工金牌",
+          "owner_id": "",
+          "owner_name": "",
+          "target": "assets/items/recruit_gold.png",
+          "size": "icon",
+          "generation": "icon_sheet",
+          "group": "item_icons",
+          "meta": {
+            "desc": "使用后随机店铺店员+5",
+            "use": {
+              "type": "quantity",
+              "btn": "使用",
+              "title": "使用募工金牌"
+            }
+          }
+        }
+      ],
+      "index": 5,
+      "row": 1,
+      "col": 2
+    },
+    {
+      "label": "募工银牌：使用后随机店铺店员+3",
+      "saves": [
+        {
+          "key": "item_icon:recruit_silver",
+          "category": "item_icon",
+          "asset_id": "recruit_silver",
+          "name": "募工银牌",
+          "owner_id": "",
+          "owner_name": "",
+          "target": "assets/items/recruit_silver.png",
+          "size": "icon",
+          "generation": "icon_sheet",
+          "group": "item_icons",
+          "meta": {
+            "desc": "使用后随机店铺店员+3",
+            "use": {
+              "type": "quantity",
+              "btn": "使用",
+              "title": "使用募工银牌"
+            }
+          }
+        }
+      ],
+      "index": 6,
+      "row": 2,
+      "col": 0
+    },
+    {
+      "label": "声望卡：使用后声望 +10",
+      "saves": [
+        {
+          "key": "item_icon:reputation_card",
+          "category": "item_icon",
+          "asset_id": "reputation_card",
+          "name": "声望卡",
+          "owner_id": "",
+          "owner_name": "",
+          "target": "assets/items/reputation_card.png",
+          "size": "icon",
+          "generation": "icon_sheet",
+          "group": "item_icons",
+          "meta": {
+            "desc": "使用后声望 +10",
+            "use": {
+              "type": "quantity",
+              "btn": "使用",
+              "title": "使用声望卡"
+            }
+          }
+        }
+      ],
+      "index": 7,
+      "row": 2,
+      "col": 1
+    },
+    {
+      "label": "高级声望卡：使用后声望 +100",
+      "saves": [
+        {
+          "key": "item_icon:reputation_card_adv",
+          "category": "item_icon",
+          "asset_id": "reputation_card_adv",
+          "name": "高级声望卡",
+          "owner_id": "",
+          "owner_name": "",
+          "target": "assets/items/reputation_card_adv.png",
+          "size": "icon",
+          "generation": "icon_sheet",
+          "group": "item_icons",
+          "meta": {
+            "desc": "使用后声望 +100",
+            "use": {
+              "type": "quantity",
+              "btn": "使用",
+              "title": "使用高级声望卡"
+            }
+          }
+        }
+      ],
+      "index": 8,
+      "row": 2,
+      "col": 2
+    }
+  ],
+  "filename_base": "task_0269_icon_sheet_item_icons",
+  "image_name": "task_0269_icon_sheet_item_icons.png",
+  "output_path": "build/asset_pipeline/inbox/atlases/task_0269_icon_sheet_item_icons.png"
+}

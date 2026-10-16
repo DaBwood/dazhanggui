@@ -1,0 +1,230 @@
+{
+  "task_id": "task_0245",
+  "kind": "icon_sheet",
+  "group": "fishing_icons",
+  "title": "fishing_icons 图标图集",
+  "rows": 3,
+  "cols": 3,
+  "reference_image": "",
+  "cells": [
+    {
+      "label": "邓氏鱼：无双",
+      "saves": [
+        {
+          "key": "fishing_icon:dengshi_yu",
+          "category": "fishing_icon",
+          "asset_id": "dengshi_yu",
+          "name": "邓氏鱼",
+          "owner_id": "",
+          "owner_name": "",
+          "target": "assets/fishing/dengshi_yu.png",
+          "size": "icon",
+          "generation": "icon_sheet",
+          "group": "fishing_icons",
+          "meta": {
+            "quality": "无双",
+            "kind": ""
+          }
+        }
+      ],
+      "index": 0,
+      "row": 0,
+      "col": 0
+    },
+    {
+      "label": "帝王蟹：普通 fish",
+      "saves": [
+        {
+          "key": "fishing_icon:diwang_xie",
+          "category": "fishing_icon",
+          "asset_id": "diwang_xie",
+          "name": "帝王蟹",
+          "owner_id": "",
+          "owner_name": "",
+          "target": "assets/fishing/diwang_xie.png",
+          "size": "icon",
+          "generation": "icon_sheet",
+          "group": "fishing_icons",
+          "meta": {
+            "quality": "普通",
+            "kind": "fish"
+          }
+        }
+      ],
+      "index": 1,
+      "row": 0,
+      "col": 1
+    },
+    {
+      "label": "东星斑：无",
+      "saves": [
+        {
+          "key": "fishing_icon:dongxing_ban",
+          "category": "fishing_icon",
+          "asset_id": "dongxing_ban",
+          "name": "东星斑",
+          "owner_id": "",
+          "owner_name": "",
+          "target": "assets/fishing/dongxing_ban.png",
+          "size": "icon",
+          "generation": "icon_sheet",
+          "group": "fishing_icons",
+          "meta": {
+            "quality": "无",
+            "kind": ""
+          }
+        }
+      ],
+      "index": 2,
+      "row": 0,
+      "col": 2
+    },
+    {
+      "label": "斗鱼：无",
+      "saves": [
+        {
+          "key": "fishing_icon:dou_yu",
+          "category": "fishing_icon",
+          "asset_id": "dou_yu",
+          "name": "斗鱼",
+          "owner_id": "",
+          "owner_name": "",
+          "target": "assets/fishing/dou_yu.png",
+          "size": "icon",
+          "generation": "icon_sheet",
+          "group": "fishing_icons",
+          "meta": {
+            "quality": "无",
+            "kind": ""
+          }
+        }
+      ],
+      "index": 3,
+      "row": 1,
+      "col": 0
+    },
+    {
+      "label": "独角鲸：无双",
+      "saves": [
+        {
+          "key": "fishing_icon:dujiao_jing",
+          "category": "fishing_icon",
+          "asset_id": "dujiao_jing",
+          "name": "独角鲸",
+          "owner_id": "",
+          "owner_name": "",
+          "target": "assets/fishing/dujiao_jing.png",
+          "size": "icon",
+          "generation": "icon_sheet",
+          "group": "fishing_icons",
+          "meta": {
+            "quality": "无双",
+            "kind": ""
+          }
+        }
+      ],
+      "index": 4,
+      "row": 1,
+      "col": 1
+    },
+    {
+      "label": "多宝鱼：无",
+      "saves": [
+        {
+          "key": "fishing_icon:duobao_yu",
+          "category": "fishing_icon",
+          "asset_id": "duobao_yu",
+          "name": "多宝鱼",
+          "owner_id": "",
+          "owner_name": "",
+          "target": "assets/fishing/duobao_yu.png",
+          "size": "icon",
+          "generation": "icon_sheet",
+          "group": "fishing_icons",
+          "meta": {
+            "quality": "无",
+            "kind": ""
+          }
+        }
+      ],
+      "index": 5,
+      "row": 1,
+      "col": 2
+    },
+    {
+      "label": "翻车鱼：普通",
+      "saves": [
+        {
+          "key": "fishing_icon:fanche_yu",
+          "category": "fishing_icon",
+          "asset_id": "fanche_yu",
+          "name": "翻车鱼",
+          "owner_id": "",
+          "owner_name": "",
+          "target": "assets/fishing/fanche_yu.png",
+          "size": "icon",
+          "generation": "icon_sheet",
+          "group": "fishing_icons",
+          "meta": {
+            "quality": "普通",
+            "kind": ""
+          }
+        }
+      ],
+      "index": 6,
+      "row": 2,
+      "col": 0
+    },
+    {
+      "label": "鲱鱼：无",
+      "saves": [
+        {
+          "key": "fishing_icon:fei_yu",
+          "category": "fishing_icon",
+          "asset_id": "fei_yu",
+          "name": "鲱鱼",
+          "owner_id": "",
+          "owner_name": "",
+          "target": "assets/fishing/fei_yu.png",
+          "size": "icon",
+          "generation": "icon_sheet",
+          "group": "fishing_icons",
+          "meta": {
+            "quality": "无",
+            "kind": ""
+          }
+        }
+      ],
+      "index": 7,
+      "row": 2,
+      "col": 1
+    },
+    {
+      "label": "飞鱼：无",
+      "saves": [
+        {
+          "key": "fishing_icon:feiyu",
+          "category": "fishing_icon",
+          "asset_id": "feiyu",
+          "name": "飞鱼",
+          "owner_id": "",
+          "owner_name": "",
+          "target": "assets/fishing/feiyu.png",
+          "size": "icon",
+          "generation": "icon_sheet",
+          "group": "fishing_icons",
+          "meta": {
+            "quality": "无",
+            "kind": ""
+          }
+        }
+      ],
+      "index": 8,
+      "row": 2,
+      "col": 2
+    }
+  ],
+  "filename_base": "task_0245_icon_sheet_fishing_icons",
+  "image_name": "task_0245_icon_sheet_fishing_icons.png",
+  "output_path": "build/asset_pipeline/inbox/atlases/task_0245_icon_sheet_fishing_icons.png"
+}

@@ -1,0 +1,233 @@
+{
+  "task_id": "task_0279",
+  "kind": "icon_sheet",
+  "group": "item_icons",
+  "title": "item_icons 图标图集",
+  "rows": 3,
+  "cols": 3,
+  "reference_image": "",
+  "cells": [
+    {
+      "label": "铜簪：赠送挚友，友好度+2",
+      "saves": [
+        {
+          "key": "item_icon:tong_zan",
+          "category": "item_icon",
+          "asset_id": "tong_zan",
+          "name": "铜簪",
+          "owner_id": "",
+          "owner_name": "",
+          "target": "assets/items/tong_zan.png",
+          "size": "icon",
+          "generation": "icon_sheet",
+          "group": "item_icons",
+          "meta": {
+            "desc": "赠送挚友，友好度+2",
+            "use": ""
+          }
+        }
+      ],
+      "index": 0,
+      "row": 0,
+      "col": 0
+    },
+    {
+      "label": "珍宝箱：打开后随机获得火器/瓷器/琼浆/茶叶/宣纸×500",
+      "saves": [
+        {
+          "key": "item_icon:treasure_box",
+          "category": "item_icon",
+          "asset_id": "treasure_box",
+          "name": "珍宝箱",
+          "owner_id": "",
+          "owner_name": "",
+          "target": "assets/items/treasure_box.png",
+          "size": "icon",
+          "generation": "icon_sheet",
+          "group": "item_icons",
+          "meta": {
+            "desc": "打开后随机获得火器/瓷器/琼浆/茶叶/宣纸×500",
+            "use": {
+              "type": "treasure_box",
+              "btn": "打开"
+            }
+          }
+        }
+      ],
+      "index": 1,
+      "row": 0,
+      "col": 1
+    },
+    {
+      "label": "兔耳首饰：小舞专属信物【兔耳首饰】，信物技能【舞跃翩跹】；获取途径待接",
+      "saves": [
+        {
+          "key": "item_icon:tu_er_shou_shi",
+          "category": "item_icon",
+          "asset_id": "tu_er_shou_shi",
+          "name": "兔耳首饰",
+          "owner_id": "",
+          "owner_name": "",
+          "target": "assets/items/tu_er_shou_shi.png",
+          "size": "icon",
+          "generation": "icon_sheet",
+          "group": "item_icons",
+          "meta": {
+            "desc": "小舞专属信物【兔耳首饰】，信物技能【舞跃翩跹】；获取途径待接",
+            "use": ""
+          }
+        }
+      ],
+      "index": 2,
+      "row": 0,
+      "col": 2
+    },
+    {
+      "label": "活力丹：使用后徒弟槽位活力+5",
+      "saves": [
+        {
+          "key": "item_icon:vitality_pill",
+          "category": "item_icon",
+          "asset_id": "vitality_pill",
+          "name": "活力丹",
+          "owner_id": "",
+          "owner_name": "",
+          "target": "assets/items/vitality_pill.png",
+          "size": "icon",
+          "generation": "icon_sheet",
+          "group": "item_icons",
+          "meta": {
+            "desc": "使用后徒弟槽位活力+5",
+            "use": ""
+          }
+        }
+      ],
+      "index": 3,
+      "row": 1,
+      "col": 0
+    },
+    {
+      "label": "许愿石：用于刷新挚友店铺技能，必定获得20%-30%加成",
+      "saves": [
+        {
+          "key": "item_icon:wish_stone",
+          "category": "item_icon",
+          "asset_id": "wish_stone",
+          "name": "许愿石",
+          "owner_id": "",
+          "owner_name": "",
+          "target": "assets/items/wish_stone.png",
+          "size": "icon",
+          "generation": "icon_sheet",
+          "group": "item_icons",
+          "meta": {
+            "desc": "用于刷新挚友店铺技能，必定获得20%-30%加成",
+            "use": ""
+          }
+        }
+      ],
+      "index": 4,
+      "row": 1,
+      "col": 1
+    },
+    {
+      "label": "木梳：赠送给挚友，友好+1",
+      "saves": [
+        {
+          "key": "item_icon:wood_comb",
+          "category": "item_icon",
+          "asset_id": "wood_comb",
+          "name": "木梳",
+          "owner_id": "",
+          "owner_name": "",
+          "target": "assets/items/wood_comb.png",
+          "size": "icon",
+          "generation": "icon_sheet",
+          "group": "item_icons",
+          "meta": {
+            "desc": "赠送给挚友，友好+1",
+            "use": ""
+          }
+        }
+      ],
+      "index": 5,
+      "row": 1,
+      "col": 2
+    },
+    {
+      "label": "五绝功法：小鱼儿信物【五绝功法】专属升级道具，五绝每级消耗600个；获取途径待接",
+      "saves": [
+        {
+          "key": "item_icon:wu_jue_gong_fa",
+          "category": "item_icon",
+          "asset_id": "wu_jue_gong_fa",
+          "name": "五绝功法",
+          "owner_id": "",
+          "owner_name": "",
+          "target": "assets/items/wu_jue_gong_fa.png",
+          "size": "icon",
+          "generation": "icon_sheet",
+          "group": "item_icons",
+          "meta": {
+            "desc": "小鱼儿信物【五绝功法】专属升级道具，五绝每级消耗600个；获取途径待接",
+            "use": ""
+          }
+        }
+      ],
+      "index": 6,
+      "row": 2,
+      "col": 0
+    },
+    {
+      "label": "五灵岩：五灵系列促织蜕壳所需的道具",
+      "saves": [
+        {
+          "key": "item_icon:wuling_yan",
+          "category": "item_icon",
+          "asset_id": "wuling_yan",
+          "name": "五灵岩",
+          "owner_id": "",
+          "owner_name": "",
+          "target": "assets/items/wuling_yan.png",
+          "size": "icon",
+          "generation": "icon_sheet",
+          "group": "item_icons",
+          "meta": {
+            "desc": "五灵系列促织蜕壳所需的道具",
+            "use": ""
+          }
+        }
+      ],
+      "index": 7,
+      "row": 2,
+      "col": 1
+    },
+    {
+      "label": "舞龙绣球：兑换门客【龙骧】所需",
+      "saves": [
+        {
+          "key": "item_icon:wulong_xiuqiu",
+          "category": "item_icon",
+          "asset_id": "wulong_xiuqiu",
+          "name": "舞龙绣球",
+          "owner_id": "",
+          "owner_name": "",
+          "target": "assets/items/wulong_xiuqiu.png",
+          "size": "icon",
+          "generation": "icon_sheet",
+          "group": "item_icons",
+          "meta": {
+            "desc": "兑换门客【龙骧】所需",
+            "use": ""
+          }
+        }
+      ],
+      "index": 8,
+      "row": 2,
+      "col": 2
+    }
+  ],
+  "filename_base": "task_0279_icon_sheet_item_icons",
+  "image_name": "task_0279_icon_sheet_item_icons.png",
+  "output_path": "build/asset_pipeline/inbox/atlases/task_0279_icon_sheet_item_icons.png"
+}

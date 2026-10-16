@@ -1,0 +1,154 @@
+{
+  "task_id": "task_0019",
+  "kind": "costume_sheet",
+  "group": "costume_friend:ji_ye",
+  "title": "极夜 的服装图集",
+  "rows": 3,
+  "cols": 2,
+  "reference_image": "",
+  "cells": [
+    {
+      "label": "中元夜游（素装）",
+      "saves": [
+        {
+          "key": "costume_full:ji_ye:ji_ye_cos01",
+          "category": "costume_full",
+          "asset_id": "ji_ye_cos01",
+          "name": "中元夜游",
+          "owner_id": "ji_ye",
+          "owner_name": "极夜",
+          "target": "assets/costumes/ji_ye_cos01.png",
+          "size": "portrait",
+          "generation": "costume_sheet",
+          "group": "costume_friend:ji_ye",
+          "meta": {
+            "quality": "素装",
+            "series": "",
+            "owner_kind": "friend"
+          }
+        },
+        {
+          "key": "friend_portrait:ji_ye:ji_ye",
+          "category": "friend_portrait",
+          "asset_id": "ji_ye",
+          "name": "极夜",
+          "owner_id": "ji_ye",
+          "owner_name": "极夜",
+          "target": "assets/portraits/friends/ji_ye.png",
+          "size": "portrait",
+          "generation": "portrait",
+          "group": "friend_portraits",
+          "meta": {
+            "category": "农"
+          }
+        }
+      ],
+      "index": 0,
+      "row": 0,
+      "col": 0
+    },
+    {
+      "label": "雪域冰莲（素装）",
+      "saves": [
+        {
+          "key": "costume_full:ji_ye:ji_ye_cos02",
+          "category": "costume_full",
+          "asset_id": "ji_ye_cos02",
+          "name": "雪域冰莲",
+          "owner_id": "ji_ye",
+          "owner_name": "极夜",
+          "target": "assets/costumes/ji_ye_cos02.png",
+          "size": "portrait",
+          "generation": "costume_sheet",
+          "group": "costume_friend:ji_ye",
+          "meta": {
+            "quality": "素装",
+            "series": "",
+            "owner_kind": "friend"
+          }
+        }
+      ],
+      "index": 1,
+      "row": 0,
+      "col": 1
+    },
+    {
+      "label": "彼岸有花（素装）",
+      "saves": [
+        {
+          "key": "costume_full:ji_ye:ji_ye_cos03",
+          "category": "costume_full",
+          "asset_id": "ji_ye_cos03",
+          "name": "彼岸有花",
+          "owner_id": "ji_ye",
+          "owner_name": "极夜",
+          "target": "assets/costumes/ji_ye_cos03.png",
+          "size": "portrait",
+          "generation": "costume_sheet",
+          "group": "costume_friend:ji_ye",
+          "meta": {
+            "quality": "素装",
+            "series": "",
+            "owner_kind": "friend"
+          }
+        }
+      ],
+      "index": 2,
+      "row": 1,
+      "col": 0
+    },
+    {
+      "label": "音戏人心（素装）",
+      "saves": [
+        {
+          "key": "costume_full:ji_ye:ji_ye_cos04",
+          "category": "costume_full",
+          "asset_id": "ji_ye_cos04",
+          "name": "音戏人心",
+          "owner_id": "ji_ye",
+          "owner_name": "极夜",
+          "target": "assets/costumes/ji_ye_cos04.png",
+          "size": "portrait",
+          "generation": "costume_sheet",
+          "group": "costume_friend:ji_ye",
+          "meta": {
+            "quality": "素装",
+            "series": "",
+            "owner_kind": "friend"
+          }
+        }
+      ],
+      "index": 3,
+      "row": 1,
+      "col": 1
+    },
+    {
+      "label": "万妖之王（锦衣）",
+      "saves": [
+        {
+          "key": "costume_full:ji_ye:ji_ye_cos05",
+          "category": "costume_full",
+          "asset_id": "ji_ye_cos05",
+          "name": "万妖之王",
+          "owner_id": "ji_ye",
+          "owner_name": "极夜",
+          "target": "assets/costumes/ji_ye_cos05.png",
+          "size": "portrait",
+          "generation": "costume_sheet",
+          "group": "costume_friend:ji_ye",
+          "meta": {
+            "quality": "锦衣",
+            "series": "",
+            "owner_kind": "friend"
+          }
+        }
+      ],
+      "index": 4,
+      "row": 2,
+      "col": 0
+    }
+  ],
+  "filename_base": "task_0019_costume_sheet_costume_friend_ji_ye",
+  "image_name": "task_0019_costume_sheet_costume_friend_ji_ye.png",
+  "output_path": "build/asset_pipeline/inbox/atlases/task_0019_costume_sheet_costume_friend_ji_ye.png"
+}

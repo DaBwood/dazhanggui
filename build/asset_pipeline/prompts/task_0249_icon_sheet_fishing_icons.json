@@ -1,0 +1,230 @@
+{
+  "task_id": "task_0249",
+  "kind": "icon_sheet",
+  "group": "fishing_icons",
+  "title": "fishing_icons 图标图集",
+  "rows": 3,
+  "cols": 3,
+  "reference_image": "",
+  "cells": [
+    {
+      "label": "橘身刺尾鱼：无",
+      "saves": [
+        {
+          "key": "fishing_icon:jushen_ciweiyu",
+          "category": "fishing_icon",
+          "asset_id": "jushen_ciweiyu",
+          "name": "橘身刺尾鱼",
+          "owner_id": "",
+          "owner_name": "",
+          "target": "assets/fishing/jushen_ciweiyu.png",
+          "size": "icon",
+          "generation": "icon_sheet",
+          "group": "fishing_icons",
+          "meta": {
+            "quality": "无",
+            "kind": ""
+          }
+        }
+      ],
+      "index": 0,
+      "row": 0,
+      "col": 0
+    },
+    {
+      "label": "宽带石斑：无",
+      "saves": [
+        {
+          "key": "fishing_icon:kuandai_shiban",
+          "category": "fishing_icon",
+          "asset_id": "kuandai_shiban",
+          "name": "宽带石斑",
+          "owner_id": "",
+          "owner_name": "",
+          "target": "assets/fishing/kuandai_shiban.png",
+          "size": "icon",
+          "generation": "icon_sheet",
+          "group": "fishing_icons",
+          "meta": {
+            "quality": "无",
+            "kind": ""
+          }
+        }
+      ],
+      "index": 1,
+      "row": 0,
+      "col": 1
+    },
+    {
+      "label": "蓝宝石鱼：无",
+      "saves": [
+        {
+          "key": "fishing_icon:lanbaoshi_yu",
+          "category": "fishing_icon",
+          "asset_id": "lanbaoshi_yu",
+          "name": "蓝宝石鱼",
+          "owner_id": "",
+          "owner_name": "",
+          "target": "assets/fishing/lanbaoshi_yu.png",
+          "size": "icon",
+          "generation": "icon_sheet",
+          "group": "fishing_icons",
+          "meta": {
+            "quality": "无",
+            "kind": ""
+          }
+        }
+      ],
+      "index": 2,
+      "row": 0,
+      "col": 2
+    },
+    {
+      "label": "蓝粉海星：极.无双",
+      "saves": [
+        {
+          "key": "fishing_icon:lanfen_haixing",
+          "category": "fishing_icon",
+          "asset_id": "lanfen_haixing",
+          "name": "蓝粉海星",
+          "owner_id": "",
+          "owner_name": "",
+          "target": "assets/fishing/lanfen_haixing.png",
+          "size": "icon",
+          "generation": "icon_sheet",
+          "group": "fishing_icons",
+          "meta": {
+            "quality": "极.无双",
+            "kind": ""
+          }
+        }
+      ],
+      "index": 3,
+      "row": 1,
+      "col": 0
+    },
+    {
+      "label": "蓝血凯鱼：传奇",
+      "saves": [
+        {
+          "key": "fishing_icon:lanxue_kaiyu",
+          "category": "fishing_icon",
+          "asset_id": "lanxue_kaiyu",
+          "name": "蓝血凯鱼",
+          "owner_id": "",
+          "owner_name": "",
+          "target": "assets/fishing/lanxue_kaiyu.png",
+          "size": "icon",
+          "generation": "icon_sheet",
+          "group": "fishing_icons",
+          "meta": {
+            "quality": "传奇",
+            "kind": ""
+          }
+        }
+      ],
+      "index": 4,
+      "row": 1,
+      "col": 1
+    },
+    {
+      "label": "鲤鱼：无",
+      "saves": [
+        {
+          "key": "fishing_icon:li_yu",
+          "category": "fishing_icon",
+          "asset_id": "li_yu",
+          "name": "鲤鱼",
+          "owner_id": "",
+          "owner_name": "",
+          "target": "assets/fishing/li_yu.png",
+          "size": "icon",
+          "generation": "icon_sheet",
+          "group": "fishing_icons",
+          "meta": {
+            "quality": "无",
+            "kind": ""
+          }
+        }
+      ],
+      "index": 5,
+      "row": 1,
+      "col": 2
+    },
+    {
+      "label": "鲢鱼：无",
+      "saves": [
+        {
+          "key": "fishing_icon:lian_yu",
+          "category": "fishing_icon",
+          "asset_id": "lian_yu",
+          "name": "鲢鱼",
+          "owner_id": "",
+          "owner_name": "",
+          "target": "assets/fishing/lian_yu.png",
+          "size": "icon",
+          "generation": "icon_sheet",
+          "group": "fishing_icons",
+          "meta": {
+            "quality": "无",
+            "kind": ""
+          }
+        }
+      ],
+      "index": 6,
+      "row": 2,
+      "col": 0
+    },
+    {
+      "label": "灵玉：无 item",
+      "saves": [
+        {
+          "key": "fishing_icon:ling_yu",
+          "category": "fishing_icon",
+          "asset_id": "ling_yu",
+          "name": "灵玉",
+          "owner_id": "",
+          "owner_name": "",
+          "target": "assets/fishing/ling_yu.png",
+          "size": "icon",
+          "generation": "icon_sheet",
+          "group": "fishing_icons",
+          "meta": {
+            "quality": "无",
+            "kind": "item"
+          }
+        }
+      ],
+      "index": 7,
+      "row": 2,
+      "col": 1
+    },
+    {
+      "label": "六角蝾螈：普通",
+      "saves": [
+        {
+          "key": "fishing_icon:liujiao_rongyuan",
+          "category": "fishing_icon",
+          "asset_id": "liujiao_rongyuan",
+          "name": "六角蝾螈",
+          "owner_id": "",
+          "owner_name": "",
+          "target": "assets/fishing/liujiao_rongyuan.png",
+          "size": "icon",
+          "generation": "icon_sheet",
+          "group": "fishing_icons",
+          "meta": {
+            "quality": "普通",
+            "kind": ""
+          }
+        }
+      ],
+      "index": 8,
+      "row": 2,
+      "col": 2
+    }
+  ],
+  "filename_base": "task_0249_icon_sheet_fishing_icons",
+  "image_name": "task_0249_icon_sheet_fishing_icons.png",
+  "output_path": "build/asset_pipeline/inbox/atlases/task_0249_icon_sheet_fishing_icons.png"
+}

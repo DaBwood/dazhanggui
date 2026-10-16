@@ -1,0 +1,180 @@
+{
+  "task_id": "task_0153",
+  "kind": "costume_sheet",
+  "group": "costume_hero:zhen_tufu",
+  "title": "镇屠夫 的服装图集",
+  "rows": 3,
+  "cols": 2,
+  "reference_image": "",
+  "cells": [
+    {
+      "label": "山中野彘（素装）",
+      "saves": [
+        {
+          "key": "costume_full:zhen_tufu:zhen_tufu_cos01",
+          "category": "costume_full",
+          "asset_id": "zhen_tufu_cos01",
+          "name": "山中野彘",
+          "owner_id": "zhen_tufu",
+          "owner_name": "镇屠夫",
+          "target": "assets/costumes/zhen_tufu_cos01.png",
+          "size": "portrait",
+          "generation": "costume_sheet",
+          "group": "costume_hero:zhen_tufu",
+          "meta": {
+            "quality": "素装",
+            "series": "",
+            "owner_kind": "hero"
+          }
+        },
+        {
+          "key": "hero_portrait:zhen_tufu:zhen_tufu",
+          "category": "hero_portrait",
+          "asset_id": "zhen_tufu",
+          "name": "镇屠夫",
+          "owner_id": "zhen_tufu",
+          "owner_name": "镇屠夫",
+          "target": "assets/portraits/heroes/zhen_tufu.png",
+          "size": "portrait",
+          "generation": "portrait",
+          "group": "hero_portraits",
+          "meta": {
+            "category": "商",
+            "quality": 2
+          }
+        }
+      ],
+      "index": 0,
+      "row": 0,
+      "col": 0
+    },
+    {
+      "label": "举铁大师（素装）",
+      "saves": [
+        {
+          "key": "costume_full:zhen_tufu:zhen_tufu_cos02",
+          "category": "costume_full",
+          "asset_id": "zhen_tufu_cos02",
+          "name": "举铁大师",
+          "owner_id": "zhen_tufu",
+          "owner_name": "镇屠夫",
+          "target": "assets/costumes/zhen_tufu_cos02.png",
+          "size": "portrait",
+          "generation": "costume_sheet",
+          "group": "costume_hero:zhen_tufu",
+          "meta": {
+            "quality": "素装",
+            "series": "",
+            "owner_kind": "hero"
+          }
+        }
+      ],
+      "index": 1,
+      "row": 0,
+      "col": 1
+    },
+    {
+      "label": "三只小猪（素装）",
+      "saves": [
+        {
+          "key": "costume_full:zhen_tufu:zhen_tufu_cos03",
+          "category": "costume_full",
+          "asset_id": "zhen_tufu_cos03",
+          "name": "三只小猪",
+          "owner_id": "zhen_tufu",
+          "owner_name": "镇屠夫",
+          "target": "assets/costumes/zhen_tufu_cos03.png",
+          "size": "portrait",
+          "generation": "costume_sheet",
+          "group": "costume_hero:zhen_tufu",
+          "meta": {
+            "quality": "素装",
+            "series": "",
+            "owner_kind": "hero"
+          }
+        }
+      ],
+      "index": 2,
+      "row": 1,
+      "col": 0
+    },
+    {
+      "label": "沐日光华（素装）",
+      "saves": [
+        {
+          "key": "costume_full:zhen_tufu:zhen_tufu_cos04",
+          "category": "costume_full",
+          "asset_id": "zhen_tufu_cos04",
+          "name": "沐日光华",
+          "owner_id": "zhen_tufu",
+          "owner_name": "镇屠夫",
+          "target": "assets/costumes/zhen_tufu_cos04.png",
+          "size": "portrait",
+          "generation": "costume_sheet",
+          "group": "costume_hero:zhen_tufu",
+          "meta": {
+            "quality": "素装",
+            "series": "",
+            "owner_kind": "hero"
+          }
+        }
+      ],
+      "index": 3,
+      "row": 1,
+      "col": 1
+    },
+    {
+      "label": "圣诞老人（素装）",
+      "saves": [
+        {
+          "key": "costume_full:zhen_tufu:zhen_tufu_cos05",
+          "category": "costume_full",
+          "asset_id": "zhen_tufu_cos05",
+          "name": "圣诞老人",
+          "owner_id": "zhen_tufu",
+          "owner_name": "镇屠夫",
+          "target": "assets/costumes/zhen_tufu_cos05.png",
+          "size": "portrait",
+          "generation": "costume_sheet",
+          "group": "costume_hero:zhen_tufu",
+          "meta": {
+            "quality": "素装",
+            "series": "",
+            "owner_kind": "hero"
+          }
+        }
+      ],
+      "index": 4,
+      "row": 2,
+      "col": 0
+    },
+    {
+      "label": "王胖子（素装）",
+      "saves": [
+        {
+          "key": "costume_full:zhen_tufu:zhen_tufu_cos06",
+          "category": "costume_full",
+          "asset_id": "zhen_tufu_cos06",
+          "name": "王胖子",
+          "owner_id": "zhen_tufu",
+          "owner_name": "镇屠夫",
+          "target": "assets/costumes/zhen_tufu_cos06.png",
+          "size": "portrait",
+          "generation": "costume_sheet",
+          "group": "costume_hero:zhen_tufu",
+          "meta": {
+            "quality": "素装",
+            "series": "",
+            "owner_kind": "hero"
+          }
+        }
+      ],
+      "index": 5,
+      "row": 2,
+      "col": 1
+    }
+  ],
+  "filename_base": "task_0153_costume_sheet_costume_hero_zhen_tufu",
+  "image_name": "task_0153_costume_sheet_costume_hero_zhen_tufu.png",
+  "output_path": "build/asset_pipeline/inbox/atlases/task_0153_costume_sheet_costume_hero_zhen_tufu.png"
+}

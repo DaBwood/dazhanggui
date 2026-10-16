@@ -1,0 +1,179 @@
+{
+  "task_id": "task_0058",
+  "kind": "costume_sheet",
+  "group": "costume_friend:xiao_hudie",
+  "title": "小蝴蝶 的服装图集",
+  "rows": 3,
+  "cols": 2,
+  "reference_image": "",
+  "cells": [
+    {
+      "label": "陌枝新露（素装）",
+      "saves": [
+        {
+          "key": "costume_full:xiao_hudie:xiao_hudie_cos01",
+          "category": "costume_full",
+          "asset_id": "xiao_hudie_cos01",
+          "name": "陌枝新露",
+          "owner_id": "xiao_hudie",
+          "owner_name": "小蝴蝶",
+          "target": "assets/costumes/xiao_hudie_cos01.png",
+          "size": "portrait",
+          "generation": "costume_sheet",
+          "group": "costume_friend:xiao_hudie",
+          "meta": {
+            "quality": "素装",
+            "series": "",
+            "owner_kind": "friend"
+          }
+        },
+        {
+          "key": "friend_portrait:xiao_hudie:xiao_hudie",
+          "category": "friend_portrait",
+          "asset_id": "xiao_hudie",
+          "name": "小蝴蝶",
+          "owner_id": "xiao_hudie",
+          "owner_name": "小蝴蝶",
+          "target": "assets/portraits/friends/xiao_hudie.png",
+          "size": "portrait",
+          "generation": "portrait",
+          "group": "friend_portraits",
+          "meta": {
+            "category": "商"
+          }
+        }
+      ],
+      "index": 0,
+      "row": 0,
+      "col": 0
+    },
+    {
+      "label": "蝶意莺情（素装）",
+      "saves": [
+        {
+          "key": "costume_full:xiao_hudie:xiao_hudie_cos02",
+          "category": "costume_full",
+          "asset_id": "xiao_hudie_cos02",
+          "name": "蝶意莺情",
+          "owner_id": "xiao_hudie",
+          "owner_name": "小蝴蝶",
+          "target": "assets/costumes/xiao_hudie_cos02.png",
+          "size": "portrait",
+          "generation": "costume_sheet",
+          "group": "costume_friend:xiao_hudie",
+          "meta": {
+            "quality": "素装",
+            "series": "",
+            "owner_kind": "friend"
+          }
+        }
+      ],
+      "index": 1,
+      "row": 0,
+      "col": 1
+    },
+    {
+      "label": "冬日仙灵（素装）",
+      "saves": [
+        {
+          "key": "costume_full:xiao_hudie:xiao_hudie_cos03",
+          "category": "costume_full",
+          "asset_id": "xiao_hudie_cos03",
+          "name": "冬日仙灵",
+          "owner_id": "xiao_hudie",
+          "owner_name": "小蝴蝶",
+          "target": "assets/costumes/xiao_hudie_cos03.png",
+          "size": "portrait",
+          "generation": "costume_sheet",
+          "group": "costume_friend:xiao_hudie",
+          "meta": {
+            "quality": "素装",
+            "series": "",
+            "owner_kind": "friend"
+          }
+        }
+      ],
+      "index": 2,
+      "row": 1,
+      "col": 0
+    },
+    {
+      "label": "情牵梁祝（素装）",
+      "saves": [
+        {
+          "key": "costume_full:xiao_hudie:xiao_hudie_cos04",
+          "category": "costume_full",
+          "asset_id": "xiao_hudie_cos04",
+          "name": "情牵梁祝",
+          "owner_id": "xiao_hudie",
+          "owner_name": "小蝴蝶",
+          "target": "assets/costumes/xiao_hudie_cos04.png",
+          "size": "portrait",
+          "generation": "costume_sheet",
+          "group": "costume_friend:xiao_hudie",
+          "meta": {
+            "quality": "素装",
+            "series": "",
+            "owner_kind": "friend"
+          }
+        }
+      ],
+      "index": 3,
+      "row": 1,
+      "col": 1
+    },
+    {
+      "label": "蝶醒春生（锦衣）",
+      "saves": [
+        {
+          "key": "costume_full:xiao_hudie:xiao_hudie_cos05",
+          "category": "costume_full",
+          "asset_id": "xiao_hudie_cos05",
+          "name": "蝶醒春生",
+          "owner_id": "xiao_hudie",
+          "owner_name": "小蝴蝶",
+          "target": "assets/costumes/xiao_hudie_cos05.png",
+          "size": "portrait",
+          "generation": "costume_sheet",
+          "group": "costume_friend:xiao_hudie",
+          "meta": {
+            "quality": "锦衣",
+            "series": "",
+            "owner_kind": "friend"
+          }
+        }
+      ],
+      "index": 4,
+      "row": 2,
+      "col": 0
+    },
+    {
+      "label": "不朽静谧（锦衣）",
+      "saves": [
+        {
+          "key": "costume_full:xiao_hudie:xiao_hudie_cos06",
+          "category": "costume_full",
+          "asset_id": "xiao_hudie_cos06",
+          "name": "不朽静谧",
+          "owner_id": "xiao_hudie",
+          "owner_name": "小蝴蝶",
+          "target": "assets/costumes/xiao_hudie_cos06.png",
+          "size": "portrait",
+          "generation": "costume_sheet",
+          "group": "costume_friend:xiao_hudie",
+          "meta": {
+            "quality": "锦衣",
+            "series": "",
+            "owner_kind": "friend"
+          }
+        }
+      ],
+      "index": 5,
+      "row": 2,
+      "col": 1
+    }
+  ],
+  "filename_base": "task_0058_costume_sheet_costume_friend_xiao_hudie",
+  "image_name": "task_0058_costume_sheet_costume_friend_xiao_hudie.png",
+  "output_path": "build/asset_pipeline/inbox/atlases/task_0058_costume_sheet_costume_friend_xiao_hudie.png"
+}

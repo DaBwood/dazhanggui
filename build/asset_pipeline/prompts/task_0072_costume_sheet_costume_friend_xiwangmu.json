@@ -1,0 +1,54 @@
+{
+  "task_id": "task_0072",
+  "kind": "costume_sheet",
+  "group": "costume_friend:xiwangmu",
+  "title": "西王母 的服装图集",
+  "rows": 1,
+  "cols": 1,
+  "reference_image": "",
+  "cells": [
+    {
+      "label": "玉瓷星宫（锦衣）",
+      "saves": [
+        {
+          "key": "costume_full:xiwangmu:xiwangmu_cos01",
+          "category": "costume_full",
+          "asset_id": "xiwangmu_cos01",
+          "name": "玉瓷星宫",
+          "owner_id": "xiwangmu",
+          "owner_name": "西王母",
+          "target": "assets/costumes/xiwangmu_cos01.png",
+          "size": "portrait",
+          "generation": "costume_sheet",
+          "group": "costume_friend:xiwangmu",
+          "meta": {
+            "quality": "锦衣",
+            "series": "",
+            "owner_kind": "friend"
+          }
+        },
+        {
+          "key": "friend_portrait:xiwangmu:xiwangmu",
+          "category": "friend_portrait",
+          "asset_id": "xiwangmu",
+          "name": "西王母",
+          "owner_id": "xiwangmu",
+          "owner_name": "西王母",
+          "target": "assets/portraits/friends/xiwangmu.png",
+          "size": "portrait",
+          "generation": "portrait",
+          "group": "friend_portraits",
+          "meta": {
+            "category": "工"
+          }
+        }
+      ],
+      "index": 0,
+      "row": 0,
+      "col": 0
+    }
+  ],
+  "filename_base": "task_0072_costume_sheet_costume_friend_xiwangmu",
+  "image_name": "task_0072_costume_sheet_costume_friend_xiwangmu.png",
+  "output_path": "build/asset_pipeline/inbox/atlases/task_0072_costume_sheet_costume_friend_xiwangmu.png"
+}

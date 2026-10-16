@@ -1,0 +1,55 @@
+{
+  "task_id": "task_0131",
+  "kind": "costume_sheet",
+  "group": "costume_hero:song_huizong",
+  "title": "宋徽宗 的服装图集",
+  "rows": 1,
+  "cols": 1,
+  "reference_image": "",
+  "cells": [
+    {
+      "label": "铁画银钩（素装）",
+      "saves": [
+        {
+          "key": "costume_full:song_huizong:song_huizong_cos01",
+          "category": "costume_full",
+          "asset_id": "song_huizong_cos01",
+          "name": "铁画银钩",
+          "owner_id": "song_huizong",
+          "owner_name": "宋徽宗",
+          "target": "assets/costumes/song_huizong_cos01.png",
+          "size": "portrait",
+          "generation": "costume_sheet",
+          "group": "costume_hero:song_huizong",
+          "meta": {
+            "quality": "素装",
+            "series": "",
+            "owner_kind": "hero"
+          }
+        },
+        {
+          "key": "hero_portrait:song_huizong:song_huizong",
+          "category": "hero_portrait",
+          "asset_id": "song_huizong",
+          "name": "宋徽宗",
+          "owner_id": "song_huizong",
+          "owner_name": "宋徽宗",
+          "target": "assets/portraits/heroes/song_huizong.png",
+          "size": "portrait",
+          "generation": "portrait",
+          "group": "hero_portraits",
+          "meta": {
+            "category": "士",
+            "quality": 2
+          }
+        }
+      ],
+      "index": 0,
+      "row": 0,
+      "col": 0
+    }
+  ],
+  "filename_base": "task_0131_costume_sheet_costume_hero_song_huizong",
+  "image_name": "task_0131_costume_sheet_costume_hero_song_huizong.png",
+  "output_path": "build/asset_pipeline/inbox/atlases/task_0131_costume_sheet_costume_hero_song_huizong.png"
+}

@@ -1,0 +1,54 @@
+{
+  "task_id": "task_0045",
+  "kind": "costume_sheet",
+  "group": "costume_friend:sha_lan",
+  "title": "沙兰 的服装图集",
+  "rows": 1,
+  "cols": 1,
+  "reference_image": "",
+  "cells": [
+    {
+      "label": "逆焰惊弦（素装）",
+      "saves": [
+        {
+          "key": "costume_full:sha_lan:sha_lan_cos01",
+          "category": "costume_full",
+          "asset_id": "sha_lan_cos01",
+          "name": "逆焰惊弦",
+          "owner_id": "sha_lan",
+          "owner_name": "沙兰",
+          "target": "assets/costumes/sha_lan_cos01.png",
+          "size": "portrait",
+          "generation": "costume_sheet",
+          "group": "costume_friend:sha_lan",
+          "meta": {
+            "quality": "素装",
+            "series": "",
+            "owner_kind": "friend"
+          }
+        },
+        {
+          "key": "friend_portrait:sha_lan:sha_lan",
+          "category": "friend_portrait",
+          "asset_id": "sha_lan",
+          "name": "沙兰",
+          "owner_id": "sha_lan",
+          "owner_name": "沙兰",
+          "target": "assets/portraits/friends/sha_lan.png",
+          "size": "portrait",
+          "generation": "portrait",
+          "group": "friend_portraits",
+          "meta": {
+            "category": "商"
+          }
+        }
+      ],
+      "index": 0,
+      "row": 0,
+      "col": 0
+    }
+  ],
+  "filename_base": "task_0045_costume_sheet_costume_friend_sha_lan",
+  "image_name": "task_0045_costume_sheet_costume_friend_sha_lan.png",
+  "output_path": "build/asset_pipeline/inbox/atlases/task_0045_costume_sheet_costume_friend_sha_lan.png"
+}

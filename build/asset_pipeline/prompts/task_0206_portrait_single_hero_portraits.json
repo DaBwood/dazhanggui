@@ -1,0 +1,38 @@
+{
+  "task_id": "task_0206",
+  "kind": "portrait_single",
+  "group": "hero_portraits",
+  "title": "梁歪七",
+  "rows": 1,
+  "cols": 1,
+  "reference_image": "",
+  "cells": [
+    {
+      "label": "梁歪七",
+      "saves": [
+        {
+          "key": "hero_portrait:liang_waiqi:liang_waiqi",
+          "category": "hero_portrait",
+          "asset_id": "liang_waiqi",
+          "name": "梁歪七",
+          "owner_id": "liang_waiqi",
+          "owner_name": "梁歪七",
+          "target": "assets/portraits/heroes/liang_waiqi.png",
+          "size": "portrait",
+          "generation": "portrait",
+          "group": "hero_portraits",
+          "meta": {
+            "category": "侠",
+            "quality": 0
+          }
+        }
+      ],
+      "index": 0,
+      "row": 0,
+      "col": 0
+    }
+  ],
+  "filename_base": "task_0206_portrait_single_hero_portraits",
+  "image_name": "task_0206_portrait_single_hero_portraits.png",
+  "output_path": "build/asset_pipeline/inbox/atlases/task_0206_portrait_single_hero_portraits.png"
+}

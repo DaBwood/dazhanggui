@@ -1,0 +1,54 @@
+{
+  "task_id": "task_0089",
+  "kind": "costume_sheet",
+  "group": "costume_friend:zhi_nv",
+  "title": "织女 的服装图集",
+  "rows": 1,
+  "cols": 1,
+  "reference_image": "",
+  "cells": [
+    {
+      "label": "朝朝相思（素装）",
+      "saves": [
+        {
+          "key": "costume_full:zhi_nv:zhi_nv_cos01",
+          "category": "costume_full",
+          "asset_id": "zhi_nv_cos01",
+          "name": "朝朝相思",
+          "owner_id": "zhi_nv",
+          "owner_name": "织女",
+          "target": "assets/costumes/zhi_nv_cos01.png",
+          "size": "portrait",
+          "generation": "costume_sheet",
+          "group": "costume_friend:zhi_nv",
+          "meta": {
+            "quality": "素装",
+            "series": "",
+            "owner_kind": "friend"
+          }
+        },
+        {
+          "key": "friend_portrait:zhi_nv:zhi_nv",
+          "category": "friend_portrait",
+          "asset_id": "zhi_nv",
+          "name": "织女",
+          "owner_id": "zhi_nv",
+          "owner_name": "织女",
+          "target": "assets/portraits/friends/zhi_nv.png",
+          "size": "portrait",
+          "generation": "portrait",
+          "group": "friend_portraits",
+          "meta": {
+            "category": "工"
+          }
+        }
+      ],
+      "index": 0,
+      "row": 0,
+      "col": 0
+    }
+  ],
+  "filename_base": "task_0089_costume_sheet_costume_friend_zhi_nv",
+  "image_name": "task_0089_costume_sheet_costume_friend_zhi_nv.png",
+  "output_path": "build/asset_pipeline/inbox/atlases/task_0089_costume_sheet_costume_friend_zhi_nv.png"
+}

@@ -1,0 +1,155 @@
+{
+  "task_id": "task_0119",
+  "kind": "costume_sheet",
+  "group": "costume_hero:liu_maoxing",
+  "title": "刘昴星 的服装图集",
+  "rows": 3,
+  "cols": 2,
+  "reference_image": "",
+  "cells": [
+    {
+      "label": "彗星炒饭（素装）",
+      "saves": [
+        {
+          "key": "costume_full:liu_maoxing:liu_maoxing_cos01",
+          "category": "costume_full",
+          "asset_id": "liu_maoxing_cos01",
+          "name": "彗星炒饭",
+          "owner_id": "liu_maoxing",
+          "owner_name": "刘昴星",
+          "target": "assets/costumes/liu_maoxing_cos01.png",
+          "size": "portrait",
+          "generation": "costume_sheet",
+          "group": "costume_hero:liu_maoxing",
+          "meta": {
+            "quality": "素装",
+            "series": "",
+            "owner_kind": "hero"
+          }
+        },
+        {
+          "key": "hero_portrait:liu_maoxing:liu_maoxing",
+          "category": "hero_portrait",
+          "asset_id": "liu_maoxing",
+          "name": "刘昴星",
+          "owner_id": "liu_maoxing",
+          "owner_name": "刘昴星",
+          "target": "assets/portraits/heroes/liu_maoxing.png",
+          "size": "portrait",
+          "generation": "portrait",
+          "group": "hero_portraits",
+          "meta": {
+            "category": "侠",
+            "quality": 1
+          }
+        }
+      ],
+      "index": 0,
+      "row": 0,
+      "col": 0
+    },
+    {
+      "label": "神龙少年（素装）",
+      "saves": [
+        {
+          "key": "costume_full:liu_maoxing:liu_maoxing_cos02",
+          "category": "costume_full",
+          "asset_id": "liu_maoxing_cos02",
+          "name": "神龙少年",
+          "owner_id": "liu_maoxing",
+          "owner_name": "刘昴星",
+          "target": "assets/costumes/liu_maoxing_cos02.png",
+          "size": "portrait",
+          "generation": "costume_sheet",
+          "group": "costume_hero:liu_maoxing",
+          "meta": {
+            "quality": "素装",
+            "series": "",
+            "owner_kind": "hero"
+          }
+        }
+      ],
+      "index": 1,
+      "row": 0,
+      "col": 1
+    },
+    {
+      "label": "楼麟覆灭（素装）",
+      "saves": [
+        {
+          "key": "costume_full:liu_maoxing:liu_maoxing_cos03",
+          "category": "costume_full",
+          "asset_id": "liu_maoxing_cos03",
+          "name": "楼麟覆灭",
+          "owner_id": "liu_maoxing",
+          "owner_name": "刘昴星",
+          "target": "assets/costumes/liu_maoxing_cos03.png",
+          "size": "portrait",
+          "generation": "costume_sheet",
+          "group": "costume_hero:liu_maoxing",
+          "meta": {
+            "quality": "素装",
+            "series": "",
+            "owner_kind": "hero"
+          }
+        }
+      ],
+      "index": 2,
+      "row": 1,
+      "col": 0
+    },
+    {
+      "label": "大宇宙烧卖（素装）",
+      "saves": [
+        {
+          "key": "costume_full:liu_maoxing:liu_maoxing_cos04",
+          "category": "costume_full",
+          "asset_id": "liu_maoxing_cos04",
+          "name": "大宇宙烧卖",
+          "owner_id": "liu_maoxing",
+          "owner_name": "刘昴星",
+          "target": "assets/costumes/liu_maoxing_cos04.png",
+          "size": "portrait",
+          "generation": "costume_sheet",
+          "group": "costume_hero:liu_maoxing",
+          "meta": {
+            "quality": "素装",
+            "series": "",
+            "owner_kind": "hero"
+          }
+        }
+      ],
+      "index": 3,
+      "row": 1,
+      "col": 1
+    },
+    {
+      "label": "出神入化（华服）",
+      "saves": [
+        {
+          "key": "costume_full:liu_maoxing:liu_maoxing_cos05",
+          "category": "costume_full",
+          "asset_id": "liu_maoxing_cos05",
+          "name": "出神入化",
+          "owner_id": "liu_maoxing",
+          "owner_name": "刘昴星",
+          "target": "assets/costumes/liu_maoxing_cos05.png",
+          "size": "portrait",
+          "generation": "costume_sheet",
+          "group": "costume_hero:liu_maoxing",
+          "meta": {
+            "quality": "华服",
+            "series": "",
+            "owner_kind": "hero"
+          }
+        }
+      ],
+      "index": 4,
+      "row": 2,
+      "col": 0
+    }
+  ],
+  "filename_base": "task_0119_costume_sheet_costume_hero_liu_maoxing",
+  "image_name": "task_0119_costume_sheet_costume_hero_liu_maoxing.png",
+  "output_path": "build/asset_pipeline/inbox/atlases/task_0119_costume_sheet_costume_hero_liu_maoxing.png"
+}

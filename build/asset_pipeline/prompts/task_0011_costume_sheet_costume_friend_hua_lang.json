@@ -1,0 +1,54 @@
+{
+  "task_id": "task_0011",
+  "kind": "costume_sheet",
+  "group": "costume_friend:hua_lang",
+  "title": "花郎 的服装图集",
+  "rows": 1,
+  "cols": 1,
+  "reference_image": "",
+  "cells": [
+    {
+      "label": "飞鹰走马（素装）",
+      "saves": [
+        {
+          "key": "costume_full:hua_lang:hua_lang_cos01",
+          "category": "costume_full",
+          "asset_id": "hua_lang_cos01",
+          "name": "飞鹰走马",
+          "owner_id": "hua_lang",
+          "owner_name": "花郎",
+          "target": "assets/costumes/hua_lang_cos01.png",
+          "size": "portrait",
+          "generation": "costume_sheet",
+          "group": "costume_friend:hua_lang",
+          "meta": {
+            "quality": "素装",
+            "series": "",
+            "owner_kind": "friend"
+          }
+        },
+        {
+          "key": "friend_portrait:hua_lang:hua_lang",
+          "category": "friend_portrait",
+          "asset_id": "hua_lang",
+          "name": "花郎",
+          "owner_id": "hua_lang",
+          "owner_name": "花郎",
+          "target": "assets/portraits/friends/hua_lang.png",
+          "size": "portrait",
+          "generation": "portrait",
+          "group": "friend_portraits",
+          "meta": {
+            "category": "工"
+          }
+        }
+      ],
+      "index": 0,
+      "row": 0,
+      "col": 0
+    }
+  ],
+  "filename_base": "task_0011_costume_sheet_costume_friend_hua_lang",
+  "image_name": "task_0011_costume_sheet_costume_friend_hua_lang.png",
+  "output_path": "build/asset_pipeline/inbox/atlases/task_0011_costume_sheet_costume_friend_hua_lang.png"
+}

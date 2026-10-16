@@ -1,0 +1,130 @@
+{
+  "task_id": "task_0115",
+  "kind": "costume_sheet",
+  "group": "costume_hero:lei_en",
+  "title": "雷恩 的服装图集",
+  "rows": 2,
+  "cols": 2,
+  "reference_image": "",
+  "cells": [
+    {
+      "label": "游刃有余（素装）",
+      "saves": [
+        {
+          "key": "costume_full:lei_en:lei_en_cos01",
+          "category": "costume_full",
+          "asset_id": "lei_en_cos01",
+          "name": "游刃有余",
+          "owner_id": "lei_en",
+          "owner_name": "雷恩",
+          "target": "assets/costumes/lei_en_cos01.png",
+          "size": "portrait",
+          "generation": "costume_sheet",
+          "group": "costume_hero:lei_en",
+          "meta": {
+            "quality": "素装",
+            "series": "",
+            "owner_kind": "hero"
+          }
+        },
+        {
+          "key": "hero_portrait:lei_en:lei_en",
+          "category": "hero_portrait",
+          "asset_id": "lei_en",
+          "name": "雷恩",
+          "owner_id": "lei_en",
+          "owner_name": "雷恩",
+          "target": "assets/portraits/heroes/lei_en.png",
+          "size": "portrait",
+          "generation": "portrait",
+          "group": "hero_portraits",
+          "meta": {
+            "category": "农",
+            "quality": 2
+          }
+        }
+      ],
+      "index": 0,
+      "row": 0,
+      "col": 0
+    },
+    {
+      "label": "唯强独尊（素装）",
+      "saves": [
+        {
+          "key": "costume_full:lei_en:lei_en_cos02",
+          "category": "costume_full",
+          "asset_id": "lei_en_cos02",
+          "name": "唯强独尊",
+          "owner_id": "lei_en",
+          "owner_name": "雷恩",
+          "target": "assets/costumes/lei_en_cos02.png",
+          "size": "portrait",
+          "generation": "costume_sheet",
+          "group": "costume_hero:lei_en",
+          "meta": {
+            "quality": "素装",
+            "series": "",
+            "owner_kind": "hero"
+          }
+        }
+      ],
+      "index": 1,
+      "row": 0,
+      "col": 1
+    },
+    {
+      "label": "贪狼壶（素装）",
+      "saves": [
+        {
+          "key": "costume_full:lei_en:lei_en_cos03",
+          "category": "costume_full",
+          "asset_id": "lei_en_cos03",
+          "name": "贪狼壶",
+          "owner_id": "lei_en",
+          "owner_name": "雷恩",
+          "target": "assets/costumes/lei_en_cos03.png",
+          "size": "portrait",
+          "generation": "costume_sheet",
+          "group": "costume_hero:lei_en",
+          "meta": {
+            "quality": "素装",
+            "series": "",
+            "owner_kind": "hero"
+          }
+        }
+      ],
+      "index": 2,
+      "row": 1,
+      "col": 0
+    },
+    {
+      "label": "初获七星（华服）",
+      "saves": [
+        {
+          "key": "costume_full:lei_en:lei_en_cos04",
+          "category": "costume_full",
+          "asset_id": "lei_en_cos04",
+          "name": "初获七星",
+          "owner_id": "lei_en",
+          "owner_name": "雷恩",
+          "target": "assets/costumes/lei_en_cos04.png",
+          "size": "portrait",
+          "generation": "costume_sheet",
+          "group": "costume_hero:lei_en",
+          "meta": {
+            "quality": "华服",
+            "series": "",
+            "owner_kind": "hero"
+          }
+        }
+      ],
+      "index": 3,
+      "row": 1,
+      "col": 1
+    }
+  ],
+  "filename_base": "task_0115_costume_sheet_costume_hero_lei_en",
+  "image_name": "task_0115_costume_sheet_costume_hero_lei_en.png",
+  "output_path": "build/asset_pipeline/inbox/atlases/task_0115_costume_sheet_costume_hero_lei_en.png"
+}

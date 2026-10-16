@@ -1,0 +1,38 @@
+{
+  "task_id": "task_0197",
+  "kind": "portrait_single",
+  "group": "hero_portraits",
+  "title": "何雅士",
+  "rows": 1,
+  "cols": 1,
+  "reference_image": "",
+  "cells": [
+    {
+      "label": "何雅士",
+      "saves": [
+        {
+          "key": "hero_portrait:he_yashi:he_yashi",
+          "category": "hero_portrait",
+          "asset_id": "he_yashi",
+          "name": "何雅士",
+          "owner_id": "he_yashi",
+          "owner_name": "何雅士",
+          "target": "assets/portraits/heroes/he_yashi.png",
+          "size": "portrait",
+          "generation": "portrait",
+          "group": "hero_portraits",
+          "meta": {
+            "category": "士",
+            "quality": 0
+          }
+        }
+      ],
+      "index": 0,
+      "row": 0,
+      "col": 0
+    }
+  ],
+  "filename_base": "task_0197_portrait_single_hero_portraits",
+  "image_name": "task_0197_portrait_single_hero_portraits.png",
+  "output_path": "build/asset_pipeline/inbox/atlases/task_0197_portrait_single_hero_portraits.png"
+}

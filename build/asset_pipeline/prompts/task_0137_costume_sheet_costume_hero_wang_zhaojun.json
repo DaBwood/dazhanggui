@@ -1,0 +1,39 @@
+{
+  "task_id": "task_0137",
+  "kind": "costume_sheet",
+  "group": "costume_hero:wang_zhaojun",
+  "title": "王昭君 的服装图集",
+  "rows": 1,
+  "cols": 1,
+  "reference_image": "",
+  "cells": [
+    {
+      "label": "夙愿终成（华服）",
+      "saves": [
+        {
+          "key": "costume_full:wang_zhaojun:wang_zhaojun_cos07",
+          "category": "costume_full",
+          "asset_id": "wang_zhaojun_cos07",
+          "name": "夙愿终成",
+          "owner_id": "wang_zhaojun",
+          "owner_name": "王昭君",
+          "target": "assets/costumes/wang_zhaojun_cos07.png",
+          "size": "portrait",
+          "generation": "costume_sheet",
+          "group": "costume_hero:wang_zhaojun",
+          "meta": {
+            "quality": "华服",
+            "series": "",
+            "owner_kind": "hero"
+          }
+        }
+      ],
+      "index": 0,
+      "row": 0,
+      "col": 0
+    }
+  ],
+  "filename_base": "task_0137_costume_sheet_costume_hero_wang_zhaojun",
+  "image_name": "task_0137_costume_sheet_costume_hero_wang_zhaojun.png",
+  "output_path": "build/asset_pipeline/inbox/atlases/task_0137_costume_sheet_costume_hero_wang_zhaojun.png"
+}

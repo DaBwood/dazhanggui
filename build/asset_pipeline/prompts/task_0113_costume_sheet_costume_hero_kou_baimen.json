@@ -1,0 +1,155 @@
+{
+  "task_id": "task_0113",
+  "kind": "costume_sheet",
+  "group": "costume_hero:kou_baimen",
+  "title": "寇白门 的服装图集",
+  "rows": 3,
+  "cols": 2,
+  "reference_image": "",
+  "cells": [
+    {
+      "label": "鸿鹄展翅（华服 五凤来仪）",
+      "saves": [
+        {
+          "key": "costume_full:kou_baimen:kou_baimen_cos01",
+          "category": "costume_full",
+          "asset_id": "kou_baimen_cos01",
+          "name": "鸿鹄展翅",
+          "owner_id": "kou_baimen",
+          "owner_name": "寇白门",
+          "target": "assets/costumes/kou_baimen_cos01.png",
+          "size": "portrait",
+          "generation": "costume_sheet",
+          "group": "costume_hero:kou_baimen",
+          "meta": {
+            "quality": "华服",
+            "series": "五凤来仪",
+            "owner_kind": "hero"
+          }
+        },
+        {
+          "key": "hero_portrait:kou_baimen:kou_baimen",
+          "category": "hero_portrait",
+          "asset_id": "kou_baimen",
+          "name": "寇白门",
+          "owner_id": "kou_baimen",
+          "owner_name": "寇白门",
+          "target": "assets/portraits/heroes/kou_baimen.png",
+          "size": "portrait",
+          "generation": "portrait",
+          "group": "hero_portraits",
+          "meta": {
+            "category": "侠",
+            "quality": 2
+          }
+        }
+      ],
+      "index": 0,
+      "row": 0,
+      "col": 0
+    },
+    {
+      "label": "越王勾践剑（华服 传世珍宝）",
+      "saves": [
+        {
+          "key": "costume_full:kou_baimen:kou_baimen_cos02",
+          "category": "costume_full",
+          "asset_id": "kou_baimen_cos02",
+          "name": "越王勾践剑",
+          "owner_id": "kou_baimen",
+          "owner_name": "寇白门",
+          "target": "assets/costumes/kou_baimen_cos02.png",
+          "size": "portrait",
+          "generation": "costume_sheet",
+          "group": "costume_hero:kou_baimen",
+          "meta": {
+            "quality": "华服",
+            "series": "传世珍宝",
+            "owner_kind": "hero"
+          }
+        }
+      ],
+      "index": 1,
+      "row": 0,
+      "col": 1
+    },
+    {
+      "label": "西岳太华（华服 山河五岳）",
+      "saves": [
+        {
+          "key": "costume_full:kou_baimen:kou_baimen_cos03",
+          "category": "costume_full",
+          "asset_id": "kou_baimen_cos03",
+          "name": "西岳太华",
+          "owner_id": "kou_baimen",
+          "owner_name": "寇白门",
+          "target": "assets/costumes/kou_baimen_cos03.png",
+          "size": "portrait",
+          "generation": "costume_sheet",
+          "group": "costume_hero:kou_baimen",
+          "meta": {
+            "quality": "华服",
+            "series": "山河五岳",
+            "owner_kind": "hero"
+          }
+        }
+      ],
+      "index": 2,
+      "row": 1,
+      "col": 0
+    },
+    {
+      "label": "声妙入神（华服 汴梁女团）",
+      "saves": [
+        {
+          "key": "costume_full:kou_baimen:kou_baimen_cos04",
+          "category": "costume_full",
+          "asset_id": "kou_baimen_cos04",
+          "name": "声妙入神",
+          "owner_id": "kou_baimen",
+          "owner_name": "寇白门",
+          "target": "assets/costumes/kou_baimen_cos04.png",
+          "size": "portrait",
+          "generation": "costume_sheet",
+          "group": "costume_hero:kou_baimen",
+          "meta": {
+            "quality": "华服",
+            "series": "汴梁女团",
+            "owner_kind": "hero"
+          }
+        }
+      ],
+      "index": 3,
+      "row": 1,
+      "col": 1
+    },
+    {
+      "label": "傲雪寒梅（锦衣 百花齐放）",
+      "saves": [
+        {
+          "key": "costume_full:kou_baimen:kou_baimen_cos05",
+          "category": "costume_full",
+          "asset_id": "kou_baimen_cos05",
+          "name": "傲雪寒梅",
+          "owner_id": "kou_baimen",
+          "owner_name": "寇白门",
+          "target": "assets/costumes/kou_baimen_cos05.png",
+          "size": "portrait",
+          "generation": "costume_sheet",
+          "group": "costume_hero:kou_baimen",
+          "meta": {
+            "quality": "锦衣",
+            "series": "百花齐放",
+            "owner_kind": "hero"
+          }
+        }
+      ],
+      "index": 4,
+      "row": 2,
+      "col": 0
+    }
+  ],
+  "filename_base": "task_0113_costume_sheet_costume_hero_kou_baimen",
+  "image_name": "task_0113_costume_sheet_costume_hero_kou_baimen.png",
+  "output_path": "build/asset_pipeline/inbox/atlases/task_0113_costume_sheet_costume_hero_kou_baimen.png"
+}
