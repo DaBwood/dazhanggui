@@ -908,14 +908,14 @@ func _build_star_row(stars: int) -> HBoxContainer:
 # 选中=白光环、满级=金光环（halo 压图标下层露 3px 边）；缺图回落品质色圆底；全程显式 anchor/offset，不碰 preset
 func _build_skill_button(_sname: String, stars: int, is_max: bool, is_sel: bool, on_click: Callable, icon_tex: Texture2D = null, qual: String = "") -> Button:
 	var btn := Button.new()
-	btn.custom_minimum_size = Vector2(56, 64)
+	btn.custom_minimum_size = Vector2(60, 64)
 	btn.mouse_filter = Control.MOUSE_FILTER_PASS   # 穿透触摸滑动
 	var transparent := StyleBoxEmpty.new()
 	btn.add_theme_stylebox_override("normal", transparent)
 	btn.add_theme_stylebox_override("hover", transparent)
 	btn.add_theme_stylebox_override("pressed", transparent)
 	btn.add_theme_stylebox_override("focus", transparent)
-	# 光环：选中白 / 满级金（同时满足=选中白优先），直径 58 居中露 3px
+	# 光环：选中白 / 满级金（同时满足=选中白优先），直径 60 居中露 1px（拍板：肉眼可见即可）
 	if is_sel or is_max:
 		var halo := Panel.new()
 		var hs := StyleBoxFlat.new()
@@ -923,19 +923,19 @@ func _build_skill_button(_sname: String, stars: int, is_max: bool, is_sel: bool,
 			hs.bg_color = Color(1, 1, 1)
 		else:
 			hs.bg_color = Color("#ffd700")
-		hs.set_corner_radius_all(29)
+		hs.set_corner_radius_all(30)
 		halo.add_theme_stylebox_override("panel", hs)
 		halo.anchor_left = 0.5
 		halo.anchor_top = 0.5
 		halo.anchor_right = 0.5
 		halo.anchor_bottom = 0.5
-		halo.offset_left = -29
-		halo.offset_top = -29
-		halo.offset_right = 29
-		halo.offset_bottom = 29
+		halo.offset_left = -30
+		halo.offset_top = -30
+		halo.offset_right = 30
+		halo.offset_bottom = 30
 		halo.mouse_filter = Control.MOUSE_FILTER_IGNORE
 		btn.add_child(halo)
-	# 图标圆 52（y 中心偏上 2px 给星留位）；缺图=品质色圆底 44
+	# 图标圆 58 与光环严格同心（修歪：上一版图标中心偏上2px致露边不均）；缺图=品质色圆底 50
 	if icon_tex != null:
 		var icon_tr := TextureRect.new()
 		icon_tr.texture = icon_tex
@@ -945,26 +945,26 @@ func _build_skill_button(_sname: String, stars: int, is_max: bool, is_sel: bool,
 		icon_tr.anchor_top = 0.5
 		icon_tr.anchor_right = 0.5
 		icon_tr.anchor_bottom = 0.5
-		icon_tr.offset_left = -26
-		icon_tr.offset_top = -28
-		icon_tr.offset_right = 26
-		icon_tr.offset_bottom = 24
+		icon_tr.offset_left = -29
+		icon_tr.offset_top = -29
+		icon_tr.offset_right = 29
+		icon_tr.offset_bottom = 29
 		icon_tr.mouse_filter = Control.MOUSE_FILTER_IGNORE
 		btn.add_child(icon_tr)
 	elif qual != "":
 		var disc := Panel.new()
 		var ds := StyleBoxFlat.new()
 		ds.bg_color = _skill_qual_color(qual)
-		ds.set_corner_radius_all(22)
+		ds.set_corner_radius_all(25)
 		disc.add_theme_stylebox_override("panel", ds)
 		disc.anchor_left = 0.5
 		disc.anchor_top = 0.5
 		disc.anchor_right = 0.5
 		disc.anchor_bottom = 0.5
-		disc.offset_left = -22
-		disc.offset_top = -24
-		disc.offset_right = 22
-		disc.offset_bottom = 20
+		disc.offset_left = -25
+		disc.offset_top = -25
+		disc.offset_right = 25
+		disc.offset_bottom = 25
 		disc.mouse_filter = Control.MOUSE_FILTER_IGNORE
 		btn.add_child(disc)
 	# 星数压圆底内缘（最上层后挂）；等级语义全在星级里，名字只进详情区
@@ -973,8 +973,8 @@ func _build_skill_button(_sname: String, stars: int, is_max: bool, is_sel: bool,
 	star_wrap.anchor_top = 0.0
 	star_wrap.anchor_right = 1.0
 	star_wrap.anchor_bottom = 0.0
-	star_wrap.offset_top = 38
-	star_wrap.offset_bottom = 54
+	star_wrap.offset_top = 42
+	star_wrap.offset_bottom = 58
 	star_wrap.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	btn.add_child(star_wrap)
 	var star_row := _build_star_row(stars)
@@ -982,6 +982,25 @@ func _build_skill_button(_sname: String, stars: int, is_max: bool, is_sel: bool,
 	star_wrap.add_child(star_row)
 	btn.pressed.connect(on_click)
 	return btn
+
+# 副业行图标：zhidao 之道路线与换装页同源 career_<拼音>（行 currency 是道书显示名不是 career_book，按 key 判）；其余行按显示名拼路径
+func _side_icon_path(r: Dictionary) -> String:
+	if str(r.get("key", "")) == "zhidao":
+		var pin: String = {"士": "shi"}.get(str(data.heroes.get(current_hero_id, {}).get("category", "")), "")
+		if pin != "":
+			return "res://assets/skill_icons/career_%s.png" % pin
+	return "res://assets/skill_icons/%s.png" % str(r["name"])
+
+# 之道技能图标：与换装页同源 career_<拼音>[_ji]（全库唯一一份素材，不复制）；
+# 反查 cost_item=职业道书→职业→拼音（现有素材仅士系，其余职业回落按技能名）；极·前缀=金色 _ji 档
+func _way_icon_path(skill: Dictionary) -> String:
+	var career: String = data.side_skill_system.get_career_by_book(str(skill.get("cost_item", "")))
+	var pin: String = {"士": "shi"}.get(career, "")
+	if pin == "":
+		return ""
+	if str(skill.get("name", "")).begins_with("极·"):
+		pin += "_ji"
+	return "res://assets/skill_icons/career_%s.png" % pin
 
 # 技能图标加载：契约目录 assets/skill_icons（换装批次素材共位规范），缺图返回 null 走品质圆底回落
 
@@ -1276,9 +1295,10 @@ func _fill_skill_tab(list):
 			# 【新增】2026-09-25 极·XX之道：只吃对应职业之道书，走 own 单货币显示（自动红绿着色；无资质丹/百业经验勾选对）
 			var bid: String = str(skill.get("cost_item", ""))
 			var cnum: int = int(skill.get("cost_num", 300))
+			var way_icon := _way_icon_path(skill)
 			items.append({
 				"name": skill.name, "stars": per, "is_max": is_max, "info": info,
-				"icon": "res://assets/skill_icons/%s.png" % str(skill.name),
+				"icon": way_icon if way_icon != "" else "res://assets/skill_icons/%s.png" % str(skill.name),
 				"own": [cnum, int(data.items.get(bid, 0))], "own_name": str(data.ITEM_CONFIG.get(bid, {}).get("name", bid)),
 				"on_single": on_aptitude_skill_upgrade.bind(i, "single"), "on_bulk": on_aptitude_skill_upgrade.bind(i, "bulk")
 			})
@@ -1372,7 +1392,7 @@ func _fill_shop_tab(list):
 		var lv: int = int(r["level"])
 		var info: String = "【%s】  Lv.%d/%d\n资质+%d" % [r["name"], lv, int(r["max"]), lv]
 		var it := {"name": r["name"], "stars": 1, "is_max": is_max, "info": info,
-			"icon": "res://assets/skill_icons/%s.png" % str(r["name"]),
+			"icon": _side_icon_path(r),
 			"on_single": on_side_sys_upgrade.bind(str(r["key"]), "single"), "on_bulk": on_side_sys_upgrade.bind(str(r["key"]), "bulk")}
 		if is_max:
 			info += "（已满级）"

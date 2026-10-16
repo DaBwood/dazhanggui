@@ -52,6 +52,14 @@ func get_career_book(career: String) -> String:
 	var books: Dictionary = g._side_skill_configs.get("career_books", {})
 	return str(books.get(career, ""))
 
+# 反查：道书道具 id → 职业（之道技能归属职业判定；技能栏图标与换装页同源用）
+func get_career_by_book(book_id: String) -> String:
+	var books: Dictionary = g._side_skill_configs.get("career_books", {})
+	for career in books.keys():
+		if str(books[career]) == book_id:
+			return str(career)
+	return ""
+
 # ============ 查询 ============
 func get_hero_level(hero_id: String, key: String) -> int:
 	var d: Dictionary = levels.get(hero_id, {})

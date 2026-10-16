@@ -1,7 +1,7 @@
 {
 	"crickets": [
 		{"id": "hong_ya_bai", "name": "红牙白", "career": "士", "quality": 1},
-		{"id": "she_工_bai", "name": "射弓白", "career": "士", "quality": 2},
+		{"id": "she_工_bai", "name": "射弓红", "career": "士", "quality": 2},
 		{"id": "mo_yun_lan", "name": "摩云蓝", "career": "士", "quality": 3},
 		{"id": "ku_xiu_mu", "name": "枯朽木", "career": "士", "quality": 4},
 		{"id": "jin_ling_que", "name": "金翎雀", "career": "士", "quality": 4},

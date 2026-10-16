@@ -766,13 +766,12 @@ func _make_shop_row(g: Dictionary) -> Panel:
 			c._show_success_popup("元宝不足！", 0.0, "warn")   # 【改】飘字退休→warn 弹窗
 			return
 		data.yuanbao -= g.price
-		data.items["cuzhi_cage"] = data.items.get("cuzhi_cage", 0) + g.count
-		
+		data.items["cuzhi_cage"] = data.items.get("cuzhi_cage", 0) + int(g.get("count", 0))
 		if g.has("items"):
-				for item_id in g.items.keys():
-					data.items[item_id] = data.items.get(item_id, 0) + g.items[item_id]
-					# 【改】成功反馈铺开：购买成功弹窗
-					c._show_success_popup("购买成功\n促织笼 +%d" % g.count)
+			for item_id in g.items.keys():
+				data.items[item_id] = data.items.get(item_id, 0) + g.items[item_id]
+		# 【改】成功反馈铺开：购买成功弹窗（礼包名自带内容；修复无 count 键崩溃+弹窗移出 items 循环）
+		c._show_success_popup("购买成功！%s" % g.name)
 		c.update_money_label()
 		_refresh_shop()
 		)
