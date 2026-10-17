@@ -1,6 +1,7 @@
 [gd_scene format=3]
 
 [ext_resource type="Texture2D" path="res://assets/tavern/map_bg.png" id="bg"]
+[ext_resource type="Texture2D" path="res://assets/tavern/收益罐空.png" id="jare"]
 
 [sub_resource type="StyleBoxFlat" id="page_bg"]
 bg_color = Color(0.2, 0.0823529, 0.0588235, 1)
@@ -43,6 +44,24 @@ offset_bottom = 96.0
 grow_horizontal = 2
 mouse_filter = 2
 color = Color(0, 0, 0, 0.35)
+
+
+[node name="JarIcon" type="Button" parent="."]
+layout_mode = 1
+anchors_preset = 0
+anchor_left = 0.3891
+anchor_right = 0.3891
+anchor_top = 0.5832
+anchor_bottom = 0.5832
+offset_left = -52.0
+offset_top = -52.0
+offset_right = 52.0
+offset_bottom = 52.0
+grow_horizontal = 2
+grow_vertical = 2
+tooltip_text = "收益罐（点击领取）"
+icon = ExtResource("jare")
+expand_icon = true
 
 [node name="Main" type="VBoxContainer" parent="."]
 layout_mode = 1
@@ -108,28 +127,6 @@ theme_override_styles/panel = SubResource("card_bg")
 [node name="JarCard" type="VBoxContainer" parent="Main/CenterMain/MainBody"]
 layout_mode = 2
 theme_override_constants/separation = 4
-
-[node name="JarTitle" type="Label" parent="Main/CenterMain/MainBody/JarCard"]
-layout_mode = 2
-theme_override_colors/font_color = Color(1, 0.843137, 0, 1)
-theme_override_font_sizes/font_size = 22
-text = "收益罐"
-horizontal_alignment = 1
-
-[node name="JarRow" type="HBoxContainer" parent="Main/CenterMain/MainBody/JarCard"]
-layout_mode = 2
-alignment = 1
-theme_override_constants/separation = 12
-
-[node name="JarLabel" type="Label" parent="Main/CenterMain/MainBody/JarCard/JarRow"]
-layout_mode = 2
-theme_override_font_sizes/font_size = 18
-horizontal_alignment = 1
-
-[node name="CollectButton" type="Button" parent="Main/CenterMain/MainBody/JarCard/JarRow"]
-custom_minimum_size = Vector2(100, 38)
-layout_mode = 2
-text = "领取"
 
 [node name="JhRow" type="HBoxContainer" parent="Main/CenterMain/MainBody/JarCard"]
 layout_mode = 2

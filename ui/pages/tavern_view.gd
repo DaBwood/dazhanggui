@@ -17,13 +17,15 @@ extends BaseView   # 【改】公共层下沉 ui/base_view.gd（2026-09-18 架�
 var _tab: String = "main"              # 当前视图 main/餐饮/娱乐
 var _proj: Dictionary = {"餐饮": "", "娱乐": ""}   # 各区域当前选中项目（页签状态，切区保留）
 var _timer: Timer = null               # 批处理/秒刷定时器（0.05s）
+var _jar_icon: Button = null
 var _jh_lbl: Label = null              # 叫号计数文本（主页）
 var _cd_lbl: Label = null              # 叫号恢复倒计时文本（主页）
-var _jar_lbl: Label = null             # 收益罐文本（主页）
 var _tq_lbl: Label = null              # 接待队列状态文本（主页）
 # _popup_kind/_popup_id 由基类 BaseView 持有（2026-09-18 架构重构批次⑤），此处不再声明
 
 const SCENE: PackedScene = preload("res://ui/pages/tavern_view.tscn")
+const JAR_EMPTY: Texture2D = preload("res://assets/tavern/收益罐空.png")
+const JAR_FULL: Texture2D = preload("res://assets/tavern/收益罐满.png")
 
 func _init(p_c):
 	super(p_c)   # 【改】基类注入 c/data（2026-09-18 架构重构批次⑤）
@@ -93,8 +95,10 @@ func _on_tick():
 		_jh_lbl.text = _jh_text()
 	if _cd_lbl:
 		_cd_lbl.text = _cd_text()
-	if _jar_lbl:
-		_jar_lbl.text = _jar_text()
+	if _jar_icon:
+		var has_jar_now: bool = _sys().has_jar()
+		_jar_icon.icon = JAR_FULL if has_jar_now else JAR_EMPTY
+		_jar_icon.disabled = not has_jar_now
 	if _tq_lbl:
 		_tq_lbl.text = _tq_text()
 
@@ -107,9 +111,6 @@ func _cd_text() -> String:
 		return "叫号已满" if _sys().get_jiaohao() >= _sys().get_jiaohao_cap() else "恢复中…"
 	return "叫号恢复 %02d:%02d:%02d" % [int(sec / 3600.0), int(sec / 60.0) % 60, sec % 60]
 
-func _jar_text() -> String:
-	return "可领取：银条 %s" % c.format_number(_sys().get_jar())
-
 func _tq_text() -> String:
 	var n := _sys().get_serve_queue()
 	if n > 0:
@@ -120,7 +121,7 @@ func _tq_text() -> String:
 # 接线表：按钮本体/位置/皮肤/文字全在 tavern_view.tscn（v2 范式四件套），这里只连信号；必需节点清单 fail-loud（长期约定）
 func _wire_page(page: Control):
 	for n in ["TopBar", "BackButton", "TitleLabel", "RuleButton", "InfoButton", "ResLabel",
-			"CenterMain", "MainBody", "JarCard", "JarTitle", "JarRow", "JarLabel", "CollectButton",
+			"CenterMain", "MainBody", "JarCard", "JarIcon",
 			"JhRow", "JhLabel", "AddButton", "CdLabel", "CallButton", "CallAllButton", "TqLabel",
 			"AreaScroll", "AreaBody", "MainNav", "CanButton", "JoyButton", "CanDot", "JoyDot"]:
 		if page.find_child(n, true, false) == null:
@@ -130,7 +131,7 @@ func _wire_page(page: Control):
 	page.find_child("InfoButton", true, false).pressed.connect(_show_info_popup)
 	page.find_child("CanButton", true, false).pressed.connect(func(): _switch_tab("餐饮"))
 	page.find_child("JoyButton", true, false).pressed.connect(func(): _switch_tab("娱乐"))
-	page.find_child("CollectButton", true, false).pressed.connect(_on_collect)
+	page.find_child("JarIcon", true, false).pressed.connect(_on_collect)
 	page.find_child("AddButton", true, false).pressed.connect(_on_add_jiaohao)
 	page.find_child("CallButton", true, false).pressed.connect(_on_call_one)
 	page.find_child("CallAllButton", true, false).pressed.connect(_on_call_all)
@@ -174,9 +175,9 @@ func _refresh():
 
 # ---------- 主页：收益罐主卡 + 叫号操作 ----------
 func _fill_jar_card(page: Panel):
-	_jar_lbl = page.find_child("JarLabel", true, false)
-	_jar_lbl.text = _jar_text()
-	page.find_child("CollectButton", true, false).disabled = not _sys().has_jar()
+	_jar_icon = page.find_child("JarIcon", true, false)
+	_jar_icon.icon = JAR_FULL if _sys().has_jar() else JAR_EMPTY
+	_jar_icon.disabled = not _sys().has_jar()
 	_jh_lbl = page.find_child("JhLabel", true, false)
 	_jh_lbl.text = _jh_text()
 	_cd_lbl = page.find_child("CdLabel", true, false)
