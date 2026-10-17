@@ -141,6 +141,8 @@ func _fill(page: Panel):
 	# 页签红点
 	page.find_child("CanDot", true, false).visible = _area_has_hint("餐饮")
 	page.find_child("JoyDot", true, false).visible = _area_has_hint("娱乐")
+	if not main_on:
+		_fill_area(page.find_child("AreaBody", true, false), _tab)
 
 func _on_back():
 	if _tab == "main":
