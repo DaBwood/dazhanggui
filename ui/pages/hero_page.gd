@@ -323,8 +323,9 @@ func update_hero_panel():
 		t_trans.bg_color = Color(0, 0, 0, 0)
 		for st_name in ["normal", "hover", "pressed", "focus"]:
 			token_b2.add_theme_stylebox_override(st_name, t_trans)
-		if current_hero_id == "li_bai" and ResourceLoader.exists("res://assets/heroes/token_libai.png"):
-			token_slot2.get_node("Btn/Icon").texture = load("res://assets/heroes/token_libai.png")
+		var token_icon_path := "res://assets/heroes/token_%s.png" % current_hero_id
+		if ResourceLoader.exists(token_icon_path):
+			token_slot2.get_node("Btn/Icon").texture = load(token_icon_path)
 		token_slot2.visible = true
 		token_b2.pressed.connect(token._on_token_btn_clicked)
 	else:
@@ -364,9 +365,10 @@ func update_hero_panel():
 			promo_btn.text = ""   # 字牌 art 自带玩法名，按钮仅作点击层
 			promo_btn.visible = true
 			var pp = c.get_node("HeroPanel/RightArtBar/PromoPlate")
-			if promo_name == "赋诗" and ResourceLoader.exists("res://assets/heroes/plate_promo_libai.png"):
+			var plate_path := "res://assets/heroes/plate_promo_%s.png" % current_hero_id
+			if ResourceLoader.exists(plate_path):
 				pp.visible = true
-				pp.texture = load("res://assets/heroes/plate_promo_libai.png")
+				pp.texture = load(plate_path)
 				for st_name in ["normal", "hover", "pressed"]:
 					promo_btn.remove_theme_stylebox_override(st_name)
 			else:
@@ -443,7 +445,13 @@ func update_hero_panel():
 	if is_copy_holder:
 		batch_check.visible = false
 		var ct: Dictionary = promo._get_copy_talent_info(current_hero_id)
-		lv_btn.text = ct.get("name", "天赋详情")
+		var talent_icon_path := "res://assets/skill_icons/%s.png" % str(ct.get("name", ""))
+		if ResourceLoader.exists(talent_icon_path):
+			lv_btn.text = ""
+			lv_btn.icon = load(talent_icon_path)
+			lv_btn.expand_icon = true
+		else:
+			lv_btn.text = ct.get("name", "天赋详情")
 		lv_btn.visible = true
 		lv_btn.disabled = false
 		lv_btn.remove_theme_color_override("font_color")   # 【新增】批次②③④-B4：复用钮清掉升级/突破分支的消耗着色
@@ -986,18 +994,15 @@ func _build_skill_button(_sname: String, stars: int, is_max: bool, is_sel: bool,
 # 副业行图标：zhidao 之道路线与换装页同源 career_<拼音>（行 currency 是道书显示名不是 career_book，按 key 判）；其余行按显示名拼路径
 func _side_icon_path(r: Dictionary) -> String:
 	if str(r.get("key", "")) == "zhidao":
-		var pin: String = {"士": "shi"}.get(str(data.heroes.get(current_hero_id, {}).get("category", "")), "")
-		if pin != "":
-			return "res://assets/skill_icons/career_%s.png" % pin
+		# 五种职业共用士系图标（用户拍板 2026-10-17）
+		return "res://assets/skill_icons/career_shi.png"
 	return "res://assets/skill_icons/%s.png" % str(r["name"])
 
 # 之道技能图标：与换装页同源 career_<拼音>[_ji]（全库唯一一份素材，不复制）；
 # 反查 cost_item=职业道书→职业→拼音（现有素材仅士系，其余职业回落按技能名）；极·前缀=金色 _ji 档
+# 五种职业共用士系图标（用户拍板 2026-10-17 农工商侠都用士的图）；极·前缀=金色 _ji 档
 func _way_icon_path(skill: Dictionary) -> String:
-	var career: String = data.side_skill_system.get_career_by_book(str(skill.get("cost_item", "")))
-	var pin: String = {"士": "shi"}.get(career, "")
-	if pin == "":
-		return ""
+	var pin := "shi"
 	if str(skill.get("name", "")).begins_with("极·"):
 		pin += "_ji"
 	return "res://assets/skill_icons/career_%s.png" % pin

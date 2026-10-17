@@ -499,11 +499,9 @@ func _career_skill_name(hero_id: String, quality: String) -> String:
 
 # 职业光环技能词条图：res://assets/skill_icons/career_<拼音>.png（锦衣=career_<拼音>_ji.png）
 # 现有素材仅士系；其余职业回落 _make_cos_chip 的品质圆点
+# 五种职业共用士系图标（用户拍板 2026-10-17 农工商侠都用士的图）
 func _career_icon_path(hero_id: String, quality: String) -> String:
-	var cat: String = str(data.heroes.get(hero_id, {}).get("category", ""))
-	var pin: String = {"士": "shi"}.get(cat, "")
-	if pin == "":
-		return ""
+	var pin := "shi"
 	return "res://assets/skill_icons/career_%s%s.png" % [pin, "_ji" if quality == "锦衣" else ""]
 
 # 职业光环说明弹窗（钮=升级区域左上「▦ 职业光环」）：说明弹窗统一走仓库范式 _show_rule_popup
