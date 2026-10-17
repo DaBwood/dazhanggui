@@ -1,0 +1,239 @@
+[gd_scene format=3]
+
+[ext_resource type="Texture2D" path="res://assets/tavern/map_bg.png" id="bg"]
+
+[sub_resource type="StyleBoxFlat" id="page_bg"]
+bg_color = Color(0.2, 0.0823529, 0.0588235, 1)
+
+[sub_resource type="StyleBoxFlat" id="card_bg"]
+bg_color = Color(0.164706, 0.14902, 0.25098, 1)
+border_width_left = 1
+border_width_top = 1
+border_width_right = 1
+border_width_bottom = 1
+corner_radius_top_left = 8
+corner_radius_top_right = 8
+corner_radius_bottom_right = 8
+corner_radius_bottom_left = 8
+border_color = Color(0.415686, 0.372549, 0.619608, 1)
+
+[node name="TavernPage" type="Panel"]
+z_index = 35
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+theme_override_styles/panel = SubResource("page_bg")
+
+[node name="BgImage" type="TextureRect" parent="."]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+texture = ExtResource("bg")
+stretch_mode = 6
+
+[node name="TopShade" type="ColorRect" parent="."]
+layout_mode = 1
+anchors_preset = 10
+anchor_right = 1.0
+offset_bottom = 96.0
+grow_horizontal = 2
+mouse_filter = 2
+color = Color(0, 0, 0, 0.35)
+
+[node name="Main" type="VBoxContainer" parent="."]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+theme_override_constants/separation = 8
+
+[node name="TopBar" type="HBoxContainer" parent="Main"]
+custom_minimum_size = Vector2(0, 48)
+layout_mode = 2
+theme_override_constants/separation = 8
+
+[node name="BackButton" type="Button" parent="Main/TopBar"]
+custom_minimum_size = Vector2(90, 42)
+layout_mode = 2
+theme_override_colors/font_hover_color = Color(0.901961, 0.752941, 0.482353, 1)
+text = "< 返回"
+
+[node name="LeftSpring" type="Control" parent="Main/TopBar"]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="TitleLabel" type="Label" parent="Main/TopBar"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 24
+text = "酒肆"
+
+[node name="RuleButton" type="Button" parent="Main/TopBar"]
+custom_minimum_size = Vector2(30, 30)
+layout_mode = 2
+theme_override_colors/font_hover_color = Color(0.901961, 0.752941, 0.482353, 1)
+theme_override_font_sizes/font_size = 16
+tooltip_text = "规则说明"
+text = "?"
+
+[node name="RightSpring" type="Control" parent="Main/TopBar"]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="InfoButton" type="Button" parent="Main/TopBar"]
+custom_minimum_size = Vector2(104, 40)
+layout_mode = 2
+theme_override_colors/font_hover_color = Color(0.901961, 0.752941, 0.482353, 1)
+text = "酒肆信息"
+
+[node name="ResLabel" type="Label" parent="Main"]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.901961, 0.752941, 0.482353, 1)
+theme_override_font_sizes/font_size = 16
+text = "【酒肆】"
+horizontal_alignment = 1
+
+[node name="CenterMain" type="CenterContainer" parent="Main"]
+layout_mode = 2
+size_flags_vertical = 3
+
+[node name="MainBody" type="PanelContainer" parent="Main/CenterMain"]
+custom_minimum_size = Vector2(430, 360)
+layout_mode = 2
+theme_override_styles/panel = SubResource("card_bg")
+
+[node name="JarCard" type="VBoxContainer" parent="Main/CenterMain/MainBody"]
+layout_mode = 2
+theme_override_constants/separation = 4
+
+[node name="JarTitle" type="Label" parent="Main/CenterMain/MainBody/JarCard"]
+layout_mode = 2
+theme_override_colors/font_color = Color(1, 0.843137, 0, 1)
+theme_override_font_sizes/font_size = 22
+text = "收益罐"
+horizontal_alignment = 1
+
+[node name="JarRow" type="HBoxContainer" parent="Main/CenterMain/MainBody/JarCard"]
+layout_mode = 2
+alignment = 1
+theme_override_constants/separation = 12
+
+[node name="JarLabel" type="Label" parent="Main/CenterMain/MainBody/JarCard/JarRow"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 18
+horizontal_alignment = 1
+
+[node name="CollectButton" type="Button" parent="Main/CenterMain/MainBody/JarCard/JarRow"]
+custom_minimum_size = Vector2(100, 38)
+layout_mode = 2
+text = "领取"
+
+[node name="JhRow" type="HBoxContainer" parent="Main/CenterMain/MainBody/JarCard"]
+layout_mode = 2
+alignment = 1
+theme_override_constants/separation = 8
+
+[node name="JhLabel" type="Label" parent="Main/CenterMain/MainBody/JarCard/JhRow"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 17
+horizontal_alignment = 1
+
+[node name="AddButton" type="Button" parent="Main/CenterMain/MainBody/JarCard/JhRow"]
+custom_minimum_size = Vector2(42, 34)
+layout_mode = 2
+tooltip_text = "使用【佳酿】+2 叫号"
+text = "＋"
+
+[node name="CdLabel" type="Label" parent="Main/CenterMain/MainBody/JarCard"]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.603922, 0.576471, 0.721569, 1)
+text = ""
+horizontal_alignment = 1
+
+[node name="CallButton" type="Button" parent="Main/CenterMain/MainBody/JarCard"]
+custom_minimum_size = Vector2(320, 44)
+layout_mode = 2
+text = "叫号"
+
+[node name="CallAllButton" type="Button" parent="Main/CenterMain/MainBody/JarCard"]
+custom_minimum_size = Vector2(320, 40)
+layout_mode = 2
+text = "一键叫号"
+
+[node name="TqLabel" type="Label" parent="Main/CenterMain/MainBody/JarCard"]
+layout_mode = 2
+theme_override_colors/font_color = Color(1, 0.843137, 0, 1)
+text = ""
+horizontal_alignment = 1
+
+[node name="AreaScroll" type="ScrollContainer" parent="Main"]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+horizontal_scroll_mode = 0
+
+[node name="AreaBody" type="VBoxContainer" parent="Main/AreaScroll"]
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_constants/separation = 8
+
+[node name="MainNav" type="HBoxContainer" parent="Main"]
+custom_minimum_size = Vector2(0, 56)
+layout_mode = 2
+alignment = 1
+theme_override_constants/separation = 10
+
+[node name="CanWrap" type="Control" parent="Main/MainNav"]
+custom_minimum_size = Vector2(180, 54)
+layout_mode = 2
+
+[node name="CanButton" type="Button" parent="Main/MainNav/CanWrap"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_colors/font_hover_color = Color(0.901961, 0.752941, 0.482353, 1)
+theme_override_font_sizes/font_size = 16
+text = "【餐饮】设施"
+
+[node name="CanDot" type="Label" parent="Main/MainNav/CanWrap"]
+layout_mode = 0
+offset_left = 158.0
+offset_top = -6.0
+offset_right = 178.0
+offset_bottom = 16.0
+mouse_filter = 2
+theme_override_colors/font_color = Color(0.905882, 0.298039, 0.235294, 1)
+theme_override_font_sizes/font_size = 16
+text = "●"
+
+[node name="JoyWrap" type="Control" parent="Main/MainNav"]
+custom_minimum_size = Vector2(180, 54)
+layout_mode = 2
+
+[node name="JoyButton" type="Button" parent="Main/MainNav/JoyWrap"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_colors/font_hover_color = Color(0.901961, 0.752941, 0.482353, 1)
+theme_override_font_sizes/font_size = 16
+text = "【娱乐】设施"
+
+[node name="JoyDot" type="Label" parent="Main/MainNav/JoyWrap"]
+layout_mode = 0
+offset_left = 158.0
+offset_top = -6.0
+offset_right = 178.0
+offset_bottom = 16.0
+mouse_filter = 2
+theme_override_colors/font_color = Color(0.905882, 0.298039, 0.235294, 1)
+theme_override_font_sizes/font_size = 16
+text = "●"
