@@ -450,7 +450,8 @@ func _update_cos_detail(hero_id: String, cfg: Dictionary, preview: TextureRect, 
 		title_lbl.text = "◆ 升级效果 ◆"
 		_add_body_line(body, "升级：提高以下技能等级上限+%d" % dup_bonus, Color(0.7, 0.66, 0.58), 12)
 		var lv: int = int(st.get("base", 1)) + int(st.get("extra", 0))
-		chips.add_child(_make_cos_chip("res://assets/skill_icons/%s.png" % cos_id, cos_name.substr(0, 1), COS_NAME_GOLD, "%s %d级" % [cos_name, lv], "资质+%d" % (lv * per)))
+		# 服装技能图标用服装名款（同解锁区 463 行），无图回落首字
+		chips.add_child(_make_cos_chip("res://assets/skill_icons/%s.png" % cos_name, cos_name.substr(0, 1), COS_NAME_GOLD, "%s %d级" % [cos_name, lv], "资质+%d" % (lv * per)))
 		if quality == "华服" or quality == "锦衣":
 			var way_cap: int = data.costume_system.get_cos_way_cap(hero_id, quality)
 			var way_per: int = 3 if quality == "锦衣" else 1   # 口径=_cos_way_skill_base：华服1/锦衣3
@@ -460,7 +461,8 @@ func _update_cos_detail(hero_id: String, cfg: Dictionary, preview: TextureRect, 
 	else:
 		title_lbl.text = "◆ 解锁效果 ◆"
 		_add_body_line(body, "解锁以下技能：", Color(0.85, 0.8, 0.7), 13)
-		chips.add_child(_make_cos_chip("res://assets/skill_icons/%s.png" % cos_id, cos_name.substr(0, 1), COS_NAME_GOLD, cos_name, ""))
+		# 服装解锁技能图标用服装名款（用户给过图），无图回落首字（_make_cos_chip 内置 exists 检查）
+		chips.add_child(_make_cos_chip("res://assets/skill_icons/%s.png" % cos_name, cos_name.substr(0, 1), COS_NAME_GOLD, cos_name, ""))
 		if quality == "华服" or quality == "锦衣":
 			var sk_name2: String = _career_skill_name(hero_id, quality)
 			chips.add_child(_make_cos_chip(_career_icon_path(hero_id, quality), sk_name2.substr(0, 1), Color(0.95, 0.91, 0.8), sk_name2, ""))
@@ -500,7 +502,7 @@ func _career_skill_name(hero_id: String, quality: String) -> String:
 # 职业光环技能词条图：res://assets/skill_icons/career_<拼音>.png（锦衣=career_<拼音>_ji.png）
 # 现有素材仅士系；其余职业回落 _make_cos_chip 的品质圆点
 # 五种职业共用士系图标（用户拍板 2026-10-17 农工商侠都用士的图）
-func _career_icon_path(hero_id: String, quality: String) -> String:
+func _career_icon_path(_hero_id: String, quality: String) -> String:
 	var pin := "shi"
 	return "res://assets/skill_icons/career_%s%s.png" % [pin, "_ji" if quality == "锦衣" else ""]
 

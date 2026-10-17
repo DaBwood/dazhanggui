@@ -323,7 +323,8 @@ func update_hero_panel():
 		t_trans.bg_color = Color(0, 0, 0, 0)
 		for st_name in ["normal", "hover", "pressed", "focus"]:
 			token_b2.add_theme_stylebox_override(st_name, t_trans)
-		var token_icon_path := "res://assets/heroes/token_%s.png" % current_hero_id
+		# 文件名去下划线对齐历史命名（li_bai→token_libai、wang_zhaojun→token_wangzhaojun）
+		var token_icon_path := "res://assets/heroes/token_%s.png" % current_hero_id.replace("_", "")
 		if ResourceLoader.exists(token_icon_path):
 			token_slot2.get_node("Btn/Icon").texture = load(token_icon_path)
 		token_slot2.visible = true
@@ -361,11 +362,12 @@ func update_hero_panel():
 				promo_btn.add_theme_stylebox_override(st_name, sty_fk)
 			promo_btn.pressed.connect(promo._on_fengkui_btn_clicked)
 		elif simple_ready or h.has("promotion"):
-			var promo_name: String = str(sp_cfg.get("name", "晋升")) if simple_ready else str(h.promotion.get("name", "晋升"))
-			promo_btn.text = ""   # 字牌 art 自带玩法名，按钮仅作点击层
+			# 字牌 art 自带玩法名（通用 plate_promo_<去下划线id>.png 查找见下），按钮仅作点击层
+			promo_btn.text = ""
 			promo_btn.visible = true
 			var pp = c.get_node("HeroPanel/RightArtBar/PromoPlate")
-			var plate_path := "res://assets/heroes/plate_promo_%s.png" % current_hero_id
+			# 文件名去下划线对齐历史命名（li_bai→plate_promo_libai、wang_zhaojun→plate_promo_wangzhaojun）
+			var plate_path := "res://assets/heroes/plate_promo_%s.png" % current_hero_id.replace("_", "")
 			if ResourceLoader.exists(plate_path):
 				pp.visible = true
 				pp.texture = load(plate_path)
@@ -486,16 +488,19 @@ func update_hero_panel():
 	# 升级阅历：拥有/消耗（升级牌下方独立显示，随十连勾选联动）
 	if c.has_node("HeroPanel/RightArtBar/LevelUpInfo"):
 		var lv_info = c.get_node("HeroPanel/RightArtBar/LevelUpInfo")
-		var own_exp: int = int(data.items.get("experience", 0))
-		var need_exp: int = _get_level_up_cost(h)
-		lv_info.text = "阅历：%s/%s" % [c.format_number(own_exp), c.format_number(need_exp)]
-		lv_info.add_theme_color_override("font_color", c._cost_color(own_exp, need_exp))
-		# 【改】2026-10-13 拍板：阅历黑底贴身——按文本实宽收紧标签、居中于升级牌（牌心 x≈63），黑底不延长
-		var lv_f: Font = lv_info.get_theme_font("font", "Label")
-		var lv_sz: int = lv_info.get_theme_font_size("font_size", "Label")
-		var lv_w: float = lv_f.get_string_size(lv_info.text, HORIZONTAL_ALIGNMENT_LEFT, -1, lv_sz).x + 16
-		lv_info.size.x = lv_w
-		lv_info.position.x = 63.0 - lv_w / 2.0
+		# 复制档（王昭君）天赋直接复制等级，无需升级，阅历行整体隐藏；须显式关，否则切门客残留
+		lv_info.visible = not is_copy_holder
+		if not is_copy_holder:
+			var own_exp: int = int(data.items.get("experience", 0))
+			var need_exp: int = _get_level_up_cost(h)
+			lv_info.text = "阅历：%s/%s" % [c.format_number(own_exp), c.format_number(need_exp)]
+			lv_info.add_theme_color_override("font_color", c._cost_color(own_exp, need_exp))
+			# 【改】2026-10-13 拍板：阅历黑底贴身——按文本实宽收紧标签、居中于升级牌（牌心 x≈63），黑底不延长
+			var lv_f: Font = lv_info.get_theme_font("font", "Label")
+			var lv_sz: int = lv_info.get_theme_font_size("font_size", "Label")
+			var lv_w: float = lv_f.get_string_size(lv_info.text, HORIZONTAL_ALIGNMENT_LEFT, -1, lv_sz).x + 16
+			lv_info.size.x = lv_w
+			lv_info.position.x = 63.0 - lv_w / 2.0
 	if not c.has_node("HeroPanel/ScrollContainer/SkillList"): return
 	var list = c.get_node("HeroPanel/ScrollContainer/SkillList")
 	
@@ -911,7 +916,7 @@ func _build_star_row(stars: int) -> HBoxContainer:
 # 技能按钮：矩形，上=技能名，下=星级；已满级金色边框，选中蓝色边框
 # 技能按钮：矩形，上=技能名，下=星级；已满级金色边框，选中蓝色边框
 # 【图标化】有图标时上图标（TextureRect 子节点定绘制区，绕开 Button.icon 渲染尺寸不可靠问题）；
-# 缺图回落品质色圆点（素材共位规范：assets/skill_icons 按 cos_id 命名，缺图不得崩）
+# 缺图回落品质色圆点（服装词条图标按服装名.png 命名，2026-10-17 拍板，缺图不得崩）
 # 技能按钮：圆形图标钮（2026-10-14 用户按参考图二拍板）——图标即按钮本体，星数压圆底内缘，不显示名字；
 # 选中=白光环、满级=金光环（halo 压图标下层露 3px 边）；缺图回落品质色圆底；全程显式 anchor/offset，不碰 preset
 func _build_skill_button(_sname: String, stars: int, is_max: bool, is_sel: bool, on_click: Callable, icon_tex: Texture2D = null, qual: String = "") -> Button:
@@ -1439,7 +1444,8 @@ func _fill_costume_tab(list):
 		if not is_max:
 			info += "（下级+%d）" % [(base + 1) * per]
 		items.append({"name": cfg.get("name", cos_id), "stars": per, "is_max": is_max, "info": info,
-			"icon": "res://assets/skill_icons/%s.png" % cos_id, "qual": str(cfg.get("quality", "")),
+			# 服装技能图标按服装名查找（用户拍板，与换装页同源；缺图回落品质圆点）
+			"icon": "res://assets/skill_icons/%s.png" % str(cfg.get("name", cos_id)), "qual": str(cfg.get("quality", "")),
 			"pill": per, "on_single": _on_cos_skill_upgrade.bind(cos_id, "single"), "on_bulk": _on_cos_skill_upgrade.bind(cos_id, "bulk")})
 	if items.is_empty():
 		var lbl = Label.new()
@@ -1477,7 +1483,8 @@ func _fill_halo_tab(list):
 		# 光环类显示格式：【类】门客资质+X
 		var info: String = "【%s】  Lv.%d/%d\n【%s】类门客资质+%d" % [cfg.get("name", cos_id), lv, cap, my_cat, lv * per]
 		items.append({"name": cfg.get("name", cos_id), "stars": per, "is_max": is_max, "info": info,
-			"icon": "res://assets/skill_icons/%s.png" % cos_id, "qual": str(cfg.get("quality", "")),
+			# 光环词条图标同服装名款
+			"icon": "res://assets/skill_icons/%s.png" % str(cfg.get("name", cos_id)), "qual": str(cfg.get("quality", "")),
 			"own_name": "玉璜", "own": [cs.get_halo_cost(lv + 1), int(data.items.get("yu_huang", 0))],
 			"on_single": _on_halo_upgrade.bind(cos_id, "single"), "on_bulk": _on_halo_upgrade.bind(cos_id, "bulk")})
 		# 职业光环（2026-10-16 拍板）：锦衣专属第二光环；同名光环满100级解锁，上限100，玉璜100/级；同职业门客赚钱+5%/级（等级=星级可视化）
@@ -1486,14 +1493,15 @@ func _fill_halo_tab(list):
 			var ch_info: String = "【%s：%s】  Lv.%d/%d\n同职业门客赚钱+%d%%" % [cfg.get("name", cos_id), my_cat, ch_lv, cs.CAREER_HALO_CAP, ch_lv * 5]
 			if cs.is_career_halo_unlocked(st):
 				items.append({"name": "%s：%s" % [cfg.get("name", cos_id), my_cat], "stars": ch_lv, "is_max": ch_lv >= cs.CAREER_HALO_CAP, "info": ch_info,
-					"icon": "res://assets/skill_icons/%s.png" % cos_id, "qual": "锦衣",
+					# 职业光环词条图标同服装名款
+					"icon": "res://assets/skill_icons/%s.png" % str(cfg.get("name", cos_id)), "qual": "锦衣",
 					"own_name": "玉璜", "own": [cs.CAREER_HALO_COST, int(data.items.get("yu_huang", 0))],
 					"on_single": _on_career_halo_upgrade.bind(cos_id, "single"), "on_bulk": _on_career_halo_upgrade.bind(cos_id, "bulk")})
 			else:
 				# 详情渲染只取 info 前两行（head/body），激活条件并入 body 效果行尾部（绿色 BBCode）
 				ch_info += "[color=#0a9929]（光环%s满级解锁）[/color]" % cfg.get("name", cos_id)
 				items.append({"name": "%s：%s" % [cfg.get("name", cos_id), my_cat], "stars": ch_lv, "is_max": false, "info": ch_info,
-					"icon": "res://assets/skill_icons/%s.png" % cos_id, "qual": "锦衣", "no_action": true})
+					"icon": "res://assets/skill_icons/%s.png" % str(cfg.get("name", cos_id)), "qual": "锦衣", "no_action": true})
 	# 系列光环：全部技能并入卡片（与服装光环同排同详情区）
 	var ts = data.talent_system
 	var acfg = ts.get_hero_aura_cfg(current_hero_id)
