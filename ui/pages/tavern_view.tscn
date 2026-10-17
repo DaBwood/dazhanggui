@@ -26,10 +26,10 @@ corner_radius_bottom_right = 6
 corner_radius_bottom_left = 6
 
 [sub_resource type="StyleBoxTexture" id="plaque_sb"]
-content_margin_left = 46.0
-content_margin_top = 56.0
-content_margin_right = 42.0
-content_margin_bottom = 50.0
+content_margin_left = 40.0
+content_margin_top = 18.0
+content_margin_right = 36.0
+content_margin_bottom = 12.0
 texture = ExtResource("plaque")
 texture_margin_left = 34.0
 texture_margin_top = 46.0
@@ -190,14 +190,16 @@ anchors_preset = 12
 anchor_top = 1.0
 anchor_right = 1.0
 anchor_bottom = 1.0
-offset_top = -26.0
-offset_bottom = -2.0
+offset_left = -1.0
+offset_top = -6.0
+offset_right = -1.0
+offset_bottom = 20.0
 grow_horizontal = 2
 grow_vertical = 0
 theme_override_colors/font_color = Color(0.96, 0.9, 0.78, 1)
 theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
 theme_override_constants/outline_size = 4
-theme_override_font_sizes/font_size = 17
+theme_override_font_sizes/font_size = 20
 text = "餐饮"
 horizontal_alignment = 1
 
@@ -240,38 +242,43 @@ anchors_preset = 12
 anchor_top = 1.0
 anchor_right = 1.0
 anchor_bottom = 1.0
-offset_top = -26.0
-offset_bottom = -2.0
+offset_left = 2.0
+offset_top = -6.0
+offset_right = 2.0
+offset_bottom = 20.0
 grow_horizontal = 2
 grow_vertical = 0
 theme_override_colors/font_color = Color(0.96, 0.9, 0.78, 1)
 theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
 theme_override_constants/outline_size = 4
-theme_override_font_sizes/font_size = 17
+theme_override_font_sizes/font_size = 20
 text = "娱乐"
 horizontal_alignment = 1
 
-[node name="InfoPanel" type="PanelContainer" parent="." unique_id=329886233]
+[node name="InfoPanel" type="Panel" parent="." unique_id=329886233]
 custom_maximum_size = Vector2(-1, 150)
 layout_mode = 1
 anchors_preset = -1
 anchor_left = 0.5
 anchor_right = 1.0
 anchor_bottom = 0.018
-offset_left = 16.0
-offset_top = 12.0
-offset_right = -16.0
-offset_bottom = 115.794
+offset_left = 23.0
+offset_top = 7.0
+offset_right = -9.0
+offset_bottom = 110.794
 grow_horizontal = 2
 mouse_filter = 2
 theme_override_styles/panel = SubResource("plaque_sb")
 
-[node name="InfoBox" type="VBoxContainer" parent="InfoPanel" unique_id=2012799615]
-layout_mode = 2
-theme_override_constants/separation = 6
-
-[node name="InfoTitle" type="Button" parent="InfoPanel/InfoBox" unique_id=762808679]
-layout_mode = 2
+[node name="InfoTitle" type="Button" parent="InfoPanel" unique_id=557171989]
+layout_mode = 1
+anchors_preset = 10
+anchor_right = 1.0
+offset_left = 41.0
+offset_top = 19.0
+offset_right = -35.0
+offset_bottom = 51.0
+grow_horizontal = 2
 theme_override_colors/font_color = Color(0.788235, 0.537255, 0.247059, 1)
 theme_override_colors/font_hover_color = Color(0.901961, 0.752941, 0.482353, 1)
 theme_override_font_sizes/font_size = 20
@@ -281,47 +288,56 @@ theme_override_styles/hover = SubResource("sb_empty")
 theme_override_styles/focus = SubResource("sb_empty")
 text = "红尘酒楼"
 
-[node name="FameRow" type="HBoxContainer" parent="InfoPanel/InfoBox" unique_id=2115283899]
-layout_mode = 2
-theme_override_constants/separation = 8
-alignment = 1
-
-[node name="FameIcon" type="TextureRect" parent="InfoPanel/InfoBox/FameRow" unique_id=643971337]
-custom_minimum_size = Vector2(30, 30)
-custom_maximum_size = Vector2(30, 30)
-layout_mode = 2
+[node name="FameIcon" type="TextureRect" parent="InfoPanel" unique_id=42840236]
+custom_maximum_size = Vector2(18, 25)
+layout_mode = 1
+offset_left = 83.0
+offset_top = 49.0
+offset_right = 101.0
+offset_bottom = 74.0
 mouse_filter = 2
 texture = ExtResource("fame")
 stretch_mode = 5
 
-[node name="FameLabel" type="Label" parent="InfoPanel/InfoBox/FameRow" unique_id=1877255990]
-layout_mode = 2
+[node name="FameLabel" type="Label" parent="InfoPanel" unique_id=509381620]
+layout_mode = 1
+anchors_preset = 10
+anchor_right = 1.0
+offset_left = 104.0
+offset_top = 46.0
+offset_right = -38.0
+offset_bottom = 72.0
+grow_horizontal = 2
 theme_override_colors/font_color = Color(0.9, 0.95, 0.85, 1)
 theme_override_font_sizes/font_size = 16
 text = "知名度：--"
 
-[node name="SilverRow" type="HBoxContainer" parent="InfoPanel/InfoBox" unique_id=1763987947]
-layout_mode = 2
-theme_override_constants/separation = 8
-alignment = 1
-
-[node name="SilverIcon" type="TextureRect" parent="InfoPanel/InfoBox/SilverRow" unique_id=232416770]
-custom_minimum_size = Vector2(30, 30)
-custom_maximum_size = Vector2(30, 30)
-layout_mode = 2
+[node name="SilverIcon" type="TextureRect" parent="InfoPanel" unique_id=1633993449]
+custom_maximum_size = Vector2(18, 18)
+layout_mode = 1
+offset_left = 85.0
+offset_top = 74.0
+offset_right = 103.0
+offset_bottom = 92.0
 mouse_filter = 2
 texture = ExtResource("silver")
 stretch_mode = 5
 
-[node name="SilverLabel" type="Label" parent="InfoPanel/InfoBox/SilverRow" unique_id=1912307524]
-layout_mode = 2
+[node name="SilverLabel" type="Label" parent="InfoPanel" unique_id=1617971759]
+layout_mode = 1
+anchors_preset = 10
+anchor_right = 1.0
+offset_left = 107.0
+offset_top = 69.0
+offset_right = -35.0
+offset_bottom = 95.0
+grow_horizontal = 2
 theme_override_colors/font_color = Color(0.9, 0.95, 0.85, 1)
 theme_override_font_sizes/font_size = 16
 text = "银条：--"
 
-[node name="CallCluster" type="VBoxContainer" parent="." unique_id=1823147307]
+[node name="CallCluster" type="Control" parent="." unique_id=1823147307]
 layout_mode = 1
-anchors_preset = -1
 anchor_left = 0.55
 anchor_top = 0.75
 anchor_right = 0.985
@@ -332,13 +348,17 @@ offset_right = 19.0
 offset_bottom = 20.75
 grow_horizontal = 2
 grow_vertical = 2
-theme_override_constants/separation = 4
-alignment = 1
 
-[node name="CallIconButton" type="Button" parent="CallCluster" unique_id=657428393]
-custom_minimum_size = Vector2(120, 120)
-layout_mode = 2
-size_flags_horizontal = 4
+[node name="CallIconButton" type="Button" parent="CallCluster" unique_id=1646790990]
+layout_mode = 1
+anchors_preset = 5
+anchor_left = 0.5
+anchor_right = 0.5
+offset_left = -64.5
+offset_top = 4.0
+offset_right = 105.5
+offset_bottom = 144.0
+grow_horizontal = 2
 tooltip_text = "叫号"
 theme_override_styles/normal = SubResource("sb_empty")
 theme_override_styles/pressed = SubResource("sb_empty")
@@ -347,25 +367,45 @@ theme_override_styles/focus = SubResource("sb_empty")
 icon = ExtResource("jh")
 expand_icon = true
 
-[node name="StaminaPanel" type="PanelContainer" parent="CallCluster" unique_id=1448934904]
-layout_mode = 2
-size_flags_horizontal = 4
+[node name="StaminaPanel" type="Panel" parent="CallCluster" unique_id=1448934904]
+custom_maximum_size = Vector2(115, 20)
+layout_mode = 1
+anchors_preset = 10
+anchor_right = 1.0
+offset_left = 78.0
+offset_top = 138.0
+offset_right = -68.0
+offset_bottom = 158.0
+grow_horizontal = 2
 theme_override_styles/panel = SubResource("shade")
 
-[node name="StaminaRow" type="HBoxContainer" parent="CallCluster/StaminaPanel" unique_id=2031832058]
-layout_mode = 2
-theme_override_constants/separation = 6
-alignment = 1
-
-[node name="JhLabel" type="Label" parent="CallCluster/StaminaPanel/StaminaRow" unique_id=1757297870]
-layout_mode = 2
+[node name="JhLabel" type="Label" parent="CallCluster/StaminaPanel" unique_id=1343131681]
+layout_mode = 1
+anchors_preset = 10
+anchor_right = 1.0
+offset_left = 6.0
+offset_top = -6.0
+offset_right = -17.0
+offset_bottom = 24.0
+grow_horizontal = 2
 theme_override_colors/font_color = Color(1, 1, 1, 1)
 theme_override_font_sizes/font_size = 18
 text = "体力：0/50"
 
-[node name="AddButton" type="Button" parent="CallCluster/StaminaPanel/StaminaRow" unique_id=1255444008]
-custom_minimum_size = Vector2(40, 40)
-layout_mode = 2
+[node name="AddButton" type="Button" parent="CallCluster/StaminaPanel" unique_id=575160801]
+custom_maximum_size = Vector2(25, 25)
+layout_mode = 1
+anchors_preset = 6
+anchor_left = 1.0
+anchor_top = 0.5
+anchor_right = 1.0
+anchor_bottom = 0.5
+offset_left = -11.0
+offset_top = -8.0
+offset_right = 9.0
+offset_bottom = 12.0
+grow_horizontal = 0
+grow_vertical = 2
 tooltip_text = "使用【佳酿】+2 叫号"
 theme_override_styles/normal = SubResource("sb_empty")
 theme_override_styles/pressed = SubResource("sb_empty")
@@ -374,19 +414,35 @@ theme_override_styles/focus = SubResource("sb_empty")
 icon = ExtResource("plus")
 expand_icon = true
 
-[node name="CallAllPanel" type="PanelContainer" parent="CallCluster" unique_id=1584982833]
-layout_mode = 2
-size_flags_horizontal = 4
+[node name="CallAllPanel" type="Panel" parent="CallCluster" unique_id=1584982833]
+layout_mode = 1
+anchors_preset = 10
+anchor_right = 1.0
+offset_left = 22.0
+offset_top = 165.0
+offset_right = -18.0
+offset_bottom = 207.0
+grow_horizontal = 2
 theme_override_styles/panel = SubResource("shade")
 
-[node name="CallAllButton" type="Button" parent="CallCluster/CallAllPanel" unique_id=1664502686]
-custom_maximum_size = Vector2(200, 50)
-layout_mode = 2
-size_flags_horizontal = 0
-size_flags_vertical = 4
+[node name="CallAllButton" type="Button" parent="CallCluster/CallAllPanel" unique_id=1668603877]
+custom_minimum_size = Vector2(130, 30)
+custom_maximum_size = Vector2(220, 34)
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -88.5
+offset_top = -3.0
+offset_right = 83.5
+offset_bottom = 31.0
+grow_horizontal = 2
+grow_vertical = 2
 theme_override_colors/font_color = Color(1, 1, 1, 1)
 theme_override_colors/font_hover_color = Color(0.901961, 0.752941, 0.482353, 1)
-theme_override_font_sizes/font_size = 18
+theme_override_font_sizes/font_size = 16
 theme_override_styles/normal = SubResource("sb_empty")
 theme_override_styles/pressed = SubResource("sb_empty")
 theme_override_styles/hover = SubResource("sb_empty")
