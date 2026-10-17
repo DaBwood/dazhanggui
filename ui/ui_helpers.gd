@@ -2,6 +2,7 @@
 # 《大掌柜》UI 助手设施（2026-09-19 架构重构批次B，自 game_controller.gd 原样迁出）
 # 职责：弹窗三件套（工厂/二次居中/OK按钮/滑条数字对）/ 通用关闭 / 主题样式动画 /
 #       顶部提示 / 成功·警告结果弹窗 / 赚速·门客赚钱徽标（飘字已退休 2026-10-02） / 数量选择器
+#       弹窗皮肤三件套（2026-10-17 批次：羊皮纸九切片框体/金匾标题/灯笼关闭钮，全部弹窗工厂一处切）
 # 约定（与 ui/net_ui.gd 相同）：
 #   · 本类是 RefCounted 不是 Node——节点树操作（has_node/get_node/add_child/find_children/
 #     get_viewport*/get_tree/create_tween）必须经 c 转发；弹窗/提示挂 c 根节点 z 序才有效；
@@ -19,14 +20,38 @@ var _income_float_state := {"tween": null, "display": 0.0, "target": 0}   # 【�
 var _hero_income_snapshot: Dictionary = {}   # 【新增】门客赚钱飘字：每个已拥有门客的赚钱快照 {hero_id: income}（首次建档不弹）
 var _hero_float_state := {"tween": null, "display": 0.0, "target": 0}   # 【新增】门客赚钱飘字状态（同赚速飘字结构）
 
+var _popup_skin_frame: Texture2D = null   # 【新增】弹窗皮肤批次（2026-10-17）：羊皮纸框体/金匾/灯笼三件套纹理（懒加载缓存）
+var _popup_skin_plaque: Texture2D = null
+var _popup_skin_corner_l: Texture2D = null
+var _popup_skin_corner_r: Texture2D = null
+var _popup_skin_corner_bl: Texture2D = null
+var _popup_skin_corner_br: Texture2D = null
+
 func _init(p_c):
 	c = p_c
+
+# 【新增】弹窗皮肤批次（2026-10-17）：金匾上的可视标题——
+# 契约标题 Label（vbox 下标0、名 PopupTitle）必须留在内容流供原地重建类按名改写；但匾贴片是面板后绘制子节点，
+# 内容流会被压在匾下面——故契约标题隐藏占位，本标签每帧对账镜像 text/水平对齐，调用方与既有契约零感知
+class PlaqueTitleLabel:
+	extends Label
+
+	var source: Label = null
+
+	func _process(_dt):
+		if source == null or not is_instance_valid(source):
+			set_process(false)
+			return
+		if text != source.text:
+			text = source.text
+		if horizontal_alignment != source.horizontal_alignment:
+			horizontal_alignment = source.horizontal_alignment
 
 # ============ 弹窗工厂三件套 + 通用关闭（原 controller 924~933 行区域） ============
 
 # 【新增】全屏遮罩：压暗背景并挡住弹窗期间切换页面/误触后台（z=25 低于弹窗 30、高于页面）；
 #  引用挂在 panel 的 meta 上，由 _safe_close 连带摘除，113 处调用零改动
-func _create_base_popup(title_text: String, popup_size: Vector2, _pos: Vector2 = Vector2.ZERO, with_close: bool = true) -> PanelContainer:   # _pos 已废弃：一律居中（保留参数兼容旧调用）；with_close=false=确认弹窗不带右上✕（范式§十一.8）
+func _create_base_popup(title_text: String, popup_size: Vector2, _pos: Vector2 = Vector2.ZERO, with_close: bool = true, decorated: bool = true) -> PanelContainer:   # _pos 已废弃：一律居中（保留参数兼容旧调用）；with_close=false=确认弹窗不带右上✕（范式§十一.8）；decorated=false=素面弹窗（规则说明用：暗底、无匾无灯笼、不补【确定】，2026-10-17 弹窗皮肤批次用户拍板）
 	var mask = ColorRect.new()
 	mask.set_anchors_preset(Control.PRESET_FULL_RECT)
 	mask.color = Color(0, 0, 0, 0.55)
@@ -49,64 +74,176 @@ func _create_base_popup(title_text: String, popup_size: Vector2, _pos: Vector2 =
 	# 【新增】内容把面板撑大时按真实尺寸二次居中（custom_minimum_size 只是下限，不是实际尺寸）
 	panel.ready.connect(_recenter_popup.bind(panel))
 
-	var style = StyleBoxFlat.new()
-	# 【改】底色提亮一档（原 #1e1b2e 与全屏门客面板同色，弹窗会融进背景）
-	style.bg_color = Color("#2a2640")
-	style.set_corner_radius_all(12)
-	# 【新增】2px 淡紫描边，弹窗边界一眼可辨（想换金色描边就改成 "#a8893f"）
-	style.set_border_width_all(2)
-	style.border_color = Color("#6a5f9e")
-	panel.add_theme_stylebox_override("panel", style)
+	if decorated:
+		# 【新增】弹窗皮肤批次（2026-10-17 用户拍板）：国风羊皮纸框体替暗色底板——九切片
+		# （角帽=飞檐/石板座原大不拉伸，中间羊皮纸随弹窗尺寸伸缩）；面板默认字体色改深棕（米白纸底，金字不可读）
+		if _popup_skin_frame == null:
+			_popup_skin_frame = load("res://assets/common/popup_frame.png")
+			_popup_skin_plaque = load("res://assets/common/popup_plaque.png")
+			_popup_skin_corner_l = load("res://assets/common/popup_corner_l.png")
+			_popup_skin_corner_r = load("res://assets/common/popup_corner_r.png")
+			_popup_skin_corner_bl = load("res://assets/common/popup_corner_bl.png")
+			_popup_skin_corner_br = load("res://assets/common/popup_corner_br.png")
+		var skin := StyleBoxTexture.new()
+		skin.texture = _popup_skin_frame
+		skin.texture_margin_left = 23
+		skin.texture_margin_right = 19
+		skin.texture_margin_top = 68
+		skin.texture_margin_bottom = 45
+		skin.content_margin_left = 29
+		skin.content_margin_right = 56   # 内容右让 56px：避开右上角灯笼组件垂落区（panel x W-50~W-5、y 32~180，原画此角即装饰区）
+		skin.content_margin_top = 22
+		skin.content_margin_bottom = 38
+		panel.add_theme_stylebox_override("panel", skin)
+		panel.add_theme_color_override("font_color", Color("#3a2613"))
+	else:
+		var style = StyleBoxFlat.new()
+		# 【改】底色提亮一档（原 #1e1b2e 与全屏门客面板同色，弹窗会融进背景）
+		style.bg_color = Color("#2a2640")
+		style.set_corner_radius_all(12)
+		# 【新增】2px 淡紫描边，弹窗边界一眼可辨（想换金色描边就改成 "#a8893f"）
+		style.set_border_width_all(2)
+		style.border_color = Color("#6a5f9e")
+		panel.add_theme_stylebox_override("panel", style)
 
 	var vbox = VBoxContainer.new()
+	# 内容垂直居中（皮肤批次曾改顶对齐，实测短内容偏上、底部大片空；匾标题是 overlay 不吃对齐，居中无影响）
 	vbox.alignment = BoxContainer.ALIGNMENT_CENTER
+	if decorated:
+		vbox.z_index = 1   # 内容抬到装饰层之上：匾/飞檐/灯笼/底座贴片先画、内容后盖，杜绝"组件啃内容角"（z 只管绘制序；点击区在内容矩形右缘外不受影响）
 	vbox.add_theme_constant_override("separation", 12)
 	panel.add_child(vbox)
 
 	# 【改】UI统一批次①补充：标题回到内容流第一个子节点（随内容整体居中，同旧行为）；
 	#       with_close=true 时空标题也建命名 Label——原地重建类弹窗（厢房/庄园/钓点）按名 PopupTitle 改标题、
 	#       清空重建保留下标0；确认弹窗（with_close=false）不带✕、遮罩点击不关闭（必须点按钮做选择）
+	var title: Label = null
 	if with_close or title_text != "":
-		var title = Label.new()
+		title = Label.new()
 		title.name = "PopupTitle"
 		title.text = title_text
 		title.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 		title.add_theme_font_size_override("font_size", 22)
 		title.add_theme_color_override("font_color", Color("#ffd700"))
+		if decorated:
+			title.visible = false   # 【新增】皮肤批次：契约标题隐藏占位（原地重建类按名 PopupTitle 改写的仍是它），匾上可视标题=镜像标签
 		vbox.add_child(title)
 	
-
+	var overlay: Control = null
 	if with_close:
 		# 【改】✕ 总关闭钮改悬浮层钉右上角（原 vbox 顶行方案作废：vbox 整体垂直居中，内容少时✕浮在半空）——
-		#       x_layer 作 PanelContainer 第二子节点被拉伸满幅、IGNORE 不挡点击、后绘制压内容之上；
+		#       x_layer 是 PanelContainer 子节点被容器拉伸满幅（项目既有行为）、IGNORE 不挡点击、后绘制压内容之上；
 		#       ✕ 锚定右上角，随面板尺寸/二次居中自动贴角，z 随面板被调用方提升
 		var x_layer = Control.new()
 		x_layer.mouse_filter = Control.MOUSE_FILTER_IGNORE
 		panel.add_child(x_layer)
 		var close_x = Button.new()
 		close_x.name = "PopupCloseX"
-		close_x.text = "×"   # 【改】✕(U+2715) 不在 Noto Sans SC 字形内，×(U+00D7 Latin-1) 才有——关闭钮的 X 不用赌源字体覆盖
 		close_x.set_anchors_preset(Control.PRESET_TOP_RIGHT)
-		close_x.position = Vector2(-44, 8)   # 相对右上角：右留8px、上留8px
-		close_x.size = Vector2(36, 36)
 		close_x.mouse_filter = Control.MOUSE_FILTER_STOP   # 显式STOP：必须吃点击（PASS会把点击让出去）
-		# 无底红字小钮：四态空底板只留字形，不抢弹窗标题视觉
+		# 无底空钮：四态空底板，视觉/字形随皮肤分支
 		var empty_sb = StyleBoxEmpty.new()
 		for st in ["normal", "hover", "pressed", "focus"]:
 			close_x.add_theme_stylebox_override(st, empty_sb)
-		close_x.add_theme_color_override("font_color", Color("#ff6666"))
-		close_x.add_theme_color_override("font_hover_color", Color("#ff9999"))
-		close_x.add_theme_color_override("font_pressed_color", Color("#ff4444"))
-		close_x.add_theme_font_size_override("font_size", 20)
+		if decorated:
+			# 【新增】皮肤批次：右上角灯笼=关闭钮（红 X 已画在灯笼图里），透明 hit 区盖灯罩、无字；
+			# 灯笼挂按钮子节点而非兄弟——厢房命格对比按名摘 PopupCloseX 时灯笼随之销毁，杜绝"看的不能点"死饵
+			close_x.text = ""
+			# 内容矩形系（panel = 内容 + (29,22)）：hit 区 = 灯罩位 panel (W-50,32) 起 45×81
+			close_x.position = Vector2(6, 10)   # 右缘锚随内容右边距56左移28，+6 补偿 → panel(W-50,32) 扣灯罩   # 内容矩形右缘锚=panel(W-28,22)，→ panel(W-50,32) 正扣灯罩
+			close_x.size = Vector2(45, 81)
+			var corner_r = TextureRect.new()
+			corner_r.name = "PopupCornerR"
+			corner_r.texture = _popup_skin_corner_r
+			corner_r.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_CENTERED
+			corner_r.mouse_filter = Control.MOUSE_FILTER_IGNORE
+			# 右上角整块原画（飞檐+绳+叶+灯+穗，零抠图）：panel (W-81,-35) 起 88×211，
+			# 挂按钮子节点——厢房命格对比按名摘 PopupCloseX 时整块随之销毁，杜绝死饵
+			corner_r.position = Vector2(-11, -68)   # 对齐面板右缘 src1316→panel W，灯笼骑框右边沿
+			corner_r.size = Vector2(88, 211)
+			close_x.add_child(corner_r)
+		else:
+			close_x.text = "×"   # 【改】✕(U+2715) 不在 Noto Sans SC 字形内，×(U+00D7 Latin-1) 才有——关闭钮的 X 不用赌源字体覆盖
+			close_x.position = Vector2(-44, 8)   # 相对右上角：右留8px、上留8px
+			close_x.size = Vector2(36, 36)
+			close_x.add_theme_color_override("font_color", Color("#ff6666"))
+			close_x.add_theme_color_override("font_hover_color", Color("#ff9999"))
+			close_x.add_theme_color_override("font_pressed_color", Color("#ff4444"))
+			close_x.add_theme_font_size_override("font_size", 20)
 		close_x.pressed.connect(panel.queue_free)   # 关自己：遮罩走 tree_exiting 连带清理，无需按名
 		x_layer.add_child(close_x)
-		# 【新增】遮罩点击关闭（2026-09-25 用户拍板；确认弹窗不启用——必须点【取消/确定】明确选择）
+		overlay = x_layer
+	if decorated:
+		# 【新增】金匾贴片：挂 overlay 而非面板——PanelContainer 是容器会把子控件强制重排
+		# （v1 匾被拉伸到 parchment 正中藏在登录钮后面）；x_layer / with_close=false 时的独立 overlay
+		# 都是普通 Control 不吃排布，匾锚 CENTER_TOP 才稳定；后绘制压内容流之上，标题=匾上镜像标签
+		if overlay == null:
+			overlay = Control.new()
+			overlay.mouse_filter = Control.MOUSE_FILTER_IGNORE
+			panel.add_child(overlay)
+		var plaque = TextureRect.new()
+		plaque.name = "PopupPlaque"
+		plaque.texture = _popup_skin_plaque
+		plaque.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_CENTERED
+		plaque.mouse_filter = Control.MOUSE_FILTER_IGNORE
+		plaque.set_anchors_preset(Control.PRESET_CENTER_TOP)
+		# 坐标基准=内容矩形（panel = 内容 + (29,22)）；CENTER_TOP 锚 panel x = W/2 + pos_x：
+		# pos_y -36 → panel y -14~26：露框顶 14px、骑梁 26px（原画"匾挂框沿"比例）；内容首行 56 起，零遮挡
+		plaque.position = Vector2(-96.5, -36)   # 内容矩形中点=W/2-13.5（右边距56），-96.5 → 面板正中
+		plaque.size = Vector2(220, 40)
+		overlay.add_child(plaque)
+		var corner_l = TextureRect.new()
+		corner_l.name = "PopupCornerL"
+		corner_l.texture = _popup_skin_corner_l
+		corner_l.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_CENTERED
+		corner_l.mouse_filter = Control.MOUSE_FILTER_IGNORE
+		corner_l.set_anchors_preset(Control.PRESET_TOP_LEFT)
+		# 左上飞檐端+竹叶整块原画（零抠图）：panel (-29,-22) 起 103×83——飞檐探出框左/上，
+		# 复原原画"横梁两端探出框体、架在页面上"；底收到 83px 避让首行内容
+		corner_l.position = Vector2(-58, -44)
+		corner_l.size = Vector2(103, 83)
+		overlay.add_child(corner_l)
+		var corner_bl = TextureRect.new()
+		corner_bl.name = "PopupCornerBL"
+		corner_bl.texture = _popup_skin_corner_bl
+		corner_bl.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_CENTERED
+		corner_bl.mouse_filter = Control.MOUSE_FILTER_IGNORE
+		corner_bl.set_anchors_preset(Control.PRESET_BOTTOM_LEFT)
+		# 左下石板座端+竹叶整块原画：panel (-22,H-88) 起 112×88——补全柱间裁剪被切的底座左脚（探出框左）
+		corner_bl.position = Vector2(-51, -50)   # 底边锚=panel y H-38：→ patch panel (-22,H-88)，底座与面板底齐平
+		corner_bl.size = Vector2(112, 88)
+		overlay.add_child(corner_bl)
+		var corner_br = TextureRect.new()
+		corner_br.name = "PopupCornerBR"
+		corner_br.texture = _popup_skin_corner_br
+		corner_br.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_CENTERED
+		corner_br.mouse_filter = Control.MOUSE_FILTER_IGNORE
+		corner_br.set_anchors_preset(Control.PRESET_BOTTOM_RIGHT)
+		# 右下石板座端+竹叶整块原画：panel (W-86,H-88) 起 112×88——底座右脚探出框右（原画底座比柱宽）
+		corner_br.position = Vector2(-30, -50)   # 同右锚补偿 → panel(W-86,H-88)，柱条与框体重合   # → panel (W-86,H-88)，与框体柱条完全重合无缝   # 同上：→ patch panel (W-86,H-88)
+		corner_br.size = Vector2(112, 88)
+		overlay.add_child(corner_br)
+		var plaque_title := PlaqueTitleLabel.new()
+		plaque_title.name = "PlaqueTitleVisible"
+		plaque_title.source = title
+		plaque_title.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+		plaque_title.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
+		plaque_title.add_theme_font_size_override("font_size", 22)
+		plaque_title.add_theme_color_override("font_color", Color("#3a2613"))
+		plaque_title.mouse_filter = Control.MOUSE_FILTER_IGNORE
+		plaque_title.set_anchors_preset(Control.PRESET_FULL_RECT)
+		plaque.add_child(plaque_title)
+	if with_close or not decorated:
+		# 【新增】遮罩点击关闭（2026-09-25 用户拍板；确认弹窗不启用——必须点【取消/确定】明确选择；
+		#       2026-10-17 皮肤批次：素面弹窗无✕，点任意处关闭也走这里）
 		mask.gui_input.connect(func(ev):
 			if ev is InputEventMouseButton and ev.pressed and ev.button_index == MOUSE_BUTTON_LEFT:
 				panel.queue_free()
 		)
-		# 【新增】纯信息弹窗自动补底部【确定】（2026-09-25 用户拍板）：等两帧内容建完再扫描
-		panel.ready.connect(_auto_add_ok_button.bind(panel))
+		if with_close and decorated:
+			# 【新增】纯信息弹窗自动补底部【确定】（2026-09-25 用户拍板）：等两帧内容建完再扫描
+			#       （2026-10-17 皮肤批次：仅装饰版补——素面规则弹窗点击任意处即关，不补确定钮）
+			panel.ready.connect(_auto_add_ok_button.bind(panel))
 
 	return panel
 
@@ -496,7 +633,8 @@ func _format_gains(gains: Dictionary) -> String:
 
 # 【新增】规则说明弹窗（"?"按钮）：带遮罩、点外部关闭、不自动关——区别于成功/警告弹窗（可自动关），2026-10-02 用户拍板规则长文必须弹窗。
 func _show_rule_popup(title: String, text: String):
-	var popup: PanelContainer = _create_base_popup(title, Vector2(480, 320))
+	# 【改】弹窗皮肤批次：规则说明弹窗走素面（2026-10-17 用户拍板——频率低不装饰；无✕无确定钮，点任意处即关）
+	var popup: PanelContainer = _create_base_popup(title, Vector2(480, 320), Vector2.ZERO, false, false)
 	popup.name = "RuleHelpPopup"
 	popup.z_index = 40   # 盖过页面(z35)，同科室/病症弹窗惯例
 	c.add_child(popup)   # 弹窗工厂只创建不挂载，必须调用方 add_child
