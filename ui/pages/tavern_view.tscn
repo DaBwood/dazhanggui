@@ -1,9 +1,9 @@
 [gd_scene format=3 uid="uid://c5jbm1p8j6w1x"]
 
+[ext_resource type="Texture2D" uid="uid://b7n2sm643ktsm" path="res://assets/common/check_on.png" id="11_gjber"]
 [ext_resource type="Texture2D" uid="uid://byi8tda0st44k" path="res://assets/common/返回.png" id="back"]
 [ext_resource type="Texture2D" uid="uid://dauie8cvgbiby" path="res://assets/tavern/map_bg.png" id="bg"]
 [ext_resource type="Texture2D" uid="uid://d6cyqiaefsgb" path="res://assets/tavern/餐饮.png" id="can"]
-[ext_resource type="Texture2D" uid="uid://c8oi76y4mdem0" path="res://assets/common/check_green.png" id="check"]
 [ext_resource type="Texture2D" uid="uid://cmepa3fodkol1" path="res://assets/tavern/知名度.png" id="fame"]
 [ext_resource type="Texture2D" uid="uid://cqyoidoti48f4" path="res://assets/tavern/收益罐空.png" id="jare"]
 [ext_resource type="Texture2D" uid="uid://bbvcui5432ny" path="res://assets/tavern/叫号.png" id="jh"]
@@ -48,26 +48,18 @@ mouse_filter = 2
 texture = ExtResource("bg")
 stretch_mode = 6
 
-[node name="TopShade" type="ColorRect" parent="." unique_id=200332267]
-layout_mode = 1
-anchors_preset = 10
-anchor_right = 1.0
-offset_bottom = 96.0
-grow_horizontal = 2
-mouse_filter = 2
-color = Color(0, 0, 0, 0.35)
-
 [node name="JarIcon" type="Button" parent="." unique_id=104571925]
+custom_maximum_size = Vector2(50, 50)
 layout_mode = 1
 anchors_preset = -1
 anchor_left = 0.3891
 anchor_top = 0.5832
 anchor_right = 0.3891
 anchor_bottom = 0.5832
-offset_left = -52.0
-offset_top = -52.0
-offset_right = 52.0
-offset_bottom = 52.0
+offset_left = 146.54001
+offset_top = -122.27435
+offset_right = 196.54001
+offset_bottom = -72.27435
 grow_horizontal = 2
 grow_vertical = 2
 tooltip_text = "收益罐（点击领取）"
@@ -97,10 +89,6 @@ theme_override_styles/hover = SubResource("sb_empty")
 theme_override_styles/focus = SubResource("sb_empty")
 icon = ExtResource("back")
 expand_icon = true
-
-[node name="LeftSpring" type="Control" parent="Main/TopBar" unique_id=1043604487]
-layout_mode = 2
-size_flags_horizontal = 3
 
 [node name="TitleLabel" type="Label" parent="Main/TopBar" unique_id=85879456]
 layout_mode = 2
@@ -138,29 +126,26 @@ size_flags_horizontal = 3
 theme_override_constants/separation = 8
 
 [node name="MainNav" type="HBoxContainer" parent="Main" unique_id=1774364411]
-custom_minimum_size = Vector2(0, 150)
+custom_minimum_size = Vector2(0, 100)
 layout_mode = 2
 theme_override_constants/separation = 18
 
 [node name="NavPad" type="Control" parent="Main/MainNav" unique_id=916449996]
-custom_minimum_size = Vector2(24, 0)
+custom_minimum_size = Vector2(10, 0)
 layout_mode = 2
 
 [node name="CanWrap" type="Control" parent="Main/MainNav" unique_id=956326741]
-custom_minimum_size = Vector2(60, 60)
-custom_maximum_size = Vector2(60, 60)
+custom_minimum_size = Vector2(75, 75)
+custom_maximum_size = Vector2(75, 75)
 layout_mode = 2
+size_flags_horizontal = 4
+size_flags_vertical = 0
 
 [node name="CanButton" type="Button" parent="Main/MainNav/CanWrap" unique_id=931974374]
-custom_maximum_size = Vector2(50, -1)
 layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
-offset_left = -15.0
-offset_top = 66.0
-offset_right = -25.0
-offset_bottom = 66.0
 grow_horizontal = 2
 grow_vertical = 2
 theme_override_styles/normal = SubResource("sb_empty")
@@ -171,29 +156,29 @@ icon = ExtResource("can")
 expand_icon = true
 
 [node name="CanDot" type="Label" parent="Main/MainNav/CanWrap" unique_id=2142893156]
-layout_mode = 0
-offset_left = 26.0
-offset_top = 68.0
-offset_right = 46.0
-offset_bottom = 93.0
+layout_mode = 1
+anchors_preset = 1
+anchor_left = 1.0
+anchor_right = 1.0
+offset_left = -20.0
+offset_bottom = 25.0
+grow_horizontal = 0
 theme_override_colors/font_color = Color(0.905882, 0.298039, 0.235294, 1)
 theme_override_font_sizes/font_size = 16
 text = "●"
 
 [node name="JoyWrap" type="Control" parent="Main/MainNav" unique_id=1354235536]
-custom_minimum_size = Vector2(140, 150)
+custom_minimum_size = Vector2(75, 75)
+custom_maximum_size = Vector2(75, 75)
 layout_mode = 2
+size_flags_horizontal = 4
+size_flags_vertical = 0
 
 [node name="JoyButton" type="Button" parent="Main/MainNav/JoyWrap" unique_id=383690945]
-custom_maximum_size = Vector2(50, 50)
 layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
-offset_left = -27.0
-offset_top = 71.0
-offset_right = -117.0
-offset_bottom = -29.0
 grow_horizontal = 2
 grow_vertical = 2
 theme_override_styles/normal = SubResource("sb_empty")
@@ -204,11 +189,13 @@ icon = ExtResource("joy")
 expand_icon = true
 
 [node name="JoyDot" type="Label" parent="Main/MainNav/JoyWrap" unique_id=614167423]
-layout_mode = 0
-offset_left = 7.0
-offset_top = 65.0
-offset_right = 27.0
-offset_bottom = 90.0
+layout_mode = 1
+anchors_preset = 1
+anchor_left = 1.0
+anchor_right = 1.0
+offset_left = -20.0
+offset_bottom = 25.0
+grow_horizontal = 0
 theme_override_colors/font_color = Color(0.905882, 0.298039, 0.235294, 1)
 theme_override_font_sizes/font_size = 16
 text = "●"
@@ -293,7 +280,7 @@ theme_override_constants/separation = 4
 alignment = 1
 
 [node name="CallIconButton" type="Button" parent="CallCluster" unique_id=657428393]
-custom_minimum_size = Vector2(150, 140)
+custom_minimum_size = Vector2(120, 120)
 layout_mode = 2
 size_flags_horizontal = 4
 tooltip_text = "叫号"
@@ -339,4 +326,4 @@ theme_override_styles/pressed = SubResource("sb_empty")
 theme_override_styles/hover = SubResource("sb_empty")
 theme_override_styles/focus = SubResource("sb_empty")
 text = " 一键叫号"
-icon = ExtResource("check")
+icon = ExtResource("11_gjber")
