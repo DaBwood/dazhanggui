@@ -90,12 +90,40 @@ func _create_base_popup(title_text: String, popup_size: Vector2, _pos: Vector2 =
 		skin.texture_margin_right = 19
 		skin.texture_margin_top = 68
 		skin.texture_margin_bottom = 45
-		skin.content_margin_left = 29
-		skin.content_margin_right = 56   # 内容右让 56px：避开右上角灯笼组件垂落区（panel x W-50~W-5、y 32~180，原画此角即装饰区）
-		skin.content_margin_top = 22
-		skin.content_margin_bottom = 38
+		skin.content_margin_left = 40
+		skin.content_margin_right = 60   # 内容右让 60px：避开灯笼垂落区（panel x W-50~W-5）
+		skin.content_margin_top = 36   # 首行实内容=36+占位标题22+间距12=70，退出顶梁(68)
+		skin.content_margin_bottom = 40
 		panel.add_theme_stylebox_override("panel", skin)
 		panel.add_theme_color_override("font_color", Color("#3a2613"))
+		# 【新增】弹窗按钮统一绿意（2026-10-17 用户拍板）：主题挂面板，后代 Button 全体生效（调用方显式覆写者除外）
+		var btn_theme := Theme.new()
+		var sb_btn_n := StyleBoxFlat.new()
+		sb_btn_n.bg_color = Color("#4a9e5c")
+		sb_btn_n.set_corner_radius_all(8)
+		var sb_btn_h := StyleBoxFlat.new()
+		sb_btn_h.bg_color = Color("#57b56c")
+		sb_btn_h.set_corner_radius_all(8)
+		var sb_btn_p := StyleBoxFlat.new()
+		sb_btn_p.bg_color = Color("#3d8450")
+		sb_btn_p.set_corner_radius_all(8)
+		var sb_btn_d := StyleBoxFlat.new()
+		sb_btn_d.bg_color = Color("#a9b5aa")
+		sb_btn_d.set_corner_radius_all(8)
+		btn_theme.set_stylebox("normal", "Button", sb_btn_n)
+		btn_theme.set_stylebox("hover", "Button", sb_btn_h)
+		btn_theme.set_stylebox("pressed", "Button", sb_btn_p)
+		btn_theme.set_stylebox("disabled", "Button", sb_btn_d)
+		btn_theme.set_stylebox("focus", "Button", sb_btn_h)
+		# 字色进主题而非面板覆盖——Godot4 的 add_theme_color_override 不传子节点，theme 类型项才传播（动态建的标签免疫白字）
+		btn_theme.set_color("font_color", "Label", Color("#3a2613"))
+		btn_theme.set_color("font_color", "LineEdit", Color("#3a2613"))
+		btn_theme.set_color("font_color", "RichTextLabel", Color("#3a2613"))
+		btn_theme.set_color("font_color", "Button", Color("#ffffff"))
+		btn_theme.set_color("font_hover_color", "Button", Color("#ffffff"))
+		btn_theme.set_color("font_pressed_color", "Button", Color("#e8f5ec"))
+		btn_theme.set_color("font_disabled_color", "Button", Color("#f0f0f0"))
+		panel.theme = btn_theme
 	else:
 		var style = StyleBoxFlat.new()
 		# 【改】底色提亮一档（原 #1e1b2e 与全屏门客面板同色，弹窗会融进背景）
@@ -150,7 +178,7 @@ func _create_base_popup(title_text: String, popup_size: Vector2, _pos: Vector2 =
 			# 灯笼挂按钮子节点而非兄弟——厢房命格对比按名摘 PopupCloseX 时灯笼随之销毁，杜绝"看的不能点"死饵
 			close_x.text = ""
 			# 内容矩形系（panel = 内容 + (29,22)）：hit 区 = 灯罩位 panel (W-50,32) 起 45×81
-			close_x.position = Vector2(6, 10)   # 右缘锚随内容右边距56左移28，+6 补偿 → panel(W-50,32) 扣灯罩   # 内容矩形右缘锚=panel(W-28,22)，→ panel(W-50,32) 正扣灯罩
+			close_x.position = Vector2(10, -4)   # 重推：右缘锚随边距60→panel(W-50,32) 扣灯罩   # 右缘锚随内容右边距56左移28，+6 补偿 → panel(W-50,32) 扣灯罩   # 内容矩形右缘锚=panel(W-28,22)，→ panel(W-50,32) 正扣灯罩
 			close_x.size = Vector2(45, 81)
 			var corner_r = TextureRect.new()
 			corner_r.name = "PopupCornerR"
@@ -189,7 +217,7 @@ func _create_base_popup(title_text: String, popup_size: Vector2, _pos: Vector2 =
 		plaque.set_anchors_preset(Control.PRESET_CENTER_TOP)
 		# 坐标基准=内容矩形（panel = 内容 + (29,22)）；CENTER_TOP 锚 panel x = W/2 + pos_x：
 		# pos_y -36 → panel y -14~26：露框顶 14px、骑梁 26px（原画"匾挂框沿"比例）；内容首行 56 起，零遮挡
-		plaque.position = Vector2(-96.5, -36)   # 内容矩形中点=W/2-13.5（右边距56），-96.5 → 面板正中
+		plaque.position = Vector2(-100, -50)   # 边距40/36后重推：内容矩形系→panel x=W/2-110、y=-14~26   # 内容矩形中点=W/2-13.5（右边距56），-96.5 → 面板正中
 		plaque.size = Vector2(220, 40)
 		overlay.add_child(plaque)
 		var corner_l = TextureRect.new()
@@ -200,7 +228,7 @@ func _create_base_popup(title_text: String, popup_size: Vector2, _pos: Vector2 =
 		corner_l.set_anchors_preset(Control.PRESET_TOP_LEFT)
 		# 左上飞檐端+竹叶整块原画（零抠图）：panel (-29,-22) 起 103×83——飞檐探出框左/上，
 		# 复原原画"横梁两端探出框体、架在页面上"；底收到 83px 避让首行内容
-		corner_l.position = Vector2(-58, -44)
+		corner_l.position = Vector2(-69, -58)   # 重推：→ panel (-29,-22)
 		corner_l.size = Vector2(103, 83)
 		overlay.add_child(corner_l)
 		var corner_bl = TextureRect.new()
@@ -210,7 +238,7 @@ func _create_base_popup(title_text: String, popup_size: Vector2, _pos: Vector2 =
 		corner_bl.mouse_filter = Control.MOUSE_FILTER_IGNORE
 		corner_bl.set_anchors_preset(Control.PRESET_BOTTOM_LEFT)
 		# 左下石板座端+竹叶整块原画：panel (-22,H-88) 起 112×88——补全柱间裁剪被切的底座左脚（探出框左）
-		corner_bl.position = Vector2(-51, -50)   # 底边锚=panel y H-38：→ patch panel (-22,H-88)，底座与面板底齐平
+		corner_bl.position = Vector2(-62, -48)   # 重推：底锚=panel y H-40：→ panel(-22,H-88)   # 底边锚=panel y H-38：→ patch panel (-22,H-88)，底座与面板底齐平
 		corner_bl.size = Vector2(112, 88)
 		overlay.add_child(corner_bl)
 		var corner_br = TextureRect.new()
@@ -220,7 +248,7 @@ func _create_base_popup(title_text: String, popup_size: Vector2, _pos: Vector2 =
 		corner_br.mouse_filter = Control.MOUSE_FILTER_IGNORE
 		corner_br.set_anchors_preset(Control.PRESET_BOTTOM_RIGHT)
 		# 右下石板座端+竹叶整块原画：panel (W-86,H-88) 起 112×88——底座右脚探出框右（原画底座比柱宽）
-		corner_br.position = Vector2(-30, -50)   # 同右锚补偿 → panel(W-86,H-88)，柱条与框体重合   # → panel (W-86,H-88)，与框体柱条完全重合无缝   # 同上：→ patch panel (W-86,H-88)
+		corner_br.position = Vector2(-26, -48)   # 重推：→ panel(W-86,H-88)   # 同右锚补偿 → panel(W-86,H-88)，柱条与框体重合   # → panel (W-86,H-88)，与框体柱条完全重合无缝   # 同上：→ patch panel (W-86,H-88)
 		corner_br.size = Vector2(112, 88)
 		overlay.add_child(corner_br)
 		var plaque_title := PlaqueTitleLabel.new()
@@ -244,6 +272,11 @@ func _create_base_popup(title_text: String, popup_size: Vector2, _pos: Vector2 =
 			# 【新增】纯信息弹窗自动补底部【确定】（2026-09-25 用户拍板）：等两帧内容建完再扫描
 			#       （2026-10-17 皮肤批次：仅装饰版补——素面规则弹窗点击任意处即关，不补确定钮）
 			panel.ready.connect(_auto_add_ok_button.bind(panel))
+	if decorated:
+		# 【新增】弹窗皮肤批次（2026-10-17 用户拍板）：装饰版弹窗一律禁横向滚动——超宽内容容器内自缩，不出横滚条
+		panel.ready.connect(_disable_h_scroll.bind(panel))
+		# 【新增】浅色显式字色→深棕：只作用于弹窗子树（页内同构建器实例不受影响，解决深底/parchment 双色复用）
+		panel.ready.connect(_adapt_popup_contrast.bind(panel))
 
 	return panel
 
@@ -259,6 +292,22 @@ func _recenter_popup(panel: Control):
 # 【新增】纯信息弹窗自动补底部【确定】（2026-09-25 用户拍板）：等两帧内容建完后扫描内容区，
 # 一个动作钮都没有（纯展示）才在底部补【确定】（=queue_free，与✕/遮罩点击同路径）；
 # 有使用/升级/列表按钮的弹窗不补；CheckBox/CheckButton 勾选框不算动作钮
+# 【新增】弹窗皮肤批次（2026-10-17 用户拍板）：弹窗子树内浅色显式字色统一改深棕——
+# 深底色时代留的灰/薰衣草字在羊皮纸上发虚；按解析后实际字色判定（亮度高且低饱和才改），金/红/绿等彩色字不动。
+# 只走弹窗子树：同一份卡片构建器在全屏页（深底）里的实例不受影响。限制：原地重建类弹窗重建后的新标签不覆盖（撞见再静态修）。
+func _adapt_popup_contrast(panel: PanelContainer):
+	for lbl in panel.find_children("*", "Label", true, false):
+		var col = lbl.get_theme_color("font_color")
+		var mx = maxf(col.r, maxf(col.g, col.b))
+		var mn = minf(col.r, minf(col.g, col.b))
+		if (mx + mn) * 0.5 > 0.45 and (mx - mn) < 0.35 * mx:
+			lbl.add_theme_color_override("font_color", Color("#5a3d26"))
+
+# 【新增】弹窗皮肤批次（2026-10-17 用户拍板）：装饰版弹窗内全部 ScrollContainer 禁横滚（防内容超宽出横滚条；动态后建的列表需调用方自行禁）
+func _disable_h_scroll(panel: PanelContainer):
+	for sc in panel.find_children("*", "ScrollContainer", true, false):
+		sc.horizontal_scroll_mode = ScrollContainer.SCROLL_MODE_DISABLED
+
 func _auto_add_ok_button(panel: PanelContainer):
 	await c.get_tree().process_frame
 	await c.get_tree().process_frame

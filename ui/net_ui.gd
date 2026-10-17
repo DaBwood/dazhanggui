@@ -37,10 +37,6 @@ func _show_login_gate():
 	vb.position = Vector2(-110, -190)
 	vb.add_theme_constant_override("separation", 16)
 	gate.add_child(vb)
-	var hint = Label.new()
-	hint.text = "登录或注册后进入游戏\n存档跟随账号"
-	hint.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
-	vb.add_child(hint)
 	var offline = Button.new()
 	offline.text = "离线模式（不联机）"
 	offline.pressed.connect(_enter_offline)

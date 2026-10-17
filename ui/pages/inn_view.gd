@@ -230,7 +230,7 @@ func _on_start_cook():
 # 【新增】批次②③④-B1修正：客栈玩法说明弹窗（只从主标题旁"?"进入）
 func _show_rule_popup():
 	_close_node("InnRulePopup")
-	var popup: PanelContainer = c._create_base_popup("客栈说明", Vector2(380, 300))
+	var popup: PanelContainer = c._create_base_popup("客栈说明", Vector2(420, 320))   # 【改】皮肤批次：380→420，说明行长文本容宽余量
 	popup.name = "InnRulePopup"
 	popup.get_meta("popup_mask").z_index = 39
 	popup.z_index = 40
@@ -275,6 +275,7 @@ func _show_hero_popup():
 	var scroll := ScrollContainer.new()
 	scroll.size_flags_vertical = Control.SIZE_EXPAND_FILL
 	scroll.custom_minimum_size = Vector2(0, 380)
+	scroll.horizontal_scroll_mode = ScrollContainer.SCROLL_MODE_DISABLED   # 【新增】皮肤批次：禁横滚
 	vb.add_child(scroll)
 	grid.columns = 2
 	grid.size_flags_horizontal = Control.SIZE_EXPAND_FILL
@@ -325,6 +326,7 @@ func _show_pack_popup(hero_id: String):
 	var scroll := ScrollContainer.new()
 	scroll.size_flags_vertical = Control.SIZE_EXPAND_FILL
 	scroll.custom_minimum_size = Vector2(0, 330)
+	scroll.horizontal_scroll_mode = ScrollContainer.SCROLL_MODE_DISABLED   # 【新增】皮肤批次：禁横滚
 	vb.add_child(scroll)
 	var grid := GridContainer.new()
 	grid.columns = 1
@@ -479,6 +481,7 @@ func _fill_recipe(body: VBoxContainer):
 	# 当前职业 10 道菜（卡片网格 2 列；可升级的红点提示，点击开升级弹窗）
 	var scroll := ScrollContainer.new()
 	scroll.size_flags_vertical = Control.SIZE_EXPAND_FILL
+	scroll.horizontal_scroll_mode = ScrollContainer.SCROLL_MODE_DISABLED   # 【新增】皮肤批次：禁横滚
 	body.add_child(scroll)
 	var grid := GridContainer.new()
 	grid.columns = 2
@@ -584,6 +587,7 @@ func _fill_exchange(body: VBoxContainer):
 	# 【改】批次②③④-B12：兑换商店改双列卡片，不再用“整行信息+右侧小按钮”
 	var scroll := ScrollContainer.new()
 	scroll.size_flags_vertical = Control.SIZE_EXPAND_FILL
+	scroll.horizontal_scroll_mode = ScrollContainer.SCROLL_MODE_DISABLED   # 【新增】皮肤批次：禁横滚
 	body.add_child(scroll)
 	var grid := GridContainer.new()
 	grid.columns = 2

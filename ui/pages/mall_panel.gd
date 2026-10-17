@@ -124,6 +124,7 @@ func _build_recharge_page():
 	rc.add_child(content)
 	var yuanbai = VBoxContainer.new()   # 元宝充值列表
 	yuanbai.name = "YuanbaiContainer"
+	yuanbai.size_flags_vertical = Control.SIZE_EXPAND_FILL   # 【新增】皮肤批次：页签切换内容高度不一，三页容器统一填满，弹窗视觉尺寸固定
 	content.add_child(yuanbai)
 	var grid = GridContainer.new()
 	grid.name = "RechargeGrid"
@@ -131,16 +132,18 @@ func _build_recharge_page():
 	yuanbai.add_child(grid)
 	var daily = VBoxContainer.new()
 	daily.name = "DailyGiftContainer"
+	daily.size_flags_vertical = Control.SIZE_EXPAND_FILL   # 【新增】皮肤批次：同上
 	daily.visible = false
 	content.add_child(daily)
 	var special = VBoxContainer.new()
 	special.name = "SpecialPackContainer"
+	special.size_flags_vertical = Control.SIZE_EXPAND_FILL   # 【新增】皮肤批次：同上
 	content.add_child(special)
 	c.add_child(panel)
 
 # 【新增】UI统一批A：VIP 面板构建器（同充值页迁工厂；标题走工厂 PopupTitle，原内层 Title 删除）
 func _build_vip_panel():
-	var panel = c._create_base_popup(c.TXT_VIP_TITLE, Vector2(520, 720))
+	var panel = c._create_base_popup(c.TXT_VIP_TITLE, Vector2(560, 720))   # 【改】皮肤批次：520→560，VIP16 长奖励行（门客+挚友双名）容宽不足出横滚
 	panel.name = "VIPPanel"
 	var vb = panel.get_child(0)
 	vb.name = "VBoxContainer"   # 【新增】命名对齐既有节点路径（_update_vip_panel 按此取值）
@@ -152,6 +155,15 @@ func _build_vip_panel():
 	progress.name = "VIPProgress"
 	progress.max_value = 100
 	progress.show_percentage = false
+	# 【新增】皮肤批次：默认蓝进度条在羊皮纸上突兀→浅 parchment 底 + 古金填充
+	var pb_bg := StyleBoxFlat.new()
+	pb_bg.bg_color = Color("#e8dcc8")
+	pb_bg.set_corner_radius_all(4)
+	var pb_fill := StyleBoxFlat.new()
+	pb_fill.bg_color = Color("#c9a050")
+	pb_fill.set_corner_radius_all(4)
+	progress.add_theme_stylebox_override("background", pb_bg)
+	progress.add_theme_stylebox_override("fill", pb_fill)
 	vb.add_child(progress)
 	vb.add_child(HSeparator.new())
 	var vip_list = VBoxContainer.new()
@@ -194,7 +206,7 @@ func _update_recharge_page():
 		var btn = Button.new()
 		btn.custom_minimum_size = Vector2(0, 80)
 		btn.size_flags_horizontal = Control.SIZE_EXPAND_FILL
-		btn.size_flags_vertical = Control.SIZE_EXPAND_FILL
+		btn.size_flags_vertical = Control.SIZE_FILL   # 【改】皮肤批次：竖向不拉伸——原 EXPAND_FILL 把九钮撑满内容区顶到上下框
 		btn.add_theme_font_size_override("font_size", 16)
 		btn.text = "¥%d\n%d元宝" % [amount, amount * 10]
 		btn.pressed.connect(_on_recharge_confirmed.bind(amount))
@@ -214,6 +226,7 @@ func _update_special_pack_page():
 	scroll.name = "SpecialPackScroll"
 	scroll.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	scroll.size_flags_vertical = Control.SIZE_EXPAND_FILL
+	scroll.horizontal_scroll_mode = ScrollContainer.SCROLL_MODE_DISABLED   # 【新增】皮肤批次：本页访问即重建（工厂 ready 遍历盲区），自禁横滚
 	container.add_child(scroll)
 	
 	var main_vbox = VBoxContainer.new()
@@ -234,7 +247,7 @@ func _update_special_pack_page():
 		var info = Label.new()
 		info.text = "%s\n%s" % [pack.name, pack.desc]
 		info.horizontal_alignment = HORIZONTAL_ALIGNMENT_LEFT
-		info.add_theme_font_size_override("font_size", 18)
+		info.add_theme_font_size_override("font_size", 15)   # 【改】皮肤批次：18→15 收行宽，防购买钮被挤出视口
 		row.add_child(info)
 		
 		var spacer = Control.new()
@@ -405,6 +418,7 @@ func _update_vip_panel():
 	var scroll = ScrollContainer.new()
 	scroll.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	scroll.size_flags_vertical = Control.SIZE_EXPAND_FILL
+	scroll.horizontal_scroll_mode = ScrollContainer.SCROLL_MODE_DISABLED   # 【新增】皮肤批次：禁横滚（_update 动态建，工厂 ready 遍历时还没生，须自禁）
 	list_container.add_child(scroll)
 
 	var list_vbox = VBoxContainer.new()
@@ -420,7 +434,7 @@ func _update_vip_panel():
 		lv_label.text = "VIP%d" % level
 		lv_label.custom_minimum_size.x = 50
 		if level == current_level:
-			lv_label.add_theme_color_override("font_color", Color("#ffd700"))
+			lv_label.add_theme_color_override("font_color", Color("#b8860b"))   # 【改】皮肤批次：亮金 parchment 上发虚→古铜
 		row.add_child(lv_label)
 
 		var exp_label = Label.new()
@@ -441,13 +455,14 @@ func _update_vip_panel():
 		else:
 			reward_text = "无特殊奖励"
 		reward_label.text = reward_text
-		reward_label.custom_minimum_size.x = 140
-		reward_label.add_theme_color_override("font_color", Color("#888888"))
+		reward_label.custom_minimum_size.x = 130
+		reward_label.add_theme_font_size_override("font_size", 15)   # 【新增】皮肤批次：16→15 收行宽
+		reward_label.add_theme_color_override("font_color", Color("#5a3d26"))   # 【改】皮肤批次：灰字 parchment 上发虚→深棕
 		row.add_child(reward_label)
 
 		# 领取按钮
 		var claim_btn = Button.new()
-		claim_btn.custom_minimum_size.x = 80
+		claim_btn.custom_minimum_size.x = 72
 		if data.get_vip_level() < level:
 			claim_btn.text = "未达成"
 			claim_btn.disabled = true
