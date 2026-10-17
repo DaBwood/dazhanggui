@@ -1,31 +1,43 @@
-[gd_scene format=3]
+[gd_scene format=3 uid="uid://c5jbm1p8j6w1x"]
 
-[ext_resource type="Texture2D" path="res://assets/tavern/map_bg.png" id="bg"]
-[ext_resource type="Texture2D" path="res://assets/tavern/收益罐空.png" id="jare"]
+[ext_resource type="Texture2D" uid="uid://byi8tda0st44k" path="res://assets/common/返回.png" id="back"]
+[ext_resource type="Texture2D" uid="uid://dauie8cvgbiby" path="res://assets/tavern/map_bg.png" id="bg"]
+[ext_resource type="Texture2D" uid="uid://d6cyqiaefsgb" path="res://assets/tavern/餐饮.png" id="can"]
+[ext_resource type="Texture2D" uid="uid://c8oi76y4mdem0" path="res://assets/common/check_green.png" id="check"]
+[ext_resource type="Texture2D" uid="uid://cmepa3fodkol1" path="res://assets/tavern/知名度.png" id="fame"]
+[ext_resource type="Texture2D" uid="uid://cqyoidoti48f4" path="res://assets/tavern/收益罐空.png" id="jare"]
+[ext_resource type="Texture2D" uid="uid://bbvcui5432ny" path="res://assets/tavern/叫号.png" id="jh"]
+[ext_resource type="Texture2D" uid="uid://d23jebqlb22g5" path="res://assets/tavern/娱乐.png" id="joy"]
+[ext_resource type="Texture2D" uid="uid://b8in17sqym0bl" path="res://assets/common/加号.png" id="plus"]
+[ext_resource type="Texture2D" uid="uid://buwwlct3olwnv" path="res://assets/common/说明.png" id="rule"]
+[ext_resource type="Texture2D" uid="uid://cly6ndx8uiod7" path="res://assets/tavern/银条.png" id="silver"]
 
 [sub_resource type="StyleBoxFlat" id="page_bg"]
 bg_color = Color(0.2, 0.0823529, 0.0588235, 1)
 
-[sub_resource type="StyleBoxFlat" id="card_bg"]
-bg_color = Color(0.164706, 0.14902, 0.25098, 1)
-border_width_left = 1
-border_width_top = 1
-border_width_right = 1
-border_width_bottom = 1
-corner_radius_top_left = 8
-corner_radius_top_right = 8
-corner_radius_bottom_right = 8
-corner_radius_bottom_left = 8
-border_color = Color(0.415686, 0.372549, 0.619608, 1)
+[sub_resource type="StyleBoxEmpty" id="sb_empty"]
 
-[node name="TavernPage" type="Panel"]
+[sub_resource type="StyleBoxFlat" id="wood"]
+bg_color = Color(0.239216, 0.164706, 0.101961, 0.92)
+border_width_left = 2
+border_width_top = 2
+border_width_right = 2
+border_width_bottom = 2
+border_color = Color(0.788235, 0.537255, 0.247059, 1)
+corner_radius_top_left = 10
+corner_radius_top_right = 10
+corner_radius_bottom_right = 10
+corner_radius_bottom_left = 10
+
+[node name="TavernPage" type="Panel" unique_id=273249107]
 z_index = 35
 anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
 theme_override_styles/panel = SubResource("page_bg")
 
-[node name="BgImage" type="TextureRect" parent="."]
+[node name="BgImage" type="TextureRect" parent="." unique_id=1515545575]
+custom_maximum_size = Vector2(600, 1067)
 layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
@@ -36,7 +48,7 @@ mouse_filter = 2
 texture = ExtResource("bg")
 stretch_mode = 6
 
-[node name="TopShade" type="ColorRect" parent="."]
+[node name="TopShade" type="ColorRect" parent="." unique_id=200332267]
 layout_mode = 1
 anchors_preset = 10
 anchor_right = 1.0
@@ -45,13 +57,12 @@ grow_horizontal = 2
 mouse_filter = 2
 color = Color(0, 0, 0, 0.35)
 
-
-[node name="JarIcon" type="Button" parent="."]
+[node name="JarIcon" type="Button" parent="." unique_id=104571925]
 layout_mode = 1
-anchors_preset = 0
+anchors_preset = -1
 anchor_left = 0.3891
-anchor_right = 0.3891
 anchor_top = 0.5832
+anchor_right = 0.3891
 anchor_bottom = 0.5832
 offset_left = -52.0
 offset_top = -52.0
@@ -63,174 +74,269 @@ tooltip_text = "收益罐（点击领取）"
 icon = ExtResource("jare")
 expand_icon = true
 
-[node name="Main" type="VBoxContainer" parent="."]
+[node name="Main" type="VBoxContainer" parent="." unique_id=1788079410]
 layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
 theme_override_constants/separation = 8
 
-[node name="TopBar" type="HBoxContainer" parent="Main"]
+[node name="TopBar" type="HBoxContainer" parent="Main" unique_id=196502955]
 custom_minimum_size = Vector2(0, 48)
 layout_mode = 2
 theme_override_constants/separation = 8
 
-[node name="BackButton" type="Button" parent="Main/TopBar"]
-custom_minimum_size = Vector2(90, 42)
+[node name="BackButton" type="Button" parent="Main/TopBar" unique_id=1943041693]
+custom_minimum_size = Vector2(52, 42)
 layout_mode = 2
-theme_override_colors/font_hover_color = Color(0.901961, 0.752941, 0.482353, 1)
-text = "< 返回"
+theme_override_styles/normal = SubResource("sb_empty")
+theme_override_styles/pressed = SubResource("sb_empty")
+theme_override_styles/hover = SubResource("sb_empty")
+theme_override_styles/focus = SubResource("sb_empty")
+icon = ExtResource("back")
+expand_icon = true
 
-[node name="LeftSpring" type="Control" parent="Main/TopBar"]
+[node name="LeftSpring" type="Control" parent="Main/TopBar" unique_id=1043604487]
 layout_mode = 2
 size_flags_horizontal = 3
 
-[node name="TitleLabel" type="Label" parent="Main/TopBar"]
+[node name="TitleLabel" type="Label" parent="Main/TopBar" unique_id=85879456]
 layout_mode = 2
 theme_override_font_sizes/font_size = 24
 text = "酒肆"
 
-[node name="RuleButton" type="Button" parent="Main/TopBar"]
-custom_minimum_size = Vector2(30, 30)
+[node name="RuleButton" type="Button" parent="Main/TopBar" unique_id=807268280]
+custom_minimum_size = Vector2(34, 34)
 layout_mode = 2
-theme_override_colors/font_hover_color = Color(0.901961, 0.752941, 0.482353, 1)
-theme_override_font_sizes/font_size = 16
 tooltip_text = "规则说明"
-text = "?"
+theme_override_styles/normal = SubResource("sb_empty")
+theme_override_styles/pressed = SubResource("sb_empty")
+theme_override_styles/hover = SubResource("sb_empty")
+theme_override_styles/focus = SubResource("sb_empty")
+icon = ExtResource("rule")
+expand_icon = true
 
-[node name="RightSpring" type="Control" parent="Main/TopBar"]
+[node name="RightSpring" type="Control" parent="Main/TopBar" unique_id=551766890]
 layout_mode = 2
 size_flags_horizontal = 3
 
-[node name="InfoButton" type="Button" parent="Main/TopBar"]
-custom_minimum_size = Vector2(104, 40)
-layout_mode = 2
-theme_override_colors/font_hover_color = Color(0.901961, 0.752941, 0.482353, 1)
-text = "酒肆信息"
-
-[node name="ResLabel" type="Label" parent="Main"]
-layout_mode = 2
-theme_override_colors/font_color = Color(0.901961, 0.752941, 0.482353, 1)
-theme_override_font_sizes/font_size = 16
-text = "【酒肆】"
-horizontal_alignment = 1
-
-[node name="CenterMain" type="CenterContainer" parent="Main"]
+[node name="CenterFill" type="Control" parent="Main" unique_id=972470868]
 layout_mode = 2
 size_flags_vertical = 3
 
-[node name="MainBody" type="PanelContainer" parent="Main/CenterMain"]
-custom_minimum_size = Vector2(430, 360)
-layout_mode = 2
-theme_override_styles/panel = SubResource("card_bg")
-
-[node name="JarCard" type="VBoxContainer" parent="Main/CenterMain/MainBody"]
-layout_mode = 2
-theme_override_constants/separation = 4
-
-[node name="JhRow" type="HBoxContainer" parent="Main/CenterMain/MainBody/JarCard"]
-layout_mode = 2
-alignment = 1
-theme_override_constants/separation = 8
-
-[node name="JhLabel" type="Label" parent="Main/CenterMain/MainBody/JarCard/JhRow"]
-layout_mode = 2
-theme_override_font_sizes/font_size = 17
-horizontal_alignment = 1
-
-[node name="AddButton" type="Button" parent="Main/CenterMain/MainBody/JarCard/JhRow"]
-custom_minimum_size = Vector2(42, 34)
-layout_mode = 2
-tooltip_text = "使用【佳酿】+2 叫号"
-text = "＋"
-
-[node name="CdLabel" type="Label" parent="Main/CenterMain/MainBody/JarCard"]
-layout_mode = 2
-theme_override_colors/font_color = Color(0.603922, 0.576471, 0.721569, 1)
-text = ""
-horizontal_alignment = 1
-
-[node name="CallButton" type="Button" parent="Main/CenterMain/MainBody/JarCard"]
-custom_minimum_size = Vector2(320, 44)
-layout_mode = 2
-text = "叫号"
-
-[node name="CallAllButton" type="Button" parent="Main/CenterMain/MainBody/JarCard"]
-custom_minimum_size = Vector2(320, 40)
-layout_mode = 2
-text = "一键叫号"
-
-[node name="TqLabel" type="Label" parent="Main/CenterMain/MainBody/JarCard"]
-layout_mode = 2
-theme_override_colors/font_color = Color(1, 0.843137, 0, 1)
-text = ""
-horizontal_alignment = 1
-
-[node name="AreaScroll" type="ScrollContainer" parent="Main"]
+[node name="AreaScroll" type="ScrollContainer" parent="Main" unique_id=875101209]
 layout_mode = 2
 size_flags_horizontal = 3
 size_flags_vertical = 3
 horizontal_scroll_mode = 0
 
-[node name="AreaBody" type="VBoxContainer" parent="Main/AreaScroll"]
+[node name="AreaBody" type="VBoxContainer" parent="Main/AreaScroll" unique_id=1514174121]
 layout_mode = 2
 size_flags_horizontal = 3
 theme_override_constants/separation = 8
 
-[node name="MainNav" type="HBoxContainer" parent="Main"]
-custom_minimum_size = Vector2(0, 56)
+[node name="MainNav" type="HBoxContainer" parent="Main" unique_id=1774364411]
+custom_minimum_size = Vector2(0, 150)
 layout_mode = 2
+theme_override_constants/separation = 18
+
+[node name="NavPad" type="Control" parent="Main/MainNav" unique_id=916449996]
+custom_minimum_size = Vector2(24, 0)
+layout_mode = 2
+
+[node name="CanWrap" type="Control" parent="Main/MainNav" unique_id=956326741]
+custom_minimum_size = Vector2(60, 60)
+custom_maximum_size = Vector2(60, 60)
+layout_mode = 2
+
+[node name="CanButton" type="Button" parent="Main/MainNav/CanWrap" unique_id=931974374]
+custom_maximum_size = Vector2(50, -1)
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = -15.0
+offset_top = 66.0
+offset_right = -25.0
+offset_bottom = 66.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_styles/normal = SubResource("sb_empty")
+theme_override_styles/pressed = SubResource("sb_empty")
+theme_override_styles/hover = SubResource("sb_empty")
+theme_override_styles/focus = SubResource("sb_empty")
+icon = ExtResource("can")
+expand_icon = true
+
+[node name="CanDot" type="Label" parent="Main/MainNav/CanWrap" unique_id=2142893156]
+layout_mode = 0
+offset_left = 26.0
+offset_top = 68.0
+offset_right = 46.0
+offset_bottom = 93.0
+theme_override_colors/font_color = Color(0.905882, 0.298039, 0.235294, 1)
+theme_override_font_sizes/font_size = 16
+text = "●"
+
+[node name="JoyWrap" type="Control" parent="Main/MainNav" unique_id=1354235536]
+custom_minimum_size = Vector2(140, 150)
+layout_mode = 2
+
+[node name="JoyButton" type="Button" parent="Main/MainNav/JoyWrap" unique_id=383690945]
+custom_maximum_size = Vector2(50, 50)
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = -27.0
+offset_top = 71.0
+offset_right = -117.0
+offset_bottom = -29.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_styles/normal = SubResource("sb_empty")
+theme_override_styles/pressed = SubResource("sb_empty")
+theme_override_styles/hover = SubResource("sb_empty")
+theme_override_styles/focus = SubResource("sb_empty")
+icon = ExtResource("joy")
+expand_icon = true
+
+[node name="JoyDot" type="Label" parent="Main/MainNav/JoyWrap" unique_id=614167423]
+layout_mode = 0
+offset_left = 7.0
+offset_top = 65.0
+offset_right = 27.0
+offset_bottom = 90.0
+theme_override_colors/font_color = Color(0.905882, 0.298039, 0.235294, 1)
+theme_override_font_sizes/font_size = 16
+text = "●"
+
+[node name="InfoPanel" type="PanelContainer" parent="." unique_id=329886233]
+layout_mode = 1
+anchors_preset = -1
+anchor_left = 0.5
+anchor_right = 1.0
+anchor_bottom = 0.018
+offset_left = 16.0
+offset_top = 12.0
+offset_right = -16.0
+offset_bottom = 115.794
+grow_horizontal = 2
+mouse_filter = 2
+theme_override_styles/panel = SubResource("wood")
+
+[node name="InfoBox" type="VBoxContainer" parent="InfoPanel" unique_id=2012799615]
+layout_mode = 2
+theme_override_constants/separation = 6
+
+[node name="InfoTitle" type="Button" parent="InfoPanel/InfoBox" unique_id=762808679]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.788235, 0.537255, 0.247059, 1)
+theme_override_colors/font_hover_color = Color(0.901961, 0.752941, 0.482353, 1)
+theme_override_font_sizes/font_size = 20
+theme_override_styles/normal = SubResource("sb_empty")
+theme_override_styles/pressed = SubResource("sb_empty")
+theme_override_styles/hover = SubResource("sb_empty")
+theme_override_styles/focus = SubResource("sb_empty")
+text = "红尘酒楼"
+
+[node name="FameRow" type="HBoxContainer" parent="InfoPanel/InfoBox" unique_id=2115283899]
+layout_mode = 2
+theme_override_constants/separation = 8
 alignment = 1
-theme_override_constants/separation = 10
 
-[node name="CanWrap" type="Control" parent="Main/MainNav"]
-custom_minimum_size = Vector2(180, 54)
+[node name="FameIcon" type="TextureRect" parent="InfoPanel/InfoBox/FameRow" unique_id=643971337]
+custom_minimum_size = Vector2(30, 30)
+custom_maximum_size = Vector2(30, 30)
 layout_mode = 2
+mouse_filter = 2
+texture = ExtResource("fame")
+stretch_mode = 5
 
-[node name="CanButton" type="Button" parent="Main/MainNav/CanWrap"]
+[node name="FameLabel" type="Label" parent="InfoPanel/InfoBox/FameRow" unique_id=1877255990]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.9, 0.95, 0.85, 1)
+theme_override_font_sizes/font_size = 16
+text = "知名度：--"
+
+[node name="SilverRow" type="HBoxContainer" parent="InfoPanel/InfoBox" unique_id=1763987947]
+layout_mode = 2
+theme_override_constants/separation = 8
+alignment = 1
+
+[node name="SilverIcon" type="TextureRect" parent="InfoPanel/InfoBox/SilverRow" unique_id=232416770]
+custom_minimum_size = Vector2(30, 30)
+custom_maximum_size = Vector2(30, 30)
+layout_mode = 2
+mouse_filter = 2
+texture = ExtResource("silver")
+stretch_mode = 5
+
+[node name="SilverLabel" type="Label" parent="InfoPanel/InfoBox/SilverRow" unique_id=1912307524]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.9, 0.95, 0.85, 1)
+theme_override_font_sizes/font_size = 16
+text = "银条：--"
+
+[node name="CallCluster" type="VBoxContainer" parent="." unique_id=1823147307]
 layout_mode = 1
-anchors_preset = 15
-anchor_right = 1.0
-anchor_bottom = 1.0
+anchors_preset = -1
+anchor_left = 0.55
+anchor_top = 0.75
+anchor_right = 0.985
+anchor_bottom = 0.985
 grow_horizontal = 2
 grow_vertical = 2
-theme_override_colors/font_hover_color = Color(0.901961, 0.752941, 0.482353, 1)
-theme_override_font_sizes/font_size = 16
-text = "【餐饮】设施"
+theme_override_constants/separation = 4
+alignment = 1
 
-[node name="CanDot" type="Label" parent="Main/MainNav/CanWrap"]
-layout_mode = 0
-offset_left = 158.0
-offset_top = -6.0
-offset_right = 178.0
-offset_bottom = 16.0
-mouse_filter = 2
-theme_override_colors/font_color = Color(0.905882, 0.298039, 0.235294, 1)
-theme_override_font_sizes/font_size = 16
-text = "●"
-
-[node name="JoyWrap" type="Control" parent="Main/MainNav"]
-custom_minimum_size = Vector2(180, 54)
+[node name="CallIconButton" type="Button" parent="CallCluster" unique_id=657428393]
+custom_minimum_size = Vector2(150, 140)
 layout_mode = 2
+size_flags_horizontal = 4
+tooltip_text = "叫号"
+theme_override_styles/normal = SubResource("sb_empty")
+theme_override_styles/pressed = SubResource("sb_empty")
+theme_override_styles/hover = SubResource("sb_empty")
+theme_override_styles/focus = SubResource("sb_empty")
+icon = ExtResource("jh")
+expand_icon = true
 
-[node name="JoyButton" type="Button" parent="Main/MainNav/JoyWrap"]
-layout_mode = 1
-anchors_preset = 15
-anchor_right = 1.0
-anchor_bottom = 1.0
-grow_horizontal = 2
-grow_vertical = 2
+[node name="StaminaRow" type="HBoxContainer" parent="CallCluster" unique_id=2031832058]
+layout_mode = 2
+theme_override_constants/separation = 6
+alignment = 1
+
+[node name="JhLabel" type="Label" parent="CallCluster/StaminaRow" unique_id=1757297870]
+layout_mode = 2
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+theme_override_font_sizes/font_size = 18
+text = "体力：0/50"
+
+[node name="AddButton" type="Button" parent="CallCluster/StaminaRow" unique_id=1255444008]
+custom_minimum_size = Vector2(40, 40)
+layout_mode = 2
+tooltip_text = "使用【佳酿】+2 叫号"
+theme_override_styles/normal = SubResource("sb_empty")
+theme_override_styles/pressed = SubResource("sb_empty")
+theme_override_styles/hover = SubResource("sb_empty")
+theme_override_styles/focus = SubResource("sb_empty")
+icon = ExtResource("plus")
+expand_icon = true
+
+[node name="CallAllButton" type="Button" parent="CallCluster" unique_id=1664502686]
+custom_maximum_size = Vector2(50, 50)
+layout_mode = 2
+size_flags_horizontal = 0
+size_flags_vertical = 4
+theme_override_colors/font_color = Color(1, 1, 1, 1)
 theme_override_colors/font_hover_color = Color(0.901961, 0.752941, 0.482353, 1)
-theme_override_font_sizes/font_size = 16
-text = "【娱乐】设施"
-
-[node name="JoyDot" type="Label" parent="Main/MainNav/JoyWrap"]
-layout_mode = 0
-offset_left = 158.0
-offset_top = -6.0
-offset_right = 178.0
-offset_bottom = 16.0
-mouse_filter = 2
-theme_override_colors/font_color = Color(0.905882, 0.298039, 0.235294, 1)
-theme_override_font_sizes/font_size = 16
-text = "●"
+theme_override_font_sizes/font_size = 18
+theme_override_styles/normal = SubResource("sb_empty")
+theme_override_styles/pressed = SubResource("sb_empty")
+theme_override_styles/hover = SubResource("sb_empty")
+theme_override_styles/focus = SubResource("sb_empty")
+text = " 一键叫号"
+icon = ExtResource("check")

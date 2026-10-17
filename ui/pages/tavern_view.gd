@@ -19,8 +19,6 @@ var _proj: Dictionary = {"餐饮": "", "娱乐": ""}   # 各区域当前选中�
 var _timer: Timer = null               # 批处理/秒刷定时器（0.05s）
 var _jar_icon: Button = null
 var _jh_lbl: Label = null              # 叫号计数文本（主页）
-var _cd_lbl: Label = null              # 叫号恢复倒计时文本（主页）
-var _tq_lbl: Label = null              # 接待队列状态文本（主页）
 # _popup_kind/_popup_id 由基类 BaseView 持有（2026-09-18 架构重构批次⑤），此处不再声明
 
 const SCENE: PackedScene = preload("res://ui/pages/tavern_view.tscn")
@@ -93,65 +91,52 @@ func _on_tick():
 		_sys().process_serve_queue(4)
 	if _jh_lbl:
 		_jh_lbl.text = _jh_text()
-	if _cd_lbl:
-		_cd_lbl.text = _cd_text()
 	if _jar_icon:
 		var has_jar_now: bool = _sys().has_jar()
 		_jar_icon.icon = JAR_FULL if has_jar_now else JAR_EMPTY
 		_jar_icon.disabled = not has_jar_now
-	if _tq_lbl:
-		_tq_lbl.text = _tq_text()
 
 func _jh_text() -> String:
-	return "叫号：%d / %d" % [_sys().get_jiaohao(), _sys().get_jiaohao_cap()]
+	return "体力：%d/%d" % [_sys().get_jiaohao(), _sys().get_jiaohao_cap()]
 
-func _cd_text() -> String:
-	var sec := _sys().get_next_jiaohao_seconds()
-	if sec <= 0:
-		return "叫号已满" if _sys().get_jiaohao() >= _sys().get_jiaohao_cap() else "恢复中…"
-	return "叫号恢复 %02d:%02d:%02d" % [int(sec / 3600.0), int(sec / 60.0) % 60, sec % 60]
-
-func _tq_text() -> String:
-	var n := _sys().get_serve_queue()
-	if n > 0:
-		return "接待队列：%d（接待中…）" % n
-	return "接待队列：0"
-
-# ---------- 页面构建 ----------
-# 接线表：按钮本体/位置/皮肤/文字全在 tavern_view.tscn（v2 范式四件套），这里只连信号；必需节点清单 fail-loud（长期约定）
 func _wire_page(page: Control):
-	for n in ["TopBar", "BackButton", "TitleLabel", "RuleButton", "InfoButton", "ResLabel",
-			"CenterMain", "MainBody", "JarCard", "JarIcon",
-			"JhRow", "JhLabel", "AddButton", "CdLabel", "CallButton", "CallAllButton", "TqLabel",
-			"AreaScroll", "AreaBody", "MainNav", "CanButton", "JoyButton", "CanDot", "JoyDot"]:
+	for n in ["TopBar", "BackButton", "TitleLabel", "RuleButton", "CenterFill",
+			"AreaScroll", "AreaBody", "MainNav", "CanButton", "JoyButton", "CanDot", "JoyDot",
+			"InfoPanel", "InfoTitle", "FameLabel", "SilverLabel",
+			"CallIconButton", "JhLabel", "AddButton", "CallAllButton", "JarIcon"]:
 		if page.find_child(n, true, false) == null:
 			c.push_error("tavern_view: 必需节点 %s 缺失，检查 tavern_view.tscn" % n)
 	page.find_child("BackButton", true, false).pressed.connect(_on_back)
 	page.find_child("RuleButton", true, false).pressed.connect(_show_rule_popup)
-	page.find_child("InfoButton", true, false).pressed.connect(_show_info_popup)
+	page.find_child("InfoTitle", true, false).pressed.connect(_show_info_popup)
 	page.find_child("CanButton", true, false).pressed.connect(func(): _switch_tab("餐饮"))
 	page.find_child("JoyButton", true, false).pressed.connect(func(): _switch_tab("娱乐"))
 	page.find_child("JarIcon", true, false).pressed.connect(_on_collect)
 	page.find_child("AddButton", true, false).pressed.connect(_on_add_jiaohao)
-	page.find_child("CallButton", true, false).pressed.connect(_on_call_one)
+	page.find_child("CallIconButton", true, false).pressed.connect(_on_call_one)
 	page.find_child("CallAllButton", true, false).pressed.connect(_on_call_all)
 
-# 状态驱动填充：静态结构在 tscn，脚本只灌文本/显隐（灌内容口径）
+# 状态驱动填充：静态结构/图标全在 tscn，脚本只灌文本/显隐（灌内容口径）
 func _fill(page: Panel):
 	var title: Label = page.find_child("TitleLabel", true, false)
 	title.text = "酒肆" if _tab == "main" else "酒肆 · %s" % _tab
-	var res: Label = page.find_child("ResLabel", true, false)
-	res.text = "【%s】 Lv.%d　知名度 %s　银条 %s" % [
-		_sys().get_sign_name(), _sys().get_level(), c.format_number(_sys().get_fame_total()), c.format_number(_sys().get_yintiao())]
+	# 右上信息牌（酒肆信息图标化：标题可点=信息弹窗）
+	page.find_child("InfoTitle", true, false).text = _sys().get_sign_name()
+	page.find_child("FameLabel", true, false).text = "知名度：%s" % c.format_number(_sys().get_fame_total())
+	page.find_child("SilverLabel", true, false).text = "银条：%s" % c.format_number(_sys().get_yintiao())
 	var main_on: bool = _tab == "main"
-	page.find_child("CenterMain", true, false).visible = main_on
+	page.find_child("CenterFill", true, false).visible = main_on
 	page.find_child("MainNav", true, false).visible = main_on
 	var area_scroll: ScrollContainer = page.find_child("AreaScroll", true, false)
 	area_scroll.visible = not main_on
-	if main_on:
-		_fill_jar_card(page)
-	else:
-		_fill_area(page.find_child("AreaBody", true, false), _tab)
+	# 收益罐双态（tick 也活更新）
+	_jar_icon = page.find_child("JarIcon", true, false)
+	_jar_icon.icon = JAR_FULL if _sys().has_jar() else JAR_EMPTY
+	_jar_icon.disabled = not _sys().has_jar()
+	# 体力行
+	_jh_lbl = page.find_child("JhLabel", true, false)
+	_jh_lbl.text = _jh_text()
+	# 页签红点
 	page.find_child("CanDot", true, false).visible = _area_has_hint("餐饮")
 	page.find_child("JoyDot", true, false).visible = _area_has_hint("娱乐")
 
@@ -174,20 +159,6 @@ func _refresh():
 		_show_facility_popup(_popup_id)
 
 # ---------- 主页：收益罐主卡 + 叫号操作 ----------
-func _fill_jar_card(page: Panel):
-	_jar_icon = page.find_child("JarIcon", true, false)
-	_jar_icon.icon = JAR_FULL if _sys().has_jar() else JAR_EMPTY
-	_jar_icon.disabled = not _sys().has_jar()
-	_jh_lbl = page.find_child("JhLabel", true, false)
-	_jh_lbl.text = _jh_text()
-	_cd_lbl = page.find_child("CdLabel", true, false)
-	_cd_lbl.text = _cd_text()
-	var has_jh: bool = _sys().get_jiaohao() > 0
-	page.find_child("CallButton", true, false).disabled = not has_jh
-	page.find_child("CallAllButton", true, false).disabled = not has_jh
-	_tq_lbl = page.find_child("TqLabel", true, false)
-	_tq_lbl.text = _tq_text()
-
 func _area_has_hint(area: String) -> bool:
 	for f in _sys().get_facility_list():
 		if str(f.get("area", "")) != area:
