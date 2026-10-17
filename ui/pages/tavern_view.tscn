@@ -1,6 +1,9 @@
 [gd_scene format=3 uid="uid://c5jbm1p8j6w1x"]
 
 [ext_resource type="Texture2D" uid="uid://b7n2sm643ktsm" path="res://assets/common/check_on.png" id="11_gjber"]
+[ext_resource type="Texture2D" path="res://assets/common/check_off.png" id="chkoff"]
+[ext_resource type="Texture2D" path="res://assets/common/check_on_s.png" id="chkon_s"]
+[ext_resource type="Texture2D" path="res://assets/common/check_off_s.png" id="chkoff_s"]
 [ext_resource type="Texture2D" uid="uid://byi8tda0st44k" path="res://assets/common/返回.png" id="back"]
 [ext_resource type="Texture2D" uid="uid://dauie8cvgbiby" path="res://assets/tavern/map_bg.png" id="bg"]
 [ext_resource type="Texture2D" uid="uid://d6cyqiaefsgb" path="res://assets/tavern/餐饮.png" id="can"]
@@ -85,6 +88,7 @@ anchor_right = 1.0
 anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
+mouse_filter = 2
 theme_override_constants/separation = 8
 
 [node name="TopBarPanel" type="PanelContainer" parent="Main" unique_id=1105731195]
@@ -425,7 +429,7 @@ offset_bottom = 207.0
 grow_horizontal = 2
 theme_override_styles/panel = SubResource("shade")
 
-[node name="CallAllButton" type="Button" parent="CallCluster/CallAllPanel" unique_id=1668603877]
+[node name="CallAllCheck" type="CheckBox" parent="CallCluster/CallAllPanel" unique_id=1668603877]
 custom_minimum_size = Vector2(130, 30)
 custom_maximum_size = Vector2(220, 34)
 layout_mode = 1
@@ -443,9 +447,8 @@ grow_vertical = 2
 theme_override_colors/font_color = Color(1, 1, 1, 1)
 theme_override_colors/font_hover_color = Color(0.901961, 0.752941, 0.482353, 1)
 theme_override_font_sizes/font_size = 16
-theme_override_styles/normal = SubResource("sb_empty")
-theme_override_styles/pressed = SubResource("sb_empty")
-theme_override_styles/hover = SubResource("sb_empty")
+theme_override_icons/checked = ExtResource("chkon_s")
+theme_override_icons/unchecked = ExtResource("chkoff_s")
+icon_max_width = 24
 theme_override_styles/focus = SubResource("sb_empty")
 text = " 一键叫号"
-icon = ExtResource("11_gjber")

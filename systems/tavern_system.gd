@@ -34,6 +34,7 @@ var jar_yintiao: int = 0              # 收益罐：待领取银条
 var jiaohao: int = 0                  # 叫号（体力池：20分钟/点自然恢复，上限50）
 var jiaohao_time: int = 0             # 上次叫号结算时间戳（离线补发基准）
 var serve_queue: int = 0              # 接待队列：一键叫号转入，视图定时器时间盒批处理（进存档，离线不做假结算）
+var auto_call_all: bool = false       # 一键叫号勾选：true=叫号消耗全部体力（进存档，退游重进保持）
 var facility_levels: Dictionary = {}  # facility_id: 等级（>=1=已解锁；缺省=未解锁）
 var granted: Dictionary = {"friendly": {}, "talent": {}}  # 每类挚友累计已发友好/才华（新挚友解锁时一次性补发）
 var caiyi: Dictionary = {}            # 才艺经验池 {friend_id: 数量}（本轮只累积，消耗端待挚友技能系统）
@@ -45,6 +46,12 @@ func _init(p_g):
 	g = p_g
 
 # ============ 存档：本系统拥有的字段 ============
+func get_auto_call_all() -> bool:
+	return auto_call_all
+
+func set_auto_call_all(v: bool) -> void:
+	auto_call_all = v
+
 func get_save_data() -> Dictionary:
 	return {"tavern": {
 		"sign_name": sign_name, "level": level,
@@ -52,7 +59,7 @@ func get_save_data() -> Dictionary:
 		"jiaohao": jiaohao, "jiaohao_time": jiaohao_time,
 		"serve_queue": serve_queue,   # 接待队列持久化：离线不做假结算，读档后接着接待
 		"facility_levels": facility_levels,
-		"granted": granted, "caiyi": caiyi}}
+		"granted": granted, "caiyi": caiyi, "auto_call_all": auto_call_all}}
 
 # 从扁平存档表认领本系统字段（旧档/新档缺字段保持初始值；时间戳缺失从当前起算）
 func load_save_data(s: Dictionary):
@@ -67,6 +74,7 @@ func load_save_data(s: Dictionary):
 	jiaohao = int(d.get("jiaohao", 0))
 	jiaohao_time = int(d.get("jiaohao_time", 0))
 	serve_queue = int(d.get("serve_queue", 0))
+	auto_call_all = bool(d.get("auto_call_all", false))
 	if d.has("facility_levels") and d.facility_levels is Dictionary:
 		facility_levels = d.facility_levels
 	else:

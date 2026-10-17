@@ -18,12 +18,15 @@ var _tab: String = "main"              # 当前视图 main/餐饮/娱乐
 var _proj: Dictionary = {"餐饮": "", "娱乐": ""}   # 各区域当前选中项目（页签状态，切区保留）
 var _timer: Timer = null               # 批处理/秒刷定时器（0.05s）
 var _jar_icon: Button = null
+var _call_all_check: CheckBox = null
 var _jh_lbl: Label = null              # 叫号计数文本（主页）
 # _popup_kind/_popup_id 由基类 BaseView 持有（2026-09-18 架构重构批次⑤），此处不再声明
 
 const SCENE: PackedScene = preload("res://ui/pages/tavern_view.tscn")
 const JAR_EMPTY: Texture2D = preload("res://assets/tavern/收益罐空.png")
 const JAR_FULL: Texture2D = preload("res://assets/tavern/收益罐满.png")
+const INFO_BG: Texture2D = preload("res://assets/tavern/酒肆信息弹窗.png")
+const FAC_BG: Texture2D = preload("res://assets/tavern/酒肆设施弹窗.png")
 
 func _init(p_c):
 	super(p_c)   # 【改】基类注入 c/data（2026-09-18 架构重构批次⑤）
@@ -92,9 +95,7 @@ func _on_tick():
 	if _jh_lbl:
 		_jh_lbl.text = _jh_text()
 	if _jar_icon:
-		var has_jar_now: bool = _sys().has_jar()
-		_jar_icon.icon = JAR_FULL if has_jar_now else JAR_EMPTY
-		_jar_icon.disabled = not has_jar_now
+		_jar_icon.icon = JAR_FULL if _sys().has_jar() else JAR_EMPTY
 
 func _jh_text() -> String:
 	return "体力：%d/%d" % [_sys().get_jiaohao(), _sys().get_jiaohao_cap()]
@@ -103,7 +104,7 @@ func _wire_page(page: Control):
 	for n in ["TopBarPanel", "TopBar", "BackButton", "TitleLabel", "RuleButton", "CenterFill",
 			"AreaScroll", "AreaBody", "MainNav", "CanButton", "JoyButton", "CanDot", "JoyDot",
 			"InfoPanel", "InfoTitle", "FameLabel", "SilverLabel",
-			"CallIconButton", "StaminaPanel", "JhLabel", "AddButton", "CallAllPanel", "CallAllButton", "JarIcon"]:
+			"CallIconButton", "StaminaPanel", "JhLabel", "AddButton", "CallAllPanel", "CallAllCheck", "JarIcon"]:
 		if page.find_child(n, true, false) == null:
 			push_error("tavern_view: 必需节点 %s 缺失，检查 tavern_view.tscn" % n)
 	page.find_child("BackButton", true, false).pressed.connect(_on_back)
@@ -113,8 +114,8 @@ func _wire_page(page: Control):
 	page.find_child("JoyButton", true, false).pressed.connect(func(): _switch_tab("娱乐"))
 	page.find_child("JarIcon", true, false).pressed.connect(_on_collect)
 	page.find_child("AddButton", true, false).pressed.connect(_on_add_jiaohao)
-	page.find_child("CallIconButton", true, false).pressed.connect(_on_call_one)
-	page.find_child("CallAllButton", true, false).pressed.connect(_on_call_all)
+	page.find_child("CallAllCheck", true, false).toggled.connect(_on_call_all_toggled)
+	page.find_child("CallIconButton", true, false).pressed.connect(_on_call)
 
 # 状态驱动填充：静态结构/图标全在 tscn，脚本只灌文本/显隐（灌内容口径）
 func _fill(page: Panel):
@@ -132,10 +133,11 @@ func _fill(page: Panel):
 	# 收益罐双态（tick 也活更新）
 	_jar_icon = page.find_child("JarIcon", true, false)
 	_jar_icon.icon = JAR_FULL if _sys().has_jar() else JAR_EMPTY
-	_jar_icon.disabled = not _sys().has_jar()
-	# 体力行
+	# 体力行 + 一键叫号勾选（勾选=叫号消耗全部体力）
 	_jh_lbl = page.find_child("JhLabel", true, false)
 	_jh_lbl.text = _jh_text()
+	_call_all_check = page.find_child("CallAllCheck", true, false)
+	_call_all_check.button_pressed = _sys().get_auto_call_all()
 	# 页签红点
 	page.find_child("CanDot", true, false).visible = _area_has_hint("餐饮")
 	page.find_child("JoyDot", true, false).visible = _area_has_hint("娱乐")
@@ -263,108 +265,103 @@ func _on_sync_upgrade(proj: String):
 
 # ---------- 设施弹窗：三属性当前→下级 + 升级/同步升级勾选 + 左右切设施 ----------
 func _show_facility_popup(fid: String):
-	_popup_kind = "facility"
-	_popup_id = fid
-	_close_node("TavernPopup")
-	var fcfg := _sys().get_facility_cfg(fid)
-	if fcfg.is_empty():
-		return
-	var fname := str(fcfg.get("name", fid))
-	var popup: PanelContainer = c._create_base_popup("设施", Vector2(440, 500))
-	popup.name = "TavernPopup"
-	popup.z_index = 40   # 盖过 TavernPage(z35)，同 inn/bank 弹窗惯例
-	c.add_child(popup)
-	var vb: VBoxContainer = popup.get_child(0)
-	# 头部：左切换 | 名称+等级+类别 | 右切换（同项目内循环）
-	var head := HBoxContainer.new()
-	head.add_theme_constant_override("separation", 8)
-	head.alignment = BoxContainer.ALIGNMENT_CENTER
-	vb.add_child(head)
-	var sib_ids := []
-	for sf in _sys().get_project_facilities(str(fcfg.get("project", ""))):
-		sib_ids.append(str(sf.get("id", "")))
-	var idx: int = sib_ids.find(fid)
-	var prev_btn := Button.new()
-	prev_btn.text = "◀"
-	prev_btn.custom_minimum_size = Vector2(40, 32)
-	prev_btn.disabled = sib_ids.size() <= 1
-	if idx >= 0:
-		var prev_id: String = str(sib_ids[(idx - 1 + sib_ids.size()) % sib_ids.size()])
-		prev_btn.pressed.connect(func(): _show_facility_popup(prev_id))
-	head.add_child(prev_btn)
+	var fcfg: Dictionary = _sys().get_facility_cfg(fid)
+	var root: Control = _art_popup(FAC_BG, Vector2(600, 889))
+	# 红色横幅：设施名（未解锁不显示 Lv）+ 左右切换
 	var name_lbl := Label.new()
-	name_lbl.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	name_lbl.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	name_lbl.add_theme_font_size_override("font_size", 22)
+	name_lbl.add_theme_color_override("font_color", Color(1, 1, 1, 0.95))
 	if _sys().is_facility_unlocked(fid):
-		name_lbl.text = "【%s】 Lv.%d（%s类）" % [fname, _sys().get_facility_level(fid), str(fcfg.get("category", ""))]
+		name_lbl.text = "【%s】 Lv.%d" % [str(fcfg.get("name", fid)), int(_sys().get_facility_level(fid))]
 	else:
-		name_lbl.text = "【%s】（%s类）" % [fname, str(fcfg.get("category", ""))]
-	name_lbl.add_theme_font_size_override("font_size", 18)
-	head.add_child(name_lbl)
-	var next_btn := Button.new()
-	next_btn.text = "▶"
-	next_btn.custom_minimum_size = Vector2(40, 32)
-	next_btn.disabled = sib_ids.size() <= 1
-	if idx >= 0:
-		var next_id: String = str(sib_ids[(idx + 1) % sib_ids.size()])
-		next_btn.pressed.connect(func(): _show_facility_popup(next_id))
-	head.add_child(next_btn)
-	# 设施图占位（后续丢图： assets 下放设施图按 id 命名即可替换此处）
-	var pic := Label.new()
-	pic.text = "〔%s〕" % fname
-	pic.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
-	pic.custom_minimum_size = Vector2(0, 72)
-	pic.add_theme_font_size_override("font_size", 28)
-	pic.add_theme_color_override("font_color", Color(0.85, 0.62, 0.28, 0.35))
-	vb.add_child(pic)
-	# flavor 文案
+		name_lbl.text = "【%s】" % str(fcfg.get("name", fid))
+	_place(root, name_lbl, 0.30, 0.062, 0.70, 0.128)
+	var ids: Array = []
+	for f in _sys().get_project_facilities(str(fcfg.get("project", ""))):
+		ids.append(str(f.get("id", fid)))
+	var idx: int = ids.find(fid)
+	var prev_id: String = ids[(idx - 1 + ids.size()) % ids.size()] if idx >= 0 else fid
+	var next_id: String = ids[(idx + 1) % ids.size()] if idx >= 0 else fid
+	for b in [["prev", "◀", prev_id, 0.235, 0.075, 0.295, 0.115], ["next", "▶", next_id, 0.705, 0.075, 0.765, 0.115]]:
+		var hb := Button.new()
+		hb.text = b[1]
+		hb.add_theme_font_size_override("font_size", 16)
+		hb.add_theme_color_override("font_color", Color(1, 1, 1, 0.8))
+		for st in ["normal", "hover", "pressed", "focus"]:
+			hb.add_theme_stylebox_override(st, StyleBoxEmpty.new())
+		var target: String = str(b[2])
+		hb.pressed.connect(func():
+			root.queue_free()
+			_show_facility_popup(target))
+		hb.disabled = target == fid
+		_place(root, hb, float(b[3]), float(b[4]), float(b[5]), float(b[6]))
+	# 风味
 	var flavor := Label.new()
 	flavor.text = str(fcfg.get("flavor", ""))
+	flavor.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	flavor.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
-	flavor.add_theme_color_override("font_color", Color("#9a93b8"))
-	vb.add_child(flavor)
+	flavor.add_theme_font_size_override("font_size", 15)
+	flavor.add_theme_color_override("font_color", Color("#8a7a66"))
+	_place(root, flavor, 0.15, 0.20, 0.85, 0.30)
 	if not _sys().is_facility_unlocked(fid):
-		# 未解锁：解锁需求（知名度门槛 + 银条开价）
-		# 【改】批次②③④-B11：设施解锁门槛/开价统一（当前/需求）格式，保留达到/未达到红绿提示
-		c._add_cost_row(vb, "解锁需求：知名度", int(_sys().get_fame_total()), int(_sys().get_unlock_fame(fcfg)))
-		c._add_cost_row(vb, "开价：银条", int(_sys().get_yintiao()), int(_sys().get_unlock_cost(fcfg)))
+		# 未解锁：解锁需求 + 开价 + 解锁主钮
+		_kv_row(root, 0.16, 0.37, 0.84, 0.415, "解锁需求：知名度", int(_sys().get_fame_total()), int(_sys().get_unlock_fame(fcfg)))
+		_kv_row(root, 0.16, 0.44, 0.84, 0.485, "开价：银条", int(_sys().get_yintiao()), int(_sys().get_unlock_cost(fcfg)))
 		var unlock_btn := Button.new()
 		unlock_btn.text = "解锁设施"
-		unlock_btn.custom_minimum_size = Vector2(0, 42)
+		unlock_btn.custom_minimum_size = Vector2(0, 46)
+		var ub := StyleBoxFlat.new()
+		ub.bg_color = Color("#c9a050")
+		ub.set_corner_radius_all(10)
+		for st in ["normal", "hover", "pressed"]:
+			unlock_btn.add_theme_stylebox_override(st, ub)
+		unlock_btn.add_theme_color_override("font_color", Color("#3a2613"))
+		unlock_btn.add_theme_font_size_override("font_size", 18)
 		unlock_btn.disabled = not _sys().can_unlock_facility(fid).get("ok", false)
 		unlock_btn.pressed.connect(func(): _on_facility_unlock(fid))
-		vb.add_child(unlock_btn)
+		_place(root, unlock_btn, 0.28, 0.60, 0.72, 0.68)
 		return
 	# 已解锁：三属性 当前→下级
-	var pv := _sys().get_facility_preview(fid)
+	var pv: Dictionary = _sys().get_facility_preview(fid)
 	var bond_name: String = "友好" if str(pv.get("stat", "")) == "friendly" else "才华"
-	var row1 := Label.new()
-	row1.text = "知名度：%d → %d" % [int(pv.get("fame", 0)), int(pv.get("next_fame", 0))]
-	vb.add_child(row1)
-	var row2 := Label.new()
-	row2.text = "银条收益：%d → %d" % [int(pv.get("income", 0)), int(pv.get("next_income", 0))]
-	vb.add_child(row2)
-	var row3 := Label.new()
-	row3.text = "%s类挚友%s：%d → %d" % [str(pv.get("cat", "")), bond_name, int(pv.get("bond", 0)), int(pv.get("next_bond", 0))]
-	vb.add_child(row3)
+	var stat_rows := [
+		"知名度：%d → %d" % [int(pv.get("fame", 0)), int(pv.get("next_fame", 0))],
+		"银条收益：%d → %d" % [int(pv.get("income", 0)), int(pv.get("next_income", 0))],
+		"%s类挚友%s：%d → %d" % [str(pv.get("cat", "")), bond_name, int(pv.get("bond", 0)), int(pv.get("next_bond", 0))]]
+	for i in range(3):
+		var rl := Label.new()
+		rl.text = stat_rows[i]
+		rl.add_theme_font_size_override("font_size", 17)
+		rl.add_theme_color_override("font_color", Color("#5a3d26"))
+		_place(root, rl, 0.16, 0.36 + i * 0.068, 0.84, 0.42 + i * 0.068)
 	if bool(pv.get("maxed", false)):
 		var maxed := Label.new()
 		maxed.text = "设施已满级"
-		maxed.add_theme_color_override("font_color", Color("#9a93b8"))
-		vb.add_child(maxed)
+		maxed.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+		maxed.add_theme_font_size_override("font_size", 16)
+		maxed.add_theme_color_override("font_color", Color("#9a8a76"))
+		_place(root, maxed, 0.16, 0.585, 0.84, 0.635)
 	else:
-		# 【改】批次②③④-B11：升级消耗统一（拥有/消耗）格式，道具名默认色、数字红绿
-		c._add_cost_row(vb, "消耗：银条", int(_sys().get_yintiao()), int(pv.get("cost", 0)))
-		# 同步升级勾选：勾选后升级按钮=同项目全部已解锁设施各升1级
+		_kv_row(root, 0.16, 0.585, 0.84, 0.625, "消耗：银条", int(_sys().get_yintiao()), int(pv.get("cost", 0)))
 		var sync_cb := CheckBox.new()
 		sync_cb.text = "同步升级（同项目全部设施各升1级）"
-		vb.add_child(sync_cb)
+		sync_cb.add_theme_font_size_override("font_size", 14)
+		sync_cb.add_theme_color_override("font_color", Color("#5a3d26"))
+		_place(root, sync_cb, 0.16, 0.655, 0.84, 0.705)
 		var up_btn := Button.new()
-		up_btn.text = "升级"
-		up_btn.custom_minimum_size = Vector2(0, 42)
+		up_btn.text = "升级设施"
+		up_btn.custom_minimum_size = Vector2(0, 46)
+		var usb := StyleBoxFlat.new()
+		usb.bg_color = Color("#c9a050")
+		usb.set_corner_radius_all(10)
+		for st in ["normal", "hover", "pressed"]:
+			up_btn.add_theme_stylebox_override(st, usb)
+		up_btn.add_theme_color_override("font_color", Color("#3a2613"))
+		up_btn.add_theme_font_size_override("font_size", 18)
 		up_btn.disabled = not _sys().can_upgrade_facility(fid).get("ok", false)
 		up_btn.pressed.connect(func(): _on_facility_upgrade(fid, str(fcfg.get("project", "")), sync_cb.button_pressed, up_btn))
-		vb.add_child(up_btn)
+		_place(root, up_btn, 0.28, 0.75, 0.72, 0.83)
 
 func _on_facility_unlock(fid: String):
 	var r := _sys().unlock_facility(fid)
@@ -450,12 +447,28 @@ func _on_add_jiaohao():
 	btn_row.add_child(ok_btn)
 
 func _on_collect():
+	if not _sys().has_jar():
+		# 空罐也允许点击，给红色反馈（disabled 已取消，罐永可点）
+		c._show_success_popup("收益罐还是空的", 1.0, "warn")
+		return
 	var r := _sys().collect_jar()
 	# 【改】成功反馈铺开：领取成功弹窗
 	c._show_success_popup("领取成功\n银条 +%s" % c.format_number(r))
 	_refresh()
 
 # 叫号：1 位客人转入接待队列（接待由定时器批处理）
+# 一键叫号勾选落酒肆系统存档：退游重进保持
+func _on_call_all_toggled(on: bool):
+	_sys().set_auto_call_all(on)
+	data.save_game()
+
+# 叫号入口：勾选"一键叫号"→消耗全部体力（call_all），未勾选→消耗一点（call_one）
+func _on_call():
+	if _call_all_check != null and _call_all_check.button_pressed:
+		_on_call_all()
+	else:
+		_on_call_one()
+
 func _on_call_one():
 	var r := _sys().call_one()
 	if not r.get("ok", false):
@@ -494,78 +507,136 @@ func _show_rule_popup():
 		vb.add_child(body)
 
 # ---------- 酒肆信息弹窗 ----------
+
+# ---- 自定义画底弹窗（信息/设施专用：全屏遮罩点击关 + 画底 + 右上✕）----
+func _place(parent: Control, node: Control, fx0: float, fy0: float, fx1: float, fy1: float) -> void:
+	node.anchor_left = fx0
+	node.anchor_top = fy0
+	node.anchor_right = fx1
+	node.anchor_bottom = fy1
+	node.offset_left = 0
+	node.offset_top = 0
+	node.offset_right = 0
+	node.offset_bottom = 0
+	parent.add_child(node)
+
+func _art_popup(bg: Texture2D, popup_size: Vector2) -> Control:
+	var mask := ColorRect.new()
+	mask.color = Color(0, 0, 0, 0.55)
+	mask.set_anchors_preset(Control.PRESET_FULL_RECT)
+	mask.z_index = 39
+	c.add_child(mask)
+	var root := Control.new()
+	root.name = "TavernPopup"
+	root.z_index = 40
+	root.custom_minimum_size = popup_size
+	# 左上锚点 + 显式坐标尺寸：CENTER 锚点会让 position 变成相对屏幕中心，直接出屏
+	root.set_anchors_preset(Control.PRESET_TOP_LEFT)
+	root.position = (c.get_viewport_rect().size - popup_size) * 0.5
+	root.size = popup_size
+	mask.add_child(root)
+	var bgt := TextureRect.new()
+	bgt.texture = bg
+	bgt.stretch_mode = TextureRect.STRETCH_SCALE
+	bgt.set_anchors_preset(Control.PRESET_FULL_RECT)
+	bgt.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	root.add_child(bgt)
+	var close_x := Button.new()
+	close_x.text = "×"
+	close_x.add_theme_font_size_override("font_size", 26)
+	close_x.add_theme_color_override("font_color", Color("#e6c07b"))
+	for st in ["normal", "hover", "pressed", "focus"]:
+		close_x.add_theme_stylebox_override(st, StyleBoxEmpty.new())
+	_place(root, close_x, 0.885, 0.02, 0.975, 0.105)
+	close_x.pressed.connect(root.queue_free)
+	mask.gui_input.connect(func(ev):
+		if ev is InputEventMouseButton and ev.pressed and ev.button_index == MOUSE_BUTTON_LEFT:
+			root.queue_free())
+	root.tree_exiting.connect(mask.queue_free)
+	return root
+
+# 画底弹窗键值行：左键右值（达不到红/达得到绿）
+func _kv_row(parent: Control, fx0: float, fy0: float, fx1: float, fy1: float, key: String, have: int, need: int) -> void:
+	var k := Label.new()
+	k.text = key
+	k.add_theme_font_size_override("font_size", 16)
+	k.add_theme_color_override("font_color", Color("#5a3d26"))
+	_place(parent, k, fx0, fy0, fx0 + 0.42, fy1)
+	var v := Label.new()
+	v.text = "%s / %s" % [c.format_number(have), c.format_number(need)]
+	v.horizontal_alignment = HORIZONTAL_ALIGNMENT_RIGHT
+	v.add_theme_font_size_override("font_size", 16)
+	v.add_theme_color_override("font_color", Color("#2e8b57") if have >= need else Color("#c0392b"))
+	_place(parent, v, fx1 - 0.32, fy0, fx1, fy1)
+
 func _show_info_popup():
-	_popup_kind = "info"
-	_popup_id = ""
-	_close_node("TavernPopup")
-	var popup: PanelContainer = c._create_base_popup("酒肆信息", Vector2(440, 460))
-	popup.name = "TavernPopup"
-	popup.z_index = 40   # 盖过 TavernPage(z35)，同 inn/bank 弹窗惯例
-	c.add_child(popup)
-	var vb: VBoxContainer = popup.get_child(0)
-	# 招牌 + 改名（改名免费，限8字；改名后重进弹窗即可见新名）
-	var sign_row := HBoxContainer.new()
-	sign_row.add_theme_constant_override("separation", 8)
-	vb.add_child(sign_row)
+	var root: Control = _art_popup(INFO_BG, Vector2(720, 603))
+	# 顶区右侧：招牌/等级（左侧楼宇为画底自带）
 	var sign_lbl := Label.new()
 	sign_lbl.text = "招牌：%s" % _sys().get_sign_name()
-	sign_lbl.size_flags_horizontal = Control.SIZE_EXPAND_FILL
-	sign_row.add_child(sign_lbl)
+	sign_lbl.add_theme_font_size_override("font_size", 20)
+	sign_lbl.add_theme_color_override("font_color", Color("#5a3d26"))
+	_place(root, sign_lbl, 0.53, 0.055, 0.88, 0.115)
 	var rename_btn := Button.new()
 	rename_btn.text = "改名"
-	rename_btn.custom_minimum_size = Vector2(70, 32)
+	rename_btn.add_theme_font_size_override("font_size", 13)
+	rename_btn.add_theme_color_override("font_color", Color("#8a6a45"))
+	for st in ["normal", "hover", "pressed", "focus"]:
+		rename_btn.add_theme_stylebox_override(st, StyleBoxEmpty.new())
 	rename_btn.pressed.connect(_show_rename_popup)
-	sign_row.add_child(rename_btn)
-	# 等级 + 升级（知名度达标免费升）
-	var lv_row := HBoxContainer.new()
-	lv_row.add_theme_constant_override("separation", 8)
-	vb.add_child(lv_row)
-	var lv_lbl := Label.new()
-	lv_lbl.text = "等级：Lv.%d" % _sys().get_level()
-	lv_lbl.size_flags_horizontal = Control.SIZE_EXPAND_FILL
-	lv_row.add_child(lv_lbl)
-	if _sys().get_level() < _sys().get_max_level():
-		var up_btn := Button.new()
-		up_btn.text = "升级"
-		up_btn.custom_minimum_size = Vector2(70, 32)
-		up_btn.disabled = not _sys().can_level_up().get("ok", false)
-		up_btn.pressed.connect(_on_level_up)
-		lv_row.add_child(up_btn)
+	_place(root, rename_btn, 0.75, 0.122, 0.845, 0.172)
+	var lv := Label.new()
+	lv.text = "等级：%d" % _sys().get_level()
+	lv.add_theme_font_size_override("font_size", 16)
+	lv.add_theme_color_override("font_color", Color("#5a3d26"))
+	_place(root, lv, 0.53, 0.115, 0.74, 0.165)
+	# 画底丝带：接待客人收益
+	var ribbon := Label.new()
+	ribbon.text = "接待客人收益"
+	ribbon.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	ribbon.add_theme_font_size_override("font_size", 20)
+	ribbon.add_theme_color_override("font_color", Color(1, 1, 1, 0.92))
+	_place(root, ribbon, 0.14, 0.435, 0.88, 0.515)
+	# 三行收益
+	var rows := [
+		"银条收益：%s" % c.format_number(_sys().get_income_per_guest()),
+		"门客百业经验：%s" % c.format_number(_sys().get_baiye_per_guest()),
+		"挚友才艺经验：%s" % c.format_number(_sys().get_caiyi_per_guest())]
+	for i in range(3):
+		var rl := Label.new()
+		rl.text = rows[i]
+		rl.add_theme_font_size_override("font_size", 17)
+		rl.add_theme_color_override("font_color", Color("#5a3d26"))
+		_place(root, rl, 0.22, 0.545 + i * 0.062, 0.80, 0.60 + i * 0.062)
+	# 知名度进度 + 底部升级主钮
+	_kv_row(root, 0.22, 0.775, 0.80, 0.815, "知名度", int(_sys().get_fame_total()), int(_sys().get_fame_threshold()))
+	var pb := ProgressBar.new()
+	pb.min_value = 0
+	pb.max_value = max(1, int(_sys().get_fame_threshold()))
+	pb.value = clamp(int(_sys().get_fame_total()), 0, int(_sys().get_fame_threshold()))
+	var pb_fill := StyleBoxFlat.new()
+	pb_fill.bg_color = Color("#c9a050")
+	pb_fill.set_corner_radius_all(6)
+	pb.add_theme_stylebox_override("fill", pb_fill)
+	_place(root, pb, 0.22, 0.83, 0.80, 0.875)
+	var up := Button.new()
+	up.custom_minimum_size = Vector2(0, 44)
+	var up_sb := StyleBoxFlat.new()
+	up_sb.bg_color = Color("#c9a050")
+	up_sb.set_corner_radius_all(10)
+	for st in ["normal", "hover", "pressed"]:
+		up.add_theme_stylebox_override(st, up_sb)
+	up.add_theme_color_override("font_color", Color("#3a2613"))
+	up.add_theme_font_size_override("font_size", 20)
+	if _sys().get_level() >= int(_sys().get_max_level()):
+		up.text = "已满级"
+		up.disabled = true
 	else:
-		var max_lbl := Label.new()
-		max_lbl.text = "已满级"
-		max_lbl.add_theme_color_override("font_color", Color("#9a93b8"))
-		lv_row.add_child(max_lbl)
-	# 接待收益三项
-	var gain := Label.new()
-	gain.text = "接待客人收益：银条 %s" % c.format_number(_sys().get_income_per_guest())
-	vb.add_child(gain)
-	var baiye := Label.new()
-	baiye.text = "门客百业经验：%d" % _sys().get_baiye_per_guest()   # 【改】批次②③④-B1修正：规则说明移入标题旁"?"弹窗
-	vb.add_child(baiye)
-	var caiyi := Label.new()
-	caiyi.text = "挚友才艺经验：%d" % _sys().get_caiyi_per_guest()   # 【改】批次②③④-B1修正：规则说明移入标题旁"?"弹窗
-	vb.add_child(caiyi)
-	# 小喇叭知名度：进度 + 阈值
-	var fame_cur := _sys().get_fame_total()
-	var fame_need := _sys().get_fame_threshold()
-	if _sys().get_level() >= _sys().get_max_level():
-		var fame := Label.new()
-		fame.text = "小喇叭知名度：%s（已满级）" % c.format_number(fame_cur)
-		vb.add_child(fame)
-	else:
-		# 【改】批次②③④-B11：知名度进度统一（当前/需求）格式，保留达到/未达到红绿提示
-		c._add_cost_row(vb, "小喇叭知名度", int(fame_cur), int(fame_need))
-	var bar := ProgressBar.new()
-	bar.min_value = 0
-	bar.max_value = maxi(1, fame_need)
-	bar.value = fame_cur
-	bar.custom_minimum_size = Vector2(0, 22)
-	bar.show_percentage = false
-	vb.add_child(bar)
-	# 【删】批次②③④-B1修正：免费升级说明移入标题旁"?"弹窗，信息弹窗只留实际进度与升级功能
+		up.text = "升级"
+		up.disabled = not _sys().can_level_up().get("ok", false)
+		up.pressed.connect(_on_level_up)
+	_place(root, up, 0.33, 0.895, 0.67, 0.955)
 
-# 改名弹窗：免费，限8个中文字
 func _show_rename_popup():
 	_close_node("TavernPopup")
 	var popup: PanelContainer = c._create_base_popup("修改招牌", Vector2(400, 200), Vector2.ZERO, false)   # 【改】UI统一批次①：确认弹窗不带右上✕
