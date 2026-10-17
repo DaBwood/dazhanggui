@@ -1049,7 +1049,7 @@ func _on_skill_btn_clicked(tab_id: String, idx: int):
 	if tab_id == "fengkui_wuyue" and c.has_node("FengkuiPanel"):
 		promo._show_fengkui_panel("wuyue")
 
-# 详情区：左=信息（技能名/等级/当前加成/下级数值），右=勾选框+升级+升级10次；已满级右侧全藏只盖红章
+# 详情区：左=信息（技能名/等级/当前加成/下级数值），右=勾选框+升级+升级10次；已满级右侧全藏只盖印章图标
 func _render_skill_detail(list: VBoxContainer, item: Dictionary) -> void:
 	var detail_wrap := Control.new()
 	detail_wrap.custom_minimum_size = Vector2(0, 108)
@@ -1245,16 +1245,18 @@ func _render_skill_detail(list: VBoxContainer, item: Dictionary) -> void:
 			up10.add_theme_color_override("font_color", Color(1, 1, 1))
 			up10.pressed.connect(item["on_bulk"])
 			btn_row.add_child(up10)
-	# 已满级红章：盖在详情区上
+	# 已满级用印章图标盖在详情区上，比文字更醒目且各页统一
 	if is_max:
-		var stamp := Label.new()
-		stamp.text = "已满级"
-		stamp.set_anchors_preset(Control.PRESET_CENTER_RIGHT)   # 【改】右侧中间
-		stamp.offset_left = -28
+		var stamp := TextureRect.new()
+		stamp.texture = load("res://assets/common/manji.png")
+		stamp.custom_minimum_size = Vector2(64, 64)
+		stamp.expand_mode = TextureRect.EXPAND_IGNORE_SIZE
+		stamp.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_CENTERED
+		stamp.set_anchors_preset(Control.PRESET_CENTER_RIGHT)
+		stamp.offset_left = -92
+		stamp.offset_top = -32
 		stamp.offset_right = -28
-		stamp.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
-		stamp.add_theme_font_size_override("font_size", 30)
-		stamp.add_theme_color_override("font_color", Color(0.9, 0.2, 0.2, 0.7))
+		stamp.offset_bottom = 32
 		detail_wrap.add_child(stamp)
 	list.add_child(detail_wrap)
 
@@ -1287,9 +1289,7 @@ func _fill_skill_tab(list):
 		var cap_max: int = int(skill.max_level) + data.get_initial_skill_cap_bonus()
 		var is_max: bool = skill.level >= cap_max
 		var info: String = "【%s】  Lv.%d/%d\n资质+%d" % [skill.name, skill.level, cap_max, skill.level * per]
-		if is_max:
-			info += "（已满级）"
-		else:
+		if not is_max:
 			info += "（下级+%d）" % [(skill.level + 1) * per]
 		if skill.has("cost_item") and str(skill.get("cost_item", "")) != "":
 			# 【新增】2026-09-25 极·XX之道：只吃对应职业之道书，走 own 单货币显示（自动红绿着色；无资质丹/百业经验勾选对）
@@ -1322,9 +1322,7 @@ func _fill_skill_tab(list):
 				var per: int = int(skill.aptitude_per_level)
 				var is_max: bool = skill.level >= skill.max_level
 				var info: String = "【%s】  Lv.%d/%d\n资质+%d" % [skill.name, skill.level, skill.max_level, skill.level * per]
-				if is_max:
-					info += "（已满级）"
-				else:
+				if not is_max:
 					info += "（下级+%d）" % [(skill.level + 1) * per]
 				items.append({
 					"name": skill.name, "stars": per, "is_max": is_max, "info": info,
@@ -1345,7 +1343,7 @@ func _fill_skill_tab(list):
 		if is_lock:
 			t_info = "【%s】\n信物达到%d级解锁（当前信物Lv.%d）" % [t_name, int(d["unlock"]), int(d["token_lv"])]
 		elif t_lv >= t_cap:
-			t_info = "【%s】  Lv.%d/%d\n资质+%d（已满级）" % [t_name, t_lv, t_cap, t_lv * t_star]
+			t_info = "【%s】  Lv.%d/%d\n资质+%d" % [t_name, t_lv, t_cap, t_lv * t_star]
 		else:
 			t_info = "【%s】  Lv.%d/%d\n资质+%d（下级+%d）" % [t_name, t_lv, t_cap, t_lv * t_star, (t_lv + 1) * t_star]
 		items.append({
@@ -1369,9 +1367,7 @@ func _fill_shop_tab(list):
 		var is_max: bool = skill.level >= skill.max_level
 		# 店铺类显示格式：店铺赚速+X%（下级+Y%）
 		var info: String = "【%s】  Lv.%d/%d\n店铺赚速+%.0f%%" % [skill.name, skill.level, skill.max_level, current_percent * 100]
-		if is_max:
-			info += "（已满级）"
-		else:
+		if not is_max:
 			info += "（下级+%.0f%%）" % [(current_percent + skill.percent_per_level) * 100]
 		if is_caiyuan:
 			# 货币(消耗/库存) 由勾选框显示，信息区不再写每级消耗
@@ -1394,9 +1390,7 @@ func _fill_shop_tab(list):
 		var it := {"name": r["name"], "stars": 1, "is_max": is_max, "info": info,
 			"icon": _side_icon_path(r),
 			"on_single": on_side_sys_upgrade.bind(str(r["key"]), "single"), "on_bulk": on_side_sys_upgrade.bind(str(r["key"]), "bulk")}
-		if is_max:
-			info += "（已满级）"
-		else:
+		if not is_max:
 			info += "（下级+%d）" % (lv + 1)
 			it["own_name"] = str(r["currency"])
 			it["own"] = [int(r["cost"]), data.side_skill_system.get_stock(current_hero_id, str(r["key"]))]
@@ -1408,9 +1402,7 @@ func _fill_shop_tab(list):
 		var star: int = int(s.star)
 		var is_max: bool = lv >= int(s.max_level)
 		var info: String = "【虫师】%s  Lv.%d/%d\n资质+%d" % [s.name, lv, int(s.max_level), lv * star]
-		if is_max:
-			info += "（已满级）"
-		else:
+		if not is_max:
 			info += "（下级+%d）" % [(lv + 1) * star]
 		items.append({"name": s.name, "stars": star, "is_max": is_max, "info": info,
 			"icon": "res://assets/skill_icons/%s.png" % str(s.name),
@@ -1439,9 +1431,7 @@ func _fill_costume_tab(list):
 		var per = int(cs._settings().get("apt_per_level", {}).get(cfg.get("quality", "素装"), 2))
 		var is_max: bool = base >= max_lv
 		var info: String = "【%s】%s  Lv.%d/%d\n资质+%d" % [cfg.get("quality", ""), cfg.get("name", cos_id), base, max_lv, base * per]
-		if is_max:
-			info += "（已满级）"
-		else:
+		if not is_max:
 			info += "（下级+%d）" % [(base + 1) * per]
 		items.append({"name": cfg.get("name", cos_id), "stars": per, "is_max": is_max, "info": info,
 			"icon": "res://assets/skill_icons/%s.png" % cos_id, "qual": str(cfg.get("quality", "")),
@@ -1481,8 +1471,6 @@ func _fill_halo_tab(list):
 		var is_max: bool = lv >= cap
 		# 光环类显示格式：【类】门客资质+X
 		var info: String = "【%s】  Lv.%d/%d\n【%s】类门客资质+%d" % [cfg.get("name", cos_id), lv, cap, my_cat, lv * per]
-		if is_max:
-			info += "（已满级）"
 		items.append({"name": cfg.get("name", cos_id), "stars": per, "is_max": is_max, "info": info,
 			"icon": "res://assets/skill_icons/%s.png" % cos_id, "qual": str(cfg.get("quality", "")),
 			"own_name": "玉璜", "own": [cs.get_halo_cost(lv + 1), int(data.items.get("yu_huang", 0))],
@@ -1492,8 +1480,6 @@ func _fill_halo_tab(list):
 			var ch_lv: int = cs.get_career_halo_level(st)
 			var ch_info: String = "【%s：%s】  Lv.%d/%d\n同职业门客赚钱+%d%%" % [cfg.get("name", cos_id), my_cat, ch_lv, cs.CAREER_HALO_CAP, ch_lv * 5]
 			if cs.is_career_halo_unlocked(st):
-				if ch_lv >= cs.CAREER_HALO_CAP:
-					ch_info += "（已满级）"
 				items.append({"name": "%s：%s" % [cfg.get("name", cos_id), my_cat], "stars": ch_lv, "is_max": ch_lv >= cs.CAREER_HALO_CAP, "info": ch_info,
 					"icon": "res://assets/skill_icons/%s.png" % cos_id, "qual": "锦衣",
 					"own_name": "玉璜", "own": [cs.CAREER_HALO_COST, int(data.items.get("yu_huang", 0))],
