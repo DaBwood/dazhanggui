@@ -100,12 +100,12 @@ func _jh_text() -> String:
 	return "体力：%d/%d" % [_sys().get_jiaohao(), _sys().get_jiaohao_cap()]
 
 func _wire_page(page: Control):
-	for n in ["TopBar", "BackButton", "TitleLabel", "RuleButton", "CenterFill",
+	for n in ["TopBarPanel", "TopBar", "BackButton", "TitleLabel", "RuleButton", "CenterFill",
 			"AreaScroll", "AreaBody", "MainNav", "CanButton", "JoyButton", "CanDot", "JoyDot",
 			"InfoPanel", "InfoTitle", "FameLabel", "SilverLabel",
-			"CallIconButton", "JhLabel", "AddButton", "CallAllButton", "JarIcon"]:
+			"CallIconButton", "StaminaPanel", "JhLabel", "AddButton", "CallAllPanel", "CallAllButton", "JarIcon"]:
 		if page.find_child(n, true, false) == null:
-			c.push_error("tavern_view: 必需节点 %s 缺失，检查 tavern_view.tscn" % n)
+			push_error("tavern_view: 必需节点 %s 缺失，检查 tavern_view.tscn" % n)
 	page.find_child("BackButton", true, false).pressed.connect(_on_back)
 	page.find_child("RuleButton", true, false).pressed.connect(_show_rule_popup)
 	page.find_child("InfoTitle", true, false).pressed.connect(_show_info_popup)
