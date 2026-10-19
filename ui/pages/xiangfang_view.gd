@@ -601,14 +601,14 @@ func _show_furniture_popup(fid: String):
 	var lv_l := Label.new()
 	lv_l.text = "等级 Lv%d / %d · 持有 %d 件" % [st["lv"], _sys().get_max_lv(), st["cnt"]]
 	lv_l.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
-	lv_l.add_theme_color_override("font_color", Color("#bbbbbb"))
+	lv_l.add_theme_color_override("font_color", UiHelpers.PAPER_TEXT_SUB)
 	vbox.add_child(lv_l)
 
 	# 当前 & 下级效果（无双/传奇=资质；卓越/优秀/普通=固定赚钱）
 	var cur_l := Label.new()
 	cur_l.text = "当前效果：" + _effect_text(fc, st["lv"]) if st["lv"] > 0 else "当前效果：未解锁"
 	cur_l.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
-	cur_l.add_theme_color_override("font_color", Color("#7ee08a"))
+	cur_l.add_theme_color_override("font_color", UiHelpers.PAPER_OK)
 	vbox.add_child(cur_l)
 	if st["lv"] < _sys().get_max_lv():
 		var cost: int = _sys().get_upgrade_cost(fid, st["lv"])
@@ -617,7 +617,7 @@ func _show_furniture_popup(fid: String):
 			_effect_text(fc, st["lv"] + 1), cost * int(q.get("talisman", 0))]
 		nxt_l.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 		nxt_l.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
-		nxt_l.add_theme_color_override("font_color", Color("#8fd3c7"))
+		nxt_l.add_theme_color_override("font_color", UiHelpers.PAPER_TEXT_SUB)
 		vbox.add_child(nxt_l)
 		# 【改】批次②③④-B10：升级消耗统一（拥有/消耗），道具名默认色、数字红绿
 		c._add_cost_row(vbox, "升级消耗：同名家具", int(st["cnt"]), cost)
@@ -627,7 +627,7 @@ func _show_furniture_popup(fid: String):
 		var max_l := Label.new()
 		max_l.text = "已满级（富余 %d 件可回收）" % recyc
 		max_l.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
-		max_l.add_theme_color_override("font_color", Color("#ffd700"))
+		max_l.add_theme_color_override("font_color", UiHelpers.PAPER_TEXT)
 		vbox.add_child(max_l)
 		if recyc > 0:
 			var rec_btn := Button.new()
@@ -648,7 +648,7 @@ func _show_furniture_popup(fid: String):
 		var reason_l := Label.new()
 		reason_l.text = str(chk.get("reason", ""))
 		reason_l.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
-		reason_l.add_theme_color_override("font_color", Color("#e74c3c"))
+		reason_l.add_theme_color_override("font_color", UiHelpers.PAPER_BAD)
 		vbox.add_child(reason_l)
 
 	var up_all_btn := Button.new()
@@ -716,7 +716,7 @@ func _show_fengshui_popup():
 		c.format_number(_sys().get_fengshui()), fs_l, _sys().get_fengshui_to_next()]
 	head_l.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	head_l.add_theme_font_size_override("font_size", 16)
-	head_l.add_theme_color_override("font_color", Color("#8fd3c7"))
+	head_l.add_theme_color_override("font_color", UiHelpers.PAPER_TEXT)
 	vbox.add_child(head_l)
 
 	var note_l := Label.new()
@@ -724,32 +724,26 @@ func _show_fengshui_popup():
 	note_l.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	note_l.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
 	note_l.add_theme_font_size_override("font_size", 11)
-	note_l.add_theme_color_override("font_color", Color("#888888"))
+	note_l.add_theme_color_override("font_color", UiHelpers.PAPER_TEXT_SUB)
 	vbox.add_child(note_l)
 
 	# 10 档概率表：当前等级 vs 下一级（用户拍板：只看这两列）
 	var cur_rows: Array = _sys().get_fengshui_rows(fs_l)
 	var nxt_rows: Array = _sys().get_fengshui_rows(fs_l + 1)
-	var scroll := ScrollContainer.new()
-	scroll.custom_minimum_size = Vector2(0, 240)
-	scroll.size_flags_vertical = Control.SIZE_EXPAND_FILL
-	scroll.horizontal_scroll_mode = ScrollContainer.SCROLL_MODE_DISABLED
-	vbox.add_child(scroll)
-	var rows := VBoxContainer.new()
-	rows.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	var rows: VBoxContainer = c.popup_scroll(vbox)
+	rows.custom_minimum_size = Vector2(0, 240)   # 概率表固定显示高度（组件滚动区默认无下限高）
 	rows.add_theme_constant_override("separation", 2)
-	scroll.add_child(rows)
 	var head_row := Label.new()
 	head_row.text = "品质　　当前　→　下一级"
 	head_row.add_theme_font_size_override("font_size", 12)
-	head_row.add_theme_color_override("font_color", Color("#aaaaaa"))
+	head_row.add_theme_color_override("font_color", UiHelpers.PAPER_TEXT_SUB)
 	rows.add_child(head_row)
 	for i in range(mini(cur_rows.size(), nxt_rows.size())):
 		var row_l := Label.new()
 		row_l.text = "%s　%.2f%% → %.2f%%" % [
 			cur_rows[i]["name"], float(cur_rows[i]["pct"]) * 100.0, float(nxt_rows[i]["pct"]) * 100.0]
 		row_l.add_theme_font_size_override("font_size", 13)
-		row_l.add_theme_color_override("font_color", Color("#dddddd"))
+		row_l.add_theme_color_override("font_color", UiHelpers.PAPER_TEXT)
 		rows.add_child(row_l)
 
 
@@ -758,17 +752,8 @@ func _show_medal_popup():
 	_popup_kind = "medal"
 	_popup_id = ""
 	var vbox: VBoxContainer = _popup_vbox("勋章", Vector2(460, 420))
-	var card := PanelContainer.new()
-	var style := StyleBoxFlat.new()
-	style.bg_color = Color("#2a2640")
-	style.border_color = Color("#6a5f9e")
-	style.set_border_width_all(2)
-	style.set_corner_radius_all(6)
-	card.add_theme_stylebox_override("panel", style)
-	vbox.add_child(card)
-	var vb := VBoxContainer.new()
-	vb.add_theme_constant_override("separation", 4)
-	card.add_child(vb)
+	# 【改】弹窗组件化批次：自造暗色卡 → 纸面卡片组件（羊皮纸皮肤定式，暗底金字在纸面不可读）
+	var vb: VBoxContainer = c.popup_card(vbox)
 	var head_row := HBoxContainer.new()
 	head_row.alignment = BoxContainer.ALIGNMENT_CENTER
 	head_row.add_theme_constant_override("separation", 6)
@@ -777,7 +762,7 @@ func _show_medal_popup():
 	head.text = "勋章：%s（%d级）" % [_sys().get_medal_name(), _sys().medal_lv]
 	head.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	head.add_theme_font_size_override("font_size", 18)
-	head.add_theme_color_override("font_color", Color("#e6c07b"))
+	head.add_theme_color_override("font_color", UiHelpers.PAPER_TEXT)
 	head_row.add_child(head)
 	var help_btn := Button.new()
 	help_btn.text = "i"   # 【改】批次②③④-B3：面板内补充信息入口统一用"i"（"?"只留玩法主标题旁）
@@ -788,14 +773,14 @@ func _show_medal_popup():
 	var effect := Label.new()
 	effect.text = "全部商铺赚速 +%d%%　初始技能等级上限 +%d" % [int(_sys().get_medal_shop_pct() * 100), _sys().get_medal_skill_cap()]
 	effect.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
-	effect.add_theme_color_override("font_color", Color("#e6c07b"))
+	effect.add_theme_color_override("font_color", UiHelpers.PAPER_TEXT)
 	vb.add_child(effect)
 	var nxt: Dictionary = _sys().get_next_medal_cfg()
 	if nxt.is_empty():
 		var max_lbl := Label.new()
 		max_lbl.text = "已满级"
 		max_lbl.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
-		max_lbl.add_theme_color_override("font_color", Color("#9a93b8"))
+		max_lbl.add_theme_color_override("font_color", UiHelpers.PAPER_TEXT_SUB)
 		vb.add_child(max_lbl)
 	else:
 		var need: int = int(nxt.get("need_comfort", 0))
@@ -811,7 +796,7 @@ func _show_medal_popup():
 		var next_effect := Label.new()
 		next_effect.text = "下级效果：全部商铺赚速 +%d%%　初始技能等级上限 +%d" % [int(float(nxt.get("shop_pct", 0.0)) * 100.0), int(nxt.get("skill_cap", 0))]
 		next_effect.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
-		next_effect.add_theme_color_override("font_color", Color("#7ee787"))
+		next_effect.add_theme_color_override("font_color", UiHelpers.PAPER_OK)
 		vb.add_child(next_effect)
 		var up_btn := Button.new()
 		up_btn.text = "升级勋章"
@@ -1158,7 +1143,7 @@ func _show_luck_detail_popup(popup_id: String):
 		var line := Label.new()
 		line.text = "%s：%s" % [hero_name, ("资质 +%d" % int(val)) if idx < 6 else ("赚钱 +%.2f%%" % val)]
 		line.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
-		line.add_theme_color_override("font_color", Color("#dddddd"))
+		line.add_theme_color_override("font_color", UiHelpers.PAPER_TEXT)
 		vbox.add_child(line)
 
 # 卜卦一卦
@@ -1201,10 +1186,10 @@ func _show_divine_popup():
 	money_l.add_theme_font_size_override("font_size", 26)
 	if d_money >= 0.0:
 		money_l.text = "装上后赚钱 +%s/秒 ▲" % c.format_number(int(d_money))
-		money_l.add_theme_color_override("font_color", Color("#7ee787"))
+		money_l.add_theme_color_override("font_color", UiHelpers.PAPER_OK)
 	else:
 		money_l.text = "装上后赚钱 %s/秒 ▼" % c.format_number(int(d_money))
-		money_l.add_theme_color_override("font_color", Color("#e74c3c"))
+		money_l.add_theme_color_override("font_color", UiHelpers.PAPER_BAD)
 	vbox.add_child(money_l)
 
 	# ② 双卡：左旧右新，新卡逐门客带差异红绿
@@ -1239,10 +1224,10 @@ func _make_luck_card(title: String, luck: Dictionary, pid: String, idx: int, pcf
 	card.custom_minimum_size = Vector2(0, 200)   # 宽度弹性均分（随弹窗自适应），固定高保卡形
 	card.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	var style = StyleBoxFlat.new()
-	style.bg_color = Color("#262236")
+	style.bg_color = UiHelpers.PAPER_CARD_BG
 	style.set_corner_radius_all(10)
 	style.set_border_width_all(1)
-	style.border_color = Color("#5a5178")
+	style.border_color = UiHelpers.PAPER_CARD_LINE
 	card.add_theme_stylebox_override("panel", style)
 	var cv := VBoxContainer.new()
 	cv.alignment = BoxContainer.ALIGNMENT_CENTER
@@ -1251,13 +1236,13 @@ func _make_luck_card(title: String, luck: Dictionary, pid: String, idx: int, pcf
 	t.text = title
 	t.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	t.add_theme_font_size_override("font_size", 15)
-	t.add_theme_color_override("font_color", Color("#e6c07b"))
+	t.add_theme_color_override("font_color", UiHelpers.PAPER_TEXT)
 	cv.add_child(t)
 	if luck.is_empty():
 		var empty_l := Label.new()
 		empty_l.text = slot_name + "（空槽）"
 		empty_l.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
-		empty_l.add_theme_color_override("font_color", Color("#888888"))
+		empty_l.add_theme_color_override("font_color", UiHelpers.PAPER_TEXT_SUB)
 		cv.add_child(empty_l)
 		return card
 	var is_outer: bool = idx < 6
@@ -1284,14 +1269,14 @@ func _make_luck_card(title: String, luck: Dictionary, pid: String, idx: int, pcf
 			var d: float = val - float(old_map[hid])
 			if d > 0.0:
 				txt += "（+%s）" % _fmt_val(d, is_outer)
-				line.add_theme_color_override("font_color", Color("#7ee787"))
+				line.add_theme_color_override("font_color", UiHelpers.PAPER_OK)
 			elif d < 0.0:
 				txt += "（%s）" % _fmt_val(d, is_outer)
-				line.add_theme_color_override("font_color", Color("#e74c3c"))
+				line.add_theme_color_override("font_color", UiHelpers.PAPER_BAD)
 			else:
-				line.add_theme_color_override("font_color", Color("#dddddd"))
+				line.add_theme_color_override("font_color", UiHelpers.PAPER_TEXT_SUB)
 		else:
-			line.add_theme_color_override("font_color", Color("#dddddd"))
+			line.add_theme_color_override("font_color", UiHelpers.PAPER_TEXT_SUB)
 		line.text = txt
 		cv.add_child(line)
 	return card
@@ -1404,14 +1389,8 @@ func _show_overview_popup():
 		empty_l.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 		vbox.add_child(empty_l)
 	else:
-		var scroll := ScrollContainer.new()
-		scroll.size_flags_vertical = Control.SIZE_EXPAND_FILL
-		scroll.horizontal_scroll_mode = ScrollContainer.SCROLL_MODE_DISABLED
-		vbox.add_child(scroll)
-		var rows := VBoxContainer.new()
-		rows.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+		var rows: VBoxContainer = c.popup_scroll(vbox)
 		rows.add_theme_constant_override("separation", 3)
-		scroll.add_child(rows)
 		for hid in totals.keys():
 			var hero_name: String = str((data.heroes.get(hid, {}) as Dictionary).get("name", hid))
 			var t: Dictionary = totals[hid]
@@ -1431,14 +1410,14 @@ func _show_upeffect_popup():
 	head.text = "命格等级区间（命盘 %d 级 → %d 级）" % [_msys().plate_lv, _msys().plate_lv + 1]
 	head.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	head.add_theme_font_size_override("font_size", 14)
-	head.add_theme_color_override("font_color", Color("#ffd700"))
+	head.add_theme_color_override("font_color", UiHelpers.PAPER_TEXT)
 	vbox.add_child(head)
 	for k in range(cur.size()):
 		var line := Label.new()
 		line.text = "%d 级：现 %.2f%% → 下级 %.2f%%" % [
 			_msys().plate_lv + k, float(cur[k]) * 100.0, float(nxt[k]) * 100.0]
 		line.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
-		line.add_theme_color_override("font_color", Color("#dddddd") if float(nxt[k]) <= float(cur[k]) else Color("#7ee787"))
+		line.add_theme_color_override("font_color", UiHelpers.PAPER_TEXT_SUB if float(nxt[k]) <= float(cur[k]) else UiHelpers.PAPER_OK)
 		vbox.add_child(line)
 
 
@@ -1468,7 +1447,7 @@ func _show_upresult_popup(fid: String):
 	var eff := Label.new()
 	eff.text = "%s → %s" % [_effect_text(fc, lv0), _effect_text(fc, lv1)]
 	eff.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
-	eff.add_theme_color_override("font_color", Color("#7ee787"))
+	eff.add_theme_color_override("font_color", UiHelpers.PAPER_OK)
 	vbox.add_child(eff)
 
 	var dc: int = int(_upresult.get("d_comfort", 0))
@@ -1476,7 +1455,7 @@ func _show_upresult_popup(fid: String):
 		var comfort_l := Label.new()
 		comfort_l.text = "舒适度 +%d（当前 %s）" % [dc, c.format_number(_sys().get_total_comfort())]
 		comfort_l.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
-		comfort_l.add_theme_color_override("font_color", Color("#8fd3c7"))
+		comfort_l.add_theme_color_override("font_color", UiHelpers.PAPER_OK)
 		vbox.add_child(comfort_l)
 
 	var dfs: int = int(_upresult.get("d_fengshui", 0))
@@ -1484,5 +1463,5 @@ func _show_upresult_popup(fid: String):
 		var fs_l := Label.new()
 		fs_l.text = "风水 +%d（当前 %s · %d 级）" % [dfs, c.format_number(_sys().get_fengshui()), _sys().get_fengshui_level()]
 		fs_l.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
-		fs_l.add_theme_color_override("font_color", Color("#8fd3c7"))
+		fs_l.add_theme_color_override("font_color", UiHelpers.PAPER_OK)
 		vbox.add_child(fs_l)
