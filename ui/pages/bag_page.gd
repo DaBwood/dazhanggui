@@ -322,12 +322,8 @@ func _show_ginseng_selector():
 	panel.name = "GinsengSelector"
 	var vbox = panel.get_child(0)
 
-	var scroll = ScrollContainer.new()
-	scroll.custom_minimum_size = Vector2(480, 300)
-	vbox.add_child(scroll)
-
-	var list = VBoxContainer.new()
-	scroll.add_child(list)
+	var list: VBoxContainer = c.popup_scroll(vbox)
+	list.custom_minimum_size = Vector2(480, 300)   # 选择器固定显示区（组件滚动区默认无下限高）
 
 	# 门客按实时赚速降序排列（走收入缓存表）
 	var hero_ids = data.heroes.keys()
@@ -378,12 +374,8 @@ func _show_baiye_selector():
 	panel.name = "BaiyeSelector"
 	var vbox = panel.get_child(0)
 
-	var scroll = ScrollContainer.new()
-	scroll.custom_minimum_size = Vector2(480, 300)
-	vbox.add_child(scroll)
-
-	var list = VBoxContainer.new()
-	scroll.add_child(list)
+	var list: VBoxContainer = c.popup_scroll(vbox)
+	list.custom_minimum_size = Vector2(480, 300)   # 选择器固定显示区（组件滚动区默认无下限高）
 
 	# 门客按实时赚速降序排列（同人参选择器）
 	var hero_ids = data.heroes.keys()
@@ -431,12 +423,8 @@ func _show_hero_box_selector():
 	vbox.add_child(search)
 	c._hook_web_cjk_input(search, "门客名字")
 	
-	var scroll = ScrollContainer.new()
-	scroll.custom_minimum_size = Vector2(440, 336)
-	vbox.add_child(scroll)
-	
-	var list = VBoxContainer.new()
-	scroll.add_child(list)
+	var list: VBoxContainer = c.popup_scroll(vbox)
+	list.custom_minimum_size = Vector2(440, 336)   # 选择器固定显示区（组件滚动区默认无下限高）
 	
 	var entries: Array = []
 	var has_unlockable = false
@@ -470,12 +458,8 @@ func _show_friend_box_selector():
 	panel.name = "FriendBoxSelector"
 	var vbox = panel.get_child(0)
 	
-	var scroll = ScrollContainer.new()
-	scroll.custom_minimum_size = Vector2(440, 380)
-	vbox.add_child(scroll)
-	
-	var list = VBoxContainer.new()
-	scroll.add_child(list)
+	var list: VBoxContainer = c.popup_scroll(vbox)
+	list.custom_minimum_size = Vector2(440, 380)   # 选择器固定显示区（组件滚动区默认无下限高）
 	
 	var has_unlockable = false
 	for friend_id in data.get_all_friend_ids():
@@ -516,13 +500,8 @@ func _open_soul_boxes(item_id: String, kind: String, n: int):
 	var popup = c._create_base_popup("开启结果（%d个）" % n, Vector2(460, 420))
 	popup.name = "SoulBoxResultPopup"
 	var svbox = popup.get_child(0)
-	var scroll = ScrollContainer.new()
-	scroll.custom_minimum_size = Vector2(0, 320)
-	scroll.size_flags_vertical = Control.SIZE_EXPAND_FILL
-	svbox.add_child(scroll)
-	var list = VBoxContainer.new()
-	list.size_flags_horizontal = Control.SIZE_EXPAND_FILL
-	scroll.add_child(list)
+	var list: VBoxContainer = c.popup_scroll(svbox)
+	list.custom_minimum_size = Vector2(0, 320)   # 结果/获得列表固定显示高度（组件滚动区默认无下限高）
 	for line in lines:
 		var lbl = Label.new()
 		lbl.text = line
@@ -570,12 +549,8 @@ func _show_item_box_selector(p_qty: int):
 	vbox.add_child(search)
 	c._hook_web_cjk_input(search, "道具名字")   # Web 端中文 IME 引擎级未修，聚焦弹原生 prompt
 
-	var scroll = ScrollContainer.new()
-	scroll.custom_minimum_size = Vector2(440, 360)
-	vbox.add_child(scroll)
-
-	var list = VBoxContainer.new()
-	scroll.add_child(list)
+	var list: VBoxContainer = c.popup_scroll(vbox)
+	list.custom_minimum_size = Vector2(440, 360)   # 选择器固定显示区（组件滚动区默认无下限高）
 
 	# 只排除物品盒子自身（防止递归）；服装/门客等盒子只能开出对应类别，无递归风险
 	var exclude_ids = ["item_box"]
@@ -626,11 +601,8 @@ func _show_cos_box_selector():
 	search.placeholder_text = "输入服装或门客名字搜索…"
 	vbox.add_child(search)
 	c._hook_web_cjk_input(search, "服装或门客名字")   # Web 端中文 IME 引擎级未修，聚焦弹原生 prompt
-	var scroll = ScrollContainer.new()
-	scroll.custom_minimum_size = Vector2(440, 400)
-	vbox.add_child(scroll)
-	var list = VBoxContainer.new()
-	scroll.add_child(list)
+	var list: VBoxContainer = c.popup_scroll(vbox)
+	list.custom_minimum_size = Vector2(440, 400)   # 选择器固定显示区（组件滚动区默认无下限高）
 	var entries: Array = []
 	for e in data.costume_system.get_all_cos_entries():
 		var btn = Button.new()
@@ -681,12 +653,8 @@ func _show_item_gains_popup(title: String, gains: Dictionary):
 	var popup = c._create_base_popup(title, Vector2(420, 480), Vector2(366, 100))
 	popup.name = "ItemGainsPopup"
 	var vb = popup.get_child(0)
-	var scroll = ScrollContainer.new()
-	scroll.custom_minimum_size = Vector2(0, 340)
-	vb.add_child(scroll)
-	var list = VBoxContainer.new()
-	list.size_flags_horizontal = Control.SIZE_EXPAND_FILL
-	scroll.add_child(list)
+	var list: VBoxContainer = c.popup_scroll(vb)
+	list.custom_minimum_size = Vector2(0, 340)   # 结果/获得列表固定显示高度（组件滚动区默认无下限高）
 	# 按 ITEM_CONFIG 配置顺序展示（未在配置里的 id 排最后，防御性处理）
 	var ordered = []
 	for iid in data.ITEM_CONFIG.keys():
