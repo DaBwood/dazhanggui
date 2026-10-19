@@ -365,11 +365,11 @@ func _show_cricket_detail(item: Dictionary):
 	var exp_lbl = Label.new()
 	if item.level >= max_lv:
 		exp_lbl.text = "军衔：已满阶"
-		exp_lbl.add_theme_color_override("font_color", Color("#aaaaaa"))
+		exp_lbl.add_theme_color_override("font_color", UiHelpers.PAPER_TEXT_SUB)
 	else:
 		var lown: int = sys.get_same_name_count(cdata)
 		exp_lbl.text = "下次升阶需消耗：%d 只同名促织（拥有 %d）" % [cost, lown]
-		exp_lbl.add_theme_color_override("font_color", Color("#ff6b6b") if lown < cost else Color("#ffd700"))
+		exp_lbl.add_theme_color_override("font_color", UiHelpers.PAPER_BAD if lown < cost else UiHelpers.PAPER_TEXT)
 	exp_lbl.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	vbox.add_child(exp_lbl)
 
@@ -537,12 +537,14 @@ func _show_guarantee_selector():
 	var hint = Label.new()
 	hint.text = "累计消耗已达%d次，自选一只无双促织" % sys.get_guarantee_target()
 	hint.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
-	hint.add_theme_color_override("font_color", Color("#ffaa00"))
+	hint.add_theme_color_override("font_color", UiHelpers.PAPER_TEXT_SUB)
 	vbox.add_child(hint)
 
 	var scroll = ScrollContainer.new()
 	scroll.size_flags_vertical = Control.SIZE_EXPAND_FILL
 	scroll.custom_minimum_size = Vector2(500, 0)
+	scroll.horizontal_scroll_mode = ScrollContainer.SCROLL_MODE_DISABLED   # 弹窗禁横滚
+	scroll.vertical_scroll_mode = ScrollContainer.SCROLL_MODE_SHOW_NEVER   # 用户拍板：滚动条默认隐藏（竖滚保留）
 	vbox.add_child(scroll)
 
 	var grid = GridContainer.new()
@@ -911,6 +913,8 @@ func _show_hero_worm_skills(hero_id: String, h: Dictionary):
 	var scroll = ScrollContainer.new()
 	scroll.size_flags_vertical = Control.SIZE_EXPAND_FILL
 	scroll.custom_minimum_size = Vector2(480, 0)
+	scroll.horizontal_scroll_mode = ScrollContainer.SCROLL_MODE_DISABLED   # 弹窗禁横滚
+	scroll.vertical_scroll_mode = ScrollContainer.SCROLL_MODE_SHOW_NEVER   # 用户拍板：滚动条默认隐藏（竖滚保留）
 	vbox.add_child(scroll)
 
 	var list = VBoxContainer.new()
@@ -938,7 +942,8 @@ func _make_worm_skill_row(hero_id: String, idx: int, skill: Dictionary, cdata: D
 	# 【改】行颜色统一走星级色配置（cuzhi.json star_colors；quality 与 star 1:1）
 	var col = Color(sys.get_quality_color(cdata.quality))
 	var sty = StyleBoxFlat.new()
-	sty.bg_color = CARD
+	# 【改】弹窗组件化批次：行卡暗底→纸面卡色（CARD 常量继续服务页身暗卡）
+	sty.bg_color = UiHelpers.PAPER_CARD_BG
 	sty.border_color = col
 	sty.border_width_bottom = 2
 	sty.border_width_left = 2
@@ -985,7 +990,7 @@ func _make_worm_skill_row(hero_id: String, idx: int, skill: Dictionary, cdata: D
 	bonus_lbl.text = bonus_str
 	bonus_lbl.custom_minimum_size = Vector2(100, 0)
 	# 【改】效果/未激活文字改暖沙金，避免与一星绿冲突
-	bonus_lbl.add_theme_color_override("font_color", Color("#e6c07b"))
+	bonus_lbl.add_theme_color_override("font_color", UiHelpers.PAPER_TEXT)
 	hbox.add_child(bonus_lbl)
 
 	btn.pressed.connect(func(): _show_worm_skill_upgrade(hero_id, idx, skill, cdata))
@@ -1037,12 +1042,12 @@ func _show_worm_skill_upgrade(hero_id: String, idx: int, skill: Dictionary, cdat
 	var rank_lbl = Label.new()
 	if rank_ok:
 		rank_lbl.text = "促织军衔：%s（满足要求）" % current_rank_info.full_name
-		rank_lbl.add_theme_color_override("font_color", Color("#e6c07b"))
+		rank_lbl.add_theme_color_override("font_color", UiHelpers.PAPER_OK)
 	else:
 		# 【改】提示显示还需提升多少阶
 		var need_up = required_absolute - current_rank
 		rank_lbl.text = "促织军衔：%s  |  需达到：%s（还需提升%d阶）" % [current_rank_info.full_name, required_rank_name, need_up]
-		rank_lbl.add_theme_color_override("font_color", Color("#ff6666"))
+		rank_lbl.add_theme_color_override("font_color", UiHelpers.PAPER_BAD)
 	rank_lbl.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	vbox.add_child(rank_lbl)
 
@@ -1334,7 +1339,7 @@ func _show_jar_action(jar: Dictionary):
 	var have_lbl = Label.new()
 	have_lbl.text = "拥有促织蜜膏：%d" % have
 	have_lbl.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
-	have_lbl.add_theme_color_override("font_color", Color("#ffaa00"))
+	have_lbl.add_theme_color_override("font_color", UiHelpers.PAPER_TEXT)
 	vbox.add_child(have_lbl)
 
 	var hbox = HBoxContainer.new()
@@ -1539,12 +1544,14 @@ func show_wushuang_box_selector():
 	var hint = Label.new()
 	hint.text = "请选择一只无双促织"
 	hint.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
-	hint.add_theme_color_override("font_color", Color("#ffaa00"))
+	hint.add_theme_color_override("font_color", UiHelpers.PAPER_TEXT_SUB)
 	vbox.add_child(hint)
 
 	var scroll = ScrollContainer.new()
 	scroll.size_flags_vertical = Control.SIZE_EXPAND_FILL
 	scroll.custom_minimum_size = Vector2(500, 0)
+	scroll.horizontal_scroll_mode = ScrollContainer.SCROLL_MODE_DISABLED   # 弹窗禁横滚
+	scroll.vertical_scroll_mode = ScrollContainer.SCROLL_MODE_SHOW_NEVER   # 用户拍板：滚动条默认隐藏（竖滚保留）
 	vbox.add_child(scroll)
 
 	var grid = GridContainer.new()
