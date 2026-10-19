@@ -204,17 +204,8 @@ func _build_medal_card(popup: PanelContainer):
 	var box := VBoxContainer.new()
 	box.name = "MedalCardBox"
 	pvb.add_child(box)
-	var card := PanelContainer.new()
-	var style := StyleBoxFlat.new()
-	style.bg_color = Color("#2a2640")
-	style.border_color = Color("#6a5f9e")
-	style.set_border_width_all(2)
-	style.set_corner_radius_all(6)
-	card.add_theme_stylebox_override("panel", style)
-	box.add_child(card)
-	var vb := VBoxContainer.new()
-	vb.add_theme_constant_override("separation", 4)
-	card.add_child(vb)
+	# 【改】弹窗组件化批次：自造暗色卡 → 纸面卡片组件（原地重建按名 MedalCardBox 摘旧盒，卡随盒重建）
+	var vb: VBoxContainer = c.popup_card(box)
 	var head_row := HBoxContainer.new()
 	head_row.alignment = BoxContainer.ALIGNMENT_CENTER
 	head_row.add_theme_constant_override("separation", 6)
@@ -223,7 +214,7 @@ func _build_medal_card(popup: PanelContainer):
 	head.text = "%s（%d级）" % [cs.get_medal_name(), cs.get_medal_lv()]
 	head.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	head.add_theme_font_size_override("font_size", 18)
-	head.add_theme_color_override("font_color", Color("#e6c07b"))
+	head.add_theme_color_override("font_color", UiHelpers.PAPER_TEXT)
 	head_row.add_child(head)
 	var help_btn := Button.new()
 	help_btn.text = "?"
@@ -243,7 +234,7 @@ func _build_medal_card(popup: PanelContainer):
 		nxt_lbl.text = "下级：全部商铺赚速 +%d%%　初始技能等级上限 +%d" % [int(float(nxt.get("shop_pct", 0.0)) * 100), int(nxt.get("skill_cap", 0))]
 		nxt_lbl.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 		nxt_lbl.add_theme_font_size_override("font_size", 12)
-		nxt_lbl.add_theme_color_override("font_color", Color("#7ee787"))
+		nxt_lbl.add_theme_color_override("font_color", UiHelpers.PAPER_OK)
 		vb.add_child(nxt_lbl)
 		var need: int = int(nxt.get("need_score", 0))
 		var score: int = cs.get_total_score()
@@ -587,7 +578,7 @@ func _show_detail(cid: String):
 		st.text = _detail_status
 		st.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 		st.size_flags_horizontal = Control.SIZE_EXPAND_FILL
-		st.add_theme_color_override("font_color", Color("#ff6666"))
+		st.add_theme_color_override("font_color", UiHelpers.PAPER_BAD)
 		vbox.add_child(st)
 
 	var q = int(coll.get("quality", 4))
@@ -603,7 +594,7 @@ func _show_detail(cid: String):
 	effect_title.text = "效果预览" if not sys.is_owned(cid) else "当前效果"
 	effect_title.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	effect_title.size_flags_horizontal = Control.SIZE_EXPAND_FILL
-	effect_title.add_theme_color_override("font_color", Color("#ffd700"))
+	effect_title.add_theme_color_override("font_color", UiHelpers.PAPER_TEXT)
 	vbox.add_child(effect_title)
 
 	var base_desc = Label.new()
@@ -734,13 +725,8 @@ func _show_pick_selector(cid: String):
 	panel.name = "CollectionPickPopup"
 	panel.z_index = 40
 	var vbox = panel.get_child(0)
-	var scroll = ScrollContainer.new()
-	scroll.custom_minimum_size = Vector2(0, 400)
-	scroll.size_flags_vertical = Control.SIZE_EXPAND_FILL
-	vbox.add_child(scroll)
-	var list = VBoxContainer.new()
-	list.size_flags_horizontal = Control.SIZE_EXPAND_FILL
-	scroll.add_child(list)
+	var list: VBoxContainer = c.popup_scroll(vbox)
+	list.custom_minimum_size = Vector2(0, 400)   # 选择器固定显示高度（组件滚动区默认无下限高）
 	# 按实时赚速降序（项目三页排序约定）
 	var ids = data.heroes.keys()
 	ids.sort_custom(func(a, b): return data.get_hero_income(b) < data.get_hero_income(a))
@@ -778,7 +764,7 @@ func show_suit_frag_box_selector(item_id: String, p_qty: int = 1):
 	var hint = Label.new()
 	hint.text = "选择成员，获得该碎片 ×%d" % p_qty
 	hint.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
-	hint.add_theme_color_override("font_color", Color(0.7, 0.7, 0.75))
+	hint.add_theme_color_override("font_color", UiHelpers.PAPER_TEXT_SUB)
 	vbox.add_child(hint)
 	for cid in suit.get("members", []):
 		var coll = sys.get_collection(cid)
@@ -941,13 +927,13 @@ func _show_suit_detail(sid: String):
 	head.text = "【%s】" % suit.get("name", sid)
 	head.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	head.add_theme_font_size_override("font_size", 18)
-	head.add_theme_color_override("font_color", Color("#ffd700"))
+	head.add_theme_color_override("font_color", UiHelpers.PAPER_TEXT)
 	vbox.add_child(head)
 	var sub = Label.new()
 	sub.text = "已激活 %d/%d 档　成员最低★%d，已达 %d 档" % [info.activated, info.total, info.min_star, info.reached]
 	sub.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	sub.add_theme_font_size_override("font_size", 12)
-	sub.add_theme_color_override("font_color", Color("#a49fc4"))
+	sub.add_theme_color_override("font_color", UiHelpers.PAPER_TEXT_SUB)
 	vbox.add_child(sub)
 	# 成员明细：未拥有的降灰
 	for m in suit.get("members", []):
@@ -956,13 +942,13 @@ func _show_suit_detail(sid: String):
 		ml.text = "%s ★%d" % [sys.get_collection(m).get("name", m), sys.get_star(m) if owned_m else 0]
 		ml.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 		ml.add_theme_font_size_override("font_size", 13)
-		ml.add_theme_color_override("font_color", Color("#c8c3e0") if owned_m else Color("#666080"))
+		ml.add_theme_color_override("font_color", UiHelpers.PAPER_TEXT if owned_m else UiHelpers.PAPER_TEXT_SUB)
 		vbox.add_child(ml)
 	# 当前效果全文
 	var et = Label.new()
 	et.text = "当前效果"
 	et.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
-	et.add_theme_color_override("font_color", Color("#ffd700"))
+	et.add_theme_color_override("font_color", UiHelpers.PAPER_TEXT)
 	vbox.add_child(et)
 	var el = Label.new()
 	el.text = _suit_effect_label(sid, suit)
@@ -970,7 +956,7 @@ func _show_suit_detail(sid: String):
 	el.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	el.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	el.add_theme_font_size_override("font_size", 12)
-	el.add_theme_color_override("font_color", Color("#7ee787"))
+	el.add_theme_color_override("font_color", UiHelpers.PAPER_OK)
 	vbox.add_child(el)
 	# 主操作：大激活钮
 	var ab = Button.new()
@@ -1037,13 +1023,8 @@ func _show_results(results: Array):
 	panel.name = "CollectionResultPopup"
 	panel.z_index = 40
 	var vbox = panel.get_child(0)
-	var scroll = ScrollContainer.new()
-	scroll.custom_minimum_size = Vector2(0, 400)
-	scroll.size_flags_vertical = Control.SIZE_EXPAND_FILL
-	vbox.add_child(scroll)
-	var list = VBoxContainer.new()
-	list.size_flags_horizontal = Control.SIZE_EXPAND_FILL
-	scroll.add_child(list)
+	var list: VBoxContainer = c.popup_scroll(vbox)
+	list.custom_minimum_size = Vector2(0, 400)   # 结果列表固定显示高度（组件滚动区默认无下限高）
 	for e in results:
 		var label = Label.new()
 		var txt = e.get("label", "")
@@ -1063,13 +1044,8 @@ func _show_probability():
 	panel.name = "CollectionResultPopup"
 	panel.z_index = 40
 	var vbox = panel.get_child(0)
-	var scroll = ScrollContainer.new()
-	scroll.custom_minimum_size = Vector2(0, 420)
-	scroll.size_flags_vertical = Control.SIZE_EXPAND_FILL
-	vbox.add_child(scroll)
-	var list = VBoxContainer.new()
-	list.size_flags_horizontal = Control.SIZE_EXPAND_FILL
-	scroll.add_child(list)
+	var list: VBoxContainer = c.popup_scroll(vbox)
+	list.custom_minimum_size = Vector2(0, 420)   # 概率表固定显示高度（组件滚动区默认无下限高）
 	var total = 0
 	for e in data.collection_system.get_lottery_pool():
 		total += int(e.get("weight", 0))

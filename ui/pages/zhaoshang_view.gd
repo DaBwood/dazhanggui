@@ -360,7 +360,7 @@ func _fill_sign_popup(popup):
 	var vip_hint := Label.new()
 	vip_hint.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	vip_hint.add_theme_font_size_override("font_size", 12)
-	vip_hint.add_theme_color_override("font_color", Color("#8a84a8"))
+	vip_hint.add_theme_color_override("font_color", UiHelpers.PAPER_TEXT_SUB)
 	vip_hint.text = "单次最多消耗 %d 份批文（随 VIP 提升）" % _sys().get_max_copies()
 	vbox.add_child(vip_hint)
 
@@ -395,7 +395,7 @@ func _fill_sign_popup(popup):
 	var per_min: int = _sys().get_merit_per_min()
 	var info := Label.new()
 	info.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
-	info.add_theme_color_override("font_color", Color("#c8c3e0"))
+	info.add_theme_color_override("font_color", UiHelpers.PAPER_TEXT_SUB)
 	info.text = "项目时长 %d 分钟\n每分钟资历 %d\n预计结算 %s+%d" % [_copies * minutes, per_min,
 		_sys().merit_name(str(conf.get("merit", ""))), per_min * _copies * minutes]
 	vbox.add_child(info)
@@ -403,7 +403,7 @@ func _fill_sign_popup(popup):
 	var hint := Label.new()
 	hint.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	hint.add_theme_font_size_override("font_size", 12)
-	hint.add_theme_color_override("font_color", Color("#8a84a8"))
+	hint.add_theme_color_override("font_color", UiHelpers.PAPER_TEXT_SUB)
 	hint.text = "资历产出受自身身份、藏品效果影响"
 	vbox.add_child(hint)
 
@@ -446,7 +446,7 @@ func _on_project(p: Dictionary):
 
 	var info := Label.new()
 	info.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
-	info.add_theme_color_override("font_color", Color("#c8c3e0"))
+	info.add_theme_color_override("font_color", UiHelpers.PAPER_TEXT_SUB)
 	info.text = "剩余 %s\n自己每分钟资历 %d（%s）" % [_fmt_remain(int(p.get("end_ts", 0))),
 		_sys().get_merit_per_min(), _sys().merit_name(str(conf.get("merit", "")))]
 	vbox.add_child(info)
