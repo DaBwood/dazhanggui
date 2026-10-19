@@ -65,7 +65,7 @@ func _fill_technique_popup(panel: PanelContainer):
 	title.text = "%s" % cfg.get("name", tech_id)   # 标题去【】居中（与庄园弹窗同惯例）
 	title.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	title.add_theme_font_size_override("font_size", 20)
-	title.add_theme_color_override("font_color", Color("#ffd700"))
+	title.add_theme_color_override("font_color", UiHelpers.PAPER_TEXT)
 	vbox.add_child(title)
 
 	var product = String(cfg.get("product", ""))
@@ -78,6 +78,8 @@ func _fill_technique_popup(panel: PanelContainer):
 	var scroll = ScrollContainer.new()
 	scroll.custom_minimum_size = Vector2(330, 350)
 	scroll.size_flags_vertical = Control.SIZE_EXPAND_FILL
+	scroll.horizontal_scroll_mode = ScrollContainer.SCROLL_MODE_DISABLED   # 弹窗禁横滚
+	scroll.vertical_scroll_mode = ScrollContainer.SCROLL_MODE_SHOW_NEVER   # 用户拍板：滚动条默认隐藏（竖滚保留；位置记忆契约见下 value_changed）
 	vbox.add_child(scroll)
 
 	var detail_list = VBoxContainer.new()
@@ -132,7 +134,7 @@ func _build_project_block(tech: Dictionary, project_key: String) -> VBoxContaine
 		members.text = "成员：%s" % members_text
 		members.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
 		members.add_theme_font_size_override("font_size", 12)
-		members.add_theme_color_override("font_color", Color("#aaaaaa"))
+		members.add_theme_color_override("font_color", UiHelpers.PAPER_TEXT_SUB)
 		block.add_child(members)
 
 	block.add_child(_build_scroll_row(tech, project_key, project, "vol1"))
@@ -187,12 +189,12 @@ func _build_scroll_row(tech: Dictionary, project_key: String, project: Dictionar
 	# 效果文本拆两行（当前一行/下级一行），禁自动换行——窄列折行难看（用户拍板）
 	var info = Label.new()
 	info.add_theme_font_size_override("font_size", 13)
-	info.add_theme_color_override("font_color", Color("#bbbbbb"))
+	info.add_theme_color_override("font_color", UiHelpers.PAPER_TEXT_SUB)
 	info.text = _get_scroll_effect_text(project, volume, level)
 	left.add_child(info)
 	var next_lbl = Label.new()
 	next_lbl.add_theme_font_size_override("font_size", 13)
-	next_lbl.add_theme_color_override("font_color", Color("#bbbbbb"))
+	next_lbl.add_theme_color_override("font_color", UiHelpers.PAPER_TEXT_SUB)
 	next_lbl.text = "→ %s" % _get_scroll_effect_text(project, volume, level + 1)
 	left.add_child(next_lbl)
 
@@ -221,11 +223,11 @@ func _build_scroll_row(tech: Dictionary, project_key: String, project: Dictionar
 	right.add_child(batch_chk)
 	return card
 
-# 卡片样式：与庄园弹窗升级卡同款（深底#221d33+淡紫描边）
+# 卡片样式：与庄园弹窗升级卡同款（羊皮纸卡色令牌，原深底紫边定式已随弹窗羊皮纸化失效）
 func _make_card_style() -> StyleBoxFlat:
 	var card_sty := StyleBoxFlat.new()
-	card_sty.bg_color = Color("#221d33")
-	card_sty.border_color = Color("#6a5f9e")
+	card_sty.bg_color = UiHelpers.PAPER_CARD_BG
+	card_sty.border_color = UiHelpers.PAPER_CARD_LINE
 	card_sty.set_border_width_all(1)
 	card_sty.set_corner_radius_all(6)
 	card_sty.set_content_margin_all(8)
