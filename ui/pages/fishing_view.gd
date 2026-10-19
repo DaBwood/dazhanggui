@@ -168,17 +168,8 @@ func _show_medal_popup():
 	popup.z_index = 40
 	c.add_child(popup)
 	var pvb: VBoxContainer = popup.get_child(0)
-	var card := PanelContainer.new()
-	var style := StyleBoxFlat.new()
-	style.bg_color = Color("#2a2640")
-	style.border_color = Color("#6a5f9e")
-	style.set_border_width_all(2)
-	style.set_corner_radius_all(6)
-	card.add_theme_stylebox_override("panel", style)
-	pvb.add_child(card)
-	var vb := VBoxContainer.new()
-	vb.add_theme_constant_override("separation", 4)
-	card.add_child(vb)
+	# 【改】弹窗组件化批次：自造暗色卡 → 纸面卡片组件（羊皮纸皮肤定式，暗底金字在纸面不可读）
+	var vb: VBoxContainer = c.popup_card(pvb)
 	var head_row := HBoxContainer.new()
 	head_row.alignment = BoxContainer.ALIGNMENT_CENTER
 	head_row.add_theme_constant_override("separation", 6)
@@ -187,19 +178,19 @@ func _show_medal_popup():
 	head.text = "勋章：%s（%d级）" % [fs.get_medal_name(), fs.get_medal_lv()]
 	head.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	head.add_theme_font_size_override("font_size", 18)
-	head.add_theme_color_override("font_color", Color("#e6c07b"))
+	head.add_theme_color_override("font_color", UiHelpers.PAPER_TEXT)
 	head_row.add_child(head)
 	var effect := Label.new()
 	effect.text = "全部商铺赚速 +%d%%　精进技能等级上限 +%d" % [int(fs.get_medal_shop_pct() * 100), fs.get_refine_cap_bonus()]
 	effect.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
-	effect.add_theme_color_override("font_color", Color("#e6c07b"))
+	effect.add_theme_color_override("font_color", UiHelpers.PAPER_TEXT)
 	vb.add_child(effect)
 	var nxt: Dictionary = fs.get_next_medal_cfg()
 	if nxt.is_empty():
 		var max_lbl := Label.new()
 		max_lbl.text = "已满级"
 		max_lbl.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
-		max_lbl.add_theme_color_override("font_color", Color("#9a93b8"))
+		max_lbl.add_theme_color_override("font_color", UiHelpers.PAPER_TEXT_SUB)
 		vb.add_child(max_lbl)
 	else:
 		var need: int = int(nxt.get("need_exp", 0))
@@ -216,7 +207,7 @@ func _show_medal_popup():
 		var next_effect := Label.new()
 		next_effect.text = "下级效果：全部商铺赚速 +%d%%　精进上限 +%d" % [int(float(nxt.get("shop_pct", 0.0)) * 100.0), int(nxt.get("refine_cap", 0))]
 		next_effect.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
-		next_effect.add_theme_color_override("font_color", Color("#7ee787"))
+		next_effect.add_theme_color_override("font_color", UiHelpers.PAPER_OK)
 		vb.add_child(next_effect)
 		var up_btn := Button.new()
 		up_btn.text = "升级勋章"
@@ -350,13 +341,9 @@ func _on_fishing_multi():
 	# 汇总弹窗
 	var popup = c._create_base_popup("撒网收获", Vector2(460, 520))
 	var vb = popup.get_child(0)
-	var scroll = ScrollContainer.new()
-	scroll.custom_minimum_size = Vector2(0, 380)
-	vb.add_child(scroll)
-	var list = VBoxContainer.new()
-	list.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	var list: VBoxContainer = c.popup_scroll(vb)
+	list.custom_minimum_size = Vector2(0, 380)   # 渔获汇总固定显示高度（组件滚动区默认无下限高）
 	list.add_theme_constant_override("separation", 4)
-	scroll.add_child(list)
 	# 渔获按品级顺序展示
 	var fishes: Dictionary = res.fishes
 	for q in FishingSystem.QUALITY_ORDER:
@@ -373,14 +360,14 @@ func _on_fishing_multi():
 		var lbl2 = Label.new()
 		lbl2.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 		lbl2.text = "触发任务：%s" % desc
-		lbl2.add_theme_color_override("font_color", Color("#7CFC00"))
+		lbl2.add_theme_color_override("font_color", UiHelpers.PAPER_OK)
 		list.add_child(lbl2)
 	# 中途停止原因（如地龙不足）
 	if res.get("reason", "") != "" and int(res.count) < 10:
 		var lbl3 = Label.new()
 		lbl3.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 		lbl3.text = "（%s，提前停止）" % res.reason
-		lbl3.add_theme_color_override("font_color", Color("#aaaaaa"))
+		lbl3.add_theme_color_override("font_color", UiHelpers.PAPER_TEXT_SUB)
 		list.add_child(lbl3)
 	c.add_child(popup)
 	_refresh_info()
@@ -417,7 +404,8 @@ func _fill_location_popup(popup):
 		btn.custom_minimum_size = Vector2(200, 52)
 		btn.text = "%s\n%s：%d" % [loc_cfg.get("name", lid), fs.get_bait_name(lid), fs.get_bait_count(lid)]
 		if lid == _loc:
-			btn.add_theme_color_override("font_color", Color("#ffd700"))   # 当前钓点高亮，不再响应点击
+			# 【改】弹窗组件化批次：当前钓点高亮金字→PAPER_OK（纸面金字不可读，绿=当前选中态）
+			btn.add_theme_color_override("font_color", UiHelpers.PAPER_OK)   # 当前钓点高亮，不再响应点击
 		else:
 			btn.pressed.connect(_on_switch_location.bind(popup, lid))
 		loc_row.add_child(btn)
@@ -426,17 +414,12 @@ func _fill_location_popup(popup):
 	hint.text = "%s · %s 可钓到的渔获" % [fs.get_period(), fs.get_weather()]
 	hint.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	hint.add_theme_font_size_override("font_size", 13)
-	hint.add_theme_color_override("font_color", Color("#aaaaaa"))
+	hint.add_theme_color_override("font_color", UiHelpers.PAPER_TEXT_SUB)
 	vb.add_child(hint)
 
-	var scroll = ScrollContainer.new()
-	scroll.custom_minimum_size = Vector2(0, 380)
-	scroll.size_flags_vertical = Control.SIZE_EXPAND_FILL
-	vb.add_child(scroll)
-	var list = VBoxContainer.new()
-	list.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	var list: VBoxContainer = c.popup_scroll(vb)
+	list.custom_minimum_size = Vector2(0, 380)   # 鱼池列表固定显示高度（组件滚动区默认无下限高）
 	list.add_theme_constant_override("separation", 4)
-	scroll.add_child(list)
 
 	# 选中钓点的当前鱼池按品级分组（只列渔获，不列道具；未解锁的条件鱼不在池中自然不显示）
 	var pool = fs.get_current_pool(_loc)
@@ -546,6 +529,8 @@ func _on_task_btn():
 	scroll.name = "TaskScroll"
 	scroll.custom_minimum_size = Vector2(0, 340)
 	scroll.size_flags_vertical = Control.SIZE_EXPAND_FILL
+	scroll.horizontal_scroll_mode = ScrollContainer.SCROLL_MODE_DISABLED   # 弹窗禁横滚
+	scroll.vertical_scroll_mode = ScrollContainer.SCROLL_MODE_SHOW_NEVER   # 用户拍板：滚动条默认隐藏（竖滚保留）
 	vb.add_child(scroll)
 	var list = VBoxContainer.new()
 	list.name = "TaskList"
@@ -636,6 +621,8 @@ func _on_dex_btn():
 	scroll.name = "DexScroll"
 	scroll.custom_minimum_size = Vector2(0, 420)
 	scroll.size_flags_vertical = Control.SIZE_EXPAND_FILL
+	scroll.horizontal_scroll_mode = ScrollContainer.SCROLL_MODE_DISABLED   # 弹窗禁横滚
+	scroll.vertical_scroll_mode = ScrollContainer.SCROLL_MODE_SHOW_NEVER   # 用户拍板：滚动条默认隐藏（竖滚保留）
 	vb.add_child(scroll)
 	var list = VBoxContainer.new()
 	list.name = "DexList"
@@ -659,7 +646,7 @@ func _fill_dex_list(list: VBoxContainer):
 		head.text = "—— %s ——" % q
 		head.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 		head.add_theme_font_size_override("font_size", 16)
-		head.add_theme_color_override("font_color", Color("#ffd700"))
+		head.add_theme_color_override("font_color", UiHelpers.PAPER_TEXT)
 		list.add_child(head)
 		# 该品级内：可领取的排最前，其余保持配置顺序
 		var group = []
@@ -683,7 +670,7 @@ func _build_dex_row(f: Dictionary) -> HBoxContainer:
 
 	if state == 0:
 		lbl.text = "？？？"
-		lbl.add_theme_color_override("font_color", Color("#666666"))
+		lbl.add_theme_color_override("font_color", UiHelpers.PAPER_TEXT_SUB)
 	else:
 		lbl.text = f.get("name", f.id)
 		if state == 1:
@@ -698,7 +685,7 @@ func _build_dex_row(f: Dictionary) -> HBoxContainer:
 		else:
 			var done = Label.new()
 			done.text = "已领取"
-			done.add_theme_color_override("font_color", Color("#888888"))
+			done.add_theme_color_override("font_color", UiHelpers.PAPER_TEXT_SUB)
 			row.add_child(done)
 	return row
 
@@ -728,14 +715,9 @@ func _on_exchange_btn():
 	var popup = c._create_base_popup("兑换 · %s" % ex_cfg.get("quality", "无双"), Vector2(460, 520))
 	popup.name = "FishingExchangePopup"
 	var vb = popup.get_child(0)
-	var scroll = ScrollContainer.new()
-	scroll.custom_minimum_size = Vector2(0, 380)
-	scroll.size_flags_vertical = Control.SIZE_EXPAND_FILL
-	vb.add_child(scroll)
-	var list = VBoxContainer.new()
-	list.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	var list: VBoxContainer = c.popup_scroll(vb)
+	list.custom_minimum_size = Vector2(0, 380)   # 兑换列表固定显示高度（组件滚动区默认无下限高）
 	list.add_theme_constant_override("separation", 6)
-	scroll.add_child(list)
 	for f in fs.get_exchange_fish(_loc):
 		var row = HBoxContainer.new()
 		row.add_theme_constant_override("separation", 8)
@@ -789,12 +771,8 @@ func _rewards_text(rewards: Dictionary) -> String:
 func _show_gains_popup(title: String, gains: Dictionary):
 	var popup = c._create_base_popup(title, Vector2(420, 480))
 	var vb = popup.get_child(0)
-	var scroll = ScrollContainer.new()
-	scroll.custom_minimum_size = Vector2(0, 340)
-	vb.add_child(scroll)
-	var list = VBoxContainer.new()
-	list.size_flags_horizontal = Control.SIZE_EXPAND_FILL
-	scroll.add_child(list)
+	var list: VBoxContainer = c.popup_scroll(vb)
+	list.custom_minimum_size = Vector2(0, 340)   # 奖励列表固定显示高度（组件滚动区默认无下限高）
 	for iid in gains.keys():
 		var lbl = Label.new()
 		lbl.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER

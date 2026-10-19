@@ -584,7 +584,8 @@ const PAPER_CARD_LINE: Color = Color("#8a7355")
 # 滚动区：禁横滚 + 内层 VBox（常规竖排内容直接往里塞）
 func popup_scroll(parent: Control) -> VBoxContainer:
 	var scroll := ScrollContainer.new()
-	scroll.horizontal_scroll_mode = ScrollContainer.SCROLL_MODE_DISABLED
+	scroll.horizontal_scroll_mode = ScrollContainer.SCROLL_MODE_DISABLED   # 弹窗横滚只禁（横向仅限大地图白名单）
+	scroll.vertical_scroll_mode = ScrollContainer.SCROLL_MODE_SHOW_NEVER   # 用户拍板 2026-10-19：弹窗滚动条默认隐藏（竖滚保留，不显示不占位）
 	scroll.size_flags_vertical = Control.SIZE_EXPAND_FILL
 	parent.add_child(scroll)
 	var vb := VBoxContainer.new()

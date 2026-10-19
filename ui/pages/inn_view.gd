@@ -269,13 +269,15 @@ func _show_hero_popup():
 			ctx["career"] = str(cb.get_meta("career"))
 			_refresh_hero_popup_grid(ctx, grid))
 		if str(ctx["career"]) == str(career):
-			cb.add_theme_color_override("font_color", Color("#ffd700"))
+			# 【改】弹窗组件化批次：选中页签金字→PAPER_OK（纸面金字不可读；绿=当前生效选中态）
+			cb.add_theme_color_override("font_color", UiHelpers.PAPER_OK)
 		tab_row.add_child(cb)
 	# 门客网格（2列，按实时赚速降序）
 	var scroll := ScrollContainer.new()
 	scroll.size_flags_vertical = Control.SIZE_EXPAND_FILL
 	scroll.custom_minimum_size = Vector2(0, 380)
 	scroll.horizontal_scroll_mode = ScrollContainer.SCROLL_MODE_DISABLED   # 【新增】皮肤批次：禁横滚
+	scroll.vertical_scroll_mode = ScrollContainer.SCROLL_MODE_SHOW_NEVER   # 用户拍板：滚动条默认隐藏（竖滚保留）
 	vb.add_child(scroll)
 	grid.columns = 2
 	grid.size_flags_horizontal = Control.SIZE_EXPAND_FILL
@@ -327,6 +329,7 @@ func _show_pack_popup(hero_id: String):
 	scroll.size_flags_vertical = Control.SIZE_EXPAND_FILL
 	scroll.custom_minimum_size = Vector2(0, 330)
 	scroll.horizontal_scroll_mode = ScrollContainer.SCROLL_MODE_DISABLED   # 【新增】皮肤批次：禁横滚
+	scroll.vertical_scroll_mode = ScrollContainer.SCROLL_MODE_SHOW_NEVER   # 用户拍板：滚动条默认隐藏（竖滚保留）
 	vb.add_child(scroll)
 	var grid := GridContainer.new()
 	grid.columns = 1
@@ -340,7 +343,8 @@ func _show_pack_popup(hero_id: String):
 		# 卡片本体=PanelContainer：Button 不是容器，子控件不会自动排布（曾致文字叠在一起）
 		var card := PanelContainer.new()
 		var cs := StyleBoxFlat.new()
-		cs.bg_color = Color("#252138")
+		# 【改】弹窗组件化批次：卡暗底→纸面卡色（选中态靠 modulate 高亮，卡色保持衬底即可）
+		cs.bg_color = UiHelpers.PAPER_CARD_BG
 		cs.set_corner_radius_all(6)
 		card.add_theme_stylebox_override("panel", cs)
 		# 最小宽钉死为弹窗内宽：ScrollContainer 宽度继承不可靠（多层 min-size 钳制），列宽由列内最大子控件最小宽决定
@@ -352,12 +356,12 @@ func _show_pack_popup(hero_id: String):
 		var name_lbl := Label.new()
 		name_lbl.text = str(pack.get("name", ""))
 		name_lbl.add_theme_font_size_override("font_size", 14)
-		name_lbl.add_theme_color_override("font_color", Color("#ffd700"))
+		name_lbl.add_theme_color_override("font_color", UiHelpers.PAPER_TEXT)
 		name_lbl.mouse_filter = Control.MOUSE_FILTER_IGNORE
 		cv.add_child(name_lbl)
 		var info := Label.new()
 		info.add_theme_font_size_override("font_size", 12)
-		info.add_theme_color_override("font_color", Color("#c8c3e0"))
+		info.add_theme_color_override("font_color", UiHelpers.PAPER_TEXT_SUB)
 		info.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
 		info.text = "拥有 %d ｜ 每次 %s ｜ 单次 厨艺+%d 交子+%d" % [
 			int(data.items.get(str(pack.get("item", "")), 0)),
@@ -376,7 +380,7 @@ func _show_pack_popup(hero_id: String):
 	vb.add_child(qty_row)
 	var qty_lbl := Label.new()   # 只显示 食材包名 ×N（拖动/输入改数量）
 	qty_lbl.add_theme_font_size_override("font_size", 14)
-	qty_lbl.add_theme_color_override("font_color", Color("#e6c07b"))
+	qty_lbl.add_theme_color_override("font_color", UiHelpers.PAPER_TEXT)
 	qty_lbl.custom_minimum_size = Vector2(140, 0)
 	qty_row.add_child(qty_lbl)
 	# 物品同款：拖动条 + 数量输入（Web 端 SpinBox 输入不弹键盘的问题后续再处理）

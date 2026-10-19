@@ -241,7 +241,7 @@ func _fill_species_popup(panel: PanelContainer):
 	var rate_lbl = Label.new()
 	rate_lbl.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	rate_lbl.text = "%s %.1f/分" % [cfg.get("product", ""), data.get_manor_species_rate(sid)]
-	rate_lbl.add_theme_color_override("font_color", Color("#ffd700"))
+	rate_lbl.add_theme_color_override("font_color", UiHelpers.PAPER_TEXT)
 	vbox.add_child(rate_lbl)
 	
 	# 4 个地块页签行：每块显示品种Lv+单块产量，选中哪块就单独升哪块
@@ -258,7 +258,7 @@ func _fill_species_popup(panel: PanelContainer):
 		lock_lbl.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 		lock_lbl.text = "第%d%s尚未解锁：身份%d级解锁" % [
 			_plot_sel + 1, plot_word, data.get_manor_plot_need_identity(sid, _plot_sel)]
-		lock_lbl.add_theme_color_override("font_color", Color("#888888"))
+		lock_lbl.add_theme_color_override("font_color", UiHelpers.PAPER_TEXT_SUB)
 		vbox.add_child(lock_lbl)
 	else:
 		vbox.add_child(_build_level_card(sid, _plot_sel))
@@ -300,7 +300,8 @@ func _build_plot_tab(sid: String, plot_index: int, unlocked_cnt: int, plot_word:
 		btn.text = "第%d%s\nLv%d · %d/分" % [
 			plot_index + 1, plot_word, int(plot.level), int(data.get_manor_plot_rate(sid, plot_index))]
 		if plot_index == _plot_sel:
-			btn.add_theme_color_override("font_color", Color("#ffd700"))
+			# 【改】弹窗组件化批次：选中地块高亮金字→PAPER_OK（纸面金字不可读，绿=当前选中态）
+			btn.add_theme_color_override("font_color", UiHelpers.PAPER_OK)
 	else:
 		btn.text = "第%d%s\n身份%d级" % [plot_index + 1, plot_word, data.get_manor_plot_need_identity(sid, plot_index)]
 	btn.pressed.connect(_on_plot_tab.bind(plot_index))
@@ -313,11 +314,11 @@ func _on_plot_tab(plot_index: int):
 	_refresh_species_popup()
 
 # 品种等级卡 + 土地/血统卡 共用建造器（卡片式，效果当前→下级预览+升级钮）
-# 卡片底比弹窗底(#2a2640)深一档、淡紫描边（全仓卡片惯例）
+# 【改】弹窗组件化批次：卡色走羊皮纸卡色令牌（旧"比弹窗底深一档"定式随羊皮纸弹窗底失效）
 func _make_upgrade_card_style() -> StyleBoxFlat:
 	var card_sty := StyleBoxFlat.new()
-	card_sty.bg_color = Color("#221d33")
-	card_sty.border_color = Color("#6a5f9e")
+	card_sty.bg_color = UiHelpers.PAPER_CARD_BG
+	card_sty.border_color = UiHelpers.PAPER_CARD_LINE
 	card_sty.set_border_width_all(1)
 	card_sty.set_corner_radius_all(6)
 	card_sty.set_content_margin_all(8)
@@ -347,12 +348,12 @@ func _build_level_card(sid: String, plot_index: int) -> PanelContainer:
 	# 一行写不完就拆两行（不靠自动换行，用户拍板）
 	var info = Label.new()
 	info.add_theme_font_size_override("font_size", 13)
-	info.add_theme_color_override("font_color", Color("#bbbbbb"))
+	info.add_theme_color_override("font_color", UiHelpers.PAPER_TEXT_SUB)
 	info.text = "单块产量 %d/分" % int(data.get_manor_plot_rate(sid, plot_index))
 	left.add_child(info)
 	var inc_lbl = Label.new()
 	inc_lbl.add_theme_font_size_override("font_size", 13)
-	inc_lbl.add_theme_color_override("font_color", Color("#bbbbbb"))
+	inc_lbl.add_theme_color_override("font_color", UiHelpers.PAPER_TEXT_SUB)
 	inc_lbl.text = "每级+%s/分" % str(float(st.get("rate_per_level", 1)))
 	left.add_child(inc_lbl)
 
@@ -412,19 +413,19 @@ func _build_land_card(sid: String, plot_index: int, land_word: String) -> PanelC
 	# 三行分开：产量加成 / 该类商铺赚速 / 品种上限
 	var info = Label.new()
 	info.add_theme_font_size_override("font_size", 13)
-	info.add_theme_color_override("font_color", Color("#bbbbbb"))
+	info.add_theme_color_override("font_color", UiHelpers.PAPER_TEXT_SUB)
 	info.text = "产量加成：+%d%% → +%d%%" % [
 		roundi(land * pct_per * 100), roundi((land + 1) * pct_per * 100)]
 	left.add_child(info)
 	var shop_lbl = Label.new()
 	shop_lbl.add_theme_font_size_override("font_size", 13)
-	shop_lbl.add_theme_color_override("font_color", Color("#bbbbbb"))
+	shop_lbl.add_theme_color_override("font_color", UiHelpers.PAPER_TEXT_SUB)
 	shop_lbl.text = "%s类商铺赚速：+%d%% → +%d%%" % [
 		shop_cat, roundi(land * pct_per * 100), roundi((land + 1) * pct_per * 100)]
 	left.add_child(shop_lbl)
 	var cap_lbl = Label.new()
 	cap_lbl.add_theme_font_size_override("font_size", 13)
-	cap_lbl.add_theme_color_override("font_color", Color("#bbbbbb"))
+	cap_lbl.add_theme_color_override("font_color", UiHelpers.PAPER_TEXT_SUB)
 	cap_lbl.text = "品种上限：%d → %d" % [land * per_land, (land + 1) * per_land]
 	left.add_child(cap_lbl)
 

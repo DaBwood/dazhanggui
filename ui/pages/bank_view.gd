@@ -336,6 +336,8 @@ func _show_assign_selector(idx: int):
 	var scroll := ScrollContainer.new()
 	scroll.custom_minimum_size = Vector2(440, 400)
 	scroll.size_flags_vertical = Control.SIZE_EXPAND_FILL
+	scroll.horizontal_scroll_mode = ScrollContainer.SCROLL_MODE_DISABLED   # 弹窗禁横滚
+	scroll.vertical_scroll_mode = ScrollContainer.SCROLL_MODE_SHOW_NEVER   # 滚动条默认隐藏（竖滚保留）
 	vb.add_child(scroll)
 	var grid := GridContainer.new()
 	grid.columns = 3   # 英雄卡片内容紧凑，3列（同柜台网格拍板）
