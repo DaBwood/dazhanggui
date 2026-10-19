@@ -433,7 +433,7 @@ func _show_patient_popup(pid: String):
 	if _sys().is_patient_unlocked(pid):
 		var st := Label.new()
 		st.text = "已解锁　加成 +%d%%" % int(float(info.get("bonus", 0)) * 100)
-		st.add_theme_color_override("font_color", Color("#e6c07b"))
+		st.add_theme_color_override("font_color", UiHelpers.PAPER_TEXT)
 		vb.add_child(st)
 	else:
 		# 批次②③④-B10 口径：需医术走统一消耗/门槛行（拥有/需要，数字红绿）
@@ -508,7 +508,7 @@ func _show_dept_popup(dept_id: String):
 				break
 		var next_lbl := Label.new()
 		next_lbl.text = next_txt
-		next_lbl.add_theme_color_override("font_color", Color("#9a93b8"))
+		next_lbl.add_theme_color_override("font_color", UiHelpers.PAPER_TEXT_SUB)
 		vb.add_child(next_lbl)
 		# 【改】批次②③④-B10：升级消耗统一（拥有/消耗），道具名默认色、数字红绿
 		c._add_cost_row(vb, "升级消耗：图纸", int(data.items.get("ke_shi_tu_zhi", 0)), _sys().get_dept_upgrade_cost(dept_id))
@@ -618,7 +618,7 @@ func _show_illness_popup(illness_id: String):
 	var pct_lbl := Label.new()
 	pct_lbl.text = "店铺赚速加成：+%d%%（%s类店铺）　图鉴 Lv.%d" % [
 		int(_sys().get_illness_pct(illness_id) * 100), home.get("category", ""), _sys().get_illness_level(illness_id)]
-	pct_lbl.add_theme_color_override("font_color", Color("#e6c07b"))
+	pct_lbl.add_theme_color_override("font_color", UiHelpers.PAPER_TEXT)
 	vb.add_child(pct_lbl)
 	# 【改】批次②③④-B10：病症评分升级消耗统一（拥有/消耗），数字红绿
 	c._add_cost_row(vb, "升级消耗：该病症评分", int(_sys().get_illness_score(illness_id)), _sys().get_illness_upgrade_cost(illness_id))
