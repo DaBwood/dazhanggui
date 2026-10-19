@@ -1,6 +1,7 @@
 {
   "settings": {
     "default_name": "红尘酒楼",
+    "intro": "方圆十里内最豪华的酒肆，吃喝玩乐一应俱全。童叟无欺，概不赊账。",
     "max_name_len": 8,
     "max_level": 100,
     "fame_threshold_base": 5000,

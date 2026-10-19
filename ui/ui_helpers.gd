@@ -573,6 +573,146 @@ func _add_centered_panel(parent: Control, min_size: Vector2) -> VBoxContainer:
 	margin.add_child(body)
 	return body
 
+# ============ 普通弹窗内容组件（2026-10-19：羊皮纸皮肤配套；画底弹窗另走 art_popup） ============
+const PAPER_TEXT: Color = Color("#3a2613")
+const PAPER_TEXT_SUB: Color = Color("#6b5236")
+const PAPER_OK: Color = Color("#2e8b57")
+const PAPER_BAD: Color = Color("#c0392b")
+const PAPER_CARD_BG: Color = Color("#efe3cc")
+const PAPER_CARD_LINE: Color = Color("#8a7355")
+
+# 滚动区：禁横滚 + 内层 VBox（常规竖排内容直接往里塞）
+func popup_scroll(parent: Control) -> VBoxContainer:
+	var scroll := ScrollContainer.new()
+	scroll.horizontal_scroll_mode = ScrollContainer.SCROLL_MODE_DISABLED
+	scroll.size_flags_vertical = Control.SIZE_EXPAND_FILL
+	parent.add_child(scroll)
+	var vb := VBoxContainer.new()
+	vb.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	vb.add_theme_constant_override("separation", 8)
+	scroll.add_child(vb)
+	return vb
+
+# 段落小标题：深棕 15 号 + 一条淡分隔线（替代各页自造「标题+线」）
+func popup_section(parent: Control, text: String) -> VBoxContainer:
+	var box := VBoxContainer.new()
+	box.add_theme_constant_override("separation", 4)
+	parent.add_child(box)
+	var l := Label.new()
+	l.text = text
+	l.add_theme_font_size_override("font_size", 15)
+	l.add_theme_color_override("font_color", PAPER_TEXT_SUB)
+	box.add_child(l)
+	var line := ColorRect.new()
+	line.color = Color(0.54, 0.45, 0.33, 0.35)
+	line.custom_minimum_size = Vector2(0, 1)
+	line.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	box.add_child(line)
+	return box
+
+# 纸面卡片：浅纸底 + 棕边圆角，返回内部 VBox（调用方直接往返回容器塞内容）
+func popup_card(parent: Control, min_height: float = 0.0) -> VBoxContainer:
+	var card := PanelContainer.new()
+	if min_height > 0.0:
+		card.custom_minimum_size = Vector2(0, min_height)
+	var sb := StyleBoxFlat.new()
+	sb.bg_color = PAPER_CARD_BG
+	sb.border_color = PAPER_CARD_LINE
+	sb.set_border_width_all(1)
+	sb.set_corner_radius_all(6)
+	sb.content_margin_left = 12
+	sb.content_margin_right = 12
+	sb.content_margin_top = 10
+	sb.content_margin_bottom = 10
+	card.add_theme_stylebox_override("panel", sb)
+	parent.add_child(card)
+	var vb := VBoxContainer.new()
+	vb.add_theme_constant_override("separation", 6)
+	card.add_child(vb)
+	return vb
+
+# 键值行：左名（次字色）+ 右值（默认绿，不达标红）
+func popup_kv_row(parent: Control, key: String, value: String, ok: bool = true) -> HBoxContainer:
+	var row := HBoxContainer.new()
+	row.add_theme_constant_override("separation", 8)
+	parent.add_child(row)
+	var k := Label.new()
+	k.text = key
+	k.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	k.add_theme_font_size_override("font_size", 14)
+	k.add_theme_color_override("font_color", PAPER_TEXT_SUB)
+	row.add_child(k)
+	var v := Label.new()
+	v.text = value
+	v.add_theme_font_size_override("font_size", 15)
+	v.add_theme_color_override("font_color", PAPER_OK if ok else PAPER_BAD)
+	row.add_child(v)
+	return row
+
+# 底部按钮行：居中 + 10 间距（调用方往里加按钮）
+func popup_button_row(parent: Control) -> HBoxContainer:
+	var row := HBoxContainer.new()
+	row.alignment = BoxContainer.ALIGNMENT_CENTER
+	row.add_theme_constant_override("separation", 10)
+	parent.add_child(row)
+	return row
+
+# 画底弹窗壳（酒肆/药铺/酒坊/妙音坊共用）：遮罩 + 居中 + 视口自适应 + 右上朱红圆钮 + 底图铺满
+# 只提供外壳；背景图与内容由页面各自负责
+func art_popup(bg: Texture2D, popup_size: Vector2, node_name: String = "ArtPopup") -> Control:
+	var vp: Vector2 = c.get_viewport_rect().size
+	var fit: float = minf(1.0, minf((vp.x - 24.0) / popup_size.x, (vp.y - 32.0) / popup_size.y))
+	var real_size: Vector2 = popup_size * fit
+	var mask := ColorRect.new()
+	mask.color = Color(0, 0, 0, 0.55)
+	mask.set_anchors_preset(Control.PRESET_FULL_RECT)
+	mask.z_index = 39
+	c.add_child(mask)
+	var root := Control.new()
+	root.name = node_name
+	root.z_index = 40
+	root.custom_minimum_size = real_size
+	root.set_anchors_preset(Control.PRESET_TOP_LEFT)
+	root.position = (vp - real_size) * 0.5
+	root.size = real_size
+	c.add_child(root)
+	var bgt := TextureRect.new()
+	bgt.texture = bg
+	bgt.expand_mode = TextureRect.EXPAND_IGNORE_SIZE
+	bgt.stretch_mode = TextureRect.STRETCH_SCALE
+	bgt.set_anchors_preset(Control.PRESET_FULL_RECT)
+	bgt.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	root.add_child(bgt)
+	var close_x := Button.new()
+	close_x.text = "×"
+	close_x.add_theme_font_size_override("font_size", 22)
+	close_x.add_theme_color_override("font_color", Color(1, 0.96, 0.9))
+	close_x.anchor_left = 1.0
+	close_x.anchor_right = 1.0
+	close_x.offset_left = -56
+	close_x.offset_right = -10
+	close_x.offset_top = 6
+	close_x.offset_bottom = 52
+	var cx_sb := StyleBoxFlat.new()
+	cx_sb.bg_color = Color("#b23a30")
+	cx_sb.border_color = Color("#7d241d")
+	cx_sb.set_border_width_all(2)
+	cx_sb.set_corner_radius_all(23)
+	var cx_hover: StyleBoxFlat = cx_sb.duplicate()
+	cx_hover.bg_color = Color("#c94a3d")
+	for st in ["normal", "pressed"]:
+		close_x.add_theme_stylebox_override(st, cx_sb)
+	close_x.add_theme_stylebox_override("hover", cx_hover)
+	close_x.add_theme_stylebox_override("focus", cx_sb)
+	close_x.z_index = 10
+	root.add_child(close_x)
+	close_x.pressed.connect(root.queue_free)
+	mask.gui_input.connect(func(ev):
+		if ev is InputEventMouseButton and ev.pressed and ev.button_index == MOUSE_BUTTON_LEFT:
+			root.queue_free())
+	root.tree_exiting.connect(mask.queue_free)
+	return root
+
 # 【新增】批次②③④-B6：消耗类统一范式（用户 2026-09-26 定调）——消耗物名字不变色，数字固定"（拥有/消耗）"，拥有≥消耗绿色否则红色
 # 数字 Label 固定命名 CostNum：需要原地刷新的场景用 find_child("CostNum", true, false) 定位改文本和着色
 func _add_cost_row(parent: Node, prefix: String, have: int, need: int) -> HBoxContainer:

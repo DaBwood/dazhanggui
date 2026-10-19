@@ -325,13 +325,15 @@ func get_income_per_guest() -> int:
 	# 【新增】2026-09-19 藏品「招财进宝」酒肆银条收益+2%（固定值，合成即生效升星不叠加；round 防低基数取整吞加成）
 	return int(round(total * (1.0 + g.collection_system.get_special_pct("c187", 0.02))))
 
-# 每客百业经验 = 20 + 酒肆等级×1
-func get_baiye_per_guest() -> int:
-	return int(_st().get("baiye_base", 20)) + int(_st().get("baiye_per_level", 1)) * level
+# 每客百业经验 = 20 + 酒肆等级×1（lv 传 -1=当前级；信息弹窗传 当前级+1 显示下一级预览）
+func get_baiye_per_guest(lv: int = -1) -> int:
+	var use_lv: int = level if lv < 0 else lv
+	return int(_st().get("baiye_base", 20)) + int(_st().get("baiye_per_level", 1)) * use_lv
 
 # 每客才艺经验 = 200 + 酒肆等级×10
-func get_caiyi_per_guest() -> int:
-	return int(_st().get("caiyi_base", 200)) + int(_st().get("caiyi_per_level", 10)) * level
+func get_caiyi_per_guest(lv: int = -1) -> int:
+	var use_lv: int = level if lv < 0 else lv
+	return int(_st().get("caiyi_base", 200)) + int(_st().get("caiyi_per_level", 10)) * use_lv
 
 # ============ 设施解锁（知名度门槛 + 银条开价） ============
 # 解锁所需知名度 = 500 × 全局解锁序号(order)

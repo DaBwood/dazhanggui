@@ -615,6 +615,26 @@ func _cost_color(have: int, need: int) -> Color:
 func _add_cost_row(parent: Node, prefix: String, have: int, need: int) -> HBoxContainer:
 	return ui_helpers._add_cost_row(parent, prefix, have, need)
 
+# 【新增】2026-10-19：普通弹窗内容组件（羊皮纸皮肤配套，实现见 ui/ui_helpers.gd）
+func popup_scroll(parent: Control) -> VBoxContainer:
+	return ui_helpers.popup_scroll(parent)
+
+func popup_section(parent: Control, text: String) -> VBoxContainer:
+	return ui_helpers.popup_section(parent, text)
+
+func popup_card(parent: Control, min_height: float = 0.0) -> VBoxContainer:
+	return ui_helpers.popup_card(parent, min_height)
+
+func popup_kv_row(parent: Control, key: String, value: String, ok: bool = true) -> HBoxContainer:
+	return ui_helpers.popup_kv_row(parent, key, value, ok)
+
+func popup_button_row(parent: Control) -> HBoxContainer:
+	return ui_helpers.popup_button_row(parent)
+
+# 画底弹窗壳（酒肆/药铺/酒坊/妙音坊共用；背景与内容由页面各自负责）
+func art_popup(bg: Texture2D, popup_size: Vector2, node_name: String = "ArtPopup") -> Control:
+	return ui_helpers.art_popup(bg, popup_size, node_name)
+
 func _add_centered_panel(parent: Control, min_size: Vector2) -> VBoxContainer:
 	return ui_helpers._add_centered_panel(parent, min_size)
 

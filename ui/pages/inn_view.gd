@@ -550,28 +550,35 @@ func _make_recipe_card(pack_id: String, career: String, pack: Dictionary) -> Pan
 func _show_dish_popup(pack_id: String, career: String, pack: Dictionary):
 	var sys = data.inn_system
 	if c.has_node("DishPopup"): return   # 防连点堆叠
-	var panel = c._create_base_popup("菜谱升级", Vector2(360, 250), Vector2(396, 180))
+	var panel = c._create_base_popup("菜谱升级", Vector2(360, 250))
 	panel.name = "DishPopup"
 	panel.z_index = 40   # 【修】盖过 InnPage(z35)，同 inn_view 既有弹窗（40）惯例
 	var vbox = panel.get_child(0)
 	var prog: Dictionary = sys.get_dish_progress(pack_id, career)
 	var name_lbl := Label.new()
 	name_lbl.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	name_lbl.add_theme_font_size_override("font_size", 16)
+	name_lbl.add_theme_color_override("font_color", UiHelpers.PAPER_TEXT)
 	name_lbl.text = "【%s】%s　Lv.%d" % [career, sys.get_dish_name(pack, career), int(prog.get("level", 1))]
 	vbox.add_child(name_lbl)
+	# 内容卡走普通弹窗组件（纸底/棕边），替掉原来的暗底自定义色
+	var card: VBoxContainer = c.popup_card(vbox, 84)
 	var info := Label.new()
 	info.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
-	info.add_theme_font_size_override("font_size", 12)
-	info.add_theme_color_override("font_color", Color("#c8c3e0"))
+	info.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+	info.add_theme_font_size_override("font_size", 13)
+	info.add_theme_color_override("font_color", UiHelpers.PAPER_TEXT_SUB)
 	info.text = "%s类门客 赚钱 +%s\n升级进度 %d/%d 次" % [career, c.format_number(sys.get_dish_income(pack_id, career)), int(prog.get("done", 0)), int(prog.get("need", 1))]
-	vbox.add_child(info)
+	card.add_child(info)
+	var btn_row: HBoxContainer = c.popup_button_row(vbox)
 	var up_btn := Button.new()
 	up_btn.text = "升级"
+	up_btn.custom_minimum_size = Vector2(120, 38)
 	up_btn.disabled = int(prog.get("done", 0)) < int(prog.get("need", 1))
 	up_btn.pressed.connect(func():
 		_on_dish_upgrade(pack_id, career)
 		c._safe_close("DishPopup"))
-	vbox.add_child(up_btn)
+	btn_row.add_child(up_btn)
 	c.add_child(panel)
 
 # ==================== 页签三：兑换商店 ====================

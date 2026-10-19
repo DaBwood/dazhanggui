@@ -4,9 +4,8 @@
 #   主页 = 代码配色背景（深酒红棕+酒字水印，后续有"红尘酒楼"素材可直接换底）
 #          + 右上浮层（招牌/知名度/银条）+ 收益罐(领银条) + 叫号条(x/50+倒计时+【+】)
 #          + 叫号/一键叫号（纯改数字转接待队列）+ 接待队列状态 + 餐饮/娱乐双入口（带红点）
-#   设施区 = 项目页签（餐饮6项目/娱乐5项目）+ 同步升级 + 设施卡片网格（红点：可升级/可解锁）
-#   设施弹窗 = 图+名+等级+flavor + 三属性当前→下级 + 消耗 + 升级/同步升级勾选 + 左右切设施
-#   信息弹窗 = 招牌改名(免费限8字)/等级升级(知名度达标免费升)/接待收益/百业/才艺/知名度进度
+#   设施弹窗 = 羊皮纸弹窗：项目页签 + 同步升级 + 设施卡片网格（框/标题条/设施图/Lv/红点）
+#   信息弹窗 = 羊皮纸弹窗：招牌改名(免费限8字)/等级/简介/接待收益三行(当前→下级)/知名度进度/升级
 # 重建刷新模式：操作后整页重建；0.05s Timer 推进接待批次+刷文本（不重建保流畅）
 # ============================================================
 class_name TavernView
@@ -14,7 +13,6 @@ extends BaseView   # 【改】公共层下沉 ui/base_view.gd（2026-09-18 架�
 
 # c/data 引用、弹窗状态机（_popup_kind/_popup_id）由基类持有，此处不再声明
 
-var _tab: String = "main"              # 当前视图 main/餐饮/娱乐
 var _proj: Dictionary = {"餐饮": "", "娱乐": ""}   # 各区域当前选中项目（页签状态，切区保留）
 var _timer: Timer = null               # 批处理/秒刷定时器（0.05s）
 var _jar_icon: Button = null
@@ -27,6 +25,48 @@ const JAR_EMPTY: Texture2D = preload("res://assets/tavern/收益罐空.png")
 const JAR_FULL: Texture2D = preload("res://assets/tavern/收益罐满.png")
 const INFO_BG: Texture2D = preload("res://assets/tavern/酒肆信息弹窗.png")
 const FAC_BG: Texture2D = preload("res://assets/tavern/酒肆设施弹窗.png")
+# 设施卡片素材（2026-10-19 豆姐图入库）：框/标题条/五张设施图；白底已抠成透明
+const FAC_FRAME: Texture2D = preload("res://assets/tavern/设施框.png")
+const FAC_TITLE_BAR: Texture2D = preload("res://assets/tavern/设施标题.png")
+const FAC_ART_GUITAI: Texture2D = preload("res://assets/tavern/设施_柜台.png")
+const FAC_ART_CESUO: Texture2D = preload("res://assets/tavern/设施_厕所.png")
+const FAC_ART_JINGGUAN: Texture2D = preload("res://assets/tavern/设施_景观.png")
+const FAC_ART_DIAOXIANG: Texture2D = preload("res://assets/tavern/设施_雕像.png")
+const FAC_ART_HOUDENG: Texture2D = preload("res://assets/tavern/设施_等候桌.png")
+const ICON_YINTIAO: Texture2D = preload("res://assets/tavern/银条.png")
+const ICON_FAME: Texture2D = preload("res://assets/tavern/知名度.png")
+# 豆姐补的三枚图标（2026-10-19 入库）：百业=书、才艺=琵琶、改名=毛笔
+const ICON_BAIYE: Texture2D = preload("res://assets/tavern/百业经验.png")
+const ICON_CAIYI: Texture2D = preload("res://assets/tavern/才艺经验.png")
+const ICON_RENAME: Texture2D = preload("res://assets/tavern/酒楼改名.png")
+
+# ---------- 定制画底弹窗布局表（锚点外置：只调数值，不动结构；tavern_preview.py 直接读这张表出预览） ----------
+# 数值=相对弹窗矩形的比例 [x0, y0, x1, y1]；popup=弹窗像素尺寸（600×1067 设计基准）
+const UI_INFO := {
+	"popup": Vector2(560, 469),
+	"tag": [0.052, 0.335, 0.108, 0.500],
+	"title_row": [0.50, 0.045, 0.95, 0.112],
+	"level": [0.50, 0.115, 0.86, 0.165],
+	"intro": [0.54, 0.175, 0.95, 0.335],
+	"ribbon": [0.18, 0.443, 0.94, 0.505],
+	"row1": 0.525,
+	"row2": 0.583,
+	"row3": 0.641,
+	"rows_box": [0.22, 0.92],
+	"row_h": 0.058,
+	"fame": [0.22, 0.792, 0.92, 0.848],
+	"button": [0.36, 0.858, 0.64, 0.928],
+}
+const UI_AREA := {
+	"popup": Vector2(560, 830),
+	"title": [0.28, 0.052, 0.72, 0.112],
+	"content": [0.06, 0.135, 0.94, 0.925],
+	"card_min": Vector2(150, 196),
+	"card_bar": [0.07, 0.040, 0.93, 0.185],
+	"card_art": [0.11, 0.20, 0.89, 0.72],
+	"card_lv": [0.08, 0.735, 0.92, 0.815],
+	"card_dot": [0.80, 0.015, 0.95, 0.075],
+}
 
 func _init(p_c):
 	super(p_c)   # 【改】基类注入 c/data（2026-09-18 架构重构批次⑤）
@@ -59,7 +99,6 @@ func show_view():
 # 关闭=进出复位页签（原 hide_tavern_view 语义，同 clinic 惯例）+ 基类清理。
 # 基类比原实现多清 _popup_kind/_popup_id，无观测差异：下次 show 本就会清，页关期间无人读状态
 func hide_view():
-	_tab = "main"   # 下次进入回到主页（同 clinic 进出复位惯例）
 	_close_node("TavernRulePopup")   # 【新增】批次②③④-B1修正：离开酒肆时连带关闭规则说明弹窗
 	super()
 
@@ -80,13 +119,10 @@ func _build_page():
 	_timer.timeout.connect(_on_tick)
 	page.add_child(_timer)
 
-func _switch_tab(t: String):
-	_tab = t
-	_popup_kind = ""
-	_popup_id = ""
-	_close_node("TavernPopup")
-	_close_node("TavernPage")
-	show_tavern_view()
+func _open_area(area: String):
+	_popup_kind = "area"
+	_popup_id = area
+	_show_area_popup(area)
 
 func _on_tick():
 	# 接待队列批处理（时间盒 4ms，接待完自然停；队列随存档保留，重开页面接着接待）
@@ -110,8 +146,8 @@ func _wire_page(page: Control):
 	page.find_child("BackButton", true, false).pressed.connect(_on_back)
 	page.find_child("RuleButton", true, false).pressed.connect(_show_rule_popup)
 	page.find_child("InfoTitle", true, false).pressed.connect(_show_info_popup)
-	page.find_child("CanButton", true, false).pressed.connect(func(): _switch_tab("餐饮"))
-	page.find_child("JoyButton", true, false).pressed.connect(func(): _switch_tab("娱乐"))
+	page.find_child("CanButton", true, false).pressed.connect(func(): _open_area("餐饮"))
+	page.find_child("JoyButton", true, false).pressed.connect(func(): _open_area("娱乐"))
 	page.find_child("JarIcon", true, false).pressed.connect(_on_collect)
 	page.find_child("AddButton", true, false).pressed.connect(_on_add_jiaohao)
 	page.find_child("CallAllCheck", true, false).toggled.connect(_on_call_all_toggled)
@@ -120,16 +156,15 @@ func _wire_page(page: Control):
 # 状态驱动填充：静态结构/图标全在 tscn，脚本只灌文本/显隐（灌内容口径）
 func _fill(page: Panel):
 	var title: Label = page.find_child("TitleLabel", true, false)
-	title.text = "酒肆" if _tab == "main" else "酒肆 · %s" % _tab
+	title.text = "酒肆"
 	# 右上信息牌（酒肆信息图标化：标题可点=信息弹窗）
 	page.find_child("InfoTitle", true, false).text = _sys().get_sign_name()
 	page.find_child("FameLabel", true, false).text = "知名度：%s" % c.format_number(_sys().get_fame_total())
 	page.find_child("SilverLabel", true, false).text = "银条：%s" % c.format_number(_sys().get_yintiao())
-	var main_on: bool = _tab == "main"
-	page.find_child("CenterFill", true, false).visible = main_on
-	page.find_child("MainNav", true, false).visible = main_on
-	var area_scroll: ScrollContainer = page.find_child("AreaScroll", true, false)
-	area_scroll.visible = not main_on
+	# 餐饮/娱乐已改羊皮纸弹窗，页面常驻主页形态（AreaScroll 保留但不再使用）
+	page.find_child("CenterFill", true, false).visible = true
+	page.find_child("MainNav", true, false).visible = true
+	page.find_child("AreaScroll", true, false).visible = false
 	# 收益罐双态（tick 也活更新）
 	_jar_icon = page.find_child("JarIcon", true, false)
 	_jar_icon.icon = JAR_FULL if _sys().has_jar() else JAR_EMPTY
@@ -141,14 +176,9 @@ func _fill(page: Panel):
 	# 页签红点
 	page.find_child("CanDot", true, false).visible = _area_has_hint("餐饮")
 	page.find_child("JoyDot", true, false).visible = _area_has_hint("娱乐")
-	if not main_on:
-		_fill_area(page.find_child("AreaBody", true, false), _tab)
 
 func _on_back():
-	if _tab == "main":
-		hide_tavern_view()
-	else:
-		_switch_tab("main")
+	hide_tavern_view()
 
 # 操作后统一刷新：只重建页面不关弹窗；弹窗在则按类别原位重建（连升/连解锁不用反复开关）
 func _refresh():
@@ -159,6 +189,8 @@ func _refresh():
 		return
 	if _popup_kind == "info":
 		_show_info_popup()
+	elif _popup_kind == "area":
+		_show_area_popup(_popup_id)
 	elif _popup_kind == "facility" and _popup_id != "":
 		_show_facility_popup(_popup_id)
 
@@ -172,33 +204,70 @@ func _area_has_hint(area: String) -> bool:
 			return true
 	return false
 
-# ---------- 设施区：项目页签 + 同步升级 + 设施卡片网格 ----------
-func _fill_area(body: VBoxContainer, area: String):
+# ---------- 餐饮/娱乐：羊皮纸弹窗（项目页签 + 设施卡片网格） ----------
+func _show_area_popup(area: String):
+	_close_node("TavernPopup")
+	_popup_kind = "area"
+	_popup_id = area
+	var sz: Vector2 = UI_AREA["popup"]
+	var root: Control = _art_popup(FAC_BG, sz)
+	var title := Label.new()
+	title.text = area
+	title.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	title.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
+	title.add_theme_font_size_override("font_size", 30)
+	title.add_theme_color_override("font_color", Color(1, 0.97, 0.9, 0.96))
+	_place_rect(root, title, UI_AREA["title"])
+	# 内容容器：页签/同步升级/卡片网格；切项目只重铺它，不重建弹窗
+	var content := VBoxContainer.new()
+	content.name = "AreaContent"
+	content.add_theme_constant_override("separation", 10)
+	_place_rect(root, content, UI_AREA["content"])
+	_fill_area_content(content, area)
+
+func _fill_area_content(content: VBoxContainer, area: String):
+	for ch in content.get_children():
+		content.remove_child(ch)
+		ch.queue_free()
 	var projects: Array = _sys().get_projects(area)
 	if projects.is_empty():
 		return
-	# 页签行：默认选中第一个（或保留上次选择）
 	var cur: String = str(_proj.get(area, ""))
 	if not projects.has(cur):
 		cur = str(projects[0])
 		_proj[area] = cur
-	var tabs := HFlowContainer.new()
-	tabs.add_theme_constant_override("h_separation", 6)
-	tabs.add_theme_constant_override("v_separation", 6)
-	body.add_child(tabs)
+	# 项目页签
+	var tabs := HBoxContainer.new()
+	tabs.alignment = BoxContainer.ALIGNMENT_CENTER
+	tabs.add_theme_constant_override("separation", 6)
+	content.add_child(tabs)
 	for p in projects:
-		var pb := Button.new()
-		pb.text = str(p)
-		pb.custom_minimum_size = Vector2(96, 34)
-		if str(p) == cur:
-			pb.add_theme_color_override("font_color", Color("#ffd700"))   # 选中页签金色高亮
 		var proj_name: String = str(p)
-		pb.pressed.connect(func(): _on_pick_project(area, proj_name))
-		tabs.add_child(pb)
+		var tb := Button.new()
+		tb.text = proj_name
+		tb.custom_minimum_size = Vector2(72, 32)
+		tb.add_theme_font_size_override("font_size", 14)
+		_style_area_tab(tb, proj_name == cur)
+		tb.pressed.connect(func(): _on_pick_project(area, proj_name))
+		tabs.add_child(tb)
+		if _project_has_hint(proj_name):
+			var dot := Label.new()
+			dot.text = "●"
+			dot.add_theme_color_override("font_color", Color("#d0453a"))
+			dot.add_theme_font_size_override("font_size", 12)
+			dot.mouse_filter = Control.MOUSE_FILTER_IGNORE
+			dot.anchor_left = 1.0
+			dot.anchor_right = 1.0
+			dot.offset_left = -12
+			dot.offset_right = 2
+			dot.offset_top = -4
+			dot.offset_bottom = 12
+			tb.add_child(dot)
 	# 同步升级行（同项目全部已解锁设施各+1级；银条不足者自动跳过）
 	var sync_row := HBoxContainer.new()
+	sync_row.alignment = BoxContainer.ALIGNMENT_CENTER
 	sync_row.add_theme_constant_override("separation", 8)
-	body.add_child(sync_row)
+	content.add_child(sync_row)
 	var sync_cost := 0
 	for f in _sys().get_project_facilities(cur):
 		var fid := str(f.get("id", ""))
@@ -206,56 +275,147 @@ func _fill_area(body: VBoxContainer, area: String):
 			sync_cost += _sys().get_upgrade_cost(fid)
 	var sync_btn := Button.new()
 	sync_btn.text = "同步升级（银条 %s）" % c.format_number(sync_cost)
-	sync_btn.custom_minimum_size = Vector2(220, 36)
+	sync_btn.custom_minimum_size = Vector2(220, 34)
+	sync_btn.add_theme_font_size_override("font_size", 15)
 	sync_btn.disabled = sync_cost <= 0
+	_style_paper_button(sync_btn)
 	var proj_c: String = cur
 	sync_btn.pressed.connect(func(): _on_sync_upgrade(proj_c))
 	sync_row.add_child(sync_btn)
-	# 设施卡片网格（2列：点击弹详情，红点=可升级或可解锁）
+	# 设施卡片网格（3 列，纵向滚动）
+	var scroll := ScrollContainer.new()
+	scroll.horizontal_scroll_mode = ScrollContainer.SCROLL_MODE_DISABLED
+	scroll.size_flags_vertical = Control.SIZE_EXPAND_FILL
+	content.add_child(scroll)
 	var grid := GridContainer.new()
-	grid.columns = 2
+	grid.columns = 3
 	grid.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	grid.add_theme_constant_override("h_separation", 8)
 	grid.add_theme_constant_override("v_separation", 8)
-	body.add_child(grid)
+	scroll.add_child(grid)
 	for f in _sys().get_project_facilities(cur):
-		var fid := str(f.get("id", ""))
-		var fname := str(f.get("name", fid))
-		var wrap_node := Control.new()
-		wrap_node.size_flags_horizontal = Control.SIZE_EXPAND_FILL
-		wrap_node.custom_minimum_size = Vector2(0, 64)
-		grid.add_child(wrap_node)
-		var b := Button.new()
-		if _sys().is_facility_unlocked(fid):
-			b.text = "【%s】\nLv.%d　知名度 %d　银条 %d" % [fname, _sys().get_facility_level(fid),
-				_sys().get_facility_fame(f), _sys().get_facility_income(f)]
-		else:
-			b.text = "【%s】\n知名度 %s 解锁" % [fname, c.format_number(_sys().get_unlock_fame(f))]
-			b.add_theme_color_override("font_color", Color("#8f88ad"))
-		b.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
-		var fid_c: String = fid
-		b.pressed.connect(func(): _show_facility_popup(fid_c))
-		wrap_node.add_child(b)
+		grid.add_child(_make_facility_card(f))
+
+# 单张设施卡：框 + 红标题条 + 设施图 + Lv/解锁条件 + 红点
+func _make_facility_card(fcfg: Dictionary) -> Control:
+	var fid := str(fcfg.get("id", ""))
+	var unlocked: bool = _sys().is_facility_unlocked(fid)
+	var card := Control.new()
+	var cmin: Vector2 = UI_AREA["card_min"]
+	card.custom_minimum_size = cmin
+	card.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	var bg := TextureRect.new()
+	bg.texture = FAC_FRAME
+	bg.expand_mode = TextureRect.EXPAND_IGNORE_SIZE
+	bg.stretch_mode = TextureRect.STRETCH_SCALE
+	bg.set_anchors_preset(Control.PRESET_FULL_RECT)
+	bg.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	card.add_child(bg)
+	var bar := TextureRect.new()
+	bar.texture = FAC_TITLE_BAR
+	bar.expand_mode = TextureRect.EXPAND_IGNORE_SIZE
+	bar.stretch_mode = TextureRect.STRETCH_SCALE
+	bar.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	_place_rect(card, bar, UI_AREA["card_bar"])
+	var name_lbl := Label.new()
+	name_lbl.text = str(fcfg.get("name", fid))
+	name_lbl.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	name_lbl.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
+	name_lbl.add_theme_font_size_override("font_size", 13)
+	name_lbl.add_theme_color_override("font_color", Color(1, 0.97, 0.9, 0.96))
+	name_lbl.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	_place_rect(card, name_lbl, UI_AREA["card_bar"])
+	var art := TextureRect.new()
+	var tex: Texture2D = _fac_art(fid)
+	if tex != null:
+		art.texture = tex
+	art.expand_mode = TextureRect.EXPAND_IGNORE_SIZE
+	art.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_CENTERED
+	art.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	if not unlocked:
+		art.modulate = Color(1, 1, 1, 0.45)
+	_place_rect(card, art, UI_AREA["card_art"])
+	var lv := Label.new()
+	if unlocked:
+		lv.text = "Lv.%d" % _sys().get_facility_level(fid)
+	else:
+		lv.text = "知名度 %s 解锁" % c.format_number(_sys().get_unlock_fame(fcfg))
+	lv.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	lv.add_theme_font_size_override("font_size", 12)
+	lv.add_theme_color_override("font_color", Color("#5a3d26") if unlocked else Color("#a0524a"))
+	lv.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	_place_rect(card, lv, UI_AREA["card_lv"])
+	if _sys().can_upgrade_facility(fid).get("ok", false) or _sys().can_unlock_facility(fid).get("ok", false):
 		var dot := Label.new()
 		dot.text = "●"
-		dot.add_theme_color_override("font_color", Color("#e74c3c"))
-		dot.add_theme_font_size_override("font_size", 16)
-		dot.anchor_left = 1.0
-		dot.anchor_right = 1.0
-		dot.offset_left = -20
-		dot.offset_right = 0
-		dot.offset_top = -6
-		dot.offset_bottom = 14
+		dot.add_theme_color_override("font_color", Color("#d0453a"))
+		dot.add_theme_font_size_override("font_size", 15)
 		dot.mouse_filter = Control.MOUSE_FILTER_IGNORE
-		dot.visible = _sys().can_upgrade_facility(fid).get("ok", false) or _sys().can_unlock_facility(fid).get("ok", false)
-		wrap_node.add_child(dot)
+		_place_rect(card, dot, UI_AREA["card_dot"])
+	var btn := Button.new()
+	for st in ["normal", "hover", "pressed", "focus"]:
+		btn.add_theme_stylebox_override(st, StyleBoxEmpty.new())
+	btn.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
+	var fid_c: String = fid
+	btn.pressed.connect(func():
+		_popup_kind = "facility"
+		_popup_id = fid_c
+		_show_facility_popup(fid_c))
+	card.add_child(btn)
+	return card
+
+# 设施图：按 id 映射（缺失返回 null，卡片只显示框/标题/等级）
+func _fac_art(fid: String) -> Texture2D:
+	if fid == "guitai":
+		return FAC_ART_GUITAI
+	if fid == "cesuo":
+		return FAC_ART_CESUO
+	if fid == "jingguan":
+		return FAC_ART_JINGGUAN
+	if fid == "diaoxiang":
+		return FAC_ART_DIAOXIANG
+	if fid.begins_with("houdeng"):
+		return FAC_ART_HOUDENG
+	return null
+
+func _project_has_hint(proj: String) -> bool:
+	for f in _sys().get_project_facilities(proj):
+		var fid := str(f.get("id", ""))
+		if _sys().can_upgrade_facility(fid).get("ok", false) or _sys().can_unlock_facility(fid).get("ok", false):
+			return true
+	return false
+
+func _style_area_tab(btn: Button, selected: bool):
+	var sb := StyleBoxFlat.new()
+	sb.bg_color = Color("#b5523c") if selected else Color("#e8dcc4")
+	sb.border_color = Color("#8a7355")
+	sb.set_border_width_all(1)
+	sb.set_corner_radius_all(4)
+	var hover: StyleBoxFlat = sb.duplicate()
+	hover.bg_color = Color("#c4644c") if selected else Color("#f2e8d4")
+	btn.add_theme_stylebox_override("normal", sb)
+	btn.add_theme_stylebox_override("hover", hover)
+	btn.add_theme_stylebox_override("pressed", hover)
+	btn.add_theme_stylebox_override("focus", sb)
+	btn.add_theme_color_override("font_color", Color(1, 0.97, 0.9) if selected else Color("#5a3d26"))
+
+func _style_paper_button(btn: Button):
+	var sb := StyleBoxFlat.new()
+	sb.bg_color = Color("#e8dcc4")
+	sb.border_color = Color("#8a7355")
+	sb.set_border_width_all(1)
+	sb.set_corner_radius_all(4)
+	for st in ["normal", "pressed", "focus"]:
+		btn.add_theme_stylebox_override(st, sb)
+	btn.add_theme_color_override("font_color", Color("#5a3d26"))
 
 func _on_pick_project(area: String, proj: String):
 	_proj[area] = proj
-	_popup_kind = ""
-	_popup_id = ""
-	_close_node("TavernPopup")
-	_refresh()
+	var content: VBoxContainer = c.get_node_or_null("TavernPopup/AreaContent")
+	if content == null:
+		_show_area_popup(area)
+		return
+	_fill_area_content(content, area)
 
 func _on_sync_upgrade(proj: String):
 	var r := _sys().upgrade_project(proj)
@@ -267,6 +427,9 @@ func _on_sync_upgrade(proj: String):
 
 # ---------- 设施弹窗：三属性当前→下级 + 升级/同步升级勾选 + 左右切设施 ----------
 func _show_facility_popup(fid: String):
+	_close_node("TavernPopup")
+	_popup_kind = "facility"
+	_popup_id = fid
 	var fcfg: Dictionary = _sys().get_facility_cfg(fid)
 	var root: Control = _art_popup(FAC_BG, Vector2(600, 889))
 	# 红色横幅：设施名（未解锁不显示 Lv）+ 左右切换
@@ -522,40 +685,14 @@ func _place(parent: Control, node: Control, fx0: float, fy0: float, fx1: float, 
 	node.offset_bottom = 0
 	parent.add_child(node)
 
+# 布局表行 [x0,y0,x1,y1] 版本的 _place（锚点外置后统一走这里）
+func _place_rect(parent: Control, node: Control, rect) -> void:
+	_place(parent, node, float(rect[0]), float(rect[1]), float(rect[2]), float(rect[3]))
+
 func _art_popup(bg: Texture2D, popup_size: Vector2) -> Control:
-	var mask := ColorRect.new()
-	mask.color = Color(0, 0, 0, 0.55)
-	mask.set_anchors_preset(Control.PRESET_FULL_RECT)
-	mask.z_index = 39
-	c.add_child(mask)
-	var root := Control.new()
-	root.name = "TavernPopup"
-	root.z_index = 40
-	root.custom_minimum_size = popup_size
-	# 左上锚点 + 显式坐标尺寸：CENTER 锚点会让 position 变成相对屏幕中心，直接出屏
-	root.set_anchors_preset(Control.PRESET_TOP_LEFT)
-	root.position = (c.get_viewport_rect().size - popup_size) * 0.5
-	root.size = popup_size
-	mask.add_child(root)
-	var bgt := TextureRect.new()
-	bgt.texture = bg
-	bgt.stretch_mode = TextureRect.STRETCH_SCALE
-	bgt.set_anchors_preset(Control.PRESET_FULL_RECT)
-	bgt.mouse_filter = Control.MOUSE_FILTER_IGNORE
-	root.add_child(bgt)
-	var close_x := Button.new()
-	close_x.text = "×"
-	close_x.add_theme_font_size_override("font_size", 26)
-	close_x.add_theme_color_override("font_color", Color("#e6c07b"))
-	for st in ["normal", "hover", "pressed", "focus"]:
-		close_x.add_theme_stylebox_override(st, StyleBoxEmpty.new())
-	_place(root, close_x, 0.885, 0.02, 0.975, 0.105)
-	close_x.pressed.connect(root.queue_free)
-	mask.gui_input.connect(func(ev):
-		if ev is InputEventMouseButton and ev.pressed and ev.button_index == MOUSE_BUTTON_LEFT:
-			root.queue_free())
-	root.tree_exiting.connect(mask.queue_free)
-	return root
+	# 外壳统一走 ui_helpers.art_popup（2026-10-19 抽取：遮罩/居中/自适应/关闭钮/底图铺满）
+	# 酒肆只负责自己的 UI_INFO 布局表与内容；药铺/酒坊/妙音坊后续按同法复用
+	return c.art_popup(bg, popup_size, "TavernPopup")
 
 # 画底弹窗键值行：左键右值（达不到红/达得到绿）
 func _kv_row(parent: Control, fx0: float, fy0: float, fx1: float, fy1: float, key: String, have: int, need: int) -> void:
@@ -572,62 +709,103 @@ func _kv_row(parent: Control, fx0: float, fy0: float, fx1: float, fy1: float, ke
 	_place(parent, v, fx1 - 0.32, fy0, fx1, fy1)
 
 func _show_info_popup():
-	var root: Control = _art_popup(INFO_BG, Vector2(720, 603))
-	# 顶区右侧：招牌/等级（左侧楼宇为画底自带）
+	_close_node("TavernPopup")
+	_popup_kind = "info"
+	# 尺寸贴合视口：560×469（画底 1543×1293 等比），旧 720 宽会超出 600 设计宽导致裁切错位
+	var sz: Vector2 = UI_INFO["popup"]
+	var root: Control = _art_popup(INFO_BG, sz)
+	# 左卷轴签条：两个字用 VBox 竖直堆叠并居中（Label 带换行时按行居中，容易看着歪）
+	var tag_box := VBoxContainer.new()
+	tag_box.alignment = BoxContainer.ALIGNMENT_CENTER
+	tag_box.add_theme_constant_override("separation", 2)
+	_place_rect(root, tag_box, UI_INFO["tag"])
+	for ch in ["酒", "肆"]:
+		var tl := Label.new()
+		tl.text = ch
+		tl.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+		tl.add_theme_font_size_override("font_size", 22)
+		tl.add_theme_color_override("font_color", Color("#5a3d26"))
+		tag_box.add_child(tl)
+	# 招牌 + 改名同一行（改名紧跟名字，别再钉右边撞关闭钮）
+	var title_row := HBoxContainer.new()
+	title_row.add_theme_constant_override("separation", 6)
+	_place_rect(root, title_row, UI_INFO["title_row"])
 	var sign_lbl := Label.new()
 	sign_lbl.text = "招牌：%s" % _sys().get_sign_name()
-	sign_lbl.add_theme_font_size_override("font_size", 20)
-	sign_lbl.add_theme_color_override("font_color", Color("#5a3d26"))
-	_place(root, sign_lbl, 0.53, 0.055, 0.88, 0.115)
+	sign_lbl.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
+	sign_lbl.add_theme_font_size_override("font_size", 19)
+	sign_lbl.add_theme_color_override("font_color", Color("#4a3018"))
+	title_row.add_child(sign_lbl)
 	var rename_btn := Button.new()
-	rename_btn.text = "改名"
-	rename_btn.add_theme_font_size_override("font_size", 13)
-	rename_btn.add_theme_color_override("font_color", Color("#8a6a45"))
+	rename_btn.text = ""
+	rename_btn.icon = ICON_RENAME
+	rename_btn.tooltip_text = "改名"
+	rename_btn.custom_minimum_size = Vector2(28, 28)
+	rename_btn.size_flags_vertical = Control.SIZE_SHRINK_CENTER
+	rename_btn.add_theme_constant_override("h_separation", 0)
 	for st in ["normal", "hover", "pressed", "focus"]:
 		rename_btn.add_theme_stylebox_override(st, StyleBoxEmpty.new())
 	rename_btn.pressed.connect(_show_rename_popup)
-	_place(root, rename_btn, 0.75, 0.122, 0.845, 0.172)
+	title_row.add_child(rename_btn)
 	var lv := Label.new()
 	lv.text = "等级：%d" % _sys().get_level()
-	lv.add_theme_font_size_override("font_size", 16)
-	lv.add_theme_color_override("font_color", Color("#5a3d26"))
-	_place(root, lv, 0.53, 0.115, 0.74, 0.165)
+	lv.add_theme_font_size_override("font_size", 15)
+	lv.add_theme_color_override("font_color", Color("#6b5236"))
+	_place_rect(root, lv, UI_INFO["level"])
+	var intro_text := str(data._tavern_configs.get("settings", {}).get("intro", ""))
+	if intro_text != "":
+		var intro := Label.new()
+		intro.text = intro_text
+		intro.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+		intro.add_theme_font_size_override("font_size", 13)
+		intro.add_theme_color_override("font_color", Color("#7a6348"))
+		_place_rect(root, intro, UI_INFO["intro"])
 	# 画底丝带：接待客人收益
 	var ribbon := Label.new()
 	ribbon.text = "接待客人收益"
 	ribbon.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
-	ribbon.add_theme_font_size_override("font_size", 20)
-	ribbon.add_theme_color_override("font_color", Color(1, 1, 1, 0.92))
-	_place(root, ribbon, 0.14, 0.435, 0.88, 0.515)
-	# 三行收益
-	var rows := [
-		"银条收益：%s" % c.format_number(_sys().get_income_per_guest()),
-		"门客百业经验：%s" % c.format_number(_sys().get_baiye_per_guest()),
-		"挚友才艺经验：%s" % c.format_number(_sys().get_caiyi_per_guest())]
-	for i in range(3):
-		var rl := Label.new()
-		rl.text = rows[i]
-		rl.add_theme_font_size_override("font_size", 17)
-		rl.add_theme_color_override("font_color", Color("#5a3d26"))
-		_place(root, rl, 0.22, 0.545 + i * 0.062, 0.80, 0.60 + i * 0.062)
-	# 知名度进度 + 底部升级主钮
-	_kv_row(root, 0.22, 0.775, 0.80, 0.815, "知名度", int(_sys().get_fame_total()), int(_sys().get_fame_threshold()))
-	var pb := ProgressBar.new()
-	pb.min_value = 0
-	pb.max_value = max(1, int(_sys().get_fame_threshold()))
-	pb.value = clamp(int(_sys().get_fame_total()), 0, int(_sys().get_fame_threshold()))
-	var pb_fill := StyleBoxFlat.new()
-	pb_fill.bg_color = Color("#c9a050")
-	pb_fill.set_corner_radius_all(6)
-	pb.add_theme_stylebox_override("fill", pb_fill)
-	_place(root, pb, 0.22, 0.83, 0.80, 0.875)
+	ribbon.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
+	ribbon.add_theme_font_size_override("font_size", 19)
+	ribbon.add_theme_color_override("font_color", Color(1, 1, 1, 0.95))
+	_place_rect(root, ribbon, UI_INFO["ribbon"])
+	# 三行收益：银条只显当前；百业/才艺显 当前→下一级（整行居中）
+	var lv_next: int = _sys().get_level() + 1
+	_info_row(root, float(UI_INFO["row1"]), "银条收益", ICON_YINTIAO, "", c.format_number(_sys().get_income_per_guest()), "")
+	_info_row(root, float(UI_INFO["row2"]), "门客百业经验", ICON_BAIYE, "", c.format_number(_sys().get_baiye_per_guest()),
+		c.format_number(_sys().get_baiye_per_guest(lv_next)))
+	_info_row(root, float(UI_INFO["row3"]), "挚友才艺经验", ICON_CAIYI, "", c.format_number(_sys().get_caiyi_per_guest()),
+		c.format_number(_sys().get_caiyi_per_guest(lv_next)))
+	# 知名度紧贴升级钮上方（豆姐稿：此处不放进度条，只留一行数值）
+	var fame_row := HBoxContainer.new()
+	fame_row.add_theme_constant_override("separation", 6)
+	fame_row.alignment = BoxContainer.ALIGNMENT_CENTER
+	_place_rect(root, fame_row, UI_INFO["fame"])
+	var fame_icon := TextureRect.new()
+	fame_icon.texture = ICON_FAME
+	fame_icon.expand_mode = TextureRect.EXPAND_IGNORE_SIZE
+	fame_icon.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_CENTERED
+	fame_icon.custom_minimum_size = Vector2(22, 22)
+	fame_icon.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	fame_row.add_child(fame_icon)
+	var fame_lbl := Label.new()
+	fame_lbl.text = "知名度  %s / %s" % [c.format_number(_sys().get_fame_total()), c.format_number(_sys().get_fame_threshold())]
+	fame_lbl.add_theme_font_size_override("font_size", 16)
+	# 红绿原则（同消耗行）：达标绿、未达标红
+	var fame_enough: bool = int(_sys().get_fame_total()) >= int(_sys().get_fame_threshold())
+	fame_lbl.add_theme_color_override("font_color", Color("#2e8b57") if fame_enough else Color("#c0392b"))
+	fame_row.add_child(fame_lbl)
 	var up := Button.new()
-	up.custom_minimum_size = Vector2(0, 44)
 	var up_sb := StyleBoxFlat.new()
 	up_sb.bg_color = Color("#c9a050")
-	up_sb.set_corner_radius_all(10)
-	for st in ["normal", "hover", "pressed"]:
+	up_sb.border_color = Color("#9a7433")
+	up_sb.set_border_width_all(2)
+	up_sb.set_corner_radius_all(8)
+	var up_hover: StyleBoxFlat = up_sb.duplicate()
+	up_hover.bg_color = Color("#dcb463")
+	for st in ["normal", "pressed"]:
 		up.add_theme_stylebox_override(st, up_sb)
+	up.add_theme_stylebox_override("hover", up_hover)
+	up.add_theme_stylebox_override("focus", up_sb)
 	up.add_theme_color_override("font_color", Color("#3a2613"))
 	up.add_theme_font_size_override("font_size", 20)
 	if _sys().get_level() >= int(_sys().get_max_level()):
@@ -637,7 +815,54 @@ func _show_info_popup():
 		up.text = "升级"
 		up.disabled = not _sys().can_level_up().get("ok", false)
 		up.pressed.connect(_on_level_up)
-	_place(root, up, 0.33, 0.895, 0.67, 0.955)
+	_place_rect(root, up, UI_INFO["button"])
+
+# 信息弹窗收益行：图标或字牌 + 名称 + 当前值（可选 → 下一级）
+func _info_row(root: Control, y0: float, title_text: String, icon: Texture2D, badge: String, cur_text: String, next_text: String) -> void:
+	var row := HBoxContainer.new()
+	row.alignment = BoxContainer.ALIGNMENT_CENTER
+	row.add_theme_constant_override("separation", 8)
+	_place(root, row, float(UI_INFO["rows_box"][0]), y0, float(UI_INFO["rows_box"][1]), y0 + float(UI_INFO["row_h"]))
+	if icon != null:
+		var ir := TextureRect.new()
+		ir.texture = icon
+		ir.expand_mode = TextureRect.EXPAND_IGNORE_SIZE
+		ir.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_CENTERED
+		ir.custom_minimum_size = Vector2(24, 24)
+		ir.mouse_filter = Control.MOUSE_FILTER_IGNORE
+		row.add_child(ir)
+	elif badge != "":
+		var bl := Label.new()
+		bl.text = badge
+		bl.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+		bl.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
+		bl.custom_minimum_size = Vector2(24, 24)
+		bl.add_theme_font_size_override("font_size", 13)
+		bl.add_theme_color_override("font_color", Color("#f0e6d2"))
+		var bs := StyleBoxFlat.new()
+		bs.bg_color = Color("#8a6a45")
+		bs.set_corner_radius_all(12)
+		bl.add_theme_stylebox_override("normal", bs)
+		row.add_child(bl)
+	var l := Label.new()
+	l.text = title_text
+	l.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
+	l.add_theme_font_size_override("font_size", 16)
+	l.add_theme_color_override("font_color", Color("#5a3d26"))
+	row.add_child(l)
+	var v := Label.new()
+	v.text = cur_text
+	v.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
+	v.add_theme_font_size_override("font_size", 17)
+	v.add_theme_color_override("font_color", Color("#3f2a15"))
+	row.add_child(v)
+	if next_text != "":
+		var ar := Label.new()
+		ar.text = "→ " + next_text
+		ar.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
+		ar.add_theme_font_size_override("font_size", 17)
+		ar.add_theme_color_override("font_color", Color("#2e8b57"))
+		row.add_child(ar)
 
 func _show_rename_popup():
 	_close_node("TavernPopup")
