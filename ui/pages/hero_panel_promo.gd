@@ -193,13 +193,8 @@ func _on_promo_btn_clicked():
 	top_bar.add_child(contract_btn)
 	
 	# ── 晋升解锁列表：不写初始资质变化，统一"X级晋升XX，解锁技能【XX】"，已解锁金色、未解锁灰色 ──
-	var scroll = ScrollContainer.new()
-	scroll.custom_minimum_size = Vector2(420, 220)
-	vb.add_child(scroll)
-	var list = VBoxContainer.new()
-	list.size_flags_horizontal = Control.SIZE_EXPAND_FILL
-	list.add_theme_constant_override("separation", 4)
-	scroll.add_child(list)
+	var list: VBoxContainer = c.popup_scroll(vb)
+	list.custom_minimum_size = Vector2(420, 220)   # 列表固定显示高度（组件滚动区默认无下限高）
 	for tier in promo.tiers:
 		var lv_req = int(tier.get("threshold", 0))
 		var reached = promo.level >= lv_req
@@ -216,9 +211,9 @@ func _on_promo_btn_clicked():
 		# 【改】文案参数化："续缘5级晋升传奇，解锁技能【前世回忆】"
 		row.text = "%s%d级%s" % [promo_name, lv_req, "，".join(parts)]
 		if reached:
-			row.add_theme_color_override("font_color", Color("#ffd700"))
+			row.add_theme_color_override("font_color", UiHelpers.PAPER_OK)
 		else:
-			row.add_theme_color_override("font_color", Color("#888888"))
+			row.add_theme_color_override("font_color", UiHelpers.PAPER_BAD)
 		list.add_child(row)
 	
 
@@ -336,7 +331,7 @@ func _show_jinlan_panel():
 			int(hs.get_jinlan_partner_income_pct(partner_id) * 100)   # getter 返回小数，显示转%
 		]
 	else:
-		right_lbl.add_theme_color_override("font_color", Color("#888888"))
+		right_lbl.add_theme_color_override("font_color", UiHelpers.PAPER_TEXT_SUB)
 		right_lbl.text = "金兰门客\n未选择\n "
 	duo.add_child(right_lbl)
 
@@ -394,7 +389,7 @@ func _show_jinlan_panel():
 		left_v.add_child(line1)
 		var line2 = Label.new()
 		line2.horizontal_alignment = HORIZONTAL_ALIGNMENT_LEFT
-		line2.add_theme_color_override("font_color", Color("#888888"))
+		line2.add_theme_color_override("font_color", UiHelpers.PAPER_TEXT_SUB)
 		line2.text = "%s（下级：%s）" % [desc_t % (lv * per), next_val]
 		left_v.add_child(line2)
 		card.add_child(left_v)
@@ -434,13 +429,8 @@ func _show_jinlan_pick_popup():
 	var vb = popup.get_child(0)
 	var st = hs.get_jinlan_state(hp.current_hero_id)
 	var cur: String = str(st.get("partner", ""))
-	var scroll = ScrollContainer.new()
-	scroll.custom_minimum_size = Vector2(400, 360)
-	vb.add_child(scroll)
-	var list = VBoxContainer.new()
-	list.size_flags_horizontal = Control.SIZE_EXPAND_FILL
-	list.add_theme_constant_override("separation", 4)
-	scroll.add_child(list)
+	var list: VBoxContainer = c.popup_scroll(vb)
+	list.custom_minimum_size = Vector2(400, 360)   # 列表固定显示高度（组件滚动区默认无下限高）
 	for hid in data.heroes.keys():
 		if hid == hp.current_hero_id: continue
 		var is_cur: bool = cur == hid
@@ -504,7 +494,7 @@ func _show_qinhe_panel():
 			c.format_number(hs.get_qinhe_income_bonus(partner_id))
 		]
 	else:
-		right_lbl.add_theme_color_override("font_color", Color("#888888"))
+		right_lbl.add_theme_color_override("font_color", UiHelpers.PAPER_TEXT_SUB)
 		right_lbl.text = "亲和门客\n未选择\n "
 	duo.add_child(right_lbl)
 
@@ -555,7 +545,7 @@ func _show_qinhe_panel():
 	left_v.add_child(line1)
 	var line2 = Label.new()
 	line2.horizontal_alignment = HORIZONTAL_ALIGNMENT_LEFT
-	line2.add_theme_color_override("font_color", Color("#888888"))
+	line2.add_theme_color_override("font_color", UiHelpers.PAPER_TEXT_SUB)
 	line2.text = "转化比例 %d%%（下级：%d%%）" % [ratio_pct, (aura_lv + 1) * ratio_base_pct]
 	left_v.add_child(line2)
 	card1.add_child(left_v)
@@ -589,7 +579,7 @@ func _show_qinhe_panel():
 	left2.add_child(l21)
 	var l22 = Label.new()
 	l22.horizontal_alignment = HORIZONTAL_ALIGNMENT_LEFT
-	l22.add_theme_color_override("font_color", Color("#888888"))
+	l22.add_theme_color_override("font_color", UiHelpers.PAPER_TEXT_SUB)
 	if partner_id != "":
 		l22.text = "亲和门客获得珍兽贡献的%d%%（当前 +%s/秒）" % [ratio_pct, c.format_number(hs.get_qinhe_income_bonus(partner_id))]
 	else:
@@ -615,13 +605,8 @@ func _show_qinhe_pick_popup():
 	var vb = popup.get_child(0)
 	var st = hs.get_qinhe_state(hp.current_hero_id)
 	var cur: String = str(st.get("partner", ""))
-	var scroll = ScrollContainer.new()
-	scroll.custom_minimum_size = Vector2(400, 360)
-	vb.add_child(scroll)
-	var list = VBoxContainer.new()
-	list.size_flags_horizontal = Control.SIZE_EXPAND_FILL
-	list.add_theme_constant_override("separation", 4)
-	scroll.add_child(list)
+	var list: VBoxContainer = c.popup_scroll(vb)
+	list.custom_minimum_size = Vector2(400, 360)   # 列表固定显示高度（组件滚动区默认无下限高）
 	for hid in data.heroes.keys():
 		if hid == hp.current_hero_id: continue
 		var is_cur: bool = cur == hid
@@ -815,7 +800,7 @@ func _show_fengkui_panel(tab_id: String = "skill"):
 		tab_bar.add_child(tbtn)
 	for tab_btn in tab_bar.get_children():
 		if tab_btn.get_meta("tab_id", "") == tab_id:
-			tab_btn.add_theme_color_override("font_color", Color("#ffd700"))
+			tab_btn.add_theme_color_override("font_color", UiHelpers.PAPER_OK)
 
 func _on_fengkui_tab_clicked(tab_id: String):
 	_show_fengkui_panel(tab_id)
@@ -954,7 +939,7 @@ func _fill_fengkui_wuyue_tab(vb):
 	# 底部：资质合计计入凤魁 + 光环归属说明
 	var total_lbl = Label.new()
 	total_lbl.text = "资质合计：+%d（计入凤魁【%s】）" % [data.hero_system.get_wuyue_aptitude(hp.current_hero_id), data.heroes[hp.current_hero_id].get("name", "")]
-	total_lbl.add_theme_color_override("font_color", Color("#ffd700"))
+	total_lbl.add_theme_color_override("font_color", UiHelpers.PAPER_TEXT)
 	vb.add_child(total_lbl)
 	var note = Label.new()
 	note.text = "服装光环仍在各属门客的光环页签升级生效"
