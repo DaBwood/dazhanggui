@@ -360,7 +360,8 @@ func _add_hero_card(grid: GridContainer, counter_idx: int, hero_id: String):
 	var h: Dictionary = data.heroes[hero_id]
 	var card := PanelContainer.new()
 	var rs := StyleBoxFlat.new()
-	rs.bg_color = Color("#252138")
+	# 【改】弹窗组件化批次：选择器卡暗底→纸面卡色（组件需预挂 parent 且行距/圆角不同，按 §10 保留自造卡只换色）
+	rs.bg_color = UiHelpers.PAPER_CARD_BG
 	rs.set_corner_radius_all(8)
 	card.add_theme_stylebox_override("panel", rs)
 	card.size_flags_horizontal = Control.SIZE_EXPAND_FILL
@@ -371,7 +372,7 @@ func _add_hero_card(grid: GridContainer, counter_idx: int, hero_id: String):
 	var name_lbl := Label.new()
 	name_lbl.text = "【%s】%s" % [h.get("name", hero_id), h.get("category", "")]
 	name_lbl.add_theme_font_size_override("font_size", 13)
-	name_lbl.add_theme_color_override("font_color", Color("#ffd700"))
+	name_lbl.add_theme_color_override("font_color", UiHelpers.PAPER_TEXT)
 	name_lbl.clip_text = true
 	vb.add_child(name_lbl)
 	var info_lbl := Label.new()
@@ -385,7 +386,7 @@ func _add_hero_card(grid: GridContainer, counter_idx: int, hero_id: String):
 	else:
 		skill_lbl.text = "财源广进 Lv.%d/%d" % [int(cy.get("level", 1)), int(cy.get("max_level", 200))]
 	skill_lbl.add_theme_font_size_override("font_size", 12)
-	skill_lbl.add_theme_color_override("font_color", Color("#c8c3e0"))
+	skill_lbl.add_theme_color_override("font_color", UiHelpers.PAPER_TEXT_SUB)
 	vb.add_child(skill_lbl)
 	# 委任按钮居中，不横拉满
 	var btn_row := HBoxContainer.new()
