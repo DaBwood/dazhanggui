@@ -344,12 +344,8 @@ func _on_council_pick():
 	var popup = c._create_base_popup("选择委任门客", Vector2(520, 560))
 	popup.name = "GuildCouncilPicker"
 	var vb = popup.get_child(0)
-	var scroll = ScrollContainer.new()
-	scroll.size_flags_vertical = Control.SIZE_EXPAND_FILL
-	vb.add_child(scroll)
-	var lst = VBoxContainer.new()
-	lst.size_flags_horizontal = Control.SIZE_EXPAND_FILL
-	scroll.add_child(lst)
+	var lst: VBoxContainer = c.popup_scroll(vb)
+	lst.add_theme_constant_override("separation", 4)   # 原列表默认行距
 	var heroes = data.heroes.keys()
 	heroes.sort_custom(func(a, b): return data.guild_system.get_hero_shop_pct(a) > data.guild_system.get_hero_shop_pct(b))
 	for hid in heroes:
@@ -937,18 +933,13 @@ func _on_trade_assign(trade_id: String):
 	tip.text = "勾选门客后点确认；全队赚速达标即锁定，锁定后不可撤回。"
 	tip.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
 	tip.add_theme_font_size_override("font_size", 13)
-	tip.add_theme_color_override("font_color", Color("#aaaaaa"))
+	tip.add_theme_color_override("font_color", UiHelpers.PAPER_TEXT_SUB)
 	vb.add_child(tip)
 	# 当前已委任（回显勾选）
 	var cur_heroes: Dictionary = gs._trades_of(gs.cache).get("active", {}).get(trade_id, {}).get("assigns", {}).get(c.net.username, {}).get("heroes", {})
 	# 列表（按赚速降序）
-	var scroll = ScrollContainer.new()
-	scroll.size_flags_vertical = Control.SIZE_EXPAND_FILL
-	vb.add_child(scroll)
-	var lst = VBoxContainer.new()
-	lst.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	var lst: VBoxContainer = c.popup_scroll(vb)
 	lst.add_theme_constant_override("separation", 2)
-	scroll.add_child(lst)
 	var hero_ids: Array = data.heroes.keys()   # 【修】动态类型变量返回值显式标注，:=推断不出
 	hero_ids.sort_custom(func(a, b): return data.get_hero_income(str(a)) > data.get_hero_income(str(b)))   # 【改】走收入缓存表（原逐个实时重算，排序卡）
 	for hid in hero_ids:
