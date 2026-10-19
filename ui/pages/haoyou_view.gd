@@ -52,6 +52,8 @@ func _show_popup():
 	scroll.name = "HaoyouScroll"
 	scroll.custom_minimum_size = Vector2(0, 380)
 	scroll.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	scroll.horizontal_scroll_mode = ScrollContainer.SCROLL_MODE_DISABLED   # 弹窗禁横滚
+	scroll.vertical_scroll_mode = ScrollContainer.SCROLL_MODE_SHOW_NEVER   # 用户拍板：滚动条默认隐藏（竖滚保留）
 	vb.add_child(scroll)
 	var list := VBoxContainer.new()
 	list.name = "HaoyouList"
@@ -190,8 +192,8 @@ func _card_btn(grid: GridContainer, i: int, on_text: String, off_text: String, e
 
 func _make_card_style() -> StyleBoxFlat:
 	var sty := StyleBoxFlat.new()
-	sty.bg_color = Color("#221d33")
-	sty.border_color = Color("#6a5f9e")
+	sty.bg_color = UiHelpers.PAPER_CARD_BG
+	sty.border_color = UiHelpers.PAPER_CARD_LINE
 	sty.set_border_width_all(1)
 	sty.set_corner_radius_all(6)
 	sty.set_content_margin_all(8)
@@ -249,14 +251,9 @@ func _show_search_results(users: Array):
 		sp.get_meta("popup_mask").z_index = 39
 		sp.z_index = 40
 	var vb: VBoxContainer = sp.get_child(0)
-	var scroll := ScrollContainer.new()
-	scroll.custom_minimum_size = Vector2(0, 260)
-	scroll.size_flags_horizontal = Control.SIZE_EXPAND_FILL
-	vb.add_child(scroll)
-	var list := VBoxContainer.new()
-	list.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	var list: VBoxContainer = c.popup_scroll(vb)
+	list.custom_minimum_size = Vector2(0, 260)   # 结果列表固定显示高度（组件滚动区默认无下限高）
 	list.add_theme_constant_override("separation", 6)
-	scroll.add_child(list)
 	for u in users:
 		var uname := str(u.get("username", ""))
 		var dname := str(u.get("display_name", ""))
@@ -390,14 +387,9 @@ func _show_visit_popup(owner_name: String, profile: Dictionary):
 		vp.get_meta("popup_mask").z_index = 39
 		vp.z_index = 40
 	var vb: VBoxContainer = vp.get_child(0)
-	var scroll := ScrollContainer.new()
-	scroll.custom_minimum_size = Vector2(0, 500)
-	scroll.size_flags_horizontal = Control.SIZE_EXPAND_FILL
-	vb.add_child(scroll)
-	var list := VBoxContainer.new()
-	list.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	var list: VBoxContainer = c.popup_scroll(vb)
+	list.custom_minimum_size = Vector2(0, 500)   # 资料列表固定显示高度（组件滚动区默认无下限高）
 	list.add_theme_constant_override("separation", 6)
-	scroll.add_child(list)
 	_visit_section_title(list, "总赚速：%s" % _fmt_num(int(profile.get("total_income", 0))))
 	var heroes: Array = profile.get("heroes", [])
 	_visit_section_title(list, "门客（%d）" % heroes.size())
@@ -429,7 +421,7 @@ func _show_visit_popup(owner_name: String, profile: Dictionary):
 func _visit_section_title(list: VBoxContainer, text: String):
 	var lbl := Label.new()
 	lbl.text = text
-	lbl.add_theme_color_override("font_color", Color("#ffd700"))
+	lbl.add_theme_color_override("font_color", UiHelpers.PAPER_TEXT)
 	lbl.add_theme_font_size_override("font_size", 16)
 	list.add_child(lbl)
 
