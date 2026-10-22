@@ -40,3 +40,6 @@ desktop.ini
 
 # 构建产物（如果后续有）
 /dist/
+
+# APK 提取产物（本地自用，不进仓库）
+_apk_extract/

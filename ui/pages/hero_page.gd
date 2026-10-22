@@ -628,12 +628,8 @@ func _show_beast_selector_for_hero():
 	panel.name = "BeastSelectForHero"
 	var vbox = panel.get_child(0)
 	
-	var scroll = ScrollContainer.new()
-	scroll.custom_minimum_size = Vector2(440, 280)
-	vbox.add_child(scroll)
-	
-	var list = VBoxContainer.new()
-	scroll.add_child(list)
+	var list: VBoxContainer = c.popup_scroll(vbox)
+	list.custom_minimum_size = Vector2(440, 280)   # 列表固定显示高度（组件滚动区默认无下限高）
 	
 	var has_beast = false
 	for beast_id in data.beasts.keys():
@@ -855,20 +851,16 @@ func _on_fate_btn_clicked(hero_id: String):
 	popup.name = "FatePopup"
 	var vb = popup.get_child(0)
 	# 列表可滚动，挚友多时不超窗
-	var scroll = ScrollContainer.new()
-	scroll.custom_minimum_size = Vector2(0, 280)
-	vb.add_child(scroll)
-	var list = VBoxContainer.new()
-	list.size_flags_horizontal = Control.SIZE_EXPAND_FILL
-	scroll.add_child(list)
+	var list: VBoxContainer = c.popup_scroll(vb)
+	list.custom_minimum_size = Vector2(0, 280)   # 列表固定显示高度（组件滚动区默认无下限高）
 	for fid in fate_ids:
 		var cfg = data.get_friend_config(fid)
 		var lbl = Label.new()
 		lbl.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 		if data.friends.has(fid):
-			# 已拥有：金色 + 当前友好度
+			# 已拥有：点亮态（金→达标绿，纸面金字不可读）+ 当前友好度
 			lbl.text = "【%s】已拥有（友好%d）" % [cfg.get("name", fid), data.friends[fid].friendly]
-			lbl.add_theme_color_override("font_color", Color("#ffd700"))
+			lbl.add_theme_color_override("font_color", UiHelpers.PAPER_OK)
 		else:
 			# 未拥有：按获取途径显示提示（VIP解锁 > 游历好感 > 仅标未拥有）
 			var vip_lv = data.get_friend_unlock_vip(fid)
@@ -1648,12 +1640,8 @@ func _show_cuzhi_selector():
 	panel.name = "CuzhiSelector"
 	var vbox = panel.get_child(0)
 	
-	var scroll = ScrollContainer.new()
-	scroll.custom_minimum_size = Vector2(440, 280)
-	vbox.add_child(scroll)
-	
-	var list = VBoxContainer.new()
-	scroll.add_child(list)
+	var list: VBoxContainer = c.popup_scroll(vbox)
+	list.custom_minimum_size = Vector2(440, 280)   # 列表固定显示高度（组件滚动区默认无下限高）
 	
 	var crickets = data.cuzhi_system.get_equipable_crickets()
 	var has_any = false
@@ -1907,7 +1895,7 @@ func _show_guardian_panel():
 	else:
 		level_lbl.text = "守护灵等级：Lv.%d / 6000" % gs.level
 	level_lbl.add_theme_font_size_override("font_size", 18)
-	level_lbl.add_theme_color_override("font_color", Color("#ffd700"))
+	level_lbl.add_theme_color_override("font_color", UiHelpers.PAPER_TEXT)
 	vb.add_child(level_lbl)
 	
 	var bonus_lbl = Label.new()
@@ -1918,12 +1906,8 @@ func _show_guardian_panel():
 	vb.add_child(bonus_lbl)
 	
 	# 阶段列表（滚动）
-	var scroll = ScrollContainer.new()
-	scroll.custom_minimum_size = Vector2(0, 240)
-	vb.add_child(scroll)
-	var list = VBoxContainer.new()
-	list.size_flags_horizontal = Control.SIZE_EXPAND_FILL
-	scroll.add_child(list)
+	var list: VBoxContainer = c.popup_scroll(vb)
+	list.custom_minimum_size = Vector2(0, 240)   # 列表固定显示高度（组件滚动区默认无下限高）
 	
 	for i in range(data.guardian_system.PHASES.size()):
 		var phase = data.guardian_system.PHASES[i]
@@ -1935,12 +1919,12 @@ func _show_guardian_panel():
 		var status_text = ""
 		if full:
 			status_text = "【已注满】"
-			info.add_theme_color_override("font_color", Color("#ffd700"))   # 【新增】金色点亮
+			info.add_theme_color_override("font_color", UiHelpers.PAPER_OK)   # 【新增】点亮态（金→达标绿，纸面金字不可读）
 		elif unlocked:
 			status_text = "【已解锁】"
 		else:
 			status_text = "【未解锁】"
-			info.add_theme_color_override("font_color", Color("#888888"))   # 【新增】灰色未解锁
+			info.add_theme_color_override("font_color", UiHelpers.PAPER_TEXT_SUB)   # 【新增】未解锁（灰→次级色）
 		
 		info.text = "%s %s  赚钱+%.0f%%  技能：%s(+%d/级)" % [
 			phase.name, status_text, phase.income_pct * 100, phase.skill_name, phase.skill_apt
@@ -2074,7 +2058,7 @@ func _show_guardian_avatar_popup():
 		if is_current:
 			info = Label.new()
 			info.text = "【%s】当前形象" % av.name
-			info.add_theme_color_override("font_color", Color("#ffd700"))
+			info.add_theme_color_override("font_color", UiHelpers.PAPER_OK)
 		elif has_unlocked:
 			info = Label.new()
 			info.text = "【%s】已解锁" % av.name
@@ -2149,7 +2133,7 @@ func _show_talent_panel(tab_id: String = "talent"):
 		tbtn.text = t[1]
 		tbtn.custom_minimum_size = Vector2(140, 36)
 		if t[0] == tab_id:
-			tbtn.add_theme_color_override("font_color", Color("#ffd700"))
+			tbtn.add_theme_color_override("font_color", UiHelpers.PAPER_OK)
 		tbtn.pressed.connect(_on_talent_tab_clicked.bind(t[0]))
 		tab_box.add_child(tbtn)
 	
@@ -2213,7 +2197,7 @@ func _fill_talent_refine_area(vb):
 	else:
 		var full_lbl = Label.new()
 		full_lbl.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
-		full_lbl.add_theme_color_override("font_color", Color("#ffd700"))
+		full_lbl.add_theme_color_override("font_color", UiHelpers.PAPER_OK)
 		full_lbl.text = "已精进至满星（%d星）" % max_star
 		vb.add_child(full_lbl)
 
@@ -2227,24 +2211,20 @@ func _fill_unique_talent_tab(vb):
 		var tip = Label.new()
 		tip.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 		tip.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
-		tip.add_theme_color_override("font_color", Color("#888888"))
+		tip.add_theme_color_override("font_color", UiHelpers.PAPER_TEXT_SUB)
 		tip.text = "该门客没有天赋"
 		vb.add_child(tip)
 		return
-	var scroll = ScrollContainer.new()
-	scroll.custom_minimum_size = Vector2(420, 260)
-	vb.add_child(scroll)
-	var list = VBoxContainer.new()
-	list.size_flags_horizontal = Control.SIZE_EXPAND_FILL
-	list.add_theme_constant_override("separation", 6)
-	scroll.add_child(list)
+	var list: VBoxContainer = c.popup_scroll(vb)
+	list.custom_minimum_size = Vector2(420, 260)   # 列表固定显示高度（组件滚动区默认无下限高）
+	list.add_theme_constant_override("separation", 6)   # 原列表行距覆写保留
 	for t in cfg.get("tiers", {}).get(cur_tier, []):
 		var row = Label.new()
 		row.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 		row.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
 		# 未实装活动向效果灰显"后续版本开放"，不显示数值文案（批次④收口口径不变）
 		if ts.is_unwired_talent_kind(str(t.get("kind", ""))):
-			row.add_theme_color_override("font_color", Color("#888888"))
+			row.add_theme_color_override("font_color", UiHelpers.PAPER_TEXT_SUB)
 			row.text = "【%s】后续版本开放" % str(t.get("name", ""))
 		else:
 			row.add_theme_color_override("font_color", Color("#7ee787"))
@@ -2263,13 +2243,9 @@ func _fill_talent_skill_tab(vb):
 	skill_title.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	skill_title.text = "—— 解锁技能 ——"
 	vb.add_child(skill_title)
-	var scroll = ScrollContainer.new()
-	scroll.custom_minimum_size = Vector2(420, 200)
-	vb.add_child(scroll)
-	var list = VBoxContainer.new()
-	list.size_flags_horizontal = Control.SIZE_EXPAND_FILL
-	list.add_theme_constant_override("separation", 4)
-	scroll.add_child(list)
+	var list: VBoxContainer = c.popup_scroll(vb)
+	list.custom_minimum_size = Vector2(420, 200)   # 列表固定显示高度（组件滚动区默认无下限高）
+	list.add_theme_constant_override("separation", 4)   # 原列表行距覆写保留
 	for s in range(1, max_star + 1):
 		var scfg = ts.get_star_cfg(s)
 		var sname: String = scfg.get("skill_name", "")
@@ -2290,7 +2266,7 @@ func _fill_talent_skill_tab(vb):
 			row.text = "【%s】Lv.%d/%d  每级%d资质·%d资质丹" % [sname, lv, cap, apt, apt]
 		else:
 			row.text = "【%s】精进%d星解锁（每级%d资质）" % [sname, s, apt]
-			row.add_theme_color_override("font_color", Color("#888888"))
+			row.add_theme_color_override("font_color", UiHelpers.PAPER_TEXT_SUB)
 		list.add_child(row)
 	
 	# ── 规则说明 ──
@@ -2313,13 +2289,9 @@ func _show_attr_breakdown():
 	c.add_child(popup)   # 弹窗工厂只创建不挂树，必须自行 add_child
 	var vb = popup.get_child(0)
 	# 长列表自加滚动区（弹窗工厂只给标题+VBox）
-	var scroll = ScrollContainer.new()
-	scroll.custom_minimum_size = Vector2(520, 780)
-	vb.add_child(scroll)
-	var list = VBoxContainer.new()
-	list.size_flags_horizontal = Control.SIZE_EXPAND_FILL
-	list.add_theme_constant_override("separation", 6)
-	scroll.add_child(list)
+	var list: VBoxContainer = c.popup_scroll(vb)
+	list.custom_minimum_size = Vector2(520, 780)   # 列表固定显示高度（组件滚动区默认无下限高）
+	list.add_theme_constant_override("separation", 6)   # 原列表行距覆写保留
 	# 资质段
 	_bd_section(list, "资质 %d" % int(bd.get("apt_total", 0)))
 	_bd_grid(list, bd.get("apt_rows", []), false)
@@ -2340,7 +2312,7 @@ func _bd_section(parent: VBoxContainer, text: String):
 	lbl.text = text
 	lbl.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	lbl.add_theme_font_size_override("font_size", 17)
-	lbl.add_theme_color_override("font_color", Color("#ffd700"))
+	lbl.add_theme_color_override("font_color", UiHelpers.PAPER_TEXT)
 	parent.add_child(lbl)
 
 # 构成弹窗三列行格：rows=[[名, 值]…]；is_pct=true 时值按小数制百分比显示（0.02→+2.0%）
