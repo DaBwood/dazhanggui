@@ -1,0 +1,322 @@
+APTITUDE
+ge_langzhong | 普通资质 | 1/200
+zheng_guonong | 普通资质 | 1/200
+liang_waiqi | 普通资质 | 1/200
+zhu_huolang | 普通资质 | 1/200
+kang_chashi | 普通资质 | 1/200
+cai_yufu | 普通资质 | 1/200
+liu_xizi | 普通资质 | 1/200
+zheng_chuzi | 普通资质 | 1/200
+he_yashi | 普通资质 | 1/200
+liu_bukuai | 普通资质 | 1/200
+luo_sunshan | 普通资质 | 1/200
+li_gushi | 普通资质 | 1/200
+wu_shiren | 普通资质 | 1/200
+wan_jinya | 普通资质 | 1/200
+niu_fushi | 普通资质 | 1/200
+tang_hulu | 普通资质 | 1/200
+zhu_daliang | 普通资质 | 1/200
+jia_houzi | 普通资质 | 1/200
+hu_qigai | 普通资质 | 1/200
+zhang_laobo | 普通资质 | 1/200
+zhao_liehu | 非凡资质 | 1/200
+jia_jiguan | 非凡资质 | 1/200
+liu_silang | 非凡资质 | 1/200
+yun_youren | 非凡资质 | 1/200
+zhuang_gengfu | 非凡资质 | 1/200
+qin_jianxian | 非凡资质 | 1/200
+li_jianchi | 非凡资质 | 1/200
+cao_tiejiang | 非凡资质 | 1/200
+xing_huwei | 非凡资质 | 1/200
+yan_xiaoer | 非凡资质 | 1/200
+qian_caizhu | 非凡资质 | 1/200
+wu_biaoshi | 非凡资质 | 1/200
+yao_wuzuo | 非凡资质 | 1/200
+pi_yingjiang | 非凡资质 | 1/200
+tian_shiren | 非凡资质 | 1/200
+si_lang | 非凡资质 | 1/200
+yan_xiansheng | 大师资质 | 1/200
+feng_mier | 大师资质 | 1/200
+li_shenshou | 大师资质 | 1/200
+zhen_tufu | 大师资质 | 1/200
+hong_laoxie | 大师资质 | 1/200
+wu_daozi | 大师资质 | 1/200
+sun_bin | 大师资质 | 1/200
+lu_ban | 大师资质 | 1/200
+du_kang | 大师资质 | 1/200
+ou_yezi | 大师资质 | 1/200
+gao_jianli | 大师资质 | 1/200
+su_wu | 大师资质 | 1/200
+bi_sheng | 大师资质 | 1/200
+zong_ze | 大师资质 | 1/200
+zhang_sanfeng | 大师资质 | 1/200
+shen_wansan | 大师资质 | 1/200
+shi_gandang | 大师资质 | 1/200
+shi_gandang | 金刚臂 | 1/200
+song_huizong | 大师资质 | 1/200
+song_huizong | 瘦金体 | 1/200
+cai_jing | 大师资质 | 1/200
+cai_jing | 花石纲 | 1/200
+dunhuang_jiangshen | 大师资质 | 1/200
+dunhuang_jiangshen | 麟角刷 | 1/200
+baixi_shengdao | 大师资质 | 1/200
+baixi_shengdao | 幻影刀 | 1/200
+song_jiang | 大师资质 | 1/200
+song_jiang | 及时雨 | 1/200
+huo_yanwang | 大师资质 | 1/200
+huo_yanwang | 夺命判 | 1/200
+lei_en | 大师资质 | 1/200
+lei_en | 青龙斩 | 1/200
+lei_en | 冰山雕 | 1/200
+xiang_en | 大师资质 | 1/200
+xiang_en | 破军切 | 1/200
+xiang_en | 神速切 | 1/200
+zhou_yu | 大师资质 | 1/200
+zhou_yu | 业火烩 | 1/200
+zhou_yu | 火焰手 | 1/200
+qin_shihuang | 大师资质 | 1/200
+qin_shihuang | 千秋霸业 | 1/200
+qin_shihuang | 始皇帝 | 1/200
+qin_shihuang | 睥睨天下 | 1/200
+qin_shihuang | 万里长城 | 1/200
+qin_shihuang | 衡石量书 | 1/200
+gun_haijiao | 大师资质 | 1/200
+gun_haijiao | 海盗王 | 1/200
+lv_bu | 大师资质 | 1/200
+lv_bu | 骁勇善战 | 1/200
+ne_zha | 大师资质 | 1/200
+ne_zha | 神枪聚元 | 1/200
+sun_wu | 大师资质 | 1/200
+sun_wu | 用兵如神 | 1/200
+qin_qiong_yuchi_gong | 大师资质 | 1/200
+qin_qiong_yuchi_gong | 鞭锏扬威 | 1/200
+ao_wu | 大师资质 | 1/200
+ao_wu | 与狼同行 | 1/200
+xiao_wu | 大师资质 | 1/200
+xiao_wu | 爆杀八段摔 | 1/200
+xiao_wu | 无敌金身 | 1/200
+xiao_qi | 大师资质 | 1/200
+xiao_qi | 千金妙玉 | 1/200
+xiao_qi | 敏而好学 | 1/200
+xiao_qi | 秀外慧中 | 1/200
+xiang_yu | 大师资质 | 1/200
+xiang_yu | 无畏冲锋 | 1/200
+zheng_he | 大师资质 | 1/200
+zheng_he | 了如指掌 | 1/200
+xiao_ba | 大师资质 | 1/200
+xiao_ba | 见微知著 | 1/200
+xiao_ba | 聚沙成塔 | 1/200
+long_xiang | 大师资质 | 1/200
+long_xiang | 立身举龙 | 1/200
+song_taizu | 大师资质 | 1/200
+song_taizu | 杯酒释兵权 | 1/200
+luo_haiwang | 大师资质 | 1/200
+luo_haiwang | 客满堂前 | 1/200
+ma_xianglan | 大师资质 | 1/200
+ma_xianglan | 墨兰册 | 1/200
+ma_xianglan | 幽兰馆 | 1/200
+li_xiangjun | 大师资质 | 1/200
+li_xiangjun | 香扇坠 | 1/200
+li_xiangjun | 风尘落 | 1/200
+dong_xiaowan | 大师资质 | 1/200
+dong_xiaowan | 葬残花 | 1/200
+dong_xiaowan | 灌香糖 | 1/200
+bian_yujing | 大师资质 | 1/200
+bian_yujing | 忘忧曲 | 1/200
+bian_yujing | 善尤兰 | 1/200
+kou_baimen | 大师资质 | 1/200
+kou_baimen | 绽芳华 | 1/200
+kou_baimen | 巾帼心 | 1/200
+hu_lu_xianren | 非凡资质 | 1/200
+xie_lu | 非凡资质 | 1/200
+yang_jian | 非凡资质 | 1/200
+xiao_yuer | 非凡资质 | 1/200
+mei_changsu | 非凡资质 | 1/200
+zhang_qiling | 非凡资质 | 1/200
+bai_yuechu | 非凡资质 | 1/200
+liu_maoxing | 非凡资质 | 1/200
+hua_mulan | 非凡资质 | 1/200
+wang_zhaojun | 非凡资质 | 1/200
+wang_zhaojun | 塞弦歌 | 1/200
+lan_feihong | 非凡资质 | 1/200
+li_bai | 非凡资质 | 1/200
+shen_suanzi | 非凡资质 | 1/200
+luo_caifeng | 大师资质 | 1/200
+ding_xiren | 大师资质 | 1/200
+ding_xiren | 牵丝戏 | 1/200
+fang_huotou | 大师资质 | 1/200
+fang_huotou | 震天雷 | 1/200
+leng_erpi | 大师资质 | 1/200
+leng_erpi | 缝合术 | 1/200
+ya_jiu | 大师资质 | 1/200
+ya_jiu | 聚财来 | 1/200
+ya_jiu | 财运通 | 1/200
+guanxingshi | 大师资质 | 1/200
+guanxingshi | 星辉术 | 1/200
+guanxingshi | 观天意 | 1/200
+guanxingshi | 道天机 | 1/200
+jisi_fuhao | 大师资质 | 1/200
+jisi_fuhao | 占卜术 | 1/200
+jisi_fuhao | 善谋略 | 1/200
+jisi_fuhao | 懂文武 | 1/200
+jisi_fuhao | 开疆土 | 1/200
+dayu | 传说资质 | 1/200
+dayu | 治水术 | 1/200
+dayu | 水龙吟 | 1/200
+dayu | 凿龙门 | 1/200
+dayu | 会诸侯 | 1/200
+dayu | 造九鼎 | 1/200
+fuxi | 传说资质 | 1/200
+fuxi | 位三皇 | 1/200
+fuxi | 观天象 | 1/200
+fuxi | 悟太极 | 1/200
+fuxi | 创八卦 | 1/200
+fuxi | 游太虚 | 1/200
+fuxi | 天下和 | 1/200
+houyi | 传说资质 | 1/200
+houyi | 赐彤弓 | 1/200
+houyi | 诛凿齿 | 1/200
+houyi | 徼大风 | 1/200
+houyi | 降猰貐 | 1/200
+houyi | 扶下国 | 1/200
+houyi | 统百部 | 1/200
+houyi | 得灵药 | 1/200
+chiyou | 传说资质 | 1/200
+chiyou | 九黎族 | 1/200
+chiyou | 侵如火 | 1/200
+chiyou | 战逐鹿 | 1/200
+chiyou | 风雨助 | 1/200
+chiyou | 驱千旗 | 1/200
+chiyou | 魔神角 | 1/200
+chiyou | 铜铁骨 | 1/200
+chiyou | 制五兵 | 1/200
+donghuang_taiyi | 完美资质 | 1/200
+donghuang_taiyi | 称东皇 | 1/200
+donghuang_taiyi | 力证道 | 1/200
+donghuang_taiyi | 灭祖巫 | 1/200
+donghuang_taiyi | 太阳星 | 1/200
+donghuang_taiyi | 混沌钟 | 1/200
+donghuang_taiyi | 镇鸿蒙 | 1/200
+donghuang_taiyi | 统万族 | 1/200
+donghuang_taiyi | 立天庭 | 1/200
+haotian_shangdi | 完美资质 | 1/200
+haotian_shangdi | 赐福祉 | 1/200
+haotian_shangdi | 封仙籍 | 1/200
+haotian_shangdi | 登无极 | 1/200
+haotian_shangdi | 镇邪祟 | 1/200
+haotian_shangdi | 昊天塔 | 1/200
+haotian_shangdi | 开纪元 | 1/200
+haotian_shangdi | 立天纲 | 1/200
+haotian_shangdi | 掌天枢 | 1/200
+chen_xiang | 非凡资质 | 1/200
+
+SHOP
+ge_langzhong | 门客委任 | 0.05 | 0.03
+zheng_guonong | 门客委任 | 0.05 | 0.03
+liang_waiqi | 门客委任 | 0.05 | 0.03
+zhu_huolang | 门客委任 | 0.05 | 0.03
+kang_chashi | 门客委任 | 0.05 | 0.03
+cai_yufu | 门客委任 | 0.05 | 0.03
+liu_xizi | 门客委任 | 0.05 | 0.03
+zheng_chuzi | 门客委任 | 0.05 | 0.03
+he_yashi | 门客委任 | 0.05 | 0.03
+liu_bukuai | 门客委任 | 0.05 | 0.03
+luo_sunshan | 门客委任 | 0.05 | 0.03
+li_gushi | 门客委任 | 0.05 | 0.03
+wu_shiren | 门客委任 | 0.05 | 0.03
+wan_jinya | 门客委任 | 0.05 | 0.03
+niu_fushi | 门客委任 | 0.05 | 0.03
+tang_hulu | 门客委任 | 0.05 | 0.03
+zhu_daliang | 门客委任 | 0.05 | 0.03
+jia_houzi | 门客委任 | 0.05 | 0.03
+hu_qigai | 门客委任 | 0.05 | 0.03
+zhang_laobo | 门客委任 | 0.05 | 0.03
+zhao_liehu | 门客委任 | 0.05 | 0.03
+jia_jiguan | 门客委任 | 0.05 | 0.03
+liu_silang | 门客委任 | 0.05 | 0.03
+yun_youren | 门客委任 | 0.05 | 0.03
+zhuang_gengfu | 门客委任 | 0.05 | 0.03
+qin_jianxian | 门客委任 | 0.05 | 0.03
+li_jianchi | 门客委任 | 0.05 | 0.03
+cao_tiejiang | 门客委任 | 0.05 | 0.03
+xing_huwei | 门客委任 | 0.05 | 0.03
+yan_xiaoer | 门客委任 | 0.05 | 0.03
+qian_caizhu | 门客委任 | 0.05 | 0.03
+wu_biaoshi | 门客委任 | 0.05 | 0.03
+yao_wuzuo | 门客委任 | 0.05 | 0.03
+pi_yingjiang | 门客委任 | 0.05 | 0.03
+tian_shiren | 门客委任 | 0.05 | 0.03
+si_lang | 门客委任 | 0.05 | 0.03
+yan_xiansheng | 门客委任 | 0.05 | 0.03
+feng_mier | 门客委任 | 0.05 | 0.03
+li_shenshou | 门客委任 | 0.05 | 0.03
+zhen_tufu | 门客委任 | 0.05 | 0.03
+hong_laoxie | 门客委任 | 0.05 | 0.03
+wu_daozi | 门客委任 | 0.05 | 0.03
+sun_bin | 门客委任 | 0.05 | 0.03
+lu_ban | 门客委任 | 0.05 | 0.03
+du_kang | 门客委任 | 0.05 | 0.03
+ou_yezi | 门客委任 | 0.05 | 0.03
+gao_jianli | 门客委任 | 0.05 | 0.03
+su_wu | 门客委任 | 0.05 | 0.03
+bi_sheng | 门客委任 | 0.05 | 0.03
+zong_ze | 门客委任 | 0.05 | 0.03
+zhang_sanfeng | 门客委任 | 0.05 | 0.03
+shen_wansan | 门客委任 | 0.05 | 0.03
+shi_gandang | 门客委任 | 0.05 | 0.03
+song_huizong | 门客委任 | 0.05 | 0.03
+cai_jing | 门客委任 | 0.05 | 0.03
+dunhuang_jiangshen | 门客委任 | 0.05 | 0.03
+baixi_shengdao | 门客委任 | 0.05 | 0.03
+song_jiang | 门客委任 | 0.05 | 0.03
+huo_yanwang | 门客委任 | 0.05 | 0.03
+lei_en | 门客委任 | 0.05 | 0.03
+xiang_en | 门客委任 | 0.05 | 0.03
+zhou_yu | 门客委任 | 0.05 | 0.03
+qin_shihuang | 门客委任 | 0.05 | 0.03
+gun_haijiao | 门客委任 | 0.05 | 0.03
+lv_bu | 门客委任 | 0.05 | 0.03
+ne_zha | 门客委任 | 0.05 | 0.03
+sun_wu | 门客委任 | 0.05 | 0.03
+qin_qiong_yuchi_gong | 门客委任 | 0.05 | 0.03
+ao_wu | 门客委任 | 0.05 | 0.03
+xiao_wu | 门客委任 | 0.05 | 0.03
+xiao_qi | 门客委任 | 0.05 | 0.03
+xiang_yu | 门客委任 | 0.05 | 0.03
+zheng_he | 门客委任 | 0.05 | 0.03
+xiao_ba | 门客委任 | 0.05 | 0.03
+long_xiang | 门客委任 | 0.05 | 0.03
+song_taizu | 门客委任 | 0.05 | 0.03
+luo_haiwang | 门客委任 | 0.05 | 0.03
+ma_xianglan | 门客委任 | 0.05 | 0.03
+li_xiangjun | 门客委任 | 0.05 | 0.03
+dong_xiaowan | 门客委任 | 0.05 | 0.03
+bian_yujing | 门客委任 | 0.05 | 0.03
+kou_baimen | 门客委任 | 0.05 | 0.03
+hu_lu_xianren | 门客委任 | 0.05 | 0.03
+xie_lu | 门客委任 | 0.05 | 0.03
+yang_jian | 门客委任 | 0.05 | 0.03
+xiao_yuer | 门客委任 | 0.05 | 0.03
+mei_changsu | 门客委任 | 0.05 | 0.03
+zhang_qiling | 门客委任 | 0.05 | 0.03
+bai_yuechu | 门客委任 | 0.05 | 0.03
+liu_maoxing | 门客委任 | 0.05 | 0.03
+hua_mulan | 门客委任 | 0.05 | 0.03
+wang_zhaojun | 门客委任 | 0.05 | 0.03
+lan_feihong | 门客委任 | 0.05 | 0.03
+li_bai | 门客委任 | 0.05 | 0.03
+shen_suanzi | 门客委任 | 0.05 | 0.03
+luo_caifeng | 门客委任 | 0.05 | 0.03
+ding_xiren | 门客委任 | 0.05 | 0.03
+fang_huotou | 门客委任 | 0.05 | 0.03
+leng_erpi | 门客委任 | 0.05 | 0.03
+ya_jiu | 门客委任 | 0.05 | 0.03
+guanxingshi | 门客委任 | 0.05 | 0.03
+jisi_fuhao | 门客委任 | 0.05 | 0.03
+dayu | 门客委任 | 0.05 | 0.03
+fuxi | 门客委任 | 0.05 | 0.03
+houyi | 门客委任 | 0.05 | 0.03
+chiyou | 门客委任 | 0.05 | 0.03
+donghuang_taiyi | 门客委任 | 0.05 | 0.03
+haotian_shangdi | 门客委任 | 0.05 | 0.03
+chen_xiang | 门客委任 | 0.05 | 0.03

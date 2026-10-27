@@ -9,7 +9,7 @@
   - GameConfigDB -> JSON，protobuf/* -> .proto
 
 用法：
-  python tools/extract_jwdzg.py --apk C:\\path\\jwdzg.apk --out _apk_extract
+  python tools/extract_jwdzg.py --apk C:\\path\\jwdzg.apk --out C:\\Users\\林\\Documents\\大掌柜_assets
   python tools/extract_jwdzg.py --apk ... --out ... --what text
   python tools/extract_jwdzg.py --apk ... --out ... --what media   # 只拷明文媒体
 """
@@ -27,9 +27,9 @@ VAL = {c: i for i, c in enumerate(KEYS)}
 
 TEXT_TYPE = "cc.TextAsset"
 # 明文、可直接拷贝的 native 扩展名（纹理 .png/.pkm 是 lyqszp 加密，不在此列）
-PLAIN_MEDIA = {".mp3", ".ogg", ".wav", ".atlas", ".bin", ".ttf"}
+PLAIN_MEDIA = {".mp3", ".ogg", ".wav", ".atlas", ".bin", ".ttf", ".jpg", ".jpeg"}
 # 只处理这些类型的 native 资源，避免把 2 万多个 SpriteFrame 当失败
-MEDIA_TYPES = {"cc.AudioClip", "cc.BufferAsset", "sp.SkeletonData", "cc.TTFFont"}
+MEDIA_TYPES = {"cc.AudioClip", "cc.BufferAsset", "sp.SkeletonData", "cc.TTFFont", "cc.ImageAsset", "cc.Texture2D"}
 
 
 def decode_uuid(b64: str) -> str:
@@ -79,8 +79,8 @@ def safe_join(root: str, rel: str) -> str:
 def main():
     ap = argparse.ArgumentParser()
     ap.add_argument("--apk", required=True)
-    ap.add_argument("--out", default="_apk_extract")
-    ap.add_argument("--what", choices=["text", "media", "all"], default="text")
+    ap.add_argument("--out", default=r"C:\Users\林\Documents\大掌柜_assets")
+    ap.add_argument("--what", choices=["text", "media", "raw", "all"], default="text")
     ap.add_argument("--limit", type=int, default=0, help="只处理前 N 项（调试用）")
     args = ap.parse_args()
 
@@ -118,6 +118,36 @@ def main():
             stem = base.split("@")[0]
             u = os.path.splitext(stem)[0]
             native_map.setdefault(u, []).append(n)
+
+    # raw：按 native 文件扩展名直接拷明文（音频/图集/字体/FairyGUI 包），不看类型
+    if args.what == "raw":
+        uuid_to_rel = {}
+        for key, meta in paths.items():
+            try:
+                u = decode_uuid(uuid_of(key))
+            except Exception:
+                continue
+            uuid_to_rel.setdefault(u, meta[0])
+        for u, files in native_map.items():
+            for n in files:
+                ext2 = os.path.splitext(n)[1].lower()
+                if ext2 not in PLAIN_MEDIA:
+                    continue
+                rel = uuid_to_rel.get(u, "_uuid/" + u)
+                dest = safe_join(out_root, "media" + os.sep + rel + ext2)
+                os.makedirs(os.path.dirname(dest), exist_ok=True)
+                with open(dest, "wb") as f:
+                    f.write(z.read(n))
+                manifest.append([rel, dest, os.path.getsize(dest), ext2, "plain"])
+                ok += 1
+        man_path = os.path.join(out_root, "manifest_raw.csv")
+        with open(man_path, "w", encoding="utf-8-sig", newline="") as f:
+            w = csv.writer(f)
+            w.writerow(["source_path", "output", "size", "ext", "cipher"])
+            w.writerows(manifest)
+        print("ok=%d fail=%d out=%s" % (ok, fail, out_root))
+        print("manifest=%s" % man_path)
+        return
 
     for key, meta in paths.items():
         if args.limit and len(manifest) >= args.limit:
@@ -170,7 +200,7 @@ def main():
             fail += 1
             manifest.append([rel, "", 0, "", "FAIL: %s" % e])
 
-    man_path = os.path.join(out_root, "manifest.csv")
+    man_path = os.path.join(out_root, "manifest_%s.csv" % args.what)
     with open(man_path, "w", encoding="utf-8-sig", newline="") as f:
         w = csv.writer(f)
         w.writerow(["source_path", "output", "size", "ext", "cipher"])

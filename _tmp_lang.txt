@@ -1,0 +1,14 @@
+== C:\Users\林\Documents\大掌柜_assets\text\cn\zh_cn\json\LanguageWordDB.json header=['id', 'zh_cn'] rows=41036
+['Patrons-102110', '鐛肎幭']
+['Patrons_Desc-102110', '睛遌枥帋鱓帋椞\uef4c薻遌枥帋鱓帋䝣\uef4c薮遌枥帋鱓帋䶥\uef4c䉇遌枥帋鱓帋䶧⁂']
+Talent_Name-10001 -> []
+Skills-20001 -> []
+Skills-20010 -> [['Skills-20010', '廔槏通鵢']]
+Player_Chara_Name-100900101 -> []
+== C:\Users\林\Documents\大掌柜_assets\text\cn\zh_cn\json\HH\LanguageWordDB.json header=['id', 'zh_cn'] rows=7339
+['SystemName-1', '颅䥇治溟']
+['System_Desc-1', '鏷䎖颅䥇\uef4c玐䌇馒鈲䰞灧']
+Talent_Name-10001 -> [['Talent_Name-10001', '摴爍']]
+Skills-20001 -> [['Skills-20001', '畻䆻']]
+Skills-20010 -> [['Skills-20010', '䑸頀']]
+Player_Chara_Name-100900101 -> [['Player_Chara_Name-100900101', '枳痧怵䄉']]

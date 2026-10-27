@@ -45,7 +45,7 @@
 - **每阶段一个 commit**，不 push。
 - 每阶段在 `docs/底座-阶段报告.md` 追加一节：改了什么 / 没改什么 / 验证命令 / 结果 / 风险。
 - 交付时给 `git diff --stat` 与三次 headless 输出，不贴整文件。
-- 不 commit `_apk_extract/`（已进 `.gitignore`）。
+- 不 commit 提取产物（在工程外 `C:\Users\林\Documents\大掌柜_assets\`，不在仓库里）。
 
 ---
 

@@ -41,5 +41,7 @@ desktop.ini
 # 构建产物（如果后续有）
 /dist/
 
-# APK 提取产物（本地自用，不进仓库）
+# APK 提取产物（旧路径，保留防误放；正式产物在工程外 大掌柜_assets）
 _apk_extract/
+_tmp_pip/
+__pycache__/
