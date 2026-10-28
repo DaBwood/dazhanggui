@@ -12,6 +12,10 @@ extends RefCounted
 const HERO_SCENE := preload("res://ui/pages/hero_page.tscn")
 const CARD_SCENE := preload("res://ui/pages/hero_card.tscn")
 const HERO_PANEL_SCENE := preload("res://ui/pages/hero_panel.tscn")
+# 首屏同步建卡/绑卡数量（3 列 × 3 行 = 9，正好一屏）；其余每帧补一批，
+# 避免一次进门客页就把上百张缩略图全解码，造成单帧 200ms+ 的"一瞬卡顿"。
+const HERO_FIRST_BIND := 9
+const HERO_CREATE_CHUNK := 4
 var c      # game_controller 根脚本引用
 var data   # GameData 数据中枢引用
 
@@ -39,6 +43,10 @@ var _btn_scroll: Dictionary = {"skill": 0, "shop": 0, "costume": 0, "halo": 0}
 # 门客列表过滤：职业页签（""=全部）
 var _hero_career := ""
 var _hero_career_btns := {}   # 职业→按钮，用于高亮当前页签
+var _list_token: int = 0      # 列表构建代次：重建/刷新时 +1，旧的分帧补绑协程自行退出
+var _list_building: bool = false   # 分帧补绑进行中（期间重复进页不强制全量重绑）
+var _pending_refresh: bool = false # 建卡期间收到刷新请求：建完再全量刷一次
+var _hero_card_h: int = 200        # 本次构建的卡片定高（分帧建卡时复用）
 
 
 # 由 game_controller._ready 创建本模块时注入引用
@@ -55,6 +63,8 @@ func _init(p_c):
 # 背景：门客立绘 69 张原图同步解码 ≈1.4s / 531 MB 显存，原先 _enter_game 无条件建一次，
 # 而默认落地页是府邸 —— 等于每次进游戏都白付一次卡顿。
 func ensure_hero_list():
+	if _list_building:
+		return   # 分帧补绑进行中：直接复用，避免重复进页触发全量重绑
 	var built: Node = c.get_node_or_null("PageContainer/HeroPage/HeroScene")
 	if built == null:
 		generate_hero_list()
@@ -88,22 +98,89 @@ func generate_hero_list():
 	var zone_h := scroll.size.y
 	if zone_h < 100:   # 首帧布局未就绪兜底（正常路径不触发）
 		zone_h = page.size.y - 120
-	var card_h := int((zone_h - 24) / 3)
-	for hero_id in data.heroes.keys():
-		var cell: Button = CARD_SCENE.instantiate()
-		cell.custom_minimum_size.y = card_h
-		grid.add_child(cell)   # 先入树触发 _ready（@onready 就位），再灌数据
-		cell.bind_data(hero_id, data, false)
-		cell.pressed.connect(open_hero_detail.bind(hero_id))
+	_hero_card_h = int((zone_h - 24) / 3)
+	# 先算好展示顺序（品质降序→实时赚速降序，未解锁按配置顺序殿后），再按顺序建卡：
+	# 分帧建卡时新卡直接 append 就是正确位置，不用等全部建完再 move_child 重排。
+	_refresh_hero_top_bar()   # 顺带把收入缓存建起来，排序只查表
+	var ordered: Array = []   # [hero_id, locked]
+	var unlocked: Array = []  # [hero_id, quality, income]
+	for hid in data.heroes.keys():
+		var id := str(hid)
+		unlocked.append([id, int(data.heroes[hid].get("quality", 0)), data.get_hero_income(id)])
+	unlocked.sort_custom(func(a, b):
+		if a[1] != b[1]: return a[1] > b[1]
+		return a[2] > b[2])
+	for row in unlocked:
+		ordered.append([str(row[0]), false])
 	for cfg_id in data._hero_configs.keys():
 		if not data.heroes.has(cfg_id):
-			var locked_cell: Button = CARD_SCENE.instantiate()
-			locked_cell.custom_minimum_size.y = card_h
-			grid.add_child(locked_cell)   # 先入树触发 _ready，再灌数据
-			locked_cell.bind_data(cfg_id, data, true)
-			locked_cell.pressed.connect(_on_locked_hero_clicked.bind(cfg_id))
+			ordered.append([str(cfg_id), true])
+	# 首屏同步建卡+绑定；其余分帧建卡并就地绑定
+	# （旧实现在尾部还会 update_hero_list 全量重绑一次，等于双倍开销）
+	_list_token += 1
+	_pending_refresh = false
+	var token := _list_token
+	_list_building = true
+	var first := mini(HERO_FIRST_BIND, ordered.size())
+	for i in range(first):
+		_spawn_hero_card(grid, str(ordered[i][0]), bool(ordered[i][1]))
+	_bind_hero_cards(grid, 0, first)
 	_set_hero_career(_hero_career)
-	update_hero_list()
+	_build_hero_cards_deferred(grid, ordered, first, token)
+
+# 建一张卡并接线（meta 在绑数据前就位；筛选态直接套用，分帧建卡也不会闪出错误职业）
+func _spawn_hero_card(grid: GridContainer, hero_id: String, locked: bool) -> Button:
+	var cell: Button = CARD_SCENE.instantiate()
+	cell.custom_minimum_size.y = _hero_card_h
+	cell.set_meta("hero_id", hero_id)
+	cell.set_meta("locked", locked)
+	grid.add_child(cell)   # 先入树触发 _ready（@onready 就位）
+	if locked:
+		cell.pressed.connect(_on_locked_hero_clicked.bind(hero_id))
+	else:
+		cell.pressed.connect(open_hero_detail.bind(hero_id))
+	cell.visible = (_hero_career == "" or str(data._hero_configs.get(hero_id, {}).get("category", "")) == _hero_career)
+	return cell
+
+# 同步绑定 [from, to) 区间；区间越界自动截断
+func _bind_hero_cards(grid: GridContainer, from: int, to: int) -> void:
+	var cells := grid.get_children()
+	var end := mini(to, cells.size())
+	for i in range(maxi(from, 0), end):
+		var cell = cells[i]
+		if not is_instance_valid(cell) or not cell.has_method("bind_data"):
+			continue
+		var hid := str(cell.get_meta("hero_id", ""))
+		if hid == "":
+			continue
+		cell.bind_data(hid, data, not data.heroes.has(hid))
+
+# 分帧建卡：每帧 HERO_CREATE_CHUNK 张，建完立即绑定；token 变化（重建/刷新）或场景失效即退出
+func _build_hero_cards_deferred(grid: GridContainer, ordered: Array, from: int, token: int) -> void:
+	var idx := from
+	# 首帧先让出去：调用方（generate）已同步建好首屏，这里再同步跑一批会把耗时叠回同一帧
+	await c.get_tree().process_frame
+	while true:
+		if token != _list_token:
+			return   # 新一代构建已接管（_list_building 归它管，不能在这里清）
+		if not is_instance_valid(grid):
+			_list_building = false   # 场景被释放：必须复位，否则 ensure 会永远早退
+			return
+		if idx >= ordered.size():
+			break
+		var end := mini(idx + HERO_CREATE_CHUNK, ordered.size())
+		for i in range(idx, end):
+			var hero_id := str(ordered[i][0])
+			var cell := _spawn_hero_card(grid, hero_id, bool(ordered[i][1]))
+			if is_instance_valid(cell):
+				cell.bind_data(hero_id, data, not data.heroes.has(hero_id))
+		idx = end
+		await c.get_tree().process_frame
+	if token == _list_token:
+		_list_building = false
+		if _pending_refresh:
+			_pending_refresh = false
+			update_hero_list()   # 建卡期间数据变过：补一次全量绑定+重排
 
 func _on_locked_hero_clicked(hero_id: String):
 	var vip_level = data.get_hero_unlock_vip(hero_id)
@@ -805,6 +882,12 @@ func open_hero_detail(hero_id: String):
 	open_hero_panel(hero_id)
 
 func update_hero_list():
+	# 分帧建卡未完成：不能在这里取消构建（会漏掉后半段卡片，列表永远不完整），
+	# 先记一笔，等建完由 _build_hero_cards_deferred 统一全量刷新一次。
+	if _list_building:
+		_pending_refresh = true
+		return
+	_pending_refresh = false
 	var grid: GridContainer = c.get_node_or_null("PageContainer/HeroPage/HeroScene/HeroScroll/HeroGrid")
 	if grid == null:
 		return
@@ -813,16 +896,26 @@ func update_hero_list():
 		if not cell.has_method("bind_data"):
 			continue
 		var hid := str(cell.get_meta("hero_id", ""))
+		if hid == "":
+			# 兼容旧卡：早期版本靠节点名承载 hero_id
+			hid = str(cell.name).replace("_hero_locked", "").replace("_hero", "")
+			if hid == "":
+				continue
+			cell.set_meta("hero_id", hid)
 		cell.bind_data(hid, data, not data.heroes.has(hid))
 	_sort_hero_grid(grid)
+	_apply_hero_filter()   # 刷新后保持当前职业页签（原实现只在 generate 尾部套筛选）
 
 func _sort_hero_grid(grid):
 	var unlocked = []   # 已解锁：[cell, 品质, 实时赚速]
 	var locked = []     # 未解锁VIP门客：保持原相对顺序
 	for cell in grid.get_children():
 		if not cell is Button: continue
-		# 与 update_hero_list 相同的 id 解析方式：去掉 _hero_locked / _hero 后缀
-		var hero_id = cell.name.replace("_hero_locked", "").replace("_hero", "")
+		# 【修】优先用 bind_data 写的 meta：卡片节点名是 HeroCard/@Button@N，不含 hero_id，
+		# 旧实现按名字解析导致所有卡都被判成"未解锁"，品质/赚速排序从未真正生效。
+		var hero_id := str(cell.get_meta("hero_id", ""))
+		if hero_id == "":
+			hero_id = str(cell.name).replace("_hero_locked", "").replace("_hero", "")
 		if data.heroes.has(hero_id):
 			var h: Dictionary = data.heroes[hero_id]
 			unlocked.append([cell, int(h.get("quality", 0)), data.get_hero_income(hero_id)])
@@ -833,13 +926,24 @@ func _sort_hero_grid(grid):
 		if a[1] != b[1]: return a[1] > b[1]
 		return a[2] > b[2])
 	# 用 move_child 原位重排：先排已解锁，未解锁依次排到末尾（不销毁重建，保留卡片信号连接）
-	var idx = 0
+	# 【性能】先比对目标顺序，已一致就完全不动：move_child 每次都会触发容器重排，
+	# 109 张卡即使顺序没变也要付 ~20ms；重进页面绝大多数情况顺序不变。
+	var target: Array = []
 	for pair in unlocked:
-		grid.move_child(pair[0], idx)
-		idx += 1
+		target.append(pair[0])
 	for cell in locked:
-		grid.move_child(cell, idx)
-		idx += 1
+		target.append(cell)
+	var current: Array = grid.get_children()
+	var same: bool = current.size() == target.size()
+	if same:
+		for i in range(target.size()):
+			if current[i] != target[i]:
+				same = false
+				break
+	if same:
+		return
+	for i in range(target.size()):
+		grid.move_child(target[i], i)
 
 # 【新增】获取指定门客的全部缘分挚友id（friends.json 中 bound_heroes 数组包含该门客的挚友）
 func _get_fate_friends(hero_id: String) -> Array:
