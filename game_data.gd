@@ -811,6 +811,51 @@ func _selfcheck_save_key_pairs() -> void:
 			push_warning("[存档自检] 键只写不读=" + str(k3) + "（死写入：无 load_save_data 用字面键认领，确认是否 has 以外方式读）")
 
 
+# ============ 商铺加成注册表（B1：接管原 shop_system 的 14 项手写加法） ============
+# 新增加成一个全局店铺加成源 = 在 _register_shop_bonuses() 里注册一行，不再改 shop_system.gd。
+# 顺序即浮点求和顺序：重排会改尾数，进而可能改 int() 截断结果——不要按字母/分类重排。
+var _shop_modifiers: Array = []   # [{label: String, fn: Callable(g, ctx) -> float}]
+
+
+func clear_shop_modifiers() -> void:
+	_shop_modifiers.clear()
+
+
+func register_shop_modifier(label: String, fn: Callable) -> void:
+	_shop_modifiers.append({"label": label, "fn": fn})
+
+
+# 店铺赚速总乘数 = 1.0 + Σ 各注册项。
+# 必须从 1.0 起累加、按注册顺序逐项加：这样和原链 1.0 + A + B + ... 的浮点结果逐位一致，
+# 改成 1.0 + (0.0 + A + B + ...) 会改尾数，int() 截断处可能出现 1 的差异。
+func get_shop_multiplier(shop_id: String) -> float:
+	var s: Dictionary = shops.get(shop_id, {})
+	var ctx := {"shop_id": shop_id, "category": str(s.get("category", ""))}
+	var total := 1.0
+	for m in _shop_modifiers:
+		total += float(m.fn.call(self, ctx))
+	return total
+
+
+func _register_shop_bonuses() -> void:
+	clear_shop_modifiers()
+	# 1~14 与原 get_shop_auto_income 的加法链逐项对应（顺序固定）
+	register_shop_modifier("钱庄", func(g, _ctx): return g.shop_system.get_global_bonus_percent())
+	register_shop_modifier("门客派遣", func(g, ctx): return g.shop_system.get_assigned_hero_bonus(str(ctx["shop_id"])))
+	register_shop_modifier("挚友", func(g, ctx): return g.shop_system.get_assigned_friend_bonus(str(ctx["shop_id"])))
+	register_shop_modifier("宅院", func(g, ctx): return g.get_courtyard_shop_percent_bonus(str(ctx["shop_id"])))
+	register_shop_modifier("庄园", func(g, ctx): return g.get_manor_shop_pct_bonus(str(ctx["category"])))
+	register_shop_modifier("商会", func(g, ctx): return g.guild_system.get_career_bonus(str(ctx["category"])))
+	register_shop_modifier("医馆", func(g, ctx): return g.clinic_system.get_category_bonus(str(ctx["category"])))
+	register_shop_modifier("药铺勋章", func(g, _ctx): return g.drugshop_system.get_medal_shop_pct())
+	register_shop_modifier("酒坊勋章", func(g, _ctx): return g.winery_system.get_medal_shop_pct())
+	register_shop_modifier("酒坊职业", func(g, ctx): return g.winery_system.get_workshop_career_pct(str(ctx["category"])))
+	register_shop_modifier("妙音坊勋章", func(g, _ctx): return g.miaoyin_system.get_medal_shop_pct())
+	register_shop_modifier("垂钓勋章", func(g, _ctx): return g.fishing_system.get_medal_shop_pct())
+	register_shop_modifier("藏品勋章", func(g, _ctx): return g.collection_system.get_medal_shop_pct())
+	register_shop_modifier("厢房勋章", func(g, _ctx): return g.xiangfang_system.get_medal_shop_pct())
+
+
 func _register_hero_bonuses() -> void:
 	HeroData.clear_bonus_registry()
 	# ── 资质 apt ──
@@ -925,6 +970,8 @@ func _init():
 	_selfcheck_save_key_pairs()   # 仅编辑器期跑（函数首行有 OS.has_feature 闸）
 	# 【新增】2026-09-25 架构批次A：门客加成源注册表（HeroData 聚合器/构成面板的唯一来源清单）
 	_register_hero_bonuses()
+	# 【新增】2026-10-28 底座 B1：商铺加成注册表（原 shop_system 里 14 项手写加法）
+	_register_shop_bonuses()
 
 # ==================== 配置加载 ====================
 

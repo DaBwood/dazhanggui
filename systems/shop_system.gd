@@ -70,38 +70,31 @@ func get_shop_auto_income(shop_id: String) -> int:
 	# 【新增】叠加药铺工艺：伙计赚速固定值加成（洗药/晒药全体 +0.1×等级，职业工艺对应类目 +0.5×等级）
 	var staff_income = float(s.staff_income) + g.get_courtyard_shop_staff_income_bonus(shop_id) + g.drugshop_system.get_craft_staff_bonus(str(s.get("category", "")))
 	var staff = s.staff * staff_income
-	
-	# 门客派遣加成
-	var hero_bonus = 0.0
-	for hero_id in g.heroes.keys():
-		if g.heroes[hero_id].assigned_shop == shop_id:
-			hero_bonus += HeroData.get_shop_bonus(g.heroes[hero_id])
-
-	# 挚友加成
-	var friend_shop_bonus = 0.0
-	for fid in g.friends.keys():
-		for sk in g.get_friend_shop_skills(fid):
-			if sk.category == s.get("category", ""):
-				friend_shop_bonus += sk.bonus
-
 	#基础+店员
 	var subtotal = base + staff
-	
-	# 总百分比（【新增】叠加宅院商铺卷二：店铺总赚速 +25%×卷二等级）
-	var bonus = 1.0 + get_global_bonus_percent() + hero_bonus + friend_shop_bonus \
-		+ g.get_courtyard_shop_percent_bonus(shop_id) \
-		+ g.get_manor_shop_pct_bonus(str(s.get("category", ""))) \
-		+ g.guild_system.get_career_bonus(str(s.get("category", ""))) \
-		+ g.clinic_system.get_category_bonus(str(s.get("category", ""))) \
-		+ g.drugshop_system.get_medal_shop_pct() + g.winery_system.get_medal_shop_pct() \
-		+ g.winery_system.get_workshop_career_pct(str(s.get("category", ""))) \
-		+ g.miaoyin_system.get_medal_shop_pct() + g.fishing_system.get_medal_shop_pct() \
-		+ g.collection_system.get_medal_shop_pct() + g.xiangfang_system.get_medal_shop_pct()
-	# 上式追加项必须写成真实代码行：本行曾因新项误粘进行内注释尾部，整串加成静默失效（2026-10-06 实测定案）
-	
-	
+	# 总乘数：14 个加成源全部走注册表（game_data._register_shop_bonuses，顺序=原手写链）
+	# 门客派遣/挚友两项已抽成本文件 get_assigned_hero_bonus / get_assigned_friend_bonus
+	var bonus: float = g.get_shop_multiplier(shop_id)
 	#返回最终赚速
 	return int(subtotal * bonus)
+
+# 门客派遣加成（B1：从 get_shop_auto_income 抽出，供商铺加成注册表调用；遍历顺序不变）
+func get_assigned_hero_bonus(shop_id: String) -> float:
+	var total := 0.0
+	for hero_id in g.heroes.keys():
+		if g.heroes[hero_id].assigned_shop == shop_id:
+			total += HeroData.get_shop_bonus(g.heroes[hero_id])
+	return total
+
+# 挚友加成（B1：同上；按店铺职业匹配挚友店铺技能）
+func get_assigned_friend_bonus(shop_id: String) -> float:
+	var category: String = str(g.shops.get(shop_id, {}).get("category", ""))
+	var total := 0.0
+	for fid in g.friends.keys():
+		for sk in g.get_friend_shop_skills(fid):
+			if sk.category == category:
+				total += sk.bonus
+	return total
 
 #总赚速
 func get_total_auto_income() -> int:
