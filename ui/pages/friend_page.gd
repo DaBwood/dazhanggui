@@ -599,7 +599,10 @@ func _build_hero_tab(body: VBoxContainer, fid: String):
 		portrait.custom_minimum_size = Vector2(44, 44)
 		portrait.expand_mode = TextureRect.EXPAND_IGNORE_SIZE
 		portrait.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_COVERED
-		var path = "res://assets/portraits/heroes/%s.png" % hid
+		# 缩略图优先：44x44 的框不值得解码 1254x1735 的原图（69 张原图 = 531 MB 显存）
+		var path = "res://assets/portraits/heroes_card/%s.png" % hid
+		if not ResourceLoader.exists(path):
+			path = "res://assets/portraits/heroes/%s.png" % hid
 		if ResourceLoader.exists(path):
 			portrait.texture = load(path)
 		item.add_child(portrait)

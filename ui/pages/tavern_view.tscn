@@ -134,6 +134,7 @@ size_flags_horizontal = 3
 [node name="CenterFill" type="Control" parent="Main" unique_id=972470868]
 layout_mode = 2
 size_flags_vertical = 3
+mouse_filter = 2
 
 [node name="AreaScroll" type="ScrollContainer" parent="Main" unique_id=875101209]
 layout_mode = 2

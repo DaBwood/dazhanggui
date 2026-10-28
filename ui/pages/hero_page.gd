@@ -51,6 +51,16 @@ func _init(p_c):
 
 # ============ 以下为原 game_controller.gd 搬迁函数（逻辑未改，仅根节点访问加了 c. 前缀） ============
 
+# 懒建入口：首次进「门客」页才建壳，已建则只刷数据。
+# 背景：门客立绘 69 张原图同步解码 ≈1.4s / 531 MB 显存，原先 _enter_game 无条件建一次，
+# 而默认落地页是府邸 —— 等于每次进游戏都白付一次卡顿。
+func ensure_hero_list():
+	var built: Node = c.get_node_or_null("PageContainer/HeroPage/HeroScene")
+	if built == null:
+		generate_hero_list()
+	else:
+		update_hero_list()
+
 func generate_hero_list():
 	# 配置空兜底（原实现口径）
 	if data._hero_configs.is_empty():

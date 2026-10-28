@@ -225,8 +225,8 @@ func _enter_game():
 	connect_signals()
 	#初始化店铺列表
 	generate_shop_list()
-	#初始化门客列表
-	generate_hero_list()
+	# 门客列表改懒建：首次进「门客」页才生成（原无条件在此建，69 张立绘同步解码 ≈1.4s / 531 MB 显存，
+	# 而默认落地页是府邸，等于白卡一次进游戏；见 switch_page 的 ensure_hero_list）
 	#初始化背包
 	generate_bag_list()
 	#初始化府邸
@@ -313,8 +313,8 @@ func switch_page(page_id: String):
 	if has_node(page_path): get_node(page_path).visible = true
 
 	
-	#进入门客页面时更新门客列表
-	if page_id == "hero":update_hero_list()
+	#进入门客页面时更新门客列表（首次进页才建壳，之后只刷数据）
+	if page_id == "hero":ensure_hero_list()
 	#进入背包页面时更新背包列表
 	if page_id == "bag":update_bag_list()
 	# 进入府邸时更新
@@ -786,6 +786,9 @@ func update_shop_panel():
 
 func generate_hero_list():
 	return hero_page.generate_hero_list()
+
+func ensure_hero_list():
+	return hero_page.ensure_hero_list()
 
 func _create_hero_card(hero_id: String, locked: bool) -> Button:
 	return hero_page._create_hero_card(hero_id, locked)
