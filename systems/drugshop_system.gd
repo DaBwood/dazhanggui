@@ -70,7 +70,7 @@ func load_save_data(s: Dictionary):
 	ach = d.get("ach", {})
 	patients_total = int(d.get("patients_total", 0))
 	if stamina_ts <= 0:
-		stamina_ts = int(Time.get_unix_time_from_system())   # get_unix_time 返回 float，显式转 int 消窄化警告
+		stamina_ts = Clock.now()   # 初始化计时基准
 	_init_state()
 	_sync_stamina()
 
@@ -117,11 +117,12 @@ func get_medal_count() -> int:
 
 # ============ 体力池（与收益结算解耦：只恢复体力，不计算收益） ============
 func _sync_stamina():
-	var now: int = int(Time.get_unix_time_from_system())
-	var gained: int = int((now - stamina_ts) / float(_st().get("stamina_interval", 2400)))
-	if gained > 0:
-		stamina = min(int(_st().get("stamina_cap", 30)), stamina + gained)
-		stamina_ts += gained * int(_st().get("stamina_interval", 2400))
+	var now: int = Clock.now()
+	var interval: int = int(_st().get("stamina_interval", 2400))
+	var cap: int = int(_st().get("stamina_cap", 30))
+	var r: Array = RegenTimer.apply(stamina, stamina_ts, now, interval, cap)
+	stamina = int(r[0])
+	stamina_ts = int(r[1])
 
 func get_stamina() -> int:
 	_sync_stamina()
@@ -135,7 +136,7 @@ func get_next_stamina_seconds() -> int:
 	_sync_stamina()
 	if stamina >= get_stamina_cap():
 		return 0
-	return int(int(_st().get("stamina_interval", 2400)) - (Time.get_unix_time_from_system() - stamina_ts))
+	return RegenTimer.next_seconds(stamina_ts, Clock.now(), int(_st().get("stamina_interval", 2400)))
 
 # ============ 一键接待开关 ============
 # 【改】2026-09-16 用户拍板：勾选只切换营业按钮模式，不消耗病人；点【营业】才把病人转入队列
@@ -155,7 +156,7 @@ func settle_all() -> Dictionary:
 	var n: int = stamina
 	settle_queue += n
 	stamina = 0
-	stamina_ts = int(Time.get_unix_time_from_system())   # 清零后重起自然恢复计时
+	stamina_ts = Clock.now()   # 清零后重起自然恢复计时
 	return {"ok": true, "n": n}
 
 # ============ 后台节拍（game_controller 每秒 + 页面定时器共用入口） ============

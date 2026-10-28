@@ -91,7 +91,7 @@ func load_save_data(s: Dictionary):
 	if sign_name == "":
 		sign_name = str(_st().get("default_name", "红尘酒楼"))
 	if jiaohao_time <= 0:
-		jiaohao_time = int(Time.get_unix_time_from_system())   # get_unix_time 返回 float，显式转 int 消窄化警告
+		jiaohao_time = Clock.now()   # 初始化计时基准
 	_sync_jiaohao()
 
 # 新档默认装配：解锁配置中 initial=true 的设施（1级），并按1级属性给已拥有挚友发放友好/才华
@@ -148,11 +148,12 @@ func get_project_facilities(project: String) -> Array:
 
 # ============ 叫号体力（医馆病人队列同款：时间恢复/离线补发/道具超上限） ============
 func _sync_jiaohao():
-	var now: int = int(Time.get_unix_time_from_system())
-	var gained: int = int((now - jiaohao_time) / float(_st().get("jiaohao_interval", 1200)))
-	if gained > 0:
-		jiaohao = min(int(_st().get("jiaohao_cap", 50)), jiaohao + gained)
-		jiaohao_time += gained * int(_st().get("jiaohao_interval", 1200))
+	var now: int = Clock.now()
+	var interval: int = int(_st().get("jiaohao_interval", 1200))
+	var cap: int = int(_st().get("jiaohao_cap", 50))
+	var r: Array = RegenTimer.apply(jiaohao, jiaohao_time, now, interval, cap)
+	jiaohao = int(r[0])
+	jiaohao_time = int(r[1])
 
 func get_jiaohao() -> int:
 	_sync_jiaohao()
@@ -166,7 +167,7 @@ func get_next_jiaohao_seconds() -> int:
 	_sync_jiaohao()
 	if jiaohao >= get_jiaohao_cap():
 		return 0
-	return maxi(0, int(_st().get("jiaohao_interval", 1200)) - (int(Time.get_unix_time_from_system()) - jiaohao_time))
+	return maxi(0, RegenTimer.next_seconds(jiaohao_time, Clock.now(), int(_st().get("jiaohao_interval", 1200))))
 
 # 道具途径加叫号（佳酿+2/个）：不受上限限制（上限只管自然恢复）
 func add_jiaohao(n: int):
@@ -194,7 +195,7 @@ func call_all() -> Dictionary:
 	var n: int = jiaohao
 	serve_queue += n
 	jiaohao = 0
-	jiaohao_time = int(Time.get_unix_time_from_system())
+	jiaohao_time = Clock.now()
 	return {"ok": true, "count": n}
 
 # 接待批处理：视图定时器以【时间盒 4ms/0.05s】驱动（约5000+/秒，帧压力恒定）

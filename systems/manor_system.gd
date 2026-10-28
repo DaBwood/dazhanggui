@@ -228,29 +228,30 @@ func add_hours_production(hours: float) -> Dictionary:
 
 # 在线懒结算：按距上次结算的时间差入库（挂在每秒自动收益处调用）
 func settle():
-	var now = int(Time.get_unix_time_from_system())
+	var now = Clock.now()
 	if g.manor_last_settle <= 0:
 		g.manor_last_settle = now   # 首次（新档/旧档升级）只初始化时间戳，不补产量
 		return
-	var elapsed = now - g.manor_last_settle
-	if elapsed <= 0: return
+	var minutes: float = Accrual.elapsed_units(g.manor_last_settle, now, 60.0, 0.0)
+	if minutes <= 0.0: return
 	g.manor_last_settle = now
-	_add_production(elapsed / 60.0)
+	_add_production(minutes)
 
 # 离线结算：登录时调用，按离线时长 × 100%产量 入库（上限24小时）
 # 离线秒数口径与店铺离线收益一致（正常退出用登出时间，闪退用上次登录时间）
 # 注意：必须在 last_login_time 被更新为"本次登录"之前调用
 func settle_offline():
 	if g.last_logout_time <= 0 and g.last_login_time <= 0: return
-	var now = int(Time.get_unix_time_from_system())
+	var now = Clock.now()
 	var offline_seconds = 0
 	if g.last_logout_time > g.last_login_time:
 		offline_seconds = now - g.last_logout_time   # 上次正常退出
 	elif g.last_login_time > 0:
 		offline_seconds = now - g.last_login_time    # 闪退/强退
-	offline_seconds = clamp(offline_seconds, 0, int(get_settings().get("offline_cap_hours", 24)) * 3600)
+	var cap_hours: int = int(get_settings().get("offline_cap_hours", 24))
+	offline_seconds = clampi(offline_seconds, 0, cap_hours * 3600)
 	if offline_seconds <= 0: return
-	_add_production(offline_seconds / 60.0)
+	_add_production(Accrual.units_from_seconds(offline_seconds, 60.0, float(cap_hours * 60)))
 	# 结算后同步时间戳，避免在线 settle 重复结算同一段时间
 	g.manor_last_settle = now
 	print("庄园离线产量已结算，离线时长：", offline_seconds, "秒")

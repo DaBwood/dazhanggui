@@ -88,7 +88,7 @@ func load_save_data(s: Dictionary):
 	if d.has("patient_unlocked") and d.patient_unlocked is Dictionary:
 		patient_unlocked = d.patient_unlocked
 	if patient_time <= 0:
-		patient_time = int(Time.get_unix_time_from_system())   # get_unix_time 返回 float，显式转 int 消窄化警告
+		patient_time = Clock.now()   # 初始化计时基准
 	# 旧档兼容：首轮默认只建药房（unlock_cost=0 的科室视为已建）
 	for dept_id in _cfg().get("departments", {}):
 		var dd: Dictionary = _cfg().get("departments", {})[dept_id]
@@ -120,11 +120,12 @@ func collect_jar() -> Dictionary:
 
 # ============ 病人队列（体力池）：按时间差离线补发，封顶上限；道具加人不封顶 ============
 func _sync_patients():
-	var now: int = int(Time.get_unix_time_from_system())
-	var gained: int = int((now - patient_time) / float(_st().get("patient_interval", 1200)))
-	if gained > 0:
-		patients = min(int(_st().get("patient_cap", 60)), patients + gained)
-		patient_time += gained * int(_st().get("patient_interval", 1200))
+	var now: int = Clock.now()
+	var interval: int = int(_st().get("patient_interval", 1200))
+	var cap: int = int(_st().get("patient_cap", 60))
+	var r: Array = RegenTimer.apply(patients, patient_time, now, interval, cap)
+	patients = int(r[0])
+	patient_time = int(r[1])
 
 func get_patient_count() -> int:
 	_sync_patients()
@@ -138,7 +139,7 @@ func get_next_patient_seconds() -> int:
 	_sync_patients()
 	if patients >= get_patient_cap():
 		return 0
-	return int(int(_st().get("patient_interval", 1200)) - (Time.get_unix_time_from_system() - patient_time))
+	return RegenTimer.next_seconds(patient_time, Clock.now(), int(_st().get("patient_interval", 1200)))
 
 # 道具途径加病人：不受上限限制（上限只管自然恢复），允许超出排队
 func add_patients(n: int):
@@ -230,7 +231,7 @@ func admit_all() -> Dictionary:
 	var n := patients
 	treat_queue += n
 	patients = 0
-	patient_time = int(Time.get_unix_time_from_system())   # 清零后重起自然恢复计时
+	patient_time = Clock.now()   # 清零后重起自然恢复计时
 	return {"ok": true, "count": n}
 
 # 治疗批处理：视图定时器以【时间盒 4ms/0.05s】驱动（约5000+/秒，帧压力恒定）

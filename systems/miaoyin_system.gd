@@ -84,7 +84,7 @@ func load_save_data(s: Dictionary):
 func _init_state() -> void:
 	medal_lv = clampi(medal_lv, 1, get_medal_count())
 	if not jar.has("last"):
-		jar["last"] = int(Time.get_unix_time_from_system())
+		jar["last"] = Clock.now()
 	jar["last"] = int(jar.get("last", 0))
 	jar["yyb"] = maxf(0.0, float(jar.get("yyb", 0.0)))
 	if not jar.has("yyw") or not (jar["yyw"] is Dictionary):
@@ -141,7 +141,7 @@ func _bootstrap_deadlock_if_needed() -> void:
 			(buildings[bid] as Array)[idx] = maxi(1, int((buildings[bid] as Array)[idx]))
 
 func _new_jar() -> Dictionary:
-	return {"last": int(Time.get_unix_time_from_system()), "yyb": 0.0, "yyw": {}, "yyf": {}}
+	return {"last": Clock.now(), "yyb": 0.0, "yyw": {}, "yyf": {}}
 
 # ============ 配置快捷读 ============
 func _cfg() -> Dictionary:
@@ -590,14 +590,12 @@ func has_any_output() -> bool:
 # ============ 收益罐（lazy settlement；上限截断，领取取整，fraction 留罐） ============
 func settle_jar() -> void:
 	_init_state()
-	var now: int = int(Time.get_unix_time_from_system())
+	var now: int = Clock.now()
 	var last: int = int(jar.get("last", 0))
 	if last <= 0:
 		jar["last"] = now
 		return
-	var elapsed_min: float = maxf(0.0, (float(now) - float(last)) / 60.0)
-	var cap_min: float = float(get_jar_cap_hours() * 60)
-	var settle_min: float = minf(elapsed_min, cap_min)
+	var settle_min: float = Accrual.elapsed_units(last, now, 60.0, float(get_jar_cap_hours() * 60))
 	if settle_min > 0.0:
 		_produce_minutes(settle_min, false)
 	jar["last"] = now

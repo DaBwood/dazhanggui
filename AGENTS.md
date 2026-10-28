@@ -110,7 +110,7 @@ $env:APPDATA = Join-Path $env:TEMP 'dzg_godot_user'
 - 未开工：商会三期 BOSS、山庄、绣房、寻珍探宝；限时活动要做轮换（原作几十个，按版本分批接入，先立活动框架），见路线图 §1.4 / M6。
 - 基建欠账：0 音频、0 新手引导、8/40 页面场景化。
 - 主线策略：先做 **B 底座**（`docs/底座改造-Kimi交接.md`：Shop 加成注册表 → Accrual → 页面壳/MedalTrack），验收后再进 M0/M1；底座未过不开新玩法。
-- **底座进度（2026-10-28）**：B1 Shop 加成注册表 ✅ 完成（`docs/底座-阶段报告.md`；`tests/snapshot_economy.gd` 快照全绿）。B2 未开工，B3 等 FairyGUI spike。
+- **底座进度（2026-10-28）**：B1 Shop 加成注册表 ✅ 完成（`docs/底座-阶段报告.md`；`tests/snapshot_economy.gd` 快照全绿）。B2 时间结算双原语 ✅（`systems/common/accrual.gd` + `regen_timer.gd`；`tests/snapshot_accrual.gd`，重构前后同哈希）。B3 等 FairyGUI spike。
 
 ## 7. 从 Kimi 旧档案继承时的取舍
 
