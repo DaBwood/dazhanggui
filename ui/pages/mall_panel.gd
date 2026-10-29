@@ -481,7 +481,7 @@ func _on_claim_vip_reward(level: int):
 		# 刷新 VIP 面板
 		_update_vip_panel()
 		# 刷新门客/挚友列表
-		c.generate_hero_list()
+		c.ensure_hero_list()
 		c.update_friend_page()
 		c.update_all_ui()
 		data.save_game() 

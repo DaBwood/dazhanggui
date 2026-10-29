@@ -12,6 +12,19 @@ var g  # GameData中枢
 var PHASES: Array = []
 var AVATARS: Array = []
 
+# ============ 收入重建期预聚合（build/clear 由 HeroData._rebuild_income_cache 调用） ============
+# 藏品套装"守护灵提供的赚钱+%"是全局标量，原实现对每个门客都重算一遍（109 次），重建期缓存一次。
+var _inc_cache_ready := false
+var _c_suit_pct := 0.0
+
+func build_income_caches() -> void:
+	_c_suit_pct = g.collection_system.get_guardian_suit_pct()
+	_inc_cache_ready = true
+
+func clear_income_caches() -> void:
+	_inc_cache_ready = false
+	_c_suit_pct = 0.0
+
 func _init(p_g):
 	g = p_g
 	_load_config()
@@ -163,7 +176,9 @@ func get_total_income_pct(hero_id: String) -> float:
 	for i in range(PHASES.size()):
 		if is_phase_full(hero_id, i):
 			total += PHASES[i].income_pct
-	return total + g.collection_system.get_guardian_suit_pct()  # 【新增】藏品套装"守护灵提供的赚钱+%"
+	# 【新增】藏品套装"守护灵提供的赚钱+%"（重建期走预聚合标量，见 build_income_caches）
+	var suit: float = _c_suit_pct if _inc_cache_ready else g.collection_system.get_guardian_suit_pct()
+	return total + suit
 
 # ============ 技能 ============
 

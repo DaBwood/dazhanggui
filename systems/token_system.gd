@@ -13,6 +13,34 @@ var g   # GameData 中枢引用（不标类型避免循环引用）
 
 static var _share_guard: bool = false   # 【新增】信物资质互算重入锁（防信物门客互绑死循环；互绑时按就近截断取值）
 
+# ============ 收入重建期预聚合（build/clear 由 HeroData._rebuild_income_cache 调用） ============
+# 被绑定者的加成原本每个门客都要扫一遍全部信物（O(N²)），重建前反向聚合一次。
+var _inc_cache_ready := false
+var _c_bound_pct := {}   # hero_id -> 被绑定赚钱%（首个命中的主人配置，与原实现 return 语义一致）
+var _c_bind_owners := {}  # hero_id -> [主人id...]（原 get_bound_aptitude 每个门客都扫全部信物）
+
+func build_income_caches() -> void:
+	_c_bound_pct.clear()
+	_c_bind_owners.clear()
+	for owner_id in g.hero_tokens.keys():
+		if not has_token(owner_id): continue
+		var cfg: Dictionary = get_token_cfg(owner_id)
+		if cfg.is_empty(): continue
+		for target in get_binds(owner_id):
+			var tid := str(target)
+			if tid == "" or not g.heroes.has(tid): continue
+			if not _c_bound_pct.has(tid):
+				_c_bound_pct[tid] = float(cfg.get("bind_income_pct", 0.10))
+			if not _c_bind_owners.has(tid):
+				_c_bind_owners[tid] = []
+			_c_bind_owners[tid].append(str(owner_id))
+	_inc_cache_ready = true
+
+func clear_income_caches() -> void:
+	_inc_cache_ready = false
+	_c_bound_pct.clear()
+	_c_bind_owners.clear()
+
 # 由 GameData._init 创建本系统时注入中枢引用
 func _init(p_g):
 	g = p_g
@@ -213,6 +241,13 @@ func get_owner_aptitude(hero_id: String) -> int:
 # 门客作为"被绑定者"获得的资质 = 主人的信物等级 × 每级资质
 func get_bound_aptitude(hero_id: String) -> int:
 	var total := 0
+	if _inc_cache_ready:
+		for owner_id in _c_bind_owners.get(hero_id, []):
+			var cfg: Dictionary = get_token_cfg(str(owner_id))
+			total += get_level(str(owner_id)) * int(cfg.get("aptitude_per_level", 3))
+			# 【新增】2026-09-24 倾心共赢（小八信物被动）：无双后为绑定门客提供主人自身资质百分比
+			total += get_share_passive_bonus(str(owner_id), hero_id)
+		return total
 	for owner_id in g.hero_tokens.keys():
 		if not has_token(owner_id): continue
 		var cfg = get_token_cfg(owner_id)
@@ -253,6 +288,8 @@ func get_share_passive_pct(owner_id: String) -> float:
 
 # 门客作为"被绑定者"获得的赚钱百分比（固定 bind_income_pct）
 func get_bound_income_pct(hero_id: String) -> float:
+	if _inc_cache_ready:
+		return float(_c_bound_pct.get(hero_id, 0.0))
 	for owner_id in g.hero_tokens.keys():
 		if not has_token(owner_id): continue
 		var cfg = get_token_cfg(owner_id)

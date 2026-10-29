@@ -646,7 +646,7 @@ func _on_hero_box_selected(hero_id: String):
 	c._show_success_popup("获得门客\n【%s】" % cfg.name)
 	c.update_all_ui()
 	update_bag_list()
-	c.generate_hero_list() 
+	c.ensure_hero_list()
 
 # 【新增】道具获得明细弹窗（关卡宝箱等批量开启道具用）：按配置表顺序逐项列出获得物，点确定关闭
 func _show_item_gains_popup(title: String, gains: Dictionary):

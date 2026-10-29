@@ -119,14 +119,14 @@ func generate_hero_list():
 	# （旧实现在尾部还会 update_hero_list 全量重绑一次，等于双倍开销）
 	_list_token += 1
 	_pending_refresh = false
-	var token := _list_token
+	var build_token := _list_token
 	_list_building = true
 	var first := mini(HERO_FIRST_BIND, ordered.size())
 	for i in range(first):
 		_spawn_hero_card(grid, str(ordered[i][0]), bool(ordered[i][1]))
 	_bind_hero_cards(grid, 0, first)
 	_set_hero_career(_hero_career)
-	_build_hero_cards_deferred(grid, ordered, first, token)
+	_build_hero_cards_deferred(grid, ordered, first, build_token)
 
 # 建一张卡并接线（meta 在绑数据前就位；筛选态直接套用，分帧建卡也不会闪出错误职业）
 func _spawn_hero_card(grid: GridContainer, hero_id: String, locked: bool) -> Button:
@@ -155,13 +155,13 @@ func _bind_hero_cards(grid: GridContainer, from: int, to: int) -> void:
 			continue
 		cell.bind_data(hid, data, not data.heroes.has(hid))
 
-# 分帧建卡：每帧 HERO_CREATE_CHUNK 张，建完立即绑定；token 变化（重建/刷新）或场景失效即退出
-func _build_hero_cards_deferred(grid: GridContainer, ordered: Array, from: int, token: int) -> void:
+# 分帧建卡：每帧 HERO_CREATE_CHUNK 张，建完立即绑定；代次变化（重建/刷新）或场景失效即退出
+func _build_hero_cards_deferred(grid: GridContainer, ordered: Array, from: int, build_token: int) -> void:
 	var idx := from
 	# 首帧先让出去：调用方（generate）已同步建好首屏，这里再同步跑一批会把耗时叠回同一帧
 	await c.get_tree().process_frame
 	while true:
-		if token != _list_token:
+		if build_token != _list_token:
 			return   # 新一代构建已接管（_list_building 归它管，不能在这里清）
 		if not is_instance_valid(grid):
 			_list_building = false   # 场景被释放：必须复位，否则 ensure 会永远早退
@@ -176,7 +176,7 @@ func _build_hero_cards_deferred(grid: GridContainer, ordered: Array, from: int, 
 				cell.bind_data(hero_id, data, not data.heroes.has(hero_id))
 		idx = end
 		await c.get_tree().process_frame
-	if token == _list_token:
+	if build_token == _list_token:
 		_list_building = false
 		if _pending_refresh:
 			_pending_refresh = false

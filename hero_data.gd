@@ -17,6 +17,8 @@ static var _beastless_calc := false
 static var _income_cache: Dictionary = {}     # hero_id -> 门客总赚钱（get_income 快照）
 static var _contrib_cache: Dictionary = {}    # hero_id -> 全局贡献（收入×突破×0.5 快照）
 static var _income_cache_dirty: bool = true   # 初始即脏：进游戏首次读取时建表
+# 重建期开关：为真时各系统光环 getter 改查预聚合表（见 _rebuild_income_cache / *_system.build_income_caches）
+static var _ctx_active: bool = false
 
 # 置脏入口：任何可能改动门客收入的操作后调用（汇流点 update_all_ui 统一调，各系统无需各自接线）
 static func invalidate_income_cache() -> void:
@@ -24,13 +26,32 @@ static func invalidate_income_cache() -> void:
 
 # 重建：全量扫荡一次。贡献不重复调 get_global_contribution（它内部会再算一遍 get_income），
 # 拆出 _contribution_from_income 复用同一份收入快照，一次重建每门客只算一遍
+# 【性能】重建前让各系统把跨门客光环反向聚合一次（原实现对每个门客都重扫全部门客，O(N²)，
+# 109 门客实测 233ms 且每秒触发）；聚合后各光环源 O(1) 查表，重建结束即清空，
+# 面板单查（非重建期）仍走原逻辑，数值口径完全不变。
 static func _rebuild_income_cache(g) -> void:
 	_income_cache.clear()
 	_contrib_cache.clear()
+	_ctx_active = true
+	g.hero_system.build_income_caches()
+	g.talent_system.build_income_caches()
+	g.costume_system.build_income_caches()
+	g.guardian_system.build_income_caches()
+	g.token_system.build_income_caches()
+	g.courtyard_system.build_income_caches()
+	g.winery_system.build_income_caches()
 	for hero_id in g.heroes.keys():
 		var inc: int = get_income(g, hero_id)
 		_income_cache[hero_id] = inc
 		_contrib_cache[hero_id] = _contribution_from_income(g, hero_id, inc)
+	_ctx_active = false
+	g.hero_system.clear_income_caches()
+	g.talent_system.clear_income_caches()
+	g.costume_system.clear_income_caches()
+	g.guardian_system.clear_income_caches()
+	g.token_system.clear_income_caches()
+	g.courtyard_system.clear_income_caches()
+	g.winery_system.clear_income_caches()
 	_income_cache_dirty = false
 
 # 查表读门客赚钱（外部读取一律走这里；表外门客返回 0）

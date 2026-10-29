@@ -52,7 +52,7 @@ def fill_enclosed(alpha):
     return out[2:2 + h, 2:2 + w]
 
 
-def build(raw_path, atlas_path, out_path, threshold=8):
+def build(raw_path, atlas_path, out_path, threshold=2):
     page, regions = parse_atlas(atlas_path)
     W, H = page["size"]
     im = Image.open(raw_path).convert("RGB")
@@ -69,10 +69,10 @@ def build(raw_path, atlas_path, out_path, threshold=8):
         if not solid.any():
             empty.append(r["name"])
             continue
-        a = fill_enclosed(solid)
-        # If keying erased a fully-dark region, keep the whole rect.
-        if a.sum() == 0:
-            a = np.full((h, w), 255, dtype=np.uint8)
+        # No hole filling: the atlas background is pure black, and dark
+        # clothing is not pure black.  Filling would turn thin props into
+        # opaque rectangles.
+        a = (solid * 255).astype(np.uint8)
         alpha[y:y + h, x:x + w] = a
     out = Image.fromarray(arr, "RGB").convert("RGBA")
     out.putalpha(Image.fromarray(alpha, "L").filter(ImageFilter.GaussianBlur(0.3)))

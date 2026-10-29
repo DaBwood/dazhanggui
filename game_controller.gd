@@ -386,7 +386,8 @@ func on_auto_earn():
 	# 【新增】一键贸易节拍：勾选期间每秒自动贸易一次；挂在本函数故离开关卡页也持续跑
 	if data.stage_auto_trade:
 		_on_stage_auto_trade_tick(data.stage_auto_trade_tick())
-	update_all_ui()
+	# 【性能】方案B（2026-10-29 用户拍板）：每秒节拍不置脏收入表，避免每秒全量重建 109 门客
+	update_all_ui(true)
 	# 【新增】关卡页实时刷新：页内常驻实时铜钱/阅历，挂每秒节拍+页面守卫（2026-10-06 关卡页改版）
 	if current_page == "stage":
 		update_stage_page()
@@ -452,10 +453,15 @@ func on_money_plus_clicked():
 		return
 	_show_quantity_selector("hour_card", "使用小时卡", _on_item_use_confirmed)
 
-func update_all_ui():
+# skip_income_dirty=true：每秒被动节拍不置脏（方案B，2026-10-29 用户拍板）——
+# 被动 tick 不改任何赚钱输入（等级/资质/光环/服装/信物/宅院…全部是玩家操作），
+# 每秒全量重建 109 门客纯属浪费；收入表改为只在玩家操作后重算。
+# 例外：促织罐孵化这类后台变化最多滞后到下一次操作，可接受。
+func update_all_ui(skip_income_dirty: bool = false):
 	# 【新增】收入缓存表置脏（2026-09-25 用户拍板"赚速写入式表格"）：所有养成操作都汇流本函数，
-	# 在此统一置脏，各系统无需各自接线；每秒 on_auto_earn 也经过这里，缓存至多 1 秒即刷新
-	HeroData.invalidate_income_cache()
+	# 在此统一置脏，各系统无需各自接线
+	if not skip_income_dirty:
+		HeroData.invalidate_income_cache()
 	update_money_label()
 	update_entry_buttons()
 	

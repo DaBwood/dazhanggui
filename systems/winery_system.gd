@@ -16,6 +16,23 @@ extends RefCounted
 # GameData 中枢引用（不标注类型，避免类之间循环引用导致解析失败）
 var g
 
+# ============ 收入重建期预聚合（build/clear 由 HeroData._rebuild_income_cache 调用） ============
+# 名酒记按职业的赚钱合计原本每个门客都扫一遍酒表，重建前按职业聚合一次。
+var _inc_cache_ready := false
+var _c_career_wine := {}   # category -> 该职业名酒赚钱合计
+
+func build_income_caches() -> void:
+	_c_career_wine.clear()
+	for wc in _cfg().get("wines", []):
+		var career := str(wc.get("career", ""))
+		if career == "": continue
+		_c_career_wine[career] = int(_c_career_wine.get(career, 0)) + get_wine_income(str(wc.get("id", "")))
+	_inc_cache_ready = true
+
+func clear_income_caches() -> void:
+	_inc_cache_ready = false
+	_c_career_wine.clear()
+
 # ---------- 存档字段（内部持有） ----------
 # 【改】2026-09-18 材料库存并入物品表 g.items（背包即库存；采买/初始赠送/酿造消耗/活动奖励统一走物品表）
 var buy_ts: int = 0                # 本周周一 0 点时间戳（每周限购刷新基准）
@@ -618,6 +635,8 @@ func has_satis_loop_ready() -> bool:
 # 某职业门客的名酒记固定赚速：该职业绑定酒的 Σ（品质序×10000 + 品质序×5000×(级-1)）
 # 读取式（hero_data.get_extra_income 职业行挂点，同客栈菜谱/促织培育范式；2026-09-18 用户拍板按职业接入）
 func get_career_wine_income(career: String) -> int:
+	if _inc_cache_ready:
+		return int(_c_career_wine.get(career, 0))
 	var total := 0
 	for wc in _cfg().get("wines", []):
 		if str(wc.get("career", "")) != career:

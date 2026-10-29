@@ -9,6 +9,28 @@ extends RefCounted
 # GameData 中枢引用（不标注类型，避免类之间循环引用导致解析失败）
 var g
 
+# ============ 收入重建期预聚合（build/clear 由 HeroData._rebuild_income_cache 调用） ============
+# 门客→卷轴项目的反查原本每个门客都全量扫技艺表，重建前建一次表。
+var _inc_cache_ready := false
+var _c_role_project := {}   # hero_id -> {tech_id, project_key}
+
+func build_income_caches() -> void:
+	_c_role_project.clear()
+	for tech in get_technique_list():
+		for project_key in ["project1", "project2"]:
+			var project: Dictionary = tech.get(project_key, {})
+			if project.get("type", "") != "hero": continue
+			var found := {"tech_id": tech.get("id", ""), "project_key": project_key}
+			for hid in project.get("heroes", []):
+				var key := str(hid)
+				if not _c_role_project.has(key):
+					_c_role_project[key] = found
+	_inc_cache_ready = true
+
+func clear_income_caches() -> void:
+	_inc_cache_ready = false
+	_c_role_project.clear()
+
 # 由 GameData._init 创建本系统时注入中枢引用
 func _init(p_g):
 	g = p_g
@@ -146,6 +168,8 @@ func apply_friend_unlock_bonus(friend_id: String):
 # ============ 分配反查与加成 ============
 # 反查门客/挚友所在的卷轴项目；找不到返回空字典
 func _find_role_project(role_id: String, role_type: String) -> Dictionary:
+	if role_type == "hero" and _inc_cache_ready:
+		return _c_role_project.get(role_id, {})
 	var list_key = "heroes" if role_type == "hero" else "friends"
 	for tech in get_technique_list():
 		for project_key in ["project1", "project2"]:

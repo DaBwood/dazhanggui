@@ -13,6 +13,15 @@ extends RefCounted
 
 var g   # GameData 中枢引用（不标类型避免循环引用）
 
+# ============ 收入重建期预聚合（2026-10-28 性能批次，同 hero_system） ============
+# 天赋/系列光环原实现每个门客都重扫全部门客（O(N²)），重建时按目标分桶一次算完。
+var _inc_cache_ready := false
+var _c_talent_pct_all := 0.0        # all_hero_pct 全体
+var _c_talent_pct_career := {}      # category -> career_pct
+var _c_talent_pct_series := {}      # series -> series_pct
+var _c_aura_pct_self := {}          # hero_id -> 系列光环 self_pct（本人份）
+var _c_aura_pct_career := {}        # category -> 系列光环 career_pct（全同职业共享）
+
 # 由 GameData._init 创建本系统时注入中枢引用
 func _init(p_g):
 	g = p_g
@@ -299,11 +308,53 @@ func _active_talent_effects(hero_id: String) -> Array:
 	if tcfg.get("suspended_tiers", []).has(tier): return []
 	return tcfg.get("tiers", {}).get(tier, [])
 
+# ============ 收入重建期预聚合（build/clear 由 HeroData._rebuild_income_cache 调用） ============
+# 反向遍历一次：天赋按 all/career/series 分桶，系列光环按 self/career 分桶；getter 变 O(1)。
+# 条件与下面原实现逐条对应，改口径必须两处同步。
+func build_income_caches() -> void:
+	_c_talent_pct_all = 0.0
+	_c_talent_pct_career.clear()
+	_c_talent_pct_series.clear()
+	_c_aura_pct_self.clear()
+	_c_aura_pct_career.clear()
+	for hid in g.heroes.keys():
+		var cat := str(g.heroes[hid].get("category", ""))
+		for e in _active_talent_effects(hid):
+			match str(e.get("kind", "")):
+				"career_pct":
+					if cat != "":
+						_c_talent_pct_career[cat] = float(_c_talent_pct_career.get(cat, 0.0)) + get_effect_value(e, hid)
+				"all_hero_pct":
+					_c_talent_pct_all += get_effect_value(e, hid)
+				"series_pct":
+					var series_key := str(e.get("series", ""))
+					_c_talent_pct_series[series_key] = float(_c_talent_pct_series.get(series_key, 0.0)) + get_effect_value(e, hid)
+		for sk in get_hero_aura_cfg(hid).get("skills", []):
+			var kind := str(sk.get("effect", {}).get("kind", ""))
+			var v: float = float(sk.get("effect", {}).get("per", 0)) * get_aura_level(hid, sk)
+			if kind == "self_pct":
+				_c_aura_pct_self[hid] = float(_c_aura_pct_self.get(hid, 0.0)) + v
+			elif kind == "career_pct":
+				if cat != "":
+					_c_aura_pct_career[cat] = float(_c_aura_pct_career.get(cat, 0.0)) + v
+	_inc_cache_ready = true
+
+func clear_income_caches() -> void:
+	_inc_cache_ready = false
+	_c_talent_pct_all = 0.0
+	_c_talent_pct_career.clear()
+	_c_talent_pct_series.clear()
+	_c_aura_pct_self.clear()
+	_c_aura_pct_career.clear()
+
 # 门客赚钱百分比（hero_data get_percent_bonus 调用）：
 # career_pct=同职业门客 / all_hero_pct=全体门客 / series_pct=指定系列（系列归属取 hero_auras.json）
 func get_hero_talent_pct(hero_id: String) -> float:
 	if not g.heroes.has(hero_id): return 0.0
 	var cat: String = str(g.heroes[hero_id].get("category", ""))
+	if _inc_cache_ready:
+		var series: String = str(get_hero_aura_cfg(hero_id).get("series", ""))
+		return _c_talent_pct_all + float(_c_talent_pct_career.get(cat, 0.0)) + float(_c_talent_pct_series.get(series, 0.0))
 	var total = 0.0
 	for hid in g.heroes.keys():
 		for e in _active_talent_effects(hid):
@@ -323,6 +374,8 @@ func get_hero_talent_pct(hero_id: String) -> float:
 func get_aura_pct(hero_id: String) -> float:
 	if not g.heroes.has(hero_id): return 0.0
 	var cat: String = str(g.heroes[hero_id].get("category", ""))
+	if _inc_cache_ready:
+		return float(_c_aura_pct_self.get(hero_id, 0.0)) + float(_c_aura_pct_career.get(cat, 0.0))
 	var total = 0.0
 	for hid in g.heroes.keys():
 		if str(g.heroes[hid].get("category", "")) != cat: continue

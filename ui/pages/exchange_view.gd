@@ -312,7 +312,7 @@ func _on_exchange_series_hero(entry: Dictionary, series: Dictionary, cell: Butto
 		update_series_exchange_view()
 		c.update_all_ui()
 		c.update_bag_list()
-		c.generate_hero_list()
+		c.ensure_hero_list()
 		c.update_friend_page()
 	else:
 		c.flash_red(cell.get_path())   # 【新增】闪红审计：操作失败反馈（2026-09-19）
@@ -328,7 +328,7 @@ func _on_exchange_role(role_type: String, role_id: String, cost: int, cell: Butt
 		c.update_all_ui()
 		c.update_bag_list()
 		if role_type == "hero":
-			c.generate_hero_list()
+			c.ensure_hero_list()
 		c.update_friend_page()
 	else:
 		c.flash_red(cell.get_path())   # 【新增】闪红审计：操作失败反馈（2026-09-19）

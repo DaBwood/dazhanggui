@@ -9,6 +9,25 @@ extends RefCounted
 # GameData 中枢引用（不标注类型，避免类之间循环引用导致解析失败）
 var g
 
+# ============ 收入重建期光环预聚合（2026-10-28 性能批次） ============
+# 背景：师徒/自带/双人光环原实现是"每个门客都重扫全部门客"（O(N²)），
+# 109 门客整套加成聚合 233ms，而 update_all_ui 每秒置脏后立即重建 = 每秒卡一下。
+# 重建前 HeroData 调 build_income_caches() 反向遍历一次；重建结束 clear 掉。
+# 非重建期（门客面板单查）_inc_cache_ready=false，仍走原逻辑，数值口径不变。
+var _inc_cache_ready := false
+var _c_master_apt := {}         # hero_id -> 师徒光环资质
+var _c_master_pct_self := {}    # hero_id -> 师徒光环%（self_master / self）
+var _c_master_pct_career := {}  # category -> 师徒光环%（master_career，全同职业共享）
+var _c_self_apt := {}           # hero_id -> 自带光环资质（本人份）
+var _c_self_apt_wuyan := 0      # 五艳共享的自带光环资质总额
+var _c_self_pct_self := {}      # hero_id -> 自带光环%（self）
+var _c_self_pct_career := {}    # category -> 自带光环%（career）
+var _c_pair_apt := {}           # hero_id -> 双人光环资质
+var _c_pair_pct := {}           # hero_id -> 双人光环%
+var _c_wuyan := {}              # 五艳集合（构建期快照）
+var _c_jinlan_owner := {}       # partner_id -> 金兰主人（伙伴侧加成反查，原实现每个门客都全量扫一遍）
+var _c_qinhe_owner := {}        # partner_id -> 亲和主人（沉香，同上）
+
 # 由 GameData._init 创建本系统时注入中枢引用
 func _init(p_g):
 	g = p_g
@@ -417,9 +436,113 @@ func upgrade_master_aura(hero_id: String, aura_id: String, times: int = 1) -> Di
 	_get_master_aura_levels(hero_id)[aura_id] = lv + times
 	return {"ok": true, "level": lv + times}
 
+# ============ 收入重建期预聚合（build/clear 由 HeroData._rebuild_income_cache 调用） ============
+# 反向遍历一次：把"谁的光环加给谁"直接累加到目标门客表，getter 变成 O(1) 查表。
+# 所有条件与下面的原实现逐条对应，改口径必须两处同步。
+func build_income_caches() -> void:
+	_c_master_apt.clear()
+	_c_master_pct_self.clear()
+	_c_master_pct_career.clear()
+	_c_self_apt.clear()
+	_c_self_apt_wuyan = 0
+	_c_self_pct_self.clear()
+	_c_self_pct_career.clear()
+	_c_pair_apt.clear()
+	_c_pair_pct.clear()
+	_c_wuyan.clear()
+	_c_jinlan_owner.clear()
+	_c_qinhe_owner.clear()
+	for wid in get_wuyan_heroes():
+		_c_wuyan[str(wid)] = true
+	for hid in g.heroes.keys():
+		var h = g.heroes[hid]
+		var cat := str(h.get("category", ""))
+		var master_id := str(h.get("master_hero_id", ""))
+		# 金兰 / 亲和：伙伴侧加成的反查表（原 get_jinlan_owner / get_qinhe_owner 每次全量扫门客）
+		if is_jinlan_unlocked(hid):
+			var jp := str(h.get("jinlan", {}).get("partner", ""))
+			if jp != "" and jp != hid and not _c_jinlan_owner.has(jp): _c_jinlan_owner[jp] = hid
+		if is_qinhe_unlocked(hid):
+			var qp := str(h.get("qinhe", {}).get("partner", ""))
+			if qp != "" and qp != hid and not _c_qinhe_owner.has(qp): _c_qinhe_owner[qp] = hid
+		# 师徒光环
+		for aura in get_master_aura_cfgs(hid):
+			var t := str(aura.get("type", ""))
+			var lv := get_master_aura_level(hid, aura.get("id", ""))
+			if t == "aptitude":
+				if str(aura.get("target", "self_master")) != "self_master": continue
+				var apt: int = int(aura.get("per", 0)) * lv
+				_c_add_int(_c_master_apt, hid, apt)
+				if master_id != "": _c_add_int(_c_master_apt, master_id, apt)
+			elif t == "income_pct":
+				var pct: float = float(aura.get("per", 0)) * float(lv) / 100.0
+				match str(aura.get("target", "")):
+					"self_master":
+						_c_add_float(_c_master_pct_self, hid, pct)
+						if master_id != "": _c_add_float(_c_master_pct_self, master_id, pct)
+					"master_career":
+						if master_id != "" and g.heroes.has(master_id):
+							var mcat := str(g.heroes[master_id].get("category", ""))
+							if mcat != "": _c_add_float(_c_master_pct_career, mcat, pct)
+					"self":
+						_c_add_float(_c_master_pct_self, hid, pct)
+		# 自带光环
+		for aura in get_self_aura_cfgs(hid):
+			var t := str(aura.get("type", ""))
+			var lv := get_self_aura_level(hid, aura.get("id", ""))
+			if t == "aptitude":
+				if str(aura.get("target", "")) != "self_wuyan": continue
+				var apt: int = int(aura.get("per", 0)) * lv
+				_c_add_int(_c_self_apt, hid, apt)
+				_c_self_apt_wuyan += apt
+			elif t == "income_pct":
+				var pct: float = float(aura.get("per", 0)) * float(lv) / 100.0
+				match str(aura.get("target", "")):
+					"self":
+						_c_add_float(_c_self_pct_self, hid, pct)
+					"career":
+						if cat != "": _c_add_float(_c_self_pct_career, cat, pct)
+		# 双人光环
+		for a in get_pair_aura_cfgs(hid):
+			var t := str(a.get("type", ""))
+			var lv := get_pair_aura_level(hid, a.get("id", ""))
+			var partner := str(a.get("partner", ""))
+			if t == "aptitude":
+				var apt: int = int(a.get("per", 0)) * lv
+				_c_add_int(_c_pair_apt, hid, apt)
+				if partner != "" and partner != hid: _c_add_int(_c_pair_apt, partner, apt)
+			elif t == "income_pct":
+				var pct: float = float(a.get("per", 0)) * float(lv) / 100.0
+				_c_add_float(_c_pair_pct, hid, pct)
+				if partner != "" and partner != hid: _c_add_float(_c_pair_pct, partner, pct)
+	_inc_cache_ready = true
+
+func clear_income_caches() -> void:
+	_inc_cache_ready = false
+	_c_master_apt.clear()
+	_c_master_pct_self.clear()
+	_c_master_pct_career.clear()
+	_c_self_apt.clear()
+	_c_self_apt_wuyan = 0
+	_c_self_pct_self.clear()
+	_c_self_pct_career.clear()
+	_c_pair_apt.clear()
+	_c_pair_pct.clear()
+	_c_wuyan.clear()
+	_c_jinlan_owner.clear()
+	_c_qinhe_owner.clear()
+
+func _c_add_int(d: Dictionary, key: String, n: int) -> void:
+	d[key] = int(d.get(key, 0)) + n
+
+func _c_add_float(d: Dictionary, key: String, n: float) -> void:
+	d[key] = float(d.get(key, 0.0)) + n
+
 # 师徒光环·资质加成：配置驱动遍历（童叟无欺/师徒同心——光环持有者本人与师傅各吃一份，HeroData.get_total_aptitude 追加）
 # 【改】2026-09-25 去硬编码 aura id，按 type/target 走配置（小柒师徒同心同款生效，小八数值口径不变）
 func get_master_aura_aptitude(hero_id: String) -> int:
+	if _inc_cache_ready:
+		return int(_c_master_apt.get(hero_id, 0))
 	var total := 0
 	for hid in g.heroes.keys():
 		for aura in get_master_aura_cfgs(hid):
@@ -432,6 +555,9 @@ func get_master_aura_aptitude(hero_id: String) -> int:
 # 师徒光环·赚钱%（get_percent_bonus 追加）：target=self_master（自身与师傅）/ master_career（师傅同职业门客）/ self（自身）
 # 【改】2026-09-25 去硬编码 aura id，按 target 走配置（师从五艳同款生效，小八数值口径不变）
 func get_master_aura_income_pct(hero_id: String) -> float:
+	if _inc_cache_ready:
+		var hc: String = str(g.heroes.get(hero_id, {}).get("category", ""))
+		return float(_c_master_pct_self.get(hero_id, 0.0)) + float(_c_master_pct_career.get(hc, 0.0))
 	var total := 0.0
 	var hero_cat := str(g.heroes.get(hero_id, {}).get("category", ""))
 	for hid in g.heroes.keys():
@@ -516,6 +642,10 @@ func upgrade_self_aura(hero_id: String, aura_id: String) -> Dictionary:
 
 # 自带光环·资质加成（云裳羽衣）：光环持有者（小柒）与秦淮五艳各吃一份（HeroData.get_total_aptitude 追加）
 func get_self_aura_aptitude(hero_id: String) -> int:
+	if _inc_cache_ready:
+		if _c_wuyan.has(hero_id):
+			return _c_self_apt_wuyan
+		return int(_c_self_apt.get(hero_id, 0))
 	var total := 0
 	for hid in g.heroes.keys():
 		for aura in get_self_aura_cfgs(hid):
@@ -528,6 +658,9 @@ func get_self_aura_aptitude(hero_id: String) -> int:
 
 # 自带光环·赚钱%（玉蝶轻舞=自身 / 花影翩跹=同职业含本人；get_percent_bonus 追加）
 func get_self_aura_income_pct(hero_id: String) -> float:
+	if _inc_cache_ready:
+		var hc: String = str(g.heroes.get(hero_id, {}).get("category", ""))
+		return float(_c_self_pct_self.get(hero_id, 0.0)) + float(_c_self_pct_career.get(hc, 0.0))
 	var total := 0.0
 	var hero_cat := str(g.heroes.get(hero_id, {}).get("category", ""))
 	for hid in g.heroes.keys():
@@ -636,6 +769,8 @@ func get_fengzi_attr(hero_id: String) -> Dictionary:
 
 # 谁把我设为金兰伙伴（反向查找；全游戏仅花木兰有金兰，循环极短）
 func get_jinlan_owner(partner_id: String) -> String:
+	if _inc_cache_ready:
+		return str(_c_jinlan_owner.get(partner_id, ""))
 	for hid in g.heroes.keys():
 		if hid == partner_id: continue
 		if not is_jinlan_unlocked(hid): continue
@@ -745,6 +880,8 @@ func clear_qinhe_partner(hero_id: String):
 
 # 谁把我设为亲和门客（反向查找；全游戏仅沉香有亲和，循环极短）
 func get_qinhe_owner(partner_id: String) -> String:
+	if _inc_cache_ready:
+		return str(_c_qinhe_owner.get(partner_id, ""))
 	for hid in g.heroes.keys():
 		if hid == partner_id: continue
 		if not is_qinhe_unlocked(hid): continue
@@ -809,6 +946,8 @@ func upgrade_pair_aura(hero_id: String, aura_id: String, times: int = 1) -> Dict
 
 # 双人光环·资质：三五组合 per=10/级 → 配置主与 partner 各吃一份（HeroData.get_total_aptitude 追加）
 func get_pair_aura_aptitude(hero_id: String) -> int:
+	if _inc_cache_ready:
+		return int(_c_pair_apt.get(hero_id, 0))
 	var total := 0
 	for hid in g.heroes.keys():
 		for a in get_pair_aura_cfgs(hid):
@@ -820,6 +959,8 @@ func get_pair_aura_aptitude(hero_id: String) -> int:
 
 # 双人光环·赚钱%：落日起誓 per=5%/级（配置百分数口径，/100 转小数，percent_bonus 小数口径）
 func get_pair_aura_income_pct(hero_id: String) -> float:
+	if _inc_cache_ready:
+		return float(_c_pair_pct.get(hero_id, 0.0))
 	var total := 0.0
 	for hid in g.heroes.keys():
 		for a in get_pair_aura_cfgs(hid):

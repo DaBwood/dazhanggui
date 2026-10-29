@@ -324,6 +324,8 @@ func upgrade_career_halo(hero_id: String, cos_id: String, mode: String = "single
 func get_career_halo_income_pct_by_career(career: String) -> float:
 	if career == "":
 		return 0.0
+	if _inc_cache_ready:
+		return float(_c_career_halo.get(career, 0.0))
 	var pct := 0.0
 	for hid in g.heroes.keys():
 		if g.heroes[hid].get("category", "") != career:
@@ -363,10 +365,56 @@ func upgrade_halo(hero_id: String, cos_id: String, mode: String = "single") -> D
 	st["halo"] = lv
 	return {"ok": true, "levels": levels}
 
+# ============ 收入重建期预聚合（build/clear 由 HeroData._rebuild_income_cache 调用） ============
+# 服装资质/职业光环原本每个门客都重扫全部门客的服装（O(N²)），重建前反向聚合一次。
+# 条件与原实现逐条对应，改口径必须两处同步。
+var _inc_cache_ready := false
+var _c_costume_apt := {}     # hero_id -> 服装资质（技能资质 + 同职业光环资质）
+var _c_career_halo := {}     # category -> 职业光环赚钱%（锦衣）
+var _c_series_count := {}    # series_name -> 已解锁件数（系列群体光环每个门客都重算一遍）
+
+func build_income_caches() -> void:
+	_c_costume_apt.clear()
+	_c_career_halo.clear()
+	_c_series_count.clear()
+	for series in _cfgs().get("series", []):
+		var sname := str(series.get("name", ""))
+		if sname != "":
+			_c_series_count[sname] = count_series_unlocked(sname)
+	var per: int = int(_settings().get("halo_apt_per_level", 1))
+	var halo_apt := {}   # category -> 光环资质合计
+	for hid in g.heroes.keys():
+		var h: Dictionary = g.heroes[hid]
+		var cat: String = str(h.get("category", ""))
+		var skill_apt := 0
+		for cfg in get_hero_costume_cfgs(hid):
+			if str(cfg.get("series", "")) == "山河五岳": continue
+			skill_apt += get_cos_skill_aptitude(hid, cfg.get("id", ""))
+		_c_costume_apt[hid] = skill_apt
+		var cos_dict: Dictionary = h.get("costumes", {})
+		for cos_id in cos_dict.keys():
+			var st: Dictionary = cos_dict[cos_id]
+			if st.has("base"):
+				halo_apt[cat] = int(halo_apt.get(cat, 0)) + int(st.get("halo", 0)) * per
+			if str(_get_hero_cos_cfg(hid, str(cos_id)).get("quality", "")) == "锦衣" and is_career_halo_unlocked(st):
+				_c_career_halo[cat] = float(_c_career_halo.get(cat, 0.0)) + float(get_career_halo_level(st)) * 0.05
+	for hid in g.heroes.keys():
+		var cat2: String = str(g.heroes[hid].get("category", ""))
+		_c_costume_apt[hid] = int(_c_costume_apt.get(hid, 0)) + int(halo_apt.get(cat2, 0))
+	_inc_cache_ready = true
+
+func clear_income_caches() -> void:
+	_inc_cache_ready = false
+	_c_costume_apt.clear()
+	_c_career_halo.clear()
+	_c_series_count.clear()
+
 # ============ 资质/赚速加成汇总（HeroData 经 GameData 转发调用） ============
 # 服装总资质 = 自身全部服装技能资质 + 同category所有门客的光环等级合计（含自身）
 func get_hero_costume_aptitude(hero_id: String) -> int:
 	if not g.heroes.has(hero_id): return 0
+	if _inc_cache_ready:
+		return int(_c_costume_apt.get(hero_id, 0))
 	var total = 0
 	# 自身服装技能资质（山河五岳系列除外：该系列集中到凤魁晋升页签，资质计入凤魁本人，2026-09-25）
 	for cfg in get_hero_costume_cfgs(hero_id):
@@ -416,6 +464,8 @@ func _count_series_owned_by_hero(series: Dictionary, hero_id: String) -> int:
 
 # 某系列已解锁件数（门客系列数门客，挚友系列数挚友；用于光环1跨系列计数）
 func count_series_unlocked(series_name: String) -> int:
+	if _inc_cache_ready:
+		return int(_c_series_count.get(series_name, 0))
 	var series = _get_series_cfg(series_name)
 	if series.is_empty(): return 0
 	var n = 0

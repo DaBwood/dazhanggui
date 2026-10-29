@@ -178,7 +178,7 @@ func _on_claim_identity_reward(level: int):
 		c._show_success_popup("领取成功\n%s" % result.reward.name)
 		_update_identity_reward_list()
 		c.update_all_ui()
-		c.generate_hero_list()
+		c.ensure_hero_list()
 		if c.has_node("PageContainer/BeastPage"):
 			c.update_beast_page()
 	elif result.duplicate:
