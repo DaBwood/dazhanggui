@@ -52,6 +52,39 @@ def fill_enclosed(alpha):
     return out[2:2 + h, 2:2 + w]
 
 
+def fill_small_holes(solid, max_frac=0.25):
+    """Fill enclosed background pockets, but never the outside background.
+
+    A thin prop (staff) splits the region into large border-touching background
+    areas; those stay transparent.  Small enclosed pockets (belt gaps, dark
+    clothing interiors) are filled so the part does not get holes.
+    """
+    h, w = solid.shape
+    visited = np.zeros((h, w), bool)
+    limit = max(4, int(h * w * max_frac))
+    for y in range(h):
+        for x in range(w):
+            if solid[y, x] or visited[y, x]:
+                continue
+            stack = [(y, x)]
+            visited[y, x] = True
+            comp = []
+            border = False
+            while stack:
+                cy, cx = stack.pop()
+                comp.append((cy, cx))
+                if cy == 0 or cx == 0 or cy == h - 1 or cx == w - 1:
+                    border = True
+                for ny, nx in ((cy - 1, cx), (cy + 1, cx), (cy, cx - 1), (cy, cx + 1)):
+                    if 0 <= ny < h and 0 <= nx < w and not solid[ny, nx] and not visited[ny, nx]:
+                        visited[ny, nx] = True
+                        stack.append((ny, nx))
+            if not border and len(comp) <= limit:
+                for cy, cx in comp:
+                    solid[cy, cx] = True
+    return solid
+
+
 def build(raw_path, atlas_path, out_path, threshold=2):
     page, regions = parse_atlas(atlas_path)
     W, H = page["size"]
@@ -64,14 +97,19 @@ def build(raw_path, atlas_path, out_path, threshold=2):
             continue
         x, y = (int(v) for v in r["xy"].split(","))
         w, h = (int(v) for v in r["size"].split(","))
+        # Spine packs rotated regions transposed: the rect on the page is
+        # (h x w), not (w x h).  The runtime swaps the UVs itself, so we must
+        # copy the packed rect exactly as stored.
+        if r.get("rotate", "").strip().lower() == "true":
+            w, h = h, w
         rect = arr[y:y + h, x:x + w]
         solid = rect.max(axis=2) > threshold
         if not solid.any():
             empty.append(r["name"])
             continue
-        # No hole filling: the atlas background is pure black, and dark
-        # clothing is not pure black.  Filling would turn thin props into
-        # opaque rectangles.
+        # Fill only small enclosed pockets; large border-touching background
+        # areas (around thin props) must stay transparent.
+        solid = fill_small_holes(solid)
         a = (solid * 255).astype(np.uint8)
         alpha[y:y + h, x:x + w] = a
     out = Image.fromarray(arr, "RGB").convert("RGBA")
