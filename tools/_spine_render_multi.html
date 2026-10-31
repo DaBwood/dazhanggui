@@ -1,0 +1,161 @@
+<!doctype html>
+<html>
+<head>
+<meta charset="utf-8">
+<style>
+  html, body { margin: 0; padding: 0; background: transparent; overflow: hidden; }
+  canvas { display: block; }
+</style>
+</head>
+<body>
+<canvas id="c"></canvas>
+<script src="spine-webgl.js"></script>
+<script>
+(async function () {
+  try {
+    const params = new URLSearchParams(location.search);
+    const id = params.get('id');
+    const type = params.get('type') || 'patrons';
+    const fmt = params.get('fmt') || 'bin';
+    const W = parseInt(params.get('w') || '1400', 10);
+    const H = parseInt(params.get('h') || '1800', 10);
+    const base = `stage/${type}/${id}/`;
+    const dataFile = fmt === 'json' ? 'skeleton.json' : 'skeleton.bin';
+
+    const atlasText = await fetch(base + 'skeleton.atlas').then(r => {
+      if (!r.ok) throw new Error('atlas ' + r.status);
+      return r.text();
+    });
+
+    // Page names are the unindented lines immediately followed by an
+    // unindented "size:" line.  Region names are followed by indented
+    // properties, so they never match.
+    const lines = atlasText.split(/\r?\n/);
+    const pageNames = [];
+    for (let i = 0; i < lines.length; i++) {
+      const line = lines[i];
+      if (!line || /^\s/.test(line) || line.indexOf(':') >= 0) continue;
+      let j = i + 1;
+      while (j < lines.length && !lines[j].trim()) j++;
+      if (j < lines.length && !/^\s/.test(lines[j]) && /^size:/.test(lines[j].trim())) {
+        pageNames.push(line.trim());
+      }
+    }
+    if (!pageNames.length) throw new Error('no atlas pages');
+
+    const images = await Promise.all(pageNames.map(name => new Promise((res, rej) => {
+      const img = new Image();
+      img.onload = () => res(img);
+      img.onerror = () => rej(new Error('texture load failed: ' + name));
+      img.src = base + name;
+    })));
+    const imageByPage = {};
+    pageNames.forEach((name, i) => { imageByPage[name] = images[i]; });
+
+    const dataBuf = await fetch(base + dataFile).then(r => {
+      if (!r.ok) throw new Error(dataFile + ' ' + r.status);
+      return fmt === 'json' ? r.text() : r.arrayBuffer();
+    });
+
+    const canvas = document.getElementById('c');
+    canvas.width = W;
+    canvas.height = H;
+    const gl = canvas.getContext('webgl', { alpha: true, premultipliedAlpha: false, antialias: true });
+    if (!gl) throw new Error('no webgl');
+
+    const atlas = new spine.TextureAtlas(atlasText, function (path) {
+      const key = path.split('/').pop();
+      const img = imageByPage[path] || imageByPage[key] || images[0];
+      if (!img) throw new Error('no texture for ' + path);
+      return new spine.webgl.GLTexture(gl, img);
+    });
+    const loader = new spine.AtlasAttachmentLoader(atlas);
+    let data;
+    if (fmt === 'json') {
+      data = new spine.SkeletonJson(loader).readSkeletonData(JSON.parse(dataBuf));
+    } else {
+      data = new spine.SkeletonBinary(loader).readSkeletonData(new Uint8Array(dataBuf));
+    }
+    const skeleton = new spine.Skeleton(data);
+    skeleton.setToSetupPose();
+    const hide = (params.get('hide') || '').split(',').filter(Boolean);
+    const hideExact = new Set(hide.filter(h => /^\d+$/.test(h)));
+    const hideSub = hide.filter(h => !hideExact.has(h));
+    if (hide.length) {
+      for (const slot of skeleton.slots) {
+        const name = slot.data.name;
+        if (hideExact.has(name) || hideSub.some(h => name.indexOf(h) >= 0)) {
+          skeleton.setAttachment(name, null);
+        }
+      }
+    }
+    const anim = params.get('anim');
+    if (anim) {
+      const state = new spine.AnimationState(new spine.AnimationStateData(data));
+      state.setAnimation(0, anim, false);
+      state.update(parseFloat(params.get('time') || '0'));
+      state.apply(skeleton);
+    }
+    skeleton.updateWorldTransform();
+
+    if (params.get('dump')) {
+      const info = skeleton.slots.map(slot => {
+        const att = slot.getAttachment();
+        return {
+          name: slot.data.name,
+          bone: slot.bone.data.name,
+          attachment: att ? att.name : '',
+          x: Math.round(slot.bone.worldX * 10) / 10,
+          y: Math.round(slot.bone.worldY * 10) / 10,
+        };
+      });
+      const bones = skeleton.bones.map(bone => ({
+        name: bone.data.name,
+        parent: bone.parent ? bone.parent.data.name : '',
+        x: Math.round(bone.worldX * 10) / 10,
+        y: Math.round(bone.worldY * 10) / 10,
+      }));
+      const animations = (data.animations || []).map(a => a.name);
+      document.body.innerHTML = '<pre id="dump">' + JSON.stringify({slots: info, bones: bones, animations: animations}) + '</pre>';
+      document.title = 'DUMP';
+      window.__done = true;
+      return;
+    }
+
+    const offset = new spine.Vector2();
+    const size = new spine.Vector2();
+    skeleton.getBounds(offset, size, []);
+    if (!(size.x > 0 && size.y > 0)) throw new Error('empty bounds');
+
+    const pad = Math.max(size.x, size.y) * 0.03;
+    const worldW = size.x + pad * 2;
+    const worldH = size.y + pad * 2;
+    const scale = Math.min(W / worldW, H / worldH);
+    const viewW = W / scale;
+    const viewH = H / scale;
+
+    const renderer = new spine.webgl.SceneRenderer(canvas, gl, true);
+    const camera = new spine.webgl.OrthoCamera(canvas.width, canvas.height);
+    camera.viewportWidth = viewW;
+    camera.viewportHeight = viewH;
+    camera.position.set(offset.x + size.x / 2, offset.y + size.y / 2, 0);
+    camera.update();
+    renderer.camera = camera;
+
+    gl.viewport(0, 0, canvas.width, canvas.height);
+    gl.clearColor(0, 0, 0, 0);
+    gl.clear(gl.COLOR_BUFFER_BIT);
+    renderer.begin();
+    renderer.drawSkeleton(skeleton, true);
+    renderer.end();
+
+    document.title = 'OK ' + canvas.width + 'x' + canvas.height + ' ' + offset.x + ',' + offset.y + ',' + size.x + ',' + size.y + ' ' + viewW + ',' + viewH;
+    window.__done = true;
+  } catch (e) {
+    document.title = 'ERR ' + e.message;
+    window.__error = e.message;
+  }
+})();
+</script>
+</body>
+</html>

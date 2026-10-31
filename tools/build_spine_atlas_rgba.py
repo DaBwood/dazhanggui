@@ -17,27 +17,64 @@ import numpy as np
 from PIL import Image, ImageDraw, ImageFilter
 
 
-def parse_atlas(path):
-    lines = open(path, encoding="utf-8").read().splitlines()
-    page = {}
-    regions = []
-    cur = None
-    for line in lines:
-        s = line.strip()
-        if not s:
+def parse_atlas_pages(source):
+    """Parse a Spine atlas into a list of pages.
+
+    A multi-page atlas is just several page blocks concatenated:
+        page-name
+        size: W,H
+        format: ...
+        region
+          rotate: ...
+    Page names and region names are both unindented, so a page header is
+    recognised by the following unindented ``size:`` line.  Region ``size:``
+    lines are indented and therefore never match.
+    """
+    if os.path.exists(source):
+        text = open(source, encoding="utf-8").read()
+    else:
+        text = source
+    lines = text.splitlines()
+    starts = []
+    for i, line in enumerate(lines):
+        if not line or line.startswith(" ") or ":" in line:
             continue
-        if not line.startswith(" ") and s.startswith("size:"):
-            w, h = s.split(":", 1)[1].split(",")
+        j = i + 1
+        while j < len(lines) and not lines[j].strip():
+            j += 1
+        if j < len(lines) and not lines[j].startswith(" ") and lines[j].strip().startswith("size:"):
+            starts.append(i)
+    pages = []
+    for n, start in enumerate(starts):
+        end = starts[n + 1] if n + 1 < len(starts) else len(lines)
+        page = {"name": lines[start].strip(), "regions": []}
+        cur = None
+        for line in lines[start + 1:end]:
+            s = line.strip()
+            if not s:
+                continue
+            if not line.startswith(" ") and ":" not in s:
+                cur = {"name": s}
+                page["regions"].append(cur)
+            elif cur is None and not line.startswith(" ") and ":" in s:
+                k, v = s.split(":", 1)
+                page[k.strip()] = v.strip()
+            elif cur is not None and ":" in s:
+                k, v = s.split(":", 1)
+                cur[k.strip()] = v.strip()
+        if "size" in page:
+            w, h = page["size"].split(",")
             page["size"] = (int(w), int(h))
-        elif not line.startswith(" ") and s.startswith("format:"):
-            page["format"] = s.split(":", 1)[1].strip()
-        elif not line.startswith(" ") and ":" not in s:
-            cur = {"name": s}
-            regions.append(cur)
-        elif cur is not None and ":" in s:
-            k, v = s.split(":", 1)
-            cur[k.strip()] = v.strip()
-    return page, regions
+        pages.append(page)
+    return pages
+
+
+def parse_atlas(path):
+    """Backwards-compatible single-page view (first page)."""
+    pages = parse_atlas_pages(path)
+    if not pages:
+        return {}, []
+    return pages[0], pages[0]["regions"]
 
 
 def fill_enclosed(alpha):
@@ -85,11 +122,31 @@ def fill_small_holes(solid, max_frac=0.25):
     return solid
 
 
-def build(raw_path, atlas_path, out_path, threshold=2):
-    page, regions = parse_atlas(atlas_path)
+def build(raw_path, atlas_path, out_path, threshold=2, page_index=0, atlas_text=None,
+          fill_holes=True, mask_path=None):
+    """Build one RGBA atlas page from a raw colour page.
+
+    The game stores the colour page followed by a packed white alpha mask
+    (same atlas layout), so the top ``H`` rows are the colour page and the
+    matching rows of the second half are its mask.  When ``mask_path`` is
+    given that mask is used directly; otherwise the old per-region black
+    keying is used for packages that only ship a colour page.
+    """
+    pages = parse_atlas_pages(atlas_text if atlas_text is not None else atlas_path)
+    if not pages:
+        raise ValueError("empty atlas: %s" % atlas_path)
+    page = pages[page_index]
+    regions = page["regions"]
     W, H = page["size"]
     im = Image.open(raw_path).convert("RGB")
     arr = np.asarray(im)[:H, :W]
+    if mask_path:
+        alpha = np.asarray(Image.open(mask_path).convert("L"))[:H, :W]
+        out = Image.fromarray(arr, "RGB").convert("RGBA")
+        out.putalpha(Image.fromarray(alpha, "L").filter(ImageFilter.GaussianBlur(0.3)))
+        os.makedirs(os.path.dirname(out_path), exist_ok=True)
+        out.save(out_path, optimize=True)
+        return out.size, len(regions), []
     alpha = np.zeros((H, W), dtype=np.uint8)
     empty = []
     for r in regions:
@@ -109,7 +166,8 @@ def build(raw_path, atlas_path, out_path, threshold=2):
             continue
         # Fill only small enclosed pockets; large border-touching background
         # areas (around thin props) must stay transparent.
-        solid = fill_small_holes(solid)
+        if fill_holes:
+            solid = fill_small_holes(solid)
         a = (solid * 255).astype(np.uint8)
         alpha[y:y + h, x:x + w] = a
     out = Image.fromarray(arr, "RGB").convert("RGBA")
