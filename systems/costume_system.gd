@@ -89,7 +89,7 @@ func get_worn_cos_path(hero_id: String) -> String:
 	var worn: String = get_worn_cos(hero_id)
 	if worn == "":
 		return ""
-	var p: String = "res://assets/costumes/%s.png" % worn
+	var p: String = "res://assets/portraits/heroes_cos/%s.png" % worn
 	return p if ResourceLoader.exists(p) else ""
 
 # 服装技能总等级 = 资质丹等级 + 服装额外等级（额外等级在200满级之上）

@@ -280,7 +280,7 @@ func _build_cos_cards(cards: VBoxContainer, hero_id: String, preview: TextureRec
 		th.offset_bottom = -20.0
 		th.expand_mode = TextureRect.EXPAND_IGNORE_SIZE
 		th.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_CENTERED
-		var tex_path: String = "res://assets/costumes/%s.png" % cos_id
+		var tex_path: String = "res://assets/portraits/heroes_cos/%s.png" % cos_id
 		if cos_id == "__default":
 			var base_p: String = "res://assets/portraits/heroes/%s.png" % hero_id
 			tex_path = base_p if ResourceLoader.exists(base_p) else ""
@@ -429,7 +429,7 @@ func _update_cos_detail(hero_id: String, cfg: Dictionary, preview: TextureRect, 
 			up_btn.pressed.disconnect(conn2.callable)
 		up_btn.visible = false
 		return
-	var tex_path: String = "res://assets/costumes/%s.png" % cos_id
+	var tex_path: String = "res://assets/portraits/heroes_cos/%s.png" % cos_id
 	preview.texture = load(tex_path) if ResourceLoader.exists(tex_path) else null
 	var _nc := PackedStringArray()
 	for _ch in cos_name:
