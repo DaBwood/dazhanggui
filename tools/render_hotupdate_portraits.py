@@ -224,9 +224,10 @@ def drop_small_components(im, min_area=200):
 
 
 def render_one(stage_root, cid, out_path, port, profile, width, height, hide, anim="", at=0.0,
-               min_area=200, kind="patrons"):
+               min_area=200, kind="patrons", scale=2):
+    rw, rh = width * scale, height * scale
     url = ("http://127.0.0.1:%d/%s?id=%s&type=%s&w=%d&h=%d&hide=%s"
-           % (port, PAGE, cid, kind, width, height, hide))
+           % (port, PAGE, cid, kind, rw, rh, hide))
     if anim:
         url += "&anim=%s&time=%s" % (anim, at)
     raw = out_path + ".raw.png"
@@ -234,7 +235,7 @@ def render_one(stage_root, cid, out_path, port, profile, width, height, hide, an
         EDGE, "--headless=new", "--no-first-run",
         "--user-data-dir=" + profile,
         "--use-angle=swiftshader", "--enable-unsafe-swiftshader",
-        "--hide-scrollbars", "--window-size=%d,%d" % (width, height),
+        "--hide-scrollbars", "--window-size=%d,%d" % (rw, rh),
         "--default-background-color=00000000",
         "--virtual-time-budget=20000",
         "--screenshot=" + raw, url,
@@ -250,6 +251,8 @@ def render_one(stage_root, cid, out_path, port, profile, width, height, hide, an
     if not bbox:
         return False, "empty alpha"
     im = im.crop(bbox)
+    if scale > 1:
+        im = im.resize((max(1, im.width // scale), max(1, im.height // scale)), Image.LANCZOS)
     im = drop_small_components(im, min_area)
     bbox = im.getbbox()
     if bbox:
@@ -276,6 +279,8 @@ def main():
                     help="ignore the packed white mask and key black per region")
     ap.add_argument("--min-area", type=int, default=200,
                     help="drop detached alpha components smaller than this")
+    ap.add_argument("--scale", type=int, default=2,
+                    help="supersampling factor (render at scale x then Lanczos down)")
     ap.add_argument("--hide-map", default="",
                     help="JSON {id: {hide, anim, time}} overriding --hide/--anim")
     ap.add_argument("--append-manifest", action="store_true")
@@ -329,7 +334,7 @@ def main():
             at = float(spec.get("time", args.time))
             ok, info = render_one(stage_root, cid, dst, args.port, profile,
                                   args.width, args.height, hide,
-                                  anim, at, args.min_area, args.kind)
+                                  anim, at, args.min_area, args.kind, args.scale)
             rows.append([cid, src["data_json"], dst if ok else "", info])
             print("%s %s %s" % (cid, "OK" if ok else "FAIL", info))
     finally:

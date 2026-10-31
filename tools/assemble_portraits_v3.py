@@ -56,7 +56,8 @@ from portrait_sources import load_alljson, load_names, load_records, record_name
 EXCLUDE = {
     "patrons": {"102506", "102526", "102527", "102528", "102529",
                 "102536", "102537", "102538", "102539"},
-    "beauty": set(),
+    "beauty": {"103209", "103338", "103341", "103342", "103345", "103347",
+               "103353", "103354"},
 }
 
 EXCLUDE_REASON = {
@@ -69,6 +70,14 @@ EXCLUDE_REASON = {
     "102538": "duplicate of 102535 (小八)",
     "102539": "duplicate of 102535 (小八)",
     "102506": "non-patron (哥伦布)",
+    "103209": "not in data/friends.json (陆长青)",
+    "103338": "not in data/friends.json (玩具职人)",
+    "103341": "not in data/friends.json (织田市)",
+    "103342": "not in data/friends.json (白芙)",
+    "103345": "not in data/friends.json (伽罗奢)",
+    "103347": "not in data/friends.json (出云阿国)",
+    "103353": "not in data/friends.json (骑士)",
+    "103354": "not in data/friends.json (异国贵族)",
 }
 
 # Patron/beauty pairs that share one appearance (isTwins/isSwitch).
@@ -90,7 +99,7 @@ SHARED_APPEARANCE = {
 # checked first; these ids only fall back to the v2 half when none exists.
 RENDER_BAD = {
     "patrons": {"102517", "102519", "102523", "102540"},
-    "beauty": {"103379", "103382", "103388", "103390"},
+    "beauty": set(),
 }
 
 
@@ -208,6 +217,11 @@ def main():
             return t["page"][cid], "page"
         if cid not in RENDER_BAD.get(kind, ()) and cid in t["drawn"]:
             return t["drawn"][cid], "rendered"
+        # Sources may have been cleaned up after the portraits were imported
+        # into the game project; keep the already assembled file in that case.
+        dst = os.path.join(out_root, t["prefix"] + "_full", cid + ".png")
+        if os.path.exists(dst):
+            return dst, "existing"
         return "", ""
 
     def pick_layer(kind, cid, layer):
@@ -220,9 +234,14 @@ def main():
             at = src_tables[ak]
             if acid in at[layer]:
                 return at[layer][acid], "v2-shared"
+            if acid in at["drawn_" + layer]:
+                return at["drawn_" + layer][acid], "hotupdate-shared"
         hot = t["drawn_" + layer]
         if cid in hot:
             return hot[cid], "hotupdate"
+        dst = os.path.join(out_root, t["prefix"] + "_" + layer, cid + ".png")
+        if os.path.exists(dst):
+            return dst, "existing"
         return "", ""
 
     for kind, (prefix, render_kind) in plan.items():
@@ -243,14 +262,16 @@ def main():
             src, how = pick_full(kind, cid)
             if src:
                 dst = os.path.join(dst_full, cid + ".png")
-                shutil.copy2(src, dst)
+                if os.path.abspath(src) != os.path.abspath(dst):
+                    shutil.copy2(src, dst)
                 rows.append([kind, cid, name, "full", how, src, dst])
 
             for layer, dst_dir in (("half", dst_half), ("head", dst_head)):
                 src, how = pick_layer(kind, cid, layer)
                 if src:
                     dst = os.path.join(dst_dir, cid + ".png")
-                    shutil.copy2(src, dst)
+                    if os.path.abspath(src) != os.path.abspath(dst):
+                        shutil.copy2(src, dst)
                     rows.append([kind, cid, name, layer, how, src, dst])
 
     with open(os.path.join(out_root, "manifest.csv"), "w", encoding="utf-8-sig", newline="") as f:

@@ -23,6 +23,7 @@ import numpy as np
 from PIL import Image
 
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
+from portrait_alpha import soft_alpha  # noqa: E402
 from render_hotupdate_portraits import (  # noqa: E402
     decode_texture,
     entries_for,
@@ -31,7 +32,7 @@ from render_hotupdate_portraits import (  # noqa: E402
 )
 
 
-def split_color_mask(im, threshold=32):
+def split_color_mask(im, low=8):
     """Cocos split texture -> RGBA image using the bottom half as alpha."""
     w, h = im.size
     if h < 4:
@@ -39,7 +40,7 @@ def split_color_mask(im, threshold=32):
     half = h // 2
     color = im.crop((0, 0, w, half)).convert("RGBA")
     mask = np.asarray(im.crop((0, half, w, h)).convert("L"))
-    alpha = np.where(mask > threshold, 255, 0).astype(np.uint8)
+    alpha = soft_alpha(mask, low)
     arr = np.asarray(color).copy()
     arr[:, :, 3] = alpha
     out = Image.fromarray(arr, "RGBA")
@@ -64,18 +65,28 @@ def main():
     ap = argparse.ArgumentParser()
     ap.add_argument("--assets", default=r"C:\Users\林\Documents\大掌柜_assets")
     ap.add_argument("--out", default=r"C:\Users\林\Documents\大掌柜_assets\clean\portraits_v3\rendered")
+    ap.add_argument("--kind", default="patrons", choices=("patrons", "beauty"))
     ap.add_argument("--ids", nargs="+", default=["102542", "102543", "102544"])
     args = ap.parse_args()
 
     assets = os.path.abspath(args.assets)
     out_root = os.path.abspath(args.out)
     config = load_config(assets)
-    os.makedirs(os.path.join(out_root, "patrons_half"), exist_ok=True)
-    os.makedirs(os.path.join(out_root, "patrons_head"), exist_ok=True)
+    kind_dir = "Patrons" if args.kind == "patrons" else "Beauty"
+    half_folder = args.kind + "_half"
+    head_folder = args.kind + "_head"
+    # Patrons: /2 = half (186x308), /4 = head.
+    # Beauties: /4 = half (square card), /2 = head.
+    if args.kind == "patrons":
+        layer_suffixes = (("2", half_folder), ("4", head_folder))
+    else:
+        layer_suffixes = (("4", half_folder), ("2", head_folder))
+    os.makedirs(os.path.join(out_root, half_folder), exist_ok=True)
+    os.makedirs(os.path.join(out_root, head_folder), exist_ok=True)
 
     for cid in args.ids:
-        for suffix, folder in (("2", "patrons_half"), ("4", "patrons_head")):
-            tex = find_gui_texture(assets, config, "newGui/Patrons/%s/%s" % (cid, suffix))
+        for suffix, folder in layer_suffixes:
+            tex = find_gui_texture(assets, config, "newGui/%s/%s/%s" % (kind_dir, cid, suffix))
             if not tex:
                 print("%s /%s MISSING" % (cid, suffix))
                 continue

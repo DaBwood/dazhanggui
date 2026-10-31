@@ -26,6 +26,9 @@ import sys
 import numpy as np
 from PIL import Image
 
+sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
+from portrait_alpha import soft_alpha  # noqa: E402
+
 KINDS = (("Patrons", "patrons"), ("Beauty", "beauty"))
 
 
@@ -35,7 +38,7 @@ def build_page(src, dst, threshold=32):
     split = h // 2
     color = im.crop((0, 0, w, split))
     mask = np.asarray(im.crop((0, split, w, h)).convert("L"))
-    alpha = np.where(mask > threshold, 255, 0).astype(np.uint8)
+    alpha = soft_alpha(mask)
     arr = np.asarray(color.convert("RGBA")).copy()
     arr[:, :, 3] = alpha
     out = Image.fromarray(arr, "RGBA")

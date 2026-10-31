@@ -71,6 +71,7 @@ def main():
     ap.add_argument("--height", type=int, default=1800)
     ap.add_argument("--hide", default=HIDE)
     ap.add_argument("--min-area", type=int, default=200)
+    ap.add_argument("--scale", type=int, default=2)
     args = ap.parse_args()
 
     assets = os.path.abspath(args.assets)
@@ -102,7 +103,7 @@ def main():
             dst = os.path.join(out_root, cid + ".png")
             ok, info = render_one(stage_root, cid, dst, args.port, profile,
                                   args.width, args.height, args.hide,
-                                  min_area=args.min_area, kind=args.kind)
+                                  min_area=args.min_area, kind=args.kind, scale=args.scale)
             print("%s %s %s" % (cid, "OK" if ok else "FAIL", info))
     finally:
         httpd.shutdown()
