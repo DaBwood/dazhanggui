@@ -46,8 +46,8 @@ DUPLICATE_NAME_NOTE = {
 # Source caveats worth keeping visible in names.csv.
 PATRON_NOTE = {
     "102518": "art shared with Beauty 103365 (isTwins/isSwitch); hot-update 王昭君 spine not shipped",
-    "102542": "hot-update Spine render; double-page atlas",
-    "102543": "hot-update Spine render",
+    "102542": "hot-update Spine render; full battlefield camp scene (double-page atlas)",
+    "102543": "hot-update Spine render; full shark-butcher scene",
     "102544": "hot-update Spine render; official pose is the lotus-boat scene, lower body inside the boat",
 }
 
