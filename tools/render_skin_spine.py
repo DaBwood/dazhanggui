@@ -19,6 +19,7 @@ import csv
 import gzip
 import io
 import os
+import re
 import shutil
 import sys
 
@@ -47,6 +48,13 @@ def prepare_stage(root, cid, src):
     else:
         raise FileNotFoundError("no skeleton.json/skeleton.skel in " + src)
     shutil.copy2(os.path.join(src, "skeleton.atlas"), os.path.join(stage, "skeleton.atlas"))
+    # WebGL1 cannot sample non-power-of-two textures with REPEAT wrap; such a
+    # page becomes "incomplete" and samples black.  Force CLAMP for exports.
+    atlas_path = os.path.join(stage, "skeleton.atlas")
+    atlas_text = open(atlas_path, encoding="utf-8", errors="replace").read()
+    patched = re.sub(r"(?m)^repeat:\s*xy\s*$", "repeat: none", atlas_text)
+    if patched != atlas_text:
+        open(atlas_path, "w", encoding="utf-8", newline="").write(patched)
     for name in os.listdir(src):
         if name.endswith(".astc"):
             im = decode_astc_bytes(open(os.path.join(src, name), "rb").read())
@@ -75,7 +83,14 @@ def main():
     ap.add_argument("--scale", type=int, default=2)
     ap.add_argument("--hide", default="")
     ap.add_argument("--anim", default="")
-    ap.add_argument("--time", type=float, default=0.0)
+    # "end" samples the last frame of the clip, i.e. after the entrance.
+    ap.add_argument("--time", default="0")
+    # Scene-style skins keep large soft-alpha areas in their atlas; drawing
+    # those pages as premultiplied shows them as washed-out rectangles.
+    ap.add_argument("--pma", type=int, default=1, choices=(0, 1))
+    # Effect slots that rely on additive/screen blending look like white
+    # rectangles on a transparent canvas; drop them for portrait exports.
+    ap.add_argument("--noblend", action="store_true")
     args = ap.parse_args()
 
     assets = os.path.abspath(args.assets)
@@ -105,10 +120,16 @@ def main():
                 print("%s prep FAIL %s" % (cid, exc))
                 continue
             dst = os.path.join(out_root, cid + ".png")
+            extra = []
+            if not args.pma:
+                extra.append("pma=0")
+            if args.noblend:
+                extra.append("noblend=1")
             ok, info = render_one(os.path.join(root, "stage"), cid, dst, args.port, profile,
                                   args.width, args.height, args.hide,
                                   anim=args.anim, at=args.time,
-                                  min_area=200, kind="skin", scale=args.scale, page=page, fmt=fmt)
+                                  min_area=200, kind="skin", scale=args.scale, page=page, fmt=fmt,
+                                  extra="&".join(extra))
             print("%s %s %s" % (cid, "OK" if ok else "FAIL", info))
             rows.append([cid, src, dst if ok else "", info])
     finally:

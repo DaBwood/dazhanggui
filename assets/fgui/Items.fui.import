@@ -1,0 +1,16 @@
+[remap]
+
+importer="fairygui.package"
+importer_version=7
+type="Resource"
+uid="uid://bt4khqlvcy6wu"
+path="res://.godot/imported/Items.fui-be8f9cd92591309981ec450c365c7512.res"
+
+[deps]
+
+source_file="res://assets/fgui/Items.fui"
+dest_files=["res://.godot/imported/Items.fui-be8f9cd92591309981ec450c365c7512.res"]
+
+[params]
+
+codegen/enabled=true

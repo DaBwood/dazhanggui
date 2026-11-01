@@ -21,6 +21,11 @@ const SINGLE_USE_TYPES: Array = ["hero_box", "friend_box", "wushuang_cuzhi_box",
 # 【新增】背包底部栏当前页（2026-09-10 商会第二批）：item=物品 compose=合成
 var _bag_tab: String = "item"
 
+# 【新增】2026-11-01 背包复刻并入：默认显示原作 FairyGUI 整窗（ui/pages/bag_fgui_view.gd），
+# 右上「旧版」钮可切回旧版功能背包（道具使用/合成选择器全部保留）；"fgui"=原作整窗 "legacy"=旧版
+var _bag_mode: String = "fgui"
+var _fgui: BagFguiView = null
+
 # 【新增】合成配方：小资质丹20合1资质丹；残破缀玉20合1指定缀玉（用户拍板）
 const COMPOSE_RECIPES: Array = [
 	{"output": "aptitude_pill", "material": "small_aptitude_pill", "ratio": 20},
@@ -50,6 +55,29 @@ func _init(p_c):
 func generate_bag_list():
 	if not c.has_node("PageContainer/BagPage"): return
 	var bag_page = c.get_node("PageContainer/BagPage")
+
+	# 【新增】2026-11-01 背包复刻并入：默认显示原作 FairyGUI 整窗
+	# 懒建口径：仅背包页可见时才加载五包+建整窗（_enter_game 启动期调用时页面未显示，跳过不白付加载）
+	if _bag_mode == "fgui":
+		if not bag_page.visible:
+			return
+		if _fgui == null:
+			_fgui = BagFguiView.new(c)
+		if _fgui.ensure_built(bag_page):
+			_hide_legacy_list(bag_page)
+			_update_mode_toggle(bag_page)
+			return
+		# 加载失败兜底：回退旧版功能背包，页面不空
+		_bag_mode = "legacy"
+		c._show_success_popup("原作背包界面加载失败，已回退旧版背包", 0.0, "warn")
+	# 旧版模式：隐藏 FGUI 整窗（若已建），恢复旧列表显隐
+	if _fgui != null:
+		_fgui.set_visible(false)
+	_update_mode_toggle(bag_page)
+	if bag_page.has_node("BagBottomBar"):
+		bag_page.get_node("BagBottomBar").visible = true
+	if bag_page.has_node("BagScroll"):
+		bag_page.get_node("BagScroll").visible = true
 
 	# 【新增】底部栏：物品/合成切换
 	# 【修】BagPage 是 0 尺寸空壳（全工程布局由 _apply_portrait_layout 显式摆位，见 game_controller 2373行）
@@ -125,6 +153,37 @@ func generate_bag_list():
 
 # 【新增】底部栏切换
 var _bag_kw := ""
+
+# 【新增】2026-11-01 背包复刻并入：原作/旧版切换钮（挂 BagPage 宿主右上角，两种模式共用）
+func _update_mode_toggle(bag_page) -> void:
+	var btn: Button
+	if bag_page.has_node("BagModeToggle"):
+		btn = bag_page.get_node("BagModeToggle")
+	else:
+		btn = Button.new()
+		btn.name = "BagModeToggle"
+		btn.custom_minimum_size = Vector2(56, 28)
+		btn.set_anchors_preset(Control.PRESET_TOP_LEFT)
+		btn.z_index = 2   # 压过 FGUI 整窗（整窗节点默认 z=0）
+		btn.add_theme_font_size_override("font_size", 13)
+		btn.pressed.connect(_on_bag_mode_toggle)
+		bag_page.add_child(btn)
+	btn.text = "旧版" if _bag_mode == "fgui" else "原作"
+	# 摆右上角（视口逻辑宽即宿主宽；FGUI 关闭钮在原作窗口左上角，不冲突）
+	var vw: float = c.get_viewport_rect().size.x
+	btn.position = Vector2(maxf(0.0, vw - 62.0), 6.0)
+	btn.size = Vector2(56, 28)
+
+func _on_bag_mode_toggle():
+	_bag_mode = "legacy" if _bag_mode == "fgui" else "fgui"
+	generate_bag_list()
+
+# 【新增】隐藏旧版列表节点（切到 FGUI 模式时；不删节点，切回旧版原地重建复用）
+func _hide_legacy_list(bag_page) -> void:
+	if bag_page.has_node("BagBottomBar"):
+		bag_page.get_node("BagBottomBar").visible = false
+	if bag_page.has_node("BagScroll"):
+		bag_page.get_node("BagScroll").visible = false
 
 func _on_bag_tab(tab: String):
 	if _bag_tab == tab:

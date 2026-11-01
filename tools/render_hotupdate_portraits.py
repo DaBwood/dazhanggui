@@ -224,13 +224,15 @@ def drop_small_components(im, min_area=200):
 
 
 def render_one(stage_root, cid, out_path, port, profile, width, height, hide, anim="", at=0.0,
-               min_area=200, kind="patrons", scale=2, page=None, fmt="bin"):
+               min_area=200, kind="patrons", scale=2, page=None, fmt="bin", extra=""):
     rw, rh = width * scale, height * scale
     page = page or PAGE
     url = ("http://127.0.0.1:%d/%s?id=%s&type=%s&w=%d&h=%d&hide=%s&fmt=%s"
            % (port, page, cid, kind, rw, rh, hide, fmt))
     if anim:
         url += "&anim=%s&time=%s" % (anim, at)
+    if extra:
+        url += "&" + extra
     raw = out_path + ".raw.png"
     cmd = [
         EDGE, "--headless=new", "--no-first-run",

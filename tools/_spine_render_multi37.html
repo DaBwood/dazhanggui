@@ -22,7 +22,8 @@
     const base = `stage/${type}/${id}/`;
     const dataFile = fmt === 'json' ? 'skeleton.json' : 'skeleton.bin';
 
-    const atlasText = await fetch(base + 'skeleton.atlas').then(r => {
+    const stamp = '?v=' + Date.now();
+    const atlasText = await fetch(base + 'skeleton.atlas' + stamp, { cache: 'no-store' }).then(r => {
       if (!r.ok) throw new Error('atlas ' + r.status);
       return r.text();
     });
@@ -47,12 +48,12 @@
       const img = new Image();
       img.onload = () => res(img);
       img.onerror = () => rej(new Error('texture load failed: ' + name));
-      img.src = base + name;
+      img.src = base + name + stamp;
     })));
     const imageByPage = {};
     pageNames.forEach((name, i) => { imageByPage[name] = images[i]; });
 
-    const dataBuf = await fetch(base + dataFile).then(r => {
+    const dataBuf = await fetch(base + dataFile + stamp, { cache: 'no-store' }).then(r => {
       if (!r.ok) throw new Error(dataFile + ' ' + r.status);
       return fmt === 'json' ? r.text() : r.arrayBuffer();
     });
@@ -79,12 +80,15 @@
     const skeleton = new spine.Skeleton(data);
     skeleton.setToSetupPose();
     const hide = (params.get('hide') || '').split(',').filter(Boolean);
+    const noBlend = params.get('noblend') === '1';
     const hideExact = new Set(hide.filter(h => /^\d+$/.test(h)));
     const hideSub = hide.filter(h => !hideExact.has(h));
-    if (hide.length) {
+    if (hide.length || noBlend) {
       for (const slot of skeleton.slots) {
         const name = slot.data.name;
         if (hideExact.has(name) || hideSub.some(h => name.indexOf(h) >= 0)) {
+          skeleton.setAttachment(name, null);
+        } else if (noBlend && slot.data.blendMode !== 0) {
           skeleton.setAttachment(name, null);
         }
       }
@@ -93,7 +97,13 @@
     if (anim) {
       const state = new spine.AnimationState(new spine.AnimationStateData(data));
       state.setAnimation(0, anim, false);
-      state.update(parseFloat(params.get('time') || '0'));
+      const atRaw = params.get('time') || '0';
+      let at = parseFloat(atRaw);
+      if (atRaw === 'end') {
+        const clip = data.findAnimation ? data.findAnimation(anim) : null;
+        at = clip ? Math.max(0, clip.duration - 0.05) : 0;
+      }
+      state.update(at);
       state.apply(skeleton);
     }
     skeleton.updateWorldTransform();
@@ -104,6 +114,8 @@
         return {
           name: slot.data.name,
           bone: slot.bone.data.name,
+          blend: slot.data.blendMode,
+          color: [slot.color.r, slot.color.g, slot.color.b, slot.color.a],
           attachment: att ? att.name : '',
           x: Math.round(slot.bone.worldX * 10) / 10,
           y: Math.round(slot.bone.worldY * 10) / 10,
@@ -115,7 +127,7 @@
         x: Math.round(bone.worldX * 10) / 10,
         y: Math.round(bone.worldY * 10) / 10,
       }));
-      const animations = (data.animations || []).map(a => a.name);
+      const animations = (data.animations || []).map(a => ({ name: a.name, duration: a.duration }));
       document.body.innerHTML = '<pre id="dump">' + JSON.stringify({slots: info, bones: bones, animations: animations}) + '</pre>';
       document.title = 'DUMP';
       window.__done = true;
@@ -145,8 +157,12 @@
     gl.viewport(0, 0, canvas.width, canvas.height);
     gl.clearColor(0, 0, 0, 0);
     gl.clear(gl.COLOR_BUFFER_BIT);
+    // Atlas pages are straight (non-premultiplied) alpha.  Scene-style skins
+    // with large soft-alpha areas need pma=0, otherwise those areas show up as
+    // washed-out rectangles.
+    const pma = params.get('pma') !== '0';
     renderer.begin();
-    renderer.drawSkeleton(skeleton, true);
+    renderer.drawSkeleton(skeleton, pma);
     renderer.end();
 
     document.title = 'OK ' + canvas.width + 'x' + canvas.height + ' ' + offset.x + ',' + offset.y + ',' + size.x + ',' + size.y + ' ' + viewW + ',' + viewH;
