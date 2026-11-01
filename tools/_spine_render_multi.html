@@ -77,7 +77,15 @@
       data = new spine.SkeletonBinary(loader).readSkeletonData(new Uint8Array(dataBuf));
     }
     const skeleton = new spine.Skeleton(data);
+    if (data.defaultSkin) {
+      skeleton.setSkin(data.defaultSkin);
+    } else if (data.findSkin && data.findSkin('default')) {
+      skeleton.setSkin(data.findSkin('default'));
+    }
     skeleton.setToSetupPose();
+    for (const slot of skeleton.slots) {
+      slot.color.a = 1;
+    }
     const hide = (params.get('hide') || '').split(',').filter(Boolean);
     const hideExact = new Set(hide.filter(h => /^\d+$/.test(h)));
     const hideSub = hide.filter(h => !hideExact.has(h));
