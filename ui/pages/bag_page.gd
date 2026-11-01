@@ -19,12 +19,17 @@ var _pending_baiye_count: int = 0
 const SINGLE_USE_TYPES: Array = ["hero_box", "friend_box", "wushuang_cuzhi_box", "cos_box"]
 
 # 【新增】背包底部栏当前页（2026-09-10 商会第二批）：item=物品 compose=合成
-var _bag_tab: String = "item"
 
 # 【新增】2026-11-01 背包复刻并入：默认显示原作 FairyGUI 整窗（ui/pages/bag_fgui_view.gd），
 # 右上「旧版」钮可切回旧版功能背包（道具使用/合成选择器全部保留）；"fgui"=原作整窗 "legacy"=旧版
-var _bag_mode: String = "fgui"
 var _fgui: BagFguiView = null
+
+# 【新增】2026-11-01 道具图标：6 位图标 id 图库 + 工程道具 id 映射（clean/item_icons 流水线产出）
+const ICON_DIR := "res://assets/items/icons/"
+const ICON_MAP_PATH := "res://data/item_icon_map.json"
+var _icon_map: Dictionary = {}
+var _icon_map_loaded: bool = false
+var _icon_tex_cache: Dictionary = {}   # 道具 id -> Texture2D（点开详情弹窗不重复 load 磁盘）
 
 # 【新增】合成配方：小资质丹20合1资质丹；残破缀玉20合1指定缀玉（用户拍板）
 const COMPOSE_RECIPES: Array = [
@@ -52,191 +57,90 @@ func _init(p_c):
 
 # ============ 以下为原 game_controller.gd 搬迁函数（逻辑未改，仅根节点访问加了 c. 前缀） ============
 
+# 【新增 2026-11-01】离开背包页时收尾：原作整窗是挂在根节点上的覆盖层（不是 BagPage 子节点），
+# 必须显式隐藏，否则回府邸还顶着背包窗。顶栏/底栏不再隐藏，无需还原。
+func leave_fgui() -> void:
+	if _fgui != null:
+		_fgui.set_visible(false)
+
 func generate_bag_list():
 	if not c.has_node("PageContainer/BagPage"): return
 	var bag_page = c.get_node("PageContainer/BagPage")
 
-	# 【新增】2026-11-01 背包复刻并入：默认显示原作 FairyGUI 整窗
+	# 背包页＝原作 FairyGUI 整窗（2026-11-01 起旧版功能背包已删除，不再有双模式切换）
 	# 懒建口径：仅背包页可见时才加载五包+建整窗（_enter_game 启动期调用时页面未显示，跳过不白付加载）
-	if _bag_mode == "fgui":
-		if not bag_page.visible:
-			return
-		if _fgui == null:
-			_fgui = BagFguiView.new(c)
-		if _fgui.ensure_built(bag_page):
-			_hide_legacy_list(bag_page)
-			_update_mode_toggle(bag_page)
-			return
-		# 加载失败兜底：回退旧版功能背包，页面不空
-		_bag_mode = "legacy"
-		c._show_success_popup("原作背包界面加载失败，已回退旧版背包", 0.0, "warn")
-	# 旧版模式：隐藏 FGUI 整窗（若已建），恢复旧列表显隐
-	if _fgui != null:
-		_fgui.set_visible(false)
-	_update_mode_toggle(bag_page)
-	if bag_page.has_node("BagBottomBar"):
-		bag_page.get_node("BagBottomBar").visible = true
-	if bag_page.has_node("BagScroll"):
-		bag_page.get_node("BagScroll").visible = true
+	if not bag_page.visible:
+		return
+	if _fgui == null:
+		_fgui = BagFguiView.new(c)
+	if _fgui.ensure_built(bag_page):
+		# 整窗挂根节点后不会被页面显隐带着走，进背包必须显式显示
+		_fgui.set_visible(true)
+		_fgui.refresh_items()
+		return
+	# 加载失败兜底：旧版背包已删，只能明确提示（不再静默留空白页）
+	c._show_success_popup("原作背包界面加载失败，请检查 assets/fgui 下的五个包", 0.0, "warn")
 
-	# 【新增】底部栏：物品/合成切换
-	# 【修】BagPage 是 0 尺寸空壳（全工程布局由 _apply_portrait_layout 显式摆位，见 game_controller 2373行）
-	# 不能依赖锚点，本页自管：滚动区与底部栏都用显式 position/size，每次生成重算（窗口缩放后下次生成自愈）
-	var vs: Vector2 = c.get_viewport_rect().size
-	# 夹心高度与 game_controller 新栏规则一致：顶栏只在府邸/商铺、底栏只在五主页面（可见才算高度）
-	var top_h: float = 50 if (c.has_node("TopBar") and c.get_node("TopBar").visible) else 0
-	var bot_h: float = 60 if (c.has_node("BottomNav") and c.get_node("BottomNav").visible) else 0
-	var content_h: float = vs.y - top_h - bot_h - 48   # 48=本栏高度
-	var bar: HBoxContainer
-	if bag_page.has_node("BagBottomBar"):
-		bar = bag_page.get_node("BagBottomBar")
-	else:
-		bar = HBoxContainer.new()
-		bar.name = "BagBottomBar"
-		bar.add_theme_constant_override("separation", 8)
-		bag_page.add_child(bar)
-	bar.set_anchors_preset(Control.PRESET_TOP_LEFT)
-	bar.position = Vector2(0, content_h)
-	bar.size = Vector2(vs.x, 48)
-	# 每次重建按钮（当前页高亮状态可能变化）
-	for child in bar.get_children():
-		child.queue_free()
-	for tab in [["item", "物品"], ["compose", "合成"]]:
-		var tb = Button.new()
-		tb.text = tab[1]
-		tb.custom_minimum_size = Vector2(88, 40)
-		tb.mouse_filter = Control.MOUSE_FILTER_PASS   # 滚动穿透，同格子按钮
-		var is_active: bool = _bag_tab == tab[0]
-		tb.add_theme_color_override("font_color", Color(1.0, 0.85, 0.3) if is_active else Color(0.65, 0.65, 0.65))
-		tb.pressed.connect(_on_bag_tab.bind(tab[0]))
-		bar.add_child(tb)
-	# 搜索框：过滤物品名（Web 端中文 IME 引擎级未修，聚焦弹原生 prompt）
-	var search := LineEdit.new()
-	search.name = "BagSearchEdit"
-	search.placeholder_text = "搜索物品…"
-	search.size_flags_horizontal = Control.SIZE_EXPAND_FILL
-	search.custom_minimum_size = Vector2(120, 40)
-	c._hook_web_cjk_input(search, "物品名")
-	search.text_changed.connect(func(t: String):
-		_bag_kw = t.strip_edges()
-		var sc: ScrollContainer = bag_page.get_node("BagScroll")
-		_fill_bag_grid(sc.get_node("BagGrid")))
-	bar.add_child(search)
-
-	# 【改】BagScroll 显式铺满内容区（底部给切换栏留48px）；BagGrid 必须放在 BagScroll 内部
-	# 【修】同上：空壳页不能依赖锚点，显式 position/size
-	var scroll: ScrollContainer
-	if bag_page.has_node("BagScroll"):
-		scroll = bag_page.get_node("BagScroll")
-	else:
-		scroll = ScrollContainer.new()
-		scroll.name = "BagScroll"
-		bag_page.add_child(scroll)
-	scroll.set_anchors_preset(Control.PRESET_TOP_LEFT)
-	scroll.position = Vector2.ZERO
-	scroll.size = Vector2(vs.x, content_h)
-
-	# 自动创建 GridContainer（如果没有），作为 ScrollContainer 的子节点
-	var grid: GridContainer
-	if scroll.has_node("BagGrid"):
-		grid = scroll.get_node("BagGrid")
-	else:
-		grid = GridContainer.new()
-		grid.name = "BagGrid"
-		grid.columns = 5
-		grid.size_flags_horizontal = Control.SIZE_EXPAND_FILL
-		grid.add_theme_constant_override("h_separation", 8)
-		grid.add_theme_constant_override("v_separation", 8)
-		scroll.add_child(grid)
-
-	_fill_bag_grid(grid)
 
 # 【新增】底部栏切换
-var _bag_kw := ""
 
 # 【新增】2026-11-01 背包复刻并入：原作/旧版切换钮（挂 BagPage 宿主右上角，两种模式共用）
-func _update_mode_toggle(bag_page) -> void:
-	var btn: Button
-	if bag_page.has_node("BagModeToggle"):
-		btn = bag_page.get_node("BagModeToggle")
-	else:
-		btn = Button.new()
-		btn.name = "BagModeToggle"
-		btn.custom_minimum_size = Vector2(56, 28)
-		btn.set_anchors_preset(Control.PRESET_TOP_LEFT)
-		btn.z_index = 2   # 压过 FGUI 整窗（整窗节点默认 z=0）
-		btn.add_theme_font_size_override("font_size", 13)
-		btn.pressed.connect(_on_bag_mode_toggle)
-		bag_page.add_child(btn)
-	btn.text = "旧版" if _bag_mode == "fgui" else "原作"
-	# 摆右上角（视口逻辑宽即宿主宽；FGUI 关闭钮在原作窗口左上角，不冲突）
-	var vw: float = c.get_viewport_rect().size.x
-	btn.position = Vector2(maxf(0.0, vw - 62.0), 6.0)
-	btn.size = Vector2(56, 28)
 
-func _on_bag_mode_toggle():
-	_bag_mode = "legacy" if _bag_mode == "fgui" else "fgui"
-	generate_bag_list()
 
-# 【新增】隐藏旧版列表节点（切到 FGUI 模式时；不删节点，切回旧版原地重建复用）
-func _hide_legacy_list(bag_page) -> void:
-	if bag_page.has_node("BagBottomBar"):
-		bag_page.get_node("BagBottomBar").visible = false
-	if bag_page.has_node("BagScroll"):
-		bag_page.get_node("BagScroll").visible = false
+func _item_icon_texture(item_id: String) -> Texture2D:
+	if _icon_tex_cache.has(item_id):
+		return _icon_tex_cache[item_id]
+	if not _icon_map_loaded:
+		_icon_map_loaded = true
+		if FileAccess.file_exists(ICON_MAP_PATH):
+			var parsed: Variant = JSON.parse_string(FileAccess.get_file_as_string(ICON_MAP_PATH))
+			if typeof(parsed) == TYPE_DICTIONARY:
+				var m: Variant = parsed.get("map", null)
+				if typeof(m) == TYPE_DICTIONARY:
+					_icon_map = m
+	var ent: Dictionary = _icon_map.get(item_id, {})
+	var icon_id := str(ent.get("icon", ""))
+	if icon_id == "":
+		_icon_tex_cache[item_id] = null
+		return null
+	var path := ICON_DIR + icon_id + ".png"
+	if not ResourceLoader.exists(path):
+		_icon_tex_cache[item_id] = null
+		return null
+	var tex := load(path) as Texture2D
+	_icon_tex_cache[item_id] = tex
+	return tex
 
-func _on_bag_tab(tab: String):
-	if _bag_tab == tab:
-		return
-	_bag_tab = tab
-	generate_bag_list()
-
-# 背包格子内容：按当前页签填充
-func _fill_bag_grid(grid: GridContainer):
-	# 清空旧格子
-	for child in grid.get_children():
-		child.queue_free()
-	if _bag_tab == "compose":
-		_fill_compose_grid(grid)
-		return
-
-	# 搜索关键字过滤物品名（空=全部）
-	var kw_lower := _bag_kw.to_lower()
-
-	# 【改】为每种已拥有物品生成简洁按钮，只显示名称；数量0不进背包
-	for item_id in data.ITEM_CONFIG.keys():
-		var cfg = data.ITEM_CONFIG[item_id]
-		
-		# 跳过隐藏道具（如鱼食）
-		if cfg.get("hide_in_bag", false):
-			continue
-		if kw_lower != "" and not str(cfg.get("name", "")).to_lower().contains(kw_lower):
-			continue
-		
-		var count = data.items.get(item_id, 0)
-		if item_id == "lottery_ticket":
-			count = data.lottery_ticket
-		# 【新增】背包列表只显示已拥有物品，数量为 0 的道具不生成格子
-		if int(count) <= 0:
-			continue
-
-		var btn = _make_bag_cell("%s\nx%d" % [cfg.name, count])   # 【改】统一样式抽出，物品/合成页签共用
-		btn.name = item_id + "_btn"
-		# 点击打开详情弹窗
-		btn.pressed.connect(_show_item_detail_popup.bind(item_id))
-		grid.add_child(btn)
-
-# 【改】物品详情弹窗：名称/数量/描述 + 数量选择器（滑条+输入框，默认0）+ 使用按钮
-# 0 点使用提示选数量；>0 按 use.type 分派：直接消耗类按N结算，需二次选择的带N进选择器
+# 【新增 2026-11-01】点格子→详情弹窗改为延迟一帧创建：弹窗要建遮罩 + 九切片皮肤 + 匾额灯笼十余个节点，
+# 在 FGUI 的点击回调栈里同步建会明显顿一下；延迟一帧既不丢操作，点击帧也不再卡。
 func _show_item_detail_popup(item_id: String):
+	_show_item_detail_popup_now.call_deferred(item_id)
+
+func _show_item_detail_popup_now(item_id: String):
+	# 同名弹窗已在场先收掉（延迟一帧可能叠出两个）
+	var old: Node = c.get_node_or_null("ItemDetailPopup")
+	if old != null:
+		old.queue_free()
 	var cfg = data.ITEM_CONFIG.get(item_id, {})
 	var count = data.items.get(item_id, 0)
 	if item_id == "lottery_ticket":
 		count = data.lottery_ticket
 
-	var popup = c._create_base_popup(cfg.get("name", "物品详情"), Vector2(400, 380))
+	var tex := _item_icon_texture(item_id)
+
+	var popup = c._create_base_popup(cfg.get("name", "物品详情"), Vector2(400, 460) if tex != null else Vector2(400, 380))
 	popup.name = "ItemDetailPopup"
 	var vbox = popup.get_child(0)
+
+	# 图标（原作详情弹窗顶部大图标；缺图时不占位）
+	if tex != null:
+		var icon_rect := TextureRect.new()
+		icon_rect.texture = tex
+		icon_rect.custom_minimum_size = Vector2(112, 112)
+		icon_rect.expand_mode = TextureRect.EXPAND_IGNORE_SIZE
+		icon_rect.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_CENTERED
+		icon_rect.size_flags_horizontal = Control.SIZE_SHRINK_CENTER
+		vbox.add_child(icon_rect)
 
 	# 数量
 	var count_lbl = Label.new()
@@ -849,54 +753,6 @@ func _on_hungu_box_pick(popup, slot: String, quality: String, qty: int):
 # ============================================================
 
 # 背包格子统一样式（物品/合成页签共用）
-func _make_bag_cell(text_str: String) -> Button:
-	var btn = Button.new()
-	btn.text = text_str   # 名称第一行，数量第二行
-	btn.custom_minimum_size = Vector2(0, 50)    # 不限制宽度，高度50容纳两行
-	btn.size_flags_horizontal = Control.SIZE_EXPAND_FILL
-	# 【修】手机端：按钮默认 STOP 会拦截触摸滚动，改 PASS 让滑动事件穿透到 ScrollContainer
-	btn.mouse_filter = Control.MOUSE_FILTER_PASS
-	btn.add_theme_font_size_override("font_size", 14)
-	btn.add_theme_color_override("font_color", Color(0.9, 0.85, 0.75))
-	btn.add_theme_color_override("font_pressed_color", Color(1.0, 0.95, 0.8))
-	btn.add_theme_color_override("font_hover_color", Color(1.0, 1.0, 1.0))
-	var btn_style = StyleBoxFlat.new()
-	btn_style.bg_color = Color(0.15, 0.14, 0.18)
-	btn_style.border_color = Color(0.35, 0.32, 0.40)
-	btn_style.border_width_bottom = 2
-	btn_style.corner_radius_top_left = 3
-	btn_style.corner_radius_top_right = 3
-	btn_style.corner_radius_bottom_left = 3
-	btn_style.corner_radius_bottom_right = 3
-	btn.add_theme_stylebox_override("normal", btn_style)
-	var hover_style = btn_style.duplicate()
-	hover_style.bg_color = Color(0.22, 0.20, 0.28)
-	hover_style.border_color = Color(0.50, 0.45, 0.60)
-	btn.add_theme_stylebox_override("hover", hover_style)
-	var press_style = btn_style.duplicate()
-	press_style.bg_color = Color(0.10, 0.09, 0.13)
-	btn.add_theme_stylebox_override("pressed", press_style)
-	return btn
-
-# 合成页签：配方格子（产出名+现有数量，点击进合成弹窗）；珍兽产出显示拥有只数
-func _fill_compose_grid(grid: GridContainer):
-	for recipe in COMPOSE_RECIPES:
-		var out_id := str(recipe.get("output", ""))
-		var have: int
-		if str(recipe.get("output_type", "")) == "beast":
-			# 【新增】2026-09-16 兽骨→驺虞：产出是珍兽，持有数读珍兽实例数（道具表里没有它）
-			have = data.get_beast_instance_count(out_id)
-			var beast_btn = _make_bag_cell("%s\nx%d" % [data.get_beast_config(out_id).get("name", out_id), have])
-			beast_btn.pressed.connect(_show_compose_popup.bind(recipe))
-			grid.add_child(beast_btn)
-			continue
-		var out_cfg: Dictionary = data.ITEM_CONFIG.get(out_id, {})
-		# 【改】格子只显示名称+持有数（同物品页样式，直上直下自然排布）；配比与材料余量只在弹窗里展示
-		var btn = _make_bag_cell("%s\nx%d" % [out_cfg.get("name", out_id), int(data.items.get(out_id, 0))])
-		btn.pressed.connect(_show_compose_popup.bind(recipe))
-		grid.add_child(btn)
-
-# 合成弹窗：滑条选数量（最大=材料数÷配比），确认即消耗材料产出
 func _show_compose_popup(recipe: Dictionary):
 	var out_id := str(recipe.get("output", ""))
 	var mat_id := str(recipe.get("material", ""))

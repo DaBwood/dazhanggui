@@ -312,6 +312,10 @@ func switch_page(page_id: String):
 	var page_path = "PageContainer/" + page_id.capitalize() + "Page"
 	if has_node(page_path): get_node(page_path).visible = true
 
+	# 【新增 2026-11-01】背包原作整窗是根节点下的全屏覆盖层，切走时要显式收尾（隐藏 + 还原顶底栏）
+	if page_id != "bag" and bag_page != null:
+		bag_page.leave_fgui()
+
 	
 	#进入门客页面时更新门客列表（首次进页才建壳，之后只刷数据）
 	if page_id == "hero":ensure_hero_list()
@@ -1670,14 +1674,6 @@ func _apply_portrait_layout():
 			pg.set_anchors_preset(Control.PRESET_TOP_LEFT)
 			pg.position = Vector2.ZERO
 			pg.size = $PageContainer.size
-	
-	
-	# 背包页滚动区铺满整页（门客页已场景化：HeroScroll 布局由 hero_page.tscn 锚点自持，不在此列）
-	if has_node("PageContainer/BagPage/BagScroll"):
-		var sc = get_node("PageContainer/BagPage/BagScroll")
-		sc.set_anchors_preset(Control.PRESET_TOP_LEFT)
-		sc.position = Vector2.ZERO
-		sc.size = Vector2(vs.x, vs.y - 110)
 
 # 【新增】无双促织盒子使用入口（由 bag_page 调用）
 func show_wushuang_box_selector():

@@ -9,13 +9,20 @@ func _ready() -> void:
 	await get_tree().process_frame
 	for n in ["LoginGate", "LoginPopup", "OfflineHintPopup", "SyncMask"]:
 		if game.has_node(n):
-			game.get_node(n).visible = false
+			game.get_node(n).queue_free()
+	# 弹窗遮罩（0.55 黑，z=25）是弹窗的兄弟节点，弹窗没了要一起清，否则整页被压暗
+	for ch in game.get_children():
+		if ch is ColorRect and (ch as ColorRect).color.a >= 0.5:
+			ch.queue_free()
 	game._enter_game()
+	for i in range(4):
+		await get_tree().process_frame
 	game.switch_page("bag")
-	for i in range(12):
+	game.switch_page("bag")
+	for i in range(40):
 		await get_tree().process_frame
 	await _shot("res://tests/bag_fgui_preview.png")
-	print("SHOT1_SAVED mode=", game.bag_page._bag_mode)
+	print("SHOT1_SAVED tab=item")
 
 	var fv = game.bag_page._fgui
 	# 页签切换：合成
@@ -23,7 +30,21 @@ func _ready() -> void:
 	for i in range(4):
 		await get_tree().process_frame
 	await _shot("res://tests/bag_fgui_tab3.png")
-	print("SHOT3_SAVED tab=compose")
+	print("SHOT3_SAVED tab=compose items=", fv._tab_data[2].size())
+	# 合成格点击：第一格 → 合成弹窗
+	var clist = fv._lists[2]
+	if clist != null and clist.num_items > 0:
+		fv._on_compose_cell_clicked(null, clist.get_child_at(0))
+		for i in range(4):
+			await get_tree().process_frame
+		await _shot("res://tests/bag_fgui_compose.png")
+		print("SHOT5_SAVED compose popup visible=", game.has_node("ComposePopup"))
+		game._safe_close("ComposePopup")
+	fv._on_tab_clicked(1)
+	for i in range(4):
+		await get_tree().process_frame
+	await _shot("res://tests/bag_fgui_tab2.png")
+	print("SHOT2_SAVED tab=activity items=", fv._tab_data[1].size())
 	fv._on_tab_clicked(0)
 	# 格子点击：第一格 → 详情弹窗
 	if fv._list != null and fv._list.num_items > 0:
@@ -36,13 +57,6 @@ func _ready() -> void:
 		game._safe_close("ItemDetailPopup")
 	else:
 		print("SHOT4_SKIP no items")
-
-	# 切到旧版功能背包再截一张
-	game.bag_page._on_bag_mode_toggle()
-	for i in range(8):
-		await get_tree().process_frame
-	await _shot("res://tests/bag_legacy_preview.png")
-	print("SHOT2_SAVED mode=", game.bag_page._bag_mode)
 	get_tree().quit()
 
 func _shot(path: String) -> void:

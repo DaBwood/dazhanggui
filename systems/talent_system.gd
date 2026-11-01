@@ -463,7 +463,7 @@ func get_apprentice_income_pct() -> float:
 				total += get_effect_value(e, hid)
 	return total
 
-# 培养见识（阅历）百分比（apprentice train 发放处乘区）：全体拥有门客的 pct 求和（10=10%）
+# 培养阅历（阅历）百分比（apprentice train 发放处乘区）：全体拥有门客的 pct 求和（10=10%）
 func get_apprentice_learn_pct() -> float:
 	var total = 0.0
 	for hid in g.heroes.keys():

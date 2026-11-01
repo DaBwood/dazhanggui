@@ -1,0 +1,2053 @@
+{
+ "_comment": "project item id -> icon id (assets/items/icons/<icon>.png); match: name/substr/similar/manual/fallback/chest；quality=原作品质 1-5，用于格子底色",
+ "map": {
+  "hero_box": {
+   "name": "门客盒子",
+   "icon": "119157",
+   "orig": "一世枭雄锦盒",
+   "match": "fallback",
+   "file": true,
+   "quality": 5
+  },
+  "friend_box": {
+   "name": "挚友盒子",
+   "icon": "119157",
+   "orig": "一世枭雄锦盒",
+   "match": "fallback",
+   "file": true,
+   "quality": 5
+  },
+  "item_box": {
+   "name": "物品盒子",
+   "icon": "119157",
+   "orig": "一世枭雄锦盒",
+   "match": "fallback",
+   "file": true,
+   "quality": 5
+  },
+  "cos_box": {
+   "name": "服装盒子",
+   "icon": "119157",
+   "orig": "一世枭雄锦盒",
+   "match": "fallback",
+   "file": true,
+   "quality": 5
+  },
+  "manhuang_box": {
+   "name": "蛮荒礼盒",
+   "icon": "119157",
+   "orig": "一世枭雄锦盒",
+   "match": "fallback",
+   "file": true,
+   "quality": 5
+  },
+  "suitbox_礼遇": {
+   "name": "礼遇自选锦盒",
+   "icon": "110033",
+   "orig": "小见识箱",
+   "match": "chest1",
+   "file": true,
+   "quality": 2
+  },
+  "suitbox_冕瑞": {
+   "name": "冕瑞自选锦盒",
+   "icon": "110034",
+   "orig": "中见识箱",
+   "match": "chest2",
+   "file": true,
+   "quality": 3
+  },
+  "suitbox_宸华": {
+   "name": "宸华自选锦盒",
+   "icon": "119018",
+   "orig": "珍兽宝箱",
+   "match": "chest3",
+   "file": true,
+   "quality": 4
+  },
+  "suitbox_醉栖": {
+   "name": "醉栖自选锦盒",
+   "icon": "119022",
+   "orig": "卓越突破箱",
+   "match": "chest4",
+   "file": true,
+   "quality": 3
+  },
+  "suitbox_共欢": {
+   "name": "共欢自选锦盒",
+   "icon": "119026",
+   "orig": "野兽宝箱",
+   "match": "chest5",
+   "file": true,
+   "quality": 3
+  },
+  "suitbox_锦忆": {
+   "name": "锦忆自选锦盒",
+   "icon": "119030",
+   "orig": "珍宝箱",
+   "match": "chest6",
+   "file": true,
+   "quality": 3
+  },
+  "suitbox_瑞光": {
+   "name": "瑞光自选锦盒",
+   "icon": "119112",
+   "orig": "宴会人气宝箱",
+   "match": "chest7",
+   "file": true,
+   "quality": 3
+  },
+  "suitbox_承运": {
+   "name": "承运自选锦盒",
+   "icon": "119157",
+   "orig": "一世枭雄锦盒",
+   "match": "chest0",
+   "file": true,
+   "quality": 5
+  },
+  "suitbox_重华": {
+   "name": "重华自选锦盒",
+   "icon": "110033",
+   "orig": "小见识箱",
+   "match": "chest1",
+   "file": true,
+   "quality": 2
+  },
+  "suitbox_阖欢": {
+   "name": "阖欢自选锦盒",
+   "icon": "110034",
+   "orig": "中见识箱",
+   "match": "chest2",
+   "file": true,
+   "quality": 3
+  },
+  "suitbox_寰商": {
+   "name": "寰商自选锦盒",
+   "icon": "119018",
+   "orig": "珍兽宝箱",
+   "match": "chest3",
+   "file": true,
+   "quality": 4
+  },
+  "suitbox_市贾": {
+   "name": "市贾自选锦盒",
+   "icon": "119022",
+   "orig": "卓越突破箱",
+   "match": "chest4",
+   "file": true,
+   "quality": 3
+  },
+  "suitbox_丹凤": {
+   "name": "丹凤自选锦盒",
+   "icon": "119026",
+   "orig": "野兽宝箱",
+   "match": "chest5",
+   "file": true,
+   "quality": 3
+  },
+  "suitbox_锦堂": {
+   "name": "锦堂自选锦盒",
+   "icon": "119030",
+   "orig": "珍宝箱",
+   "match": "chest6",
+   "file": true,
+   "quality": 3
+  },
+  "suitbox_清辉": {
+   "name": "清辉自选锦盒",
+   "icon": "119112",
+   "orig": "宴会人气宝箱",
+   "match": "chest7",
+   "file": true,
+   "quality": 3
+  },
+  "suitbox_星光": {
+   "name": "星光自选锦盒",
+   "icon": "119157",
+   "orig": "一世枭雄锦盒",
+   "match": "chest0",
+   "file": true,
+   "quality": 5
+  },
+  "suitbox_韶华": {
+   "name": "韶华自选锦盒",
+   "icon": "110033",
+   "orig": "小见识箱",
+   "match": "chest1",
+   "file": true,
+   "quality": 2
+  },
+  "suitbox_坤舆": {
+   "name": "坤舆自选锦盒",
+   "icon": "110034",
+   "orig": "中见识箱",
+   "match": "chest2",
+   "file": true,
+   "quality": 3
+  },
+  "suitbox_瑶华": {
+   "name": "瑶华自选锦盒",
+   "icon": "119018",
+   "orig": "珍兽宝箱",
+   "match": "chest3",
+   "file": true,
+   "quality": 4
+  },
+  "suitbox_国香": {
+   "name": "国香自选锦盒",
+   "icon": "119022",
+   "orig": "卓越突破箱",
+   "match": "chest4",
+   "file": true,
+   "quality": 3
+  },
+  "suitbox_玉瑞": {
+   "name": "玉瑞自选锦盒",
+   "icon": "119026",
+   "orig": "野兽宝箱",
+   "match": "chest5",
+   "file": true,
+   "quality": 3
+  },
+  "suitbox_琅轩": {
+   "name": "琅轩自选锦盒",
+   "icon": "119030",
+   "orig": "珍宝箱",
+   "match": "chest6",
+   "file": true,
+   "quality": 3
+  },
+  "suitbox_离尘": {
+   "name": "离尘自选锦盒",
+   "icon": "119112",
+   "orig": "宴会人气宝箱",
+   "match": "chest7",
+   "file": true,
+   "quality": 3
+  },
+  "suitbox_溯光": {
+   "name": "溯光自选锦盒",
+   "icon": "119157",
+   "orig": "一世枭雄锦盒",
+   "match": "chest0",
+   "file": true,
+   "quality": 5
+  },
+  "suitbox_超然": {
+   "name": "超然自选锦盒",
+   "icon": "110033",
+   "orig": "小见识箱",
+   "match": "chest1",
+   "file": true,
+   "quality": 2
+  },
+  "suitbox_碧爻": {
+   "name": "碧爻自选锦盒",
+   "icon": "110034",
+   "orig": "中见识箱",
+   "match": "chest2",
+   "file": true,
+   "quality": 3
+  },
+  "suitbox_剑魂": {
+   "name": "剑魂自选锦盒",
+   "icon": "119018",
+   "orig": "珍兽宝箱",
+   "match": "chest3",
+   "file": true,
+   "quality": 4
+  },
+  "suitbox_童忆": {
+   "name": "童忆自选锦盒",
+   "icon": "119022",
+   "orig": "卓越突破箱",
+   "match": "chest4",
+   "file": true,
+   "quality": 3
+  },
+  "suitbox_求知": {
+   "name": "求知自选锦盒",
+   "icon": "119026",
+   "orig": "野兽宝箱",
+   "match": "chest5",
+   "file": true,
+   "quality": 3
+  },
+  "suitbox_魂器": {
+   "name": "魂器自选锦盒",
+   "icon": "119030",
+   "orig": "珍宝箱",
+   "match": "chest6",
+   "file": true,
+   "quality": 3
+  },
+  "suitbox_风华": {
+   "name": "风华自选锦盒",
+   "icon": "119112",
+   "orig": "宴会人气宝箱",
+   "match": "chest7",
+   "file": true,
+   "quality": 3
+  },
+  "suitbox_续缘": {
+   "name": "续缘自选锦盒",
+   "icon": "119157",
+   "orig": "一世枭雄锦盒",
+   "match": "chest0",
+   "file": true,
+   "quality": 5
+  },
+  "suitbox_奥林": {
+   "name": "奥林自选锦盒",
+   "icon": "110033",
+   "orig": "小见识箱",
+   "match": "chest1",
+   "file": true,
+   "quality": 2
+  },
+  "suitbox_水玉": {
+   "name": "水玉自选锦盒",
+   "icon": "110034",
+   "orig": "中见识箱",
+   "match": "chest2",
+   "file": true,
+   "quality": 3
+  },
+  "suitbox_时霜": {
+   "name": "时霜自选锦盒",
+   "icon": "119018",
+   "orig": "珍兽宝箱",
+   "match": "chest3",
+   "file": true,
+   "quality": 4
+  },
+  "suitbox_周年": {
+   "name": "周年自选锦盒",
+   "icon": "119022",
+   "orig": "卓越突破箱",
+   "match": "chest4",
+   "file": true,
+   "quality": 3
+  },
+  "suitbox_春意盎然": {
+   "name": "春意盎然自选锦盒",
+   "icon": "119026",
+   "orig": "野兽宝箱",
+   "match": "chest5",
+   "file": true,
+   "quality": 3
+  },
+  "suitbox_迎春": {
+   "name": "迎春自选锦盒",
+   "icon": "119030",
+   "orig": "珍宝箱",
+   "match": "chest6",
+   "file": true,
+   "quality": 3
+  },
+  "suitbox_花火": {
+   "name": "花火自选锦盒",
+   "icon": "119112",
+   "orig": "宴会人气宝箱",
+   "match": "chest7",
+   "file": true,
+   "quality": 3
+  },
+  "suitbox_凝冰": {
+   "name": "凝冰自选锦盒",
+   "icon": "119157",
+   "orig": "一世枭雄锦盒",
+   "match": "chest0",
+   "file": true,
+   "quality": 5
+  },
+  "suitbox_五艳": {
+   "name": "五艳自选锦盒",
+   "icon": "110033",
+   "orig": "小见识箱",
+   "match": "chest1",
+   "file": true,
+   "quality": 2
+  },
+  "shop_blueprint": {
+   "name": "商铺图纸",
+   "icon": "110000",
+   "orig": "商铺图纸",
+   "match": "name",
+   "file": true,
+   "quality": 3
+  },
+  "hq_blueprint": {
+   "name": "钱庄图纸",
+   "icon": "110001",
+   "orig": "钱庄图纸",
+   "match": "name",
+   "file": true,
+   "quality": 4
+  },
+  "recruit_bronze": {
+   "name": "募工铜牌",
+   "icon": "110069",
+   "orig": "募工铜牌",
+   "match": "name",
+   "file": true,
+   "quality": 2
+  },
+  "recruit_silver": {
+   "name": "募工银牌",
+   "icon": "110070",
+   "orig": "募工银牌",
+   "match": "name",
+   "file": true,
+   "quality": 3
+  },
+  "recruit_gold": {
+   "name": "募工金牌",
+   "icon": "110071",
+   "orig": "募工金牌",
+   "match": "name",
+   "file": true,
+   "quality": 4
+  },
+  "hun_gu_box": {
+   "name": "魂骨盒子",
+   "icon": "119157",
+   "orig": "一世枭雄锦盒",
+   "match": "fallback",
+   "file": true,
+   "quality": 5
+  },
+  "huo_qi": {
+   "name": "火器",
+   "icon": "110082",
+   "orig": "火器",
+   "match": "name",
+   "file": true,
+   "quality": 3
+  },
+  "ci_qi": {
+   "name": "瓷器",
+   "icon": "110080",
+   "orig": "瓷器",
+   "match": "name",
+   "file": true,
+   "quality": 3
+  },
+  "qiong_jiang": {
+   "name": "琼浆",
+   "icon": "110081",
+   "orig": "琼浆",
+   "match": "name",
+   "file": true,
+   "quality": 3
+  },
+  "cha_ye": {
+   "name": "茶叶",
+   "icon": "110079",
+   "orig": "茶叶",
+   "match": "name",
+   "file": true,
+   "quality": 3
+  },
+  "xuan_zhi": {
+   "name": "宣纸",
+   "icon": "110078",
+   "orig": "宣纸",
+   "match": "name",
+   "file": true,
+   "quality": 3
+  },
+  "random_book": {
+   "name": "随机书籍",
+   "icon": "119019",
+   "orig": "随机书籍",
+   "match": "name",
+   "file": true,
+   "quality": 2
+  },
+  "aptitude_pill": {
+   "name": "资质丹",
+   "icon": "110005",
+   "orig": "资质丹",
+   "match": "name",
+   "file": true,
+   "quality": 5
+  },
+  "small_aptitude_pill": {
+   "name": "小资质丹",
+   "icon": "110060",
+   "orig": "小资质丹",
+   "match": "name",
+   "file": true,
+   "quality": 4
+  },
+  "guild_hammer": {
+   "name": "商会锤",
+   "icon": "110065",
+   "orig": "商会金锤",
+   "match": "similar0.86",
+   "file": true,
+   "quality": 3
+  },
+  "treasure_box": {
+   "name": "珍宝箱",
+   "icon": "119030",
+   "orig": "珍宝箱",
+   "match": "name",
+   "file": true,
+   "quality": 3
+  },
+  "canpo_zhuiyu": {
+   "name": "残破缀玉",
+   "icon": "110111",
+   "orig": "残破缀玉",
+   "match": "name",
+   "file": true,
+   "quality": 4
+  },
+  "experience": {
+   "name": "阅历",
+   "icon": "101002",
+   "orig": "见识",
+   "match": "manual",
+   "file": true,
+   "quality": 2
+  },
+  "abacus": {
+   "name": "算盘",
+   "icon": "110003",
+   "orig": "算盘",
+   "match": "name",
+   "file": true,
+   "quality": 2
+  },
+  "fengyasong": {
+   "name": "风雅颂",
+   "icon": "110051",
+   "orig": "卓越玉佩",
+   "match": "manual",
+   "file": true,
+   "quality": 3
+  },
+  "exp_box": {
+   "name": "阅历箱",
+   "icon": "119030",
+   "orig": "珍宝箱",
+   "match": "fallback",
+   "file": true,
+   "quality": 3
+  },
+  "ginseng": {
+   "name": "百年人参",
+   "icon": "110085",
+   "orig": "百年人参",
+   "match": "name",
+   "file": true,
+   "quality": 4
+  },
+  "ginseng_1000": {
+   "name": "千年人参",
+   "icon": "110085",
+   "orig": "百年人参",
+   "match": "similar0.75",
+   "file": true,
+   "quality": 4
+  },
+  "wood_comb": {
+   "name": "木梳",
+   "icon": "110014",
+   "orig": "木梳",
+   "match": "name",
+   "file": true,
+   "quality": 2
+  },
+  "tong_zan": {
+   "name": "铜簪",
+   "icon": "110015",
+   "orig": "铜簪",
+   "match": "name",
+   "file": true,
+   "quality": 3
+  },
+  "yin_erhuan": {
+   "name": "银耳环",
+   "icon": "110016",
+   "orig": "银耳环",
+   "match": "name",
+   "file": true,
+   "quality": 4
+  },
+  "rouge": {
+   "name": "胭脂",
+   "icon": "110112",
+   "orig": "胭脂",
+   "match": "name",
+   "file": true,
+   "quality": 2
+  },
+  "xiang_nang": {
+   "name": "香囊",
+   "icon": "110113",
+   "orig": "香囊",
+   "match": "name",
+   "file": true,
+   "quality": 3
+  },
+  "huarong_xia": {
+   "name": "花容匣",
+   "icon": "110281",
+   "orig": "花容匣",
+   "match": "name",
+   "file": true,
+   "quality": 4
+  },
+  "energy_pill": {
+   "name": "精力丹",
+   "icon": "110013",
+   "orig": "精力丹",
+   "match": "name",
+   "file": true,
+   "quality": 2
+  },
+  "stage_box": {
+   "name": "关卡宝箱",
+   "icon": "119030",
+   "orig": "珍宝箱",
+   "match": "fallback",
+   "file": true,
+   "quality": 3
+  },
+  "hour_card": {
+   "name": "小时卡",
+   "icon": "110032",
+   "orig": "时辰卡",
+   "match": "similar0.67",
+   "file": true,
+   "quality": 3
+  },
+  "beast_fruit": {
+   "name": "珍兽果",
+   "icon": "110021",
+   "orig": "珍兽果",
+   "match": "name",
+   "file": true,
+   "quality": 3
+  },
+  "aroma_fruit": {
+   "name": "奇香果",
+   "icon": "110022",
+   "orig": "奇香果",
+   "match": "name",
+   "file": true,
+   "quality": 3
+  },
+  "awaken_fruit": {
+   "name": "觉醒果",
+   "icon": "110019",
+   "orig": "觉醒果",
+   "match": "name",
+   "file": true,
+   "quality": 5
+  },
+  "stamina_pill": {
+   "name": "体力丹",
+   "icon": "110090",
+   "orig": "体力丹",
+   "match": "name",
+   "file": true,
+   "quality": 3
+  },
+  "lottery_ticket": {
+   "name": "抽奖券",
+   "icon": "110062",
+   "orig": "抽奖券",
+   "match": "name",
+   "file": true,
+   "quality": 3
+  },
+  "hero_token": {
+   "name": "门客帖",
+   "icon": "110011",
+   "orig": "门客帖",
+   "match": "name",
+   "file": true,
+   "quality": 5
+  },
+  "friend_token": {
+   "name": "挚友帖",
+   "icon": "110327",
+   "orig": "拜帖",
+   "match": "fallback",
+   "file": true,
+   "quality": 4
+  },
+  "vitality_pill": {
+   "name": "活力丹",
+   "icon": "110017",
+   "orig": "活力丹",
+   "match": "name",
+   "file": true,
+   "quality": 2
+  },
+  "wish_stone": {
+   "name": "许愿石",
+   "icon": "110018",
+   "orig": "许愿石",
+   "match": "name",
+   "file": true,
+   "quality": 2
+  },
+  "reputation_card": {
+   "name": "声望卡",
+   "icon": "110041",
+   "orig": "声望卡",
+   "match": "name",
+   "file": true,
+   "quality": 4
+  },
+  "reputation_card_adv": {
+   "name": "高级声望卡",
+   "icon": "101006",
+   "orig": "声望",
+   "match": "substr",
+   "file": true,
+   "quality": 1
+  },
+  "rose_perfume": {
+   "name": "玫瑰香水",
+   "icon": "110091",
+   "orig": "玫瑰香水",
+   "match": "name",
+   "file": true,
+   "quality": 5
+  },
+  "xia_way": {
+   "name": "侠义之道",
+   "icon": "110010",
+   "orig": "侠义之道",
+   "match": "name",
+   "file": true,
+   "quality": 2
+  },
+  "nong_way": {
+   "name": "农业之道",
+   "icon": "110007",
+   "orig": "农业之道",
+   "match": "name",
+   "file": true,
+   "quality": 2
+  },
+  "shi_way": {
+   "name": "仕途之道",
+   "icon": "110006",
+   "orig": "仕途之道",
+   "match": "name",
+   "file": true,
+   "quality": 2
+  },
+  "gong_way": {
+   "name": "工业之道",
+   "icon": "110008",
+   "orig": "工业之道",
+   "match": "name",
+   "file": true,
+   "quality": 2
+  },
+  "shang_way": {
+   "name": "经商之道",
+   "icon": "110009",
+   "orig": "经商之道",
+   "match": "name",
+   "file": true,
+   "quality": 2
+  },
+  "patient_manual": {
+   "name": "病人手册",
+   "icon": "110143",
+   "orig": "病人手册",
+   "match": "name",
+   "file": true,
+   "quality": 3
+  },
+  "drugshop_sign": {
+   "name": "药铺招牌",
+   "icon": "110213",
+   "orig": "药铺招牌",
+   "match": "name",
+   "file": true,
+   "quality": 3
+  },
+  "baiye_zhaji": {
+   "name": "百业札记",
+   "icon": "110160",
+   "orig": "百业札记",
+   "match": "name",
+   "file": true,
+   "quality": 3
+  },
+  "wushuang_gugu": {
+   "name": "无双兽骨",
+   "icon": "110067",
+   "orig": "无双兽骨",
+   "match": "name",
+   "file": true,
+   "quality": 5
+  },
+  "ke_shi_tu_zhi": {
+   "name": "科室图纸",
+   "icon": "110000",
+   "orig": "商铺图纸",
+   "match": "fallback",
+   "file": true,
+   "quality": 3
+  },
+  "shicai_jidan": {
+   "name": "鸡蛋食材包",
+   "icon": "117000",
+   "orig": "蛋",
+   "match": "substr",
+   "file": true,
+   "quality": 1
+  },
+  "shicai_fenmian": {
+   "name": "粉面食材包",
+   "icon": "117002",
+   "orig": "粉面",
+   "match": "substr",
+   "file": true,
+   "quality": 1
+  },
+  "shicai_shengfen": {
+   "name": "生粉食材包",
+   "icon": "117004",
+   "orig": "生粉",
+   "match": "substr",
+   "file": true,
+   "quality": 2
+  },
+  "shicai_yinliao": {
+   "name": "饮料食材包",
+   "icon": "117006",
+   "orig": "饮料",
+   "match": "substr",
+   "file": true,
+   "quality": 2
+  },
+  "shicai_zhurou": {
+   "name": "猪肉食材包",
+   "icon": "117008",
+   "orig": "肉",
+   "match": "substr",
+   "file": true,
+   "quality": 3
+  },
+  "shicai_yulei": {
+   "name": "鱼类食材包",
+   "icon": "117010",
+   "orig": "鱼",
+   "match": "substr",
+   "file": true,
+   "quality": 3
+  },
+  "shicai_tanglei": {
+   "name": "汤类食材包",
+   "icon": "117012",
+   "orig": "汤",
+   "match": "substr",
+   "file": true,
+   "quality": 4
+  },
+  "shicai_daxia": {
+   "name": "大虾食材包",
+   "icon": "117014",
+   "orig": "虾",
+   "match": "substr",
+   "file": true,
+   "quality": 4
+  },
+  "shicai_jirou": {
+   "name": "鸡肉食材包",
+   "icon": "117008",
+   "orig": "肉",
+   "match": "substr",
+   "file": true,
+   "quality": 3
+  },
+  "shicai_pangxie": {
+   "name": "螃蟹食材包",
+   "icon": "117018",
+   "orig": "蟹",
+   "match": "substr",
+   "file": true,
+   "quality": 5
+  },
+  "can_tie": {
+   "name": "门客残帖",
+   "icon": "110012",
+   "orig": "门客残帖",
+   "match": "name",
+   "file": true,
+   "quality": 4
+  },
+  "kaishan_yin": {
+   "name": "开山印碎片",
+   "icon": "110087",
+   "orig": "开山印碎片",
+   "match": "name",
+   "file": true,
+   "quality": 3
+  },
+  "zongjiang_yin": {
+   "name": "宗匠印碎片",
+   "icon": "110088",
+   "orig": "宗匠令碎片",
+   "match": "similar0.80",
+   "file": true,
+   "quality": 3
+  },
+  "tao_bao_quan": {
+   "name": "淘宝券",
+   "icon": "110329",
+   "orig": "淘宝卡",
+   "match": "similar0.67",
+   "file": true,
+   "quality": 4
+  },
+  "ying_chong_guang": {
+   "name": "萤虫光",
+   "icon": "110335",
+   "orig": "萤虫光",
+   "match": "name",
+   "file": true,
+   "quality": 1
+  },
+  "zhu_huo_guang": {
+   "name": "烛火光",
+   "icon": "110336",
+   "orig": "烛火光",
+   "match": "name",
+   "file": true,
+   "quality": 2
+  },
+  "xing_yao_guang": {
+   "name": "星曜光",
+   "icon": "110337",
+   "orig": "星曜光",
+   "match": "name",
+   "file": true,
+   "quality": 3
+  },
+  "yue_hua_guang": {
+   "name": "月华光",
+   "icon": "110338",
+   "orig": "月华光",
+   "match": "name",
+   "file": true,
+   "quality": 4
+  },
+  "ri_lun_guang": {
+   "name": "日轮光",
+   "icon": "110339",
+   "orig": "日轮光",
+   "match": "name",
+   "file": true,
+   "quality": 5
+  },
+  "frag_zhuoyue": {
+   "name": "通用碎片·卓越",
+   "icon": "110087",
+   "orig": "开山印碎片",
+   "match": "fallback",
+   "file": true,
+   "quality": 3
+  },
+  "frag_youxiu": {
+   "name": "通用碎片·优秀",
+   "icon": "110087",
+   "orig": "开山印碎片",
+   "match": "fallback",
+   "file": true,
+   "quality": 3
+  },
+  "frag_putong": {
+   "name": "通用碎片·普通",
+   "icon": "110087",
+   "orig": "开山印碎片",
+   "match": "fallback",
+   "file": true,
+   "quality": 3
+  },
+  "cuzhi_cage": {
+   "name": "促织笼",
+   "icon": "110233",
+   "orig": "促织笼",
+   "match": "name",
+   "file": true,
+   "quality": 4
+  },
+  "wuse_shi": {
+   "name": "五色石",
+   "icon": "110277",
+   "orig": "五色石",
+   "match": "name",
+   "file": true,
+   "quality": 5
+  },
+  "soul_stone_box": {
+   "name": "魂石宝箱",
+   "icon": "119030",
+   "orig": "珍宝箱",
+   "match": "fallback",
+   "file": true,
+   "quality": 3
+  },
+  "soul_wushuang_box": {
+   "name": "无双魂石箱",
+   "icon": "119030",
+   "orig": "珍宝箱",
+   "match": "fallback",
+   "file": true,
+   "quality": 3
+  },
+  "wushuang_cuzhi_box": {
+   "name": "无双促织盒子",
+   "icon": "119157",
+   "orig": "一世枭雄锦盒",
+   "match": "fallback",
+   "file": true,
+   "quality": 5
+  },
+  "cuzhi_migao": {
+   "name": "促织蜜膏",
+   "icon": "130029",
+   "orig": "蜂蜜",
+   "match": "manual",
+   "file": true,
+   "quality": 3
+  },
+  "cuzhi_jinghua": {
+   "name": "促织精华",
+   "icon": "110245",
+   "orig": "促织精华",
+   "match": "name",
+   "file": true,
+   "quality": 3
+  },
+  "wuxing_yan": {
+   "name": "五行岩",
+   "icon": "110277",
+   "orig": "五色石",
+   "match": "manual",
+   "file": true,
+   "quality": 5
+  },
+  "sanguo_yan": {
+   "name": "三国岩",
+   "icon": "110188",
+   "orig": "山海石",
+   "match": "manual",
+   "file": true,
+   "quality": 5
+  },
+  "jianghu_yan": {
+   "name": "江湖岩",
+   "icon": "110263",
+   "orig": "璞石天星",
+   "match": "manual",
+   "file": true,
+   "quality": 4
+  },
+  "shanhai_yan": {
+   "name": "山海岩",
+   "icon": "110188",
+   "orig": "山海石",
+   "match": "similar0.67",
+   "file": true,
+   "quality": 5
+  },
+  "wuling_yan": {
+   "name": "五灵岩",
+   "icon": "110485",
+   "orig": "五灵石",
+   "match": "similar0.67",
+   "file": true,
+   "quality": 5
+  },
+  "zui_xian_niang": {
+   "name": "醉仙酿",
+   "icon": "101007",
+   "orig": "陈酿",
+   "match": "manual",
+   "file": true,
+   "quality": 2
+  },
+  "qing_feng_jian": {
+   "name": "青锋剑",
+   "icon": "110352",
+   "orig": "青蜂剑",
+   "match": "similar0.67",
+   "file": true,
+   "quality": 5
+  },
+  "qi_se_cailian": {
+   "name": "七色彩莲",
+   "icon": "110353",
+   "orig": "七色彩莲",
+   "match": "name",
+   "file": true,
+   "quality": 5
+  },
+  "shen_jie_fa_yin": {
+   "name": "神界法印",
+   "icon": "110355",
+   "orig": "神界法印",
+   "match": "name",
+   "file": true,
+   "quality": 5
+  },
+  "wu_jue_gong_fa": {
+   "name": "五绝功法",
+   "icon": "110354",
+   "orig": "五绝功法",
+   "match": "name",
+   "file": true,
+   "quality": 5
+  },
+  "yu_ban_zhi": {
+   "name": "玉扳指",
+   "icon": "110367",
+   "orig": "玉扳指",
+   "match": "name",
+   "file": true,
+   "quality": 4
+  },
+  "yu_chan": {
+   "name": "玉蝉",
+   "icon": "110272",
+   "orig": "玉蝉",
+   "match": "name",
+   "file": true,
+   "quality": 5
+  },
+  "liu_jiao_tong_ling": {
+   "name": "六角铜铃",
+   "icon": "110394",
+   "orig": "六角铜铃",
+   "match": "name",
+   "file": true,
+   "quality": 4
+  },
+  "jian_ling_shou_huan": {
+   "name": "见灵手环",
+   "icon": "110280",
+   "orig": "见灵手环",
+   "match": "name",
+   "file": true,
+   "quality": 5
+  },
+  "qian_kun_suan_pan": {
+   "name": "乾坤算盘",
+   "icon": "110509",
+   "orig": "乾坤算盘",
+   "match": "name",
+   "file": true,
+   "quality": 5
+  },
+  "mo_xiang_zhu_jian": {
+   "name": "墨香竹简",
+   "icon": "110417",
+   "orig": "墨香竹简",
+   "match": "name",
+   "file": true,
+   "quality": 5
+  },
+  "teji_chushi_xunzhang": {
+   "name": "特级厨师勋章",
+   "icon": "110270",
+   "orig": "特厨勋章",
+   "match": "similar0.80",
+   "file": true,
+   "quality": 5
+  },
+  "qing_lian_shi_hao": {
+   "name": "青莲诗毫",
+   "icon": "110311",
+   "orig": "书法毛笔",
+   "match": "manual",
+   "file": true,
+   "quality": 4
+  },
+  "ming_yan_pi_pa": {
+   "name": "鸣雁琵琶",
+   "icon": "110308",
+   "orig": "琵琶",
+   "match": "substr",
+   "file": true,
+   "quality": 5
+  },
+  "chu_shen_mi_ji": {
+   "name": "厨神秘籍",
+   "icon": "110411",
+   "orig": "厨神秘籍",
+   "match": "name",
+   "file": true,
+   "quality": 5
+  },
+  "hu_qin_pi_pa": {
+   "name": "胡琴琵琶",
+   "icon": "110308",
+   "orig": "琵琶",
+   "match": "substr",
+   "file": true,
+   "quality": 5
+  },
+  "shan_hu_shou_chuan": {
+   "name": "珊瑚手串",
+   "icon": "110343",
+   "orig": "珊瑚手串",
+   "match": "name",
+   "file": true,
+   "quality": 5
+  },
+  "she_lu_gong": {
+   "name": "射虏弓",
+   "icon": "110472",
+   "orig": "射虏弓",
+   "match": "name",
+   "file": true,
+   "quality": 5
+  },
+  "jin_guo_rong_zhuang": {
+   "name": "巾帼戎装",
+   "icon": "110473",
+   "orig": "巾帼戎装",
+   "match": "name",
+   "file": true,
+   "quality": 5
+  },
+  "bing_jie_mulan": {
+   "name": "秉节木兰",
+   "icon": "110471",
+   "orig": "秉节木兰",
+   "match": "name",
+   "file": true,
+   "quality": 5
+  },
+  "ning_lei_jing": {
+   "name": "凝泪晶",
+   "icon": "110435",
+   "orig": "凝泪晶",
+   "match": "name",
+   "file": true,
+   "quality": 5
+  },
+  "xuyuan_tianshu": {
+   "name": "续缘天书",
+   "icon": "110357",
+   "orig": "续缘天书",
+   "match": "name",
+   "file": true,
+   "quality": 5
+  },
+  "zongjiang_ling": {
+   "name": "宗匠令",
+   "icon": "110073",
+   "orig": "宗匠令",
+   "match": "name",
+   "file": true,
+   "quality": 4
+  },
+  "kaishan_ling": {
+   "name": "开山令",
+   "icon": "110072",
+   "orig": "开山印",
+   "match": "similar0.67",
+   "file": true,
+   "quality": 4
+  },
+  "panzhu_zhuiyu": {
+   "name": "攀竹缀玉",
+   "icon": "110106",
+   "orig": "擎竹缀玉",
+   "match": "similar0.75",
+   "file": true,
+   "quality": 5
+  },
+  "zhimeng_zhuiyu": {
+   "name": "织梦缀玉",
+   "icon": "110108",
+   "orig": "织梦缀玉",
+   "match": "name",
+   "file": true,
+   "quality": 5
+  },
+  "yingge_zhuiyu": {
+   "name": "莺歌缀玉",
+   "icon": "110109",
+   "orig": "莺歌缀玉",
+   "match": "name",
+   "file": true,
+   "quality": 5
+  },
+  "luohua_zhuiyu": {
+   "name": "落花缀玉",
+   "icon": "110107",
+   "orig": "落花缀玉",
+   "match": "name",
+   "file": true,
+   "quality": 5
+  },
+  "liuyun_zhuiyu": {
+   "name": "流云缀玉",
+   "icon": "110110",
+   "orig": "流云缀玉",
+   "match": "name",
+   "file": true,
+   "quality": 5
+  },
+  "xuanhe_qixi": {
+   "name": "宣和七玺",
+   "icon": "110161",
+   "orig": "宣和七玺",
+   "match": "name",
+   "file": true,
+   "quality": 5
+  },
+  "tiankui_lingqi": {
+   "name": "天魁令旗",
+   "icon": "110145",
+   "orig": "天魁令旗",
+   "match": "name",
+   "file": true,
+   "quality": 5
+  },
+  "yuanhun_dou": {
+   "name": "冤魂斗",
+   "icon": "110146",
+   "orig": "冤魂斗",
+   "match": "name",
+   "file": true,
+   "quality": 5
+  },
+  "quanxiang_guan": {
+   "name": "权相之冠",
+   "icon": "110124",
+   "orig": "权相之冠",
+   "match": "name",
+   "file": true,
+   "quality": 5
+  },
+  "fangtian_huaji": {
+   "name": "方天画戟",
+   "icon": "110217",
+   "orig": "方天画戟",
+   "match": "name",
+   "file": true,
+   "quality": 5
+  },
+  "taia_jian": {
+   "name": "泰阿剑",
+   "icon": "110231",
+   "orig": "泰阿剑",
+   "match": "name",
+   "file": true,
+   "quality": 5
+  },
+  "hufu_junling": {
+   "name": "虎符军令",
+   "icon": "110252",
+   "orig": "虎符军令",
+   "match": "name",
+   "file": true,
+   "quality": 5
+  },
+  "suitang_huaben": {
+   "name": "隋唐话本",
+   "icon": "110345",
+   "orig": "隋唐话本",
+   "match": "name",
+   "file": true,
+   "quality": 5
+  },
+  "bawang_qiang": {
+   "name": "霸王枪",
+   "icon": "110415",
+   "orig": "霸王枪",
+   "match": "name",
+   "file": true,
+   "quality": 5
+  },
+  "huanglong_jinduan": {
+   "name": "黄龙锦缎",
+   "icon": "110089",
+   "orig": "绸缎",
+   "match": "manual",
+   "file": true,
+   "quality": 3
+  },
+  "tiangong_zanchui": {
+   "name": "天工錾锤",
+   "icon": "110136",
+   "orig": "天工錾锤",
+   "match": "name",
+   "file": true,
+   "quality": 5
+  },
+  "qisheng_mianju": {
+   "name": "七圣面具",
+   "icon": "110138",
+   "orig": "七圣面具",
+   "match": "name",
+   "file": true,
+   "quality": 5
+  },
+  "danqing_pan": {
+   "name": "丹青盘",
+   "icon": "110170",
+   "orig": "丹青盘",
+   "match": "name",
+   "file": true,
+   "quality": 5
+  },
+  "cangbao_tu": {
+   "name": "藏宝图",
+   "icon": "110212",
+   "orig": "藏宝图",
+   "match": "name",
+   "file": true,
+   "quality": 5
+  },
+  "huojian_qiang": {
+   "name": "火尖枪",
+   "icon": "110239",
+   "orig": "火尖枪",
+   "match": "name",
+   "file": true,
+   "quality": 5
+  },
+  "shoulie_guren": {
+   "name": "狩猎骨刃",
+   "icon": "110370",
+   "orig": "狩猎骨刃",
+   "match": "name",
+   "file": true,
+   "quality": 5
+  },
+  "chengzu_chiling": {
+   "name": "成祖敕令",
+   "icon": "110428",
+   "orig": "成祖敕令",
+   "match": "name",
+   "file": true,
+   "quality": 5
+  },
+  "wulong_xiuqiu": {
+   "name": "舞龙绣球",
+   "icon": "110520",
+   "orig": "舞龙绣球",
+   "match": "name",
+   "file": true,
+   "quality": 5
+  },
+  "yugu_dao": {
+   "name": "鱼骨刀",
+   "icon": "117010",
+   "orig": "鱼",
+   "match": "substr",
+   "file": true,
+   "quality": 3
+  },
+  "yuye_jinhua": {
+   "name": "玉叶金花",
+   "icon": "110405",
+   "orig": "玉叶金花",
+   "match": "name",
+   "file": true,
+   "quality": 5
+  },
+  "linglong_hebao": {
+   "name": "玲珑荷包",
+   "icon": "110508",
+   "orig": "玲珑荷包",
+   "match": "name",
+   "file": true,
+   "quality": 5
+  },
+  "long_zhi_cao": {
+   "name": "龙芝草",
+   "icon": "110373",
+   "orig": "龙芝叶",
+   "match": "similar0.67",
+   "file": true,
+   "quality": 4
+  },
+  "cui_gu_jing_chen": {
+   "name": "淬骨精尘",
+   "icon": "110372",
+   "orig": "淬骨精尘",
+   "match": "name",
+   "file": true,
+   "quality": 3
+  },
+  "jinghe_bainian": {
+   "name": "百年晶核",
+   "icon": "110392",
+   "orig": "百年魂核",
+   "match": "similar0.75",
+   "file": true,
+   "quality": 1
+  },
+  "jinghe_qiannian": {
+   "name": "千年晶核",
+   "icon": "110375",
+   "orig": "千年魂核",
+   "match": "similar0.75",
+   "file": true,
+   "quality": 2
+  },
+  "jinghe_wannian": {
+   "name": "万年晶核",
+   "icon": "110376",
+   "orig": "万年魂核",
+   "match": "similar0.75",
+   "file": true,
+   "quality": 3
+  },
+  "jinghe_shiwannian": {
+   "name": "十万年晶核",
+   "icon": "110377",
+   "orig": "十万年魂核",
+   "match": "similar0.80",
+   "file": true,
+   "quality": 4
+  },
+  "jinghe_baiwannian": {
+   "name": "百万年晶核",
+   "icon": "110378",
+   "orig": "百万年魂核",
+   "match": "similar0.80",
+   "file": true,
+   "quality": 5
+  },
+  "feng_shen_zhi": {
+   "name": "封神志",
+   "icon": "110125",
+   "orig": "封神志",
+   "match": "name",
+   "file": true,
+   "quality": 5
+  },
+  "shan_hai_shi": {
+   "name": "山海石",
+   "icon": "110188",
+   "orig": "山海石",
+   "match": "name",
+   "file": true,
+   "quality": 5
+  },
+  "hong_huang_huo": {
+   "name": "鸿荒火",
+   "icon": "110243",
+   "orig": "鸿荒火",
+   "match": "name",
+   "file": true,
+   "quality": 5
+  },
+  "jiu_yuan_shui": {
+   "name": "九渊之水",
+   "icon": "110361",
+   "orig": "九渊之水",
+   "match": "name",
+   "file": true,
+   "quality": 5
+  },
+  "yu_ling_zhi": {
+   "name": "玉灵芝",
+   "icon": "110350",
+   "orig": "玉灵芝",
+   "match": "name",
+   "file": true,
+   "quality": 5
+  },
+  "hu_po_yao_shi": {
+   "name": "虎魄耀石",
+   "icon": "110363",
+   "orig": "虎魄耀石",
+   "match": "name",
+   "file": true,
+   "quality": 5
+  },
+  "long_hun_jing_yuan": {
+   "name": "龙魂精元",
+   "icon": "110365",
+   "orig": "龙魂精元",
+   "match": "name",
+   "file": true,
+   "quality": 5
+  },
+  "fu_sang_zhi": {
+   "name": "扶桑枝",
+   "icon": "110348",
+   "orig": "扶桑枝",
+   "match": "name",
+   "file": true,
+   "quality": 5
+  },
+  "long_zhuo_xi": {
+   "name": "龙擢星玺",
+   "icon": "110498",
+   "orig": "龙攫星玺",
+   "match": "similar0.75",
+   "file": true,
+   "quality": 5
+  },
+  "xing_wu_po": {
+   "name": "星武珀石",
+   "icon": "110504",
+   "orig": "星武珀石",
+   "match": "name",
+   "file": true,
+   "quality": 5
+  },
+  "xing_shu_lin": {
+   "name": "星枢麟角",
+   "icon": "110506",
+   "orig": "星枢麟角",
+   "match": "name",
+   "file": true,
+   "quality": 5
+  },
+  "yu_shi": {
+   "name": "鱼食",
+   "icon": "110196",
+   "orig": "鱼食",
+   "match": "name",
+   "file": true,
+   "quality": 3
+  },
+  "minjing_shouji": {
+   "name": "市井手记",
+   "icon": "110159",
+   "orig": "市井手记",
+   "match": "name",
+   "file": true,
+   "quality": 3
+  },
+  "jia_niang": {
+   "name": "佳酿",
+   "icon": "110177",
+   "orig": "佳酿",
+   "match": "name",
+   "file": true,
+   "quality": 3
+  },
+  "chanwu_card": {
+   "name": "产物卡",
+   "icon": "110165",
+   "orig": "产物卡",
+   "match": "name",
+   "file": true,
+   "quality": 3
+  },
+  "yu_huang": {
+   "name": "玉璜",
+   "icon": "110190",
+   "orig": "玉璜",
+   "match": "name",
+   "file": true,
+   "quality": 4
+  },
+  "tanmu_zan": {
+   "name": "檀木簪",
+   "icon": "110191",
+   "orig": "檀木簪",
+   "match": "name",
+   "file": true,
+   "quality": 4
+  },
+  "shengshi_zhong": {
+   "name": "盛世钟",
+   "icon": "110131",
+   "orig": "盛世钟",
+   "match": "name",
+   "file": true,
+   "quality": 5
+  },
+  "jingzhong_bei": {
+   "name": "精忠碑",
+   "icon": "110134",
+   "orig": "精忠碑",
+   "match": "name",
+   "file": true,
+   "quality": 5
+  },
+  "feng_yu": {
+   "name": "凤羽",
+   "icon": "110153",
+   "orig": "凤羽",
+   "match": "name",
+   "file": true,
+   "quality": 5
+  },
+  "jin_furong": {
+   "name": "金芙蓉",
+   "icon": "110193",
+   "orig": "金芙蓉",
+   "match": "name",
+   "file": true,
+   "quality": 5
+  },
+  "jian_wan": {
+   "name": "剑丸",
+   "icon": "110207",
+   "orig": "剑丸",
+   "match": "name",
+   "file": true,
+   "quality": 5
+  },
+  "tian_xing": {
+   "name": "天星",
+   "icon": "110221",
+   "orig": "天星",
+   "match": "name",
+   "file": true,
+   "quality": 5
+  },
+  "bogu_juan": {
+   "name": "博古卷",
+   "icon": "110250",
+   "orig": "博古卷",
+   "match": "name",
+   "file": true,
+   "quality": 5
+  },
+  "fengyou_wuyue_shi": {
+   "name": "凤游五岳石",
+   "icon": "110381",
+   "orig": "凤游五岳石",
+   "match": "name",
+   "file": true,
+   "quality": 5
+  },
+  "feng_you_yan_tu": {
+   "name": "凤游宴图",
+   "icon": "110384",
+   "orig": "凤游宴图",
+   "match": "name",
+   "file": true,
+   "quality": 5
+  },
+  "jin_feng_ling_long": {
+   "name": "金凤玲珑",
+   "icon": "110385",
+   "orig": "金凤玲珑",
+   "match": "name",
+   "file": true,
+   "quality": 5
+  },
+  "yulin_jue": {
+   "name": "蕴灵珏",
+   "icon": "110420",
+   "orig": "蕴灵珏",
+   "match": "name",
+   "file": true,
+   "quality": 5
+  },
+  "ke_ting_yiyun": {
+   "name": "柯亭遗韵",
+   "icon": "110305",
+   "orig": "笛子",
+   "match": "manual",
+   "file": true,
+   "quality": 3
+  },
+  "yan_yue_gufeng": {
+   "name": "偃月孤锋",
+   "icon": "110175",
+   "orig": "北斗钢刀",
+   "match": "manual",
+   "file": true,
+   "quality": 5
+  },
+  "bai_he_yushan": {
+   "name": "白鹤羽扇",
+   "icon": "110421",
+   "orig": "白鹤羽扇",
+   "match": "name",
+   "file": true,
+   "quality": 5
+  },
+  "ming_kong_xuanjue": {
+   "name": "明空玄珏",
+   "icon": "110420",
+   "orig": "蕴灵珏",
+   "match": "manual",
+   "file": true,
+   "quality": 5
+  },
+  "jiajibi": {
+   "name": "家具币",
+   "icon": "101044",
+   "orig": "家具币",
+   "match": "name",
+   "file": true,
+   "quality": 4
+  },
+  "fengshui_fu": {
+   "name": "风水符",
+   "icon": "110326",
+   "orig": "风水符",
+   "match": "name",
+   "file": true,
+   "quality": 4
+  },
+  "kezhong_card": {
+   "name": "刻钟卡",
+   "icon": "110031",
+   "orig": "刻钟卡",
+   "match": "name",
+   "file": true,
+   "quality": 2
+  },
+  "suiji_piwen": {
+   "name": "随机批文",
+   "icon": "119111",
+   "orig": "随机批文",
+   "match": "name",
+   "file": true,
+   "quality": 4
+  },
+  "zixuan_baoyin": {
+   "name": "自选宝印",
+   "icon": "119114",
+   "orig": "自选宝印",
+   "match": "name",
+   "file": true,
+   "quality": 4
+  },
+  "baoyin_fragment": {
+   "name": "自选宝印碎片",
+   "icon": "119116",
+   "orig": "自选宝印碎片",
+   "match": "name",
+   "file": true,
+   "quality": 3
+  },
+  "wushuang_jingpo": {
+   "name": "无双精魄",
+   "icon": "110171",
+   "orig": "无双精魄",
+   "match": "name",
+   "file": true,
+   "quality": 5
+  },
+  "huaguo": {
+   "name": "花果",
+   "icon": "110215",
+   "orig": "花果",
+   "match": "name",
+   "file": true,
+   "quality": 3
+  },
+  "gaoliang": {
+   "name": "高粱",
+   "icon": "110216",
+   "orig": "高粱",
+   "match": "name",
+   "file": true,
+   "quality": 3
+  },
+  "daogu": {
+   "name": "稻谷",
+   "icon": "110214",
+   "orig": "稻谷",
+   "match": "name",
+   "file": true,
+   "quality": 3
+  },
+  "yyf_wudao": {
+   "name": "舞蹈之花",
+   "icon": "110324",
+   "orig": "舞蹈之花",
+   "match": "name",
+   "file": true,
+   "quality": 5
+  },
+  "yyf_shengyue": {
+   "name": "声乐之花",
+   "icon": "110321",
+   "orig": "声乐之花",
+   "match": "name",
+   "file": true,
+   "quality": 5
+  },
+  "yyf_yueqi": {
+   "name": "乐器之花",
+   "icon": "110322",
+   "orig": "乐器之花",
+   "match": "name",
+   "file": true,
+   "quality": 5
+  },
+  "yyf_chuangzuo": {
+   "name": "创作之花",
+   "icon": "110323",
+   "orig": "创作之花",
+   "match": "name",
+   "file": true,
+   "quality": 5
+  },
+  "yyf_yitai": {
+   "name": "仪态之花",
+   "icon": "110320",
+   "orig": "仪态之花",
+   "match": "name",
+   "file": true,
+   "quality": 5
+  },
+  "miaoyin_jiasu_ka": {
+   "name": "妙音坊加速卡",
+   "icon": "110325",
+   "orig": "加速卡",
+   "match": "substr",
+   "file": true,
+   "quality": 3
+  },
+  "prop_aura_liujin_gun": {
+   "name": "鎏金棍",
+   "icon": "110173",
+   "orig": "鎏金棍",
+   "match": "name",
+   "file": true,
+   "quality": 5
+  },
+  "prop_aura_molin_caidao": {
+   "name": "墨麟菜刀",
+   "icon": "110174",
+   "orig": "墨麟菜刀",
+   "match": "name",
+   "file": true,
+   "quality": 5
+  },
+  "prop_aura_baozi": {
+   "name": "包子",
+   "icon": "110276",
+   "orig": "包子",
+   "match": "name",
+   "file": true,
+   "quality": 5
+  },
+  "prop_aura_beidou_gangdao": {
+   "name": "北斗钢刀",
+   "icon": "110175",
+   "orig": "北斗钢刀",
+   "match": "name",
+   "file": true,
+   "quality": 5
+  },
+  "prop_aura_zichen_tonghu": {
+   "name": "紫宸铜壶",
+   "icon": "110176",
+   "orig": "紫宸铜壶",
+   "match": "name",
+   "file": true,
+   "quality": 5
+  },
+  "prop_aura_panlong_hu": {
+   "name": "盘龙壶",
+   "icon": "110172",
+   "orig": "盘龙壶",
+   "match": "name",
+   "file": true,
+   "quality": 5
+  },
+  "shui_jing_xue_long_shen": {
+   "name": "水晶血龙参",
+   "icon": "110495",
+   "orig": "水晶血龙参",
+   "match": "name",
+   "file": true,
+   "quality": 5
+  },
+  "xiu_luo_bi_shou": {
+   "name": "修罗匕首",
+   "icon": "110370",
+   "orig": "狩猎骨刃",
+   "match": "manual",
+   "file": true,
+   "quality": 5
+  },
+  "tu_er_shou_shi": {
+   "name": "兔耳首饰",
+   "icon": "110496",
+   "orig": "兔耳首饰",
+   "match": "name",
+   "file": true,
+   "quality": 5
+  },
+  "sheng_hun_cao": {
+   "name": "圣魂草",
+   "icon": "110374",
+   "orig": "圣魂草",
+   "match": "name",
+   "file": true,
+   "quality": 5
+  },
+  "kai_shan_fu": {
+   "name": "开山斧",
+   "icon": "110072",
+   "orig": "开山印",
+   "match": "similar0.67",
+   "file": true,
+   "quality": 4
+  },
+  "bao_lian_deng_xin": {
+   "name": "宝莲灯芯",
+   "icon": "200411",
+   "orig": "玲珑灯",
+   "match": "manual",
+   "file": true,
+   "quality": 4
+  },
+  "daotai_piwen": {
+   "name": "道台批文",
+   "icon": "110126",
+   "orig": "道台批文",
+   "match": "name",
+   "file": true,
+   "quality": 4
+  },
+  "libu_piwen": {
+   "name": "礼部批文",
+   "icon": "110127",
+   "orig": "礼部批文",
+   "match": "name",
+   "file": true,
+   "quality": 4
+  },
+  "chengjian_piwen": {
+   "name": "承建批文",
+   "icon": "110128",
+   "orig": "承建批文",
+   "match": "name",
+   "file": true,
+   "quality": 4
+  },
+  "yaoyuan_piwen": {
+   "name": "药院批文",
+   "icon": "110129",
+   "orig": "药院批文",
+   "match": "name",
+   "file": true,
+   "quality": 4
+  },
+  "junxu_piwen": {
+   "name": "军需批文",
+   "icon": "110130",
+   "orig": "军需批文",
+   "match": "name",
+   "file": true,
+   "quality": 4
+  }
+ }
+}
