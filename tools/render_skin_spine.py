@@ -30,7 +30,9 @@ from astc2png import decode_astc_bytes  # noqa: E402
 from build_spine_atlas_rgba import parse_atlas_pages  # noqa: E402
 from render_hotupdate_portraits import render_one, start_server  # noqa: E402
 
-TEMP = r"C:\Users\林\AppData\Local\Temp\opencode"
+# DZG_TEMP lets the staging root move when the default temp dir is not
+# writable (sandboxed shells, CI).  Layout under it is unchanged.
+TEMP = os.environ.get("DZG_TEMP") or r"C:\Users\林\AppData\Local\Temp\opencode"
 HERE = os.path.dirname(os.path.abspath(__file__))
 
 
