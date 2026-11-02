@@ -9,20 +9,21 @@ const PACKAGE_NAME := "Basic"
 const COMPONENT_ID := "c4aoo2d"
 const COMPONENT_NAME := "MissionItem6"
 const _TYPE_0 := preload("res://generated/fairygui/basic_3/ui_basic_3_patrons_bg_item.gd")
-const _TYPE_1 := preload("res://generated/fairygui/basic/ui_basic_patrons_level_bg_item.gd")
-const _TYPE_2 := preload("res://generated/fairygui/basic/ui_basic_occupation_item_1.gd")
+const _TYPE_1 := preload("res://generated/fairygui/patrons/ui_patrons_study_down_ani_3.gd")
+const _TYPE_2 := preload("res://generated/fairygui/basic/ui_basic_patrons_level_bg_item.gd")
+const _TYPE_3 := preload("res://generated/fairygui/basic/ui_basic_occupation_item_1.gd")
 
 var bg_corner: FGUIImage
 var bg_item: _TYPE_0
 var bg_star: FGUIImage
 var down_effect_ani_1: FGUIMovieClip
 var down_effect_ani_2: FGUIMovieClip
-var down_effect_ani_3: FGUIComponent
+var down_effect_ani_3: _TYPE_1
 var icon: FGUILoader
 var img_cover: FGUIImage
 var img_selected: FGUIImage
-var level_bg_item: _TYPE_1
-var occupation_item: _TYPE_2
+var level_bg_item: _TYPE_2
+var occupation_item: _TYPE_3
 var txt_level: FGUITextField
 var txt_name: FGUITextField
 var txt_occupation: FGUITextField
@@ -49,12 +50,12 @@ func _on_construct() -> void:
 	bg_star = require_child("bgStar", FGUIImage) as FGUIImage
 	down_effect_ani_1 = require_child("downEffectAni1", FGUIMovieClip) as FGUIMovieClip
 	down_effect_ani_2 = require_child("downEffectAni2", FGUIMovieClip) as FGUIMovieClip
-	down_effect_ani_3 = require_child("downEffectAni3", FGUIComponent) as FGUIComponent
+	down_effect_ani_3 = require_child("downEffectAni3", _TYPE_1) as _TYPE_1
 	icon = require_child("icon", FGUILoader) as FGUILoader
 	img_cover = require_child("imgCover", FGUIImage) as FGUIImage
 	img_selected = require_child("imgSelected", FGUIImage) as FGUIImage
-	level_bg_item = require_child("levelBgItem", _TYPE_1) as _TYPE_1
-	occupation_item = require_child("occupationItem", _TYPE_2) as _TYPE_2
+	level_bg_item = require_child("levelBgItem", _TYPE_2) as _TYPE_2
+	occupation_item = require_child("occupationItem", _TYPE_3) as _TYPE_3
 	txt_level = require_child("txtLevel", FGUITextField) as FGUITextField
 	txt_name = require_child("txtName", FGUITextField) as FGUITextField
 	txt_occupation = require_child("txtOccupation", FGUITextField) as FGUITextField

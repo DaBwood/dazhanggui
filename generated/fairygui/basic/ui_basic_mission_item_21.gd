@@ -10,8 +10,9 @@ const COMPONENT_ID := "quubpxzkz"
 const COMPONENT_NAME := "MissionItem21"
 const _TYPE_0 := preload("res://generated/fairygui/basic_3/ui_basic_3_patrons_bg_item.gd")
 const _TYPE_1 := preload("res://generated/fairygui/basic/ui_basic_btn_info_1.gd")
-const _TYPE_2 := preload("res://generated/fairygui/basic/ui_basic_patrons_level_bg_item.gd")
-const _TYPE_3 := preload("res://generated/fairygui/basic/ui_basic_occupation_item_1.gd")
+const _TYPE_2 := preload("res://generated/fairygui/patrons/ui_patrons_study_down_ani_3.gd")
+const _TYPE_3 := preload("res://generated/fairygui/basic/ui_basic_patrons_level_bg_item.gd")
+const _TYPE_4 := preload("res://generated/fairygui/basic/ui_basic_occupation_item_1.gd")
 
 var bg_corner: FGUIImage
 var bg_item: _TYPE_0
@@ -19,11 +20,11 @@ var bg_star: FGUIImage
 var btn_info: _TYPE_1
 var down_effect_ani_1: FGUIMovieClip
 var down_effect_ani_2: FGUIMovieClip
-var down_effect_ani_3: FGUIComponent
+var down_effect_ani_3: _TYPE_2
 var icon: FGUILoader
 var img_cover: FGUIImage
-var level_bg_item: _TYPE_2
-var occupation_item: _TYPE_3
+var level_bg_item: _TYPE_3
+var occupation_item: _TYPE_4
 var txt_ability: FGUITextField
 var txt_name: FGUITextField
 var txt_rest_time: FGUITextField
@@ -52,11 +53,11 @@ func _on_construct() -> void:
 	btn_info = require_child("btnInfo", _TYPE_1) as _TYPE_1
 	down_effect_ani_1 = require_child("downEffectAni1", FGUIMovieClip) as FGUIMovieClip
 	down_effect_ani_2 = require_child("downEffectAni2", FGUIMovieClip) as FGUIMovieClip
-	down_effect_ani_3 = require_child("downEffectAni3", FGUIComponent) as FGUIComponent
+	down_effect_ani_3 = require_child("downEffectAni3", _TYPE_2) as _TYPE_2
 	icon = require_child("icon", FGUILoader) as FGUILoader
 	img_cover = require_child("imgCover", FGUIImage) as FGUIImage
-	level_bg_item = require_child("levelBgItem", _TYPE_2) as _TYPE_2
-	occupation_item = require_child("occupationItem", _TYPE_3) as _TYPE_3
+	level_bg_item = require_child("levelBgItem", _TYPE_3) as _TYPE_3
+	occupation_item = require_child("occupationItem", _TYPE_4) as _TYPE_4
 	txt_ability = require_child("txtAbility", FGUITextField) as FGUITextField
 	txt_name = require_child("txtName", FGUITextField) as FGUITextField
 	txt_rest_time = require_child("txtRestTime", FGUITextField) as FGUITextField

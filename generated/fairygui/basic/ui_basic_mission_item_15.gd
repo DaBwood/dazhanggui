@@ -9,20 +9,21 @@ const PACKAGE_NAME := "Basic"
 const COMPONENT_ID := "g8g2xzhb"
 const COMPONENT_NAME := "MissionItem15"
 const _TYPE_0 := preload("res://generated/fairygui/basic_3/ui_basic_3_patrons_bg_item.gd")
-const _TYPE_1 := preload("res://generated/fairygui/basic/ui_basic_occupation_item_1.gd")
+const _TYPE_1 := preload("res://generated/fairygui/patrons/ui_patrons_study_down_ani_3.gd")
+const _TYPE_2 := preload("res://generated/fairygui/basic/ui_basic_occupation_item_1.gd")
 
 var bg_corner: FGUIImage
 var bg_item: _TYPE_0
 var bg_star: FGUIImage
 var down_effect_ani_1: FGUIMovieClip
 var down_effect_ani_2: FGUIMovieClip
-var down_effect_ani_3: FGUIComponent
+var down_effect_ani_3: _TYPE_1
 var icon: FGUILoader
 var img_coin: FGUIImage
 var img_cover: FGUIImage
 var img_free: FGUIImage
 var img_selected: FGUIImage
-var occupation_item: _TYPE_1
+var occupation_item: _TYPE_2
 var txt_atk: FGUITextField
 var txt_atk_tips: FGUITextField
 var txt_cost: FGUITextField
@@ -57,13 +58,13 @@ func _on_construct() -> void:
 	bg_star = require_child("bgStar", FGUIImage) as FGUIImage
 	down_effect_ani_1 = require_child("downEffectAni1", FGUIMovieClip) as FGUIMovieClip
 	down_effect_ani_2 = require_child("downEffectAni2", FGUIMovieClip) as FGUIMovieClip
-	down_effect_ani_3 = require_child("downEffectAni3", FGUIComponent) as FGUIComponent
+	down_effect_ani_3 = require_child("downEffectAni3", _TYPE_1) as _TYPE_1
 	icon = require_child("icon", FGUILoader) as FGUILoader
 	img_coin = require_child("imgCoin", FGUIImage) as FGUIImage
 	img_cover = require_child("imgCover", FGUIImage) as FGUIImage
 	img_free = require_child("imgFree", FGUIImage) as FGUIImage
 	img_selected = require_child("imgSelected", FGUIImage) as FGUIImage
-	occupation_item = require_child("occupationItem", _TYPE_1) as _TYPE_1
+	occupation_item = require_child("occupationItem", _TYPE_2) as _TYPE_2
 	txt_atk = require_child("txtAtk", FGUITextField) as FGUITextField
 	txt_atk_tips = require_child("txtAtkTips", FGUITextField) as FGUITextField
 	txt_cost = require_child("txtCost", FGUITextField) as FGUITextField

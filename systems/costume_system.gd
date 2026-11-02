@@ -225,7 +225,8 @@ func get_all_cos_entries() -> Array:
 		var hero_name: String = g._hero_configs.get(hero_id, {}).get("name", hero_id)
 		for cfg in _cfgs()["hero_costumes"][hero_id]:
 			out.append({"hero_id": hero_id, "hero_name": hero_name,
-				"cos_id": cfg.get("id", ""), "name": cfg.get("name", ""), "quality": cfg.get("quality", "")})
+				"cos_id": cfg.get("id", ""), "name": cfg.get("name", ""), "quality": cfg.get("quality", ""),
+				"skin": cfg.get("skin", "")})
 	return out
 
 # ============ 服装技能升级（资质丹，升基础等级，上限=200+额外等级【第35节·模型B】） ============

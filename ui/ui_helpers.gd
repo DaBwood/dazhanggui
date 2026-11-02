@@ -185,6 +185,8 @@ func _create_base_popup(title_text: String, popup_size: Vector2, _pos: Vector2 =
 			corner_r.texture = _popup_skin_corner_r
 			corner_r.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_CENTERED
 			corner_r.mouse_filter = Control.MOUSE_FILTER_IGNORE
+			# 【改】原作灯笼是暖琥珀色，我们的贴图偏奶白 → 乘一层暖色把它压成原作那口气
+			corner_r.self_modulate = Color(1.0, 0.93, 0.78)
 			# 右上角整块原画（飞檐+绳+叶+灯+穗，零抠图）：panel (W-81,-35) 起 88×211，
 			# 挂按钮子节点——厢房命格对比按名摘 PopupCloseX 时整块随之销毁，杜绝死饵
 			corner_r.position = Vector2(-11, -68)   # 对齐面板右缘 src1316→panel W，灯笼骑框右边沿

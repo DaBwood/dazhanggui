@@ -9,13 +9,14 @@ const PACKAGE_NAME := "Basic"
 const COMPONENT_ID := "kc9ipxzjs"
 const COMPONENT_NAME := "MissionItem18"
 const _TYPE_0 := preload("res://generated/fairygui/basic_3/ui_basic_3_patrons_bg_item.gd")
+const _TYPE_1 := preload("res://generated/fairygui/patrons/ui_patrons_study_down_ani_3.gd")
 
 var bg_corner: FGUIImage
 var bg_item: _TYPE_0
 var bg_star: FGUIImage
 var down_effect_ani_1: FGUIMovieClip
 var down_effect_ani_2: FGUIMovieClip
-var down_effect_ani_3: FGUIComponent
+var down_effect_ani_3: _TYPE_1
 var effect: FGUIMovieClip
 var frame: FGUIGroup
 var icon: FGUILoader
@@ -51,7 +52,7 @@ func _on_construct() -> void:
 	bg_star = require_child("bgStar", FGUIImage) as FGUIImage
 	down_effect_ani_1 = require_child("downEffectAni1", FGUIMovieClip) as FGUIMovieClip
 	down_effect_ani_2 = require_child("downEffectAni2", FGUIMovieClip) as FGUIMovieClip
-	down_effect_ani_3 = require_child("downEffectAni3", FGUIComponent) as FGUIComponent
+	down_effect_ani_3 = require_child("downEffectAni3", _TYPE_1) as _TYPE_1
 	effect = require_child("effect", FGUIMovieClip) as FGUIMovieClip
 	frame = require_child("frame", FGUIGroup) as FGUIGroup
 	icon = require_child("icon", FGUILoader) as FGUILoader

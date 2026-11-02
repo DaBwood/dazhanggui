@@ -23,11 +23,52 @@ var _skill_tab: String = "shop"
 var _hero_sub_tab: String = "menke"
 var _fanghua_sel: int = 0   # 【新增】芳华页签选中技能下标（类变量记忆，弹窗重建不丢，踩坑35）
 
+var _friend_fgui = null
+
 func _init(p_c):
 	c = p_c
 	data = p_c.data
 
 # ============ generate_friend_page：列表页不变，详情页重构 ============
+# 从 FGUI 包里取一张图当按钮图标（找不到就返回 null，按钮退回纯文字）
+func _pkg_icon(pkg_name: String, item_name: String) -> Texture2D:
+	var pk := FGUIPackage.get_by_name(pkg_name)
+	if pk == null:
+		FGUIPackage.add_package("res://assets/fgui/%s.fui" % pkg_name)
+		pk = FGUIPackage.get_by_name(pkg_name)
+	if pk == null:
+		return null
+	var asset: Variant = pk.get_item_asset_by_name(item_name)
+	return asset as Texture2D if asset is Texture2D else null
+
+
+# 图标按钮：Button 里塞 HBox(TextureRect + Label)——Button.icon 在这套主题下会被吃掉
+func _icon_button(text: String, pkg: String, item_name: String) -> Button:
+	var btn := Button.new()
+	btn.text = ""
+	var row := HBoxContainer.new()
+	row.alignment = BoxContainer.ALIGNMENT_CENTER
+	row.add_theme_constant_override("separation", 6)
+	row.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	btn.add_child(row)
+	var tex := _pkg_icon(pkg, item_name)
+	if tex != null:
+		var tr := TextureRect.new()
+		tr.texture = tex
+		tr.custom_minimum_size = Vector2(28, 28)
+		tr.expand_mode = TextureRect.EXPAND_IGNORE_SIZE
+		tr.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_CENTERED
+		tr.mouse_filter = Control.MOUSE_FILTER_IGNORE
+		row.add_child(tr)
+	var lb := Label.new()
+	lb.name = "BtnText"
+	lb.text = text
+	lb.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	row.add_child(lb)
+	btn.pressed.connect(func(): pass)
+	return btn
+
+
 func generate_friend_page():
 	if not c.has_node("PageContainer"): return
 	var page = c.get_node("PageContainer/FriendPage") if c.has_node("PageContainer/FriendPage") else null
@@ -74,6 +115,38 @@ func generate_friend_page():
 	grid.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	scroll.add_child(grid)
 
+	# --- FGUI 圆形挚友列表（原作 Patrons.DestinyBeautyItem）---
+	var fv_script: GDScript = load("res://ui/pages/friend_fgui_view.gd")
+	if fv_script != null:
+		_friend_fgui = fv_script.new(c)
+		_friend_fgui.name = "FriendFguiView"
+		_friend_fgui.size_flags_vertical = Control.SIZE_EXPAND_FILL
+		list_view.add_child(_friend_fgui)
+		_friend_fgui.ensure_built(page)
+		scroll.visible = false          # 旧文字列表隐藏，只留 FGUI 版
+		_friend_fgui.on_back = func(): c.switch_page("mansion")
+		_friend_fgui.on_pick = func(row: Dictionary):
+			if bool(row.get("locked", false)):
+				_on_locked_friend_clicked(str(row.get("id", "")), int(row.get("vip", 0)))
+			else:
+				show_friend_detail(str(row.get("id", "")))
+
+	# --- 底部筛选栏（独占一行，不压列表）---
+	var fbar := HBoxContainer.new()
+	fbar.name = "FilterBar"
+	fbar.alignment = BoxContainer.ALIGNMENT_CENTER
+	fbar.add_theme_constant_override("separation", 10)
+	list_view.add_child(fbar)
+	# 原作底部筛选栏是「旅行册 + 士农工商侠」六个图标，这里先按职业占位
+	# 士农工商侠的圆形图标由原作 Main 里的 btnOccupation0..5 提供，这里只留旅行册占位
+	var fspec := [["旅行册", -1]]
+	for item in fspec:
+		var fbtn := _icon_button(str(item[0]), "Basic", "imgBooking")
+		fbtn.name = "Filter_" + str(item[0])
+		fbtn.custom_minimum_size = Vector2(0, 56)
+		fbtn.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+		fbar.add_child(fbtn)
+
 	# 谈心操作区（谈心只在列表页全局谈，单个挚友的互动走详情页「游玩」标签）
 	var chat_op = HBoxContainer.new()
 	chat_op.name = "ChatOpBox"
@@ -81,9 +154,8 @@ func generate_friend_page():
 	chat_op.add_theme_constant_override("separation", 12)
 	list_view.add_child(chat_op)
 
-	var chat_btn = Button.new()
+	var chat_btn := _icon_button("谈心", "Basic", "chatIcon2")
 	chat_btn.name = "ChatBtn"
-	chat_btn.text = "谈心"
 	chat_btn.pressed.connect(on_chat_with_friend)
 	chat_op.add_child(chat_btn)
 
@@ -251,6 +323,22 @@ func update_friend_page():
 	for child in grid.get_children():
 		child.queue_free()
 
+	if _friend_fgui != null:
+		var rows: Array = []
+		var ids = data.friends.keys()
+		ids.sort_custom(func(a, b): return data.friends[a].friendly > data.friends[b].friendly)
+		for fid in ids:
+			var f = data.friends[fid]
+			rows.append({"id": fid, "name": f.name, "portrait": "res://assets/portraits/friends_half/%s.png" % fid,
+				"friendly": int(f.friendly), "talent": int(f.talent), "locked": false})
+		for fid in data.get_all_friend_ids():
+			if data.friends.has(fid): continue
+			var cfg = data.get_friend_config(fid)
+			rows.append({"id": fid, "name": str(cfg.get("name", "未知")),
+				"portrait": "res://assets/portraits/friends_half/%s.png" % fid,
+				"friendly": 0, "talent": 0, "locked": true, "vip": int(data.get_friend_unlock_vip(fid))})
+		_friend_fgui.refresh(rows)
+
 	var unlocked_ids = data.friends.keys()
 	unlocked_ids.sort_custom(func(a, b): return data.friends[a].friendly > data.friends[b].friendly)
 	for fid in unlocked_ids:
@@ -268,9 +356,23 @@ func update_friend_page():
 		grid.add_child(cell)
 	
 	# 【新增】进入挚友页时同步谈心按钮精力数（原只在谈心后更新，首次进页面只显示"谈心"两字）
+	var chat_box = c.get_node_or_null("PageContainer/FriendPage/ListView/ChatOpBox")
+	if chat_box != null and not chat_box.has_node("RosterBtn"):
+		var roster := Button.new()
+		roster.name = "RosterBtn"
+		roster.text = "名录"
+		roster.custom_minimum_size = Vector2(96, 52)
+		chat_box.add_child(roster)
+		chat_box.move_child(roster, 0)
+
 	var chat_btn = c.get_node_or_null("PageContainer/FriendPage/ListView/ChatOpBox/ChatBtn")
 	if chat_btn:
-		chat_btn.text = "谈心（%d/%d）" % [data.energy, data.friend_system.get_energy_cap()]
+		var txt := chat_btn.get_node_or_null("HBoxContainer/BtnText") as Label
+		var chat_label := "谈心（%d/%d）" % [data.energy, data.friend_system.get_energy_cap()]
+		if txt != null:
+			txt.text = chat_label
+		else:
+			chat_btn.text = chat_label
 
 func _create_friend_card(cname: String, friendly: int, talent: int, locked: bool) -> Button:
 	var cell = Button.new()
@@ -1347,7 +1449,12 @@ func on_chat_with_friend():
 		update_friend_page()
 		var chat_btn = page.find_child("ChatBtn", true, false)
 		if chat_btn:
-			chat_btn.text = "谈心（%d/%d）" % [data.energy, data.friend_system.get_energy_cap()]
+			var txt := chat_btn.get_node_or_null("HBoxContainer/BtnText") as Label
+			var chat_text := "谈心（%d/%d）" % [data.energy, data.friend_system.get_energy_cap()]
+			if txt != null:
+				txt.text = chat_text
+			else:
+				chat_btn.text = chat_text
 	else:
 		var chat_btn = page.find_child("ChatBtn", true, false)
 		if chat_btn:
@@ -1412,7 +1519,12 @@ func _on_use_energy_pill(spin: SpinBox = null):
 	# 【修复】谈心按钮在列表页 ListView 下，原路径从 FriendDetail 找永远为 null、文本不更新
 	var chat_btn = c.get_node("PageContainer/FriendPage/ListView").find_child("ChatBtn", true, false)
 	if chat_btn != null:
-		chat_btn.text = "谈心（%d/%d）" % [data.energy, data.friend_system.get_energy_cap()]
+		var txt := chat_btn.get_node_or_null("HBoxContainer/BtnText") as Label
+		var chat_text2 := "谈心（%d/%d）" % [data.energy, data.friend_system.get_energy_cap()]
+		if txt != null:
+			txt.text = chat_text2
+		else:
+			chat_btn.text = chat_text2
 	c.update_bag_list()
 	on_chat_with_friend()
 

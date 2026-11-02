@@ -9,9 +9,10 @@ const PACKAGE_NAME := "Basic"
 const COMPONENT_ID := "mgean78"
 const COMPONENT_NAME := "OreWarPatronsItem"
 const _TYPE_0 := preload("res://generated/fairygui/basic_3/ui_basic_3_patrons_bg_item.gd")
-const _TYPE_1 := preload("res://generated/fairygui/basic/ui_basic_patrons_level_bg_item.gd")
-const _TYPE_2 := preload("res://generated/fairygui/basic/ui_basic_occupation_item_1.gd")
-const _TYPE_3 := preload("res://generated/fairygui/basic/ui_basic_star_item_1.gd")
+const _TYPE_1 := preload("res://generated/fairygui/patrons/ui_patrons_study_down_ani_3.gd")
+const _TYPE_2 := preload("res://generated/fairygui/basic/ui_basic_patrons_level_bg_item.gd")
+const _TYPE_3 := preload("res://generated/fairygui/basic/ui_basic_occupation_item_1.gd")
+const _TYPE_4 := preload("res://generated/fairygui/basic/ui_basic_star_item_1.gd")
 
 var bg_corner: FGUIImage
 var bg_item: _TYPE_0
@@ -19,13 +20,13 @@ var bg_name: FGUIImage
 var bg_star: FGUIImage
 var down_effect_ani_1: FGUIMovieClip
 var down_effect_ani_2: FGUIMovieClip
-var down_effect_ani_3: FGUIComponent
+var down_effect_ani_3: _TYPE_1
 var icon: FGUILoader
-var level_bg_item: _TYPE_1
+var level_bg_item: _TYPE_2
 var max_effect_ani: FGUIMovieClip
-var occupation_item: _TYPE_2
+var occupation_item: _TYPE_3
 var stage_effect_ani: FGUIMovieClip
-var star_item: _TYPE_3
+var star_item: _TYPE_4
 var txt_earn_num: FGUITextField
 var txt_level: FGUITextField
 var txt_name: FGUITextField
@@ -54,13 +55,13 @@ func _on_construct() -> void:
 	bg_star = require_child("bgStar", FGUIImage) as FGUIImage
 	down_effect_ani_1 = require_child("downEffectAni1", FGUIMovieClip) as FGUIMovieClip
 	down_effect_ani_2 = require_child("downEffectAni2", FGUIMovieClip) as FGUIMovieClip
-	down_effect_ani_3 = require_child("downEffectAni3", FGUIComponent) as FGUIComponent
+	down_effect_ani_3 = require_child("downEffectAni3", _TYPE_1) as _TYPE_1
 	icon = require_child("icon", FGUILoader) as FGUILoader
-	level_bg_item = require_child("levelBgItem", _TYPE_1) as _TYPE_1
+	level_bg_item = require_child("levelBgItem", _TYPE_2) as _TYPE_2
 	max_effect_ani = require_child("maxEffectAni", FGUIMovieClip) as FGUIMovieClip
-	occupation_item = require_child("occupationItem", _TYPE_2) as _TYPE_2
+	occupation_item = require_child("occupationItem", _TYPE_3) as _TYPE_3
 	stage_effect_ani = require_child("stageEffectAni", FGUIMovieClip) as FGUIMovieClip
-	star_item = require_child("starItem", _TYPE_3) as _TYPE_3
+	star_item = require_child("starItem", _TYPE_4) as _TYPE_4
 	txt_earn_num = require_child("txtEarnNum", FGUITextField) as FGUITextField
 	txt_level = require_child("txtLevel", FGUITextField) as FGUITextField
 	txt_name = require_child("txtName", FGUITextField) as FGUITextField

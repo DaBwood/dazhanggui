@@ -1,0 +1,16 @@
+[remap]
+
+importer="fairygui.package"
+importer_version=7
+type="Resource"
+uid="uid://wfgxxkg01qhk"
+path="res://.godot/imported/AnimalsEntry.fui-1b05063a7a0e583c108ee50a789b8cc5.res"
+
+[deps]
+
+source_file="res://assets/fgui/AnimalsEntry.fui"
+dest_files=["res://.godot/imported/AnimalsEntry.fui-1b05063a7a0e583c108ee50a789b8cc5.res"]
+
+[params]
+
+codegen/enabled=true

@@ -1,0 +1,16 @@
+[remap]
+
+importer="fairygui.package"
+importer_version=7
+type="Resource"
+uid="uid://dswjskuybdqxd"
+path="res://.godot/imported/Patrons.fui-fc6d733d6f48659bb6a51cd3473ab278.res"
+
+[deps]
+
+source_file="res://assets/fgui/Patrons.fui"
+dest_files=["res://.godot/imported/Patrons.fui-fc6d733d6f48659bb6a51cd3473ab278.res"]
+
+[params]
+
+codegen/enabled=true

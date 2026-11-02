@@ -648,45 +648,301 @@ func _box_option_rows(friend_id: String, quality: String, with_friend: bool) -> 
 	var rows: Array = []
 	var fname: String = data.get_friend_config(friend_id).get("name", friend_id)
 	if with_friend:
-		rows.append({"label": "【挚友】%s" % fname, "kind": "friend", "id": friend_id, "name": fname})
+		rows.append({"label": "【挚友】%s" % fname, "kind": "friend", "id": friend_id, "name": fname,
+			"owned": data.friends.has(friend_id)})
 	for cfg in data.costume_system.get_friend_costume_cfgs(friend_id):
 		if quality != "" and str(cfg.get("quality", "")) != quality:
 			continue
+		var cos_id := str(cfg.get("id", ""))
 		rows.append({"label": "【%s】%s" % [cfg.get("quality", ""), cfg.get("name", "")],
-			"kind": "cos", "id": str(cfg.get("id", "")), "name": str(cfg.get("name", "")),
-			"quality": str(cfg.get("quality", ""))})
+			"kind": "cos", "id": cos_id, "name": str(cfg.get("name", "")),
+			"quality": str(cfg.get("quality", "")), "skin": str(cfg.get("skin", "")),
+			"owned": data.costume_system.get_friend_cos_copies(friend_id, cos_id) > 0})
 	return rows
 
-func _open_friend_box_selector(item_id: String, title: String, rows: Array) -> void:
+# 选择器行的木牌底：暗底 + 品质色描边；已拥有时整体压灰
+func _style_option_row(btn: Button, quality: String, owned: bool) -> void:
+	var sb := StyleBoxFlat.new()
+	sb.bg_color = Color("#3b342c") if owned else Color("#4a3524")
+	sb.set_corner_radius_all(6)
+	sb.set_border_width_all(2)
+	sb.border_color = Color("#6d6259") if owned else _quality_border_color(quality)
+	for st in ["normal", "hover", "pressed", "focus"]:
+		btn.add_theme_stylebox_override(st, sb)
+	var dis := sb.duplicate() as StyleBoxFlat
+	dis.bg_color = Color("#3b342c")
+	btn.add_theme_stylebox_override("disabled", dis)
+	var fc := Color("#cfc6b8") if owned else Color("#f6e6c8")
+	btn.add_theme_color_override("font_color", fc)
+	btn.add_theme_color_override("font_hover_color", fc)
+	btn.add_theme_color_override("font_disabled_color", Color("#cfc6b8"))
+
+func _quality_border_color(quality: String) -> Color:
+	match quality:
+		"素装":
+			return Color("#6bb3e0")
+		"华服":
+			return Color("#f0a13c")
+		"锦衣":
+			return Color("#e0553a")
+		"堇书":
+			return Color("#a05fd0")
+	return Color("#8a7a5e")
+
+	# 选择器行图标：挚友=头像、服装=服装图标、盒子=道具图标；找不到图返回空
+func _box_row_icon_path(row: Dictionary) -> String:
+	var kind := str(row.get("kind", ""))
+	if kind == "friend":
+		var p := "res://assets/portraits/friends_head/%s.png" % str(row.get("id", ""))
+		return p if ResourceLoader.exists(p) else ""
+	if kind == "cos":
+		var skin := str(row.get("skin", ""))
+		if skin == "":
+			return ""
+		var cp := "res://assets/costumes/icons/%s.png" % skin
+		return cp if ResourceLoader.exists(cp) else ""
+	return ""
+
+# 把贴图缩到指定边长（Button 的 icon 直接用原图会撑成 120px）
+func _scaled_icon(path: String, side: int) -> Texture2D:
+	if path == "" or not ResourceLoader.exists(path):
+		return null
+	var src: Texture2D = load(path) as Texture2D
+	if src == null:
+		return null
+	var img: Image = src.get_image()
+	if img == null:
+		return src
+	img = img.duplicate()
+	img.resize(side, side, Image.INTERPOLATE_LANCZOS)
+	return ImageTexture.create_from_image(img)
+
+# 背包道具图标的资源路径（GLoader 直接吃 res:// 路径）
+func _item_icon_path(item_id: String) -> String:
+	_item_icon_texture(item_id)          # 确保 _icon_map 已懒加载
+	var ent: Dictionary = _icon_map.get(item_id, {})
+	var icon_id := str(ent.get("icon", ""))
+	if icon_id == "":
+		return ""
+	var p := "res://assets/items/icons/%s.png" % icon_id
+	return p if ResourceLoader.exists(p) else ""
+
+# 打开原作「选择奖励」弹窗（HHPropBag.PropChooseView）；失败时退回自绘版
+# 盒子选择器：沿用我们自己的弹窗外观，内部逻辑照原作
+#   - 每行：图标 + 名称 + 「− 数量 +」步进器
+#   - 底部：已选择: k/N个 + 使用
+#   - 已拥有：灰掉不可选
+# 步进器统一入口：加减一次，并受「总数=need」约束
+func _qty_change(allocs: Array, idx: int, delta: int, need: int, refresh: Callable) -> void:
+	var total := 0
+	for v in allocs:
+		total += int(v)
+	if delta > 0:
+		if total >= need:
+			return
+		allocs[idx] = int(allocs[idx]) + 1
+	else:
+		if int(allocs[idx]) <= 0:
+			return
+		allocs[idx] = int(allocs[idx]) - 1
+	refresh.call()
+
+# 长按连续触发（0.45s 后每 0.08s 一次）：原作「*长按可以快速更改数量」
+func _bind_longpress(btn: Button, cb: Callable) -> void:
+	var state := {"timer": null}
+	btn.button_down.connect(func():
+		if state["timer"] != null:
+			return
+		var t := Timer.new()
+		t.wait_time = 0.08
+		c.add_child(t)
+		t.timeout.connect(cb)
+		state["timer"] = t
+		await c.get_tree().create_timer(0.45).timeout
+		if state["timer"] == t and is_instance_valid(t):
+			t.start())
+	btn.button_up.connect(func():
+		var t2 = state["timer"]
+		if t2 != null and is_instance_valid(t2):
+			t2.queue_free()
+		state["timer"] = null)
+
+func _style_row_panel(p: PanelContainer, quality: String, owned: bool) -> void:
+	var sb := StyleBoxFlat.new()
+	sb.bg_color = Color("#3b342c") if owned else Color("#4a3524")
+	sb.set_corner_radius_all(6)
+	sb.set_border_width_all(2)
+	sb.border_color = Color("#6d6259") if owned else _quality_border_color(quality)
+	sb.content_margin_left = 8
+	sb.content_margin_right = 8
+	sb.content_margin_top = 4
+	sb.content_margin_bottom = 4
+	p.add_theme_stylebox_override("panel", sb)
+
+# 盒子选择器：我们的弹窗外观 + 原作逻辑
+#   - 每行：图标 + 名称/状态 + 「− 数量 +」步进器（上限=要选的数量）
+#   - 底部：已选择: k/N个 + 使用（凑满 N 才能点）
+#   - 已拥有：整行灰掉、步进器禁用
+func _open_friend_box_selector(item_id: String, title: String, rows: Array, need: int = 1) -> void:
 	if c.has_node("FriendBoxSelector"):
 		return
-	var panel = c._create_base_popup(title, Vector2(460, 520), Vector2(346, 100))
+	need = maxi(need, 1)
+	var panel = c._create_base_popup(title, Vector2(480, 580), Vector2(346, 100))
 	panel.name = "FriendBoxSelector"
 	var vbox = panel.get_child(0)
-	var tip = Label.new()
-	tip.text = "可从中选择 1 项"
+	var tip := Label.new()
+	tip.text = "可以从下方中选择%d个奖励" % need
 	tip.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	tip.add_theme_color_override("font_color", Color("#7a4a12"))
 	vbox.add_child(tip)
 	var list: VBoxContainer = c.popup_scroll(vbox)
-	list.custom_minimum_size = Vector2(440, 380)
+	list.custom_minimum_size = Vector2(440, 340)
 	if rows.is_empty():
-		var empty = Label.new()
+		var empty := Label.new()
 		empty.text = "暂无可选内容（后续版本开放）"
 		empty.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 		list.add_child(empty)
-	for row in rows:
-		var btn = Button.new()
-		btn.text = str(row.get("label", ""))
-		btn.mouse_filter = Control.MOUSE_FILTER_PASS
-		btn.pressed.connect(_on_friend_box_option_selected.bind(item_id, row))
-		list.add_child(btn)
+
+	var allocs: Array = []
+	allocs.resize(rows.size())
+	for i in rows.size():
+		allocs[i] = 0
+	var count_lbl := Label.new()
+	count_lbl.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	count_lbl.text = "已选择: 0/%d个" % need
+	var use_btn := Button.new()
+	use_btn.text = "使用"
+	use_btn.disabled = true
+
+	var refresh := func():
+		var total := 0
+		for v in allocs:
+			total += int(v)
+		count_lbl.text = "已选择: %d/%d个" % [total, need]
+		use_btn.disabled = total != need
+		for i2 in rows.size():
+			var row_node := list.get_child(i2) as PanelContainer
+			if row_node == null:
+				continue
+			var minus := row_node.find_child("QtyMinus", true, false) as Button
+			var plus := row_node.find_child("QtyPlus", true, false) as Button
+			var lab := row_node.find_child("QtyLabel", true, false) as RichTextLabel
+			if lab != null:
+				lab.text = "[center][color=#f6e6c8]%d[/color][/center]" % int(allocs[i2])
+			if minus != null:
+				minus.disabled = int(allocs[i2]) <= 0
+			if plus != null:
+				plus.disabled = total >= need
+
+	for i in rows.size():
+		var row: Dictionary = rows[i]
+		var owned := bool(row.get("owned", false))
+		var pc := PanelContainer.new()
+		pc.custom_minimum_size = Vector2(430, 64)
+		_style_row_panel(pc, str(row.get("quality", "")), owned)
+		var line := HBoxContainer.new()
+		line.add_theme_constant_override("separation", 8)
+		pc.add_child(line)
+		var icon_path := _box_row_icon_path(row)
+		if icon_path == "" and str(row.get("kind", "")) == "give":
+			icon_path = _item_icon_path(str(row.get("id", "")))
+		var tex := _scaled_icon(icon_path, 52)
+		if tex != null:
+			var tr := TextureRect.new()
+			tr.texture = tex
+			tr.custom_minimum_size = Vector2(52, 52)
+			tr.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_CENTERED
+			line.add_child(tr)
+		var vb := VBoxContainer.new()
+		vb.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+		vb.add_theme_constant_override("separation", 0)
+		# 弹窗主题把 Label 的字色压成深棕；用 RichTextLabel + bbcode 强制亮色
+		var nm := RichTextLabel.new()
+		nm.bbcode_enabled = true
+		nm.fit_content = true
+		nm.scroll_active = false
+		nm.custom_minimum_size = Vector2(0, 24)
+		nm.text = "[color=%s]%s[/color]" % ["#bbb3a6" if owned else "#f6e6c8", str(row.get("label", ""))]
+		vb.add_child(nm)
+		var sub := RichTextLabel.new()
+		sub.bbcode_enabled = true
+		sub.fit_content = true
+		sub.scroll_active = false
+		sub.custom_minimum_size = Vector2(0, 16)
+		sub.text = "[color=%s][font_size=12]%s[/font_size][/color]" % ["#a09a8e" if owned else "#9fd6a0", "已拥有" if owned else "可获取"]
+		vb.add_child(sub)
+		line.add_child(vb)
+
+		var minus := Button.new()
+		minus.name = "QtyMinus"
+		minus.text = "−"
+		minus.custom_minimum_size = Vector2(40, 40)
+		minus.disabled = true
+		line.add_child(minus)
+		var ql := RichTextLabel.new()
+		ql.name = "QtyLabel"
+		ql.bbcode_enabled = true
+		ql.fit_content = false
+		ql.scroll_active = false
+		ql.custom_minimum_size = Vector2(36, 40)
+		ql.text = "[center][color=#f6e6c8]0[/color][/center]"
+		line.add_child(ql)
+		var plus := Button.new()
+		plus.name = "QtyPlus"
+		plus.text = "+"
+		plus.custom_minimum_size = Vector2(40, 40)
+		plus.disabled = owned or need <= 0
+		line.add_child(plus)
+
+		if not owned:
+			var idx := i
+			_bind_longpress(plus, func(): _qty_change(allocs, idx, 1, need, refresh))
+			_bind_longpress(minus, func(): _qty_change(allocs, idx, -1, need, refresh))
+			plus.pressed.connect(func():
+				var total := 0
+				for v in allocs:
+					total += int(v)
+				if total < need:
+					allocs[idx] = int(allocs[idx]) + 1
+					refresh.call())
+			minus.pressed.connect(func():
+				if int(allocs[idx]) > 0:
+					allocs[idx] = int(allocs[idx]) - 1
+					refresh.call())
+		list.add_child(pc)
+
+	vbox.add_child(count_lbl)
+	var tip2 := Label.new()
+	tip2.text = "*长按可以快速更改数量"
+	tip2.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	tip2.add_theme_font_size_override("font_size", 12)
+	tip2.add_theme_color_override("font_color", Color("#c0503f"))
+	vbox.add_child(tip2)
+	use_btn.pressed.connect(func():
+		var picks: Array = []
+		for i3 in rows.size():
+			var n3 := int(allocs[i3])
+			if n3 > 0:
+				picks.append({"row": rows[i3], "times": n3})
+		if picks.is_empty():
+			return
+		for p3 in picks:
+			_on_friend_box_option_selected(item_id, p3["row"], int(p3["times"])))
+	vbox.add_child(use_btn)
+	refresh.call()
 	c.add_child(panel)
 
-func _on_friend_box_option_selected(item_id: String, row: Dictionary):
-	if int(data.items.get(item_id, 0)) < 1:
+
+func _on_friend_box_option_selected(item_id: String, row: Dictionary, times: int = 1):
+	# 已拥有的本体不可再选（界面上已 disabled，这里再兜一道）
+	if bool(row.get("owned", false)):
+		return
+	var left := int(data.items.get(item_id, 0))
+	if left < 1:
 		c._safe_close("FriendBoxSelector")
 		return
-	data.items[item_id] = int(data.items.get(item_id, 0)) - 1
+	times = clampi(times, 1, left)
+	data.items[item_id] = left - times
 	var msg := ""
 	if row.get("kind", "") == "friend":
 		var ok: bool = data.unlock_friend(str(row.get("id", "")))
@@ -700,25 +956,26 @@ func _on_friend_box_option_selected(item_id: String, row: Dictionary):
 			_friend_id_from_box(item_id), str(row.get("id", "")))
 		msg = str(res.get("msg", "获取失败"))
 	c._safe_close("FriendBoxSelector")
+	c._safe_close("OrigChoosePopup")
 	c._show_success_popup(msg, 0.0, "ok")
 	c.update_all_ui()
 	update_bag_list()
 
-func _show_friend_cos_box_selector(item_id: String):
+func _show_friend_cos_box_selector(item_id: String, qty: int = 1):
 	var fid := _friend_id_from_box(item_id)
-	_open_friend_box_selector(item_id, "素装盒（选1项）", _box_option_rows(fid, "素装", true))
+	_open_friend_box_selector(item_id, "素装盒（选%d项）" % qty, _box_option_rows(fid, "素装", true), qty)
 
-func _show_friend_jinyi_box_selector(item_id: String):
+func _show_friend_jinyi_box_selector(item_id: String, qty: int = 1):
 	var fid := _friend_id_from_box(item_id)
-	_open_friend_box_selector(item_id, "锦衣盒（选1项）", _box_option_rows(fid, "锦衣", false))
+	_open_friend_box_selector(item_id, "锦衣盒（选%d项）" % qty, _box_option_rows(fid, "锦衣", false), qty)
 
-func _show_friend_multi_box_selector(item_id: String):
+func _show_friend_multi_box_selector(item_id: String, qty: int = 1):
 	var rows: Array = []
 	for box_id in data.ITEM_CONFIG.get("friend_multi_box", {}).get("friends", []):
 		var cfg: Dictionary = data.ITEM_CONFIG.get(box_id, {})
 		rows.append({"label": str(cfg.get("name", box_id)), "kind": "give", "id": str(box_id),
 			"name": str(cfg.get("name", box_id))})
-	_open_friend_box_selector(item_id, "挚友锦盒（选1项）", rows)
+	_open_friend_box_selector(item_id, "挚友锦盒（选%d项）" % qty, rows, qty)
 
 func _show_cos_box_selector():
 	if c.has_node("CosBoxSelector"): return
@@ -737,6 +994,13 @@ func _show_cos_box_selector():
 	for e in data.costume_system.get_all_cos_entries():
 		var btn = Button.new()
 		btn.text = "【%s】%s（%s）" % [e["quality"], e["name"], e["hero_name"]]
+		btn.alignment = HORIZONTAL_ALIGNMENT_LEFT
+		btn.custom_minimum_size = Vector2(430, 52)
+		var skin := str(e.get("skin", ""))
+		if skin != "":
+			btn.icon = _scaled_icon("res://assets/costumes/icons/%s.png" % skin, 44)
+		btn.expand_icon = false
+		_style_option_row(btn, str(e.get("quality", "")), false)
 		btn.mouse_filter = Control.MOUSE_FILTER_PASS
 		btn.pressed.connect(_on_cos_box_selected.bind(e))
 		list.add_child(btn)
