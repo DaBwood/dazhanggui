@@ -392,7 +392,7 @@ func on_auto_earn():
 		_on_stage_auto_trade_tick(data.stage_auto_trade_tick())
 	# 【性能】方案B（2026-10-29 用户拍板）：每秒节拍不置脏收入表，避免每秒全量重建 109 门客
 	update_all_ui(true)
-	# 【新增】关卡页实时刷新：页内常驻实时铜钱/阅历，挂每秒节拍+页面守卫（2026-10-06 关卡页改版）
+	# 【新增】关卡页实时刷新：页内常驻实时铜钱/见识，挂每秒节拍+页面守卫（2026-10-06 关卡页改版）
 	if current_page == "stage":
 		update_stage_page()
 	# 【新增】定期自动存档：每 AUTOSAVE_INTERVAL 秒写一次盘（手机 Web 端收不到退出通知，靠它兜底进度）
@@ -427,7 +427,7 @@ func _on_stage_auto_trade_tick(result: Dictionary):
 			# 通关小关发宝箱，同步背包显示；提示仅关卡页可见时弹（文案与手动贸易一致）
 			update_bag_list()
 			if current_page == "stage":
-				_show_success_popup("通关！宝箱×1  阅历+%d" % result.get("exp_reward", 0), 0.0, "ok")
+				_show_success_popup("通关！宝箱×1  见识+%d" % result.get("exp_reward", 0), 0.0, "ok")
 		"boss_ready":
 			if current_page == "stage":
 				_show_success_popup("贸易完成，Boss 已出现！", 0.0, "ok")
@@ -453,9 +453,9 @@ func _close_quantity_selector():
 func on_money_plus_clicked():
 	var count = data.items.get("hour_card", 0)
 	if count <= 0:
-		_show_success_popup("没有小时卡，请前往商城购买", 0.0, "warn")
+		_show_success_popup("没有时辰卡，请前往商城购买", 0.0, "warn")
 		return
-	_show_quantity_selector("hour_card", "使用小时卡", _on_item_use_confirmed)
+	_show_quantity_selector("hour_card", "使用时辰卡", _on_item_use_confirmed)
 
 # skip_income_dirty=true：每秒被动节拍不置脏（方案B，2026-10-29 用户拍板）——
 # 被动 tick 不改任何赚钱输入（等级/资质/光环/服装/信物/宅院…全部是玩家操作），

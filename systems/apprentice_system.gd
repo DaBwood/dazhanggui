@@ -158,7 +158,7 @@ func get_graduated_income(index: int) -> int:
 
 # ========== 徒弟：培养 / 结业 / 联姻 ==========
 
-# 培养：10000铜钱 + 1活力 → 同槽所有徒弟进度各+4、阅历+3100；满进度成年
+# 培养：10000铜钱 + 1活力 → 同槽所有徒弟进度各+4、见识+3100；满进度成年
 func train_apprentice(slot: int) -> Dictionary:
 	if slot < 0 or slot >= 5: return {"ok": false, "reason": "槽位错误"}
 	var entry = g.apprentices[slot]
@@ -176,8 +176,8 @@ func train_apprentice(slot: int) -> Dictionary:
 	# 双胞胎占同一槽位，一起培养
 	for a in list:
 		a.progress = min(g.APPRENTICE_MAX_PROGRESS, a.progress + g.APPRENTICE_PROGRESS_PER_TRAIN)
-	# 【改】三批：培养阅历吃藏品套装加成（市贾/童忆 +3%/档）
-	# 【改】批次③：天赋 apprentice_learn_pct 乘区（阅历即阅历，全体门客求和）
+	# 【改】三批：培养见识吃藏品套装加成（市贾/童忆 +3%/档）
+	# 【改】批次③：天赋 apprentice_learn_pct 乘区（见识即见识，全体门客求和）
 	g.items.experience += int(g.APPRENTICE_TRAIN_EXP * (1.0 + g.collection_system.get_apprentice_suit_pct()) * (1.0 + g.talent_system.get_apprentice_learn_pct() / 100.0))
 	var adult = list[0].progress >= g.APPRENTICE_MAX_PROGRESS
 	if adult:

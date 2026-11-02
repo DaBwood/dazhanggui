@@ -40,15 +40,15 @@ func use_item(item_id: String, count: int) -> Dictionary:
 		"exp_box":
 			g.items.exp_box -= count
 			g.items.experience += 99999 * count
-			return {"ok": true, "msg": "获得阅历 ×%d" % (99999 * count)}
+			return {"ok": true, "msg": "获得见识 ×%d" % (99999 * count)}
 		"hour_card":
 			g.items.hour_card -= count
-			g.goal_system.add_stat("hour_card_used", count)   # 【第6批新增】挚友目标：小时卡使用计数
+			g.goal_system.add_stat("hour_card_used", count)   # 【第6批新增】挚友目标：时辰卡使用计数
 			var gain = g.get_total_auto_income() * 3600 * count
 			g.money += gain
 			return {"ok": true, "msg": "获得铜钱 ×%d" % gain}
 		"kezhong_card":
-			# 【新增】2026-09-18 刻钟卡：每张获得当前自动赚速1分钟的铜钱（小时卡=3600秒的1/60）
+			# 【新增】2026-09-18 刻钟卡：每张获得当前自动赚速1分钟的铜钱（时辰卡=3600秒的1/60）
 			g.items.kezhong_card -= count
 			var gain_minute = g.get_total_auto_income() * 60 * count
 			g.money += gain_minute
@@ -169,7 +169,7 @@ func use_item(item_id: String, count: int) -> Dictionary:
 				parts.append("【%s】×%d" % [rname, gains[rid]])
 			return {"ok": true, "msg": "获得：" + "、".join(parts), "gains": gains}
 		"miaoyin_jiasu_ka":
-			# 【新增】2026-09-18 妙音坊加速卡：每张立即获得60分钟妙音坊三轨收益（直接入账，不进收益罐）
+			# 【新增】2026-09-18 加速卡：每张立即获得60分钟妙音坊三轨收益（直接入账，不进收益罐）
 			if not g.miaoyin_system.has_any_output():
 				return {"ok": false, "msg": "妙音坊暂无产出，请先升级建筑"}
 			g.items[item_id] -= count

@@ -818,7 +818,7 @@ func _suit_effect_label(sid: String, suit: Dictionary) -> String:
 				return "套装效果：全体门客副业虫师技能等级上限 +%d（已激活%d档）" % [int(per) * act, act]
 			return "套装效果：%s类门客副业虫师技能等级上限 +%d（已激活%d档）" % [wcat, int(per) * act, act]
 		"apprentice_pct":
-			return "套装效果：徒弟培养阅历与赚速 +%s%%（已激活%d档）" % [cur, act]
+			return "套装效果：徒弟培养见识与赚速 +%s%%（已激活%d档）" % [cur, act]
 		"chat_bond_pct":
 			return "套装效果：谈心获得的缘分 +%s%%（已激活%d档）" % [cur, act]
 	return "套装效果：后续版本开放"
@@ -975,8 +975,8 @@ func _show_suit_detail(sid: String):
 func _fill_tao(body: VBoxContainer):
 	var sys = data.collection_system
 	# 券信息
-	# 【改】批次②③④-B7：淘宝券走新范式 _add_cost_row（need=单次消耗1张）；"获取途径：活动"按用户拍板不显示（2026-09-26）
-	var tl_row: HBoxContainer = c._add_cost_row(body, "淘宝券", sys.get_ticket_count(), 1)
+	# 【改】批次②③④-B7：淘宝卡走新范式 _add_cost_row（need=单次消耗1张）；"获取途径：活动"按用户拍板不显示（2026-09-26）
+	var tl_row: HBoxContainer = c._add_cost_row(body, "淘宝卡", sys.get_ticket_count(), 1)
 	for tl in tl_row.get_children():
 		tl.add_theme_font_size_override("font_size", 16)
 	var row = HBoxContainer.new()
@@ -1010,9 +1010,9 @@ func _fill_tao(body: VBoxContainer):
 
 func _do_roll(n: int):
 	var r = data.collection_system.roll(n)
-	# 【新增】批次②③④-B7：roll 失败（淘宝券不足）补反馈——按钮 disabled 已门控，此处防双连点等边界
+	# 【新增】批次②③④-B7：roll 失败（淘宝卡不足）补反馈——按钮 disabled 已门控，此处防双连点等边界
 	if not r.ok:
-		c._show_success_popup(str(r.get("msg", "淘宝券不足")), 0.0, "warn")   # 【改】飘字退休→warn 弹窗
+		c._show_success_popup(str(r.get("msg", "淘宝卡不足")), 0.0, "warn")   # 【改】飘字退休→warn 弹窗
 		return
 	_show_results(r.results)
 

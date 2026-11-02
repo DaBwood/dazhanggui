@@ -128,7 +128,7 @@ func _on_stamina_plus_pressed():
 		return
 	c._show_quantity_selector("stamina_pill", "使用体力丹（每颗体力+1）", _on_stamina_pill_confirmed)
 
-# 数量选择器确认回调：参数是选择器里的 SpinBox（与现有小时卡用法一致），批量使用体力丹
+# 数量选择器确认回调：参数是选择器里的 SpinBox（与现有时辰卡用法一致），批量使用体力丹
 func _on_stamina_pill_confirmed(spin):
 	var count = int(spin.value)
 	c._close_quantity_selector()

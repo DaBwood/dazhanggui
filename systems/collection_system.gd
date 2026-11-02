@@ -373,7 +373,7 @@ func can_lottery(n: int) -> bool:
 
 func roll(count: int) -> Dictionary:
 	if not can_lottery(count):
-		return {"ok": false, "msg": "淘宝券不足", "results": []}
+		return {"ok": false, "msg": "淘宝卡不足", "results": []}
 	g.items[get_ticket_item()] = get_ticket_count() - count
 	var results = []
 	for i in count:
@@ -587,7 +587,7 @@ func get_worm_cap_bonus(category: String) -> int:
 		total += int(suit.get("per_tier", 0)) * int(_suits.get(sid, 0))
 	return total
 
-# 徒弟套装（市贾/童忆）：培养阅历+徒弟赚速 共用放大系数（per_tier 为百分点，返回小数）
+# 徒弟套装（市贾/童忆）：培养见识+徒弟赚速 共用放大系数（per_tier 为百分点，返回小数）
 func get_apprentice_suit_pct() -> float:
 	var pct = 0.0
 	for sid in get_suits().keys():

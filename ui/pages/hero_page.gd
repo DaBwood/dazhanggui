@@ -135,10 +135,9 @@ func _spawn_hero_card(grid: GridContainer, hero_id: String, locked: bool) -> But
 	cell.set_meta("hero_id", hero_id)
 	cell.set_meta("locked", locked)
 	grid.add_child(cell)   # 先入树触发 _ready（@onready 就位）
-	if locked:
-		cell.pressed.connect(_on_locked_hero_clicked.bind(hero_id))
-	else:
-		cell.pressed.connect(open_hero_detail.bind(hero_id))
+	# 【修】不能在建卡时按当时的 locked 写死回调：门客后来解锁了，卡片仍指向“锁定提示”，
+	#       表现就是已解锁门客点不开详情、只弹“需要 VIP 解锁”。改为点击时按实时数据分流。
+	cell.pressed.connect(_on_hero_card_pressed.bind(hero_id))
 	cell.visible = (_hero_career == "" or str(data._hero_configs.get(hero_id, {}).get("category", "")) == _hero_career)
 	return cell
 
@@ -187,6 +186,13 @@ func _on_locked_hero_clicked(hero_id: String):
 	var cfg = data.get_hero_config(hero_id)
 	var hero_name = cfg.get("name", "未知门客")
 	c._show_unlock_hint("门客 " + hero_name, vip_level)
+
+# 门客卡点击：按**实时**是否拥有分流（建卡时的 locked 只是建卡瞬间的快照，不可作为判定依据）
+func _on_hero_card_pressed(hero_id: String):
+	if data.heroes.has(hero_id):
+		open_hero_detail(hero_id)
+	else:
+		_on_locked_hero_clicked(hero_id)
 
 func open_hero_panel(hero_id: String):
 	current_hero_id = hero_id
@@ -549,7 +555,7 @@ func update_hero_panel():
 		lv_btn.pressed.connect(promo._on_copy_talent_btn_clicked)
 	elif need_bt:
 		# 到达突破节点：按钮显示 突破+风雅颂数量，隐藏勾选框
-		lv_btn.text = ""   # 突破字牌 art 自带词，消耗见下方阅历
+		lv_btn.text = ""   # 突破字牌 art 自带词，消耗见下方见识
 		# 【改】批次②③④-B9：按钮内嵌成本不适用统一消耗行，按 B6 边界保持整钮红绿
 		lv_btn.add_theme_color_override("font_color", c._cost_color(int(data.items.get("fengyasong", 0)), int(bt_cost)))
 		batch_check.visible = false
@@ -561,7 +567,7 @@ func update_hero_panel():
 			lv_btn.pressed.connect(on_hero_breakthrough)
 	else:
 		# 【改】消耗数字交给统一函数：未勾选显示下一级消耗，勾选十连显示十连总价
-		lv_btn.text = ""   # 升级字牌 art 自带词，消耗见下方阅历
+		lv_btn.text = ""   # 升级字牌 art 自带词，消耗见下方见识
 		# 【改】批次②③④-B9：按钮内嵌成本不适用统一消耗行，按 B6 边界保持整钮红绿
 		lv_btn.add_theme_color_override("font_color", c._cost_color(int(data.items.get("experience", 0)), _get_level_up_cost(h)))
 		batch_check.visible = true
@@ -572,17 +578,17 @@ func update_hero_panel():
 		if not lv_btn.pressed.is_connected(on_hero_level_upgrade):
 			lv_btn.pressed.connect(on_hero_level_upgrade)
 	
-	# 升级阅历：拥有/消耗（升级牌下方独立显示，随十连勾选联动）
+	# 升级见识：拥有/消耗（升级牌下方独立显示，随十连勾选联动）
 	if c.has_node("HeroPanel/RightArtBar/LevelUpInfo"):
 		var lv_info = c.get_node("HeroPanel/RightArtBar/LevelUpInfo")
-		# 复制档（王昭君）天赋直接复制等级，无需升级，阅历行整体隐藏；须显式关，否则切门客残留
+		# 复制档（王昭君）天赋直接复制等级，无需升级，见识行整体隐藏；须显式关，否则切门客残留
 		lv_info.visible = not is_copy_holder
 		if not is_copy_holder:
 			var own_exp: int = int(data.items.get("experience", 0))
 			var need_exp: int = _get_level_up_cost(h)
-			lv_info.text = "阅历：%s/%s" % [c.format_number(own_exp), c.format_number(need_exp)]
+			lv_info.text = "见识：%s/%s" % [c.format_number(own_exp), c.format_number(need_exp)]
 			lv_info.add_theme_color_override("font_color", c._cost_color(own_exp, need_exp))
-			# 【改】2026-10-13 拍板：阅历黑底贴身——按文本实宽收紧标签、居中于升级牌（牌心 x≈63），黑底不延长
+			# 【改】2026-10-13 拍板：见识黑底贴身——按文本实宽收紧标签、居中于升级牌（牌心 x≈63），黑底不延长
 			var lv_f: Font = lv_info.get_theme_font("font", "Label")
 			var lv_sz: int = lv_info.get_theme_font_size("font_size", "Label")
 			var lv_w: float = lv_f.get_string_size(lv_info.text, HORIZONTAL_ALIGNMENT_LEFT, -1, lv_sz).x + 16
@@ -636,7 +642,7 @@ func on_hero_level_upgrade():
 		c.update_all_ui()
 		c.update_bag_list()
 	else:
-		c._show_success_popup("阅历不足", 0.0, "warn")   # 【新增】批次②③④-B4：升级失败反馈（门客升级耗阅历）   # 【改】飘字退休→warn 弹窗
+		c._show_success_popup("见识不足", 0.0, "warn")   # 【新增】批次②③④-B4：升级失败反馈（门客升级耗见识）   # 【改】飘字退休→warn 弹窗
 
 # 【新增】升级按钮文本：未勾选十连显示下一级消耗；勾选十连显示接下来最多10级（不超突破上限）的总消耗
 # 【改】批次②③④-B4：消耗数值拆出 _get_level_up_cost，按钮文本与批次③着色共用同一口径

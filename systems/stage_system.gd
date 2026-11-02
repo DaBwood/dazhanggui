@@ -59,7 +59,7 @@ func do_stage_trade() -> Dictionary:
 	g.reputation += 1
 	g.stage_trade_count += 1
 	
-	# 每次贸易获得阅历（随章节递增，但不高）
+	# 每次贸易获得见识（随章节递增，但不高）
 	var exp_reward = 10 * g.stage_main
 	g.items.experience += exp_reward
 	

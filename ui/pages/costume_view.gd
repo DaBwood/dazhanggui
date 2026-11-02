@@ -207,12 +207,24 @@ func show_hero_costume_popup(hero_id: String):
 	btn_cell.alignment = BoxContainer.ALIGNMENT_CENTER
 	btn_cell.add_theme_constant_override("separation", 4)
 	up_vbox.add_child(btn_cell)
+	# 【新增】消耗行 = 40×40 服装小图标 + 数量（原作解锁区就是图标+数量并排）
+	var cost_row := HBoxContainer.new()
+	cost_row.name = "CosCostRow"
+	cost_row.alignment = BoxContainer.ALIGNMENT_CENTER
+	cost_row.add_theme_constant_override("separation", 4)
+	btn_cell.add_child(cost_row)
+	var cost_icon := TextureRect.new()
+	cost_icon.name = "CosCostIcon"
+	cost_icon.custom_minimum_size = Vector2(22, 22)
+	cost_icon.expand_mode = TextureRect.EXPAND_IGNORE_SIZE
+	cost_icon.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_CENTERED
+	cost_row.add_child(cost_icon)
 	var cost_lbl := Label.new()
 	cost_lbl.name = "CosCost"
 	cost_lbl.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	cost_lbl.add_theme_font_size_override("font_size", 13)
 	cost_lbl.add_theme_color_override("font_color", Color(0.9, 0.85, 0.75))
-	btn_cell.add_child(cost_lbl)
+	cost_row.add_child(cost_lbl)
 	var btn_row := HBoxContainer.new()
 	btn_row.alignment = BoxContainer.ALIGNMENT_CENTER
 	btn_row.add_theme_constant_override("separation", 10)
@@ -280,7 +292,7 @@ func _build_cos_cards(cards: VBoxContainer, hero_id: String, preview: TextureRec
 		th.offset_bottom = -20.0
 		th.expand_mode = TextureRect.EXPAND_IGNORE_SIZE
 		th.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_CENTERED
-		var tex_path: String = "res://assets/portraits/heroes_cos/%s.png" % cos_id
+		var tex_path: String = "res://assets/costumes/icons/%s.png" % String(cfg.get("skin", ""))
 		if cos_id == "__default":
 			var base_p: String = "res://assets/portraits/heroes/%s.png" % hero_id
 			tex_path = base_p if ResourceLoader.exists(base_p) else ""
@@ -389,6 +401,26 @@ func _make_cos_chip(icon_path: String, fallback_char: String, chip_color: Color,
 	return chip
 
 # 选中联动：预览图/名牌/升级区域（双态：未解锁=解锁效果，已解锁=升级效果）
+# 消耗行的小图标（服装 40×40 小图）；无 skin 时清空（不做兜底，缺图就露白由数据侧补）
+func _set_cost_icon(cost_lbl: Label, cfg: Dictionary) -> void:
+	if cost_lbl == null:
+		return
+	var row := cost_lbl.get_parent()
+	if row == null:
+		return
+	var icon := row.get_node_or_null("CosCostIcon") as TextureRect
+	if icon == null:
+		return
+	var skin: String = String(cfg.get("skin", ""))
+	if skin == "":
+		icon.texture = null
+		icon.visible = false
+		return
+	var p: String = "res://assets/costumes/icons/%s_s.png" % skin
+	icon.texture = load(p) if ResourceLoader.exists(p) else null
+	icon.visible = icon.texture != null
+
+
 func _update_cos_detail(hero_id: String, cfg: Dictionary, preview: TextureRect, _qtag: TextureRect, name_lbl: Label, title_lbl: Label, halo_btn: Button, body: VBoxContainer, cost_lbl: Label, act_btn: Button, up_btn: Button):
 	for ch in body.get_children():
 		ch.queue_free()
@@ -416,6 +448,7 @@ func _update_cos_detail(hero_id: String, cfg: Dictionary, preview: TextureRect, 
 		title_lbl.text = "◆ 使用效果 ◆"
 		_add_body_line(body, "默认形象，无法升级", Color(0.85, 0.8, 0.7), 15)
 		cost_lbl.text = ""
+		_set_cost_icon(cost_lbl, {})
 		for conn in act_btn.pressed.get_connections():
 			act_btn.pressed.disconnect(conn.callable)
 		act_btn.disabled = false
@@ -439,7 +472,8 @@ func _update_cos_detail(hero_id: String, cfg: Dictionary, preview: TextureRect, 
 	# ── 双态：解锁效果 / 升级效果（华服/锦衣双词条分列左右，解锁/双钮居中）
 	halo_btn.visible = true
 	halo_btn.pressed.connect(_show_halo_rule.bind(hero_id, cfg))
-	cost_lbl.text = "库存 %d/1" % stock
+	cost_lbl.text = "%d/1" % stock
+	_set_cost_icon(cost_lbl, cfg)
 	cost_lbl.add_theme_color_override("font_color", Color(0.9, 0.85, 0.75))
 	if stock < 1:
 		cost_lbl.add_theme_color_override("font_color", Color(1, 0.45, 0.4))

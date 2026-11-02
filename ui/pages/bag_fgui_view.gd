@@ -16,9 +16,14 @@ extends RefCounted
 const PKG_DIR := "res://assets/fgui"   # 背包链路子集（5 包 + 图集，取舍见交付说明）
 const PKG_NAMES: Array = ["Basic", "Basic2", "Basic3", "Items", "Bag"]   # 依赖序：Basic 系与 Items 先于 Bag
 const WIN_SIZE := Vector2(750, 1334)   # 原作整窗设计尺寸（fgui_parsed.json：Bag/Main 750×1334）
+# 实际有内容的区域高度：列表底 192+972=1164，下面只有「所有/品质」下拉(~1200)与底部留白，
+# 1334 里最后约 94px 是空背景。按 1240 定等比，既完整显示内容又不浪费宽度。
+const WIN_CONTENT_H := 1240.0
 const TAB_TITLES: Array = ["道具", "活动", "合成"]   # 原作三页签文字（任务书口径）
 const ICON_DIR := "res://assets/items/icons/"       # 道具图标库（原作 6 位图标 id 命名，2026-11-01 入库）
 const ICON_MAP_PATH := "res://data/item_icon_map.json"   # 工程道具 id -> 图标 id + quality 映射
+const COS_ICON_DIR := "res://assets/costumes/icons/"      # 服装图标（<skin_id>.png / _s.png，2026-11-02 入库）
+const COS_PREFIX := "cos:"                                # 背包里服装道具的伪 id 前缀
 const FONT_UI := "res://assets/fonts/MNJYH.ttf"     # 原作 UI 字体「迷你简艺黑」（media/_uuid/MNJYH.ttf 提取）
 # 「活动」页签数据源：活动限定产出的道具 id（原作由活动系统下发，本工程暂无活动玩法，
 # 现阶段按显式清单列举——加活动道具就往这里加 id，加完自动出现在活动页签）
@@ -29,6 +34,8 @@ var data   # GameData 数据中枢引用
 
 var _host: Control = null   # BagPage 宿主节点
 var _node: Control = null   # 已实例化的整窗节点（Bag/Main 的 node）
+var _clip: Control = null   # 整窗的裁剪容器（只占顶栏/底栏之间的夹心区）
+var _back: ColorRect = null # 夹心区底色（整窗等比缩放后两侧留边的补底）
 var _comp: FGUIComponent = null   # Bag/Main 的组件包装（get_child/get_controller 用）
 var _list: FGUIList = null        # 「道具」页签的 GList（list1）
 var _ctrl: FGUIController = null  # 页签控制器 c1（0=道具 1=活动 2=合成）
@@ -37,6 +44,7 @@ var _tab_data: Array = [[], [], []]   # 各页签的数据源（道具：item_id
 var _item_ids: Array = []   # 兼容旧引用：恒等于 _tab_data[0]
 var _icon_map: Dictionary = {}   # 道具 id -> {icon, orig, match, file, quality}，懒加载一次
 var _icon_cache: Dictionary = {} # 道具 id -> 图标 id（或空串），避免每帧查 ResourceLoader
+var _cos_index: Dictionary = {}  # 服装 id -> {hero,name,quality,skin}（首次用到时建一次）
 var _resize_hooked := false
 
 # 由 bag_page 首次进入 FGUI 模式时创建本模块并注入引用
@@ -84,8 +92,22 @@ func ensure_built(host: Control) -> bool:
 	_host = host
 	_node = view.node
 	_node.name = "BagFguiMain"
-	# 挂到根节点：整窗是「页面之外」的全屏视图，挂 BagPage（夹在顶底栏之间的空壳）会撑不开
-	c.add_child(_node)
+	# 挂到根节点：整窗是「页面之外」的全屏视图，挂 BagPage（夹在顶底栏之间的空壳）会撑不开。
+	# 【改 2026-11-02】外面再套一层裁剪容器：整窗按宽铺满时高度会超出夹心区，
+	#   不裁剪就会盖住底部导航（用户反馈「页面偏下、侵占底栏」）。
+	if _clip == null or not is_instance_valid(_clip):
+		_clip = Control.new()
+		_clip.name = "BagFguiClip"
+		_clip.clip_contents = true
+		_clip.mouse_filter = Control.MOUSE_FILTER_PASS
+		c.add_child(_clip)
+		# 整窗按高度等比缩放后两侧会留边，垫一块同色底，避免露出灰色游戏背景
+		_back = ColorRect.new()
+		_back.name = "BagFguiBack"
+		_back.color = Color(0.145, 0.137, 0.129)
+		_back.mouse_filter = Control.MOUSE_FILTER_IGNORE
+		_clip.add_child(_back)
+	_clip.add_child(_node)
 	_node.visible = true
 	_inject_static_texts()
 	_wire_tabs()
@@ -95,6 +117,15 @@ func ensure_built(host: Control) -> bool:
 	if not _resize_hooked:
 		_resize_hooked = true
 		c.get_tree().root.size_changed.connect(_layout)
+		# 【改 2026-11-02】顶栏/底栏的显隐与高度是后设的：首次 _layout 跑在它们就位之前，
+		#   不补连接就会一直用「top_h=0 / bot_h=0」的旧值（表现就是整窗偏下、压住底栏）。
+		for bar_name in ["TopBar", "BottomNav"]:
+			if c.has_node(bar_name):
+				var bar: Control = c.get_node(bar_name)
+				if not bar.resized.is_connected(_layout):
+					bar.resized.connect(_layout)
+				if not bar.visibility_changed.is_connected(_layout):
+					bar.visibility_changed.connect(_layout)
 	_layout()
 	# switch_page 里 update_bag_list 先于 _apply_portrait_layout 执行，
 	# 首建时宿主矩形尚未刷新，延迟一帧按最终矩形再排一次
@@ -103,8 +134,18 @@ func ensure_built(host: Control) -> bool:
 	return true
 
 func set_visible(p_visible: bool) -> void:
+	if _clip != null and is_instance_valid(_clip):
+		_clip.visible = p_visible
 	if is_instance_valid(_node):
 		_node.visible = p_visible
+	# 【性能】背包整窗是不透明的，底下的页面（背景图 + 各页节点）没必要继续绘制。
+	#   真机上少这一层整体重绘，滚动时的填充率开销会明显下降。
+	if c.has_node("PageContainer"):
+		var page_container: Control = c.get_node("PageContainer")
+		page_container.visible = not p_visible
+	if p_visible:
+		# 每次进入都按当时的两栏矩形重排（进入前 TopBar/BottomNav 可能刚切换显隐）
+		call_deferred("_layout")
 
 # 等比缩放铺满内容区（同背包复刻工程 main.gd 口径：min(宽比, 高比)）。
 # 【改 2026-11-01】纳入顶栏/底栏：背包页要显示底部导航（用户口径），整窗只能占「夹心区」，
@@ -122,11 +163,20 @@ func _layout() -> void:
 	if c.has_node("BottomNav") and c.get_node("BottomNav").visible:
 		bot_h = c.get_node("BottomNav").size.y
 	var area := Rect2(Vector2(0.0, top_h), Vector2(vs.x, maxf(1.0, vs.y - top_h - bot_h)))
-	# 【改 2026-11-01】按宽铺满（原作整窗是满宽设计）：等比缩到宽度正好等于视口宽，
-	# 多出来的高度（1334 画布 − 夹心区）落到视口下方，被底栏挡住不露白边。
-	var s: float = area.size.x / WIN_SIZE.x
-	_node.scale = Vector2(s, s)
-	_node.position = Vector2(area.position.x, area.position.y)
+	# 【改 2026-11-02】等比缩放到「整窗完整可见」并按夹心区居中；两侧/上下的余量由 _back 补底色。
+	#   口径变更：宽度铺满会让 1334 高的整窗溢出夹心区（压住底部导航），改为完整可见优先。
+	var s: float = minf(area.size.x / WIN_SIZE.x, area.size.y / WIN_CONTENT_H)
+	if _clip != null and is_instance_valid(_clip):
+		_clip.position = area.position
+		_clip.size = area.size
+		if _back != null and is_instance_valid(_back):
+			_back.position = Vector2.ZERO
+			_back.size = area.size
+		_node.scale = Vector2(s, s)
+		_node.position = Vector2((area.size.x - WIN_SIZE.x * s) * 0.5, 0.0)
+	else:
+		_node.scale = Vector2(s, s)
+		_node.position = area.position
 
 # 加载五包（FGUIPackage 静态注册表按名去重，重复调用幂等）
 func _load_packages() -> bool:
@@ -198,6 +248,9 @@ func _wire_item_list() -> void:
 			push_error("BagFguiView: list" + str(tab + 1) + " 缺失")
 			continue
 		lst.item_renderer = _on_cell_render.bind(tab)
+		# 【性能】保持非虚拟列表：背包最多几十格，一次性建好后滚动期间不再增删节点。
+		# 插件 0.6.0 的虚拟列表在滚动时会反复回收/重建可见格子（_set_virtual 一旦调用不可回退），
+		# 真机上反而更抖，所以这里不调 _set_virtual。
 
 # 刷新三个页签的格子（数据变化/进页时由 bag_page.generate_bag_list 调用）
 func refresh_items() -> void:
@@ -213,9 +266,11 @@ func refresh_items() -> void:
 			continue
 		var arr: Array = _tab_data[tab]
 		lst.num_items = arr.size()
-		# 插件 0.6.0 实测：非虚拟列表 num_items 只建池不回调 renderer，手动补一轮
-		for i in range(lst.num_items):
-			_on_cell_render(i, lst.get_child_at(i), tab)
+		# 虚拟列表（本项目默认）会自己按可见区间实例化并回调 item_renderer，
+		# 不再手动补渲染；非虚拟列表（插件 0.6.0）num_items 只建池不回调，需要补一轮。
+		if lst.num_items > 0 and not bool(lst.get("_virtual")):
+			for i in range(lst.num_items):
+				_on_cell_render(i, lst.get_child_at(i), tab)
 	_update_empty_hint()
 
 # 空列表提示：只在当前页签的列表为空时显示原作 txtEmpty
@@ -250,6 +305,9 @@ func _owned_item_ids(only_event: bool) -> Array:
 		if _get_item_count(item_id) <= 0:
 			continue
 		out.append(item_id)
+	# 【新增】已解锁的门客服装也当道具陈列（挚友服装暂不进背包，换装界面还没做）
+	if not only_event:
+		out.append_array(_owned_cos_item_ids())
 	return out
 
 # 合成页签条目：产出一格（配方字典原样带上，点击开合成弹窗）
@@ -261,9 +319,55 @@ func _compose_entries() -> Array:
 	return out
 
 func _get_item_count(item_id: String) -> int:
+	if item_id.begins_with(COS_PREFIX):
+		return 1
 	if item_id == "lottery_ticket":
 		return int(data.lottery_ticket)
 	return int(data.items.get(item_id, 0))
+
+
+# 已解锁的门客服装 → "cos:<cos_id>" 列表（挚友服装暂不处理：换装界面还没做）
+func _owned_cos_item_ids() -> Array:
+	var out: Array = []
+	var heroes: Dictionary = data.costume_configs.get("hero_costumes", {})
+	for hero_id in heroes.keys():
+		for cfg in heroes[hero_id]:
+			var cos_id := str(cfg.get("id", ""))
+			if cos_id == "":
+				continue
+			if data.costume_system.is_hero_cos_unlocked(hero_id, cos_id):
+				out.append(COS_PREFIX + cos_id)
+	return out
+
+
+# 单条服装的元数据：cos_id → {hero,name,quality,skin}
+func _cos_meta(item_id: String) -> Dictionary:
+	var cos_id := item_id.substr(COS_PREFIX.length())
+	if _cos_index.is_empty():
+		var heroes: Dictionary = data.costume_configs.get("hero_costumes", {})
+		for hero_id in heroes.keys():
+			for cfg in heroes[hero_id]:
+				_cos_index[str(cfg.get("id", ""))] = {
+					"hero": hero_id,
+					"name": str(cfg.get("name", "")),
+					"quality": str(cfg.get("quality", "")),
+					"skin": str(cfg.get("skin", "")),
+				}
+	return _cos_index.get(cos_id, {})
+
+
+# 服装品质名 → 品质底图页号（P1绿/P2蓝/P4橙/P5红/P6深红）
+func _cos_quality_tier(quality_name: String) -> int:
+	match quality_name:
+		"素装":
+			return 2
+		"华服":
+			return 4
+		"锦衣":
+			return 5
+		"堇书":
+			return 6
+	return 3
 
 # 格子渲染（三页签共用）：道具/活动格 = 图标 + 数量；合成格 = 产出物图标 + 现有数量，点击开合成弹窗
 func _on_cell_render(index: int, obj: FGUIObject, tab: int = 0) -> void:
@@ -285,6 +389,8 @@ func _on_cell_render(index: int, obj: FGUIObject, tab: int = 0) -> void:
 		count = _get_item_count(item_id)
 	var cfg: Dictionary = data.ITEM_CONFIG.get(item_id, {})
 	var display_name := str(cfg.get("name", ""))
+	if item_id.begins_with(COS_PREFIX):
+		display_name = str(_cos_meta(item_id).get("name", ""))
 	if display_name == "" and recipe.has("output_type") and str(recipe.output_type) == "beast":
 		display_name = _beast_name(item_id)
 	if display_name == "":
@@ -307,6 +413,13 @@ func _decorate_cell(obj: FGUIObject, item_id: String, count: int, display_name: 
 	var comp := obj as FGUIComponent
 	if comp == null:
 		return
+	# 【性能】同一格重复渲染时内容没变就跳过：滑动列表会反复回调 renderer，
+	# 每次重设 text / url / 控制器都会触发重排与贴图重载，是卡顿的主因
+	var decor_key := item_id + "|" + str(count) + "|" + display_name
+	if obj.node != null:
+		if obj.node.has_meta("bag_decor_key") and str(obj.node.get_meta("bag_decor_key")) == decor_key:
+			return
+		obj.node.set_meta("bag_decor_key", decor_key)
 	var cnt := comp.get_child("txtCount")
 	if cnt != null:
 		# bgCount（半透明黑数量条）在 .fui 里排在 icon 之前，被 114×114 图标盖住；
@@ -321,6 +434,21 @@ func _decorate_cell(obj: FGUIObject, item_id: String, count: int, display_name: 
 			if cnt.node != null:
 				cnt.node.z_index = 3
 			obj.node.set_meta("bag_count_on_top", true)
+			# 【性能】格子里两个 GMovieClip（effectAni/effectAni2）默认 playing=true，
+			# 几十个格子各跑两个 Timer + 每帧换贴图，滑动时明显掉帧；背包用不到，直接停掉
+			for ani_name in ["effectAni", "effectAni2"]:
+				var ani := comp.get_child(ani_name)
+				if ani is FGUIMovieClip:
+					(ani as FGUIMovieClip).playing = false
+				if ani != null and ani.node != null:
+					ani.node.visible = false
+					# 连节点处理也关掉：隐藏但仍在树上的节点依旧参与每帧遍历
+					ani.node.process_mode = Node.PROCESS_MODE_DISABLED
+			for extra in ["imgLimitedTime", "imgRedPoint"]:
+				var ex := comp.get_child(extra)
+				if ex != null and ex.node != null:
+					ex.node.visible = false
+					ex.node.process_mode = Node.PROCESS_MODE_DISABLED
 		# .fui 里 txtCount 绑的是位图字体「ui://sq0gzulmk5ti1s5」，我们没导出该资源 →
 		# 位图分支字形宽度为 0、数字全叠一格；显式指到 TTF 路径即可走动态字体分支
 		if cnt.font.begins_with("ui://"):
@@ -328,7 +456,12 @@ func _decorate_cell(obj: FGUIObject, item_id: String, count: int, display_name: 
 		# 原作格子只写数字（右下角），不写 "x" 前缀
 		cnt.text = str(count)
 	_apply_cell_quality(comp, _quality_for(item_id))
-	var has_icon := _apply_cell_icon(comp, _icon_id_for(item_id))
+	var has_icon := false
+	if item_id.begins_with(COS_PREFIX):
+		var skin := str(_cos_meta(item_id).get("skin", ""))
+		has_icon = _apply_cell_icon_url(comp, COS_ICON_DIR + skin + ".png" if skin != "" else "")
+	else:
+		has_icon = _apply_cell_icon(comp, _icon_id_for(item_id))
 	if obj.node != null:
 		_ensure_name_label(obj.node, display_name, not has_icon)
 
@@ -357,6 +490,8 @@ func _on_compose_cell_clicked(_event = null, obj: FGUIObject = null) -> void:
 
 # 品质（1-5，来自原作道具表；0=未知）→ 格子底图 bgItem 的控制器 c1 页码 0-6
 func _quality_for(item_id: String) -> int:
+	if item_id.begins_with(COS_PREFIX):
+		return _cos_quality_tier(str(_cos_meta(item_id).get("quality", "")))
 	var ent: Dictionary = _icon_map.get(item_id, {})
 	return int(ent.get("quality", 0))
 
@@ -369,7 +504,7 @@ func _apply_cell_quality(comp: FGUIComponent, quality: int) -> void:
 	var ctrl: FGUIController = bg.get_controller("c1")
 	if ctrl == null:
 		return
-	ctrl.selected_index = clampi(quality - 1, 0, 6)
+	ctrl.selected_index = clampi(quality, 0, 6)
 
 # 取映射里的 6 位图标 id；无映射或文件缺失返回空串（结果缓存：每帧刷新不重复查盘）
 func _icon_id_for(item_id: String) -> String:
@@ -386,15 +521,27 @@ func _icon_id_for(item_id: String) -> String:
 
 # 把图标塞进格子组件的 icon 槽（FGUILoader 走 _load_external，res:// 路径直接 load 成贴图）
 func _apply_cell_icon(comp: FGUIComponent, icon_id: String) -> bool:
+	if icon_id == "":
+		return _apply_cell_icon_url(comp, "")
+	return _apply_cell_icon_url(comp, ICON_DIR + icon_id + ".png")
+
+
+# 把任意 res:// 贴图路径塞进格子（服装图标与道具图标共用这条；空串＝清空）
+func _apply_cell_icon_url(comp: FGUIComponent, want: String) -> bool:
 	if comp == null:
 		return false
 	var loader := comp.get_child("icon") as FGUILoader
 	if loader == null:
 		return false
-	if icon_id == "":
+	if want == "":
 		loader.url = ""
 		return false
-	loader.url = ICON_DIR + icon_id + ".png"
+	# 【性能】url 没变就不重设：GLoader 的 url setter 每次都走 _load_url → load 贴图
+	if comp.node != null and comp.node.has_meta("bag_icon_url") and str(comp.node.get_meta("bag_icon_url")) == want:
+		return true
+	if comp.node != null:
+		comp.node.set_meta("bag_icon_url", want)
+	loader.url = want
 	return true
 
 # 格子名字小标签（仅在无图标时显示；有图标时原作格子不显示名字）

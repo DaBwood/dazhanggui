@@ -22,7 +22,7 @@
 	  "friend": "meng_qier",
 	  "stat": "hour_card_used",
 	  "need": 15,
-	  "desc": "累计使用小时卡"
+	  "desc": "累计使用时辰卡"
 	},
 	{
 	  "friend": "ya_huan",

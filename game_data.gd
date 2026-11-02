@@ -182,7 +182,7 @@ const SPECIAL_PACKS = [
 # 可选：items 道具及数量 / beast 珍兽ID / beast_fruit 珍兽果 / aroma_fruit 奇香果
 const MALL_PACKS = [
 	{"name": "驺虞礼包",   "desc": "驺虞×1 + 珍兽果×988 + 奇香果×988", "cost": 19888, "beast": "zou_yu", "beast_fruit": 988, "aroma_fruit": 988},
-	{"name": "小时卡礼包", "desc": "小时卡×999",                        "cost": 998,   "items": {"hour_card": 999}},
+	{"name": "时辰卡礼包", "desc": "时辰卡×999",                        "cost": 998,   "items": {"hour_card": 999}},
 	{"name": "活力礼包",   "desc": "木梳×1000 + 胭脂×1000 + 活力丹×2000 + 玫瑰香水×1", "cost": 1988,  "items": {"wood_comb": 1000, "rouge": 1000, "vitality_pill": 2000, "rose_perfume": 1}},
 	{"name": "声望礼包",   "desc": "声望卡×100 + 高级声望卡×10", "cost": 988,  "items": {"reputation_card": 100, "reputation_card_adv": 10}},
 	{"name": "体力礼包", "desc": "体力丹×100 + 木梳×100 + 胭脂×100", "cost": 1988, "items": {"stamina_pill": 100, "wood_comb": 100, "rouge": 100}},
@@ -249,7 +249,7 @@ const APPRENTICE_PROGRESS_PER_TRAIN = 4      # 每次培养提升的进度
 
 const APPRENTICE_TRAIN_COST = 10000          # 每次培养消耗铜钱
 
-const APPRENTICE_TRAIN_EXP = 3100            # 每次培养获得阅历
+const APPRENTICE_TRAIN_EXP = 3100            # 每次培养获得见识
 
 const APPRENTICE_VIGOR_MAX = 500             # 每个槽位活力上限
 

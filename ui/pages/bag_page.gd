@@ -16,7 +16,8 @@ var _pending_ginseng_type: String = ""
 # 【新增】2026-09-16 百业札记待使用数量（选中门客后结算）
 var _pending_baiye_count: int = 0
 #【新增】固定为1的道具类型：数量锁定单次开启（门客/挚友盒解锁对象唯一；促织架按ID唯一存放）
-const SINGLE_USE_TYPES: Array = ["hero_box", "friend_box", "wushuang_cuzhi_box", "cos_box"]
+const SINGLE_USE_TYPES: Array = ["hero_box", "friend_box", "wushuang_cuzhi_box", "cos_box",
+	"friend_cos_box", "friend_jinyi_box", "friend_multi_box"]
 
 # 【新增】背包底部栏当前页（2026-09-10 商会第二批）：item=物品 compose=合成
 
@@ -43,7 +44,7 @@ const COMPOSE_RECIPES: Array = [
 	{"output": "hero_token", "material": "can_tie", "ratio": 10},
 	{"output": "kaishan_ling", "material": "kaishan_yin", "ratio": 20},
 	{"output": "zongjiang_ling", "material": "zongjiang_yin", "ratio": 20},
-	# 【新增】2026-09-18 刻钟卡×60→小时卡；无双精魄×20→珍兽白泽（白泽同驺虞走珍兽产出分支）
+	# 【新增】2026-09-18 刻钟卡×60→时辰卡；无双精魄×20→珍兽白泽（白泽同驺虞走珍兽产出分支）
 	{"output": "hour_card", "material": "kezhong_card", "ratio": 60},
 	{"output": "bai_ze", "material": "wushuang_jingpo", "ratio": 20, "output_type": "beast"},
 	# 【新增】2026-09-16 无双兽骨×40→珍兽驺虞（产出是珍兽不是道具：格子/弹窗走 output_type 分支）
@@ -112,6 +113,71 @@ func _item_icon_texture(item_id: String) -> Texture2D:
 	return tex
 
 # 【新增 2026-11-01】点格子→详情弹窗改为延迟一帧创建：弹窗要建遮罩 + 九切片皮肤 + 匾额灯笼十余个节点，
+# 服装详情：图标 + 归属（谁的什么皮肤）+ 去哪解锁/升级
+# 背包里的服装是「凭证」，真正穿戴/升级在门客换装界面
+func _show_cos_detail_popup(cos_id: String):
+	var hero_id := ""
+	var cfg: Dictionary = {}
+	var heroes: Dictionary = data.costume_configs.get("hero_costumes", {})
+	for hid in heroes.keys():
+		for item in heroes[hid]:
+			if str(item.get("id", "")) == cos_id:
+				hero_id = hid
+				cfg = item
+				break
+		if not cfg.is_empty():
+			break
+	var cos_name: String = str(cfg.get("name", cos_id))
+	var quality: String = str(cfg.get("quality", "素装"))
+	var hero_name: String = hero_id
+	var hcfg: Dictionary = data.get_hero_config(hero_id)
+	if not hcfg.is_empty():
+		hero_name = str(hcfg.get("name", hero_id))
+	var skin: String = str(cfg.get("skin", ""))
+	var tex: Texture2D = null
+	if skin != "":
+		var p: String = "res://assets/costumes/icons/%s.png" % skin
+		if ResourceLoader.exists(p):
+			tex = load(p) as Texture2D
+	var popup = c._create_base_popup("服装详情", Vector2(400, 470) if tex != null else Vector2(400, 380))
+	popup.name = "ItemDetailPopup"
+	var vbox = popup.get_child(0)
+	if tex != null:
+		var icon_rect := TextureRect.new()
+		icon_rect.texture = tex
+		icon_rect.custom_minimum_size = Vector2(112, 112)
+		icon_rect.expand_mode = TextureRect.EXPAND_IGNORE_SIZE
+		icon_rect.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_CENTERED
+		icon_rect.size_flags_horizontal = Control.SIZE_SHRINK_CENTER
+		vbox.add_child(icon_rect)
+	var name_lbl := Label.new()
+	name_lbl.text = "【%s】%s" % [quality, cos_name]
+	name_lbl.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	name_lbl.add_theme_font_size_override("font_size", 18)
+	vbox.add_child(name_lbl)
+	var owner_lbl := Label.new()
+	owner_lbl.text = "归属：%s" % hero_name
+	owner_lbl.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	vbox.add_child(owner_lbl)
+	var desc_lbl := Label.new()
+	desc_lbl.text = "已获得的服装，可在「门客 → %s → 换装」里穿戴、解锁与升级。" % hero_name
+	desc_lbl.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+	desc_lbl.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	vbox.add_child(desc_lbl)
+	var go_btn := Button.new()
+	go_btn.text = "去换装"
+	go_btn.custom_minimum_size = Vector2(160, 40)
+	go_btn.size_flags_horizontal = Control.SIZE_SHRINK_CENTER
+	go_btn.pressed.connect(_on_cos_detail_go.bind(hero_id))
+	vbox.add_child(go_btn)
+	c.add_child(popup)
+
+func _on_cos_detail_go(hero_id: String):
+	c._safe_close("ItemDetailPopup")
+	if data.costume_system != null and c.costume_view != null:
+		c.costume_view.show_hero_costume_popup(hero_id)
+
+
 # 在 FGUI 的点击回调栈里同步建会明显顿一下；延迟一帧既不丢操作，点击帧也不再卡。
 func _show_item_detail_popup(item_id: String):
 	_show_item_detail_popup_now.call_deferred(item_id)
@@ -121,6 +187,10 @@ func _show_item_detail_popup_now(item_id: String):
 	var old: Node = c.get_node_or_null("ItemDetailPopup")
 	if old != null:
 		old.queue_free()
+	# 【新增】服装道具（cos:<cos_id>）：不是 items.json 里的条目，单独走服装详情
+	if item_id.begins_with("cos:"):
+		_show_cos_detail_popup(item_id.substr(4))
+		return
 	var cfg = data.ITEM_CONFIG.get(item_id, {})
 	var count = data.items.get(item_id, 0)
 	if item_id == "lottery_ticket":
@@ -168,8 +238,8 @@ func _show_item_detail_popup_now(item_id: String):
 		fix_lbl.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 		vbox.add_child(fix_lbl)
 	else:
-		# 数量选择器：滑条+输入框双向同步，默认0（复用全局辅助）
-		var pair = c._create_slider_spin_pair(vbox, count, 0)
+		# 数量选择器：滑条+输入框双向同步，默认1（min_val 即初始值，复用全局辅助默认口径）
+		var pair = c._create_slider_spin_pair(vbox, count)
 		qty_spin = pair.spin
 
 	var use_btn = Button.new()
@@ -226,6 +296,18 @@ func _on_detail_use(item_id: String, qty: int, popup: Control):
 			# 【新增】服装盒子：先关详情弹窗再开选择器（与 hero_box 等先例一致）
 			popup.queue_free()
 			_show_cos_box_selector()
+		"friend_cos_box":
+			# 【新增】挚友素装盒：选该挚友本人或其任一素装
+			popup.queue_free()
+			_show_friend_cos_box_selector(item_id)
+		"friend_jinyi_box":
+			# 【新增】挚友锦衣盒：选该挚友的锦衣之一
+			popup.queue_free()
+			_show_friend_jinyi_box_selector(item_id)
+		"friend_multi_box":
+			# 【新增】挚友锦盒：选五个挚友素装盒之一
+			popup.queue_free()
+			_show_friend_multi_box_selector(item_id)
 		"manhuang_box":
 			popup.queue_free()
 			_show_manhuang_box_selector(qty)
@@ -250,7 +332,7 @@ func _on_detail_use(item_id: String, qty: int, popup: Control):
 			popup.queue_free()
 			_open_treasure_boxes(qty)
 
-# 【新增】按数量使用道具（结算体抽出，详情弹窗与小时卡入口共用）
+# 【新增】按数量使用道具（结算体抽出，详情弹窗与时辰卡入口共用）
 func _use_items(item_id: String, count: int):
 	var result = data.use_item(item_id, count)
 	if result.get("ok", false):
@@ -553,6 +635,91 @@ func _filter_named_buttons(entries: Array, text: String) -> void:
 		e["btn"].visible = (q == "" or String(e["text"]).to_lower().contains(q))
 
 # 【新增】服装盒子选择弹窗：从所有服装中选一件（加库存不自动解锁，到所属门客服装页解锁）
+# 【新增】挚友盒子：素装盒 / 锦衣盒 / 多选锦盒（2026-11-02 用户口径）
+# 素装盒 = 选「该挚友本人」或「该挚友任一素装」；锦衣盒 = 选该挚友任一锦衣；
+# 锦盒(friend_multi_box) = 选五个挚友素装盒之一。
+func _friend_id_from_box(item_id: String) -> String:
+	for prefix in ["friend_cos_box_", "friend_jinyi_box_"]:
+		if item_id.begins_with(prefix):
+			return item_id.substr(prefix.length())
+	return ""
+
+func _box_option_rows(friend_id: String, quality: String, with_friend: bool) -> Array:
+	var rows: Array = []
+	var fname: String = data.get_friend_config(friend_id).get("name", friend_id)
+	if with_friend:
+		rows.append({"label": "【挚友】%s" % fname, "kind": "friend", "id": friend_id, "name": fname})
+	for cfg in data.costume_system.get_friend_costume_cfgs(friend_id):
+		if quality != "" and str(cfg.get("quality", "")) != quality:
+			continue
+		rows.append({"label": "【%s】%s" % [cfg.get("quality", ""), cfg.get("name", "")],
+			"kind": "cos", "id": str(cfg.get("id", "")), "name": str(cfg.get("name", "")),
+			"quality": str(cfg.get("quality", ""))})
+	return rows
+
+func _open_friend_box_selector(item_id: String, title: String, rows: Array) -> void:
+	if c.has_node("FriendBoxSelector"):
+		return
+	var panel = c._create_base_popup(title, Vector2(460, 520), Vector2(346, 100))
+	panel.name = "FriendBoxSelector"
+	var vbox = panel.get_child(0)
+	var tip = Label.new()
+	tip.text = "可从中选择 1 项"
+	tip.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	vbox.add_child(tip)
+	var list: VBoxContainer = c.popup_scroll(vbox)
+	list.custom_minimum_size = Vector2(440, 380)
+	if rows.is_empty():
+		var empty = Label.new()
+		empty.text = "暂无可选内容（后续版本开放）"
+		empty.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+		list.add_child(empty)
+	for row in rows:
+		var btn = Button.new()
+		btn.text = str(row.get("label", ""))
+		btn.mouse_filter = Control.MOUSE_FILTER_PASS
+		btn.pressed.connect(_on_friend_box_option_selected.bind(item_id, row))
+		list.add_child(btn)
+	c.add_child(panel)
+
+func _on_friend_box_option_selected(item_id: String, row: Dictionary):
+	if int(data.items.get(item_id, 0)) < 1:
+		c._safe_close("FriendBoxSelector")
+		return
+	data.items[item_id] = int(data.items.get(item_id, 0)) - 1
+	var msg := ""
+	if row.get("kind", "") == "friend":
+		var ok: bool = data.unlock_friend(str(row.get("id", "")))
+		msg = ("获得挚友【%s】" % row.get("name", "")) if ok else "该挚友已拥有，道具已消耗"
+	elif row.get("kind", "") == "give":
+		var give_id := str(row.get("id", ""))
+		data.items[give_id] = int(data.items.get(give_id, 0)) + 1
+		msg = "获得【%s】×1" % row.get("name", give_id)
+	else:
+		var res: Dictionary = data.costume_system.grant_friend_costume(
+			_friend_id_from_box(item_id), str(row.get("id", "")))
+		msg = str(res.get("msg", "获取失败"))
+	c._safe_close("FriendBoxSelector")
+	c._show_success_popup(msg, 0.0, "ok")
+	c.update_all_ui()
+	update_bag_list()
+
+func _show_friend_cos_box_selector(item_id: String):
+	var fid := _friend_id_from_box(item_id)
+	_open_friend_box_selector(item_id, "素装盒（选1项）", _box_option_rows(fid, "素装", true))
+
+func _show_friend_jinyi_box_selector(item_id: String):
+	var fid := _friend_id_from_box(item_id)
+	_open_friend_box_selector(item_id, "锦衣盒（选1项）", _box_option_rows(fid, "锦衣", false))
+
+func _show_friend_multi_box_selector(item_id: String):
+	var rows: Array = []
+	for box_id in data.ITEM_CONFIG.get("friend_multi_box", {}).get("friends", []):
+		var cfg: Dictionary = data.ITEM_CONFIG.get(box_id, {})
+		rows.append({"label": str(cfg.get("name", box_id)), "kind": "give", "id": str(box_id),
+			"name": str(cfg.get("name", box_id))})
+	_open_friend_box_selector(item_id, "挚友锦盒（选1项）", rows)
+
 func _show_cos_box_selector():
 	if c.has_node("CosBoxSelector"): return
 	if data.items.get("cos_box", 0) < 1: return

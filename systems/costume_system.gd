@@ -527,6 +527,26 @@ func exchange_friend_costume(friend_id: String, cos_id: String) -> Dictionary:
 		return {"ok": true, "msg": "解锁服装【%s】，友好+%d 才华+%d" % [cfg.get("name", cos_id), int(gain[0]), int(gain[1])]}
 	return {"ok": true, "msg": "【%s】友好+%d 才华+%d" % [cfg.get("name", cos_id), int(gain[0]), int(gain[1])]}
 
+# 【新增】挚友盒直接发放挚友服装：不消耗系列道具，友好/才华加成口径与 exchange_friend_costume 一致
+# （首次走 friend_unlock 档，重复走 friend_dup 档）；返回 {ok, msg, first}
+func grant_friend_costume(friend_id: String, cos_id: String) -> Dictionary:
+	if not g.friends.has(friend_id):
+		return {"ok": false, "msg": "尚未拥有该挚友"}
+	var cfg = _get_friend_cos_cfg(friend_id, cos_id)
+	if cfg.is_empty():
+		return {"ok": false, "msg": "服装不存在"}
+	if not g.friends[friend_id].has("costumes"):
+		g.friends[friend_id]["costumes"] = {}
+	var copies = get_friend_cos_copies(friend_id, cos_id)
+	var table = _settings().get("friend_unlock" if copies == 0 else "friend_dup", {})
+	var gain = table.get(cfg.get("quality", "素装"), [300, 300])
+	g.friends[friend_id].friendly += int(gain[0])
+	g.friends[friend_id].talent += int(gain[1])
+	g.friends[friend_id]["costumes"][cos_id] = copies + 1
+	return {"ok": true, "first": copies == 0,
+			"msg": "%s【%s】友好+%d 才华+%d" % ["解锁" if copies == 0 else "获得",
+			cfg.get("name", cos_id), int(gain[0]), int(gain[1])]}
+
 # ============ 服装版之道技能（2026-09-25 用户拍板：华服→XX之道（华服）、锦衣→极·XX之道（锦衣）） ============
 # 与自带版同名共存的额外资质技能（方案B后缀命名），进【技能】页签；数值同自带版：华服版 1★（+1资质/级）吃职业道书100/级，锦衣版 3★（+3资质/级）吃书300/级
 # 技能字典带 cost_item/cost_num 走 hero_page 通用书消耗/own 显示分支；上限公式=服装技能同款数值：新解锁+unlock_bonus（华服20/锦衣30）、每次升级+dup_bonus（15），无封顶

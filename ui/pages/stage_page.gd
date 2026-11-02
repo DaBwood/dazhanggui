@@ -155,13 +155,13 @@ func update_stage_page():
 		c._show_success_popup("一键贸易已停止：%s" % data.stage_auto_stop_reason, 4.0, "ok")
 		data.stage_auto_stop_reason = ""
 
-	# 章-关简称口径（用户拍板⑧）："38-4"；铜钱/阅历挪顶排「闯关」两侧，跟随实时数据
+	# 章-关简称口径（用户拍板⑧）："38-4"；铜钱/见识挪顶排「闯关」两侧，跟随实时数据
 	var title := inst.get_node_or_null("StageHead/StageBadge/StageTitle") as Label
 	if title: title.text = "%d-%d" % [data.stage_main, data.stage_sub]
 	var top_money := inst.get_node_or_null("TopRow/TopMoney") as Label
 	if top_money: top_money.text = "铜钱：%s" % c.format_number(data.money)
 	var top_exp := inst.get_node_or_null("TopRow/TopExp") as Label
-	if top_exp: top_exp.text = "阅历：%s" % c.format_number(data.items.experience)
+	if top_exp: top_exp.text = "见识：%s" % c.format_number(data.items.experience)
 
 	var carriage_label := inst.get_node_or_null("CarriageLabel") as Label
 	if carriage_label:
@@ -281,7 +281,7 @@ func on_stage_trade():
 
 	# 普通贸易静默，只有关键节点才提示（口径同 main 原版）
 	if result.type == "next_sub":
-		c._show_success_popup("通关！宝箱×1  阅历+%d" % result.get("exp_reward", 0), 0.0, "ok")
+		c._show_success_popup("通关！宝箱×1  见识+%d" % result.get("exp_reward", 0), 0.0, "ok")
 	elif result.type == "boss_ready":
 		c._show_success_popup("贸易完成，Boss 已出现！", 0.0, "ok")
 func on_stage_boss():

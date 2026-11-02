@@ -202,7 +202,7 @@ func _fmt_rate(x: float) -> String:
 func _on_plus_pressed():
 	var count: int = int(data.items.get("miaoyin_jiasu_ka", 0))
 	if count <= 0:
-		c._show_success_popup("没有妙音坊加速卡", 0.0, "warn")   # 【改】飘字退休→warn 弹窗
+		c._show_success_popup("没有加速卡", 0.0, "warn")   # 【改】飘字退休→warn 弹窗
 		return
 	_show_accel_popup()
 
@@ -1094,15 +1094,15 @@ func _on_medal_upgrade():
 	c.update_all_ui()
 	_refresh()
 
-# ---------- 弹窗：妙音坊加速卡（数量选择；每张=立即获得60分钟三轨收益） ----------
+# ---------- 弹窗：加速卡（数量选择；每张=立即获得60分钟三轨收益） ----------
 func _show_accel_popup():
 	close_popup()
 	_popup_kind = "accel"
 	var count: int = int(data.items.get("miaoyin_jiasu_ka", 0))
 	if count <= 0:
-		c._show_success_popup("没有妙音坊加速卡", 0.0, "warn")   # 【改】飘字退休→warn 弹窗
+		c._show_success_popup("没有加速卡", 0.0, "warn")   # 【改】飘字退休→warn 弹窗
 		return
-	var popup: PanelContainer = c._create_base_popup("使用妙音坊加速卡", Vector2(430, 300), Vector2.ZERO, false)   # 【改】UI统一批次①：确认弹窗不带右上✕
+	var popup: PanelContainer = c._create_base_popup("使用加速卡", Vector2(430, 300), Vector2.ZERO, false)   # 【改】UI统一批次①：确认弹窗不带右上✕
 	popup.name = _popup_node_name
 	popup.z_index = 40
 	c.add_child(popup)

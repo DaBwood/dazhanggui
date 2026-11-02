@@ -2,7 +2,7 @@
 	"_comment": "道具配置表。config=道具定义(name名称/desc描述/use使用方式,use可省略); initial=新档初始数量(未列出的道具自动补0)",
 	"config": {
 		"hero_box": {
-			"name": "门客盒子",
+			"name": "门客宝箱",
 			"desc": "打开后可从所有门客中选择一个获得",
 			"use": {
 				"type": "hero_box",
@@ -10,15 +10,95 @@
 			}
 		},
 		"friend_box": {
-			"name": "挚友盒子",
+			"name": "挚友宝箱",
 			"desc": "打开后可从所有挚友中选择一个获得",
 			"use": {
 				"type": "friend_box",
 				"btn": "打开"
 			}
 		},
+		"collection_box": {
+			"name": "藏品锦盒",
+			"desc": "打开后可选择一个完整藏品获得（碎片请用藏品碎片锦盒）",
+			"use": {
+				"type": "collection_box",
+				"btn": "打开"
+			}
+		},
+		"friend_multi_box": {
+			"name": "挚友锦盒",
+			"desc": "打开后可选择一个挚友盒子获得，再打开该盒子选择挚友或其素装/锦衣",
+			"use": {
+				"type": "friend_multi_box",
+				"btn": "打开"
+			},
+			"grants": "friend_box",
+			"friends": [
+				"friend_cos_box_miao_jiang_shengnv",
+				"friend_cos_box_qing_ning",
+				"friend_cos_box_ning_yin",
+				"friend_cos_box_bu_kuai",
+				"friend_cos_box_zhou_meili"
+			]
+		},
+		"friend_cos_box_miao_jiang_shengnv": {
+			"name": "苗疆圣女素装盒",
+			"desc": "打开后可选择苗疆圣女本人或任一素装",
+			"use": {
+				"type": "friend_cos_box",
+				"btn": "打开"
+			}
+		},
+		"friend_jinyi_box_miao_jiang_shengnv": {
+			"name": "苗疆圣女锦衣盒",
+			"desc": "打开后可选择苗疆圣女的锦衣之一",
+			"use": {
+				"type": "friend_jinyi_box",
+				"btn": "打开"
+			}
+		},
+		"friend_cos_box_qing_ning": {
+			"name": "青凝素装盒",
+			"desc": "打开后可选择青凝本人或任一素装",
+			"use": {
+				"type": "friend_cos_box",
+				"btn": "打开"
+			}
+		},
+		"friend_jinyi_box_qing_ning": {
+			"name": "青凝锦衣盒",
+			"desc": "打开后可选择青凝的锦衣之一",
+			"use": {
+				"type": "friend_jinyi_box",
+				"btn": "打开"
+			}
+		},
+		"friend_cos_box_ning_yin": {
+			"name": "凝音素装盒",
+			"desc": "打开后可选择凝音本人或任一素装",
+			"use": {
+				"type": "friend_cos_box",
+				"btn": "打开"
+			}
+		},
+		"friend_cos_box_bu_kuai": {
+			"name": "捕快素装盒",
+			"desc": "打开后可选择捕快本人或任一素装",
+			"use": {
+				"type": "friend_cos_box",
+				"btn": "打开"
+			}
+		},
+		"friend_cos_box_zhou_meili": {
+			"name": "周梅丽素装盒",
+			"desc": "打开后可选择周梅丽本人或任一素装",
+			"use": {
+				"type": "friend_cos_box",
+				"btn": "打开"
+			}
+		},
 		"item_box": {
-			"name": "物品盒子",
+			"name": "物品宝箱",
 			"desc": "打开后可选择任意道具获得（支持批量）",
 			"use": {
 				"type": "item_box",
@@ -26,7 +106,7 @@
 			}
 		},
 		"cos_box": {
-			"name": "服装盒子",
+			"name": "服装宝箱",
 			"desc": "打开后从所有服装中选择一件获得",
 			"use": {
 				"type": "cos_box",
@@ -34,7 +114,7 @@
 			}
 		},
 		"manhuang_box": {
-			"name": "蛮荒礼盒",
+			"name": "蛮荒宝箱",
 			"desc": "打开后自选一种蛮荒兑换道具×100（九渊之水/玉灵芝/虎魄耀石/龙魂精元/扶桑枝）",
 			"use": {
 				"type": "manhuang_box",
@@ -446,7 +526,7 @@
 			}
 		},
 		"hun_gu_box": {
-			"name": "魂骨盒子",
+			"name": "魂骨宝箱",
 			"desc": "打开后自选部位和品级，获得一块魂骨",
 			"use": {
 				"type": "hun_gu_box",
@@ -516,8 +596,8 @@
 			"desc": "20个可在背包合成1个资质丹"
 		},
 		"guild_hammer": {
-			"name": "商会锤",
-			"desc": "商会道具建设消耗"
+			"name": "商会金锤",
+			"desc": "用于商会的高级建设。"
 		},
 		"treasure_box": {
 			"name": "珍宝箱",
@@ -532,7 +612,7 @@
 			"desc": "20个可自选合成1枚缀玉（攀竹/织梦/莺歌/落花/流云）"
 		},
 		"experience": {
-			"name": "阅历",
+			"name": "见识",
 			"desc": "门客升级所需经验"
 		},
 		"abacus": {
@@ -544,30 +624,30 @@
 			"desc": "门客突破所需"
 		},
 		"exp_box": {
-			"name": "阅历箱",
-			"desc": "打开获得99999阅历",
+			"name": "见识宝箱",
+			"desc": "打开获得99999见识",
 			"use": {
 				"type": "quantity",
 				"btn": "打开",
-				"title": "打开阅历箱"
+				"title": "打开见识箱"
 			}
 		},
 		"ginseng": {
-			"name": "百年人参",
+			"name": "人参",
 			"desc": "指定门客基础赚速+2000",
 			"use": {
 				"type": "ginseng",
 				"btn": "使用",
-				"title": "使用百年人参"
+				"title": "使用人参"
 			}
 		},
 		"ginseng_1000": {
-			"name": "千年人参",
+			"name": "百年人参",
 			"desc": "指定门客基础赚速+20000",
 			"use": {
 				"type": "ginseng",
 				"btn": "使用",
-				"title": "使用千年人参"
+				"title": "使用百年人参"
 			}
 		},
 		"wood_comb": {
@@ -612,12 +692,12 @@
 			}
 		},
 		"hour_card": {
-			"name": "小时卡",
-			"desc": "使用后获得当前总赚速一小时的铜钱",
+			"name": "时辰卡",
+			"desc": "时间加速，立即获得1小时的银两。",
 			"use": {
 				"type": "quantity",
 				"btn": "使用",
-				"title": "使用小时卡"
+				"title": "使用时辰卡"
 			}
 		},
 		"beast_fruit": {
@@ -658,7 +738,7 @@
 			"desc": "用于刷新挚友店铺技能，必定获得20%-30%加成"
 		},
 		"reputation_card": {
-			"name": "声望卡",
+			"name": "声望符",
 			"desc": "使用后声望 +10",
 			"use": {
 				"type": "quantity",
@@ -667,7 +747,7 @@
 			}
 		},
 		"reputation_card_adv": {
-			"name": "高级声望卡",
+			"name": "声望卡",
 			"desc": "使用后声望 +100",
 			"use": {
 				"type": "quantity",
@@ -773,12 +853,12 @@
 			"desc": "20个合成1个开山令"
 		},
 		"zongjiang_yin": {
-			"name": "宗匠印碎片",
-			"desc": "20个合成1个宗匠令"
+			"name": "宗匠令碎片",
+			"desc": "残破的宗匠令，10个可合成1个宗匠令。"
 		},
 		"tao_bao_quan": {
-			"name": "淘宝券",
-			"desc": "用于淘宝抽取藏品（单次1张，十连10张），获取途径：活动"
+			"name": "淘宝卡",
+			"desc": "用于淘宝中，随机抽取藏品碎片、升级道具。"
 		},
 		"ying_chong_guang": {
 			"name": "萤虫光",
@@ -832,7 +912,7 @@
 			}
 		},
 		"soul_wushuang_box": {
-			"name": "无双魂石箱",
+			"name": "无双魂石宝箱",
 			"desc": "打开后获得一块四格同色的无双品质魂石",
 			"use": {
 				"type": "soul_wushuang_box",
@@ -840,7 +920,7 @@
 			}
 		},
 		"wushuang_cuzhi_box": {
-			"name": "无双促织盒子",
+			"name": "无双促织宝箱",
 			"desc": "打开后可自选一只无双及以上促织",
 			"type": "consumable",
 			"use": {
@@ -858,24 +938,24 @@
 			"desc": "用于升级门客装备的促织，回收时返还"
 		},
 		"wuxing_yan": {
-			"name": "五行岩",
-			"desc": "五行系列促织蜕壳所需的道具"
+			"name": "五行罗盘",
+			"desc": "青铜罗盘的盘面被精准划分为五片扇形区域，对应五行流转，用于五行系列促织蜕壳。"
 		},
 		"sanguo_yan": {
-			"name": "三国岩",
-			"desc": "三国系列促织蜕壳所需的道具"
+			"name": "兵法拓片",
+			"desc": "一张泛黄的桑皮纸，纸上以墨拓印着苍劲的兵阵图谱，用于三国系列促织蜕壳。"
 		},
 		"jianghu_yan": {
-			"name": "江湖岩",
-			"desc": "江湖系列促织蜕壳所需的道具"
+			"name": "百草淬露",
+			"desc": "一只荷叶边白玉盏中，盛着半透明青露，用于江湖系列促织蜕壳。"
 		},
 		"shanhai_yan": {
-			"name": "山海岩",
-			"desc": "山海系列促织蜕壳所需的道具"
+			"name": "陨金石",
+			"desc": "棱角分明的金色矿石，表面迸发出细密的金色电纹，用于山海系列促织蜕壳。"
 		},
 		"wuling_yan": {
-			"name": "五灵岩",
-			"desc": "五灵系列促织蜕壳所需的道具"
+			"name": "五灵石",
+			"desc": "一块形如碎岩的赤色晶石，石缝间跃动着不灭的灵火，用于五灵系列促织蜕壳。"
 		},
 		"zui_xian_niang": {
 			"name": "醉仙酿",
@@ -922,8 +1002,8 @@
 			"desc": "小柒晋升【灵犀】与信物【墨香竹简】共用道具（晋升每级600个/信物技能每级600个）；获取途径待接"
 		},
 		"teji_chushi_xunzhang": {
-			"name": "特级厨师勋章",
-			"desc": "特级厨师勋章信物（刘昴星·天马行空/兰飞鸿·涅槃新生）通用升级道具，每级消耗600个；获取途径待接"
+			"name": "特厨勋章",
+			"desc": "用于升级门客兰飞鸿的信物技能-涅槃新生或门客刘昴星的信物技能-天马行空。"
 		},
 		"qing_lian_shi_hao": {
 			"name": "青莲诗毫",
@@ -970,12 +1050,12 @@
 			"desc": "兑换一代宗匠系列门客所需"
 		},
 		"kaishan_ling": {
-			"name": "开山令",
+			"name": "开山印",
 			"desc": "兑换开山鼻祖系列门客所需"
 		},
 		"panzhu_zhuiyu": {
-			"name": "攀竹缀玉",
-			"desc": "兑换门客【马湘兰】所需"
+			"name": "擎竹缀玉",
+			"desc": "可在城郊招贤的秦淮五艳中招募门客-挚友：马湘兰或升级光环-勾栏美人。"
 		},
 		"zhimeng_zhuiyu": {
 			"name": "织梦缀玉",
@@ -1078,7 +1158,7 @@
 			"desc": "兑换门客【小八】所需"
 		},
 		"long_zhi_cao": {
-			"name": "龙芝草",
+			"name": "龙芝叶",
 			"desc": "魂体升级材料，每级消耗60个"
 		},
 		"cui_gu_jing_chen": {
@@ -1138,8 +1218,8 @@
 			"desc": "兑换蛮荒主兽·金乌"
 		},
 		"long_zhuo_xi": {
-			"name": "龙擢星玺",
-			"desc": "兑换星神圣兽"
+			"name": "龙攫星玺",
+			"desc": "用于召唤孟章苍龙或升级星伴等级"
 		},
 		"xing_wu_po": {
 			"name": "星武珀石",
@@ -1229,11 +1309,11 @@
 			"desc": "守护灵注灵材料，每级消耗随等级提升"
 		},
 		"ke_ting_yiyun": {
-			"name": "柯亭遗韵",
-			"desc": "解锁守护灵幻化：蔡文姬"
+			"name": "翠玉胡笳",
+			"desc": "通体翠绿的玉质乐器，用于解锁和升级守护灵——蔡文姬"
 		},
 		"yan_yue_gufeng": {
-			"name": "偃月孤锋",
+			"name": "青龙偃月刀",
 			"desc": "解锁守护灵幻化：关羽"
 		},
 		"bai_he_yushan": {
@@ -1241,8 +1321,8 @@
 			"desc": "解锁守护灵幻化：诸葛亮"
 		},
 		"ming_kong_xuanjue": {
-			"name": "明空玄珏",
-			"desc": "解锁守护灵幻化：武则天"
+			"name": "双龙玉佩",
+			"desc": "一块白玉佩，玉佩上印有双龙图案，用于解锁和升级守护灵——武则天"
 		},
 		"jiajibi": {
 			"name": "家具币",
@@ -1254,7 +1334,7 @@
 		},
 		"kezhong_card": {
 			"name": "刻钟卡",
-			"desc": "使用后获得当前赚速1分钟的铜钱；60张可在背包【合成】合成1张小时卡",
+			"desc": "使用后获得当前赚速1分钟的铜钱；60张可在背包【合成】合成1张时辰卡",
 			"use": {
 				"type": "quantity",
 				"btn": "使用",
@@ -1276,7 +1356,7 @@
 		},
 		"baoyin_fragment": {
 			"name": "自选宝印碎片",
-			"desc": "打开后选择获得开山印碎片或宗匠印碎片 ×1，可批量打开",
+			"desc": "打开后选择获得开山印碎片或宗匠令碎片 ×1，可批量打开",
 			"use": {
 				"type": "zixuan_baoyin_fragment",
 				"btn": "打开",
@@ -1320,12 +1400,12 @@
 			"desc": "妙音坊缘分物，后续用于芳华技能"
 		},
 		"miaoyin_jiasu_ka": {
-			"name": "妙音坊加速卡",
-			"desc": "立即获得60分钟的妙音坊粉丝应援收益和新秀训练产出",
+			"name": "加速卡",
+			"desc": "使用后立即获得60分钟的妙音坊粉丝应援收益和新秀训练产出。",
 			"use": {
 				"type": "quantity",
 				"btn": "使用",
-				"title": "使用妙音坊加速卡"
+				"title": "使用加速卡"
 			}
 		},
 		"prop_aura_liujin_gun": {
@@ -1369,7 +1449,7 @@
 			"desc": "小舞光环【落日起誓】【三五组合】升级道具；获取途径待接"
 		},
 		"kai_shan_fu": {
-			"name": "开山斧",
+			"name": "开山神斧",
 			"desc": "沉香晋升【历练】专属道具，每级消耗600个；获取途径待接"
 		},
 		"bao_lian_deng_xin": {

@@ -2,372 +2,372 @@
  "_comment": "project item id -> icon id (assets/items/icons/<icon>.png); match: name/substr/similar/manual/fallback/chest；quality=原作品质 1-5，用于格子底色",
  "map": {
   "hero_box": {
-   "name": "门客盒子",
-   "icon": "119157",
-   "orig": "一世枭雄锦盒",
-   "match": "fallback",
+   "name": "门客宝箱",
+   "icon": "119037",
+   "orig": "通用宝箱",
+   "match": "user",
    "file": true,
-   "quality": 5
+   "quality": 4
   },
   "friend_box": {
-   "name": "挚友盒子",
-   "icon": "119157",
-   "orig": "一世枭雄锦盒",
-   "match": "fallback",
+   "name": "挚友宝箱",
+   "icon": "119037",
+   "orig": "通用宝箱",
+   "match": "user",
    "file": true,
-   "quality": 5
+   "quality": 4
   },
   "item_box": {
-   "name": "物品盒子",
-   "icon": "119157",
-   "orig": "一世枭雄锦盒",
-   "match": "fallback",
+   "name": "物品宝箱",
+   "icon": "119037",
+   "orig": "通用宝箱",
+   "match": "user",
    "file": true,
-   "quality": 5
+   "quality": 4
   },
   "cos_box": {
-   "name": "服装盒子",
-   "icon": "119157",
-   "orig": "一世枭雄锦盒",
-   "match": "fallback",
+   "name": "服装宝箱",
+   "icon": "119037",
+   "orig": "通用宝箱",
+   "match": "user",
    "file": true,
-   "quality": 5
+   "quality": 4
   },
   "manhuang_box": {
-   "name": "蛮荒礼盒",
-   "icon": "119157",
-   "orig": "一世枭雄锦盒",
-   "match": "fallback",
+   "name": "蛮荒宝箱",
+   "icon": "119037",
+   "orig": "通用宝箱",
+   "match": "user",
    "file": true,
-   "quality": 5
+   "quality": 4
   },
   "suitbox_礼遇": {
    "name": "礼遇自选锦盒",
-   "icon": "110033",
-   "orig": "小见识箱",
-   "match": "chest1",
+   "icon": "124621",
+   "orig": "藏品碎片锦盒",
+   "match": "user",
    "file": true,
-   "quality": 2
+   "quality": 3
   },
   "suitbox_冕瑞": {
    "name": "冕瑞自选锦盒",
-   "icon": "110034",
-   "orig": "中见识箱",
-   "match": "chest2",
+   "icon": "124621",
+   "orig": "藏品碎片锦盒",
+   "match": "user",
    "file": true,
    "quality": 3
   },
   "suitbox_宸华": {
    "name": "宸华自选锦盒",
-   "icon": "119018",
-   "orig": "珍兽宝箱",
-   "match": "chest3",
+   "icon": "124621",
+   "orig": "藏品碎片锦盒",
+   "match": "user",
    "file": true,
-   "quality": 4
+   "quality": 3
   },
   "suitbox_醉栖": {
    "name": "醉栖自选锦盒",
-   "icon": "119022",
-   "orig": "卓越突破箱",
-   "match": "chest4",
+   "icon": "124621",
+   "orig": "藏品碎片锦盒",
+   "match": "user",
    "file": true,
    "quality": 3
   },
   "suitbox_共欢": {
    "name": "共欢自选锦盒",
-   "icon": "119026",
-   "orig": "野兽宝箱",
-   "match": "chest5",
+   "icon": "124621",
+   "orig": "藏品碎片锦盒",
+   "match": "user",
    "file": true,
    "quality": 3
   },
   "suitbox_锦忆": {
    "name": "锦忆自选锦盒",
-   "icon": "119030",
-   "orig": "珍宝箱",
-   "match": "chest6",
+   "icon": "124621",
+   "orig": "藏品碎片锦盒",
+   "match": "user",
    "file": true,
    "quality": 3
   },
   "suitbox_瑞光": {
    "name": "瑞光自选锦盒",
-   "icon": "119112",
-   "orig": "宴会人气宝箱",
-   "match": "chest7",
+   "icon": "124621",
+   "orig": "藏品碎片锦盒",
+   "match": "user",
    "file": true,
    "quality": 3
   },
   "suitbox_承运": {
    "name": "承运自选锦盒",
-   "icon": "119157",
-   "orig": "一世枭雄锦盒",
-   "match": "chest0",
+   "icon": "124621",
+   "orig": "藏品碎片锦盒",
+   "match": "user",
    "file": true,
-   "quality": 5
+   "quality": 3
   },
   "suitbox_重华": {
    "name": "重华自选锦盒",
-   "icon": "110033",
-   "orig": "小见识箱",
-   "match": "chest1",
+   "icon": "124621",
+   "orig": "藏品碎片锦盒",
+   "match": "user",
    "file": true,
-   "quality": 2
+   "quality": 3
   },
   "suitbox_阖欢": {
    "name": "阖欢自选锦盒",
-   "icon": "110034",
-   "orig": "中见识箱",
-   "match": "chest2",
+   "icon": "124621",
+   "orig": "藏品碎片锦盒",
+   "match": "user",
    "file": true,
    "quality": 3
   },
   "suitbox_寰商": {
    "name": "寰商自选锦盒",
-   "icon": "119018",
-   "orig": "珍兽宝箱",
-   "match": "chest3",
+   "icon": "124621",
+   "orig": "藏品碎片锦盒",
+   "match": "user",
    "file": true,
-   "quality": 4
+   "quality": 3
   },
   "suitbox_市贾": {
    "name": "市贾自选锦盒",
-   "icon": "119022",
-   "orig": "卓越突破箱",
-   "match": "chest4",
+   "icon": "124621",
+   "orig": "藏品碎片锦盒",
+   "match": "user",
    "file": true,
    "quality": 3
   },
   "suitbox_丹凤": {
    "name": "丹凤自选锦盒",
-   "icon": "119026",
-   "orig": "野兽宝箱",
-   "match": "chest5",
+   "icon": "124621",
+   "orig": "藏品碎片锦盒",
+   "match": "user",
    "file": true,
    "quality": 3
   },
   "suitbox_锦堂": {
    "name": "锦堂自选锦盒",
-   "icon": "119030",
-   "orig": "珍宝箱",
-   "match": "chest6",
+   "icon": "124621",
+   "orig": "藏品碎片锦盒",
+   "match": "user",
    "file": true,
    "quality": 3
   },
   "suitbox_清辉": {
    "name": "清辉自选锦盒",
-   "icon": "119112",
-   "orig": "宴会人气宝箱",
-   "match": "chest7",
+   "icon": "124621",
+   "orig": "藏品碎片锦盒",
+   "match": "user",
    "file": true,
    "quality": 3
   },
   "suitbox_星光": {
    "name": "星光自选锦盒",
-   "icon": "119157",
-   "orig": "一世枭雄锦盒",
-   "match": "chest0",
+   "icon": "124621",
+   "orig": "藏品碎片锦盒",
+   "match": "user",
    "file": true,
-   "quality": 5
+   "quality": 3
   },
   "suitbox_韶华": {
    "name": "韶华自选锦盒",
-   "icon": "110033",
-   "orig": "小见识箱",
-   "match": "chest1",
+   "icon": "124621",
+   "orig": "藏品碎片锦盒",
+   "match": "user",
    "file": true,
-   "quality": 2
+   "quality": 3
   },
   "suitbox_坤舆": {
    "name": "坤舆自选锦盒",
-   "icon": "110034",
-   "orig": "中见识箱",
-   "match": "chest2",
+   "icon": "124621",
+   "orig": "藏品碎片锦盒",
+   "match": "user",
    "file": true,
    "quality": 3
   },
   "suitbox_瑶华": {
    "name": "瑶华自选锦盒",
-   "icon": "119018",
-   "orig": "珍兽宝箱",
-   "match": "chest3",
+   "icon": "124621",
+   "orig": "藏品碎片锦盒",
+   "match": "user",
    "file": true,
-   "quality": 4
+   "quality": 3
   },
   "suitbox_国香": {
    "name": "国香自选锦盒",
-   "icon": "119022",
-   "orig": "卓越突破箱",
-   "match": "chest4",
+   "icon": "124621",
+   "orig": "藏品碎片锦盒",
+   "match": "user",
    "file": true,
    "quality": 3
   },
   "suitbox_玉瑞": {
    "name": "玉瑞自选锦盒",
-   "icon": "119026",
-   "orig": "野兽宝箱",
-   "match": "chest5",
+   "icon": "124621",
+   "orig": "藏品碎片锦盒",
+   "match": "user",
    "file": true,
    "quality": 3
   },
   "suitbox_琅轩": {
    "name": "琅轩自选锦盒",
-   "icon": "119030",
-   "orig": "珍宝箱",
-   "match": "chest6",
+   "icon": "124621",
+   "orig": "藏品碎片锦盒",
+   "match": "user",
    "file": true,
    "quality": 3
   },
   "suitbox_离尘": {
    "name": "离尘自选锦盒",
-   "icon": "119112",
-   "orig": "宴会人气宝箱",
-   "match": "chest7",
+   "icon": "124621",
+   "orig": "藏品碎片锦盒",
+   "match": "user",
    "file": true,
    "quality": 3
   },
   "suitbox_溯光": {
    "name": "溯光自选锦盒",
-   "icon": "119157",
-   "orig": "一世枭雄锦盒",
-   "match": "chest0",
+   "icon": "124621",
+   "orig": "藏品碎片锦盒",
+   "match": "user",
    "file": true,
-   "quality": 5
+   "quality": 3
   },
   "suitbox_超然": {
    "name": "超然自选锦盒",
-   "icon": "110033",
-   "orig": "小见识箱",
-   "match": "chest1",
+   "icon": "124621",
+   "orig": "藏品碎片锦盒",
+   "match": "user",
    "file": true,
-   "quality": 2
+   "quality": 3
   },
   "suitbox_碧爻": {
    "name": "碧爻自选锦盒",
-   "icon": "110034",
-   "orig": "中见识箱",
-   "match": "chest2",
+   "icon": "124621",
+   "orig": "藏品碎片锦盒",
+   "match": "user",
    "file": true,
    "quality": 3
   },
   "suitbox_剑魂": {
    "name": "剑魂自选锦盒",
-   "icon": "119018",
-   "orig": "珍兽宝箱",
-   "match": "chest3",
+   "icon": "124621",
+   "orig": "藏品碎片锦盒",
+   "match": "user",
    "file": true,
-   "quality": 4
+   "quality": 3
   },
   "suitbox_童忆": {
    "name": "童忆自选锦盒",
-   "icon": "119022",
-   "orig": "卓越突破箱",
-   "match": "chest4",
+   "icon": "124621",
+   "orig": "藏品碎片锦盒",
+   "match": "user",
    "file": true,
    "quality": 3
   },
   "suitbox_求知": {
    "name": "求知自选锦盒",
-   "icon": "119026",
-   "orig": "野兽宝箱",
-   "match": "chest5",
+   "icon": "124621",
+   "orig": "藏品碎片锦盒",
+   "match": "user",
    "file": true,
    "quality": 3
   },
   "suitbox_魂器": {
    "name": "魂器自选锦盒",
-   "icon": "119030",
-   "orig": "珍宝箱",
-   "match": "chest6",
+   "icon": "124621",
+   "orig": "藏品碎片锦盒",
+   "match": "user",
    "file": true,
    "quality": 3
   },
   "suitbox_风华": {
    "name": "风华自选锦盒",
-   "icon": "119112",
-   "orig": "宴会人气宝箱",
-   "match": "chest7",
+   "icon": "124621",
+   "orig": "藏品碎片锦盒",
+   "match": "user",
    "file": true,
    "quality": 3
   },
   "suitbox_续缘": {
    "name": "续缘自选锦盒",
-   "icon": "119157",
-   "orig": "一世枭雄锦盒",
-   "match": "chest0",
+   "icon": "124621",
+   "orig": "藏品碎片锦盒",
+   "match": "user",
    "file": true,
-   "quality": 5
+   "quality": 3
   },
   "suitbox_奥林": {
    "name": "奥林自选锦盒",
-   "icon": "110033",
-   "orig": "小见识箱",
-   "match": "chest1",
+   "icon": "124621",
+   "orig": "藏品碎片锦盒",
+   "match": "user",
    "file": true,
-   "quality": 2
+   "quality": 3
   },
   "suitbox_水玉": {
    "name": "水玉自选锦盒",
-   "icon": "110034",
-   "orig": "中见识箱",
-   "match": "chest2",
+   "icon": "124621",
+   "orig": "藏品碎片锦盒",
+   "match": "user",
    "file": true,
    "quality": 3
   },
   "suitbox_时霜": {
    "name": "时霜自选锦盒",
-   "icon": "119018",
-   "orig": "珍兽宝箱",
-   "match": "chest3",
+   "icon": "124621",
+   "orig": "藏品碎片锦盒",
+   "match": "user",
    "file": true,
-   "quality": 4
+   "quality": 3
   },
   "suitbox_周年": {
    "name": "周年自选锦盒",
-   "icon": "119022",
-   "orig": "卓越突破箱",
-   "match": "chest4",
+   "icon": "124621",
+   "orig": "藏品碎片锦盒",
+   "match": "user",
    "file": true,
    "quality": 3
   },
   "suitbox_春意盎然": {
    "name": "春意盎然自选锦盒",
-   "icon": "119026",
-   "orig": "野兽宝箱",
-   "match": "chest5",
+   "icon": "124621",
+   "orig": "藏品碎片锦盒",
+   "match": "user",
    "file": true,
    "quality": 3
   },
   "suitbox_迎春": {
    "name": "迎春自选锦盒",
-   "icon": "119030",
-   "orig": "珍宝箱",
-   "match": "chest6",
+   "icon": "124621",
+   "orig": "藏品碎片锦盒",
+   "match": "user",
    "file": true,
    "quality": 3
   },
   "suitbox_花火": {
    "name": "花火自选锦盒",
-   "icon": "119112",
-   "orig": "宴会人气宝箱",
-   "match": "chest7",
+   "icon": "124621",
+   "orig": "藏品碎片锦盒",
+   "match": "user",
    "file": true,
    "quality": 3
   },
   "suitbox_凝冰": {
    "name": "凝冰自选锦盒",
-   "icon": "119157",
-   "orig": "一世枭雄锦盒",
-   "match": "chest0",
+   "icon": "124621",
+   "orig": "藏品碎片锦盒",
+   "match": "user",
    "file": true,
-   "quality": 5
+   "quality": 3
   },
   "suitbox_五艳": {
    "name": "五艳自选锦盒",
-   "icon": "110033",
-   "orig": "小见识箱",
-   "match": "chest1",
+   "icon": "124621",
+   "orig": "藏品碎片锦盒",
+   "match": "user",
    "file": true,
-   "quality": 2
+   "quality": 3
   },
   "shop_blueprint": {
    "name": "商铺图纸",
@@ -410,12 +410,12 @@
    "quality": 4
   },
   "hun_gu_box": {
-   "name": "魂骨盒子",
-   "icon": "119157",
-   "orig": "一世枭雄锦盒",
-   "match": "fallback",
+   "name": "魂骨宝箱",
+   "icon": "119037",
+   "orig": "通用宝箱",
+   "match": "user",
    "file": true,
-   "quality": 5
+   "quality": 4
   },
   "huo_qi": {
    "name": "火器",
@@ -482,10 +482,10 @@
    "quality": 4
   },
   "guild_hammer": {
-   "name": "商会锤",
+   "name": "商会金锤",
    "icon": "110065",
    "orig": "商会金锤",
-   "match": "similar0.86",
+   "match": "user",
    "file": true,
    "quality": 3
   },
@@ -495,7 +495,7 @@
    "orig": "珍宝箱",
    "match": "name",
    "file": true,
-   "quality": 3
+   "quality": 2
   },
   "canpo_zhuiyu": {
    "name": "残破缀玉",
@@ -506,10 +506,10 @@
    "quality": 4
   },
   "experience": {
-   "name": "阅历",
+   "name": "见识",
    "icon": "101002",
    "orig": "见识",
-   "match": "manual",
+   "match": "user",
    "file": true,
    "quality": 2
   },
@@ -525,31 +525,31 @@
    "name": "风雅颂",
    "icon": "110051",
    "orig": "卓越玉佩",
-   "match": "manual",
+   "match": "user",
    "file": true,
    "quality": 3
   },
   "exp_box": {
-   "name": "阅历箱",
-   "icon": "119030",
-   "orig": "珍宝箱",
-   "match": "fallback",
+   "name": "见识宝箱",
+   "icon": "110034",
+   "orig": "中见识箱",
+   "match": "user",
+   "file": true,
+   "quality": 2
+  },
+  "ginseng": {
+   "name": "人参",
+   "icon": "110084",
+   "orig": "人参",
+   "match": "user",
    "file": true,
    "quality": 3
   },
-  "ginseng": {
+  "ginseng_1000": {
    "name": "百年人参",
    "icon": "110085",
    "orig": "百年人参",
-   "match": "name",
-   "file": true,
-   "quality": 4
-  },
-  "ginseng_1000": {
-   "name": "千年人参",
-   "icon": "110085",
-   "orig": "百年人参",
-   "match": "similar0.75",
+   "match": "user",
    "file": true,
    "quality": 4
   },
@@ -611,17 +611,17 @@
   },
   "stage_box": {
    "name": "关卡宝箱",
-   "icon": "119030",
-   "orig": "珍宝箱",
-   "match": "fallback",
+   "icon": "cust_stage_box",
+   "orig": "自绘",
+   "match": "user",
    "file": true,
-   "quality": 3
+   "quality": 2
   },
   "hour_card": {
-   "name": "小时卡",
+   "name": "时辰卡",
    "icon": "110032",
    "orig": "时辰卡",
-   "match": "similar0.67",
+   "match": "user",
    "file": true,
    "quality": 3
   },
@@ -675,9 +675,9 @@
   },
   "friend_token": {
    "name": "挚友帖",
-   "icon": "110327",
-   "orig": "拜帖",
-   "match": "fallback",
+   "icon": "cust_friend_tie",
+   "orig": "自绘",
+   "match": "user",
    "file": true,
    "quality": 4
   },
@@ -698,20 +698,20 @@
    "quality": 2
   },
   "reputation_card": {
-   "name": "声望卡",
-   "icon": "110041",
+   "name": "声望符",
+   "icon": "110040",
    "orig": "声望卡",
-   "match": "name",
+   "match": "user",
    "file": true,
-   "quality": 4
+   "quality": 3
   },
   "reputation_card_adv": {
-   "name": "高级声望卡",
-   "icon": "101006",
+   "name": "声望卡",
+   "icon": "110041",
    "orig": "声望",
-   "match": "substr",
+   "match": "user",
    "file": true,
-   "quality": 1
+   "quality": 4
   },
   "rose_perfume": {
    "name": "玫瑰香水",
@@ -795,9 +795,9 @@
   },
   "ke_shi_tu_zhi": {
    "name": "科室图纸",
-   "icon": "110000",
-   "orig": "商铺图纸",
-   "match": "fallback",
+   "icon": "110144",
+   "orig": "医馆图纸",
+   "match": "user",
    "file": true,
    "quality": 3
   },
@@ -805,7 +805,7 @@
    "name": "鸡蛋食材包",
    "icon": "117000",
    "orig": "蛋",
-   "match": "substr",
+   "match": "user",
    "file": true,
    "quality": 1
   },
@@ -813,7 +813,7 @@
    "name": "粉面食材包",
    "icon": "117002",
    "orig": "粉面",
-   "match": "substr",
+   "match": "user",
    "file": true,
    "quality": 1
   },
@@ -821,7 +821,7 @@
    "name": "生粉食材包",
    "icon": "117004",
    "orig": "生粉",
-   "match": "substr",
+   "match": "user",
    "file": true,
    "quality": 2
   },
@@ -829,7 +829,7 @@
    "name": "饮料食材包",
    "icon": "117006",
    "orig": "饮料",
-   "match": "substr",
+   "match": "user",
    "file": true,
    "quality": 2
   },
@@ -837,7 +837,7 @@
    "name": "猪肉食材包",
    "icon": "117008",
    "orig": "肉",
-   "match": "substr",
+   "match": "user",
    "file": true,
    "quality": 3
   },
@@ -845,7 +845,7 @@
    "name": "鱼类食材包",
    "icon": "117010",
    "orig": "鱼",
-   "match": "substr",
+   "match": "user",
    "file": true,
    "quality": 3
   },
@@ -853,7 +853,7 @@
    "name": "汤类食材包",
    "icon": "117012",
    "orig": "汤",
-   "match": "substr",
+   "match": "user",
    "file": true,
    "quality": 4
   },
@@ -861,23 +861,23 @@
    "name": "大虾食材包",
    "icon": "117014",
    "orig": "虾",
-   "match": "substr",
+   "match": "user",
    "file": true,
    "quality": 4
   },
   "shicai_jirou": {
    "name": "鸡肉食材包",
-   "icon": "117008",
-   "orig": "肉",
-   "match": "substr",
+   "icon": "117016",
+   "orig": "鸡",
+   "match": "user",
    "file": true,
-   "quality": 3
+   "quality": 5
   },
   "shicai_pangxie": {
    "name": "螃蟹食材包",
    "icon": "117018",
    "orig": "蟹",
-   "match": "substr",
+   "match": "user",
    "file": true,
    "quality": 5
   },
@@ -893,23 +893,23 @@
    "name": "开山印碎片",
    "icon": "110087",
    "orig": "开山印碎片",
-   "match": "name",
+   "match": "user",
    "file": true,
    "quality": 3
   },
   "zongjiang_yin": {
-   "name": "宗匠印碎片",
+   "name": "宗匠令碎片",
    "icon": "110088",
    "orig": "宗匠令碎片",
-   "match": "similar0.80",
+   "match": "user",
    "file": true,
    "quality": 3
   },
   "tao_bao_quan": {
-   "name": "淘宝券",
+   "name": "淘宝卡",
    "icon": "110329",
    "orig": "淘宝卡",
-   "match": "similar0.67",
+   "match": "user",
    "file": true,
    "quality": 4
   },
@@ -955,27 +955,27 @@
   },
   "frag_zhuoyue": {
    "name": "通用碎片·卓越",
-   "icon": "110087",
-   "orig": "开山印碎片",
-   "match": "fallback",
+   "icon": "cust_frag_zhuo",
+   "orig": "自绘",
+   "match": "user",
    "file": true,
-   "quality": 3
+   "quality": 4
   },
   "frag_youxiu": {
    "name": "通用碎片·优秀",
-   "icon": "110087",
-   "orig": "开山印碎片",
-   "match": "fallback",
+   "icon": "cust_frag_you",
+   "orig": "自绘",
+   "match": "user",
    "file": true,
    "quality": 3
   },
   "frag_putong": {
    "name": "通用碎片·普通",
-   "icon": "110087",
-   "orig": "开山印碎片",
-   "match": "fallback",
+   "icon": "cust_frag_pu",
+   "orig": "自绘",
+   "match": "user",
    "file": true,
-   "quality": 3
+   "quality": 2
   },
   "cuzhi_cage": {
    "name": "促织笼",
@@ -995,33 +995,33 @@
   },
   "soul_stone_box": {
    "name": "魂石宝箱",
-   "icon": "119030",
-   "orig": "珍宝箱",
-   "match": "fallback",
+   "icon": "123375",
+   "orig": "",
+   "match": "user",
    "file": true,
-   "quality": 3
+   "quality": 2
   },
   "soul_wushuang_box": {
-   "name": "无双魂石箱",
-   "icon": "119030",
-   "orig": "珍宝箱",
-   "match": "fallback",
+   "name": "无双魂石宝箱",
+   "icon": "119037",
+   "orig": "通用宝箱",
+   "match": "user",
    "file": true,
-   "quality": 3
+   "quality": 4
   },
   "wushuang_cuzhi_box": {
-   "name": "无双促织盒子",
-   "icon": "119157",
-   "orig": "一世枭雄锦盒",
-   "match": "fallback",
+   "name": "无双促织宝箱",
+   "icon": "119037",
+   "orig": "通用宝箱",
+   "match": "user",
    "file": true,
-   "quality": 5
+   "quality": 4
   },
   "cuzhi_migao": {
    "name": "促织蜜膏",
-   "icon": "130029",
-   "orig": "蜂蜜",
-   "match": "manual",
+   "icon": "124663",
+   "orig": "",
+   "match": "user",
    "file": true,
    "quality": 3
   },
@@ -1034,50 +1034,50 @@
    "quality": 3
   },
   "wuxing_yan": {
-   "name": "五行岩",
-   "icon": "110277",
-   "orig": "五色石",
-   "match": "manual",
+   "name": "五行罗盘",
+   "icon": "110486",
+   "orig": "五行罗盘",
+   "match": "user",
    "file": true,
    "quality": 5
   },
   "sanguo_yan": {
-   "name": "三国岩",
-   "icon": "110188",
-   "orig": "山海石",
-   "match": "manual",
+   "name": "兵法拓片",
+   "icon": "110487",
+   "orig": "兵法拓片",
+   "match": "user",
    "file": true,
    "quality": 5
   },
   "jianghu_yan": {
-   "name": "江湖岩",
-   "icon": "110263",
-   "orig": "璞石天星",
-   "match": "manual",
+   "name": "百草淬露",
+   "icon": "110488",
+   "orig": "百草淬露",
+   "match": "user",
    "file": true,
-   "quality": 4
+   "quality": 5
   },
   "shanhai_yan": {
-   "name": "山海岩",
-   "icon": "110188",
-   "orig": "山海石",
-   "match": "similar0.67",
+   "name": "陨金石",
+   "icon": "110489",
+   "orig": "陨金石",
+   "match": "user",
    "file": true,
    "quality": 5
   },
   "wuling_yan": {
-   "name": "五灵岩",
+   "name": "五灵石",
    "icon": "110485",
    "orig": "五灵石",
-   "match": "similar0.67",
+   "match": "user",
    "file": true,
    "quality": 5
   },
   "zui_xian_niang": {
    "name": "醉仙酿",
-   "icon": "101007",
-   "orig": "陈酿",
-   "match": "manual",
+   "icon": "124572",
+   "orig": "",
+   "match": "user",
    "file": true,
    "quality": 2
   },
@@ -1085,7 +1085,7 @@
    "name": "青锋剑",
    "icon": "110352",
    "orig": "青蜂剑",
-   "match": "similar0.67",
+   "match": "user",
    "file": true,
    "quality": 5
   },
@@ -1162,26 +1162,26 @@
    "quality": 5
   },
   "teji_chushi_xunzhang": {
-   "name": "特级厨师勋章",
+   "name": "特厨勋章",
    "icon": "110270",
    "orig": "特厨勋章",
-   "match": "similar0.80",
+   "match": "user",
    "file": true,
    "quality": 5
   },
   "qing_lian_shi_hao": {
    "name": "青莲诗毫",
-   "icon": "110311",
-   "orig": "书法毛笔",
-   "match": "manual",
+   "icon": "110429",
+   "orig": "醉墨挥毫",
+   "match": "user",
    "file": true,
-   "quality": 4
+   "quality": 5
   },
   "ming_yan_pi_pa": {
    "name": "鸣雁琵琶",
-   "icon": "110308",
+   "icon": "110522",
    "orig": "琵琶",
-   "match": "substr",
+   "match": "user",
    "file": true,
    "quality": 5
   },
@@ -1195,9 +1195,9 @@
   },
   "hu_qin_pi_pa": {
    "name": "胡琴琵琶",
-   "icon": "110308",
-   "orig": "琵琶",
-   "match": "substr",
+   "icon": "110521",
+   "orig": "宁胡节(用户指定)",
+   "match": "user",
    "file": true,
    "quality": 5
   },
@@ -1251,25 +1251,25 @@
   },
   "zongjiang_ling": {
    "name": "宗匠令",
-   "icon": "110073",
-   "orig": "宗匠令",
-   "match": "name",
+   "icon": "cust_zongjiang_ling",
+   "orig": "自绘(原作 110073 只有 40px 小图)",
+   "match": "user",
    "file": true,
    "quality": 4
   },
   "kaishan_ling": {
-   "name": "开山令",
+   "name": "开山印",
    "icon": "110072",
    "orig": "开山印",
-   "match": "similar0.67",
+   "match": "user",
    "file": true,
    "quality": 4
   },
   "panzhu_zhuiyu": {
-   "name": "攀竹缀玉",
+   "name": "擎竹缀玉",
    "icon": "110106",
    "orig": "擎竹缀玉",
-   "match": "similar0.75",
+   "match": "user",
    "file": true,
    "quality": 5
   },
@@ -1379,9 +1379,9 @@
   },
   "huanglong_jinduan": {
    "name": "黄龙锦缎",
-   "icon": "110089",
-   "orig": "绸缎",
-   "match": "manual",
+   "icon": "110549",
+   "orig": "",
+   "match": "user",
    "file": true,
    "quality": 3
   },
@@ -1451,11 +1451,11 @@
   },
   "yugu_dao": {
    "name": "鱼骨刀",
-   "icon": "117010",
+   "icon": "110554",
    "orig": "鱼",
-   "match": "substr",
+   "match": "user",
    "file": true,
-   "quality": 3
+   "quality": 5
   },
   "yuye_jinhua": {
    "name": "玉叶金花",
@@ -1474,10 +1474,10 @@
    "quality": 5
   },
   "long_zhi_cao": {
-   "name": "龙芝草",
+   "name": "龙芝叶",
    "icon": "110373",
    "orig": "龙芝叶",
-   "match": "similar0.67",
+   "match": "user",
    "file": true,
    "quality": 4
   },
@@ -1493,7 +1493,7 @@
    "name": "百年晶核",
    "icon": "110392",
    "orig": "百年魂核",
-   "match": "similar0.75",
+   "match": "user",
    "file": true,
    "quality": 1
   },
@@ -1501,7 +1501,7 @@
    "name": "千年晶核",
    "icon": "110375",
    "orig": "千年魂核",
-   "match": "similar0.75",
+   "match": "user",
    "file": true,
    "quality": 2
   },
@@ -1509,7 +1509,7 @@
    "name": "万年晶核",
    "icon": "110376",
    "orig": "万年魂核",
-   "match": "similar0.75",
+   "match": "user",
    "file": true,
    "quality": 3
   },
@@ -1517,7 +1517,7 @@
    "name": "十万年晶核",
    "icon": "110377",
    "orig": "十万年魂核",
-   "match": "similar0.80",
+   "match": "user",
    "file": true,
    "quality": 4
   },
@@ -1525,7 +1525,7 @@
    "name": "百万年晶核",
    "icon": "110378",
    "orig": "百万年魂核",
-   "match": "similar0.80",
+   "match": "user",
    "file": true,
    "quality": 5
   },
@@ -1594,10 +1594,10 @@
    "quality": 5
   },
   "long_zhuo_xi": {
-   "name": "龙擢星玺",
+   "name": "龙攫星玺",
    "icon": "110498",
    "orig": "龙攫星玺",
-   "match": "similar0.75",
+   "match": "user",
    "file": true,
    "quality": 5
   },
@@ -1751,21 +1751,21 @@
    "orig": "蕴灵珏",
    "match": "name",
    "file": true,
-   "quality": 5
+   "quality": 6
   },
   "ke_ting_yiyun": {
-   "name": "柯亭遗韵",
-   "icon": "110305",
-   "orig": "笛子",
-   "match": "manual",
+   "name": "翠玉胡笳",
+   "icon": "110544",
+   "orig": "翠玉胡笳(9.0.4 未登记)",
+   "match": "user",
    "file": true,
-   "quality": 3
+   "quality": 6
   },
   "yan_yue_gufeng": {
-   "name": "偃月孤锋",
-   "icon": "110175",
-   "orig": "北斗钢刀",
-   "match": "manual",
+   "name": "青龙偃月刀",
+   "icon": "cust_qinglong_yanyue",
+   "orig": "自绘(原作 110543 只有 40px 小图)",
+   "match": "user",
    "file": true,
    "quality": 5
   },
@@ -1775,15 +1775,15 @@
    "orig": "白鹤羽扇",
    "match": "name",
    "file": true,
-   "quality": 5
+   "quality": 6
   },
   "ming_kong_xuanjue": {
-   "name": "明空玄珏",
-   "icon": "110420",
-   "orig": "蕴灵珏",
-   "match": "manual",
+   "name": "双龙玉佩",
+   "icon": "110422",
+   "orig": "双龙玉佩",
+   "match": "user",
    "file": true,
-   "quality": 5
+   "quality": 6
   },
   "jiajibi": {
    "name": "家具币",
@@ -1906,10 +1906,10 @@
    "quality": 5
   },
   "miaoyin_jiasu_ka": {
-   "name": "妙音坊加速卡",
+   "name": "加速卡",
    "icon": "110325",
    "orig": "加速卡",
-   "match": "substr",
+   "match": "user",
    "file": true,
    "quality": 3
   },
@@ -1971,9 +1971,9 @@
   },
   "xiu_luo_bi_shou": {
    "name": "修罗匕首",
-   "icon": "110370",
-   "orig": "狩猎骨刃",
-   "match": "manual",
+   "icon": "110175",
+   "orig": "北斗钢刀",
+   "match": "user",
    "file": true,
    "quality": 5
   },
@@ -1994,18 +1994,18 @@
    "quality": 5
   },
   "kai_shan_fu": {
-   "name": "开山斧",
-   "icon": "110072",
-   "orig": "开山印",
-   "match": "similar0.67",
+   "name": "开山神斧",
+   "icon": "110562",
+   "orig": "",
+   "match": "user",
    "file": true,
-   "quality": 4
+   "quality": 5
   },
   "bao_lian_deng_xin": {
    "name": "宝莲灯芯",
-   "icon": "200411",
-   "orig": "玲珑灯",
-   "match": "manual",
+   "icon": "110567",
+   "orig": "",
+   "match": "user",
    "file": true,
    "quality": 4
   },
@@ -2046,6 +2046,78 @@
    "icon": "110130",
    "orig": "军需批文",
    "match": "name",
+   "file": true,
+   "quality": 4
+  },
+  "collection_box": {
+   "name": "藏品锦盒",
+   "icon": "124297",
+   "orig": "藏品锦盒",
+   "match": "user",
+   "file": true,
+   "quality": 2
+  },
+  "friend_multi_box": {
+   "name": "挚友锦盒",
+   "icon": "124147",
+   "orig": "挚友锦盒（多选）",
+   "match": "user",
+   "file": true,
+   "quality": 4
+  },
+  "friend_cos_box_miao_jiang_shengnv": {
+   "name": "苗疆圣女素装盒",
+   "icon": "119527",
+   "orig": "挚友素装盒",
+   "match": "user",
+   "file": true,
+   "quality": 4
+  },
+  "friend_jinyi_box_miao_jiang_shengnv": {
+   "name": "苗疆圣女锦衣盒",
+   "icon": "124145",
+   "orig": "挚友锦衣盒",
+   "match": "user",
+   "file": true,
+   "quality": 4
+  },
+  "friend_cos_box_qing_ning": {
+   "name": "青凝素装盒",
+   "icon": "119527",
+   "orig": "挚友素装盒",
+   "match": "user",
+   "file": true,
+   "quality": 4
+  },
+  "friend_jinyi_box_qing_ning": {
+   "name": "青凝锦衣盒",
+   "icon": "124145",
+   "orig": "挚友锦衣盒",
+   "match": "user",
+   "file": true,
+   "quality": 4
+  },
+  "friend_cos_box_ning_yin": {
+   "name": "凝音素装盒",
+   "icon": "119527",
+   "orig": "挚友素装盒",
+   "match": "user",
+   "file": true,
+   "quality": 4
+  },
+  "friend_cos_box_bu_kuai": {
+   "name": "捕快素装盒",
+   "icon": "119527",
+   "orig": "挚友素装盒",
+   "match": "user",
+   "file": true,
+   "quality": 4
+  },
+  "friend_cos_box_zhou_meili": {
+   "name": "周梅丽素装盒",
+   "icon": "119527",
+   "orig": "挚友素装盒",
+   "match": "user",
    "file": true,
    "quality": 4
   }
