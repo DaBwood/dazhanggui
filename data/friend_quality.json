@@ -1,0 +1,593 @@
+{
+	"_comment": "原作 BeautyDB 的挚友品质/职业（quality 1=普通 2=优秀 3=卓越 4=传奇 5=无双）",
+	"friends": {
+		"bi_bi_dong": {
+			"beauty_id": 103373,
+			"quality": 4,
+			"occupation": 1,
+			"intimacy": 300,
+			"glamour": 300
+		},
+		"bian_yujing_friend": {
+			"beauty_id": 103310,
+			"quality": 4,
+			"occupation": 4,
+			"intimacy": 400,
+			"glamour": 400
+		},
+		"bu_kuai": {
+			"beauty_id": 103306,
+			"quality": 4,
+			"occupation": 5,
+			"intimacy": 300,
+			"glamour": 300
+		},
+		"cai_shi_guan": {
+			"beauty_id": 103317,
+			"quality": 4,
+			"occupation": 1,
+			"intimacy": 300,
+			"glamour": 300
+		},
+		"dao_gu": {
+			"beauty_id": 103379,
+			"quality": 4,
+			"occupation": 5,
+			"intimacy": 300,
+			"glamour": 300
+		},
+		"dong_xiaowan_friend": {
+			"beauty_id": 103309,
+			"quality": 4,
+			"occupation": 3,
+			"intimacy": 400,
+			"glamour": 400
+		},
+		"gu_guo_gongzhu": {
+			"beauty_id": 103323,
+			"quality": 4,
+			"occupation": 2,
+			"intimacy": 300,
+			"glamour": 300
+		},
+		"he_xi": {
+			"beauty_id": 103380,
+			"quality": 4,
+			"occupation": 5,
+			"intimacy": 300,
+			"glamour": 300
+		},
+		"hu_yao_zhanggui": {
+			"beauty_id": 103314,
+			"quality": 4,
+			"occupation": 4,
+			"intimacy": 300,
+			"glamour": 300
+		},
+		"hua_lang": {
+			"beauty_id": 103326,
+			"quality": 4,
+			"occupation": 3,
+			"intimacy": 300,
+			"glamour": 300
+		},
+		"hua_mulan_friend": {
+			"beauty_id": 103385,
+			"quality": 4,
+			"occupation": 4,
+			"intimacy": 300,
+			"glamour": 300
+		},
+		"hua_wuque": {
+			"beauty_id": 103346,
+			"quality": 4,
+			"occupation": 2,
+			"intimacy": 300,
+			"glamour": 300
+		},
+		"hua_yi_shi": {
+			"beauty_id": 103305,
+			"quality": 4,
+			"occupation": 3,
+			"intimacy": 300,
+			"glamour": 300
+		},
+		"huang_ye_linglan": {
+			"beauty_id": 103344,
+			"quality": 4,
+			"occupation": 4,
+			"intimacy": 300,
+			"glamour": 300
+		},
+		"hui_yin": {
+			"beauty_id": 103372,
+			"quality": 4,
+			"occupation": 3,
+			"intimacy": 300,
+			"glamour": 300
+		},
+		"ji_ye": {
+			"beauty_id": 103359,
+			"quality": 4,
+			"occupation": 2,
+			"intimacy": 300,
+			"glamour": 300
+		},
+		"ji_zhou": {
+			"beauty_id": 103375,
+			"quality": 4,
+			"occupation": 3,
+			"intimacy": 300,
+			"glamour": 300
+		},
+		"jin_shu": {
+			"beauty_id": 103343,
+			"quality": 4,
+			"occupation": 1,
+			"intimacy": 300,
+			"glamour": 300
+		},
+		"jiu_yue": {
+			"beauty_id": 103388,
+			"quality": 4,
+			"occupation": 3,
+			"intimacy": 300,
+			"glamour": 300
+		},
+		"kou_baimen_friend": {
+			"beauty_id": 103311,
+			"quality": 4,
+			"occupation": 5,
+			"intimacy": 400,
+			"glamour": 400
+		},
+		"li_xiangjun_friend": {
+			"beauty_id": 103308,
+			"quality": 4,
+			"occupation": 2,
+			"intimacy": 400,
+			"glamour": 400
+		},
+		"ling_ye_mao_nv": {
+			"beauty_id": 103313,
+			"quality": 4,
+			"occupation": 3,
+			"intimacy": 300,
+			"glamour": 300
+		},
+		"luo": {
+			"beauty_id": 103351,
+			"quality": 4,
+			"occupation": 3,
+			"intimacy": 300,
+			"glamour": 300
+		},
+		"ma_xianglan_friend": {
+			"beauty_id": 103307,
+			"quality": 4,
+			"occupation": 1,
+			"intimacy": 400,
+			"glamour": 400
+		},
+		"meng_qier": {
+			"beauty_id": 103107,
+			"quality": 2,
+			"occupation": 5,
+			"intimacy": 100,
+			"glamour": 100
+		},
+		"miao_jiang_shengnv": {
+			"beauty_id": 103300,
+			"quality": 4,
+			"occupation": 2,
+			"intimacy": 300,
+			"glamour": 300
+		},
+		"mo_li": {
+			"beauty_id": 103361,
+			"quality": 4,
+			"occupation": 4,
+			"intimacy": 300,
+			"glamour": 300
+		},
+		"mu_shu": {
+			"beauty_id": 103384,
+			"quality": 4,
+			"occupation": 1,
+			"intimacy": 300,
+			"glamour": 300
+		},
+		"nan_gong_wan": {
+			"beauty_id": 103349,
+			"quality": 4,
+			"occupation": 4,
+			"intimacy": 300,
+			"glamour": 300
+		},
+		"ni_huang_junzhu": {
+			"beauty_id": 103356,
+			"quality": 4,
+			"occupation": 1,
+			"intimacy": 300,
+			"glamour": 300
+		},
+		"ning_yin": {
+			"beauty_id": 103368,
+			"quality": 4,
+			"occupation": 3,
+			"intimacy": 300,
+			"glamour": 300
+		},
+		"niu_lang": {
+			"beauty_id": 103328,
+			"quality": 4,
+			"occupation": 2,
+			"intimacy": 300,
+			"glamour": 300
+		},
+		"nvba": {
+			"beauty_id": 103348,
+			"quality": 4,
+			"occupation": 3,
+			"intimacy": 20000,
+			"glamour": 20000
+		},
+		"qi_ling": {
+			"beauty_id": 103367,
+			"quality": 4,
+			"occupation": 5,
+			"intimacy": 300,
+			"glamour": 300
+		},
+		"qi_shi": {
+			"beauty_id": 103205,
+			"quality": 3,
+			"occupation": 1,
+			"intimacy": 150,
+			"glamour": 150
+		},
+		"qian_ren_xue": {
+			"beauty_id": 103362,
+			"quality": 4,
+			"occupation": 1,
+			"intimacy": 300,
+			"glamour": 300
+		},
+		"qing_ning": {
+			"beauty_id": 103366,
+			"quality": 4,
+			"occupation": 1,
+			"intimacy": 300,
+			"glamour": 300
+		},
+		"qiu_ying": {
+			"beauty_id": 103350,
+			"quality": 4,
+			"occupation": 4,
+			"intimacy": 300,
+			"glamour": 300
+		},
+		"rong": {
+			"beauty_id": 103391,
+			"quality": 4,
+			"occupation": 4,
+			"intimacy": 300,
+			"glamour": 300
+		},
+		"shao_jiangjun": {
+			"beauty_id": 103208,
+			"quality": 3,
+			"occupation": 1,
+			"intimacy": 150,
+			"glamour": 150
+		},
+		"shen_meizhuang": {
+			"beauty_id": 103364,
+			"quality": 4,
+			"occupation": 2,
+			"intimacy": 300,
+			"glamour": 300
+		},
+		"shi_bo_shi": {
+			"beauty_id": 103357,
+			"quality": 4,
+			"occupation": 5,
+			"intimacy": 300,
+			"glamour": 300
+		},
+		"shou_gong_shaonv": {
+			"beauty_id": 103340,
+			"quality": 4,
+			"occupation": 3,
+			"intimacy": 300,
+			"glamour": 300
+		},
+		"si_tang": {
+			"beauty_id": 103383,
+			"quality": 4,
+			"occupation": 4,
+			"intimacy": 300,
+			"glamour": 300
+		},
+		"tan_you": {
+			"beauty_id": 103389,
+			"quality": 4,
+			"occupation": 4,
+			"intimacy": 300,
+			"glamour": 300
+		},
+		"tang_pingguo": {
+			"beauty_id": 103320,
+			"quality": 4,
+			"occupation": 4,
+			"intimacy": 300,
+			"glamour": 300
+		},
+		"tushan_honghong": {
+			"beauty_id": 103369,
+			"quality": 4,
+			"occupation": 1,
+			"intimacy": 300,
+			"glamour": 300
+		},
+		"wan_wan": {
+			"beauty_id": 103386,
+			"quality": 4,
+			"occupation": 5,
+			"intimacy": 300,
+			"glamour": 300
+		},
+		"wang_zhaojun_friend": {
+			"beauty_id": 103365,
+			"quality": 4,
+			"occupation": 4,
+			"intimacy": 300,
+			"glamour": 300
+		},
+		"wu_nv_wu": {
+			"beauty_id": 103325,
+			"quality": 4,
+			"occupation": 5,
+			"intimacy": 300,
+			"glamour": 300
+		},
+		"wu_xie": {
+			"beauty_id": 103358,
+			"quality": 4,
+			"occupation": 5,
+			"intimacy": 300,
+			"glamour": 300
+		},
+		"xiao_hudie": {
+			"beauty_id": 103330,
+			"quality": 4,
+			"occupation": 4,
+			"intimacy": 300,
+			"glamour": 300
+		},
+		"xiao_lu_nv": {
+			"beauty_id": 103336,
+			"quality": 4,
+			"occupation": 1,
+			"intimacy": 300,
+			"glamour": 300
+		},
+		"xiao_mujiang": {
+			"beauty_id": 103322,
+			"quality": 4,
+			"occupation": 3,
+			"intimacy": 300,
+			"glamour": 300
+		},
+		"xiao_ning": {
+			"beauty_id": 103387,
+			"quality": 4,
+			"occupation": 4,
+			"intimacy": 300,
+			"glamour": 300
+		},
+		"xiao_qigai": {
+			"beauty_id": 103202,
+			"quality": 3,
+			"occupation": 2,
+			"intimacy": 150,
+			"glamour": 150
+		},
+		"xiao_shimei": {
+			"beauty_id": 103302,
+			"quality": 4,
+			"occupation": 5,
+			"intimacy": 350,
+			"glamour": 350
+		},
+		"xiao_wu_friend": {
+			"beauty_id": 103334,
+			"quality": 4,
+			"occupation": 5,
+			"intimacy": 300,
+			"glamour": 300
+		},
+		"xihu_chuangniang": {
+			"beauty_id": 103324,
+			"quality": 4,
+			"occupation": 2,
+			"intimacy": 300,
+			"glamour": 300
+		},
+		"xing_lan": {
+			"beauty_id": 103376,
+			"quality": 4,
+			"occupation": 4,
+			"intimacy": 300,
+			"glamour": 300
+		},
+		"xinniang": {
+			"beauty_id": 103304,
+			"quality": 4,
+			"occupation": 4,
+			"intimacy": 1000,
+			"glamour": 1000
+		},
+		"xinniang_zhimei": {
+			"beauty_id": 103318,
+			"quality": 4,
+			"occupation": 3,
+			"intimacy": 300,
+			"glamour": 300
+		},
+		"xiu_niang": {
+			"beauty_id": 103001,
+			"quality": 1,
+			"occupation": 2,
+			"intimacy": 50,
+			"glamour": 50
+		},
+		"xiwangmu": {
+			"beauty_id": 103371,
+			"quality": 4,
+			"occupation": 3,
+			"intimacy": 50000,
+			"glamour": 50000
+		},
+		"xiyu_nvzi": {
+			"beauty_id": 103203,
+			"quality": 3,
+			"occupation": 4,
+			"intimacy": 150,
+			"glamour": 150
+		},
+		"xun_ma_shi": {
+			"beauty_id": 103312,
+			"quality": 4,
+			"occupation": 2,
+			"intimacy": 300,
+			"glamour": 300
+		},
+		"xun_ying_shaonv": {
+			"beauty_id": 103303,
+			"quality": 4,
+			"occupation": 4,
+			"intimacy": 300,
+			"glamour": 300
+		},
+		"ya_huan": {
+			"beauty_id": 103101,
+			"quality": 2,
+			"occupation": 2,
+			"intimacy": 100,
+			"glamour": 100
+		},
+		"yao_ying": {
+			"beauty_id": 103363,
+			"quality": 4,
+			"occupation": 5,
+			"intimacy": 300,
+			"glamour": 300
+		},
+		"yi_shi": {
+			"beauty_id": 103301,
+			"quality": 4,
+			"occupation": 1,
+			"intimacy": 300,
+			"glamour": 300
+		},
+		"yi_shi_new": {
+			"beauty_id": 103207,
+			"quality": 3,
+			"occupation": 1,
+			"intimacy": 150,
+			"glamour": 150
+		},
+		"yin_niang": {
+			"beauty_id": 103370,
+			"quality": 4,
+			"occupation": 2,
+			"intimacy": 300,
+			"glamour": 300
+		},
+		"ying_chun": {
+			"beauty_id": 103390,
+			"quality": 4,
+			"occupation": 5,
+			"intimacy": 300,
+			"glamour": 300
+		},
+		"yu_ge": {
+			"beauty_id": 103355,
+			"quality": 4,
+			"occupation": 5,
+			"intimacy": 300,
+			"glamour": 300
+		},
+		"yu_ji": {
+			"beauty_id": 103378,
+			"quality": 4,
+			"occupation": 1,
+			"intimacy": 300,
+			"glamour": 300
+		},
+		"yu_lu": {
+			"beauty_id": 103382,
+			"quality": 4,
+			"occupation": 2,
+			"intimacy": 300,
+			"glamour": 300
+		},
+		"yu_tu": {
+			"beauty_id": 103360,
+			"quality": 4,
+			"occupation": 3,
+			"intimacy": 300,
+			"glamour": 300
+		},
+		"yuan_xiao_guniang": {
+			"beauty_id": 103204,
+			"quality": 3,
+			"occupation": 3,
+			"intimacy": 150,
+			"glamour": 150
+		},
+		"yun_zhi": {
+			"beauty_id": 103374,
+			"quality": 4,
+			"occupation": 2,
+			"intimacy": 300,
+			"glamour": 300
+		},
+		"zhao_yang": {
+			"beauty_id": 103381,
+			"quality": 4,
+			"occupation": 3,
+			"intimacy": 300,
+			"glamour": 300
+		},
+		"zhi_nv": {
+			"beauty_id": 103327,
+			"quality": 4,
+			"occupation": 3,
+			"intimacy": 300,
+			"glamour": 300
+		},
+		"zhou_meili": {
+			"beauty_id": 103377,
+			"quality": 4,
+			"occupation": 5,
+			"intimacy": 300,
+			"glamour": 300
+		},
+		"zhuo_gui_shi": {
+			"beauty_id": 103335,
+			"quality": 4,
+			"occupation": 3,
+			"intimacy": 300,
+			"glamour": 300
+		},
+		"zi_yu": {
+			"beauty_id": 103339,
+			"quality": 4,
+			"occupation": 2,
+			"intimacy": 300,
+			"glamour": 300
+		}
+	}
+}

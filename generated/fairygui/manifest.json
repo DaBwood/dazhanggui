@@ -53,6 +53,7 @@
 		"ui://3tn1skchwonw9j": "res://generated/fairygui/items/ui_items_animals_item.gd",
 		"ui://3tn1skchy9acq2gm": "res://generated/fairygui/items/ui_items_choose_bag_item.gd",
 		"ui://3tn1skchy9acq2gn": "res://generated/fairygui/items/ui_items_select.gd",
+		"ui://4wd6tb2l10zl50": "res://generated/fairygui/beauty/ui_beauty_info.gd",
 		"ui://9ij3eev8106in4s": "res://generated/fairygui/basic_2/ui_basic_2_tips_label.gd",
 		"ui://9ij3eev86moeqnd4": "res://generated/fairygui/basic_2/ui_basic_2_btn_histroy.gd",
 		"ui://9ij3eev8a8etn79": "res://generated/fairygui/basic_2/ui_basic_2_btn_show_reward_1.gd",
@@ -809,6 +810,7 @@
 		"ui://Basic3/VerticalTitle": "res://generated/fairygui/basic_3/ui_basic_3_vertical_title.gd",
 		"ui://Basic3/btnInfoCricketTitle": "res://generated/fairygui/basic_3/ui_basic_3_btn_info_cricket_title.gd",
 		"ui://Basic3/skeletonContainer": "res://generated/fairygui/basic_3/ui_basic_3_skeleton_container.gd",
+		"ui://Beauty/Info": "res://generated/fairygui/beauty/ui_beauty_info.gd",
 		"ui://Items/AnimalsItem": "res://generated/fairygui/items/ui_items_animals_item.gd",
 		"ui://Items/AnniversaryGiftItem": "res://generated/fairygui/items/ui_items_anniversary_gift_item.gd",
 		"ui://Items/BagItem1": "res://generated/fairygui/items/ui_items_bag_item_1.gd",
@@ -2277,6 +2279,7 @@
 		"res://generated/fairygui/basic_3/ui_basic_3_union_flag_item_2.gd",
 		"res://generated/fairygui/basic_3/ui_basic_3_union_position_item.gd",
 		"res://generated/fairygui/basic_3/ui_basic_3_vertical_title.gd",
+		"res://generated/fairygui/beauty/ui_beauty_info.gd",
 		"res://generated/fairygui/items/ui_items_animals_item.gd",
 		"res://generated/fairygui/items/ui_items_anniversary_gift_item.gd",
 		"res://generated/fairygui/items/ui_items_bag_item_1.gd",
@@ -2401,6 +2404,8 @@
 		"res://assets/fgui/Basic.fui": "5660af0cff2e57d027bc8f8160603bce4cd8f59634b81180ee6c3746ef9beefe",
 		"res://assets/fgui/Basic2.fui": "07c68250d7aa42064f9cd0a1e295700deceba213f00069d4a8137bcbfa4b0da2",
 		"res://assets/fgui/Basic3.fui": "281db268a66d151885348d2b241008c2cfd901f13c5537faa4b9d10094f8a1ba",
+		"res://assets/fgui/Beauty.fui": "560dc769743e06d4bcb96104d8a64c789196af3e597d06f9e1a7f1932202c522",
+		"res://assets/fgui/Common2.fui": "3d57939e1653a9aba961565eee40b55e4b60dcaa82074c94ea116b39a8521efe",
 		"res://assets/fgui/Items.fui": "e600ef5102b2c542b4cfed269ffb737f0ac4acb2c1bc0c9067d5a3c9764a6e62",
 		"res://assets/fgui/Patrons.fui": "d5a5c70c027edf59db8278b97cba511d488af4b4aec960a516ae9cc9a119c2c2"
 	},
@@ -2417,6 +2422,8 @@
 		"res://assets/fgui/Basic.fui",
 		"res://assets/fgui/Basic2.fui",
 		"res://assets/fgui/Basic3.fui",
+		"res://assets/fgui/Beauty.fui",
+		"res://assets/fgui/Common2.fui",
 		"res://assets/fgui/Items.fui",
 		"res://assets/fgui/Patrons.fui"
 	]

@@ -4,7 +4,7 @@ extends Control
 
 const PKG_DIR := "res://assets/fgui/"
 const PKGS := ["Basic", "Basic2", "Basic3", "Items", "AnimalsEntry", "Patrons"]
-const HALF_DIR := "res://assets/portraits/friends_half/"
+const HALF_DIR := "res://assets/portraits/friends_round/"
 const WIN_W := 750.0
 const WIN_H := 1334.0
 const CELL_SCALE := 2.18     # 200×200 的挚友格放大后两列铺满 list 区（676 宽）
@@ -12,6 +12,9 @@ const CELL_SCALE := 2.18     # 200×200 的挚友格放大后两列铺满 list �
 var _c: Node = null
 var on_pick: Callable = Callable()
 var on_back: Callable = Callable()
+var on_chat: Callable = Callable()
+var _bottom_bar: Control = null
+var _full_bg: TextureRect = null
 var _root: Control = null
 var _main: FGUIComponent = null
 var _grid: GridContainer = null
@@ -48,6 +51,8 @@ func ensure_built(parent: Node) -> bool:
 	add_child(_root)
 	_root.add_child(_main.node)
 	_main.node.position = Vector2.ZERO
+	_build_bottom_bar()
+	_build_full_bg()
 
 	# 原件的 list 是门客大卡，这里隐藏，用同位置同尺寸的网格装挚友圆格
 	var list_obj: FGUIObject = _main.get_child("list")
@@ -95,7 +100,7 @@ func ensure_built(parent: Node) -> bool:
 	if _root.get_node_or_null("BgFill") == null:
 		var back := TextureRect.new()
 		back.name = "BgFill"
-		var bg_path := "res://assets/ui/friend_bg.png"
+		var bg_path := "res://assets/backgrounds/bg_friend_detail.png"
 		if ResourceLoader.exists(bg_path):
 			back.texture = load(bg_path) as Texture2D
 		else:
@@ -139,6 +144,10 @@ func ensure_built(parent: Node) -> bool:
 
 
 func show_view(v: bool) -> void:
+	if _full_bg != null and is_instance_valid(_full_bg):
+		_full_bg.visible = v
+		if v:
+			_sync_full_bg()
 	if _root != null and is_instance_valid(_root):
 		_root.visible = v
 
@@ -183,7 +192,7 @@ func _make_cell(pkg: FGUIPackage, row: Dictionary) -> Control:
 		return null
 	var comp := obj as FGUIComponent
 	# 原件默认开着的遮罩/锁/特效/倒计时，游戏里按状态开关，这里一律关
-	for hide_name in ["imgMask", "imgLock", "imgEffect", "txtTime", "imgAdd", "bgAttr", "imgNone"]:
+	for hide_name in ["imgLock", "imgEffect", "txtTime", "imgAdd", "bgAttr", "imgNone"]:
 		var h: FGUIObject = comp.get_child(hide_name)
 		if h != null:
 			h.visible = false
@@ -327,9 +336,145 @@ func _fill_title(node: FGUIComponent, title: String) -> void:
 					return
 
 
+
+## 底部操作栏：照原作摆——旅行册在左、三个入口居中、右侧精力＋一键谈心、最右谈心大按钮
+func _build_bottom_bar() -> void:
+	if _bottom_bar != null and is_instance_valid(_bottom_bar):
+		return
+	# 原件 Main 底部那两条深色横条（n15/n25）是“遮罩”观感的来源，先关掉
+	for strip in ["n25", "n15"]:
+		var strip_obj: FGUIObject = _main.get_child(strip)
+		if strip_obj != null:
+			strip_obj.visible = false
+
+	_bottom_bar = Control.new()
+	_bottom_bar.name = "BottomBar"
+	_bottom_bar.size = Vector2(WIN_W, 190.0)
+	_bottom_bar.position = Vector2(0, 1176)
+	_bottom_bar.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	_root.add_child(_bottom_bar)
+
+	# 左：旅行册
+	_add_icon_btn(_bottom_bar, "travel", Vector2(16, 2), Vector2(98, 98), Callable())
+
+	# 中：美名录 / 技能加成 / 萍水相逢（新图自带文字）
+	var entries := [["minglu", 124.0], ["jinneng", 218.0], ["pingshui", 312.0]]
+	for ent in entries:
+		_add_icon_btn(_bottom_bar, str(ent[0]), Vector2(float(ent[1]), 4), Vector2(96, 96), Callable())
+
+	# 右：精力 + 一键谈心
+	var energy := Label.new()
+	energy.text = "精力:18/18"
+	energy.add_theme_font_size_override("font_size", 22)
+	energy.add_theme_color_override("font_color", Color("#f6e6c8"))
+	energy.add_theme_color_override("font_outline_color", Color("#2a1a0c"))
+	energy.add_theme_constant_override("outline_size", 4)
+	energy.position = Vector2(416, 24)
+	energy.size = Vector2(140, 30)
+	_bottom_bar.add_child(energy)
+
+	var auto_btn := Button.new()
+	auto_btn.text = "一键谈心"
+	auto_btn.focus_mode = Control.FOCUS_NONE
+	auto_btn.position = Vector2(416, 56)
+	auto_btn.size = Vector2(124, 38)
+	auto_btn.add_theme_font_size_override("font_size", 22)
+	auto_btn.add_theme_color_override("font_color", Color("#f6e6c8"))
+	auto_btn.add_theme_color_override("font_outline_color", Color("#2a1a0c"))
+	auto_btn.add_theme_constant_override("outline_size", 4)
+	var asb := StyleBoxFlat.new()
+	asb.bg_color = Color(0.16, 0.11, 0.07, 0.35)
+	asb.set_corner_radius_all(10)
+	asb.set_border_width_all(2)
+	asb.border_color = Color(0.62, 0.47, 0.26, 0.85)
+	for st3 in ["normal", "hover", "pressed", "focus"]:
+		auto_btn.add_theme_stylebox_override(st3, asb)
+	_bottom_bar.add_child(auto_btn)
+
+	# 最右：谈心大按钮
+	_add_icon_btn(_bottom_bar, "talk", Vector2(556, 0), Vector2(96, 104), func() -> void:
+		if on_chat.is_valid():
+			on_chat.call()
+	)
+
+
+## 底部栏统一用「贴图 + 透明命中区」的画法，避免再叠底板
+func _add_icon_btn(parent: Control, key: String, pos: Vector2, box: Vector2, cb: Callable) -> Button:
+	var path := "res://assets/ui/btn/%s.png" % key
+	var b := Button.new()
+	b.name = "Btn_" + key
+	b.flat = true
+	b.focus_mode = Control.FOCUS_NONE
+	b.position = pos
+	b.size = box
+	for st in ["normal", "hover", "pressed", "focus"]:
+		b.add_theme_stylebox_override(st, StyleBoxEmpty.new())
+	if ResourceLoader.exists(path):
+		var img := TextureRect.new()
+		img.texture = load(path) as Texture2D
+		img.expand_mode = TextureRect.EXPAND_IGNORE_SIZE
+		img.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_CENTERED
+		img.size = box
+		img.mouse_filter = Control.MOUSE_FILTER_IGNORE
+		b.add_child(img)
+	if cb.is_valid():
+		b.pressed.connect(cb)
+	parent.add_child(b)
+	return b
+
+
+func _bar_button(label: String, pos: Vector2, box: Vector2) -> Button:
+	var b := Button.new()
+	b.text = label
+	b.focus_mode = Control.FOCUS_NONE
+	b.position = pos
+	b.size = box
+	b.add_theme_font_size_override("font_size", 22)
+	b.add_theme_color_override("font_color", Color("#f6e6c8"))
+	b.add_theme_color_override("font_outline_color", Color("#2a1a0c"))
+	b.add_theme_constant_override("outline_size", 4)
+	var sb := StyleBoxFlat.new()
+	sb.bg_color = Color(0.16, 0.11, 0.07, 0.55)
+	sb.set_corner_radius_all(10)
+	sb.set_border_width_all(2)
+	sb.border_color = Color(0.62, 0.47, 0.26, 0.9)
+	for st2 in ["normal", "hover", "pressed", "focus"]:
+		b.add_theme_stylebox_override(st2, sb)
+	return b
+
+
+
+## 全屏背景：原作这一页是整屏底图，我们的 FGUI 视窗只占夹心区，所以另铺一层贴到游戏根上
+func _build_full_bg() -> void:
+	var bg_path := "res://assets/backgrounds/bg_friend_detail.png"
+	if not ResourceLoader.exists(bg_path):
+		return
+	_full_bg = TextureRect.new()
+	_full_bg.name = "FriendFullBg"
+	_full_bg.texture = load(bg_path) as Texture2D
+	_full_bg.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_COVERED
+	_full_bg.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	_full_bg.visible = false
+	_c.add_child(_full_bg)
+	_c.move_child(_full_bg, 0)
+
+
+func _sync_full_bg() -> void:
+	if _full_bg == null or not is_instance_valid(_full_bg):
+		return
+	var vp: Vector2 = _c.get_viewport_rect().size
+	_full_bg.position = Vector2.ZERO
+	_full_bg.size = vp
+
+
 func _layout() -> void:
 	if _root == null:
 		return
-	var s: float = size.x / WIN_W if size.x > 1.0 else 1.0
+	# 宽高双约束取小者，整页落在夹心区里，不会顶到底部操作栏
+	var sx: float = (size.x / WIN_W) if size.x > 1.0 else 1.0
+	var sy: float = (size.y / WIN_H) if size.y > 1.0 else 1.0
+	var s: float = minf(sx, sy)
 	_root.scale = Vector2(s, s)
-	_root.size = Vector2(WIN_W, maxf(size.y / s, WIN_H))
+	_root.size = Vector2(WIN_W, WIN_H)
+	_root.position = Vector2((size.x - WIN_W * s) * 0.5, 0.0)
+	_sync_full_bg()

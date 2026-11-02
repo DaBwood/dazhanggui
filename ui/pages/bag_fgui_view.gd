@@ -36,6 +36,7 @@ var _host: Control = null   # BagPage 宿主节点
 var _node: Control = null   # 已实例化的整窗节点（Bag/Main 的 node）
 var _clip: Control = null   # 整窗的裁剪容器（只占顶栏/底栏之间的夹心区）
 var _back: ColorRect = null # 夹心区底色（整窗等比缩放后两侧留边的补底）
+var _bag_bg_tex: TextureRect = null # 背包底图（原作 bg4）
 var _comp: FGUIComponent = null   # Bag/Main 的组件包装（get_child/get_controller 用）
 var _list: FGUIList = null        # 「道具」页签的 GList（list1）
 var _ctrl: FGUIController = null  # 页签控制器 c1（0=道具 1=活动 2=合成）
@@ -107,6 +108,16 @@ func ensure_built(host: Control) -> bool:
 		_back.color = Color(0.145, 0.137, 0.129)
 		_back.mouse_filter = Control.MOUSE_FILTER_IGNORE
 		_clip.add_child(_back)
+		# 【改 2026-11-02】背包用原作 bg4 当底图（用户指定），缺图才退回纯色
+		var bag_bg := "res://assets/backgrounds/bg_bag.png"
+		if ResourceLoader.exists(bag_bg):
+			var bg_tex := TextureRect.new()
+			bg_tex.name = "BagFguiBg"
+			bg_tex.texture = load(bag_bg) as Texture2D
+			bg_tex.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_COVERED
+			bg_tex.mouse_filter = Control.MOUSE_FILTER_IGNORE
+			_clip.add_child(bg_tex)
+			_bag_bg_tex = bg_tex
 	_clip.add_child(_node)
 	_node.visible = true
 	_inject_static_texts()

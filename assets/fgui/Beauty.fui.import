@@ -1,0 +1,16 @@
+[remap]
+
+importer="fairygui.package"
+importer_version=7
+type="Resource"
+uid="uid://xthc20ktjkcu"
+path="res://.godot/imported/Beauty.fui-36c2963fbba4bcde182f3a3d5a75912d.res"
+
+[deps]
+
+source_file="res://assets/fgui/Beauty.fui"
+dest_files=["res://.godot/imported/Beauty.fui-36c2963fbba4bcde182f3a3d5a75912d.res"]
+
+[params]
+
+codegen/enabled=true

@@ -18,12 +18,15 @@ var data   # GameData 数据中枢引用
 
 var _selected_shop_skill_index: int = -1
 var current_friend_id: String = ""
+var _quality_map: Dictionary = {}
+var _quality_loaded: bool = false
 # 【新增】技能弹窗页签状态：_skill_tab=商铺/门客；_hero_sub_tab=门客页签下四级子页签
 var _skill_tab: String = "shop"
 var _hero_sub_tab: String = "menke"
 var _fanghua_sel: int = 0   # 【新增】芳华页签选中技能下标（类变量记忆，弹窗重建不丢，踩坑35）
 
 var _friend_fgui = null
+var _friend_detail_fgui = null
 
 func _init(p_c):
 	c = p_c
@@ -44,6 +47,18 @@ func _pkg_icon(pkg_name: String, item_name: String) -> Texture2D:
 
 # 图标按钮：Button 里塞 HBox(TextureRect + Label)——Button.icon 在这套主题下会被吃掉
 func _icon_button(text: String, pkg: String, item_name: String) -> Button:
+	return _make_icon_button(text, _pkg_icon(pkg, item_name))
+
+
+## 直接拿 res:// 贴图做按钮图标（新画的图都走这条，不再依赖 FGUI 包）
+func _texture_button(text: String, tex_path: String) -> Button:
+	var tex: Texture2D = null
+	if tex_path != "" and ResourceLoader.exists(tex_path):
+		tex = load(tex_path) as Texture2D
+	return _make_icon_button(text, tex)
+
+
+func _make_icon_button(text: String, tex: Texture2D) -> Button:
 	var btn := Button.new()
 	btn.text = ""
 	var row := HBoxContainer.new()
@@ -51,11 +66,10 @@ func _icon_button(text: String, pkg: String, item_name: String) -> Button:
 	row.add_theme_constant_override("separation", 6)
 	row.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	btn.add_child(row)
-	var tex := _pkg_icon(pkg, item_name)
 	if tex != null:
 		var tr := TextureRect.new()
 		tr.texture = tex
-		tr.custom_minimum_size = Vector2(28, 28)
+		tr.custom_minimum_size = Vector2(40, 40)
 		tr.expand_mode = TextureRect.EXPAND_IGNORE_SIZE
 		tr.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_CENTERED
 		tr.mouse_filter = Control.MOUSE_FILTER_IGNORE
@@ -125,6 +139,7 @@ func generate_friend_page():
 		_friend_fgui.ensure_built(page)
 		scroll.visible = false          # 旧文字列表隐藏，只留 FGUI 版
 		_friend_fgui.on_back = func(): c.switch_page("mansion")
+		_friend_fgui.on_chat = func(): on_chat_with_friend.call()
 		_friend_fgui.on_pick = func(row: Dictionary):
 			if bool(row.get("locked", false)):
 				_on_locked_friend_clicked(str(row.get("id", "")), int(row.get("vip", 0)))
@@ -141,11 +156,12 @@ func generate_friend_page():
 	# 士农工商侠的圆形图标由原作 Main 里的 btnOccupation0..5 提供，这里只留旅行册占位
 	var fspec := [["旅行册", -1]]
 	for item in fspec:
-		var fbtn := _icon_button(str(item[0]), "Basic", "imgBooking")
+		var fbtn := _texture_button(str(item[0]), "res://assets/ui/btn/travel.png")
 		fbtn.name = "Filter_" + str(item[0])
 		fbtn.custom_minimum_size = Vector2(0, 56)
 		fbtn.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 		fbar.add_child(fbtn)
+	fbar.visible = false      # 底部操作栏改由 FriendFguiView 按原作布局绘制
 
 	# 谈心操作区（谈心只在列表页全局谈，单个挚友的互动走详情页「游玩」标签）
 	var chat_op = HBoxContainer.new()
@@ -153,9 +169,11 @@ func generate_friend_page():
 	chat_op.alignment = BoxContainer.ALIGNMENT_CENTER
 	chat_op.add_theme_constant_override("separation", 12)
 	list_view.add_child(chat_op)
+	chat_op.visible = false   # 同上：心力/一键谈心/谈心大按钮已移入 FGUI 底部栏
 
 	var chat_btn := _icon_button("谈心", "Basic", "chatIcon2")
 	chat_btn.name = "ChatBtn"
+	chat_btn.custom_minimum_size = Vector2(190, 52)
 	chat_btn.pressed.connect(on_chat_with_friend)
 	chat_op.add_child(chat_btn)
 
@@ -422,11 +440,36 @@ func show_friend_detail(friend_id: String):
 	var page = c.get_node("PageContainer/FriendPage")
 	page.get_node("ListView").visible = false
 	c._set_bars_visible(false)  # 【新增】进入详情页：隐藏顶栏底栏，立绘全屏
-	page.get_node("FriendDetail").visible = true
-	# 【新增】加载并显示该挚友立绘背景（无图则保持纯色底）
+	# 【新增】FGUI 详情页（静态首屏，叠在旧详情之上，旧页暂时隐藏）
+	if _friend_detail_fgui == null:
+		_friend_detail_fgui = load("res://ui/pages/friend_detail_fgui_view.gd").new(c)
+	if _friend_detail_fgui != null and _friend_detail_fgui.ensure_built(page):
+		var fd = _friend_detail_fgui
+		fd.on_back = func() -> void: hide_friend_detail()
+		var fcfg: Dictionary = data.friends.get(friend_id, {})
+		if fcfg.is_empty():
+			fcfg = data.get_friend_config(friend_id)
+		fd.on_send = func(gift_id: String, batch: bool) -> void:
+			_on_fgui_gift(gift_id, batch)
+		fd.set_friend({
+			"id": friend_id,
+			"name": str(fcfg.get("name", "")),
+			"friendly": int(fcfg.get("friendly", 0)),
+			"talent": int(fcfg.get("talent", 0)),
+			"quality": _friend_quality(friend_id),
+		})
+		fd.set_gifts(_gift_rows())
+		fd.size = page.size
+		fd.visible = true
+	page.get_node("FriendDetail").visible = false
+	# 【新增】加载立绘背景（旧详情页用；FGUI 详情自带背景，故加载后立刻隐藏）
 	_load_friend_portrait(friend_id)
-	page.get_node("PortraitBg").visible = true
+	page.get_node("PortraitBg").visible = false
 	_update_friend_page_detail()
+	if _friend_detail_fgui != null:
+		_friend_detail_fgui.size = page.size
+		_friend_detail_fgui.z_index = 20
+		_friend_detail_fgui.visible = true
 
 func hide_friend_detail():
 	current_friend_id = ""
@@ -435,6 +478,8 @@ func hide_friend_detail():
 	page.get_node("ListView").visible = true
 	c._set_bars_visible(true)   # 【新增】返回列表：恢复顶栏底栏
 	page.get_node("FriendDetail").visible = false
+	if _friend_detail_fgui != null:
+		_friend_detail_fgui.visible = false
 	# 【新增】返回列表时隐藏立绘背景
 	page.get_node("PortraitBg").visible = false
 	# 【修】返回列表后刷新挚友列表（谈心/赠礼/升级等操作后数据已变，列表需重绘）
@@ -1213,6 +1258,64 @@ func _on_promote_title():
 
 
 # ============ 底部礼物栏 ============
+## FGUI 详情页的礼物栏数据（6 件礼物 → 图标 + 当前数量）
+func _gift_rows() -> Array:
+	var rows: Array = []
+	var ids := ["wood_comb", "rouge", "tong_zan", "yin_erhuan", "xiang_nang", "huarong_xia"]
+	var names := {"wood_comb": "木梓", "rouge": "脣脝", "tong_zan": "铜篪", "yin_erhuan": "银耳环", "xiang_nang": "香囊", "huarong_xia": "花容匣"}
+	for gid in ids:
+		var path := ""
+		if c.bag_page != null:
+			path = c.bag_page._item_icon_path(gid)
+		var iq := 0
+		if c.bag_page != null:
+			var ent: Dictionary = c.bag_page._icon_map.get(gid, {})
+			iq = int(ent.get("quality", 0))
+		rows.append({
+			"id": gid,
+			"name": names.get(gid, gid),
+			"icon": path,
+			"count": int(data.items.get(gid, 0)),
+			"quality": iq,
+		})
+	return rows
+
+
+## FGUI 详情页点「赠送」：gift_id 空则用第一件有库存的礼物
+func _on_fgui_gift(gift_id: String, batch: bool) -> void:
+	if current_friend_id == "":
+		return
+	var gid := gift_id
+	if gid == "":
+		for cand in ["wood_comb", "rouge", "tong_zan", "yin_erhuan", "xiang_nang", "huarong_xia"]:
+			if int(data.items.get(cand, 0)) > 0:
+				gid = cand
+				break
+	if gid == "":
+		c._show_success_popup("没有可赠送的礼物", 0.0, "warn")
+		return
+	var count := 10 if batch else 1
+	var own := int(data.items.get(gid, 0))
+	if own < count:
+		c._show_success_popup("礼物不足！", 0.0, "warn")
+		return
+	for i in range(count):
+		if not data.gift_friend(current_friend_id, gid):
+			break
+	if _friend_detail_fgui != null:
+		_friend_detail_fgui.set_gifts(_gift_rows())
+		var fcfg2: Dictionary = data.friends.get(current_friend_id, {})
+		if fcfg2.is_empty():
+			fcfg2 = data.get_friend_config(current_friend_id)
+		_friend_detail_fgui.refresh_stats({
+			"friendly": int(fcfg2.get("friendly", 0)),
+			"talent": int(fcfg2.get("talent", 0)),
+		})
+	_update_friend_page_detail()
+	c.update_bag_list()
+	c.update_all_ui()
+
+
 func _refresh_gift_bar():
 	if not c.has_node("PageContainer/FriendPage/FriendDetail"): return
 	var bar = c.get_node("PageContainer/FriendPage/FriendDetail/GiftBand/GiftBar")
@@ -1761,3 +1864,18 @@ func _on_locked_friend_clicked(friend_id: String, vip_level: int):
 	var cfg = data.get_friend_config(friend_id)
 	var friend_name = cfg.get("name", "未知挚友")
 	c._show_unlock_hint(friend_name, vip_level)
+
+
+## 挚友品质（原作 BeautyDB：1 普通 2 优秀 3 卓越 4 传奇 5 无双）
+func _friend_quality(friend_id: String) -> int:
+	if _quality_map.is_empty() and not _quality_loaded:
+		_quality_loaded = true
+		var path := "res://data/friend_quality.json"
+		if ResourceLoader.exists(path):
+			var f := FileAccess.open(path, FileAccess.READ)
+			if f != null:
+				var parsed: Variant = JSON.parse_string(f.get_as_text())
+				if parsed is Dictionary and (parsed as Dictionary).has("friends"):
+					_quality_map = (parsed as Dictionary)["friends"]
+	var ent: Dictionary = _quality_map.get(friend_id, {})
+	return int(ent.get("quality", 0))

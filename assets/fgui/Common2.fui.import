@@ -1,0 +1,16 @@
+[remap]
+
+importer="fairygui.package"
+importer_version=7
+type="Resource"
+uid="uid://tpxhxubgqxkj"
+path="res://.godot/imported/Common2.fui-e908c7a817c58ab330a533a7e42962df.res"
+
+[deps]
+
+source_file="res://assets/fgui/Common2.fui"
+dest_files=["res://.godot/imported/Common2.fui-e908c7a817c58ab330a533a7e42962df.res"]
+
+[params]
+
+codegen/enabled=true

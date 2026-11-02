@@ -29,5 +29,17 @@ func _run() -> void:
 	for i in range(14):
 		await get_tree().process_frame
 	await _shot("res://tests/_friend_page.png")
+	# 打开详情页（FGUI 版）
+	var fid := "qing_ning"
+	if game.data.get_friend_config(fid).is_empty():
+		for k in game.data._friend_configs.keys():
+			fid = str(k)
+			break
+	print("[page] detail friend=", fid)
+	if fid != "":
+		game.friend_page.show_friend_detail(fid)
+		for i in range(10):
+			await get_tree().process_frame
+		await _shot("res://tests/_friend_detail.png")
 	print("DONE")
 	get_tree().quit()
