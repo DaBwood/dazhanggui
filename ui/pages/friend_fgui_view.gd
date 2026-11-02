@@ -14,6 +14,8 @@ var on_pick: Callable = Callable()
 var on_back: Callable = Callable()
 var on_chat: Callable = Callable()
 var _bottom_bar: Control = null
+var _energy_label: Label = null
+var auto_chat: bool = false
 var _full_bg: TextureRect = null
 var _root: Control = null
 var _main: FGUIComponent = null
@@ -69,6 +71,9 @@ func ensure_built(parent: Node) -> bool:
 	scroll.size = area_size
 	scroll.horizontal_scroll_mode = ScrollContainer.SCROLL_MODE_DISABLED
 	_main.node.add_child(scroll)
+	var vb := scroll.get_v_scroll_bar()
+	if vb != null:
+		vb.modulate = Color(1, 1, 1, 0)      # 原作没有可见滚动条
 	_grid = GridContainer.new()
 	_grid.name = "BeautyGrid"
 	_grid.columns = 2
@@ -342,60 +347,58 @@ func _build_bottom_bar() -> void:
 	if _bottom_bar != null and is_instance_valid(_bottom_bar):
 		return
 	# 原件 Main 底部那两条深色横条（n15/n25）是“遮罩”观感的来源，先关掉
-	for strip in ["n25", "n15"]:
-		var strip_obj: FGUIObject = _main.get_child(strip)
-		if strip_obj != null:
-			strip_obj.visible = false
-
 	_bottom_bar = Control.new()
 	_bottom_bar.name = "BottomBar"
-	_bottom_bar.size = Vector2(WIN_W, 190.0)
-	_bottom_bar.position = Vector2(0, 1176)
+	_bottom_bar.size = Vector2(WIN_W, 226.0)
+	_bottom_bar.position = Vector2(0, 1108)
 	_bottom_bar.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	_root.add_child(_bottom_bar)
 
+
 	# 左：旅行册
-	_add_icon_btn(_bottom_bar, "travel", Vector2(16, 2), Vector2(98, 98), Callable())
+	_add_icon_btn(_bottom_bar, "travel", Vector2(18, 14), Vector2(98, 98), Callable())
 
 	# 中：美名录 / 技能加成 / 萍水相逢（新图自带文字）
-	var entries := [["minglu", 124.0], ["jinneng", 218.0], ["pingshui", 312.0]]
+	var entries := [["minglu", 150.0], ["jinneng", 256.0], ["pingshui", 362.0]]
 	for ent in entries:
-		_add_icon_btn(_bottom_bar, str(ent[0]), Vector2(float(ent[1]), 4), Vector2(96, 96), Callable())
+		_add_icon_btn(_bottom_bar, str(ent[0]), Vector2(float(ent[1]), 96), Vector2(96, 96), Callable())
 
 	# 右：精力 + 一键谈心
 	var energy := Label.new()
-	energy.text = "精力:18/18"
+	_energy_label = energy
+	energy.text = "精力:-"
 	energy.add_theme_font_size_override("font_size", 22)
 	energy.add_theme_color_override("font_color", Color("#f6e6c8"))
 	energy.add_theme_color_override("font_outline_color", Color("#2a1a0c"))
 	energy.add_theme_constant_override("outline_size", 4)
-	energy.position = Vector2(416, 24)
+	energy.position = Vector2(470, 108)
 	energy.size = Vector2(140, 30)
 	_bottom_bar.add_child(energy)
 
-	var auto_btn := Button.new()
+	var auto_btn := CheckBox.new()
+	auto_btn.name = "AutoChat"
 	auto_btn.text = "一键谈心"
 	auto_btn.focus_mode = Control.FOCUS_NONE
-	auto_btn.position = Vector2(416, 56)
-	auto_btn.size = Vector2(124, 38)
+	auto_btn.position = Vector2(470, 140)
+	auto_btn.size = Vector2(126, 40)
 	auto_btn.add_theme_font_size_override("font_size", 22)
 	auto_btn.add_theme_color_override("font_color", Color("#f6e6c8"))
 	auto_btn.add_theme_color_override("font_outline_color", Color("#2a1a0c"))
 	auto_btn.add_theme_constant_override("outline_size", 4)
-	var asb := StyleBoxFlat.new()
-	asb.bg_color = Color(0.16, 0.11, 0.07, 0.35)
-	asb.set_corner_radius_all(10)
-	asb.set_border_width_all(2)
-	asb.border_color = Color(0.62, 0.47, 0.26, 0.85)
-	for st3 in ["normal", "hover", "pressed", "focus"]:
-		auto_btn.add_theme_stylebox_override(st3, asb)
+	auto_btn.toggled.connect(func(pressed: bool) -> void: auto_chat = pressed)
 	_bottom_bar.add_child(auto_btn)
 
 	# 最右：谈心大按钮
-	_add_icon_btn(_bottom_bar, "talk", Vector2(556, 0), Vector2(96, 104), func() -> void:
+	_add_icon_btn(_bottom_bar, "talk", Vector2(596, 84), Vector2(104, 112), func() -> void:
 		if on_chat.is_valid():
 			on_chat.call()
 	)
+
+
+## 外部（friend_page）刷新精力显示
+func set_energy(cur: int, capv: int) -> void:
+	if _energy_label != null and is_instance_valid(_energy_label):
+		_energy_label.text = "精力:%d/%d" % [cur, capv]
 
 
 ## 底部栏统一用「贴图 + 透明命中区」的画法，避免再叠底板
@@ -455,6 +458,7 @@ func _build_full_bg() -> void:
 	_full_bg.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_COVERED
 	_full_bg.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	_full_bg.visible = false
+	_full_bg.z_index = -10   # 沉到最底，避免盖住 FGUI 面板
 	_c.add_child(_full_bg)
 	_c.move_child(_full_bg, 0)
 

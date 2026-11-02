@@ -422,7 +422,7 @@ var money: int = 0
 
 var yuanbao: int = 0
 
-var energy: int = 100
+var energy: int = 0   # 新存档由 FriendSystem.init_new_save() 填成上限；精力丹可超过上限
 var energy_time: float = 0.0   # 【新增】四批：精力恢复结算时间戳（friend_system 懒结算用）
 var vip_level: int = 0
 
@@ -974,6 +974,8 @@ func _init():
 	_register_hero_bonuses()
 	# 【新增】2026-10-28 底座 B1：商铺加成注册表（原 shop_system 里 14 项手写加法）
 	_register_shop_bonuses()
+	# 【修】新档精力给满（老档稍后由 load_game() 用存档值覆盖）
+	energy = friend_system.get_energy_cap()
 
 # ==================== 配置加载 ====================
 

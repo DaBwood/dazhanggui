@@ -25,7 +25,10 @@ func get_save_data() -> Dictionary:
 # 从扁平存档表认领本系统字段（含旧存档兼容逻辑；老存档缺字段则保持初始值）
 func load_save_data(s: Dictionary):
 	if s.has("friends"): g.friends = s.friends
-	if s.has("energy"): g.energy = s.energy
+	if s.has("energy"):
+		g.energy = int(s.energy)
+	else:
+		g.energy = get_energy_cap()   # 新存档：精力从满开始（老存档不会走到这里）
 	if s.has("energy_time"): g.energy_time = float(s.energy_time)   # 【新增】四批：精力恢复时间戳（老存档无此字段=立即开始计时的兼容）
 	# 清理存档中已不存在的挚友（防止配置删了存档还残留）
 	for friend_id in g.friends.keys():
@@ -83,9 +86,10 @@ func get_energy_regen_seconds() -> int:
 func _settle_energy() -> void:
 	var now = Time.get_unix_time_from_system()
 	if g.energy_time <= 0.0:
-		g.energy_time = now
+		g.energy_time = now   # 只补时间戳：精力满不满由存档决定（新档在 GameData._init 里已给满）
 		return
 	var cap = get_energy_cap()
+	# 【注意】不在这里夹紧：精力丹可以吃到上限以上，夹紧会把丹白吃
 	if g.energy >= cap:
 		g.energy_time = now
 		return

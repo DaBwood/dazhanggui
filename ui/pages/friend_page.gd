@@ -341,6 +341,7 @@ func update_friend_page():
 	for child in grid.get_children():
 		child.queue_free()
 
+	data.friend_system._settle_energy()   # 进页面先结算精力恢复，标签才不会停在旧值
 	if _friend_fgui != null:
 		var rows: Array = []
 		var ids = data.friends.keys()
@@ -356,6 +357,7 @@ func update_friend_page():
 				"portrait": "res://assets/portraits/friends_half/%s.png" % fid,
 				"friendly": 0, "talent": 0, "locked": true, "vip": int(data.get_friend_unlock_vip(fid))})
 		_friend_fgui.refresh(rows)
+		_friend_fgui.set_energy(data.energy, data.friend_system.get_energy_cap())
 
 	var unlocked_ids = data.friends.keys()
 	unlocked_ids.sort_custom(func(a, b): return data.friends[a].friendly > data.friends[b].friendly)
@@ -1539,9 +1541,12 @@ func on_chat_with_friend():
 				c.flash_red(chat_btn.get_path())
 		return
 	var batch = false
-	var batch_check = page.find_child("BatchChatCheck", true, false)
-	if batch_check != null:
-		batch = batch_check.button_pressed
+	if _friend_fgui != null:
+		batch = bool(_friend_fgui.auto_chat)
+	if not batch:
+		var batch_check = page.find_child("BatchChatCheck", true, false)
+		if batch_check != null:
+			batch = batch_check.button_pressed
 
 	var result = data.chat_with_friend(not batch)
 	if result.ok:
@@ -1550,6 +1555,8 @@ func on_chat_with_friend():
 		_show_chat_result(result.results)
 		c.update_all_ui()
 		update_friend_page()
+		if _friend_fgui != null:
+			_friend_fgui.set_energy(data.energy, data.friend_system.get_energy_cap())
 		var chat_btn = page.find_child("ChatBtn", true, false)
 		if chat_btn:
 			var txt := chat_btn.get_node_or_null("HBoxContainer/BtnText") as Label
