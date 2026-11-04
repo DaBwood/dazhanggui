@@ -167,7 +167,7 @@ func _refresh():
 # 【新增】批次②③④-B2：医馆玩法说明弹窗（只从主标题旁"?"进入；长说明不进画面）
 func _show_rule_popup():
 	_close_node("ClinicRulePopup")
-	var popup: PanelContainer = c._create_base_popup("医馆说明", Vector2(380, 300))
+	var popup: Control = c._create_base_popup("医馆说明", Vector2(380, 300))
 	popup.name = "ClinicRulePopup"
 	popup.get_meta("popup_mask").z_index = 39
 	popup.z_index = 40
@@ -283,7 +283,7 @@ func _on_add_patient():
 		return
 	_close_node("ClinicPopup")
 	var give: int = int(data._clinic_configs.get("settings", {}).get("manual_give", 3))
-	var popup: PanelContainer = c._create_base_popup("使用病人手册", Vector2(400, 240), Vector2.ZERO, false)   # 【改】UI统一批次①：确认弹窗不带右上✕
+	var popup: Control = c._create_base_popup("使用病人手册", Vector2(400, 240), Vector2.ZERO, false)   # 【改】UI统一批次①：确认弹窗不带右上✕
 	popup.name = "ClinicPopup"
 	popup.z_index = 40   # 盖过 ClinicPage(z35)，同 inn/bank 弹窗惯例
 	c.add_child(popup)
@@ -425,7 +425,7 @@ func _show_patient_popup(pid: String):
 	_popup_kind = "patient"
 	_popup_id = pid
 	_close_node("ClinicPopup")
-	var popup: PanelContainer = c._create_base_popup(str(info.get("name", pid)), Vector2(420, 300))
+	var popup: Control = c._create_base_popup(str(info.get("name", pid)), Vector2(420, 300))
 	popup.name = "ClinicPopup"
 	popup.z_index = 40   # 盖过 ClinicPage(z35)，同科室/病症弹窗惯例
 	c.add_child(popup)   # 弹窗工厂只创建不挂载，必须调用方 add_child（同 inn/bank 惯例）
@@ -489,7 +489,7 @@ func _show_dept_popup(dept_id: String):
 	_popup_id = dept_id
 	_close_node("ClinicPopup")
 	var d: Dictionary = data._clinic_configs.get("departments", {}).get(dept_id, {})
-	var popup: PanelContainer = c._create_base_popup(str(d.get("name", dept_id)), Vector2(420, 300))
+	var popup: Control = c._create_base_popup(str(d.get("name", dept_id)), Vector2(420, 300))
 	popup.name = "ClinicPopup"
 	popup.z_index = 40   # 盖过 ClinicPage(z35)，同 inn/bank 弹窗惯例
 	c.add_child(popup)   # 弹窗工厂只创建不挂载，必须调用方 add_child（同 inn/bank 惯例）
@@ -591,7 +591,7 @@ func _show_illness_popup(illness_id: String):
 		return
 	var ic: Dictionary = info["cfg"]
 	var home: Dictionary = data._clinic_configs.get("departments", {}).get(str(info.get("dept", "")), {})
-	var popup: PanelContainer = c._create_base_popup(str(ic.get("name", illness_id)), Vector2(420, 340))
+	var popup: Control = c._create_base_popup(str(ic.get("name", illness_id)), Vector2(420, 340))
 	popup.name = "ClinicPopup"
 	popup.z_index = 40   # 盖过 ClinicPage(z35)，同 inn/bank 弹窗惯例
 	c.add_child(popup)   # 弹窗工厂只创建不挂载，必须调用方 add_child（同 inn/bank 惯例）

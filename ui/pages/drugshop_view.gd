@@ -203,7 +203,7 @@ func _refresh():
 # 【新增】批次②③④-B2：药铺玩法说明弹窗（只从主标题旁"?"进入；长说明不进画面）
 func _show_rule_popup():
 	_close_node("DrugshopRulePopup")
-	var popup: PanelContainer = c._create_base_popup("药铺说明", Vector2(380, 300))
+	var popup: Control = c._create_base_popup("药铺说明", Vector2(380, 300))
 	popup.name = "DrugshopRulePopup"
 	popup.get_meta("popup_mask").z_index = 39
 	popup.z_index = 40
@@ -315,25 +315,16 @@ func _add_main_nav(parent: VBoxContainer):
 		dot.visible = t[2]
 		wrap_node.add_child(dot)
 
-# 勋章固定样式（2026-09-19 用户拍板）：主页右上角【勋章】入口 -> 460×420「勋章」弹窗 -> #2a2640/#6a5f9e 勋章卡 -> 等级旁[?]规则 -> 当前效果 -> 下一级进度条 -> 升级按钮 -> 关闭。后续新玩法照此模板，不再另起样式。
+# 勋章固定样式（2026-09-19 用户拍板；第七章 2026-11-04 统一：暗紫勋章卡 → 纸面卡片组件 c.popup_card，与厢房/酒坊/妙音坊一致）：主页右上角【勋章】入口 -> 「勋章」弹窗 -> 纸面勋章卡 -> 等级旁[i]规则 -> 当前效果 -> 下一级进度条 -> 升级按钮 -> 关闭。
+# 第七章：固定窗后尺寸由工厂决定（576×760），本处传入尺寸仅作历史留档。
 func _show_medal_popup():
 	_close_node("DrugshopMedalPopup")
-	var popup: PanelContainer = c._create_base_popup("勋章", Vector2(460, 420))
+	var popup: Control = c._create_base_popup("勋章", Vector2(460, 420))
 	popup.name = "DrugshopMedalPopup"
 	popup.z_index = 40
 	c.add_child(popup)
 	var pvb: VBoxContainer = popup.get_child(0)
-	var card := PanelContainer.new()
-	var style := StyleBoxFlat.new()
-	style.bg_color = Color("#2a2640")
-	style.border_color = Color("#6a5f9e")
-	style.set_border_width_all(2)
-	style.set_corner_radius_all(6)
-	card.add_theme_stylebox_override("panel", style)
-	pvb.add_child(card)
-	var vb := VBoxContainer.new()
-	vb.add_theme_constant_override("separation", 4)
-	card.add_child(vb)
+	var vb: VBoxContainer = c.popup_card(pvb)   # 【改】第七章弹窗统一：暗紫自造卡 → 纸面卡片组件
 	var head_row := HBoxContainer.new()
 	head_row.alignment = BoxContainer.ALIGNMENT_CENTER
 	head_row.add_theme_constant_override("separation", 6)
@@ -342,7 +333,7 @@ func _show_medal_popup():
 	head.text = "勋章：%s（%d级）" % [_sys().get_medal_name(), _sys().get_medal_lv()]
 	head.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	head.add_theme_font_size_override("font_size", 18)
-	head.add_theme_color_override("font_color", Color("#e6c07b"))
+	head.add_theme_color_override("font_color", UiHelpers.PAPER_TEXT)
 	head_row.add_child(head)
 	var help_btn := Button.new()
 	help_btn.text = "i"   # 【改】批次②③④-B2：面板内补充信息入口统一用"i"（"?"只留玩法主标题旁）
@@ -353,14 +344,14 @@ func _show_medal_popup():
 	var effect := Label.new()
 	effect.text = "全体商铺赚速 +%d%%　精进技能等级上限 +%d" % [int(_sys().get_medal_shop_pct() * 100), _sys().get_refine_cap_bonus()]
 	effect.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
-	effect.add_theme_color_override("font_color", Color("#e6c07b"))
+	effect.add_theme_color_override("font_color", UiHelpers.PAPER_TEXT)
 	vb.add_child(effect)
 	var nxt := _sys().get_next_medal_cfg()
 	if nxt.is_empty():
 		var max_lbl := Label.new()
 		max_lbl.text = "已达满级"
 		max_lbl.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
-		max_lbl.add_theme_color_override("font_color", Color("#9a93b8"))
+		max_lbl.add_theme_color_override("font_color", UiHelpers.PAPER_TEXT_SUB)
 		vb.add_child(max_lbl)
 	else:
 		var need: int = int(nxt.get("need_exp", 0))
@@ -376,7 +367,7 @@ func _show_medal_popup():
 		var next_effect := Label.new()
 		next_effect.text = "下级效果：全体商铺赚速 +%d%%　精进上限 +%d" % [int(float(nxt.get("shop_pct", 0.0)) * 100.0), int(nxt.get("refine_cap", 0))]
 		next_effect.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
-		next_effect.add_theme_color_override("font_color", Color("#7ee787"))
+		next_effect.add_theme_color_override("font_color", UiHelpers.PAPER_OK)
 		vb.add_child(next_effect)
 		var btn := Button.new()
 		btn.text = "升级勋章"
@@ -412,7 +403,7 @@ func _on_use_sign():
 		return
 	_close_node("DrugshopPopup")
 	var give: int = int(data._drugshop_configs.get("settings", {}).get("sign_give", 3))
-	var popup: PanelContainer = c._create_base_popup("使用药铺招牌", Vector2(400, 240), Vector2.ZERO, false)   # 【改】UI统一批次①：确认弹窗不带右上✕
+	var popup: Control = c._create_base_popup("使用药铺招牌", Vector2(400, 240), Vector2.ZERO, false)   # 【改】UI统一批次①：确认弹窗不带右上✕
 	popup.name = "DrugshopPopup"
 	popup.z_index = 40   # 盖过 DrugshopPage(z35)，同 clinic/inn 弹窗惯例
 	c.add_child(popup)   # 弹窗工厂只创建不挂载，必须调用方 add_child（同 clinic/inn 惯例）
@@ -534,7 +525,7 @@ func _show_craft_popup(cid: String):
 			break
 	if cdef.is_empty():
 		return
-	var popup: PanelContainer = c._create_base_popup(str(cdef.get("name", cid)), Vector2(420, 260))
+	var popup: Control = c._create_base_popup(str(cdef.get("name", cid)), Vector2(420, 260))
 	popup.name = "DrugshopPopup"
 	popup.z_index = 40   # 盖过 DrugshopPage(z35)，同 clinic/inn 弹窗惯例
 	c.add_child(popup)   # 弹窗工厂只创建不挂载，必须调用方 add_child（同 clinic/inn 惯例）
@@ -617,7 +608,7 @@ func _show_recipe_popup(rid: String):
 	var rc := _sys().get_recipe_cfg(rid)
 	if rc.is_empty():
 		return
-	var popup: PanelContainer = c._create_base_popup(str(rc.get("name", rid)), Vector2(420, 360))
+	var popup: Control = c._create_base_popup(str(rc.get("name", rid)), Vector2(420, 360))
 	popup.name = "DrugshopPopup"
 	popup.z_index = 40   # 盖过 DrugshopPage(z35)，同 clinic/inn 弹窗惯例
 	c.add_child(popup)   # 弹窗工厂只创建不挂载，必须调用方 add_child（同 clinic/inn 惯例）

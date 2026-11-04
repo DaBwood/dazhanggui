@@ -218,7 +218,7 @@ func _on_claim_pressed():
 # 【新增】批次②③④-B3：妙音坊玩法说明弹窗（只从主标题旁"?"进入；长说明不进画面）
 func _show_rule_popup():
 	_close_node("MiaoyinRulePopup")
-	var popup: PanelContainer = c._create_base_popup("妙音坊说明", Vector2(380, 320))
+	var popup: Control = c._create_base_popup("妙音坊说明", Vector2(380, 320))
 	popup.name = "MiaoyinRulePopup"
 	popup.get_meta("popup_mask").z_index = 39
 	popup.z_index = 40
@@ -340,7 +340,7 @@ func _show_building_popup(bid: String):
 	close_popup()
 	_popup_kind = "building"
 	_popup_id = bid
-	var popup: PanelContainer = c._create_base_popup(str(bcfg.get("name", "建筑")), Vector2(520, 560))
+	var popup: Control = c._create_base_popup(str(bcfg.get("name", "建筑")), Vector2(520, 560))
 	popup.name = _popup_node_name
 	popup.z_index = 40
 	c.add_child(popup)
@@ -683,7 +683,7 @@ func _show_rookie_popup(fid: String):
 	_popup_kind = "rookie"
 	_popup_id = fid
 	var cfg: Dictionary = data.get_friend_config(fid)
-	var popup: PanelContainer = c._create_base_popup(str(cfg.get("name", fid)), Vector2(470, 560))
+	var popup: Control = c._create_base_popup(str(cfg.get("name", fid)), Vector2(470, 560))
 	popup.name = _popup_node_name
 	popup.z_index = 40
 	c.add_child(popup)
@@ -784,7 +784,7 @@ func _show_house_popup(fid: String):
 	_popup_kind = "house"
 	_popup_id = fid
 	var cfg: Dictionary = data.get_friend_config(fid)
-	var popup: PanelContainer = c._create_base_popup("安排住所 - " + str(cfg.get("name", fid)), Vector2(520, 520))
+	var popup: Control = c._create_base_popup("安排住所 - " + str(cfg.get("name", fid)), Vector2(520, 520))
 	popup.name = _popup_node_name
 	popup.z_index = 40
 	c.add_child(popup)
@@ -926,7 +926,7 @@ func _show_audition_team_popup(slot: int):
 	close_popup()
 	_popup_kind = "audition_team"
 	_popup_id = str(slot)
-	var popup: PanelContainer = c._create_base_popup("选择上阵挚友 - 槽位 %d" % (slot + 1), Vector2(500, 520))
+	var popup: Control = c._create_base_popup("选择上阵挚友 - 槽位 %d" % (slot + 1), Vector2(500, 520))
 	popup.name = _popup_node_name
 	popup.z_index = 40
 	c.add_child(popup)
@@ -1009,27 +1009,18 @@ func _rebuild_popup():
 		_show_audition_team_popup(int(_popup_id))
 
 # ---------- 弹窗：勋章（15 级全表；繁荣度=应援币总产出/分；全部商铺赚速 +100%×级） ----------
-# 勋章固定样式（2026-09-19 用户拍板）：主页右上角【勋章】入口 -> 460×420「勋章」弹窗 -> #2a2640/#6a5f9e 勋章卡 -> 等级旁[?]规则 -> 当前效果 -> 下一级进度条 -> 升级按钮 -> 关闭。后续新玩法照此模板，不再另起样式。
+# 勋章固定样式（2026-09-19 用户拍板；第七章 2026-11-04 统一：暗紫勋章卡 → 纸面卡片组件 c.popup_card，与厢房/酒坊/药铺一致）：主页右上角【勋章】入口 -> 「勋章」弹窗 -> 纸面勋章卡 -> 等级旁[i]规则 -> 当前效果 -> 下一级进度条 -> 升级按钮 -> 关闭。
+# 第七章：固定窗后尺寸由工厂决定（576×760），本处传入尺寸仅作历史留档。
 func _show_medal_popup():
 	close_popup()
 	_popup_kind = "medal"
-	var popup: PanelContainer = c._create_base_popup("勋章", Vector2(460, 420))
+	var popup: Control = c._create_base_popup("勋章", Vector2(460, 420))
 	popup.name = _popup_node_name
 	popup.z_index = 40
 	c.add_child(popup)
 	var pvb: VBoxContainer = popup.get_child(0)
 	var lv: int = _sys().get_medal_lv()
-	var card := PanelContainer.new()
-	var cs := StyleBoxFlat.new()
-	cs.bg_color = Color("#2a2640")
-	cs.set_corner_radius_all(6)
-	cs.set_border_width_all(2)
-	cs.border_color = Color("#6a5f9e")
-	card.add_theme_stylebox_override("panel", cs)
-	pvb.add_child(card)
-	var cvb := VBoxContainer.new()
-	cvb.add_theme_constant_override("separation", 4)
-	card.add_child(cvb)
+	var cvb: VBoxContainer = c.popup_card(pvb)   # 【改】第七章弹窗统一：暗紫自造卡 → 纸面卡片组件
 	var head_row := HBoxContainer.new()
 	head_row.alignment = BoxContainer.ALIGNMENT_CENTER
 	head_row.add_theme_constant_override("separation", 6)
@@ -1038,7 +1029,7 @@ func _show_medal_popup():
 	head.text = "勋章：%s（%d级）" % [_sys().get_medal_name(lv), lv]
 	head.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	head.add_theme_font_size_override("font_size", 18)
-	head.add_theme_color_override("font_color", Color("#e6c07b"))
+	head.add_theme_color_override("font_color", UiHelpers.PAPER_TEXT)
 	head_row.add_child(head)
 	var help_btn := Button.new()
 	help_btn.text = "i"   # 【改】批次②③④-B3：面板内补充信息入口统一用"i"（"?"只留玩法主标题旁）
@@ -1049,14 +1040,14 @@ func _show_medal_popup():
 	var effect := Label.new()
 	effect.text = "全部商铺赚速 +%d%%　初始技能等级上限 +%d" % [int(round(_sys().get_medal_shop_pct() * 100.0)), _sys().get_refine_cap_bonus()]
 	effect.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
-	effect.add_theme_color_override("font_color", Color("#e6c07b"))
+	effect.add_theme_color_override("font_color", UiHelpers.PAPER_TEXT)
 	cvb.add_child(effect)
 	var need: int = _sys().get_next_medal_need()
 	if need < 0:
 		var full := Label.new()
 		full.text = "已满级"
 		full.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
-		full.add_theme_color_override("font_color", Color("#9a93b8"))
+		full.add_theme_color_override("font_color", UiHelpers.PAPER_TEXT_SUB)
 		cvb.add_child(full)
 	else:
 		# 【改】批次②③④-B10：繁荣度门槛统一（当前/需求）格式，保留达到/未达到红绿提示
@@ -1071,7 +1062,7 @@ func _show_medal_popup():
 		var next_effect := Label.new()
 		next_effect.text = "下级效果：全部商铺赚速 +%d%%　初始技能等级上限 +%d" % [int(round(float(lv + 1) * 100.0)), int(_sys().get_medal_cfg(lv + 1).get("refine_cap", 0))]
 		next_effect.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
-		next_effect.add_theme_color_override("font_color", Color("#7ee787"))
+		next_effect.add_theme_color_override("font_color", UiHelpers.PAPER_OK)
 		cvb.add_child(next_effect)
 		var up := Button.new()
 		up.text = "升级勋章"
@@ -1102,7 +1093,7 @@ func _show_accel_popup():
 	if count <= 0:
 		c._show_success_popup("没有加速卡", 0.0, "warn")   # 【改】飘字退休→warn 弹窗
 		return
-	var popup: PanelContainer = c._create_base_popup("使用加速卡", Vector2(430, 300), Vector2.ZERO, false)   # 【改】UI统一批次①：确认弹窗不带右上✕
+	var popup: Control = c._create_base_popup("使用加速卡", Vector2(430, 300), Vector2.ZERO, false)   # 【改】UI统一批次①：确认弹窗不带右上✕
 	popup.name = _popup_node_name
 	popup.z_index = 40
 	c.add_child(popup)

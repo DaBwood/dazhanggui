@@ -648,7 +648,7 @@ func art_popup(bg: Texture2D, popup_size: Vector2, node_name: String = "ArtPopup
 func _add_centered_panel(parent: Control, min_size: Vector2) -> VBoxContainer:
 	return ui_helpers._add_centered_panel(parent, min_size)
 
-func _create_base_popup(title_text: String, popup_size: Vector2, _pos: Vector2 = Vector2.ZERO, with_close: bool = true) -> PanelContainer:   # 【改】UI统一批次①：透传 with_close（确认弹窗传false不带右上✕）
+func _create_base_popup(title_text: String, popup_size: Vector2, _pos: Vector2 = Vector2.ZERO, with_close: bool = true) -> Control:   # 【改】第七章滚动批次：窗根改 PopupScrollPanel，返回类型随之为 Control   # 【改】UI统一批次①：透传 with_close（确认弹窗传false不带右上✕）
 	return ui_helpers._create_base_popup(title_text, popup_size, _pos, with_close)   # 【改】主体迁 ui/ui_helpers.gd（2026-09-19 重构批次B）
 
 # Web 端中文输入兜底委托（实现见 ui_helpers._hook_web_cjk_input）

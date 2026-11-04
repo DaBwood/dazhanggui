@@ -20,14 +20,19 @@ var _income_float_state := {"tween": null, "display": 0.0, "target": 0}   # 【�
 var _hero_income_snapshot: Dictionary = {}   # 【新增】门客赚钱飘字：每个已拥有门客的赚钱快照 {hero_id: income}（首次建档不弹）
 var _hero_float_state := {"tween": null, "display": 0.0, "target": 0}   # 【新增】门客赚钱飘字状态（同赚速飘字结构）
 
-var _popup_skin_frame: Texture2D = null   # 【新增】弹窗皮肤批次（2026-10-17）：羊皮纸框体/金匾/灯笼三件套纹理（懒加载缓存）
-var _popup_skin_plaque: Texture2D = null
-var _popup_skin_corner_l: Texture2D = null
-var _popup_skin_corner_r: Texture2D = null
-var _popup_skin_fixed: Texture2D = null
-var _popup_uniform_scale: float = 1.0
-var _popup_skin_corner_bl: Texture2D = null
-var _popup_skin_corner_br: Texture2D = null
+# 【改】弹窗统一批次（2026-11-03 第七章）：窗框素材换回原作 Basic3.Frame1 的 NinePatchRect 原件（747×600），
+#      预缩放成 576×463 入库 popup_frame_uni.png；匾/飞檐/底座/绿植全部烘焙进整图，不再叠贴片，只剩右上灯笼一张
+# 【改】2026-11-04 用户拍板：统一窗尺寸改成和「仪容技能」窗（ui/pages/friend_looks_fgui_view.gd，实测 600×625）一样大。
+#      原 576×760 竖向几乎铺满整屏、短内容大片留白；内容超出固定窗时改「上下滚动（滚动条一律隐藏）」，
+#      不再等比缩放整窗（缩放会把字缩糊）。实现见本文件 PopupScrollPanel。
+const POPUP_W := 576.0        # 统一窗宽（600 宽逻辑视口下的固定值；更窄视口按 vs.x-16 再收）
+const POPUP_H := 625.0        # 统一窗高（= 仪容技能窗基准 600×625 的高度；竖向多出的高度只拉伸羊皮纸中段）
+const POPUP_PAD_L := 46.0     # stylebox 内容左边距：框内实测 x27~36=金边、37~48=毛边纸毛口，正文从 49 起才干净
+const POPUP_PAD_R := 46.0     # 右缘对称（x534~545 是右侧毛口）→ 内容净宽 = 576-92 = 484
+const POPUP_PAD_T := 62.0     # 顶梁下沿 = 0.771×66 ≈ 51，再让 11px 给匾底投影
+const POPUP_PAD_B := 90.0     # 停在底部风景画带（625 窗下画带从 y≈542 起）之上，正文不压画
+var _popup_skin_frame: Texture2D = null   # 窗框整图（576×463，九切片用）
+var _popup_skin_corner_r: Texture2D = null   # 右上灯笼整块原画（挂关闭钮子节点）
 
 func _init(p_c):
 	c = p_c
@@ -49,11 +54,148 @@ class PlaqueTitleLabel:
 		if horizontal_alignment != source.horizontal_alignment:
 			horizontal_alignment = source.horizontal_alignment
 
+# 【新增】第七章滚动批次（2026-11-04 用户拍板）：固定窗 + 内容超高改上下滚动、滚动条一律隐藏。
+# 为什么不用 PanelContainer 当窗根：实测 PanelContainer 的尺寸下限 = 窗框最小尺寸 + 内容最小尺寸
+# （C++ 的 get_minimum_size 不理会脚本覆写；把 size 压小也会被立刻打回 940×970），内容一长窗就跟着长，
+# 「固定尺寸」根本保不住。故窗根改成自定义 Container：自己画 StyleBox 窗框、自己算内容矩形
+# （取 stylebox 的 content_margin，与旧 PanelContainer 完全一致）、
+# body（= child 0，全仓 200 处 get_child(0) 契约不变）超高时按 scroll_y 上移；
+# 根节点 clip_contents 裁掉窗外部分，内容矩形外的上下带由 PopupBandMask 补画窗框盖住。
+class PopupScrollPanel:
+	extends Container
+
+	const STEP := 64.0   # 一格滚轮滚多少像素
+
+	var body: Control = null        # 内容体（= child 0）
+	var band_mask: Control = null   # 上下遮挡带（内容溢出时才显示）
+	var scroll_y: float = 0.0
+	var overflow: float = 0.0
+	var avail_w: float = 0.0
+	var avail_h: float = 0.0
+	var _dragging: bool = false
+	var _fit_tick: int = 0   # 横向自愈扫描节流计数
+
+	func _ready() -> void:
+		clip_contents = true   # 内容超出内容矩形时靠根裁剪（滚动条不出现，符合「滚动条一律隐藏」）
+		set_process(true)
+
+	func _notification(what: int) -> void:
+		if what == NOTIFICATION_DRAW:
+			var sb := get_theme_stylebox("panel")
+			if sb != null:
+				draw_style_box(sb, Rect2(Vector2.ZERO, size))
+		elif what == NOTIFICATION_SORT_CHILDREN:
+			_layout_children()
+
+	func _process(_dt: float) -> void:
+		# 内容多是 add_child 之后才塞进来（列表/网格/提示），Container 的排序通知不一定每次都到；
+		# 每帧对一遍账（尺寸相同即零写入，不会引发重排循环），autowrap 文字重排也能跟着修正高度
+		_layout_children()
+
+	func _layout_children() -> void:
+		var sb := get_theme_stylebox("panel")
+		if sb == null:
+			return
+		var pl := sb.get_content_margin(SIDE_LEFT)
+		var pt := sb.get_content_margin(SIDE_TOP)
+		var pr := sb.get_content_margin(SIDE_RIGHT)
+		var pb := sb.get_content_margin(SIDE_BOTTOM)
+		avail_w = maxf(8.0, size.x - pl - pr)
+		avail_h = maxf(8.0, size.y - pt - pb)
+		if body != null:
+			# 【新增】第七章滚动批次（2026-11-04）：固定窗宽 576（内容净宽 484）后，超宽的说明文字会被窗框硬裁。
+			# 这里在「横向溢出」时把该 Label 改成自动换行（只动真正超宽的那几个，标题/短文案零影响）——
+			# 换行后它的最小宽缩到一行字宽，纵向由滚动兜住，不再出现「字被切掉一半」。
+			# 每 6 帧扫一次即可（文案是事后填的，最多晚 0.1 秒换行），避免每帧 find_children 造成无谓开销
+			_fit_tick += 1
+			if _fit_tick % 6 == 1:
+				_fit_width(avail_w)
+			var need := body.get_combined_minimum_size()
+			var w := maxf(avail_w, need.x)
+			if not is_equal_approx(body.size.x, w):
+				body.size.x = w
+				need = body.get_combined_minimum_size()   # 宽变了要重算（autowrap 的文字会重排）
+			overflow = maxf(0.0, need.y - avail_h)
+			scroll_y = clampf(scroll_y, 0.0, overflow)
+			var h := maxf(avail_h, need.y)
+			if not is_equal_approx(body.size.y, h):
+				body.size.y = h
+			var want := Vector2(pl, pt - scroll_y)
+			if not body.position.is_equal_approx(want):
+				body.position = want
+		# 其余子节点（✕ 层 / 匾标题）铺满内容矩形——完全复刻 PanelContainer 的排布基准：
+		# 它们的坐标都是「内容矩形系」的写死偏移，基准一变全部歪掉
+		for ch in get_children():
+			var cc := ch as Control
+			if cc == null or cc == body or cc == band_mask:
+				continue
+			cc.position = Vector2(pl, pt)
+			cc.size = Vector2(avail_w, avail_h)
+		if band_mask != null:
+			band_mask.position = Vector2.ZERO
+			band_mask.size = size
+			band_mask.visible = overflow > 0.0
+
+	# 【新增】横向自愈：只对「最小宽超过内容净宽」且没开换行的 Label 动手（开了换行的本身不会再超宽）
+	func _fit_width(w: float) -> void:
+		for n in body.find_children("*", "Label", true, false):
+			var lb := n as Label
+			if lb == null or lb.autowrap_mode != TextServer.AUTOWRAP_OFF:
+				continue
+			if lb.get_combined_minimum_size().x > w:
+				lb.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+
+	func _scroll_by(dy: float) -> void:
+		if overflow <= 0.0:
+			return
+		scroll_y = clampf(scroll_y + dy, 0.0, overflow)
+		_layout_children()
+
+	func _gui_input(ev: InputEvent) -> void:
+		if ev is InputEventMouseButton:
+			var mb := ev as InputEventMouseButton
+			if mb.button_index == MOUSE_BUTTON_WHEEL_UP and mb.pressed:
+				_scroll_by(-STEP)
+				accept_event()
+			elif mb.button_index == MOUSE_BUTTON_WHEEL_DOWN and mb.pressed:
+				_scroll_by(STEP)
+				accept_event()
+			elif mb.button_index == MOUSE_BUTTON_LEFT:
+				_dragging = mb.pressed   # 左键按住空白处上下拖（点按钮时按钮自己吃输入，不会走到这里）
+		elif ev is InputEventMouseMotion and _dragging:
+			var mm := ev as InputEventMouseMotion
+			if mm.button_mask & MOUSE_BUTTON_MASK_LEFT:
+				_scroll_by(-mm.relative.y)
+		elif ev is InputEventScreenDrag:
+			_scroll_by(-(ev as InputEventScreenDrag).relative.y)   # 触摸拖动
+		elif ev is InputEventPanGesture:
+			_scroll_by((ev as InputEventPanGesture).delta.y * STEP)
+
+# 【新增】上/下遮挡带：根节点只裁到窗边，裁不到「内容矩形」以外——滚动时内容会画到顶梁/底座上。
+# 这里把窗框贴图的上 PAD_T 行、下 PAD_B 行按原图像素重画一遍盖住（这两带在九切片里 1:1 不缩放，
+# 所以与原图逐像素一致）；仅内容溢出时显示，常态完全不影响画面。
+class PopupBandMask:
+	extends Control
+
+	var tex: Texture2D = null
+	var pad_t: float = 0.0
+	var pad_b: float = 0.0
+
+	func _draw() -> void:
+		if tex == null:
+			return
+		var tw := float(tex.get_width())
+		var th := float(tex.get_height())
+		if pad_t > 0.0:
+			draw_texture_rect_region(tex, Rect2(0.0, 0.0, size.x, pad_t), Rect2(0.0, 0.0, tw, pad_t))
+		if pad_b > 0.0:
+			draw_texture_rect_region(tex, Rect2(0.0, size.y - pad_b, size.x, pad_b), Rect2(0.0, th - pad_b, tw, pad_b))
+
 # ============ 弹窗工厂三件套 + 通用关闭（原 controller 924~933 行区域） ============
 
 # 【新增】全屏遮罩：压暗背景并挡住弹窗期间切换页面/误触后台（z=25 低于弹窗 30、高于页面）；
 #  引用挂在 panel 的 meta 上，由 _safe_close 连带摘除，113 处调用零改动
-func _create_base_popup(title_text: String, popup_size: Vector2, _pos: Vector2 = Vector2.ZERO, with_close: bool = true, decorated: bool = true) -> PanelContainer:   # _pos 已废弃：一律居中（保留参数兼容旧调用）；with_close=false=确认弹窗不带右上✕（范式§十一.8）；decorated=false=素面弹窗（规则说明用：暗底、无匾无灯笼、不补【确定】，2026-10-17 弹窗皮肤批次用户拍板）
+func _create_base_popup(title_text: String, popup_size: Vector2, _pos: Vector2 = Vector2.ZERO, with_close: bool = true, decorated: bool = true) -> Control:   # _pos 已废弃：一律居中（保留参数兼容旧调用）；with_close=false=确认弹窗不带右上✕（范式§十一.8）；decorated=false=素面弹窗（暗底、无匾无灯笼、不补【确定】；2026-11-04 第七章统一后已无调用点，规则说明也改走装饰窗，保留仅为兼容）
 	var mask = ColorRect.new()
 	mask.set_anchors_preset(Control.PRESET_FULL_RECT)
 	mask.color = Color(0, 0, 0, 0.55)
@@ -64,14 +206,24 @@ func _create_base_popup(title_text: String, popup_size: Vector2, _pos: Vector2 =
 	mask.position = Vector2.ZERO
 	mask.size = c.get_viewport_rect().size
 
-	var panel = PanelContainer.new()
+	# 【改】第七章滚动批次（2026-11-04）：窗根用自定义 Container（自绘窗框 + 自己算内容矩形 + 内容超高上下滚），
+	#  PanelContainer 做不到固定高度（它的下限含内容最小尺寸，见 PopupScrollPanel 类注释）
+	var panel := PopupScrollPanel.new()
 	panel.set_meta("popup_mask", mask)
 	# 【新增】遮罩跟随弹窗生命周期：任何关闭路径（含直接 queue_free 绕过 _safe_close）都能摘掉遮罩
 	panel.tree_exiting.connect(_on_popup_tree_exiting.bind(mask))
 	# 【改】竖屏适配：弹窗尺寸钳制不超视口（四周留边）；写死的位置也钳制在屏幕内不出界
+	# 【改】弹窗统一批次（2026-11-03 第七章 7.4 落码）：装饰弹窗一律固定尺寸——不随调用方传值/内容变高矮；
+	#      decorated 分支忽略 popup_size（签名与 166 处传参保留，迁移零改动），素面规则弹窗仍按传入值钳制
 	var vs = c.get_viewport_rect().size
-	popup_size = Vector2(minf(popup_size.x, vs.x - 40), minf(popup_size.y, vs.y - 80))
+	if decorated:
+		# 宽就用窗框贴图原宽 576：九切片中段不被挤扁、匾额正好居中；只有比视口更小的屏幕才等比缩
+		popup_size = Vector2(minf(POPUP_W, vs.x - 8.0), minf(POPUP_H, vs.y - 24.0))
+	else:
+		popup_size = Vector2(minf(popup_size.x, vs.x - 40), minf(popup_size.y, vs.y - 80))
 	panel.custom_minimum_size = popup_size
+	panel.set_meta("popup_target", popup_size)   # 巡检用：_recenter_popup 里对比真实尺寸，超窗即报（见第七章自检）
+	panel.set_meta("popup_decorated", decorated)   # 供 _recenter_popup 补做「后建内容」的字色/横滚统一
 	# 【改】一律居中，忽略 pos 参数——旧 pos 全是横屏 1152×648 写死的坐标，
 	#       钳制只能保证不出界、弹窗会贴边歪斜（30+处调用的 pos 都已失效，参数保留不删省得改签名）
 	panel.position = (vs - popup_size) / 2
@@ -83,22 +235,22 @@ func _create_base_popup(title_text: String, popup_size: Vector2, _pos: Vector2 =
 		# 【新增】弹窗皮肤批次（2026-10-17 用户拍板）：国风羊皮纸框体替暗色底板——九切片
 		# （角帽=飞檐/石板座原大不拉伸，中间羊皮纸随弹窗尺寸伸缩）；面板默认字体色改深棕（米白纸底，金字不可读）
 		if _popup_skin_frame == null:
-			_popup_skin_frame = load("res://assets/common/popup_frame.png")
-			_popup_skin_plaque = load("res://assets/common/popup_plaque.png")
-			_popup_skin_corner_l = load("res://assets/common/popup_corner_l.png")
+			# 原作窗框：Basic3.Frame1 的 NinePatchRect 原件（747×600）预缩放到 576×463 入库。
+			# 九切片角块是 1:1 绘制不缩放的，若直接给未缩放原件设边距，会出现「角块比中段大 30%」的接缝
+			_popup_skin_frame = load("res://assets/common/popup_frame_uni.png")
 			_popup_skin_corner_r = load("res://assets/common/popup_corner_r.png")
-			_popup_skin_corner_bl = load("res://assets/common/popup_corner_bl.png")
-			_popup_skin_corner_br = load("res://assets/common/popup_corner_br.png")
 		var skin := StyleBoxTexture.new()
 		skin.texture = _popup_skin_frame
-		skin.texture_margin_left = 23
-		skin.texture_margin_right = 19
-		skin.texture_margin_top = 68
-		skin.texture_margin_bottom = 45
-		skin.content_margin_left = 40
-		skin.content_margin_right = 60   # 内容右让 60px：避开灯笼垂落区（panel x W-50~W-5）
-		skin.content_margin_top = 36   # 首行实内容=36+占位标题22+间距12=70，退出顶梁(68)
-		skin.content_margin_bottom = 40
+		# 九切片边距 = 原件 (左188/上130/右188/下195) × s（s=576/747=0.771）：左右切到金边内侧，
+		# 上下切到横梁/底座为止；中间那块是纯羊皮纸竖渐变，随弹窗高度拉伸肉眼不可辨
+		skin.texture_margin_left = 145
+		skin.texture_margin_right = 145
+		skin.texture_margin_top = 100
+		skin.texture_margin_bottom = 150
+		skin.content_margin_left = POPUP_PAD_L
+		skin.content_margin_right = POPUP_PAD_R
+		skin.content_margin_top = POPUP_PAD_T
+		skin.content_margin_bottom = POPUP_PAD_B
 		panel.add_theme_stylebox_override("panel", skin)
 		panel.add_theme_color_override("font_color", Color("#3a2613"))
 		# 【新增】弹窗按钮统一绿意（2026-10-17 用户拍板）：主题挂面板，后代 Button 全体生效（调用方显式覆写者除外）
@@ -145,7 +297,23 @@ func _create_base_popup(title_text: String, popup_size: Vector2, _pos: Vector2 =
 	if decorated:
 		vbox.z_index = 1   # 内容抬到装饰层之上：匾/飞檐/灯笼/底座贴片先画、内容后盖，杜绝"组件啃内容角"（z 只管绘制序；点击区在内容矩形右缘外不受影响）
 	vbox.add_theme_constant_override("separation", 12)
+	# 【新增】第七章滚动批次：滚轮/触摸拖动要冒泡到窗根才滚得动，容器默认 STOP 会吞掉（PASS 只让事件往上走，不影响点击）
+	vbox.mouse_filter = Control.MOUSE_FILTER_PASS
 	panel.add_child(vbox)
+	panel.body = vbox   # 窗根按 stylebox 内容矩形排版它（= child 0，全仓 200 处 get_child(0) 契约不变）
+	if decorated:
+		# 【新增】第七章滚动批次：滚动内容会画到顶梁/底座上（根只裁到窗边），这层补画窗框上下带盖住；
+		# z=2 压住内容(z=1)，✕/匾(z=3)仍在其上；仅内容溢出时可见
+		var band := PopupBandMask.new()
+		band.name = "PopupBandMask"
+		band.tex = _popup_skin_frame
+		band.pad_t = POPUP_PAD_T
+		band.pad_b = POPUP_PAD_B
+		band.mouse_filter = Control.MOUSE_FILTER_IGNORE
+		band.z_index = 2
+		band.visible = false
+		panel.add_child(band)
+		panel.band_mask = band
 
 	# 【改】UI统一批次①补充：标题回到内容流第一个子节点（随内容整体居中，同旧行为）；
 	#       with_close=true 时空标题也建命名 Label——原地重建类弹窗（厢房/庄园/钓点）按名 PopupTitle 改标题、
@@ -169,6 +337,7 @@ func _create_base_popup(title_text: String, popup_size: Vector2, _pos: Vector2 =
 		#       ✕ 锚定右上角，随面板尺寸/二次居中自动贴角，z 随面板被调用方提升
 		var x_layer = Control.new()
 		x_layer.mouse_filter = Control.MOUSE_FILTER_IGNORE
+		x_layer.z_index = 3   # 【新增】第七章滚动批次：压在上下遮挡带(z=2)之上，滚动时✕/灯笼始终可见
 		panel.add_child(x_layer)
 		var close_x = Button.new()
 		close_x.name = "PopupCloseX"
@@ -182,9 +351,11 @@ func _create_base_popup(title_text: String, popup_size: Vector2, _pos: Vector2 =
 			# 【新增】皮肤批次：右上角灯笼=关闭钮（红 X 已画在灯笼图里），透明 hit 区盖灯罩、无字；
 			# 灯笼挂按钮子节点而非兄弟——厢房命格对比按名摘 PopupCloseX 时灯笼随之销毁，杜绝"看的不能点"死饵
 			close_x.text = ""
-			# 内容矩形系（panel = 内容 + (29,22)）：hit 区 = 灯罩位 panel (W-50,32) 起 45×81
-			close_x.position = Vector2(10, -4)   # 右缘锚随内容右边距56左移28，+6 补偿 → panel(W-50,32) 扣灯罩   # 内容矩形右缘锚=panel(W-28,22)，→ panel(W-50,32) 正扣灯罩
-			close_x.size = Vector2(45, 81)
+			# 【改】弹窗统一批次：窗框自带右上绿植，灯笼改挂梁下右缘内侧（原作 Basic3.Frame1 同位）。
+			# 坐标基准=内容矩形（panel = 内容 + (30,62)）：内容右缘 = panel(W-30) → pos_x -50 = panel(W-80)；
+			# hit 区只盖灯罩 42×100，不整块铺开，避免挡住内容区右上角的可点控件
+			close_x.position = Vector2(-50, 8)
+			close_x.size = Vector2(42, 100)
 			var corner_r = TextureRect.new()
 			corner_r.name = "PopupCornerR"
 			corner_r.texture = _popup_skin_corner_r
@@ -192,9 +363,9 @@ func _create_base_popup(title_text: String, popup_size: Vector2, _pos: Vector2 =
 			corner_r.mouse_filter = Control.MOUSE_FILTER_IGNORE
 			# 【改】原作灯笼是暖琥珀色，我们的贴图偏奶白 → 乘一层暖色把它压成原作那口气
 			corner_r.self_modulate = Color(1.0, 0.93, 0.78)
-			# 右上角整块原画（飞檐+绳+叶+灯+穗，零抠图）：panel (W-81,-35) 起 88×211，
+			# 整块原画（绳+叶+灯+穗，零抠图）：从 hit 区 (-22,-52) 铺开 87×232 → panel(W-102,18) 起，右缘留 15px 在框内；
 			# 挂按钮子节点——厢房命格对比按名摘 PopupCloseX 时整块随之销毁，杜绝死饵
-			corner_r.position = Vector2(8, -96)
+			corner_r.position = Vector2(-22, -52)
 			corner_r.size = Vector2(87, 232)
 			close_x.add_child(corner_r)
 		else:
@@ -209,65 +380,30 @@ func _create_base_popup(title_text: String, popup_size: Vector2, _pos: Vector2 =
 		x_layer.add_child(close_x)
 		overlay = x_layer
 	if decorated:
-		# 【新增】金匾贴片：挂 overlay 而非面板——PanelContainer 是容器会把子控件强制重排
-		# （v1 匾被拉伸到 parchment 正中藏在登录钮后面）；x_layer / with_close=false 时的独立 overlay
-		# 都是普通 Control 不吃排布，匾锚 CENTER_TOP 才稳定；后绘制压内容流之上，标题=匾上镜像标签
+		# 【改】弹窗统一批次（2026-11-03 第七章）：金匾/左上飞檐/左下右下底座已烘焙进窗框整图，
+		# 这里不再建贴片，只留「匾上可视标题」——overlay 是普通 Control（PanelContainer 把它拉到内容矩形），
+		# 不吃内容流排布，坐标基准=内容矩形，负偏移即落到框梁上
 		if overlay == null:
 			overlay = Control.new()
 			overlay.mouse_filter = Control.MOUSE_FILTER_IGNORE
+			overlay.z_index = 3   # 【新增】第七章滚动批次：同 x_layer，压在遮挡带之上
 			panel.add_child(overlay)
-		var plaque = TextureRect.new()
-		plaque.name = "PopupPlaque"
-		plaque.texture = _popup_skin_plaque
-		plaque.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_CENTERED
-		plaque.mouse_filter = Control.MOUSE_FILTER_IGNORE
-		plaque.set_anchors_preset(Control.PRESET_CENTER_TOP)
-		# 坐标基准=内容矩形（panel = 内容 + (29,22)）；CENTER_TOP 锚 panel x = W/2 + pos_x：
-		# pos_y -36 → panel y -14~26：露框顶 14px、骑梁 26px（原画"匾挂框沿"比例）；内容首行 56 起，零遮挡
-		plaque.position = Vector2(-100, -50)   # 边距40/36后重推：内容矩形系→panel x=W/2-110、y=-14~26   # 内容矩形中点=W/2-13.5（右边距56），-96.5 → 面板正中
-		plaque.size = Vector2(220, 40)
-		overlay.add_child(plaque)
-		var corner_l = TextureRect.new()
-		corner_l.name = "PopupCornerL"
-		corner_l.texture = _popup_skin_corner_l
-		corner_l.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_CENTERED
-		corner_l.mouse_filter = Control.MOUSE_FILTER_IGNORE
-		corner_l.set_anchors_preset(Control.PRESET_TOP_LEFT)
-		# 左上飞檐端+竹叶整块原画（零抠图）：panel (-29,-22) 起 103×83——飞檐探出框左/上，
-		# 复原原画"横梁两端探出框体、架在页面上"；底收到 83px 避让首行内容
-		corner_l.position = Vector2(-69, -58)   # 重推：→ panel (-29,-22)
-		corner_l.size = Vector2(103, 83)
-		overlay.add_child(corner_l)
-		var corner_bl = TextureRect.new()
-		corner_bl.name = "PopupCornerBL"
-		corner_bl.texture = _popup_skin_corner_bl
-		corner_bl.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_CENTERED
-		corner_bl.mouse_filter = Control.MOUSE_FILTER_IGNORE
-		corner_bl.set_anchors_preset(Control.PRESET_BOTTOM_LEFT)
-		# 左下石板座端+竹叶整块原画：panel (-22,H-88) 起 112×88——补全柱间裁剪被切的底座左脚（探出框左）
-		corner_bl.position = Vector2(-62, -48)   # 重推：底锚=panel y H-40：→ panel(-22,H-88)   # 底边锚=panel y H-38：→ patch panel (-22,H-88)，底座与面板底齐平
-		corner_bl.size = Vector2(112, 88)
-		overlay.add_child(corner_bl)
-		var corner_br = TextureRect.new()
-		corner_br.name = "PopupCornerBR"
-		corner_br.texture = _popup_skin_corner_br
-		corner_br.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_CENTERED
-		corner_br.mouse_filter = Control.MOUSE_FILTER_IGNORE
-		corner_br.set_anchors_preset(Control.PRESET_BOTTOM_RIGHT)
-		# 右下石板座端+竹叶整块原画：panel (W-86,H-88) 起 112×88——底座右脚探出框右（原画底座比柱宽）
-		corner_br.position = Vector2(-26, -48)   # 重推：→ panel(W-86,H-88)   # 同右锚补偿 → panel(W-86,H-88)，柱条与框体重合   # → panel (W-86,H-88)，与框体柱条完全重合无缝   # 同上：→ patch panel (W-86,H-88)
-		corner_br.size = Vector2(112, 88)
-		overlay.add_child(corner_br)
 		var plaque_title := PlaqueTitleLabel.new()
 		plaque_title.name = "PlaqueTitleVisible"
 		plaque_title.source = title
 		plaque_title.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 		plaque_title.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
-		plaque_title.add_theme_font_size_override("font_size", 22)
-		plaque_title.add_theme_color_override("font_color", Color("#3a2613"))
+		# 匾面是暗金底 (~120,104,71)，旧 22 号深棕字在上面读不出 → 浅描金字 + 1px 深投影（原作匾字就是亮色）
+		plaque_title.add_theme_font_size_override("font_size", 17)
+		plaque_title.add_theme_color_override("font_color", Color("#f6e6bb"))
+		plaque_title.add_theme_color_override("font_shadow_color", Color(0.24, 0.17, 0.08, 0.75))
+		plaque_title.add_theme_constant_override("shadow_offset_x", 0)
+		plaque_title.add_theme_constant_override("shadow_offset_y", 1)
 		plaque_title.mouse_filter = Control.MOUSE_FILTER_IGNORE
-		plaque_title.set_anchors_preset(Control.PRESET_FULL_RECT)
-		plaque.add_child(plaque_title)
+		# 匾面实测 = popup x 191~375 / y 6~37；取 184×30 居中到 panel x 288 → 内容矩形系 (-30,-62)
+		plaque_title.position = Vector2(166, -55)
+		plaque_title.size = Vector2(184, 30)
+		overlay.add_child(plaque_title)
 	if with_close or not decorated:
 		# 【新增】遮罩点击关闭（2026-09-25 用户拍板；确认弹窗不启用——必须点【取消/确定】明确选择；
 		#       2026-10-17 皮肤批次：素面弹窗无✕，点任意处关闭也走这里）
@@ -294,7 +430,29 @@ func _recenter_popup(panel: Control):
 	await c.get_tree().process_frame
 	if not is_instance_valid(panel): return
 	var vs = c.get_viewport_rect().size
-	panel.position = ((vs - panel.size) / 2).max(Vector2(8, 8))  # 钳个最小边距，超大内容也不至于顶出左上
+	# 【改】第七章滚动批次（2026-11-04 用户拍板）：窗根是自定义 Container，尺寸被钉死在固定值上
+	#   （内容超高改上下滚动，见 PopupScrollPanel），不会再被内容撑大 → 这里只做居中，不再等比缩放整窗
+	panel.position = ((vs - panel.size) / 2).max(Vector2(8, 8))  # 钳个最小边距，小屏上也不至于顶出左上
+	# 【新增】第七章（2026-11-04）：ready 时扫描只覆盖「创建前就建好的」内容——绝大多数弹窗是
+	#   add_child 之后才往里塞控件（列表/网格/提示），ready 那趟全漏掉，深底时代的近白字在羊皮纸上发虚。
+	#   这里等两帧布局完成后再统一扫一遍（同一套判定：亮且低饱和→深棕），后建内容也一并救回。
+	if panel.get_meta("popup_decorated", false):
+		_disable_h_scroll(panel)
+		_adapt_popup_contrast(panel)
+		_make_scroll_friendly(panel)   # 【新增】第七章滚动批次：非交互容器改 PASS，滚轮才冒泡到窗根
+	# 【新增】第七章自检（仅 debug 构建）：内容超出固定窗时打一行日志（已自动改为上下滚动）；
+	#   横向超出是「会被窗框裁掉」的硬伤，单独报出来指出该收窄哪个调用方
+	if OS.is_debug_build() and panel is PopupScrollPanel:
+		var psp := panel as PopupScrollPanel
+		var tname := ""
+		if psp.body != null and psp.body.get_child_count() > 0 and psp.body.get_child(0) is Label:
+			tname = (psp.body.get_child(0) as Label).text
+		if psp.overflow > 0.0:
+			print("[popup] 内容超高→上下滚动 title=%s 内容区=%dx%d 溢出=%.0f" % [tname, int(psp.avail_w), int(psp.avail_h), psp.overflow])
+		if psp.body != null:
+			var need_w := psp.body.get_combined_minimum_size().x
+			if need_w > psp.avail_w + 1.0:
+				print("[popup] 内容超宽（会被窗框裁掉，需收窄调用方）title=%s 内容宽=%d 上限=%d" % [tname, int(need_w), int(psp.avail_w)])
 
 # 【新增】纯信息弹窗自动补底部【确定】（2026-09-25 用户拍板）：等两帧内容建完后扫描内容区，
 # 一个动作钮都没有（纯展示）才在底部补【确定】（=queue_free，与✕/遮罩点击同路径）；
@@ -302,8 +460,10 @@ func _recenter_popup(panel: Control):
 # 【新增】弹窗皮肤批次（2026-10-17 用户拍板）：弹窗子树内浅色显式字色统一改深棕——
 # 深底色时代留的灰/薰衣草字在羊皮纸上发虚；按解析后实际字色判定（亮度高且低饱和才改），金/红/绿等彩色字不动。
 # 只走弹窗子树：同一份卡片构建器在全屏页（深底）里的实例不受影响。限制：原地重建类弹窗重建后的新标签不覆盖（撞见再静态修）。
-func _adapt_popup_contrast(panel: PanelContainer):
+func _adapt_popup_contrast(panel: Control):
 	for lbl in panel.find_children("*", "Label", true, false):
+		if lbl.name == "PlaqueTitleVisible":
+			continue   # 匾上标题本就该亮（暗金底亮字），别被下面的「浅色改深棕」规则吃掉
 		var col = lbl.get_theme_color("font_color")
 		var mx = maxf(col.r, maxf(col.g, col.b))
 		var mn = minf(col.r, minf(col.g, col.b))
@@ -311,11 +471,34 @@ func _adapt_popup_contrast(panel: PanelContainer):
 			lbl.add_theme_color_override("font_color", Color("#5a3d26"))
 
 # 【新增】弹窗皮肤批次（2026-10-17 用户拍板）：装饰版弹窗内全部 ScrollContainer 禁横滚（防内容超宽出横滚条；动态后建的列表需调用方自行禁）
-func _disable_h_scroll(panel: PanelContainer):
+# 【改】第七章滚动批次（2026-11-04 用户拍板「滚动条一律隐藏」）：竖滚条也改 SHOW_NEVER——
+#   滚动照常可用，只是不画条也不占位（与 popup_scroll 既有范式一致）
+func _disable_h_scroll(panel: Control):
 	for sc in panel.find_children("*", "ScrollContainer", true, false):
 		sc.horizontal_scroll_mode = ScrollContainer.SCROLL_MODE_DISABLED
+		sc.vertical_scroll_mode = ScrollContainer.SCROLL_MODE_SHOW_NEVER
 
-func _auto_add_ok_button(panel: PanelContainer):
+# 【新增】第七章滚动批次（2026-11-04）：滚轮/拖动要能冒泡到窗根（PopupScrollPanel._gui_input 收滚轮/触摸拖动），
+# 但 PanelContainer 等普通容器默认 STOP 会把事件吃掉。这里把弹窗子树里的「非交互容器」统一改 PASS：
+#   · Button/ScrollContainer/输入框/滑块/列表/树 —— 一律不动（它们自己要吃输入）；
+#   · 纯装饰的 Label/TextureRect → IGNORE（直接穿透，连 hover 都不吃）；
+#   · 其余容器 STOP → PASS（只让事件继续往上走，点击命中与层级完全不变）。
+# 有 gui_input 连接的节点视为「交互件」保持原样，避免把可点的图/字改成穿透。
+func _make_scroll_friendly(panel: Control):
+	for node in panel.find_children("*", "Control", true, false):
+		if node is BaseButton or node is ScrollContainer or node is LineEdit or node is TextEdit:
+			continue
+		if node is Range or node is TabBar or node is ItemList or node is Tree:
+			continue
+		var cc := node as Control
+		var interactive := not cc.gui_input.get_connections().is_empty()
+		if node is Label or node is TextureRect:
+			if not interactive:
+				cc.mouse_filter = Control.MOUSE_FILTER_IGNORE
+		elif cc.mouse_filter == Control.MOUSE_FILTER_STOP and not interactive:
+			cc.mouse_filter = Control.MOUSE_FILTER_PASS
+
+func _auto_add_ok_button(panel: Control):
 	await c.get_tree().process_frame
 	await c.get_tree().process_frame
 	if not is_instance_valid(panel): return
@@ -830,8 +1013,9 @@ func _format_gains(gains: Dictionary) -> String:
 
 # 【新增】规则说明弹窗（"?"按钮）：带遮罩、点外部关闭、不自动关——区别于成功/警告弹窗（可自动关），2026-10-02 用户拍板规则长文必须弹窗。
 func _show_rule_popup(title: String, text: String):
-	# 【改】弹窗皮肤批次：规则说明弹窗走素面（2026-10-17 用户拍板——频率低不装饰；无✕无确定钮，点任意处即关）
-	var popup: PanelContainer = _create_base_popup(title, Vector2(480, 320), Vector2.ZERO, false, false)
+	# 【改】弹窗统一批次（第七章 7.1）：规则说明也走同款固定窗框 + 匾额标题 + ✕ + 自动【确定】
+	#   （2026-10-17 曾判「频率低走素面」，与「所有弹窗同一尺寸」冲突，按 7.1 覆盖）
+	var popup: Control = _create_base_popup(title, Vector2(480, 320), Vector2.ZERO, true, true)
 	popup.name = "RuleHelpPopup"
 	popup.z_index = 40   # 盖过页面(z35)，同科室/病症弹窗惯例
 	c.add_child(popup)   # 弹窗工厂只创建不挂载，必须调用方 add_child

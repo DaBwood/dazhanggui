@@ -562,7 +562,7 @@ func _on_add_jiaohao():
 	_close_node("TavernPopup")
 	_popup_kind = ""   # 道具面板不属于信息/设施弹窗，刷新时不重建
 	var give: int = int(data._tavern_configs.get("settings", {}).get("jiaohao_give", 2))
-	var popup: PanelContainer = c._create_base_popup("使用佳酿", Vector2(400, 240), Vector2.ZERO, false)   # 【改】UI统一批次①：确认弹窗不带右上✕
+	var popup: Control = c._create_base_popup("使用佳酿", Vector2(400, 240), Vector2.ZERO, false)   # 【改】UI统一批次①：确认弹窗不带右上✕
 	popup.name = "TavernPopup"
 	popup.z_index = 40   # 盖过 TavernPage(z35)，同 inn/bank 弹窗惯例
 	c.add_child(popup)
@@ -655,7 +655,7 @@ func _on_call_all():
 # 【新增】批次②③④-B1修正：酒肆规则/后台计算说明弹窗（只放说明，不放玩法操作）
 func _show_rule_popup():
 	_close_node("TavernRulePopup")
-	var popup: PanelContainer = c._create_base_popup("酒肆说明", Vector2(380, 300))
+	var popup: Control = c._create_base_popup("酒肆说明", Vector2(380, 300))
 	popup.name = "TavernRulePopup"
 	popup.get_meta("popup_mask").z_index = 39
 	popup.z_index = 40
@@ -866,7 +866,7 @@ func _info_row(root: Control, y0: float, title_text: String, icon: Texture2D, ba
 
 func _show_rename_popup():
 	_close_node("TavernPopup")
-	var popup: PanelContainer = c._create_base_popup("修改招牌", Vector2(400, 200), Vector2.ZERO, false)   # 【改】UI统一批次①：确认弹窗不带右上✕
+	var popup: Control = c._create_base_popup("修改招牌", Vector2(400, 200), Vector2.ZERO, false)   # 【改】UI统一批次①：确认弹窗不带右上✕
 	popup.name = "TavernPopup"
 	popup.z_index = 40
 	c.add_child(popup)

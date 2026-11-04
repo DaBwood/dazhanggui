@@ -185,7 +185,7 @@ func _on_medal_btn():
 	_show_medal_popup()
 
 func _show_medal_popup():
-	var popup: PanelContainer = c._create_base_popup("勋章", Vector2(460, 420))
+	var popup: Control = c._create_base_popup("勋章", Vector2(460, 420))
 	popup.name = "CollectionMedalPopup"
 	popup.z_index = 40
 	c.add_child(popup)
@@ -193,7 +193,7 @@ func _show_medal_popup():
 
 # 勋章卡内容构建：保留基座内容盒，只换 MedalCardBox。原地重建、不 free 弹窗节点——
 # queue_free 同帧重建同名节点会被引擎自动改名，safe_close 按原名找不到（升级后关不掉的根因，2026-09-19 修）
-func _build_medal_card(popup: PanelContainer):
+func _build_medal_card(popup: Control):
 	var cs = data.collection_system
 	var pvb: VBoxContainer = popup.get_child(0) as VBoxContainer
 	if pvb == null:

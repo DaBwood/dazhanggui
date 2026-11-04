@@ -26,7 +26,7 @@ var _upresult: Dictionary = {}       # 升级效果弹窗数据（升级前后�
 var _auto_divining: bool = false
 var _was_auto_divining: bool = false   # 【改】退出厢房时自动卜卦的暂存开关（hide 暂停/show 恢复）     # 自动卜卦进行中（再按一次停止）
 var _auto_stats: Dictionary = {}     # 自动卜卦暂停时的计数（卦数/装上数）
-var _popup_panel: PanelContainer = null   # 当前弹窗基座（原地重建内容用）
+var _popup_panel: Control = null   # 当前弹窗基座（原地重建内容用）
 
 func _init(p_c):
 	super(p_c)
@@ -84,7 +84,7 @@ func _build(page: Panel):
 # 【新增】批次②③④-B3：厢房玩法说明弹窗（只从主标题旁"?"进入；长说明不进画面）
 func _show_rule_popup():
 	_close_node("XiangfangRulePopup")
-	var popup: PanelContainer = c._create_base_popup("厢房说明", Vector2(380, 320))
+	var popup: Control = c._create_base_popup("厢房说明", Vector2(380, 320))
 	popup.name = "XiangfangRulePopup"
 	popup.get_meta("popup_mask").z_index = 39
 	popup.z_index = 40

@@ -156,7 +156,7 @@ func _build(page: Panel):
 # 【新增】批次②③④-B2：酒坊玩法说明弹窗（只从主标题旁"?"进入；长说明不进画面）
 func _show_rule_popup():
 	_close_node("WineryRulePopup")
-	var popup: PanelContainer = c._create_base_popup("酒坊说明", Vector2(380, 300))
+	var popup: Control = c._create_base_popup("酒坊说明", Vector2(380, 300))
 	popup.name = "WineryRulePopup"
 	popup.get_meta("popup_mask").z_index = 39
 	popup.z_index = 40
@@ -202,7 +202,7 @@ func _show_workshop_popup(wid: String):
 	var wcfg: Dictionary = _sys().get_workshop_cfg(wid)
 	if wcfg.is_empty():
 		return
-	var popup: PanelContainer = c._create_base_popup(str(wcfg.get("name", wid)), Vector2(460, 520))
+	var popup: Control = c._create_base_popup(str(wcfg.get("name", wid)), Vector2(460, 520))
 	popup.name = "WineryPopup"
 	popup.z_index = 40   # 盖过 WineryPage(z35)，同 clinic/inn/drugshop 弹窗惯例
 	c.add_child(popup)   # 弹窗工厂只创建不挂载，必须调用方 add_child
@@ -283,7 +283,7 @@ func _show_brew_popup():
 	_popup_kind = "brew"
 	_popup_id = ""
 	_close_node("WineryPopup")
-	var popup: PanelContainer = c._create_base_popup("酿酒（1 材料 = 1 次）", Vector2(460, 520))
+	var popup: Control = c._create_base_popup("酿酒（1 材料 = 1 次）", Vector2(460, 520))
 	popup.name = "WineryPopup"
 	popup.z_index = 40
 	c.add_child(popup)
@@ -335,7 +335,7 @@ func _show_buy_popup():
 	_popup_kind = "buy"
 	_popup_id = ""
 	_close_node("WineryPopup")
-	var popup: PanelContainer = c._create_base_popup("采买", Vector2(460, 460))
+	var popup: Control = c._create_base_popup("采买", Vector2(460, 460))
 	popup.name = "WineryPopup"
 	popup.z_index = 40
 	c.add_child(popup)
@@ -417,28 +417,19 @@ func _on_buy(mid: String, n: int = 1):
 	c.update_all_ui()
 	_refresh()
 
-# 勋章固定样式（2026-09-19 用户拍板）：主页右上角【勋章】入口 -> 460×420「勋章」弹窗 -> #2a2640/#6a5f9e 勋章卡 -> 等级旁[?]规则 -> 当前效果 -> 下一级进度条 -> 升级按钮 -> 关闭。后续新玩法照此模板，不再另起样式。
+# 勋章固定样式（2026-09-19 用户拍板；第七章 2026-11-04 统一：暗紫勋章卡 → 纸面卡片组件 c.popup_card，与厢房/妙音坊一致）：主页右上角【勋章】入口 -> 「勋章」弹窗 -> 纸面勋章卡 -> 等级旁[i]规则 -> 当前效果 -> 下一级进度条 -> 升级按钮 -> 关闭。
+# 第七章：固定窗后尺寸由工厂决定（576×760），本处传入尺寸仅作历史留档。
 func _show_medal_popup():
 	_popup_kind = "medal"
 	_popup_id = ""
 	_close_node("WineryPopup")
-	var popup: PanelContainer = c._create_base_popup("勋章", Vector2(460, 420))
+	var popup: Control = c._create_base_popup("勋章", Vector2(460, 420))
 	popup.name = "WineryPopup"
 	popup.z_index = 40
 	c.add_child(popup)
 	var pvb: VBoxContainer = popup.get_child(0)
 	var lv: int = _sys().get_medal_lv()
-	var card := PanelContainer.new()
-	var style := StyleBoxFlat.new()
-	style.bg_color = Color("#2a2640")
-	style.border_color = Color("#6a5f9e")
-	style.set_border_width_all(2)
-	style.set_corner_radius_all(6)
-	card.add_theme_stylebox_override("panel", style)
-	pvb.add_child(card)
-	var vb := VBoxContainer.new()
-	vb.add_theme_constant_override("separation", 4)
-	card.add_child(vb)
+	var vb: VBoxContainer = c.popup_card(pvb)   # 【改】第七章弹窗统一：暗紫自造卡 → 纸面卡片组件
 	var medals_cfg: Array = _sys()._cfg().get("medals", [])
 	var medal_name: String = "酒坊勋章"
 	if lv >= 1 and lv <= medals_cfg.size():
@@ -451,7 +442,7 @@ func _show_medal_popup():
 	head.text = "勋章：%s（%d级）" % [medal_name, lv]
 	head.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	head.add_theme_font_size_override("font_size", 18)
-	head.add_theme_color_override("font_color", Color("#e6c07b"))
+	head.add_theme_color_override("font_color", UiHelpers.PAPER_TEXT)
 	head_row.add_child(head)
 	var help_btn := Button.new()
 	help_btn.text = "i"   # 【改】批次②③④-B2：面板内补充信息入口统一用"i"（"?"只留玩法主标题旁）
@@ -462,14 +453,14 @@ func _show_medal_popup():
 	var effect := Label.new()
 	effect.text = "全部商铺赚速 +%d%%　初始技能等级上限 +%d" % [int(round(_sys().get_medal_shop_pct() * 100.0)), _sys().get_refine_cap_bonus()]
 	effect.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
-	effect.add_theme_color_override("font_color", Color("#e6c07b"))
+	effect.add_theme_color_override("font_color", UiHelpers.PAPER_TEXT)
 	vb.add_child(effect)
 	var need: int = _sys().get_next_medal_need()
 	if need < 0:
 		var max_lbl := Label.new()
 		max_lbl.text = "已达满级"
 		max_lbl.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
-		max_lbl.add_theme_color_override("font_color", Color("#9a93b8"))
+		max_lbl.add_theme_color_override("font_color", UiHelpers.PAPER_TEXT_SUB)
 		vb.add_child(max_lbl)
 	else:
 		# 【改】批次②③④-B10：门槛进度统一（当前/需求）格式，保留达到/未达到红绿提示
@@ -484,7 +475,7 @@ func _show_medal_popup():
 		var next_effect := Label.new()
 		next_effect.text = "下级效果：全部商铺赚速 +%d%%　初始技能等级上限 +%d" % [int(round(float(lv + 1) * 100.0)), int(medals_cfg[lv].get("refine_cap", 0))]
 		next_effect.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
-		next_effect.add_theme_color_override("font_color", Color("#7ee787"))
+		next_effect.add_theme_color_override("font_color", UiHelpers.PAPER_OK)
 		vb.add_child(next_effect)
 		var btn := Button.new()
 		btn.text = "升级勋章"
@@ -517,7 +508,7 @@ func _show_wines_popup():
 	_popup_kind = "wines"
 	_popup_id = ""
 	_close_node("WineryPopup")
-	var popup: PanelContainer = c._create_base_popup("名酒记", Vector2(480, 560))
+	var popup: Control = c._create_base_popup("名酒记", Vector2(480, 560))
 	popup.name = "WineryPopup"
 	popup.z_index = 40
 	c.add_child(popup)
@@ -554,7 +545,7 @@ func _show_wine_info(wine_id: String):
 	var wc: Dictionary = _sys().get_wine_cfg(wine_id)
 	if wc.is_empty():
 		return
-	var popup: PanelContainer = c._create_base_popup(str(wc.get("name", wine_id)), Vector2(460, 460))
+	var popup: Control = c._create_base_popup(str(wc.get("name", wine_id)), Vector2(460, 460))
 	popup.name = "WineryPopup"
 	popup.z_index = 40
 	c.add_child(popup)
@@ -623,7 +614,7 @@ func _show_drink_popup():
 	_popup_kind = "drink"
 	_popup_id = ""
 	_close_node("WineryPopup")
-	var popup: PanelContainer = c._create_base_popup("品酒", Vector2(480, 560))
+	var popup: Control = c._create_base_popup("品酒", Vector2(480, 560))
 	popup.name = "WineryPopup"
 	popup.z_index = 40
 	c.add_child(popup)
@@ -737,7 +728,7 @@ func _show_hero_pick_popup():
 	_popup_kind = "hero_pick"
 	_popup_id = ""
 	_close_node("WineryPopup")
-	var popup: PanelContainer = c._create_base_popup("选择门客", Vector2(460, 520))
+	var popup: Control = c._create_base_popup("选择门客", Vector2(460, 520))
 	popup.name = "WineryPopup"
 	popup.z_index = 40
 	c.add_child(popup)
@@ -766,7 +757,7 @@ func _show_story_popup():
 	_popup_kind = "story"
 	_popup_id = ""
 	_close_node("WineryPopup")
-	var popup: PanelContainer = c._create_base_popup("酒客故事", Vector2(480, 560))
+	var popup: Control = c._create_base_popup("酒客故事", Vector2(480, 560))
 	popup.name = "WineryPopup"
 	popup.z_index = 40
 	c.add_child(popup)
@@ -836,7 +827,7 @@ func _show_bond_popup(hero_id: String):
 	if not data.heroes.has(hero_id):
 		return
 	var h: Dictionary = data.heroes[hero_id]
-	var popup: PanelContainer = c._create_base_popup("%s · 交情" % h.get("name", hero_id), Vector2(480, 560))
+	var popup: Control = c._create_base_popup("%s · 交情" % h.get("name", hero_id), Vector2(480, 560))
 	popup.name = "WineryPopup"
 	popup.z_index = 40
 	c.add_child(popup)

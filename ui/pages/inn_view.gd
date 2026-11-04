@@ -230,7 +230,7 @@ func _on_start_cook():
 # 【新增】批次②③④-B1修正：客栈玩法说明弹窗（只从主标题旁"?"进入）
 func _show_rule_popup():
 	_close_node("InnRulePopup")
-	var popup: PanelContainer = c._create_base_popup("客栈说明", Vector2(420, 320))   # 【改】皮肤批次：380→420，说明行长文本容宽余量
+	var popup: Control = c._create_base_popup("客栈说明", Vector2(420, 320))   # 【改】皮肤批次：380→420，说明行长文本容宽余量
 	popup.name = "InnRulePopup"
 	popup.get_meta("popup_mask").z_index = 39
 	popup.z_index = 40

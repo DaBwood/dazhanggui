@@ -592,7 +592,7 @@ func show_friend_costume_popup(friend_id: String):
 	popup.name = "FriendCostumePopup"
 	var vb = popup.get_child(0)
 	var scroll = ScrollContainer.new()
-	scroll.custom_minimum_size = Vector2(500, 380)
+	scroll.custom_minimum_size = Vector2(484, 380)   # 第七章：固定窗内容净宽 484
 	vb.add_child(scroll)
 	var list = VBoxContainer.new()
 	list.size_flags_horizontal = Control.SIZE_EXPAND_FILL

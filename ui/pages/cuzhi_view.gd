@@ -542,7 +542,7 @@ func _show_guarantee_selector():
 
 	var scroll = ScrollContainer.new()
 	scroll.size_flags_vertical = Control.SIZE_EXPAND_FILL
-	scroll.custom_minimum_size = Vector2(500, 0)
+	scroll.custom_minimum_size = Vector2(484, 0)   # 第七章：固定窗内容净宽 484（原 500 会把窗撑到 592）
 	scroll.horizontal_scroll_mode = ScrollContainer.SCROLL_MODE_DISABLED   # 弹窗禁横滚
 	scroll.vertical_scroll_mode = ScrollContainer.SCROLL_MODE_SHOW_NEVER   # 用户拍板：滚动条默认隐藏（竖滚保留）
 	vbox.add_child(scroll)
@@ -1549,7 +1549,7 @@ func show_wushuang_box_selector():
 
 	var scroll = ScrollContainer.new()
 	scroll.size_flags_vertical = Control.SIZE_EXPAND_FILL
-	scroll.custom_minimum_size = Vector2(500, 0)
+	scroll.custom_minimum_size = Vector2(484, 0)   # 第七章：固定窗内容净宽 484（原 500 会把窗撑到 592）
 	scroll.horizontal_scroll_mode = ScrollContainer.SCROLL_MODE_DISABLED   # 弹窗禁横滚
 	scroll.vertical_scroll_mode = ScrollContainer.SCROLL_MODE_SHOW_NEVER   # 用户拍板：滚动条默认隐藏（竖滚保留）
 	vbox.add_child(scroll)

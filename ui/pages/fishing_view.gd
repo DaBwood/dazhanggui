@@ -163,7 +163,7 @@ func _on_medal_btn():
 
 func _show_medal_popup():
 	var fs = data.fishing_system
-	var popup: PanelContainer = c._create_base_popup("勋章", Vector2(460, 420))
+	var popup: Control = c._create_base_popup("勋章", Vector2(460, 420))
 	popup.name = "FishingMedalPopup"
 	popup.z_index = 40
 	c.add_child(popup)

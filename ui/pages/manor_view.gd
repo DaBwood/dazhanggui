@@ -214,7 +214,7 @@ func _on_species_button(species_id: String):
 	c.add_child(panel)
 
 # 填充/刷新品种弹窗内容（升级后不关弹窗，只重建内部节点，方便连点）
-func _fill_species_popup(panel: PanelContainer):
+func _fill_species_popup(panel: Control):
 	var sid = String(panel.get_meta("species_id", ""))
 	var cfg = _get_species_cfg(sid)
 	if cfg.is_empty(): return

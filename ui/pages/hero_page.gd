@@ -2410,7 +2410,7 @@ func _show_attr_breakdown():
 	var vb = popup.get_child(0)
 	# 长列表自加滚动区（弹窗工厂只给标题+VBox）
 	var list: VBoxContainer = c.popup_scroll(vb)
-	list.custom_minimum_size = Vector2(520, 780)   # 列表固定显示高度（组件滚动区默认无下限高）
+	list.custom_minimum_size = Vector2(484, 0)   # 第七章：固定窗内容净宽 484；高度交给 ScrollContainer 自适应（原 520×780 会把窗撑大再整体缩 0.9）
 	list.add_theme_constant_override("separation", 6)   # 原列表行距覆写保留
 	# 资质段
 	_bd_section(list, "资质 %d" % int(bd.get("apt_total", 0)))
@@ -2436,7 +2436,7 @@ func _bd_section(parent: VBoxContainer, text: String):
 	parent.add_child(lbl)
 
 # 构成弹窗三列行格：rows=[[名, 值]…]；is_pct=true 时值按小数制百分比显示（0.02→+2.0%）
-# 单元格钉死 160 宽（ScrollContainer 不把宽度分给子控件，3×160+缝=504 不超滚动区 520）
+# 单元格钉死 153 宽（ScrollContainer 不把宽度分给子控件；第七章固定窗内容净宽 484 → 3×153+2×12=483 刚好塞满）
 func _bd_grid(parent: VBoxContainer, rows: Array, is_pct: bool):
 	var grid = GridContainer.new()
 	grid.columns = 3
@@ -2451,7 +2451,7 @@ func _bd_grid(parent: VBoxContainer, rows: Array, is_pct: bool):
 			cell.text = "%s +%s" % [str(r[0]), c.format_number(int(r[1]))]
 		cell.add_theme_font_size_override("font_size", 14)
 		cell.add_theme_color_override("font_color", Color("#e8e4f3"))
-		cell.custom_minimum_size = Vector2(160, 0)
+		cell.custom_minimum_size = Vector2(153, 0)
 		grid.add_child(cell)
 
 # ============ 【新增】门客搜索（物品盒子同款，2026-10-06） ============

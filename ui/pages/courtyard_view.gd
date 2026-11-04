@@ -52,7 +52,7 @@ func _on_technique_button(tech_id: String):
 	c.add_child(panel)
 
 # 填充/刷新技艺弹窗内容（升级后不关弹窗，只重建内部节点）
-func _fill_technique_popup(panel: PanelContainer):
+func _fill_technique_popup(panel: Control):
 	var tech_id = String(panel.get_meta("tech_id", ""))
 	var cfg = _get_technique_cfg(tech_id)
 	if cfg.is_empty(): return
