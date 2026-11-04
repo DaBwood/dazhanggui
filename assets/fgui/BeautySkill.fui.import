@@ -1,0 +1,16 @@
+[remap]
+
+importer="fairygui.package"
+importer_version=7
+type="Resource"
+uid="uid://wttgsenow6df"
+path="res://.godot/imported/BeautySkill.fui-44063ddf1e5a731086c19ecd314b15c2.res"
+
+[deps]
+
+source_file="res://assets/fgui/BeautySkill.fui"
+dest_files=["res://.godot/imported/BeautySkill.fui-44063ddf1e5a731086c19ecd314b15c2.res"]
+
+[params]
+
+codegen/enabled=true

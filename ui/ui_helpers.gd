@@ -24,6 +24,8 @@ var _popup_skin_frame: Texture2D = null   # 【新增】弹窗皮肤批次（202
 var _popup_skin_plaque: Texture2D = null
 var _popup_skin_corner_l: Texture2D = null
 var _popup_skin_corner_r: Texture2D = null
+var _popup_skin_fixed: Texture2D = null
+var _popup_uniform_scale: float = 1.0
 var _popup_skin_corner_bl: Texture2D = null
 var _popup_skin_corner_br: Texture2D = null
 
@@ -58,6 +60,9 @@ func _create_base_popup(title_text: String, popup_size: Vector2, _pos: Vector2 =
 	mask.z_index = 25
 	mask.mouse_filter = Control.MOUSE_FILTER_STOP
 	c.add_child(mask)
+	# 【修】anchors 预设在不吃布局的父节点上会退化成 0 尺寸，显式铺满视口
+	mask.position = Vector2.ZERO
+	mask.size = c.get_viewport_rect().size
 
 	var panel = PanelContainer.new()
 	panel.set_meta("popup_mask", mask)
@@ -178,7 +183,7 @@ func _create_base_popup(title_text: String, popup_size: Vector2, _pos: Vector2 =
 			# 灯笼挂按钮子节点而非兄弟——厢房命格对比按名摘 PopupCloseX 时灯笼随之销毁，杜绝"看的不能点"死饵
 			close_x.text = ""
 			# 内容矩形系（panel = 内容 + (29,22)）：hit 区 = 灯罩位 panel (W-50,32) 起 45×81
-			close_x.position = Vector2(10, -4)   # 重推：右缘锚随边距60→panel(W-50,32) 扣灯罩   # 右缘锚随内容右边距56左移28，+6 补偿 → panel(W-50,32) 扣灯罩   # 内容矩形右缘锚=panel(W-28,22)，→ panel(W-50,32) 正扣灯罩
+			close_x.position = Vector2(10, -4)   # 右缘锚随内容右边距56左移28，+6 补偿 → panel(W-50,32) 扣灯罩   # 内容矩形右缘锚=panel(W-28,22)，→ panel(W-50,32) 正扣灯罩
 			close_x.size = Vector2(45, 81)
 			var corner_r = TextureRect.new()
 			corner_r.name = "PopupCornerR"
@@ -189,8 +194,8 @@ func _create_base_popup(title_text: String, popup_size: Vector2, _pos: Vector2 =
 			corner_r.self_modulate = Color(1.0, 0.93, 0.78)
 			# 右上角整块原画（飞檐+绳+叶+灯+穗，零抠图）：panel (W-81,-35) 起 88×211，
 			# 挂按钮子节点——厢房命格对比按名摘 PopupCloseX 时整块随之销毁，杜绝死饵
-			corner_r.position = Vector2(-11, -68)   # 对齐面板右缘 src1316→panel W，灯笼骑框右边沿
-			corner_r.size = Vector2(88, 211)
+			corner_r.position = Vector2(8, -96)
+			corner_r.size = Vector2(87, 232)
 			close_x.add_child(corner_r)
 		else:
 			close_x.text = "×"   # 【改】✕(U+2715) 不在 Noto Sans SC 字形内，×(U+00D7 Latin-1) 才有——关闭钮的 X 不用赌源字体覆盖

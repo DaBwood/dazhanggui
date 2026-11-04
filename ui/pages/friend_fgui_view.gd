@@ -303,14 +303,14 @@ func _attr_fgui(pkg_name: String, item_name: String, side: int) -> Control:
 
 
 func _attr_icon(path: String, side: int) -> TextureRect:
-	var tr := TextureRect.new()
+	var tr_rect := TextureRect.new()
 	if ResourceLoader.exists(path):
-		tr.texture = load(path)
-	tr.custom_minimum_size = Vector2(side, side)
-	tr.expand_mode = TextureRect.EXPAND_IGNORE_SIZE
-	tr.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_CENTERED
-	tr.texture_filter = CanvasItem.TEXTURE_FILTER_LINEAR_WITH_MIPMAPS
-	return tr
+		tr_rect.texture = load(path)
+	tr_rect.custom_minimum_size = Vector2(side, side)
+	tr_rect.expand_mode = TextureRect.EXPAND_IGNORE_SIZE
+	tr_rect.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_CENTERED
+	tr_rect.texture_filter = CanvasItem.TEXTURE_FILTER_LINEAR_WITH_MIPMAPS
+	return tr_rect
 
 
 func _attr_num(v: int) -> Label:

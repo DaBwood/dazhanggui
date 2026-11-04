@@ -726,6 +726,7 @@ const CONFIG_SPECIAL_LOADERS := {
 	"hero_auras.json": "talent_system 构造内成组自加载（品质天赋+系列光环配置，批次①）",
 	"item_icon_map.json": "bag_fgui_view/bag_page 懒加载（工程 item_id → 原作 6 位图标 id 映射，2026-11-01 图标入库）",
 	"item_icons.json": "图标台账（原作道具表导出：icon id → 名字/品质，仅供查表与核对，UI 不直读）",
+	"friend_quality.json": "挚友品质台账（原作 BeautyDB 导出：friend_id → quality，friend_page 懒加载）",
 }
 
 # 【新增】全部系统实例（_init 由 SYSTEM_LIST 循环填充；save/load 共用此一份，杜绝双清单漂移）

@@ -848,11 +848,11 @@ func _open_friend_box_selector(item_id: String, title: String, rows: Array, need
 			icon_path = _item_icon_path(str(row.get("id", "")))
 		var tex := _scaled_icon(icon_path, 52)
 		if tex != null:
-			var tr := TextureRect.new()
-			tr.texture = tex
-			tr.custom_minimum_size = Vector2(52, 52)
-			tr.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_CENTERED
-			line.add_child(tr)
+			var tr_rect := TextureRect.new()
+			tr_rect.texture = tex
+			tr_rect.custom_minimum_size = Vector2(52, 52)
+			tr_rect.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_CENTERED
+			line.add_child(tr_rect)
 		var vb := VBoxContainer.new()
 		vb.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 		vb.add_theme_constant_override("separation", 0)

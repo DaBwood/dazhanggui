@@ -27,6 +27,7 @@ var _fanghua_sel: int = 0   # 【新增】芳华页签选中技能下标（类�
 
 var _friend_fgui = null
 var _friend_detail_fgui = null
+var _friend_looks = null
 
 func _init(p_c):
 	c = p_c
@@ -67,13 +68,13 @@ func _make_icon_button(text: String, tex: Texture2D) -> Button:
 	row.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	btn.add_child(row)
 	if tex != null:
-		var tr := TextureRect.new()
-		tr.texture = tex
-		tr.custom_minimum_size = Vector2(40, 40)
-		tr.expand_mode = TextureRect.EXPAND_IGNORE_SIZE
-		tr.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_CENTERED
-		tr.mouse_filter = Control.MOUSE_FILTER_IGNORE
-		row.add_child(tr)
+		var tr_rect := TextureRect.new()
+		tr_rect.texture = tex
+		tr_rect.custom_minimum_size = Vector2(40, 40)
+		tr_rect.expand_mode = TextureRect.EXPAND_IGNORE_SIZE
+		tr_rect.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_CENTERED
+		tr_rect.mouse_filter = Control.MOUSE_FILTER_IGNORE
+		row.add_child(tr_rect)
 	var lb := Label.new()
 	lb.name = "BtnText"
 	lb.text = text
@@ -448,6 +449,7 @@ func show_friend_detail(friend_id: String):
 	if _friend_detail_fgui != null and _friend_detail_fgui.ensure_built(page):
 		var fd = _friend_detail_fgui
 		fd.on_back = func() -> void: hide_friend_detail()
+		fd.on_tab = _on_detail_tab
 		var fcfg: Dictionary = data.friends.get(friend_id, {})
 		if fcfg.is_empty():
 			fcfg = data.get_friend_config(friend_id)
@@ -473,6 +475,47 @@ func show_friend_detail(friend_id: String):
 		_friend_detail_fgui.z_index = 20
 		_friend_detail_fgui.visible = true
 
+func _on_detail_tab(key: String) -> void:
+	if key == "looks":
+		_show_friend_looks()
+		return
+	c._show_success_popup("该功能后续版本开放", 0.0, "warn")
+
+
+func _show_friend_looks() -> void:
+	if not c.has_node("PageContainer/FriendPage"):
+		return
+	var page = c.get_node("PageContainer/FriendPage")
+	if _friend_looks == null:
+		var script_res = load("res://ui/pages/friend_looks_fgui_view.gd")
+		if script_res == null:
+			return
+		_friend_looks = script_res.new(c)
+	if _friend_looks == null:
+		return
+	if not _friend_looks.ensure_built(page):
+		c._show_success_popup("仪容技能页加载失败", 0.0, "warn")
+		return
+	# 仪容技能是「弹窗」：详情页留在下面当背景，只把本页叠上去
+	_friend_looks.on_back = func() -> void: _hide_friend_looks()
+	var fcfg: Dictionary = data.get_friend_config(current_friend_id)
+	_friend_looks.set_friend({
+		"id": current_friend_id,
+		"name": str(fcfg.get("name", "")),
+		"quality": _friend_quality(current_friend_id),
+	})
+	_friend_looks.size = page.size
+	_friend_looks.z_index = 40
+	_friend_looks.show_page()
+
+
+func _hide_friend_looks() -> void:
+	if _friend_looks != null:
+		_friend_looks.hide_page()
+	if _friend_detail_fgui != null:
+		_friend_detail_fgui.visible = true
+
+
 func hide_friend_detail():
 	current_friend_id = ""
 	if not c.has_node("PageContainer/FriendPage"): return
@@ -482,6 +525,7 @@ func hide_friend_detail():
 	page.get_node("FriendDetail").visible = false
 	if _friend_detail_fgui != null:
 		_friend_detail_fgui.visible = false
+		_friend_detail_fgui.z_index = 20
 	# 【新增】返回列表时隐藏立绘背景
 	page.get_node("PortraitBg").visible = false
 	# 【修】返回列表后刷新挚友列表（谈心/赠礼/升级等操作后数据已变，列表需重绘）

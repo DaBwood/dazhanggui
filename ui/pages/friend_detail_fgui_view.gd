@@ -32,8 +32,7 @@ var on_send: Callable = Callable()          # on_send(item_id: String, batch: bo
 var _batch: bool = false
 var _gift_row: HBoxContainer = null
 var _gift_scroll: ScrollContainer = null
-var _quality_tag: PanelContainer = null
-var _name_banner: PanelContainer = null
+var _name_banner: Control = null
 var _gift_buttons: Dictionary = {}
 var _gift_names: Dictionary = {}
 
@@ -47,6 +46,66 @@ static func ensure_packages() -> bool:
 	return true
 
 
+
+# 给任意 FGUI 对象装点击：本身是按钮就直接接，是 component 就往里递归找按钮。
+## 顶层的点击分发：不依赖 Control 命中（FGUI 里 GGroup/装饰件会吃掉事件），
+## 直接把点击位置换算到设计坐标，命中六个功能钮的矩形就触发。
+var _tab_rects: Dictionary = {}
+
+
+func _input(event: InputEvent) -> void:
+	if not visible or _info == null:
+		return
+	var mb := event as InputEventMouseButton
+	if mb == null or mb.button_index != MOUSE_BUTTON_LEFT or not mb.pressed:
+		return
+	# 事件坐标是「窗口像素」，按钮矩形是「设计坐标」，中间隔着拉伸变换：
+	# 先反算回画布坐标，再进 _root 的空间。
+	var vp := get_viewport()
+	var canvas_pos: Vector2 = mb.position
+	if vp != null:
+		# 事件给的是窗口像素，视口可能被 stretch 缩放过：用 视口尺寸/窗口尺寸 换算回来
+		var win_size: Vector2 = Vector2(get_window().size)
+		var vp_size: Vector2 = vp.get_visible_rect().size
+		if win_size.x > 0.0 and win_size.y > 0.0:
+			canvas_pos = mb.position * (win_size / vp_size)
+	if _root == null:
+		return
+	for key2 in _tab_rects.keys():
+		var r2: Rect2 = (_root.get_global_transform_with_canvas() * _tab_rects[key2]).grow(18.0)
+		if r2.has_point(canvas_pos):
+			if on_tab.is_valid():
+				on_tab.call(key2)
+			get_viewport().set_input_as_handled()
+			return
+
+
+func _bind_click(obj: FGUIObject, handler: Callable) -> bool:
+	if obj == null:
+		return false
+	var bound := false
+	var btn := obj as FGUIButton
+	if btn != null:
+		btn.on_click(handler)
+		bound = true
+	# 只有当这层带子件（FGUIComponent）时才往下递归：FGUIImage/Text 之类的
+	# RefCounted 没有 num_children，硬访问会直接抛错。
+	var comp := obj as FGUIComponent
+	if comp != null:
+		for i in range(comp.num_children):
+			var ch: FGUIObject = comp.get_child_at(i)
+			if ch != null and _bind_click(ch, handler):
+				bound = true
+	var control := obj.node as Control
+	if control != null and not control.has_meta("click_bound"):
+		control.set_meta("click_bound", true)
+		control.mouse_filter = Control.MOUSE_FILTER_PASS
+		control.gui_input.connect(func(ev: InputEvent) -> void:
+			if ev is InputEventMouseButton and (ev as InputEventMouseButton).button_index == MOUSE_BUTTON_LEFT and (ev as InputEventMouseButton).pressed:
+				handler.call()
+		)
+		bound = true
+	return bound
 func _init(p_c: Node) -> void:
 	_c = p_c
 	name = "FriendDetailFgui"
@@ -127,17 +186,27 @@ func ensure_built(parent: Node) -> bool:
 					on_back.call()
 			)
 
-	# 左侧四个功能钮
-	var tab_map := {"btnSkill": "skill", "btnPromotion": "fame", "btnPatronize": "play", "btnSkin": "cos"}
+	# 左侧四钮 + 右侧两钮（原作里它们是 component 包着 button，必须递归找内部按钮）
+	var tab_map := {"btnSkill": "skill", "btnPromotion": "fame", "btnPatronize": "play", "btnSkin": "cos", "btnLooks": "looks", "btnPeerless": "peerless"}
 	for btn_name in tab_map.keys():
-		var b: FGUIButton = _info.get_child(btn_name) as FGUIButton
-		if b == null:
+		var obj: FGUIObject = _info.get_child(btn_name)
+		if obj == null:
+			print("[detail] missing button node: ", btn_name)
 			continue
 		var key := str(tab_map[btn_name])
-		b.on_click(func() -> void:
+		var ok := _bind_click(obj, func() -> void:
 			if on_tab.is_valid():
 				on_tab.call(key)
 		)
+		if not ok:
+			print("[detail] cannot bind click: ", btn_name)
+
+	# 原件的装饰件（图/名字/特效）默认会吃掉鼠标：FGUI 不设 mouse_filter，
+	# 常有大面积 image 盖在按钮上，导致所有按钮点不动。这里统一放行为 IGNORE。
+	for deco in ["bgIcon", "icon", "iconItem", "iconAnchorItem", "nameItem", "identityItem", "n46", "n101", "n102", "n105", "n72", "n108", "descItem", "glamourEffect", "intimacyEffect", "txtIntimacy", "txtGlamour", "bottomComGroup", "commGroup", "itemList", "btnPromote", "btnToggle", "btnToggle2", "ToggleRoot", "ToggleRoot2", "txt_mulUse", "txt_mulUse2"]:
+		var d: FGUIObject = _info.get_child(deco)
+		if d != null and d.node != null:
+			(d.node as Control).mouse_filter = Control.MOUSE_FILTER_IGNORE
 
 	_build_overlay()
 
@@ -194,6 +263,29 @@ func _build_overlay() -> void:
 	_root.add_child(layer)
 
 
+	# 六个功能钮：原件是 component 包 button，命中区不稳，这里在同样的设计坐标上
+	# 盖一层透明按钮，点哪儿都算数（壳子本身保持可见，只是不接事件）。
+	var hit_map := {"btnSkill": "skill", "btnPromotion": "fame", "btnPatronize": "play", "btnSkin": "cos", "btnLooks": "looks", "btnPeerless": "peerless"}
+	for hit_name in hit_map.keys():
+		var hit_obj: FGUIObject = _info.get_child(hit_name)
+		if hit_obj == null:
+			continue
+		var hk := str(hit_map[hit_name])
+		var hit_btn := Button.new()
+		hit_btn.name = "Hit_" + hit_name
+		hit_btn.focus_mode = Control.FOCUS_NONE
+		hit_btn.position = Vector2(hit_obj.x, hit_obj.y)
+		hit_btn.size = Vector2(maxf(hit_obj.width, 60.0), maxf(hit_obj.height, 60.0))
+		var hsb := StyleBoxEmpty.new()
+		for st in ["normal", "hover", "pressed", "focus"]:
+			hit_btn.add_theme_stylebox_override(st, hsb)
+		hit_btn.pressed.connect(func() -> void:
+			if on_tab.is_valid():
+				on_tab.call(hk)
+		)
+		layer.add_child(hit_btn)
+		_tab_rects[hk] = Rect2(hit_btn.position, hit_btn.size)
+
 	# 旅行册：原件按钮带白边（图集切边没去干净），用自绘按钮盖掉
 	var travel: FGUIObject = _info.get_child("btnTravelBook")
 	if travel != null:
@@ -238,15 +330,15 @@ func _build_overlay() -> void:
 		var tex_path := "res://assets/ui/btn/%s.png" % str(icon_art[btn_key])
 		if not ResourceLoader.exists(tex_path):
 			continue
-		var tr := TextureRect.new()
-		tr.name = "Art_" + str(icon_art[btn_key])
-		tr.texture = load(tex_path) as Texture2D
-		tr.expand_mode = TextureRect.EXPAND_IGNORE_SIZE
-		tr.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_CENTERED
-		tr.size = Vector2(120, 120)
-		tr.position = btn_obj.node.position + Vector2((btn_obj.width - 120.0) * 0.5, (btn_obj.height - 120.0) * 0.5)
-		tr.mouse_filter = Control.MOUSE_FILTER_IGNORE
-		layer.add_child(tr)
+		var tr_rect := TextureRect.new()
+		tr_rect.name = "Art_" + str(icon_art[btn_key])
+		tr_rect.texture = load(tex_path) as Texture2D
+		tr_rect.expand_mode = TextureRect.EXPAND_IGNORE_SIZE
+		tr_rect.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_CENTERED
+		tr_rect.size = Vector2(120, 120)
+		tr_rect.position = btn_obj.node.position + Vector2((btn_obj.width - 120.0) * 0.5, (btn_obj.height - 120.0) * 0.5)
+		tr_rect.mouse_filter = Control.MOUSE_FILTER_IGNORE
+		layer.add_child(tr_rect)
 
 	_build_gift_row(layer)
 
@@ -278,10 +370,15 @@ func _mk_button(label: String, pos: Vector2, box: Vector2) -> Button:
 ## 礼物栏：原件 itemList 是空 FGUIList，这里按背包格子的样式补一排
 ## 横滑、只有「图标 + 品质描边 + 数量」，不显示名字
 func _build_gift_row(layer: Control) -> void:
+	# 原件 itemList 自带一排空槽底（虚线框），和我们的格子叠在一起会错位 → 藏掉
+	var raw_list: FGUIObject = _info.get_child("itemList")
+	if raw_list != null:
+		raw_list.visible = false
+
 	_gift_scroll = ScrollContainer.new()
 	_gift_scroll.name = "GiftScroll"
-	_gift_scroll.position = Vector2(40, 1150)
-	_gift_scroll.size = Vector2(436, 104)
+	_gift_scroll.position = Vector2(48, 1168)
+	_gift_scroll.size = Vector2(516, 100)   # 原件 itemList 就是 515 宽，5 格刚好排满
 	_gift_scroll.horizontal_scroll_mode = ScrollContainer.SCROLL_MODE_SHOW_NEVER
 	_gift_scroll.vertical_scroll_mode = ScrollContainer.SCROLL_MODE_DISABLED
 	layer.add_child(_gift_scroll)
@@ -291,9 +388,22 @@ func _build_gift_row(layer: Control) -> void:
 	_gift_row.add_theme_constant_override("separation", 8)
 	_gift_scroll.add_child(_gift_row)
 
-	# 赠送键（原件 btnSend）
+	# 赠送键（原件 btnSend）：原件是个绿色圆钮、不自带文字，这里补一个「赠送」
 	var send := _info.get_child("btnSend") as FGUIButton
 	if send != null:
+		var lbl := Label.new()
+		lbl.name = "SendText"
+		lbl.text = "赠送"
+		lbl.add_theme_font_size_override("font_size", 26)
+		lbl.add_theme_color_override("font_color", Color("#fdf6e3"))
+		lbl.add_theme_color_override("font_outline_color", Color("#2a3a24"))
+		lbl.add_theme_constant_override("outline_size", 5)
+		lbl.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+		lbl.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
+		lbl.size = Vector2(send.width, send.height)
+		lbl.position = Vector2(0, 0)
+		lbl.mouse_filter = Control.MOUSE_FILTER_IGNORE
+		send.node.add_child(lbl)
 		send.on_click(func() -> void:
 			var picked := ""
 			for gid in _gift_buttons.keys():
@@ -342,45 +452,31 @@ func set_gifts(rows: Array) -> void:
 		btn.text = ""
 		btn.disabled = count <= 0
 		btn.tooltip_text = str(row.get("name", gid))
+		for st in ["normal", "hover", "pressed", "focus", "disabled"]:
+			btn.add_theme_stylebox_override(st, StyleBoxEmpty.new())
 
-		# 图标铺满格子
-		var icon_path := str(row.get("icon", ""))
-		if icon_path != "" and ResourceLoader.exists(icon_path):
-			var tex := load(icon_path) as Texture2D
-			if tex != null:
-				var tr := TextureRect.new()
-				tr.texture = tex
-				tr.expand_mode = TextureRect.EXPAND_IGNORE_SIZE
-				tr.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_CENTERED
-				tr.position = Vector2(4, 4)
-				tr.size = Vector2(88, 88)
-				tr.mouse_filter = Control.MOUSE_FILTER_IGNORE
-				btn.add_child(tr)
+		# 背包同款格子：直接实例化 Items.BagItem1（bgItem 有品质控制器 c1，7 页=7 档品质底）
+		var cell := _make_bag_cell(gid, str(row.get("icon", "")), count, q)
+		if cell != null:
+			btn.add_child(cell.node)
 
-		# 数量（右下角）
-		var ct := Label.new()
-		ct.text = str(count)
-		ct.add_theme_font_size_override("font_size", 18)
-		ct.add_theme_color_override("font_color", Color("#fff1cf"))
-		ct.add_theme_color_override("font_outline_color", Color("#2a1a0c"))
-		ct.add_theme_constant_override("outline_size", 4)
-		ct.horizontal_alignment = HORIZONTAL_ALIGNMENT_RIGHT
-		ct.position = Vector2(0, 66)
-		ct.size = Vector2(88, 24)
-		ct.mouse_filter = Control.MOUSE_FILTER_IGNORE
-		btn.add_child(ct)
-
-		# 品质描边（背包格子同款配色）
-		var sb := StyleBoxFlat.new()
-		sb.bg_color = Color(0.16, 0.11, 0.07, 0.9)
-		sb.set_corner_radius_all(10)
-		sb.set_border_width_all(3)
-		sb.border_color = QUALITY_COLORS.get(q, Color("#6b5a44"))
-		btn.add_theme_stylebox_override("normal", sb)
-		var sb_on := sb.duplicate() as StyleBoxFlat
-		sb_on.border_color = Color(1, 0.9, 0.6)
-		btn.add_theme_stylebox_override("pressed", sb_on)
-		btn.add_theme_stylebox_override("hover", sb)
+		# 选中态：外圈金框
+		var sel := Panel.new()
+		sel.name = "SelFrame"
+		sel.size = Vector2(96, 96)
+		sel.visible = false
+		sel.mouse_filter = Control.MOUSE_FILTER_IGNORE
+		var ssel := StyleBoxFlat.new()
+		ssel.bg_color = Color(0, 0, 0, 0)
+		ssel.set_corner_radius_all(10)
+		ssel.border_color = Color(1.0, 0.86, 0.45)
+		ssel.set_border_width_all(4)
+		sel.add_theme_stylebox_override("panel", ssel)
+		sel.mouse_filter = Control.MOUSE_FILTER_IGNORE
+		btn.add_child(sel)
+		btn.toggled.connect(func(on_state: bool) -> void:
+			sel.visible = on_state
+		)
 		btn.pressed.connect(func() -> void:
 			for other in _gift_buttons.values():
 				var ob := other as Button
@@ -389,6 +485,44 @@ func set_gifts(rows: Array) -> void:
 		)
 		_gift_row.add_child(btn)
 		_gift_buttons[gid] = btn
+
+
+
+## 造一个背包同款格子（Items.BagItem1）：品质底 + 图标 + 数量，缩到 96 塞进礼物栏
+func _make_bag_cell(gid: String, icon_path: String, count: int, q: int) -> FGUIComponent:
+	var pkg := FGUIPackage.get_by_name("Items")
+	if pkg == null:
+		FGUIPackage.add_package("res://assets/fgui/Items.fui")
+		pkg = FGUIPackage.get_by_name("Items")
+	if pkg == null:
+		return null
+	var cell := pkg.create_object("BagItem1") as FGUIComponent
+	if cell == null:
+		return null
+	cell.node.scale = Vector2(0.8, 0.8)            # 120 设计尺寸 → 96
+	cell.node.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	# 品质底
+	var bg := cell.get_child("bgItem") as FGUIComponent
+	if bg != null:
+		var ctrl: FGUIController = bg.get_controller("c1")
+		if ctrl != null:
+			ctrl.selected_index = clampi(q, 0, 6)
+	# 图标
+	var loader := cell.get_child("icon") as FGUILoader
+	if loader != null:
+		loader.url = icon_path if icon_path != "" else ""
+	# 数量
+	var cnt := cell.get_child("txtCount") as FGUITextField
+	if cnt != null:
+		if cnt.font.begins_with("ui://"):
+			cnt.font = "res://assets/fonts/MNJYH.ttf"
+		cnt.text = str(count)
+	# 原件的动效/红点/限时标一律关掉
+	for nm in ["effectAni", "effectAni2", "imgRedPoint", "imgLimitedTime"]:
+		var o: FGUIObject = cell.get_child(nm)
+		if o != null:
+			o.visible = false
+	return cell
 
 
 ## 在 closeItem 里找一个短文本域当标题（与列表页同一套做法）
@@ -450,47 +584,82 @@ func _apply_name_item(name_item: FGUIObject, info: Dictionary) -> void:
 
 	if _name_banner != null and is_instance_valid(_name_banner):
 		_name_banner.queue_free()
-	var banner := PanelContainer.new()
+	# 竖签直接用门客页那套原作底图：档位词（传奇/无双…）是烘在图里的，我们只叠名字
+	var banner: Control = TextureRect.new()
 	banner.name = "NameBanner"
-	var color: Color = QUALITY_COLORS.get(q, Color("#7f8a93"))
-	var sb := StyleBoxFlat.new()
-	sb.bg_color = color
-	sb.set_corner_radius_all(8)
-	sb.set_border_width_all(3)
-	sb.border_color = Color(0.99, 0.93, 0.78, 0.95)
-	banner.add_theme_stylebox_override("panel", sb)
-	banner.position = name_item.node.position + Vector2(0, 0)
-	banner.custom_minimum_size = Vector2(name_item.width, name_item.height)
+	banner.position = name_item.node.position
 	banner.size = Vector2(name_item.width, name_item.height)
+	banner.custom_minimum_size = banner.size
+	banner.expand_mode = TextureRect.EXPAND_IGNORE_SIZE
+	banner.stretch_mode = TextureRect.STRETCH_SCALE
 	banner.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	# 门客那套竖签只有「优秀~神话」五张（字烘在图里），「普通」这一档没有 → 自绘一张同尺寸灰签补上
+	var art := "res://assets/heroes/banner_q%d.png" % clampi(q - 2, 0, 4)
+	if q > 1 and ResourceLoader.exists(art):
+		banner.texture = load(art) as Texture2D
+	else:
+		banner.queue_free()
+		banner = _make_plain_banner(q, info)
+
+	var nl := Label.new()
+	nl.text = "\n".join(str(info.get("name", "")).split())
+	nl.add_theme_font_size_override("font_size", 24)
+	nl.add_theme_color_override("font_color", Color(0.95, 0.91, 0.8))
+	nl.add_theme_color_override("font_outline_color", Color(0.1, 0.05, 0.04))
+	nl.add_theme_constant_override("outline_size", 5)
+	nl.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	nl.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
+	nl.anchor_right = 1.0
+	nl.anchor_bottom = 1.0
+	nl.offset_top = 96          # 让开顶端烘在图里的品质字（约占上方 1/3）
+	nl.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	banner.add_child(nl)
+
+	_root.add_child(banner)
+	_name_banner = banner
+
+
+
+## 「普通」档没有原作竖签，这里按同尺寸自绘一张（灰底 + 品质字 + 名字）
+func _make_plain_banner(q: int, info: Dictionary) -> Control:
+	var panel := PanelContainer.new()
+	panel.name = "NameBanner"
+	panel.position = Vector2(55, 185)
+	panel.size = Vector2(96, 274)
+	panel.custom_minimum_size = panel.size
+	panel.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	var sb := StyleBoxFlat.new()
+	sb.bg_color = QUALITY_COLORS.get(q, Color("#8d8d8d"))
+	sb.set_corner_radius_all(10)
+	sb.set_border_width_all(3)
+	sb.border_color = Color(0.96, 0.93, 0.82, 0.9)
+	panel.add_theme_stylebox_override("panel", sb)
 
 	var box := VBoxContainer.new()
-	box.add_theme_constant_override("separation", 6)
+	box.add_theme_constant_override("separation", 8)
 	box.mouse_filter = Control.MOUSE_FILTER_IGNORE
-	banner.add_child(box)
+	panel.add_child(box)
 
 	var ql := Label.new()
 	ql.text = "\n".join(str(QUALITY_NAMES[q]).split())
 	ql.add_theme_font_size_override("font_size", 26)
-	ql.add_theme_color_override("font_color", Color("#fff8e6"))
-	ql.add_theme_color_override("font_outline_color", Color("#3b2410"))
+	ql.add_theme_color_override("font_color", Color(0.98, 0.96, 0.9))
+	ql.add_theme_color_override("font_outline_color", Color(0.16, 0.12, 0.08))
 	ql.add_theme_constant_override("outline_size", 5)
 	ql.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	ql.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	box.add_child(ql)
 
-	var nl := Label.new()
-	nl.text = "\n".join(str(info.get("name", "")).split())
-	nl.add_theme_font_size_override("font_size", 24)
-	nl.add_theme_color_override("font_color", Color("#fff8e6"))
-	nl.add_theme_color_override("font_outline_color", Color("#3b2410"))
-	nl.add_theme_constant_override("outline_size", 5)
-	nl.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
-	nl.mouse_filter = Control.MOUSE_FILTER_IGNORE
-	box.add_child(nl)
-
-	_root.add_child(banner)
-	_name_banner = banner
+	var nl2 := Label.new()
+	nl2.text = "\n".join(str(info.get("name", "")).split())
+	nl2.add_theme_font_size_override("font_size", 24)
+	nl2.add_theme_color_override("font_color", Color(0.95, 0.91, 0.8))
+	nl2.add_theme_color_override("font_outline_color", Color(0.1, 0.05, 0.04))
+	nl2.add_theme_constant_override("outline_size", 5)
+	nl2.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	nl2.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	box.add_child(nl2)
+	return panel
 
 
 ## 赠送后刷新数值 + 播一次特效
